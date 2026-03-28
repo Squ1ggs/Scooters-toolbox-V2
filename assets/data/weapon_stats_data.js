@@ -4263,7 +4263,7 @@ const WEAPON_STATS_DATA = {
       },
       "ORD_Tether_Snare": {
         "impactforce_value": 30000.0,
-        "heatimpulse_value": 0.2,
+        "heatimpulse_value": 0.3,
         "modereturn_scale": 1.125,
         "modeswitch_scale": 1.125,
         "damageradius_value": 50.0,

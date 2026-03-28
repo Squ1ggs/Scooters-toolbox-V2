@@ -990,7 +990,7 @@ function getAllParts(){
     window.verifyC4shLegacyClassModSkillParts = verifyC4shLegacyClassModSkillParts;
     try {
       const check = verifyC4shLegacyClassModSkillParts();
-      console.info('verifyC4shLegacyClassModSkillParts passed:', check);
+      // Debug log removed for production build.
     } catch(e){
       console.error('verifyC4shLegacyClassModSkillParts failed:', e);
     }

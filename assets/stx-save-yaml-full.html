@@ -1,19 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<meta name="color-scheme" content="dark"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="dark" name="color-scheme"/>
 <title>Save / YAML — Scooter's Toolbox</title>
-<meta name="stx-analytics-endpoint" content="https://scooters-toolbox.netlify.app/.netlify/functions/track"/>
-<meta name="stx-counter-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/counter"/>
-<meta name="stx-items-bump-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump"/>
-<meta name="stx-items-bump-key" content=""/>
-<link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
-<link rel="icon" href="./favicon.ico" sizes="any" type="image/x-icon"/>
-<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
-<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="" name="stx-items-bump-key"/>
+<link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+<link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <style>
 /* Aligned with index.html + bulk-serial-validator.html (cyan / pink toolbox) */
 :root {
@@ -285,39 +286,39 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <body class="editor-page">
 <div class="app-shell">
 <header class="header-bar" role="banner">
-  <img src="./favicon.ico" alt="" class="header-icon" width="48" height="48" aria-hidden="true"/>
-  <div class="header-main">
-    <h1 class="header-title">Save / YAML</h1>
-    <p>Full-page editor — same tools as the <strong>Save / YAML</strong> slide-out on the main toolbox. Use this when you want more room for large saves, YAML edits, and serial lists.</p>
-  </div>
-  <div class="bv-header-actions">
-    <a class="btn btn--brand" href="../index.html">← Full toolbox</a>
-    <a class="btn btn--brand" href="../legacy/legit-builder.html" target="_blank" rel="noopener noreferrer">Legit Builder</a>
-    <a class="btn btn--brand" href="./bulk-serial-validator.html" target="_blank" rel="noopener noreferrer">Bulk serial validator</a>
-    <a class="btn btn--brand" href="../legacy/bl4-bulk-decoder.html" target="_blank" rel="noopener noreferrer">Bulk decoder</a>
-    <!-- Public Stats: remove data-stx-stats-dev + stx-site-stats-hidden; set meta stx-counter-url. Until then: Shift/Ctrl+click header favicon (session sync across pages). -->
-    <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
-      <summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
-      <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
-        <h4>Site (server)</h4>
-        <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
-        <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
-        <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-        <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
-        <hr class="stx-counter-hr"/>
-        <h4>Your browser</h4>
-        <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
-        <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-      </div>
-    </details>
-    <details class="support-menu instructions-menu" id="stxInstructionsMenuYaml">
-      <summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
-      <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox user guide">
-        <iframe class="instructions-menu__embed" id="stxInstructionsFrameYaml" title="Scooter's Toolbox user guide"></iframe>
-        <p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" target="_blank" rel="noopener">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
-      </div>
-    </details>
-  </div>
+<img alt="" aria-hidden="true" class="header-icon" height="48" src="./favicon.ico" width="48"/>
+<div class="header-main">
+<h1 class="header-title">Save / YAML</h1>
+<p>Full-page editor — same tools as the <strong>Save / YAML</strong> slide-out on the main toolbox. Use this when you want more room for large saves, YAML edits, and serial lists.</p>
+</div>
+<div class="bv-header-actions">
+<a class="btn btn--brand" href="../index.html">← Full toolbox</a>
+<a class="btn btn--brand" href="../legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
+<a class="btn btn--brand" href="./bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
+<a class="btn btn--brand" href="../legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
+<!-- Public Stats: remove data-stx-stats-dev + stx-site-stats-hidden; set meta stx-counter-url. Until then: Shift/Ctrl+click header favicon (session sync across pages). -->
+<details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
+<summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
+<div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
+<h4>Site (server)</h4>
+<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+<p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
+<hr class="stx-counter-hr"/>
+<h4>Your browser</h4>
+<div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+</div>
+</details>
+<details class="support-menu instructions-menu" id="stxInstructionsMenuYaml">
+<summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
+<div aria-label="Scooter's Toolbox user guide" class="support-menu__panel instructions-menu__panel" role="region">
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameYaml" title="Scooter's Toolbox user guide"></iframe>
+<p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" rel="noopener" target="_blank">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
+</div>
+</details>
+</div>
 </header>
 <script>
 (function () {
@@ -359,296 +360,297 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </script>
 <div class="stx-saveyaml-panel">
 <div id="rp-saveyaml-drawer-body">
-      <details id="saveYamlDetails" open style="margin-top:10px;">
-        <summary style="color:#00f3ff;font-weight:700;">Save and YAML section</summary>
-        <div style="margin-top:10px;">
-          <div class="paste-section" style="margin-bottom: 20px;">
-            <div id="paste-section-content" style="margin-top: 15px; display: block; overflow: hidden; transition: max-height 0.3s ease-in-out;">
-              <div id="deserializer-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
-            </div>
-          </div>
-          <div id="legit-section" style="margin-top: 0; display: block; overflow: visible; padding: 14px; border-radius: 10px; border: 1px solid rgba(0, 243, 255, 0.28); background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(255, 0, 200, 0.05) 100%);">
-            <div style="color: #00f3ff; font-weight: 700; font-size: 0.95em; margin-bottom: 6px;">Data validation (Legit Builder)</div>
-            <p style="color: rgba(255,255,255,0.72); font-size: 0.88em; margin: 0 0 12px 0; line-height: 1.45;">Same <code>legit-builder-core</code> checks as the standalone pages — open in a new tab.</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <a class="btn btn--brand" href="../legacy/legit-builder.html" target="_blank" rel="noopener noreferrer">Legit Builder</a>
-              <a class="btn btn--brand" href="./bulk-serial-validator.html" target="_blank" rel="noopener noreferrer">Bulk serial validator</a>
-              <a class="btn" href="../legacy/bl4-bulk-decoder.html" target="_blank" rel="noopener noreferrer">Bulk decoder</a>
-            </div>
-          </div>
-          <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
-          <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
-            <label style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;" for="steamIdInput"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
-            <input aria-label="Steam ID" id="steamIdInput" maxlength="17" pattern="[0-9]{17}" placeholder="76561198012345678" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
-            <p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Your 17-digit Steam ID or Epic Account ID. This will be saved automatically and remembered for future use.</p>
-          </div>
-          <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
-            <strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
-            <p style="color: #c7e9ff; font-size: 0.9em; margin: 0 0 15px 0; line-height: 1.5;">Select and convert .sav files to YAML. Character and <strong>profile.sav</strong> use the same encryption; pick the matching file then <strong>Convert .sav to YAML</strong>.</p>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-              <input accept=".sav" aria-label="Upload save file" id="savFileInput" style="display: none;" type="file"/>
-              <input accept=".sav" aria-label="Upload profile save file" id="profileSavFileInput" style="display: none;" type="file"/>
-              <input accept=".yaml,.yml" aria-label="Upload YAML file" id="yamlFileInput" style="display: none;" type="file"/>
-              <div style="display:flex; gap:10px; width:100%; margin-top:10px; flex-wrap: wrap;">
-                <button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load YAML File</button>
-                <button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load .sav File</button>
-                <button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load profile.sav</button>
-                <button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button">Convert .sav to YAML</button>
-              </div>
-              <div id="sav-file-info" style="margin-top: 0; padding: 12px; width: 100%; background: linear-gradient(90deg, rgba(255, 0, 150, 0.25), rgba(0, 255, 200, 0.35), rgba(0, 150, 255, 0.25)), rgba(0, 0, 0, 0.35); border-radius: 0 0 8px 8px; color: #fff; font-size: 1.05em; font-weight: 700; display: none; text-align: center;">Loaded - now click convert to YAML</div>
-              <div style="display:flex; gap:10px; width:100%; margin-top:10px;">
-                <button class="btn btn-primary" id="saveYAMLToSAVBtn" style="flex: 1;" type="button">Save YAML</button>
-                <button class="btn btn-primary primary-save-gradient pinkblue-convert-btn" id="convertYAMLToSAVBtn" style="flex: 1; min-width: 150px;" type="button">Convert to .sav</button>
-              </div>
-            </div>
-          </div>
-          <textarea aria-label="YAML editor" id="yamlInput" placeholder="load or Paste your YAML file content here to extract item serials from the backpack section of the yaml" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
-          <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
-            <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-              <div>
-                <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-char-name">Character Name:</label>
-                <input aria-label="YAML character name" id="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
-                  <button class="btn btn-Firmware" data-action="set-character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
-                  <button class="btn btn-Firmware" data-action="set-character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
-                  <button class="btn btn-Firmware" data-action="set-character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
-                  <button class="btn btn-Firmware" data-action="set-character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
-                  <button class="btn btn-Firmware" data-action="set-character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" type="button" title="YAML class: Char_RoboDealer (internal Robodealer)">C4sh</button>
-                </div>
-                <div style="margin-top: 10px;">
-                  <div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
-                  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn btn-Firmware" data-action="set-difficulty" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
-                    <button class="btn btn-Firmware" data-action="set-difficulty" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
-                    <button class="btn btn-Firmware" data-action="set-difficulty" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
+<details id="saveYamlDetails" open="" style="margin-top:10px;">
+<summary style="color:#00f3ff;font-weight:700;">Save and YAML section</summary>
+<div style="margin-top:10px;">
+<div class="paste-section" style="margin-bottom: 20px;">
+<div id="paste-section-content" style="margin-top: 15px; display: block; overflow: hidden; transition: max-height 0.3s ease-in-out;">
+<div id="deserializer-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
+</div>
+</div>
+<div id="legit-section" style="margin-top: 0; display: block; overflow: visible; padding: 14px; border-radius: 10px; border: 1px solid rgba(0, 243, 255, 0.28); background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(255, 0, 200, 0.05) 100%);">
+<div style="color: #00f3ff; font-weight: 700; font-size: 0.95em; margin-bottom: 6px;">Data validation (Legit Builder)</div>
+<p style="color: rgba(255,255,255,0.72); font-size: 0.88em; margin: 0 0 12px 0; line-height: 1.45;">Same <code>legit-builder-core</code> checks as the standalone pages — open in a new tab.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<a class="btn btn--brand" href="../legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
+<a class="btn btn--brand" href="./bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
+<a class="btn" href="../legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
+</div>
+</div>
+<div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
+<div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
+<label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
+<input aria-label="Steam ID" id="steamIdInput" maxlength="17" name="steamIdInput" pattern="[0-9]{17}" placeholder="76561198012345678" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
+<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Your 17-digit Steam ID or Epic Account ID. This will be saved automatically and remembered for future use.</p>
+</div>
+<div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
+<strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
+<p style="color: #c7e9ff; font-size: 0.9em; margin: 0 0 15px 0; line-height: 1.5;">Select and convert .sav files to YAML. Character and <strong>profile.sav</strong> use the same encryption; pick the matching file then <strong>Convert .sav to YAML</strong>.</p>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+<input accept=".sav" aria-label="Upload save file" id="savFileInput" name="savFileInput" style="display: none;" type="file"/>
+<input accept=".sav" aria-label="Upload profile save file" id="profileSavFileInput" name="profileSavFileInput" style="display: none;" type="file"/>
+<input accept=".yaml,.yml" aria-label="Upload YAML file" id="yamlFileInput" name="yamlFileInput" style="display: none;" type="file"/>
+<div style="display:flex; gap:10px; width:100%; margin-top:10px; flex-wrap: wrap;">
+<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load YAML File</button>
+<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load .sav File</button>
+<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load profile.sav</button>
+<button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button">Convert .sav to YAML</button>
+</div>
+<div id="sav-file-info" style="margin-top: 0; padding: 12px; width: 100%; background: linear-gradient(90deg, rgba(255, 0, 150, 0.25), rgba(0, 255, 200, 0.35), rgba(0, 150, 255, 0.25)), rgba(0, 0, 0, 0.35); border-radius: 0 0 8px 8px; color: #fff; font-size: 1.05em; font-weight: 700; display: none; text-align: center;">Loaded - now click convert to YAML</div>
+<div style="display:flex; gap:10px; width:100%; margin-top:10px;">
+<button class="btn btn-primary" id="saveYAMLToSAVBtn" style="flex: 1;" type="button">Save YAML</button>
+<button class="btn btn-primary primary-save-gradient pinkblue-convert-btn" id="convertYAMLToSAVBtn" style="flex: 1; min-width: 150px;" type="button">Convert to .sav</button>
+</div>
+</div>
+</div>
+<textarea aria-label="YAML editor" id="yamlInput" name="yamlInput" placeholder="load or Paste your YAML file content here to extract item serials from the backpack section of the yaml" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
+<div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
+<div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
+<div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+<div>
+<label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
+<input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+<button class="btn btn-Firmware" data-action="set-character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
+</div>
+<div style="margin-top: 10px;">
+<div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+<button class="btn btn-Firmware" data-action="set-difficulty" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
+</div>
+</div>
+<div id="presetButtonsExtra" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">
+<div id="ccRuntimeStatus" style="margin:10px 0 10px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.25); font-size:13px;">
+<div id="ccRuntimeStatusHeader" style="font-weight:900; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;"><span>Runtime status</span><span id="ccRuntimeStatusChevron" style="opacity:0.85; font-size:12px;">&gt;</span></div>
+<div id="ccRuntimeStatusBody" style="opacity:0.92; line-height:1.5; display:none;">Loading...</div>
+</div>
+<div style="font-weight: 700; margin-bottom: 8px;">World / Missions</div>
+<div class="btnRow" style="display: flex; flex-wrap: wrap; gap: 8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
+</div>
+<div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
+<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP (Oak2 curve from Nexus)" type="button">Max Level (60)</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="setMaxSDU" data-requires="character" title="Maxes SDU upgrades" type="button">Max SDU</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockVaultPowers" data-requires="character" title="Unlocks all vault powers" type="button">Unlock All Vault Powers</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockAllHoverDrives" data-requires="character" title="Unlocks all hover drives" type="button">Unlock All Hover Drives</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockAllSpecialization" data-requires="character" title="Unlocks + maxes specializations" type="button">Unlock All Specializations</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="maxCurrency" data-requires="character" title="Sets cash+eridium to max" type="button">Max Currency</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="maxAmmo" data-requires="character" title="Sets ammo pools to max" type="button">Max Ammo</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="character" title="Runs the major character/world presets" type="button">Unlock / Max Everything</button>
+</div>
+<div style="font-weight:700;margin:14px 0 8px;">World / Challenges</div>
+<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllCollectibles" data-requires="character" title="Unlocks all collectibles (requires full toolbox)" type="button">Unlock All Collectibles</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllChallenges" data-requires="character" title="Completes all challenges (requires full toolbox)" type="button">Complete All Challenges</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllAchievements" data-requires="character" title="Completes all achievements (requires full toolbox)" type="button">Complete All Achievements</button>
+</div>
+<div style="font-weight:700;margin:14px 0 8px;">Items</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px;">
+<label style="color:#00c8ff;font-size:0.88em;display:flex;align-items:center;gap:8px;margin:0;">Target item level
+                      <input aria-label="Target item level for all serials" id="yaml-items-target-level" max="60" min="1" name="yaml-items-target-level" style="width:4.2rem;padding:6px 8px;background:#2a2a2a;border:2px solid #00f3ff;border-radius:8px;color:#00f3ff;font-size:1em;" type="number" value="60"/>
+</label>
+</div>
+<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="updateAllSerialLevels" data-requires="character" title="Sets all backpack/equipped/bank item levels to your character level from this save" type="button">Set All Items to Character Level</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="setAllItemsToSpecificLevel" data-requires="character" title="Sets all items to the target level above (character level unchanged)" type="button">Set All Items to Target Level</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="showAddItemsPopup" data-requires="character" title="Add item serials to backpack" type="button">Add Item Serials</button>
+</div>
+<div style="font-weight:700;margin:14px 0 8px;">Profile Only</div>
+<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockNewGameShortcuts" data-requires="profile" title="Unlocks new game shortcuts (requires full toolbox)" type="button">Unlock New Game Shortcuts</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockAllCosmetics" data-requires="profile" title="Unlocks all cosmetics (requires full toolbox)" type="button">Unlock All Cosmetics</button>
+</div>
+<div class="info-box" style="margin-top:14px;padding:10px 12px;font-size:0.85em;opacity:0.9;">
+<strong>Two YAML types:</strong> (1) <strong>Character</strong> — begins with <code>state:</code> (e.g. inventory under <code>state.inventory</code>). Character / Items buttons apply here. (2) <strong>Profile</strong> — includes <code>domains.local.unlockables</code> (often below <code>inputprefs</code> / UI). Profile Only buttons merge into that tree; missing <code>domains</code> / <code>unlockables</code> paths are created if needed.
                   </div>
-                </div>
-                <div id="presetButtonsExtra" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">
-                  <div id="ccRuntimeStatus" style="margin:10px 0 10px; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.25); font-size:13px;">
-                    <div id="ccRuntimeStatusHeader" style="font-weight:900; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;"><span>Runtime status</span><span id="ccRuntimeStatusChevron" style="opacity:0.85; font-size:12px;">&gt;</span></div>
-                    <div id="ccRuntimeStatusBody" style="opacity:0.92; line-height:1.5; display:none;">Loading...</div>
-                  </div>
-                  <div style="font-weight: 700; margin-bottom: 8px;">World / Missions</div>
-                  <div class="btnRow" style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
-                  </div>
-                  <div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
-                  <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-                    <button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP (Oak2 curve from Nexus)" type="button">Max Level (60)</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="setMaxSDU" data-requires="character" title="Maxes SDU upgrades" type="button">Max SDU</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockVaultPowers" data-requires="character" title="Unlocks all vault powers" type="button">Unlock All Vault Powers</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllHoverDrives" data-requires="character" title="Unlocks all hover drives" type="button">Unlock All Hover Drives</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllSpecialization" data-requires="character" title="Unlocks + maxes specializations" type="button">Unlock All Specializations</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="maxCurrency" data-requires="character" title="Sets cash+eridium to max" type="button">Max Currency</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="maxAmmo" data-requires="character" title="Sets ammo pools to max" type="button">Max Ammo</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="character" title="Runs the major character/world presets" type="button">Unlock / Max Everything</button>
-                  </div>
-                  <div style="font-weight:700;margin:14px 0 8px;">World / Challenges</div>
-                  <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllCollectibles" data-requires="character" title="Unlocks all collectibles (requires full toolbox)" type="button">Unlock All Collectibles</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllChallenges" data-requires="character" title="Completes all challenges (requires full toolbox)" type="button">Complete All Challenges</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="completeAllAchievements" data-requires="character" title="Completes all achievements (requires full toolbox)" type="button">Complete All Achievements</button>
-                  </div>
-                  <div style="font-weight:700;margin:14px 0 8px;">Items</div>
-                  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px;">
-                    <label style="color:#00c8ff;font-size:0.88em;display:flex;align-items:center;gap:8px;margin:0;">Target item level
-                      <input aria-label="Target item level for all serials" id="yaml-items-target-level" max="60" min="1" style="width:4.2rem;padding:6px 8px;background:#2a2a2a;border:2px solid #00f3ff;border-radius:8px;color:#00f3ff;font-size:1em;" type="number" value="60"/>
-                    </label>
-                  </div>
-                  <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-                    <button class="btn btn-Firmware" data-action="call" data-fn="updateAllSerialLevels" data-requires="character" title="Sets all backpack/equipped/bank item levels to your character level from this save" type="button">Set All Items to Character Level</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="setAllItemsToSpecificLevel" data-requires="character" title="Sets all items to the target level above (character level unchanged)" type="button">Set All Items to Target Level</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="showAddItemsPopup" data-requires="character" title="Add item serials to backpack" type="button">Add Item Serials</button>
-                  </div>
-                  <div style="font-weight:700;margin:14px 0 8px;">Profile Only</div>
-                  <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockNewGameShortcuts" data-requires="profile" title="Unlocks new game shortcuts (requires full toolbox)" type="button">Unlock New Game Shortcuts</button>
-                    <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllCosmetics" data-requires="profile" title="Unlocks all cosmetics (requires full toolbox)" type="button">Unlock All Cosmetics</button>
-                  </div>
-                  <div class="info-box" style="margin-top:14px;padding:10px 12px;font-size:0.85em;opacity:0.9;">
-                    <strong>Two YAML types:</strong> (1) <strong>Character</strong> — begins with <code>state:</code> (e.g. inventory under <code>state.inventory</code>). Character / Items buttons apply here. (2) <strong>Profile</strong> — includes <code>domains.local.unlockables</code> (often below <code>inputprefs</code> / UI). Profile Only buttons merge into that tree; missing <code>domains</code> / <code>unlockables</code> paths are created if needed.
-                  </div>
-                </div>
-              </div>
-              <div>
-                <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-char-level">Character Level:</label>
-                <input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
-              </div>
-              <div>
-                <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-char-xp">Experience Points:</label>
-                <input aria-label="YAML character experience" id="yaml-char-xp" min="0" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)"/>
-              </div>
-              <div>
-                <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-spec-level">Specialization Level:</label>
-                <input aria-label="YAML specialization level" id="yaml-spec-level" min="1" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
-              </div>
-              <div>
-                <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-spec-points">Specialization Points:</label>
-                <input aria-label="YAML specialization points" id="yaml-spec-points" min="0" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
-              </div>
-            </div>
-            <div>
-              <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-cash">Cash:</label>
-              <input aria-label="YAML cash" id="yaml-cash" min="0" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
-            </div>
-            <div>
-              <label style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" for="yaml-eridium">Eridium:</label>
-              <input aria-label="YAML eridium" id="yaml-eridium" min="0" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
-            </div>
-            <div id="ccExtraYamlEditors" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.28); background: rgba(0,0,0,0.18);">
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-                <div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Advanced YAML Edits</div>
-                <button id="ccSafeNormalizeBtn" class="btn btn-Firmware" type="button" style="padding:8px 10px; min-width:210px;">Normalize YAML (safe)</button>
-              </div>
-              <div style="margin-top:10px;">
-                <label for="yaml-vh-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Vault Hunter level (globals):</label>
-                <input id="yaml-vh-level-unlocked" type="number" min="0" max="999" placeholder="e.g. 6" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;"/>
-              </div>
-              <div style="margin-top:12px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-                  <div style="color:#00c8ff; font-weight:800;">Ammo</div>
-                  <div style="color:#00c8ff; opacity:0.75; font-size:12px;">Auto-detects repkit / repairkit and preserves formatting</div>
-                </div>
-                <div id="ccAmmoList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
-                  <div style="color:#00c8ff; opacity:0.75; font-size:12px;">(Load YAML to list ammo keys)</div>
-                </div>
-              </div>
-              <div style="margin-top:12px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-                  <div style="color:#00c8ff; font-weight:800;">Shiny Gear Unlocks</div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button id="ccShinyAllOnBtn" class="btn btn-Firmware" type="button" style="padding:8px 10px; min-width:140px;">Unlock all (set to 1)</button>
-                    <button id="ccShinyAllOffBtn" class="btn btn-Firmware" type="button" style="padding:8px 10px; min-width:140px;">Lock all (set to 0)</button>
-                  </div>
-                </div>
-                <div id="ccShinyGearList" style="margin-top:8px; max-height: 220px; overflow:auto; padding-right:4px;">
-                  <div style="color:#00c8ff; opacity:0.75; font-size:12px;">(Load YAML to list shiny gear flags)</div>
-                </div>
-              </div>
-              <div id="ccExtraYamlMsg" style="margin-top:10px; color:#00c8ff; font-size:0.9em; opacity:0.95; display:none;"></div>
-            </div>
-            <button class="btn btn-Firmware" data-action="apply-stats" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
-            <div id="yaml-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
-            <div id="ccMissionsEditor" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.35); background: rgba(0,0,0,0.22);">
-              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                <div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Missions</div>
-                <div id="ccMissionsFoundMeta" style="color:#00c8ff; opacity:0.8; font-size:12px;"></div>
-              </div>
-              <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:end;">
-                <div style="flex:1; min-width:240px;">
-                  <label for="ccMissionScopeSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Scope:</label>
-                  <select id="ccMissionScopeSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;">
-                    <option value="all">All status nodes</option>
-                    <option value="missionset">Mission sets only</option>
-                    <option value="mission">Missions only</option>
-                    <option value="objective">Objectives only</option>
-                  </select>
-                </div>
-                <button id="ccStripUiFlagsBtn" class="btn btn-Firmware" type="button" style="padding:10px; min-width:220px; align-self:end;">Strip ui_flags</button>
-                <button id="ccAddUiFlagsBtn" class="btn btn-Firmware" type="button" style="padding:10px; min-width:220px; align-self:end;">Add ui_flags = 1</button>
-              </div>
-              <div style="display:grid; grid-template-columns: 1fr 220px; gap:10px; margin-top:10px; align-items:end;">
-                <div>
-                  <label for="ccMissionNodeSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Found mission entry:</label>
-                  <select id="ccMissionNodeSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;">
-                    <option value="">(Load YAML to list missions)</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="ccMissionStatusSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Status:</label>
-                  <select id="ccMissionStatusSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;"></select>
-                </div>
-              </div>
-              <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-                <button id="ccApplyMissionStatusBtn" class="btn btn-Firmware" type="button" style="padding:10px; min-width:220px;">Apply Mission Status</button>
-                <div id="ccMissionsStatusMsg" style="color:#00c8ff; font-size:0.9em; opacity:0.9; display:none; align-self:center;"></div>
-              </div>
-              <div style="margin-top:8px; color:#00c8ff; opacity:0.75; font-size:12px; line-height:1.35;">Edits are format-preserving: only the selected status: line is changed.</div>
-            </div>
-          </div>
-          <div id="yaml-serials-list" style="margin-top: 15px; overflow-y: auto;">
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-              <span aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em;">Found Serials (<span id="yaml-serial-count">0</span>):</span>
-              <input type="file" id="loadDecodedResultsInput" accept=".json" style="display:none"/>
-              <button type="button" class="btn btn-Firmware" id="loadDecodedResultsBtn" title="Load bulk decoder export (stx-decoded-results.json) for correct names/levels. Decode your serials in the bulk decoder first, export JSON, then load here.">Load decoded results</button>
-              <span id="decodedResultsStatus" style="font-size:0.8em;color:rgba(0,243,255,0.8);"></span>
-              <span class="decoded-results-hint" style="font-size:0.75em;color:rgba(0,243,255,0.55);">— Load for names, levels &amp; deserialized codes</span>
-            </div>
-            <div id="yaml-serials-pagination" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
-              <button type="button" class="btn" id="yaml-serials-prev-btn" style="padding:6px 12px;font-size:0.85em;">Previous 50</button>
-              <button type="button" class="btn" id="yaml-serials-next-btn" style="padding:6px 12px;font-size:0.85em;">Next 50</button>
-              <span id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
-              <button type="button" class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials (one per line). Use TXT or Auto mode, then Decode.">Open serials in bulk decoder</button>
-              <button type="button" class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB.">Open full YAML in bulk decoder</button>
-            </div>
-            <p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Large lists: the editor only previews 50 rows and decodes in chunks. For thousands of items, use <strong>Open serials in bulk decoder</strong> or export JSON from the bulk tool and <strong>Load decoded results</strong> here for names without stressing this page.</p>
-            <div id="yaml-serials-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
-          </div>
-          <details id="rebuildPasteCodeDetails" open style="margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(0,243,255,0.28); border-radius: 12px; background: rgba(0,243,255,0.05);">
-            <summary style="cursor: pointer; color: #00f3ff; font-weight: 700;">Builder import buffer</summary>
-            <p style="color: rgba(233,254,255,0.78); font-size: 0.88em; margin: 10px 0; line-height: 1.45;">Serial search <strong>Add Selected to Editor</strong> and each backpack row&rsquo;s <strong>Import</strong> fill this area (Base85 is converted to deserialized when possible). Copy into the <a href="../index.html" style="color:#7dd3fc;">full toolbox</a> paste/import box, or use <strong>Append to Add serials</strong> below.</p>
-            <label for="importBox" style="color:#00c8ff;font-size:0.85em;display:block;margin-top:8px;">Deserialized / import buffer</label>
-            <textarea id="importBox" rows="6" placeholder="Imported code appears here…" style="width:100%;box-sizing:border-box;padding:10px;margin-top:6px;background:#1a2332;border:1px solid rgba(0,243,255,0.35);border-radius:8px;color:#b8e6f0;font-family:ui-monospace,Consolas,monospace;font-size:12px;resize:vertical;"></textarea>
-            <textarea id="outCode" aria-hidden="true" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></textarea>
-            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
-              <button type="button" class="btn btn-Firmware" id="stxSaveyamlCopyImportBtn">Copy buffer</button>
-              <button type="button" class="btn" id="stxSaveyamlAppendToYamlAddBtn" title="Append buffer lines to Add New Item to YAML">Append to &quot;Add serials&quot; box</button>
-            </div>
-          </details>
-          <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
-            <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-            <p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load files with thousands of serials, search by name or ID, then add selected items to the loaded YAML, into the <strong>Builder import buffer</strong> above, or use the full toolbox import from there.</p>
-            <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
-            <textarea id="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
-            </details>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
-              <input accept=".txt,.yaml,.yml,.json,.log,.save" aria-label="Load serial file" id="serialLibraryFileInput" style="display: none;" type="file"/>
-              <button class="btn btn-Firmware" type="button" onclick="document.getElementById('serialLibraryFileInput').click()">Load Serial File</button>
-              <button class="btn btn-Firmware" type="button" id="serialLibraryPasteBtn">Load from Paste</button>
-              <input aria-label="Search serials by name or ID" id="serialSearchInput" placeholder="Search by item name or ID (e.g. 254:10)…" style="flex: 1; min-width: 200px; padding: 8px 12px; background: #1a2332; border: 1px solid rgba(0,243,255,0.4); border-radius: 8px; color: #b8e6f0; font-size: 0.95em;" type="text"/>
-              <button class="btn btn-Firmware" id="serialSearchSelectAllBtn" type="button">Select All</button>
-              <button class="btn btn-Firmware" id="serialSearchClearBtn" type="button">Clear</button>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
-              <button class="btn btn-primary primary-save-gradient" id="serialSearchAddToYamlBtn" type="button" title="Add selected serials to loaded YAML backpack">Add Selected to YAML</button>
-              <button class="btn btn-primary primary-save-gradient" id="serialSearchAddToEditorBtn" type="button" title="Import selected serials into the paste/import editor">Add Selected to Editor</button>
-            </div>
-            <div id="serial-search-status" style="color: rgba(0,200,255,0.9); font-size: 0.85em; margin-bottom: 8px;"></div>
-            <div id="serial-search-results" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid rgba(0,200,255,0.2);">
-              <div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Load a file or paste serials above to search.</div>
-            </div>
-          </div>
-          <div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
-            <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
-            <p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste one <strong>Base85</strong> or <strong>deserialized</strong> serial per line for a quick single or bulk add into the loaded save’s <code>backpack</code>. Lines starting with <code>#</code> are ignored.</p>
-            <label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
-            <textarea id="yamlAddSerialsInput" aria-label="Serials to add to YAML backpack" placeholder="One serial per line — Base85 or deserialized&#10;Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
-              <button class="btn btn-Firmware" type="button" id="yamlAddSerialsBtn">Add to backpack</button>
-              <button class="btn" type="button" id="yamlAddSerialsClearBtn">Clear box</button>
-              <span style="color: rgba(255,255,255,0.55); font-size: 0.8em;">Ctrl+Enter in the box also adds</span>
-            </div>
-            <div id="yaml-add-serials-status" role="status" style="display: none; margin-top: 10px; font-size: 0.88em; line-height: 1.35;"></div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; align-items: stretch; margin-top: 14px;">
-              <div id="yaml-auto-slot-info" style="grid-column: 1 / -1; color: #00c8ff; font-size: 0.75em; margin-top: 2px; text-align: center; line-height: 1.2;">Next available slot:</div>
-              <button class="btn btn-primary primary-save-gradient" id="btnExportYaml" style="grid-column: 1 / -1; width: 100%; padding: 10px;" type="button">Export Updated YAML</button>
-              <button class="btn btn-primary primary-save-gradient" id="btnExportSav" style="grid-column: 1 / -1; width: 100%; padding: 10px;" type="button">Export .sav</button>
-            </div>
-          </div>
-          <div class="button-group">
-            <button class="btn btn-Firmware" id="goBackFromYAMLBtn" type="button">Back to Editor</button>
-          </div>
-        </div>
-      </details>
-    </div>
+</div>
+</div>
+<div>
+<label for="yaml-char-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Level:</label>
+<input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" name="yaml-char-level" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+</div>
+<div>
+<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Experience Points:</label>
+<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
+</div>
+<div>
+<label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>
+<input aria-label="YAML specialization level" id="yaml-spec-level" min="1" name="yaml-spec-level" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+</div>
+<div>
+<label for="yaml-spec-points" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Points:</label>
+<input aria-label="YAML specialization points" id="yaml-spec-points" min="0" name="yaml-spec-points" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+</div>
+</div>
+<div>
+<label for="yaml-cash" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Cash:</label>
+<input aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+</div>
+<div>
+<label for="yaml-eridium" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Eridium:</label>
+<input aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+</div>
+<div id="ccExtraYamlEditors" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.28); background: rgba(0,0,0,0.18);">
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+<div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Advanced YAML Edits</div>
+<button class="btn btn-Firmware" id="ccSafeNormalizeBtn" style="padding:8px 10px; min-width:210px;" type="button">Normalize YAML (safe)</button>
+</div>
+<div style="margin-top:10px;">
+<label for="yaml-vh-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Vault Hunter level (globals):</label>
+<input id="yaml-vh-level-unlocked" max="999" min="0" name="yaml-vh-level-unlocked" placeholder="e.g. 6" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;" type="number"/>
+</div>
+<div style="margin-top:12px;">
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+<div style="color:#00c8ff; font-weight:800;">Ammo</div>
+<div style="color:#00c8ff; opacity:0.75; font-size:12px;">Auto-detects repkit / repairkit and preserves formatting</div>
+</div>
+<div id="ccAmmoList" style="margin-top:8px; display:flex; flex-direction:column; gap:8px;">
+<div style="color:#00c8ff; opacity:0.75; font-size:12px;">(Load YAML to list ammo keys)</div>
+</div>
+</div>
+<div style="margin-top:12px;">
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+<div style="color:#00c8ff; font-weight:800;">Shiny Gear Unlocks</div>
+<div style="display:flex; gap:8px; flex-wrap:wrap;">
+<button class="btn btn-Firmware" id="ccShinyAllOnBtn" style="padding:8px 10px; min-width:140px;" type="button">Unlock all (set to 1)</button>
+<button class="btn btn-Firmware" id="ccShinyAllOffBtn" style="padding:8px 10px; min-width:140px;" type="button">Lock all (set to 0)</button>
+</div>
+</div>
+<div id="ccShinyGearList" style="margin-top:8px; max-height: 220px; overflow:auto; padding-right:4px;">
+<div style="color:#00c8ff; opacity:0.75; font-size:12px;">(Load YAML to list shiny gear flags)</div>
+</div>
+</div>
+<div id="ccExtraYamlMsg" style="margin-top:10px; color:#00c8ff; font-size:0.9em; opacity:0.95; display:none;"></div>
+</div>
+<button class="btn btn-Firmware" data-action="apply-stats" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
+<div id="yaml-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
+<div id="ccMissionsEditor" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.35); background: rgba(0,0,0,0.22);">
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+<div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Missions</div>
+<div id="ccMissionsFoundMeta" style="color:#00c8ff; opacity:0.8; font-size:12px;"></div>
+</div>
+<div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:end;">
+<div style="flex:1; min-width:240px;">
+<label for="ccMissionScopeSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Scope:</label>
+<select id="ccMissionScopeSelect" name="ccMissionScopeSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;">
+<option value="all">All status nodes</option>
+<option value="missionset">Mission sets only</option>
+<option value="mission">Missions only</option>
+<option value="objective">Objectives only</option>
+</select>
+</div>
+<button class="btn btn-Firmware" id="ccStripUiFlagsBtn" style="padding:10px; min-width:220px; align-self:end;" type="button">Strip ui_flags</button>
+<button class="btn btn-Firmware" id="ccAddUiFlagsBtn" style="padding:10px; min-width:220px; align-self:end;" type="button">Add ui_flags = 1</button>
+</div>
+<div style="display:grid; grid-template-columns: 1fr 220px; gap:10px; margin-top:10px; align-items:end;">
+<div>
+<label for="ccMissionNodeSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Found mission entry:</label>
+<select id="ccMissionNodeSelect" name="ccMissionNodeSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;">
+<option value="">(Load YAML to list missions)</option>
+</select>
+</div>
+<div>
+<label for="ccMissionStatusSelect" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Status:</label>
+<select id="ccMissionStatusSelect" name="ccMissionStatusSelect" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:0.95em;"></select>
+</div>
+</div>
+<div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+<button class="btn btn-Firmware" id="ccApplyMissionStatusBtn" style="padding:10px; min-width:220px;" type="button">Apply Mission Status</button>
+<div id="ccMissionsStatusMsg" style="color:#00c8ff; font-size:0.9em; opacity:0.9; display:none; align-self:center;"></div>
+</div>
+<div style="margin-top:8px; color:#00c8ff; opacity:0.75; font-size:12px; line-height:1.35;">Edits are format-preserving: only the selected status: line is changed.</div>
+</div>
+</div>
+<div id="yaml-serials-list" style="margin-top: 15px; overflow-y: auto;">
+<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+<span aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em;">Found Serials (<span id="yaml-serial-count">0</span>):</span>
+<input accept=".json" id="loadDecodedResultsInput" name="loadDecodedResultsInput" style="display:none" type="file"/>
+<button class="btn btn-Firmware" id="loadDecodedResultsBtn" title="Load bulk decoder export (stx-decoded-results.json) for correct names/levels. Decode your serials in the bulk decoder first, export JSON, then load here." type="button">Load decoded results</button>
+<span id="decodedResultsStatus" style="font-size:0.8em;color:rgba(0,243,255,0.8);"></span>
+<span class="decoded-results-hint" style="font-size:0.75em;color:rgba(0,243,255,0.55);">— Load for names, levels &amp; deserialized codes</span>
+</div>
+<div id="yaml-serials-pagination" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="btn" id="yaml-serials-prev-btn" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
+<button class="btn" id="yaml-serials-next-btn" style="padding:6px 12px;font-size:0.85em;" type="button">Next 50</button>
+<span id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
+<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials (one per line). Use TXT or Auto mode, then Decode." type="button">Open serials in bulk decoder</button>
+<button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB." type="button">Open full YAML in bulk decoder</button>
+</div>
+<p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Large lists: the editor only previews 50 rows and decodes in chunks. For thousands of items, use <strong>Open serials in bulk decoder</strong> or export JSON from the bulk tool and <strong>Load decoded results</strong> here for names without stressing this page.</p>
+<div id="yaml-serials-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+</div>
+<details id="rebuildPasteCodeDetails" open="" style="margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(0,243,255,0.28); border-radius: 12px; background: rgba(0,243,255,0.05);">
+<summary style="cursor: pointer; color: #00f3ff; font-weight: 700;">Builder import buffer</summary>
+<p style="color: rgba(233,254,255,0.78); font-size: 0.88em; margin: 10px 0; line-height: 1.45;">Serial search <strong>Add Selected to Editor</strong> and each backpack row’s <strong>Import</strong> fill this area (Base85 is converted to deserialized when possible). Copy into the <a href="../index.html" style="color:#7dd3fc;">full toolbox</a> paste/import box, or use <strong>Append to Add serials</strong> below.</p>
+<label for="importBox" style="color:#00c8ff;font-size:0.85em;display:block;margin-top:8px;">Deserialized / import buffer</label>
+<textarea id="importBox" name="importBox" placeholder="Imported code appears here…" rows="6" style="width:100%;box-sizing:border-box;padding:10px;margin-top:6px;background:#1a2332;border:1px solid rgba(0,243,255,0.35);border-radius:8px;color:#b8e6f0;font-family:ui-monospace,Consolas,monospace;font-size:12px;resize:vertical;"></textarea>
+<textarea aria-hidden="true" id="outCode" name="outCode" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1"></textarea>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+<button class="btn btn-Firmware" id="stxSaveyamlCopyImportBtn" type="button">Copy buffer</button>
+<button class="btn" id="stxSaveyamlAppendToYamlAddBtn" title="Append buffer lines to Add New Item to YAML" type="button">Append to "Add serials" box</button>
+</div>
+</details>
+<div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
+<div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load files with thousands of serials, search by name or ID, then add selected items to the loaded YAML, into the <strong>Builder import buffer</strong> above, or use the full toolbox import from there.</p>
+<details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
+<textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
+</details>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;">
+<input accept=".txt,.yaml,.yml,.json,.log,.save" aria-label="Load serial file" id="serialLibraryFileInput" name="serialLibraryFileInput" style="display: none;" type="file"/>
+<button class="btn btn-Firmware" onclick="document.getElementById('serialLibraryFileInput').click()" type="button">Load Serial File</button>
+<button class="btn btn-Firmware" id="serialLibraryPasteBtn" type="button">Load from Paste</button>
+<input aria-label="Search serials by name or ID" id="serialSearchInput" name="serialSearchInput" placeholder="Search by item name or ID (e.g. 254:10)…" style="flex: 1; min-width: 200px; padding: 8px 12px; background: #1a2332; border: 1px solid rgba(0,243,255,0.4); border-radius: 8px; color: #b8e6f0; font-size: 0.95em;" type="text"/>
+<button class="btn btn-Firmware" id="serialSearchSelectAllBtn" type="button">Select All</button>
+<button class="btn btn-Firmware" id="serialSearchClearBtn" type="button">Clear</button>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+<button class="btn btn-primary primary-save-gradient" id="serialSearchAddToYamlBtn" title="Add selected serials to loaded YAML backpack" type="button">Add Selected to YAML</button>
+<button class="btn btn-primary primary-save-gradient" id="serialSearchAddToEditorBtn" title="Import selected serials into the paste/import editor" type="button">Add Selected to Editor</button>
+</div>
+<div id="serial-search-status" style="color: rgba(0,200,255,0.9); font-size: 0.85em; margin-bottom: 8px;"></div>
+<div id="serial-search-results" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid rgba(0,200,255,0.2);">
+<div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Load a file or paste serials above to search.</div>
+</div>
+</div>
+<div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
+<div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
+<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste one <strong>Base85</strong> or <strong>deserialized</strong> serial per line for a quick single or bulk add into the loaded save’s <code>backpack</code>. Lines starting with <code>#</code> are ignored.</p>
+<label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
+<textarea aria-label="Serials to add to YAML backpack" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
+Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
+<button class="btn btn-Firmware" id="yamlAddSerialsBtn" type="button">Add to backpack</button>
+<button class="btn" id="yamlAddSerialsClearBtn" type="button">Clear box</button>
+<span style="color: rgba(255,255,255,0.55); font-size: 0.8em;">Ctrl+Enter in the box also adds</span>
+</div>
+<div id="yaml-add-serials-status" role="status" style="display: none; margin-top: 10px; font-size: 0.88em; line-height: 1.35;"></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; align-items: stretch; margin-top: 14px;">
+<div id="yaml-auto-slot-info" style="grid-column: 1 / -1; color: #00c8ff; font-size: 0.75em; margin-top: 2px; text-align: center; line-height: 1.2;">Next available slot:</div>
+<button class="btn btn-primary primary-save-gradient" id="btnExportYaml" style="grid-column: 1 / -1; width: 100%; padding: 10px;" type="button">Export Updated YAML</button>
+<button class="btn btn-primary primary-save-gradient" id="btnExportSav" style="grid-column: 1 / -1; width: 100%; padding: 10px;" type="button">Export .sav</button>
+</div>
+</div>
+<div class="button-group">
+<button class="btn btn-Firmware" id="goBackFromYAMLBtn" type="button">Back to Editor</button>
+</div>
+</div>
+</details>
+</div>
 </div>
 </div>
 <script src="js/cc-toolbox-analytics.js"></script>

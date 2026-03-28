@@ -1,20 +1,21 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="color-scheme" content="dark"/>
-  <meta name="stx-analytics-endpoint" content="https://scooters-toolbox.netlify.app/.netlify/functions/track"/>
-  <meta name="stx-counter-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/counter"/>
-  <meta name="stx-items-bump-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump"/>
-  <meta name="stx-items-bump-key" content=""/>
-  <title>Simple Builder — Scooter's Toolbox</title>
-  <link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
-  <link rel="icon" href="./favicon.ico" sizes="any" type="image/x-icon"/>
-  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
-  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
-  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="dark" name="color-scheme"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="" name="stx-items-bump-key"/>
+<title>Simple Builder — Scooter's Toolbox</title>
+<link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+<link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<style>
     :root {
       --bg-base: #060a12;
       --panel: rgba(5, 12, 24, 0.82);
@@ -227,37 +228,37 @@
       .stx-embed-back { width: auto; text-align: center; margin-left: 0; }
     }
   </style>
-  <script src="data/stx_dataset.js"></script>
-  <script src="data/stx_rarities.js"></script>
+<script src="data/stx_dataset.js"></script>
+<script src="data/stx_rarities.js"></script>
 </head>
 <body class="stx-embed-page">
-  <div class="wrap">
-  <header class="stx-topbar" role="banner">
-    <img src="./favicon.ico" alt="" width="48" height="48"/>
-    <div class="stx-topbar-text">
-      <span class="stx-topbar-brand">Scooter's Toolbox</span>
-      <span class="stx-topbar-title">Simple Builder</span>
-    </div>
-    <div class="stx-topbar-actions">
-      <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
-        <summary class="stx-embed-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
-        <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
-          <h4>Site (server)</h4>
-          <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
-          <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
-          <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-          <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
-          <hr class="stx-counter-hr"/>
-          <h4>Your browser</h4>
-          <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
-          <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-        </div>
-      </details>
-      <a class="stx-embed-back" href="./stx-save-yaml-full.html">Save / YAML</a>
-      <a class="stx-embed-back" href="../index.html">← Main toolbox</a>
-    </div>
-  </header>
-  <script>
+<div class="wrap">
+<header class="stx-topbar" role="banner">
+<img alt="" height="48" src="./favicon.ico" width="48"/>
+<div class="stx-topbar-text">
+<span class="stx-topbar-brand">Scooter's Toolbox</span>
+<span class="stx-topbar-title">Simple Builder</span>
+</div>
+<div class="stx-topbar-actions">
+<details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
+<summary class="stx-embed-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
+<div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
+<h4>Site (server)</h4>
+<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+<p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
+<hr class="stx-counter-hr"/>
+<h4>Your browser</h4>
+<div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+</div>
+</details>
+<a class="stx-embed-back" href="./stx-save-yaml-full.html">Save / YAML</a>
+<a class="stx-embed-back" href="../index.html">← Main toolbox</a>
+</div>
+</header>
+<script>
   (function () {
     var stats = document.getElementById('stxPublicCounterMenu');
     if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
@@ -281,127 +282,127 @@
     });
   })();
   </script>
-  <section class="card" id="leftCard">
-    <div class="hd">
-      <div class="k">Start</div>
-      <div class="pill"><span>Mode</span> <b id="modeLabel">ID</b></div>
-    </div>
-    <div class="bd">
-      <label for="stx_itemType">Item Type</label>
-      <select id="stx_itemType">
-        <option value="">Select item type...</option>
-        <option value="Weapon">Weapon</option>
-        <option value="Shield">Shield</option>
-        <option value="Repkit">Repkit</option>
-        <option value="Grenade">Grenade</option>
-        <option value="Gadget">Gadget</option>
-        <option value="Enhancement">Enhancement</option>
-        <option value="Class Mod">Class Mod</option>
-      </select>
-      <label id="manufacturerLabel" for="stx_manufacturer">Manufacturer</label>
-      <select id="stx_manufacturer"><option value="">Select manufacturer...</option></select>
-      <div class="row" id="weaponTypeRow" style="display:none;">
-        <div>
-          <label for="weaponType">Weapon Type</label>
-          <select id="weaponType">
-            <option value="Assault Rifle">Assault Rifle</option>
-            <option value="Pistol">Pistol</option>
-            <option value="Shotgun">Shotgun</option>
-            <option value="SMG">SMG</option>
-            <option value="Sniper Rifle">Sniper Rifle</option>
-            <option value="Heavy Weapon">Heavy Weapon</option>
-          </select>
-        </div>
-        <div>
-          <label for="level">Item level</label>
-          <input id="level" type="number" min="1" max="60" value="60"/>
-        </div>
-      </div>
-      <div class="row" id="weaponExtrasRow" style="display:none;">
-        <div>
-          <label for="skinSelect">Skin / Rarity ID (optional)</label>
-          <select id="skinSelect"><option value="">-- None --</option></select>
-        </div>
-        <div>
-          <label for="camoSelect">Camo (optional)</label>
-          <select id="camoSelect"><option value="">-- None --</option></select>
-        </div>
-        <div>
-          <label for="seedInput">Seed (optional)</label>
-          <input id="seedInput" type="number" placeholder="random"/>
-        </div>
-      </div>
-      <div class="row" id="nonWeaponRow">
-        <div id="stxRarityTierWrap">
-          <label for="rarity">Rarity</label>
-          <select id="rarity"><option value="">(select rarity tier)</option></select>
-        </div>
-        <div>
-          <label for="level2">Item level</label>
-          <input id="level2" type="number" min="1" max="60" value="60"/>
-        </div>
-      </div>
-      <label id="mainPartLabel" for="mainPart">Main / Prefix Part (Body)</label>
-      <select id="mainPart"><option value="">Select Body...</option></select>
-      <div class="toggle">
-        <div>
-          <div style="font-weight:700;font-size:12px">Numeric ID mode</div>
-          <div class="small muted">Spawn vs numeric ID output</div>
-        </div>
-        <input id="idMode" type="checkbox" checked/>
-      </div>
-      <div class="toggle">
-        <div>
-          <div style="font-weight:700;font-size:12px">Buyback flag</div>
-          <div class="small muted">Append <code>| 9, 1|</code> after level</div>
-        </div>
-        <input id="buybackFlag" type="checkbox"/>
-      </div>
-      <div class="toggle">
-        <div>
-          <div style="font-weight:700;font-size:12px">All manufacturers parts</div>
-        </div>
-        <input id="allPartsToggle" type="checkbox"/>
-      </div>
-      <div class="sep"></div>
-      <div class="btnbar">
-        <button class="primary" id="btnNew">New</button>
-        <button id="btnCopyList">Copy Parts List</button>
-        <button id="btnCopyJson">Copy JSON</button>
-        <button class="danger" id="btnClear">Clear Parts</button>
-      </div>
-    </div>
-  </section>
-  <section class="card">
-    <div class="hd">
-      <div class="k">Builder</div>
-      <div class="pill"><span>Detected</span> <b id="detectedCat">—</b></div>
-    </div>
-    <div class="bd">
-      <div class="muted" id="builderEmpty">Pick a Rarity ID Part to open the builder.</div>
-      <div id="builder"></div>
-      <div class="sep"></div>
-      <div class="row">
-        <div style="flex:1;min-width:200px;">
-          <label>Full Deserialized Code</label>
-          <textarea id="outCode" readonly></textarea>
-        </div>
-        <div style="flex:1;min-width:200px;">
-          <label>Ordered Parts List</label>
-          <textarea id="outList" readonly></textarea>
-        </div>
-      </div>
-    </div>
-  </section>
-  </div>
-  <script>
+<section class="card" id="leftCard">
+<div class="hd">
+<div class="k">Start</div>
+<div class="pill"><span>Mode</span> <b id="modeLabel">ID</b></div>
+</div>
+<div class="bd">
+<label for="stx_itemType">Item Type</label>
+<select id="stx_itemType" name="stx_itemType">
+<option value="">Select item type...</option>
+<option value="Weapon">Weapon</option>
+<option value="Shield">Shield</option>
+<option value="Repkit">Repkit</option>
+<option value="Grenade">Grenade</option>
+<option value="Gadget">Gadget</option>
+<option value="Enhancement">Enhancement</option>
+<option value="Class Mod">Class Mod</option>
+</select>
+<label for="stx_manufacturer" id="manufacturerLabel">Manufacturer</label>
+<select id="stx_manufacturer" name="stx_manufacturer"><option value="">Select manufacturer...</option></select>
+<div class="row" id="weaponTypeRow" style="display:none;">
+<div>
+<label for="weaponType">Weapon Type</label>
+<select id="weaponType" name="weaponType">
+<option value="Assault Rifle">Assault Rifle</option>
+<option value="Pistol">Pistol</option>
+<option value="Shotgun">Shotgun</option>
+<option value="SMG">SMG</option>
+<option value="Sniper Rifle">Sniper Rifle</option>
+<option value="Heavy Weapon">Heavy Weapon</option>
+</select>
+</div>
+<div>
+<label for="level">Item level</label>
+<input id="level" max="60" min="1" name="level" type="number" value="60"/>
+</div>
+</div>
+<div class="row" id="weaponExtrasRow" style="display:none;">
+<div>
+<label for="skinSelect">Skin / Rarity ID (optional)</label>
+<select id="skinSelect" name="skinSelect"><option value="">-- None --</option></select>
+</div>
+<div>
+<label for="camoSelect">Camo (optional)</label>
+<select id="camoSelect" name="camoSelect"><option value="">-- None --</option></select>
+</div>
+<div>
+<label for="seedInput">Seed (optional)</label>
+<input id="seedInput" name="seedInput" placeholder="random" type="number"/>
+</div>
+</div>
+<div class="row" id="nonWeaponRow">
+<div id="stxRarityTierWrap">
+<label for="rarity">Rarity</label>
+<select id="rarity" name="rarity"><option value="">(select rarity tier)</option></select>
+</div>
+<div>
+<label for="level2">Item level</label>
+<input id="level2" max="60" min="1" name="level2" type="number" value="60"/>
+</div>
+</div>
+<label for="mainPart" id="mainPartLabel">Main / Prefix Part (Body)</label>
+<select id="mainPart" name="mainPart"><option value="">Select Body...</option></select>
+<div class="toggle">
+<div>
+<div style="font-weight:700;font-size:12px">Numeric ID mode</div>
+<div class="small muted">Spawn vs numeric ID output</div>
+</div>
+<input checked="" id="idMode" name="idMode" type="checkbox"/>
+</div>
+<div class="toggle">
+<div>
+<div style="font-weight:700;font-size:12px">Buyback flag</div>
+<div class="small muted">Append <code>| 9, 1|</code> after level</div>
+</div>
+<input id="buybackFlag" name="buybackFlag" type="checkbox"/>
+</div>
+<div class="toggle">
+<div>
+<div style="font-weight:700;font-size:12px">All manufacturers parts</div>
+</div>
+<input id="allPartsToggle" name="allPartsToggle" type="checkbox"/>
+</div>
+<div class="sep"></div>
+<div class="btnbar">
+<button class="primary" id="btnNew">New</button>
+<button id="btnCopyList">Copy Parts List</button>
+<button id="btnCopyJson">Copy JSON</button>
+<button class="danger" id="btnClear">Clear Parts</button>
+</div>
+</div>
+</section>
+<section class="card">
+<div class="hd">
+<div class="k">Builder</div>
+<div class="pill"><span>Detected</span> <b id="detectedCat">—</b></div>
+</div>
+<div class="bd">
+<div class="muted" id="builderEmpty">Pick a Rarity ID Part to open the builder.</div>
+<div id="builder"></div>
+<div class="sep"></div>
+<div class="row">
+<div style="flex:1;min-width:200px;">
+<label>Full Deserialized Code</label>
+<textarea id="outCode" name="outCode" readonly=""></textarea>
+</div>
+<div style="flex:1;min-width:200px;">
+<label>Ordered Parts List</label>
+<textarea id="outList" name="outList" readonly=""></textarea>
+</div>
+</div>
+</div>
+</section>
+</div>
+<script>
     try{ if(!window.STX_DATASET&&window.parent&&window.parent.STX_DATASET) window.STX_DATASET=window.parent.STX_DATASET; }catch(_){}
     try{ if(!window.STX_RARITIES&&window.parent&&window.parent.STX_RARITIES) window.STX_RARITIES=window.parent.STX_RARITIES; }catch(_){}
   </script>
-  <script src="js/cc-item-slug.js"></script>
-  <script src="js/cc-toolbox-analytics.js"></script>
-  <script src="js/cc-toolbox-items-made.js"></script>
-  <script src="js/cc-toolbox-public-counter.js"></script>
-  <script src="js/stx-simple-builder-core.js"></script>
+<script src="js/cc-item-slug.js"></script>
+<script src="js/cc-toolbox-analytics.js"></script>
+<script src="js/cc-toolbox-items-made.js"></script>
+<script src="js/cc-toolbox-public-counter.js"></script>
+<script src="js/stx-simple-builder-core.js"></script>
 </body>
 </html>

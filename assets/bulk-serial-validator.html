@@ -1,20 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="dark" name="color-scheme">
 <!-- Optional server analytics / public stats — same as index.html; see Netlify functions -->
-<meta name="stx-analytics-endpoint" content="https://scooters-toolbox.netlify.app/.netlify/functions/track"/>
-<meta name="stx-counter-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/counter"/>
-<meta name="stx-items-bump-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump"/>
-<meta name="stx-items-bump-key" content=""/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint">
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="" name="stx-items-bump-key"/>
 <title>Bulk serial validator — Scooter's Toolbox</title>
-<link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
-<link rel="icon" href="./favicon.ico" sizes="any" type="image/x-icon"/>
-<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
-<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
+<link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
+<link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+<link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+<link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <style>
 /* Aligned with index.html visual spec (cyan / pink toolbox) */
 :root {
@@ -390,52 +391,52 @@ aside li { margin-bottom: 6px; }
 }
 .stx-site-stats-hidden { display: none !important; }
 </style>
-</head>
+</meta></meta></head>
 <body class="editor-page">
 <div class="app-shell">
 <header class="header-bar">
-  <img src="./favicon.ico" alt="" class="header-icon" width="48" height="48" aria-hidden="true"/>
-  <div class="header-main">
-    <h1 class="header-title">Bulk serial validator</h1>
-    <p>
+<img alt="" aria-hidden="true" class="header-icon" height="48" src="./favicon.ico" width="48"/>
+<div class="header-main">
+<h1 class="header-title">Bulk serial validator</h1>
+<p>
       Paste <code>@U</code> Base85 serials or <strong>Gibbed-style deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). That text is not the same bytes as WASM <code>@U</code>; the decoder iframe parses it when WASM cannot. YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
-      then checked with the same <strong>data-backed</strong> rules as <a href="../legacy/legit-builder.html" target="_blank" rel="noopener">Legit Builder</a>
+      then checked with the same <strong>data-backed</strong> rules as <a href="../legacy/legit-builder.html" rel="noopener" target="_blank">Legit Builder</a>
       (manifest, NCS, <strong>inv composition tags</strong> from <code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>, loot schedules, weights, source tables, stats coverage). Parts not on the manifest loot-pool export are listed as <strong>FYI</strong> only (rewards/vendors/quests are still valid). Drop hints use <code>SOURCE_PATHS_DATA</code> when applicable.
     </p>
-  </div>
-  <div class="bv-header-actions">
-  <a class="btn btn--brand bv-back-link" href="../index.html">Scooter's Toolbox</a>
-  <a class="btn btn--brand bv-back-link" href="./stx-save-yaml-full.html">Save / YAML</a>
-  <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
-    <summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
-    <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
-      <h4>Site (server)</h4>
-      <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
-      <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
-      <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-      <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
-      <hr class="stx-counter-hr"/>
-      <h4>Your browser</h4>
-      <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
-      <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-    </div>
-  </details>
-  <details class="support-menu instructions-menu" id="stxInstructionsMenuBv">
-    <summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
-    <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox user guide">
-      <iframe class="instructions-menu__embed" id="stxInstructionsFrameBv" title="Scooter's Toolbox user guide"></iframe>
-      <p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" target="_blank" rel="noopener">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
-    </div>
-  </details>
-  <details class="support-menu">
-    <summary class="btn btn--brand" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
-    <div class="support-menu__panel" role="menu" aria-label="Support links">
-      <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" target="_blank" rel="noopener noreferrer" role="menuitem">Ko-fi</a>
-      <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" target="_blank" rel="noopener noreferrer" role="menuitem">Buy Me a Coffee</a>
-      <a class="support-menu__link" href="https://paypal.me/ScootersToolbox" target="_blank" rel="noopener noreferrer" role="menuitem">PayPal.me</a>
-    </div>
-  </details>
-  </div>
+</div>
+<div class="bv-header-actions">
+<a class="btn btn--brand bv-back-link" href="../index.html">Scooter's Toolbox</a>
+<a class="btn btn--brand bv-back-link" href="./stx-save-yaml-full.html">Save / YAML</a>
+<details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
+<summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
+<div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
+<h4>Site (server)</h4>
+<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+<p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
+<hr class="stx-counter-hr"/>
+<h4>Your browser</h4>
+<div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+</div>
+</details>
+<details class="support-menu instructions-menu" id="stxInstructionsMenuBv">
+<summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
+<div aria-label="Scooter's Toolbox user guide" class="support-menu__panel instructions-menu__panel" role="region">
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameBv" title="Scooter's Toolbox user guide"></iframe>
+<p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" rel="noopener" target="_blank">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
+</div>
+</details>
+<details class="support-menu">
+<summary class="btn btn--brand" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+<div aria-label="Support links" class="support-menu__panel" role="menu">
+<a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" rel="noopener noreferrer" role="menuitem" target="_blank">Ko-fi</a>
+<a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" rel="noopener noreferrer" role="menuitem" target="_blank">Buy Me a Coffee</a>
+<a class="support-menu__link" href="https://paypal.me/ScootersToolbox" rel="noopener noreferrer" role="menuitem" target="_blank">PayPal.me</a>
+</div>
+</details>
+</div>
 </header>
 <script>
 (function () {
@@ -475,125 +476,120 @@ aside li { margin-bottom: 6px; }
   });
 })();
 </script>
-
 <div class="layout">
-  <div class="panel">
-    <div class="panel__title">Input</div>
-    <div id="bv-dropzone" class="dropzone"><strong>Drop a file</strong> here or use the file picker — or paste below.</div>
-    <div class="row">
-      <input type="file" id="bv-file" accept=".yaml,.yml,.txt,.json,.log,.save">
-      <label>Format <select id="bv-mode">
-        <option value="auto">Auto</option>
-        <option value="yaml">YAML</option>
-        <option value="json">JSON</option>
-        <option value="txt">Plain lines</option>
-      </select></label>
-      <label>Item level <input type="number" id="bv-level" value="60" min="1" max="60" style="width:4rem;"></label>
-      <label><input type="checkbox" id="bv-strict" checked> Strict (fail if below LootSchedule stage)</label>
-    </div>
-    <textarea id="bv-input" placeholder="Paste YAML (serial: @U…), JSON, or one serial per line…"></textarea>
-    <div class="row" style="flex-wrap:wrap;align-items:center;">
-      <button type="button" class="btn btn--brand" id="bv-run">Validate all</button>
-      <button type="button" class="btn" id="bv-clear">Clear</button>
-      <label class="small" style="display:inline-flex;align-items:center;gap:6px;margin-left:4px;">
-        <input type="checkbox" id="bv-export-filtered" />
+<div class="panel">
+<div class="panel__title">Input</div>
+<div class="dropzone" id="bv-dropzone"><strong>Drop a file</strong> here or use the file picker — or paste below.</div>
+<div class="row">
+<input accept=".yaml,.yml,.txt,.json,.log,.save" id="bv-file" name="bv-file" type="file"/>
+<label>Format <select id="bv-mode" name="bv-mode">
+<option value="auto">Auto</option>
+<option value="yaml">YAML</option>
+<option value="json">JSON</option>
+<option value="txt">Plain lines</option>
+</select></label>
+<label>Item level <input id="bv-level" max="60" min="1" name="bv-level" style="width:4rem;" type="number" value="60"/></label>
+<label><input checked="" id="bv-strict" name="bv-strict" type="checkbox"/> Strict (fail if below LootSchedule stage)</label>
+</div>
+<textarea id="bv-input" name="bv-input" placeholder="Paste YAML (serial: @U…), JSON, or one serial per line…"></textarea>
+<div class="row" style="flex-wrap:wrap;align-items:center;">
+<button class="btn btn--brand" id="bv-run" type="button">Validate all</button>
+<button class="btn" id="bv-clear" type="button">Clear</button>
+<label class="small" style="display:inline-flex;align-items:center;gap:6px;margin-left:4px;">
+<input id="bv-export-filtered" name="bv-export-filtered" type="checkbox">
         Export only rows matching the table filter below
-      </label>
-    </div>
-    <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
-      <button type="button" class="btn" id="bv-export-json">Export JSON (report)</button>
-      <button type="button" class="btn" id="bv-export-csv">Export CSV</button>
-      <button type="button" class="btn" id="bv-export-md">Export Markdown summary</button>
-    </div>
-    <div class="row" style="align-items:center;gap:10px;flex-wrap:wrap;">
-      <div id="bv-status" class="bv-status">Idle. Same validation core as Legit Builder (manifest, NCS, inv tags, schedules, weights, stats) — no iframe; works from file:// or http://.</div>
-      <span id="bv-inv-tag-badge" class="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
-    </div>
-  </div>
-
-  <aside class="panel">
-    <div class="panel__title">How it works</div>
-    <ul>
-      <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
-      <li><strong>Inv tags</strong>: Nexus-derived <strong>composition basetags</strong> and per-slot tag chains — same <code>computeTagCompositionIssues</code> path as Legit Builder. Failures appear in <strong>Notes</strong> (e.g. lines starting with <code>Inv tags:</code>).</li>
-      <li><strong>Legit</strong>: Same stack as Legit Builder — <code>tag-comp-validation.js</code> + <code>inv_comp_tag_data.js</code> + <code>legit-builder-core.js</code> + <code>LegitDecodeHelpers.validateDecodedSerial</code> (no cross-frame access; avoids <code>file://</code> blocking).</li>
-      <li><strong>Loot-pool FYI</strong>: Off-export parts are not treated as uncertain by themselves. <strong>Notes</strong> / exports still list slot, name, and index under <code>off_pool_*</code> and the FYI line.</li>
-      <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
-      <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
-      <li><strong>Per-part clarity</strong>: Legit Builder shows a <em>Selected parts</em> table (drop pool vs inv-tag columns). Here, <strong>Notes</strong> lists real failure lines (inv tag graph, weights, NCS, etc.) — not the footer stats block.</li>
-      <li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check &ldquo;Export only rows matching&hellip;&rdquo; to export e.g. uncertain-only after choosing the filter.</li>
-      <li><strong>Alignment flags</strong> (<code>align_*</code>): Extra booleans + <code>alignment_summary</code> / <code>alignment_definitions</code> in JSON so you can compare strict <strong>OK (data)</strong> to looser row buckets in the same export (e.g. &ldquo;not Fail (data)&rdquo; or ok/warn-only). Definitions are specific to Scooter&rsquo;s Toolbox / this validator.</li>
-    </ul>
-    <p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
-  </aside>
-
-  <div class="panel" style="grid-column: 1 / -1;">
-    <div class="panel__title">Summary</div>
-    <p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
-    <div class="kpis">
-      <div class="kpi"><span>Serials</span><strong id="k-total">0</strong></div>
-      <div class="kpi"><span>Decoded OK</span><strong id="k-decoded">0</strong></div>
-      <div class="kpi"><span>OK (data)</span><strong id="k-ok">0</strong></div>
-      <div class="kpi"><span>Uncertain / map</span><strong id="k-warn">0</strong></div>
-      <div class="kpi"><span>Decode failed</span><strong id="k-decode-fail">0</strong></div>
-      <div class="kpi"><span>No manifest</span><strong id="k-nomanifest">0</strong></div>
-      <div class="kpi"><span>Fail (data)</span><strong id="k-legit-err">0</strong></div>
-    </div>
-    <details class="bv-kpi-key" style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid var(--line-soft);">
-      <summary class="small" style="cursor:pointer;color:var(--accent-cyan-dim);">What do these mean?</summary>
-      <dl class="small" style="margin:10px 0 0 16px;line-height:1.6;">
-        <dt><strong>Serials</strong></dt>
-        <dd>Total unique serials extracted from the input.</dd>
-        <dt><strong>Decoded OK</strong></dt>
-        <dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn&rsquo;t be parsed.</dd>
-        <dt><strong>OK (data)</strong></dt>
-        <dd>Decoded + manifest item found + slot map matched + passes all checks (inv tags, schedules, sources). Strict pass.</dd>
-        <dt><strong>Uncertain / map</strong></dt>
-        <dd>Decoded but no slot map match, or inv-tag/schedule warnings. Not a hard fail; use Notes to judge.</dd>
-        <dt><strong>Decode failed</strong></dt>
-        <dd>WASM couldn&rsquo;t decode (bad Base85, corrupted, or unknown format).</dd>
-        <dt><strong>No manifest</strong></dt>
-        <dd>Decoded but manufacturer/item type don&rsquo;t match any known manifest item.</dd>
-        <dt><strong>Fail (data)</strong></dt>
-        <dd>Decoded + manifest + mapped but validation failed (inv tags wrong, off loot schedule, etc.). See Notes.</dd>
-      </dl>
-    </details>
-    <div class="row" style="margin-top:14px;">
-      <label>Show <select id="bv-filter">
-        <option value="all">All rows</option>
-        <option value="ok">OK (data) only</option>
-        <option value="warn">Uncertain only</option>
-        <option value="err">Failures only</option>
-      </select></label>
-      <button type="button" class="btn" id="bv-prev">Previous page</button>
-      <button type="button" class="btn" id="bv-next">Next page</button>
-      <span id="bv-page" class="small"></span>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Serial</th>
-            <th>Decode</th>
-            <th>Item</th>
-            <th>Legit</th>
-            <th>Stats</th>
-            <th>Drop hint</th>
-            <th>Notes (inv tags, NCS, weights, …)</th>
-          </tr>
-        </thead>
-        <tbody id="bv-tbody">
-          <tr><td colspan="7" class="muted">Paste serials and click Validate all.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+      </input></label>
+</div>
+<div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
+<button class="btn" id="bv-export-json" type="button">Export JSON (report)</button>
+<button class="btn" id="bv-export-csv" type="button">Export CSV</button>
+<button class="btn" id="bv-export-md" type="button">Export Markdown summary</button>
+</div>
+<div class="row" style="align-items:center;gap:10px;flex-wrap:wrap;">
+<div class="bv-status" id="bv-status">Idle. Same validation core as Legit Builder (manifest, NCS, inv tags, schedules, weights, stats) — no iframe; works from file:// or http://.</div>
+<span class="bv-inv-tag-badge" id="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
 </div>
 </div>
-
+<aside class="panel">
+<div class="panel__title">How it works</div>
+<ul>
+<li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
+<li><strong>Inv tags</strong>: Nexus-derived <strong>composition basetags</strong> and per-slot tag chains — same <code>computeTagCompositionIssues</code> path as Legit Builder. Failures appear in <strong>Notes</strong> (e.g. lines starting with <code>Inv tags:</code>).</li>
+<li><strong>Legit</strong>: Same stack as Legit Builder — <code>tag-comp-validation.js</code> + <code>inv_comp_tag_data.js</code> + <code>legit-builder-core.js</code> + <code>LegitDecodeHelpers.validateDecodedSerial</code> (no cross-frame access; avoids <code>file://</code> blocking).</li>
+<li><strong>Loot-pool FYI</strong>: Off-export parts are not treated as uncertain by themselves. <strong>Notes</strong> / exports still list slot, name, and index under <code>off_pool_*</code> and the FYI line.</li>
+<li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
+<li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
+<li><strong>Per-part clarity</strong>: Legit Builder shows a <em>Selected parts</em> table (drop pool vs inv-tag columns). Here, <strong>Notes</strong> lists real failure lines (inv tag graph, weights, NCS, etc.) — not the footer stats block.</li>
+<li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check “Export only rows matching…” to export e.g. uncertain-only after choosing the filter.</li>
+<li><strong>Alignment flags</strong> (<code>align_*</code>): Extra booleans + <code>alignment_summary</code> / <code>alignment_definitions</code> in JSON so you can compare strict <strong>OK (data)</strong> to looser row buckets in the same export (e.g. “not Fail (data)” or ok/warn-only). Definitions are specific to Scooter’s Toolbox / this validator.</li>
+</ul>
+<p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
+</aside>
+<div class="panel" style="grid-column: 1 / -1;">
+<div class="panel__title">Summary</div>
+<p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
+<div class="kpis">
+<div class="kpi"><span>Serials</span><strong id="k-total">0</strong></div>
+<div class="kpi"><span>Decoded OK</span><strong id="k-decoded">0</strong></div>
+<div class="kpi"><span>OK (data)</span><strong id="k-ok">0</strong></div>
+<div class="kpi"><span>Uncertain / map</span><strong id="k-warn">0</strong></div>
+<div class="kpi"><span>Decode failed</span><strong id="k-decode-fail">0</strong></div>
+<div class="kpi"><span>No manifest</span><strong id="k-nomanifest">0</strong></div>
+<div class="kpi"><span>Fail (data)</span><strong id="k-legit-err">0</strong></div>
+</div>
+<details class="bv-kpi-key" style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid var(--line-soft);">
+<summary class="small" style="cursor:pointer;color:var(--accent-cyan-dim);">What do these mean?</summary>
+<dl class="small" style="margin:10px 0 0 16px;line-height:1.6;">
+<dt><strong>Serials</strong></dt>
+<dd>Total unique serials extracted from the input.</dd>
+<dt><strong>Decoded OK</strong></dt>
+<dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn’t be parsed.</dd>
+<dt><strong>OK (data)</strong></dt>
+<dd>Decoded + manifest item found + slot map matched + passes all checks (inv tags, schedules, sources). Strict pass.</dd>
+<dt><strong>Uncertain / map</strong></dt>
+<dd>Decoded but no slot map match, or inv-tag/schedule warnings. Not a hard fail; use Notes to judge.</dd>
+<dt><strong>Decode failed</strong></dt>
+<dd>WASM couldn’t decode (bad Base85, corrupted, or unknown format).</dd>
+<dt><strong>No manifest</strong></dt>
+<dd>Decoded but manufacturer/item type don’t match any known manifest item.</dd>
+<dt><strong>Fail (data)</strong></dt>
+<dd>Decoded + manifest + mapped but validation failed (inv tags wrong, off loot schedule, etc.). See Notes.</dd>
+</dl>
+</details>
+<div class="row" style="margin-top:14px;">
+<label>Show <select id="bv-filter" name="bv-filter">
+<option value="all">All rows</option>
+<option value="ok">OK (data) only</option>
+<option value="warn">Uncertain only</option>
+<option value="err">Failures only</option>
+</select></label>
+<button class="btn" id="bv-prev" type="button">Previous page</button>
+<button class="btn" id="bv-next" type="button">Next page</button>
+<span class="small" id="bv-page"></span>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Serial</th>
+<th>Decode</th>
+<th>Item</th>
+<th>Legit</th>
+<th>Stats</th>
+<th>Drop hint</th>
+<th>Notes (inv tags, NCS, weights, …)</th>
+</tr>
+</thead>
+<tbody id="bv-tbody">
+<tr><td class="muted" colspan="7">Paste serials and click Validate all.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 <!-- Same data + validation core as legacy/legit-builder.html (decoder: same-page WASM + bridge-shared, no iframe) -->
-<input type="hidden" id="item-level" value="60" aria-hidden="true">
-
+<input aria-hidden="true" id="item-level" name="item-level" type="hidden" value="60"/>
 <script>
 window.STX_WASM_URL_OVERRIDE = './wasm/stx-deserializer.wasm';
 window.STX_DECODER_USE_INLINE = true;
@@ -611,7 +607,6 @@ window.STX_DECODER_USE_INLINE = true;
 <script src="js/stx-bulk-decoder-patch-v10.js"></script>
 <script src="js/stx-bulk-decoder-patch-v11.js"></script>
 <script src="js/stx-decode-bridge-shared.js"></script>
-
 <script src="../legacy/bl4_manifest.js"></script>
 <script src="../legacy/ncs_extra.js"></script>
 <script src="../legacy/ncs_slot_map.js"></script>
