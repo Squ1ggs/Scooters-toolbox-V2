@@ -29,17 +29,23 @@ export function options() {
 }
 
 export async function getCounters() {
-  return (await STORE.getJSON('counters')) || { total: 0, unique: 0, items_made: 0 };
+  const data = await STORE.get('counters', { type: 'json' });
+  return data ?? {
+    total: 0,
+    unique: 0,
+    items_made: 0,
+  };
 }
 
 export async function setCounters(counters) {
-  const clean = {
-    total: Math.max(0, Number(counters?.total) || 0),
-    unique: Math.max(0, Number(counters?.unique) || 0),
-    items_made: Math.max(0, Number(counters?.items_made) || 0),
+  const normalized = {
+    total: Number(counters?.total || 0) || 0,
+    unique: Number(counters?.unique || 0) || 0,
+    items_made: Number(counters?.items_made || 0) || 0,
   };
-  await STORE.setJSON('counters', clean);
-  return clean;
+
+  await STORE.setJSON('counters', normalized);
+  return normalized;
 }
 
 export async function requireJson(req) {
@@ -57,8 +63,10 @@ export function timingSafeEqualLoose(a, b) {
 export function requireEnvKey(req, envName, headerName, queryName = 'key') {
   const expected = process.env[envName];
   if (!expected) return true;
+
   const gotHeader = req.headers.get(headerName) || '';
   const url = new URL(req.url);
   const gotQuery = url.searchParams.get(queryName) || '';
+
   return timingSafeEqualLoose(expected, gotHeader) || timingSafeEqualLoose(expected, gotQuery);
 }
