@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
   <!-- Server analytics: set full URL to track.php on your PHP host — see api/SETUP.md -->
-  <meta name="stx-analytics-endpoint" content=""/>
+  <meta name="stx-analytics-endpoint" content="/.netlify/functions/track"/>
   <!-- Optional public visit counter: full URL to counter.php?key=YOUR_counter_public_key — see api/SETUP.md -->
-  <meta name="stx-counter-url" content=""/>
+  <meta name="stx-counter-url" content="/.netlify/functions/counter"/>
   <!-- Optional global items counter: POST URL for items-bump.php — see api/SETUP.md -->
-  <meta name="stx-items-bump-url" content=""/>
+  <meta name="stx-items-bump-url" content="/.netlify/functions/items-bump"/>
   <!-- If api/config.php items_bump_secret is set, paste same value here (deters abuse; not a true secret once deployed) -->
   <meta name="stx-items-bump-key" content=""/>
   <title>Scooter's Toolbox – Rebuild</title>
@@ -1714,13 +1714,11 @@
             <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
             <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
             <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-            <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in <code>index.html</code> to your hosted <code>api/counter.php?key=…</code> (see <code>api/SETUP.md</code>).</p>
-            <hr class="stx-counter-hr"/>
+<hr class="stx-counter-hr"/>
             <h4>Your browser</h4>
             <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
             <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-            <p class="stx-counter-note">World total: set <code>stx-items-bump-url</code> to <code>items-bump.php</code> (optional <code>stx-items-bump-key</code> if configured on server). <strong>Only you</strong> can fix or reset counts via <code>counter-admin.php</code> + admin key — never put that key in HTML.</p>
-          </div>
+</div>
         </details>
         <details class="support-menu instructions-menu" id="stxInstructionsMenuMain">
           <summary class="btn btn--brand" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>

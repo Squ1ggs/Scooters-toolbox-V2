@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark"/>
   <!-- Server analytics: set full URL to track.php — see ../api/SETUP.md -->
-  <meta name="stx-analytics-endpoint" content=""/>
+  <meta name="stx-analytics-endpoint" content="/.netlify/functions/track"/>
   <!-- Optional: public counter URL — see ../api/SETUP.md -->
-  <meta name="stx-counter-url" content=""/>
-  <meta name="stx-items-bump-url" content=""/>
+  <meta name="stx-counter-url" content="/.netlify/functions/counter"/>
+  <meta name="stx-items-bump-url" content="/.netlify/functions/items-bump"/>
   <meta name="stx-items-bump-key" content=""/>
   <title>Legit Builder (data checks) — Scooter's Toolbox</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
@@ -759,13 +759,11 @@
         <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
         <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
         <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-        <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in this page’s <code>&lt;head&gt;</code> to your hosted <code>api/counter.php?key=…</code> (see <code>api/SETUP.md</code>).</p>
-        <hr class="stx-counter-hr"/>
+<hr class="stx-counter-hr"/>
         <h4>Your browser</h4>
         <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
         <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-        <p class="stx-counter-note">World total: <code>stx-items-bump-url</code> → <code>items-bump.php</code>. Owner tweaks: <code>counter-admin.php</code> + admin key only (never in HTML).</p>
-      </div>
+</div>
     </details>
     <details class="support-menu instructions-menu" id="stxInstructionsMenuLegit">
       <summary class="legit-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
