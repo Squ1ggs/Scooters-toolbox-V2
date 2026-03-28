@@ -1,18 +1,40 @@
 /**
  * cc-toolbox-public-counter.js — header "Stats" menu: server totals + local items-crafted.
- * Server: set <meta name="stx-counter-url" content="https://host/api/counter.php?key=…"/> or
- * window.STX_COUNTER_URL before this script. JSON: { total, unique, items_made? }.
- * See api/counter.php and api/SETUP.md.
+ * Supports either configured endpoints (meta/window) or local PHP fallbacks such as counter.php
+ * on the current page path / parent paths when hosted on a PHP server.
  */
 (function () {
   var META = 'stx-counter-url';
 
-  function counterUrl() {
+  function configuredUrl() {
     if (typeof window.STX_COUNTER_URL === 'string' && window.STX_COUNTER_URL.trim()) {
       return window.STX_COUNTER_URL.trim();
     }
     var m = document.querySelector('meta[name="' + META + '"]');
     return m && m.content ? String(m.content).trim() : '';
+  }
+
+  function candidateUrls(filename) {
+    var out = [];
+    var seen = Object.create(null);
+    function add(u) {
+      if (!u) return;
+      if (seen[u]) return;
+      seen[u] = true;
+      out.push(u);
+    }
+
+    var cfg = configuredUrl();
+    var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+
+    if (isHttp) {
+      try { add(new URL(filename, location.href).href); } catch (_) {}
+      try { add(new URL('../' + filename, location.href).href); } catch (_) {}
+      try { add(new URL('../../' + filename, location.href).href); } catch (_) {}
+    }
+
+    add(cfg);
+    return out;
   }
 
   function formatNum(n) {
@@ -70,29 +92,42 @@
     itemsEl.textContent = Number.isFinite(im) ? formatNum(im) : '—';
   }
 
+  function fetchJsonFirst(urls) {
+    var i = 0;
+    function next() {
+      if (i >= urls.length) return Promise.reject(new Error('no_counter_endpoint'));
+      var url = urls[i++];
+      return fetch(url, { method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('http_' + r.status);
+          return r.json();
+        })
+        .catch(function () {
+          return next();
+        });
+    }
+    return next();
+  }
+
   function fetchServer() {
-    var url = counterUrl();
+    var urls = candidateUrls('counter.php');
     var totalEl = document.getElementById('stx-counter-server-total');
     var uniqueEl = document.getElementById('stx-counter-server-unique');
     var itemsEl = document.getElementById('stx-counter-server-items');
     var hintEl = document.getElementById('stx-counter-server-hint');
-    if (!url) {
+    if (!urls.length) {
       if (totalEl) totalEl.textContent = '—';
       if (uniqueEl) uniqueEl.textContent = '—';
       if (itemsEl) itemsEl.textContent = '—';
-      if (hintEl) hintEl.style.display = 'block';
+      if (hintEl) hintEl.style.display = 'none';
       return;
     }
     if (hintEl) hintEl.style.display = 'none';
     if (totalEl) totalEl.textContent = '…';
     if (uniqueEl) uniqueEl.textContent = '…';
     if (itemsEl) itemsEl.textContent = '…';
-    fetch(url, { method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store' })
-      .then(function (r) {
-        return r.json().catch(function () {
-          return {};
-        });
-      })
+
+    fetchJsonFirst(urls)
       .then(function (data) {
         var t = data && data.total != null ? Number(data.total) : NaN;
         var u = data && data.unique != null ? Number(data.unique) : NaN;

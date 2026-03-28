@@ -14,12 +14,31 @@
 
   var lastBump = 0;
 
-  function itemsBumpUrl() {
+  function configuredItemsBumpUrl() {
     if (typeof window.STX_ITEMS_BUMP_URL === 'string' && window.STX_ITEMS_BUMP_URL.trim()) {
       return window.STX_ITEMS_BUMP_URL.trim();
     }
     var m = document.querySelector('meta[name="' + BUMP_URL_META + '"]');
     return m && m.content ? String(m.content).trim() : '';
+  }
+
+  function itemsBumpUrls() {
+    var out = [];
+    var seen = Object.create(null);
+    function add(u) {
+      if (!u) return;
+      if (seen[u]) return;
+      seen[u] = true;
+      out.push(u);
+    }
+    var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+    if (isHttp) {
+      try { add(new URL('items-bump.php', location.href).href); } catch (_) {}
+      try { add(new URL('../items-bump.php', location.href).href); } catch (_) {}
+      try { add(new URL('../../items-bump.php', location.href).href); } catch (_) {}
+    }
+    add(configuredItemsBumpUrl());
+    return out;
   }
 
   function itemsBumpKey() {
@@ -31,32 +50,39 @@
   }
 
   function reportGlobalItemsBump() {
-    var url = itemsBumpUrl();
-    if (!url) return;
+    var urls = itemsBumpUrls();
+    if (!urls.length) return;
     var headers = { 'Content-Type': 'application/json' };
     var k = itemsBumpKey();
     if (k) headers['X-STX-Items-Bump-Key'] = k;
-    fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({ delta: 1 }),
-      mode: 'cors',
-      credentials: 'omit',
-      cache: 'no-store'
-    })
-      .then(function (r) {
-        return r.json().catch(function () {
-          return null;
+
+    (function postNext(i) {
+      if (i >= urls.length) return;
+      fetch(urls[i], {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({ delta: 1 }),
+        mode: 'cors',
+        credentials: 'omit',
+        cache: 'no-store'
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('http_' + r.status);
+          return r.json().catch(function () {
+            return null;
+          });
+        })
+        .then(function (j) {
+          if (j && j.ok && typeof j.items_made === 'number') {
+            try {
+              document.dispatchEvent(new CustomEvent('stx-server-items-made', { detail: j.items_made }));
+            } catch (_) {}
+          }
+        })
+        .catch(function () {
+          postNext(i + 1);
         });
-      })
-      .then(function (j) {
-        if (j && j.ok && typeof j.items_made === 'number') {
-          try {
-            document.dispatchEvent(new CustomEvent('stx-server-items-made', { detail: j.items_made }));
-          } catch (_) {}
-        }
-      })
-      .catch(function () {});
+    })(0);
   }
 
   function byId(id) {

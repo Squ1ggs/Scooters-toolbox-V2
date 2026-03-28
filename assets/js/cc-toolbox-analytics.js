@@ -1,19 +1,40 @@
 /**
- * cc-toolbox-analytics.js — optional server-side visit tracking (PHP api/track.php).
- * Set endpoint before load: window.STX_ANALYTICS_ENDPOINT = 'https://your.host/api/track.php';
- * Or: <meta name="stx-analytics-endpoint" content="https://.../track.php" />
- * Optional: window.STX_ANALYTICS_TRACK_KEY if api/config.php track_secret is set.
- * No-op when endpoint is empty (local file / offline).
+ * cc-toolbox-analytics.js — optional server-side visit tracking.
+ * Supports configured endpoints (meta/window) and local PHP fallbacks such as track.php
+ * on the current page path / parent paths when hosted on a PHP server.
  */
 (function () {
   var META = 'stx-analytics-endpoint';
 
-  function endpoint() {
+  function configuredEndpoint() {
     if (typeof window.STX_ANALYTICS_ENDPOINT === 'string' && window.STX_ANALYTICS_ENDPOINT.trim()) {
       return window.STX_ANALYTICS_ENDPOINT.trim();
     }
     var m = document.querySelector('meta[name="' + META + '"]');
     return m && m.content ? String(m.content).trim() : '';
+  }
+
+  function candidateEndpoints(filename) {
+    var out = [];
+    var seen = Object.create(null);
+    function add(u) {
+      if (!u) return;
+      if (seen[u]) return;
+      seen[u] = true;
+      out.push(u);
+    }
+
+    var cfg = configuredEndpoint();
+    var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+
+    if (isHttp) {
+      try { add(new URL(filename, location.href).href); } catch (_) {}
+      try { add(new URL('../' + filename, location.href).href); } catch (_) {}
+      try { add(new URL('../../' + filename, location.href).href); } catch (_) {}
+    }
+
+    add(cfg);
+    return out;
   }
 
   function getOrCreateVisitorId() {
@@ -44,9 +65,33 @@
     return id;
   }
 
+  function postJsonFirst(urls, payload, headers) {
+    var i = 0;
+    function next() {
+      if (i >= urls.length) return Promise.reject(new Error('no_analytics_endpoint'));
+      var url = urls[i++];
+      return fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: payload,
+        mode: 'cors',
+        credentials: 'omit',
+        cache: 'no-store'
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('http_' + r.status);
+          return r.json().catch(function () { return {}; });
+        })
+        .catch(function () {
+          return next();
+        });
+    }
+    return next();
+  }
+
   function track() {
-    var url = endpoint();
-    if (!url) return;
+    var urls = candidateEndpoints('track.php');
+    if (!urls.length) return;
 
     var payload = JSON.stringify({
       visitor_id: getOrCreateVisitorId(),
@@ -58,19 +103,7 @@
       headers['X-STX-Track-Key'] = window.STX_ANALYTICS_TRACK_KEY;
     }
 
-    fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: payload,
-      mode: 'cors',
-      credentials: 'omit',
-      cache: 'no-store'
-    })
-      .then(function (r) {
-        return r.json().catch(function () {
-          return {};
-        });
-      })
+    postJsonFirst(urls, payload, headers)
       .then(function (j) {
         try {
           window.STX_ANALYTICS_LAST = j;
