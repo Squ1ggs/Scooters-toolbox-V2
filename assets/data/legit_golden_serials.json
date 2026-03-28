@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "description": "Optional known-good @U serials for manual regression checks after decode + legit validation. Add serials you have verified in-game.",
+  "serials": []
+}

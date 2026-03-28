@@ -1,88 +1,328 @@
-HOW TO USE THE EDITOR
+================================================================================
+  SCOOTER'S TOOLBOX (REBUILD) — SIMPLE USER GUIDE
+================================================================================
 
-Basic idea
+WHAT THIS IS
+------------
+Scooter's Toolbox is a browser-based item editor for Borderlands-style gear. You
+pick parts, skins, and options; the page builds the game's "item serial" for you
+and can also read serials you paste in. Everything runs locally in your browser
+(offline-friendly once the folder is on your PC).
+
+
+HOW TO RUN IT
+-------------
+1. Open the file:  index.html  (double-click, or drag into
+   Chrome / Edge / Firefox).
+2. Dismiss the splash with "Enter" when you're ready.
+3. Use the top buttons to jump to "paste a code" or ".Sav / YAML" if that's
+   what you need first.
+
+
+WHAT IS A "SERIAL"? (PLAIN ENGLISH)
+-----------------------------------
+In-game, each item is defined by a packed block of data: which body, barrel,
+parts, rarity, level, skin, etc. That data is stored efficiently as a long
+string of characters.
+
+  • Serial (BL-base85) — The short, game-style string you copy from the game or
+    from this tool. It's a compact encoding of the same information (custom
+    base-85 alphabet, not normal Base64).
+
+  • Deserialized — A longer, more human-readable text form of the same item.
+    Think of the serial as the "compressed barcode" and deserialized as the
+    "expanded description." The toolbox can convert between numeric id's vs Spawn code when both are available.
+  
+  • Here is an example serial - @Ugb)KvFme!Ku6IyaRG}926EzRj6ZHml2bBjk3jq this is the "Noisy Cricket" and deserialized with numeric id 
+    is - 4, 0, 1, 50| 2, 3815|| {80} {2} {5} {79} {57} {78} {23} {27} {28} {41}| 
+    These parts equivalate to - 
+
+4 Order Pistol
+Level 50
+
+{80} -> Legendary - Noisy Cricket
+{2} -> ORD_PS.part_body
+{5} -> ORD_PS.part_body_c
+{79} -> ORD_PS.part_barrel_noisycricket
+{57} -> ORD_PS.part_barrel_01_d
+{78} -> ORD_PS.part_mag_noisycricket
+{23} -> ORD_PS.part_scope_01_lens_01
+{27} -> ORD_PS.part_scope_acc_s01_l01_a
+{28} -> ORD_PS.part_scope_acc_s01_l01_b
+{41} -> ORD_PS.part_grip_03
+
+Rarity id is always the first part after the || 
+
+You don't need to memorize the format. Build with the UI, or paste a serial you
+already have; the editor fills in what it can and shows outputs you can copy.
+
+Tip: The toolbox may remember your last serial in this browser (local storage).
+   If something looks stuck, try a fresh code paste or clear site data for local
+   files if you use the editor that way.
+
+
+MAIN WORK AREAS (INSIDE THE BIG PAGE)
+-------------------------------------
+
+• Simple Builder (collapsible section near the top)
+  - Fast path: choose item type, manufacturer, level, main part, optional
+    seed/skin/camo.
+  - "ID" mode toggles how numeric vs spawn-style IDs are shown in lists but either can be used just the same.
+  - Outputs: Generated Code, Parts List, JSON — good for checking what you
+    picked or sharing a structured list.
+
+• Generated Item Code
+  - Live preview while you use the Guided Builder: Serial (BL-base85) and
+    Deserialized side by side, with Copy and convert buttons.
+  - "Add Item to YAML" sends the current code toward the YAML / save workflow
+    when you're building a backpack file.
+
+• Main Guided Builder
+  - Step-by-step by item type (weapons, shields, grenades, class mods, etc.).
+  - Pick manufacturer, weapon type where needed, level, then fill slots
+    (barrel, mag, scope, shield perks, and so on) using Add buttons.
+  - Seed (optional): fixes randomness so the same seed + same picks can
+    reproduce the same roll where the game uses seeds.
+
+• Paste / import / decode
+  - Use the header shortcuts like "Have a code to import/edit?" to scroll to the
+    paste area. Paste a serial or deserialized string to load and edit parts.
+
+• Floating "Generated Item Code" button (round icon, bottom area)
+  - When the floating panel is closed, that button is the quick way to open the
+    code preview again. When open, you can drag the header to move it.
+  - Inside: copy, convert Base85 ↔ deserialized, and add to YAML like above.
+
+• YAML and .Sav
+  - For people editing save-style YAML or exporting backpack data: open the
+    YAML section from the top shortcut, paste or load content, use the tool's
+    parse / export buttons as labelled on screen. There are buttons for unlocking all hover drives/unlock everything/profile.sav 
+    buttons for cosmetics/phosphenes, even a section you can edit your mission data to redo missions to get certain rolls on items and the list goes on
+• Other panels (scroll the page)
+  - Advanced Part Search — find parts by stats, names, or IDs.
+  - Presets / random rolls / skin tools — vary by section; read the short
+    labels on each box.
+  - Class Mod checklist / Enhancement checklist — structured pickers for those
+    item types.
+  - Build stats — rough stat readouts from parts when data is available (not a
+    perfect in-game DPS meter; use as a comparison aid).
+
+
+STANDALONE TOOLS (OPEN FROM THE MAIN PAGE OR DIRECTLY)
+--------------------------------------------------------
+These live under legacy/ (or assets/ for the bulk decoder). They are separate
+HTML files—useful for validation, batch decoding, or prefix research. You do
+not need them to use the main toolbox editor (index.html).
+
+
+================================================================================
+  LEGIT ITEM BUILDER  (legacy/legit-builder.html)
+================================================================================
+
+WHAT IT IS FOR
+  This page answers: "Could this exact combination of parts exist as a natural
+  drop or roll in-game?" It is a *legitimacy checker*, not a full item crafter
+  like the main toolbox. It combines several extracted datasets (manifest,
+  NCS slot maps, loot schedules, part weights, etc.) to score whether your picks
+  line up with what the data says is possible.
+
+  Important: Like any external tool, it uses heuristics where the game data is
+  ambiguous. Treat "not legit" as strong evidence to double-check, not absolute
+  proof the game can never produce something similar.
+
+HOW THE LAYOUT WORKS
+  Two columns on wide screens; stacks on small screens.
+
+  HEADER (top strip)
+    • Title and short explanation of what data feeds the tool.
+    • Color legend (read these when you scan results):
+        ✓ In loot pool (legit)     — passes the pool / schedule checks being run
+        ? Not in pool              — part or combo not found where expected
+        ✗ Invalid combo            — structural / slot / rules conflict
+        ◆ NCS-only slot            — slot exists in NCS data in a special way
+
+  LEFT COLUMN
+    • "Item & Parts" — Item Type dropdown and the slots grid (one control per
+      part slot after you pick a type).
+    • "Part Stat Effects" — directly under the slots: stat contributions from
+      your selected parts when the stat tables have entries (stays next to the
+      controls you are adjusting).
+
+  RIGHT COLUMN — panels (top to bottom)
+
+    OUTPUT
+      • Text summary of what you built and a "Deserialized Code" box: the
+        human-oriented code string for this combination (when generated).
+      • Copy Code / Reset.
+      • Numeric | Spawn toggle — switches how part IDs appear in output (game
+        uses both styles in different contexts).
+      • Item level — used with LootSchedule and related checks (e.g. minimum
+        game stage gates). Set it to the level you care about validating.
+      • Stats reference line(s) when the tool can show rolled or reference stats.
+
+    VALIDATION
+      • Main pass/fail style message for the current build (pools, strict rules).
+      • "Strict legitimacy mode" (on by default) — tighter checks using schedule
+        and weight data where available. Turn off to see looser / exploratory
+        results (still not a guarantee).
+
+    ITEM INFO
+      • High-level facts about the selected item type / base item: context the
+        validator uses (not a full wiki page).
+
+    LEGITIMACY EVIDENCE
+      • Deeper detail on *why* the tool thinks something is legit or not:
+        which rules fired, which pools or rows were consulted.
+
+    DATA SOURCES
+      • Short reminder of which bundled files power the page (manifest, NCS,
+        PARTS_STATS_DATA, weapon init tables, LootSchedule, weapon part weights).
+      • Drop-related and "data health" readouts when present — helps spot
+        missing or inconsistent extracts.
+
+WHEN TO USE IT
+  • You have a specific part list and want a second opinion before sharing a code.
+  • You are comparing "does this combo respect loot pools / schedules?"
+  • You want deserialized output alongside validation for documentation.
+
+FILE LOCATION:  legacy/legit-builder.html
+
+
+================================================================================
+  STX BULK DECODER  (assets/stx-bulk-decoder.html)
+  Primary page: legacy/bl4-bulk-decoder.html (assets/stx-bulk-decoder.html redirects)
+================================================================================
+
+WHAT IT IS FOR
+  Paste or load a *lot* of item serials at once (from YAML saves, plain text
+  lists, or JSON). The page decodes each serial offline in the browser and tries
+  to resolve part references to human-readable rows using the same local part
+  datasets the project ships with. Use it to audit inventories, backups, or
+  exported lists without decoding lines one by one in the main editor.
+
+INPUT AREA (left card)
+  • File picker — accepts .yaml, .yml, .txt, .json, .log, .save (choose a file
+    from disk instead of pasting).
+  • Mode dropdown:
+      Auto detect          — tries to guess format from content.
+      YAML serial fields   — only pulls values from YAML fields that hold serials.
+      JSON serial values   — only pulls serial strings from JSON structures.
+      TXT / pasted lines   — treats input as one serial per line (or pasted blob).
+  • Large text box — paste your file contents here if you are not using the picker.
+  • Decode serials — runs the pipeline and fills the results table.
+  • Clear — wipes input state (use before a fresh paste).
+  • Export JSON — enabled after a successful decode; exports the structured
+    results for spreadsheets or other tools.
+  • Open editor — opens the main index.html (to continue work
+    on a single item in the full editor).
+  • Send first decoded to editor — when enabled, pushes the first successfully
+    decoded row into the main editor workflow (handy for spot-checking one item
+    from a big list).
+
+  Status line — short message about what happened (counts, errors, mode).
+
+HOW RESOLUTION WORKS (sidebar text on the page)
+  • Decoding runs fully offline (WebAssembly loaded from assets/wasm next to the page).
+  • Bare refs like {80} are interpreted in a default family context; typed refs
+    like {246:22} keep their family id.
+  • If several dataset rows share the same id, the resolver prefers rows that
+    match the current manufacturer and item type when it can tell.
+
+RESULTS TABLE (below the cards)
+  Four headline numbers: Serials found, Decoded, Part rows resolved, Unresolved.
+  Each row typically includes:
+    • Item — label or index for that serial in your input.
+    • Serial — the raw string that was decoded.
+    • Decoded — decoded payload / key fields (as the tool shows them).
+    • Resolved parts — which part lines matched your local datasets.
+    • Notes — warnings, missing data, or resolver messages.
+    • Action — per-row actions where implemented (e.g. quick copy or follow-up).
+
+WHEN TO USE IT
+  • Inspecting a full backpack YAML or log dump for serials.
+  • Batch-checking that serials still decode after a game or data update.
+  • Generating a JSON report for sharing or diffing.
+
+FILE LOCATION:  legacy/bl4-bulk-decoder.html  (shortcut: assets/stx-bulk-decoder.html; old URL bl4-bulk-deserializer.html redirects)
+
+
+================================================================================
+  PREFIX LOOKUP  (legacy/prefix-lookup.html)
+================================================================================
+
+WHAT IT IS FOR
+  Research weapon *prefixes*: names, required parts, stat ties, and sources.
+  The table is built from bundled prefix data (NCS / game-table style extracts).
+  Use it when you know a prefix name or a part id and want to see what prefixes
+  use it, or to compare similar prefixes side by side.
+
+SEARCH & TABLE (main card)
+  • Search box — filter by prefix text OR part id / stat token (e.g. part codes
+    like jak_barrel_acc, or words like CritDamage). This supports *reverse*
+    lookup: search for a part id to see which prefixes require it.
+  • Filter checkboxes:
+      Legendary, Part display, Part slot / mag, Stat-based, Favorites only —
+      narrow which *kinds* of rows you see (turn categories off to declutter).
+  • Weapon family dropdown — restrict to one weapon family or "All".
+  • Sort — Prefix A–Z / Z–A, Type, Weapon family, Source.
+  • Export CSV / Export TSV — download the *currently filtered* table for Excel or
+    notes.
+  • Quick links: "Legit Builder →" jumps to the main toolbox page
+    (index.html#legit-section)—the in-page legit block—not the
+    separate standalone "Legit Item Builder" file. For the standalone validator,
+    open legacy/legit-builder.html from the main editor's tool links.
+    "Bulk Deserializer" opens the batch deserializer in a new tab.
+  • Compare — opens a modal to put two prefixes side by side (pick from the
+    compare UI).
+
+  • Search history — clickable chips of recent queries (quick re-run).
+
+  • Collapsible indexes:
+      "Prefixes by stat" and "Prefixes by part slot" — jump lists grouped by
+      stat or slot; useful when you browse instead of typing a search.
+
+  • Main table columns (sortable headers where marked):
+      Favorite star, Prefix, Type, Weapon, Exact Parts Required, Source.
+      Click a prefix row to open the detail modal (exact part list and notes).
+
+DETAIL MODAL (click a prefix)
+  • Expanded explanation of that prefix: exact parts, types, and metadata.
+  • "Your note" field — per-prefix notes stored in the page (browser local
+    storage style behavior as implemented).
+  • Close — dismisses the modal.
+
+COMPARE MODAL
+  • Choose two prefixes (via Compare button flow) to see differences in a
+    two-column layout.
+
+ROW INTERACTIONS
+  • Prefix names and part snippets are clickable in many places; use them to
+    drill down or copy. A "build guide" style hint may appear for some rows,
+    pointing you back to the main toolbox Advanced Part Search to recreate the
+    item in the editor.
+
+DATA LOAD
+  • The page loads prefix data from the bundled JSON (embedded or fetched from
+    assets/data/prefix_parts_table.json depending on build). You need the full
+    folder structure for the table to populate offline.
+
+WHEN TO USE IT
+  • "Which prefix needs this barrel part?"
+  • "What are all legendary prefixes for this weapon family?"
+  • Exporting a filtered slice of the prefix table for a guide or spreadsheet.
+
+FILE LOCATION:  legacy/prefix-lookup.html
+
+
+SMALL TIPS
 ----------
-This editor lets you:
-- Build a new item step-by-step
-- Import an existing code and edit it
-- Convert codes between normal format and BL-Base85 / deserialized
-- Mix skins and work with YAML backpack saves
+• Prefer one browser profile if you rely on "last serial" memory.
+• Append  ?debug=1  to the file URL for extra console logging (for troubleshooting).
+• If a favicon or image looks cached oddly, hard-refresh (Ctrl+F5).
 
-1. Start a new item
--------------------
-1. Go to Step 1.
-2. Pick the basic info:
-   - Item type (gun / grenade / shield / etc.)
-   - Manufacturer, weapon type, rarity, etc.
-3. Click Next to go to Step 2.
 
-2. Choose main part / barrel (Step 2)
--------------------------------------
-1. In Step 2, pick the required main part / barrel from the dropdowns.
-2. You can hover tooltips / notes to see what parts do.
-3. When you’re happy, click Next.
-
-3. Choose a skin (Step 3)
--------------------------
-1. In Step 3, use the Skin dropdown to choose the look you want.
-2. This is also the skin list that the Skin Mixer uses.
-3. Click Next to move on (you can come back later if needed).
-
-4. Choose an element (optional – Step 4)
-----------------------------------------
-1. In Step 4, use the Element dropdown.
-2. Pick something like Corrosive, Cryo, Fire, Radiation, Shock, or leave it on "No Element (blank)" if you don’t want one.
-3. Click Next.
-
-5. Parts & extras (Step 5)
---------------------------
-1. In Step 5, choose any extra parts / accessories from the lists.
-2. As you change things, the code preview area will update with the current item code.
-
-6. Generate or import codes
----------------------------
-
-Generate from your selections:
-- Once Steps 1–5 are filled in, click Generate Code (or equivalent button).
-- The editor will show you the item code and/or YAML code in the output panel.
-
-Import an existing code:
-1. Paste an existing item code into the Import / Input box.
-2. Click Import / Decode.
-3. The editor will:
-   - Fill in the steps from that code
-   - Let you tweak parts, skins, element, etc.
-   - Show the decoded structure in the preview area
-
-7. Convert to BL-Base85 / Deserialized
---------------------------------------
-Once you have a generated or imported code:
-- Click Convert to BL-Base85 to get the BL-Base85 version.
-- Click Convert to Deserialized to go the other way.
-- The result appears in the output panel; you can copy it out from there.
-You should only need to click the conversion buttons once after the fixes.
-
-8. Use the Skin Mixer
+WHERE THIS FILE LIVES
 ---------------------
-1. Open the Skin Mixer section.
-2. Choose Skin 1, Skin 2 (and optionally Skin 3) from the dropdowns.
-   - These lists mirror the normal skin list from Step 3.
-3. Click Mix Skins (or the mixer button).
-4. The editor will generate a mixed skin code you can apply from the skin list in step 3.
+docs/SCOOTERS_TOOLBOX_USER_GUIDE.txt
 
-9. YAML Backpack / Save file workflow
--------------------------------------
-1. Go to the YAML / Backpack tab/section.
-2. Paste in or load:
-   - Your existing YAML backpack data, or
-   - The YAML for a single item.
-3. Use the controls to:
-   - Edit / replace items in specific slots
-   - Delete or duplicate entries
-4. When you’re done, use the Export / Generate .sav button to create an updated save (or YAML) for your game.
-
-10. Saving your work
---------------------
-- Copy any codes you need from the output panel.
-- Save the HTML file itself locally so you can re-open the toolbox in your browser any time.
-- Optional: bookmark the page location on your disk so it’s easy to find.
+================================================================================

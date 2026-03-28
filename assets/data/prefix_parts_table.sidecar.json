@@ -1,0 +1,3517 @@
+{
+  "generated": "2026-03-26T23:12:39.494Z",
+  "source": "extracted from prefix_parts_table.json (inv_name_part + preferredparts)",
+  "total_entries": 501,
+  "flat": [
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_bor_common",
+      "prefix": "Scab",
+      "required_parts": "np_shield_manu_bor_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_bor_epic",
+      "prefix": "Scar",
+      "required_parts": "np_shield_manu_bor_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_bor_rare",
+      "prefix": "Crust",
+      "required_parts": "np_shield_manu_bor_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_bor_uncommon",
+      "prefix": "Callus",
+      "required_parts": "np_shield_manu_bor_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_dad_common",
+      "prefix": "Cover",
+      "required_parts": "np_shield_manu_dad_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_dad_epic",
+      "prefix": "Bunker",
+      "required_parts": "np_shield_manu_dad_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_dad_rare",
+      "prefix": "Pillbox",
+      "required_parts": "np_shield_manu_dad_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_dad_uncommon",
+      "prefix": "Foxhole",
+      "required_parts": "np_shield_manu_dad_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_jak_common",
+      "prefix": "Stein",
+      "required_parts": "np_shield_manu_jak_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_jak_epic",
+      "prefix": "Cask",
+      "required_parts": "np_shield_manu_jak_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_jak_rare",
+      "prefix": "Barrel",
+      "required_parts": "np_shield_manu_jak_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_jak_uncommon",
+      "prefix": "Hogshead",
+      "required_parts": "np_shield_manu_jak_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_mal_common",
+      "prefix": "Gate",
+      "required_parts": "np_shield_manu_mal_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_mal_epic",
+      "prefix": "Stanchion",
+      "required_parts": "np_shield_manu_mal_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_mal_rare",
+      "prefix": "Cullis",
+      "required_parts": "np_shield_manu_mal_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_mal_uncommon",
+      "prefix": "Fence",
+      "required_parts": "np_shield_manu_mal_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ord_common",
+      "prefix": "Alembic",
+      "required_parts": "np_shield_manu_ord_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ord_epic",
+      "prefix": "Regulus",
+      "required_parts": "np_shield_manu_ord_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ord_rare",
+      "prefix": "Retort",
+      "required_parts": "np_shield_manu_ord_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ord_uncommon",
+      "prefix": "Bezoar",
+      "required_parts": "np_shield_manu_ord_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ted_common",
+      "prefix": "Treatment",
+      "required_parts": "np_shield_manu_ted_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ted_epic",
+      "prefix": "Laminate",
+      "required_parts": "np_shield_manu_ted_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ted_rare",
+      "prefix": "Casing",
+      "required_parts": "np_shield_manu_ted_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_ted_uncommon",
+      "prefix": "Coating",
+      "required_parts": "np_shield_manu_ted_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_tor_common",
+      "prefix": "Protection",
+      "required_parts": "np_shield_manu_tor_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_tor_epic",
+      "prefix": "Prophylactic",
+      "required_parts": "np_shield_manu_tor_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_tor_rare",
+      "prefix": "Jimmy Cap",
+      "required_parts": "np_shield_manu_tor_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_tor_uncommon",
+      "prefix": "Rubber",
+      "required_parts": "np_shield_manu_tor_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_vla_common",
+      "prefix": "Eggiweg",
+      "required_parts": "np_shield_manu_vla_common"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_vla_epic",
+      "prefix": "Domy",
+      "required_parts": "np_shield_manu_vla_epic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_vla_rare",
+      "prefix": "Nagaveet",
+      "required_parts": "np_shield_manu_vla_rare"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_shield_manu_vla_uncommon",
+      "prefix": "Broony",
+      "required_parts": "np_shield_manu_vla_uncommon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_absolution",
+      "prefix": "Absolution",
+      "required_parts": "np_absolution"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_aggrovator",
+      "prefix": "Chaumurky",
+      "required_parts": "np_aggrovator"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_angel",
+      "prefix": "Guardian Angel",
+      "required_parts": "np_angel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_asher",
+      "prefix": "Asher's Rise",
+      "required_parts": "np_asher"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ATLien",
+      "prefix": "Budget Deity",
+      "required_parts": "np_ATLien"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Axe",
+      "prefix": "Buzz Axe",
+      "required_parts": "np_Axe"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ballista",
+      "prefix": "Borstel Ballista",
+      "required_parts": "np_ballista"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_barrelAged",
+      "prefix": "Oak-Aged Cask",
+      "required_parts": "np_barrelAged"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_BeeGun",
+      "prefix": "Birt's Bees",
+      "required_parts": "np_BeeGun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Blockbuster",
+      "prefix": "Blockbuster",
+      "required_parts": "np_Blockbuster"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_bod",
+      "prefix": "Bod",
+      "required_parts": "np_bod"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_BonnieClyde",
+      "prefix": "Bonnie and Clyde",
+      "required_parts": "np_BonnieClyde"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Boomslang",
+      "prefix": "Boomslang",
+      "required_parts": "np_Boomslang"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_BottledLightning",
+      "prefix": "Bottled Lightning",
+      "required_parts": "np_BottledLightning"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Bugbear",
+      "prefix": "Bugbear",
+      "required_parts": "np_Bugbear"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Bully",
+      "prefix": "Bully",
+      "required_parts": "np_Bully"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Chuck",
+      "prefix": "Chuck",
+      "required_parts": "np_Chuck"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_coldshoulder",
+      "prefix": "Cold Shoulder",
+      "required_parts": "NP_coldshoulder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_commBD",
+      "prefix": "Forsaken Chaos",
+      "required_parts": "np_commBD"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_compleat",
+      "prefix": "Compleation",
+      "required_parts": "np_compleat"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_DiscJockey",
+      "prefix": "Disc Jockey",
+      "required_parts": "np_DiscJockey"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_disco_disc",
+      "prefix": "Destructo Disco",
+      "required_parts": "np_disco_disc"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_DividedFocus",
+      "prefix": "Divided Focus",
+      "required_parts": "np_DividedFocus"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_DualDamage",
+      "prefix": "Aegon's Dream",
+      "required_parts": "NP_DualDamage"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_FaultyDetonator",
+      "prefix": "Faulty Detonator",
+      "required_parts": "np_FaultyDetonator"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Finnity",
+      "prefix": "Finnity XXX-L",
+      "required_parts": "np_Finnity"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Finnty_Upgrade",
+      "prefix": "Upgraded Finnity XXX-L",
+      "required_parts": "np_Finnty_Upgrade"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_firepot",
+      "prefix": "Firepot",
+      "required_parts": "np_firepot"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_firewall",
+      "prefix": "Firebreak",
+      "required_parts": "np_firewall"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_firewerks",
+      "prefix": "Firewerks",
+      "required_parts": "np_firewerks"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Firework",
+      "prefix": "Matador's Match",
+      "required_parts": "np_Firework"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_firstimpression",
+      "prefix": "First Impression",
+      "required_parts": "np_firstimpression"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Fisheye",
+      "prefix": "Fisheye",
+      "required_parts": "np_Fisheye"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_fuse",
+      "prefix": "Fuse",
+      "required_parts": "np_fuse"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_GammaVoid",
+      "prefix": "Gamma Void",
+      "required_parts": "np_GammaVoid"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_GMR",
+      "prefix": "G.M.R.",
+      "required_parts": "np_GMR"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Goalkeeper",
+      "prefix": "Goalkeeper",
+      "required_parts": "np_Goalkeeper"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_GoldenGod",
+      "prefix": "Golden God",
+      "required_parts": "NP_GoldenGod"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_GoreMaster",
+      "prefix": "Goremaster",
+      "required_parts": "NP_GoreMaster"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_Heartgun",
+      "prefix": "Acey May",
+      "required_parts": "NP_Heartgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_HeavyTurret",
+      "prefix": "Husky Friend",
+      "required_parts": "np_HeavyTurret"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_HeavyWeight",
+      "prefix": "Heavyweight",
+      "required_parts": "np_HeavyWeight"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Hellwalker",
+      "prefix": "Hellwalker",
+      "required_parts": "np_Hellwalker"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Hoarder",
+      "prefix": "Hoarder",
+      "required_parts": "np_Hoarder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Javelin",
+      "prefix": "Sprezzatura",
+      "required_parts": "np_Javelin"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Kaoson",
+      "prefix": "Kaoson",
+      "required_parts": "np_Kaoson"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_KingsGambit",
+      "prefix": "King's Gambit",
+      "required_parts": "np_KingsGambit"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_LeadBalloon",
+      "prefix": "Lead Balloon",
+      "required_parts": "np_LeadBalloon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_lightning",
+      "prefix": "Sparky Shield",
+      "required_parts": "np_lightning"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Linebacker",
+      "prefix": "Linebacker",
+      "required_parts": "np_Linebacker"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Lucian",
+      "prefix": "Lucian's Flank",
+      "required_parts": "np_Lucian"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Lumberjack",
+      "prefix": "Bloody Lumberjack",
+      "required_parts": "np_Lumberjack"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_momento",
+      "prefix": "Pandoran Memento",
+      "required_parts": "np_momento"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_OhmIgot",
+      "prefix": "Ohm I Got",
+      "required_parts": "np_OhmIgot"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_OnionLayeredGuard",
+      "prefix": "Onion",
+      "required_parts": "np_OnionLayeredGuard"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Onslaught",
+      "prefix": "Onslaught",
+      "required_parts": "np_Onslaught"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_phantom_flame",
+      "prefix": "Phantom Flame",
+      "required_parts": "np_phantom_flame"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_PlasmaCoil",
+      "prefix": "Plasma Coil",
+      "required_parts": "np_PlasmaCoil"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_PotatoThrower",
+      "prefix": "Potato Thrower IV",
+      "required_parts": "NP_PotatoThrower"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_PredatorDrone",
+      "prefix": "UAV",
+      "required_parts": "np_PredatorDrone"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_prince",
+      "prefix": "Prince Harming",
+      "required_parts": "np_prince"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ProteanCell",
+      "prefix": "Protean Cell",
+      "required_parts": "np_ProteanCell"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_QueensRest",
+      "prefix": "Queen's Rest",
+      "required_parts": "np_QueensRest"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_QuickDraw",
+      "prefix": "San Saba Songbird",
+      "required_parts": "np_QuickDraw"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_RainbowVomit",
+      "prefix": "Rainbow Vomit",
+      "required_parts": "np_RainbowVomit"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_rangefinder",
+      "prefix": "Rangefinder",
+      "required_parts": "np_rangefinder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_recursive",
+      "prefix": "Recursive",
+      "required_parts": "np_recursive"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_JAK_Defibrillator",
+      "prefix": "Defibrillator",
+      "required_parts": "np_repkit_uni_JAK_Defibrillator"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_ORD_TripleBypass",
+      "prefix": "Triple Bypass",
+      "required_parts": "np_repkit_uni_ORD_TripleBypass"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Roach",
+      "prefix": "Roach",
+      "required_parts": "np_Roach"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_RocketReload",
+      "prefix": "Lucky Clover",
+      "required_parts": "np_RocketReload"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Rowan",
+      "prefix": "Rowan's Charge",
+      "required_parts": "np_Rowan"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_rubber",
+      "prefix": "Jelly",
+      "required_parts": "np_rubber"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_RubysGrasp",
+      "prefix": "Ruby's Grasp",
+      "required_parts": "np_RubysGrasp"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ShieldBoi",
+      "prefix": "Principal",
+      "required_parts": "np_ShieldBoi"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ShoKunai",
+      "prefix": "Sho Kunai",
+      "required_parts": "np_ShoKunai"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Sideshow",
+      "prefix": "Sideshow",
+      "required_parts": "np_Sideshow"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_slippy",
+      "prefix": "Slippy",
+      "required_parts": "np_slippy"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Slugger",
+      "prefix": "Hot Slugger",
+      "required_parts": "np_Slugger"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Splatoon",
+      "prefix": "Inkling",
+      "required_parts": "np_Splatoon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_StopGap",
+      "prefix": "Stop Gap",
+      "required_parts": "np_StopGap"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Stray",
+      "prefix": "Stray",
+      "required_parts": "np_Stray"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Streamer",
+      "prefix": "Streamer",
+      "required_parts": "np_Streamer"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_SuperconductingPlasmaCoil",
+      "prefix": "Superconducting Plasma Coil",
+      "required_parts": "np_SuperconductingPlasmaCoil"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_SuperSoldier",
+      "prefix": "Super Soldier",
+      "required_parts": "np_SuperSoldier"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_swarm",
+      "prefix": "Swarm",
+      "required_parts": "np_swarm"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_sweet_embrace",
+      "prefix": "Sweet Embrace",
+      "required_parts": "np_sweet_embrace"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_symmetry",
+      "prefix": "Symmetry",
+      "required_parts": "np_symmetry"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_timekeeper",
+      "prefix": "Timekeeper's New Shield",
+      "required_parts": "np_timekeeper"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_TKsWave",
+      "prefix": "T.K's Wave",
+      "required_parts": "np_TKsWave"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_transmission",
+      "prefix": "Transmitter",
+      "required_parts": "np_transmission"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Truck",
+      "prefix": "Truck",
+      "required_parts": "np_Truck"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Vamoose",
+      "prefix": "Vamoose",
+      "required_parts": "np_Vamoose"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Waterfall",
+      "prefix": "Waterfall",
+      "required_parts": "np_Waterfall"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Watts4Dinner",
+      "prefix": "Watts 4 Dinner",
+      "required_parts": "np_Watts4Dinner"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_WF",
+      "prefix": "Whiskey Foxtrot",
+      "required_parts": "NP_WF"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_WomboCombo",
+      "prefix": "Wombo Combo",
+      "required_parts": "np_WomboCombo"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Zipgun",
+      "prefix": "Zipper",
+      "required_parts": "np_Zipgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_anarchy",
+      "prefix": "Anarchy",
+      "required_parts": "np_anarchy"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_anchor",
+      "prefix": "Anchor",
+      "required_parts": "np_anchor"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_AtlingGun",
+      "prefix": "Atling Gun",
+      "required_parts": "np_AtlingGun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_bloodstarved",
+      "prefix": "Darkbeast",
+      "required_parts": "np_bloodstarved"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_buoy",
+      "prefix": "Buoy",
+      "required_parts": "np_buoy"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cindershelly",
+      "prefix": "Cindershelly",
+      "required_parts": "np_cindershelly"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_01",
+      "prefix": "Psion",
+      "required_parts": "np_cm_ds_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_02",
+      "prefix": "Transistor",
+      "required_parts": "np_cm_ds_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_03",
+      "prefix": "Firedancer",
+      "required_parts": "np_cm_ds_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_04",
+      "prefix": "Naturalist",
+      "required_parts": "np_cm_ds_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_05",
+      "prefix": "Weaver",
+      "required_parts": "np_cm_ds_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_06",
+      "prefix": "Radiance",
+      "required_parts": "np_cm_ds_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_07",
+      "prefix": "Ritualist",
+      "required_parts": "np_cm_ds_07"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_08",
+      "prefix": "Alchemist",
+      "required_parts": "np_cm_ds_08"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_09",
+      "prefix": "Commander",
+      "required_parts": "np_cm_ds_09"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_10",
+      "prefix": "Hunter",
+      "required_parts": "np_cm_ds_10"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_01",
+      "prefix": "Technomancer",
+      "required_parts": "np_cm_ds_leg_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_02",
+      "prefix": "Avatar",
+      "required_parts": "np_cm_ds_leg_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_03",
+      "prefix": "Undead Eye",
+      "required_parts": "np_cm_ds_leg_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_04",
+      "prefix": "Kindread Spirits",
+      "required_parts": "np_cm_ds_leg_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_05",
+      "prefix": "Illusionist",
+      "required_parts": "np_cm_ds_leg_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_ds_leg_06",
+      "prefix": "Teen Witch",
+      "required_parts": "np_cm_ds_leg_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_01",
+      "prefix": "Agente",
+      "required_parts": "np_cm_exo_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_02",
+      "prefix": "Genio",
+      "required_parts": "np_cm_exo_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_03",
+      "prefix": "Soldado",
+      "required_parts": "np_cm_exo_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_04",
+      "prefix": "Demolitionist",
+      "required_parts": "np_cm_exo_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_05",
+      "prefix": "Técnico",
+      "required_parts": "np_cm_exo_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_06",
+      "prefix": "Mercenario",
+      "required_parts": "np_cm_exo_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_07",
+      "prefix": "Gearhead",
+      "required_parts": "np_cm_exo_07"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_08",
+      "prefix": "Trooper",
+      "required_parts": "np_cm_exo_08"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_09",
+      "prefix": "Tanker",
+      "required_parts": "np_cm_exo_09"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_10",
+      "prefix": "Practitioner",
+      "required_parts": "np_cm_exo_10"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_01",
+      "prefix": "Dancer",
+      "required_parts": "np_cm_exo_leg_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_02",
+      "prefix": "Filántropo",
+      "required_parts": "np_cm_exo_leg_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_03",
+      "prefix": "Instigator",
+      "required_parts": "np_cm_exo_leg_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_04",
+      "prefix": "Buster",
+      "required_parts": "np_cm_exo_leg_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_05",
+      "prefix": "Esgrimidor",
+      "required_parts": "np_cm_exo_leg_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_exo_leg_06",
+      "prefix": "Grenazerker",
+      "required_parts": "np_cm_exo_leg_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_01",
+      "prefix": "Breaker",
+      "required_parts": "np_cm_grav_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_02",
+      "prefix": "Chemist",
+      "required_parts": "np_cm_grav_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_03",
+      "prefix": "Assistant",
+      "required_parts": "np_cm_grav_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_04",
+      "prefix": "Physicist",
+      "required_parts": "np_cm_grav_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_05",
+      "prefix": "Controller",
+      "required_parts": "np_cm_grav_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_06",
+      "prefix": "Compiler",
+      "required_parts": "np_cm_grav_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_07",
+      "prefix": "Specialist",
+      "required_parts": "np_cm_grav_07"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_08",
+      "prefix": "Bookworm",
+      "required_parts": "np_cm_grav_08"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_09",
+      "prefix": "Radiologist",
+      "required_parts": "np_cm_grav_09"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_10",
+      "prefix": "Savant",
+      "required_parts": "np_cm_grav_10"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_01",
+      "prefix": "Bio-Robot",
+      "required_parts": "np_cm_grav_leg_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_02",
+      "prefix": "Reactor",
+      "required_parts": "np_cm_grav_leg_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_03",
+      "prefix": "Generator",
+      "required_parts": "np_cm_grav_leg_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_04",
+      "prefix": "Driver",
+      "required_parts": "np_cm_grav_leg_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_05",
+      "prefix": "Skeptic",
+      "required_parts": "np_cm_grav_leg_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_grav_leg_06",
+      "prefix": "Scientist",
+      "required_parts": "np_cm_grav_leg_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_01",
+      "prefix": "Guardian",
+      "required_parts": "np_cm_pal_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_02",
+      "prefix": "Brawler",
+      "required_parts": "np_cm_pal_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_03",
+      "prefix": "Grenadier",
+      "required_parts": "np_cm_pal_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_04",
+      "prefix": "Icebringer",
+      "required_parts": "np_cm_pal_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_05",
+      "prefix": "Torchbearer",
+      "required_parts": "np_cm_pal_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_06",
+      "prefix": "Stormcaller",
+      "required_parts": "np_cm_pal_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_07",
+      "prefix": "Soldier",
+      "required_parts": "np_cm_pal_07"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_08",
+      "prefix": "Commando",
+      "required_parts": "np_cm_pal_08"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_09",
+      "prefix": "Cyborg",
+      "required_parts": "np_cm_pal_09"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_10",
+      "prefix": "Outlaw",
+      "required_parts": "np_cm_pal_10"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_01",
+      "prefix": "Furnace",
+      "required_parts": "np_cm_pal_leg_01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_02",
+      "prefix": "Elementalist",
+      "required_parts": "np_cm_pal_leg_02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_03",
+      "prefix": "Blacksmith",
+      "required_parts": "np_cm_pal_leg_03"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_04",
+      "prefix": "Shatterwight",
+      "required_parts": "np_cm_pal_leg_04"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_05",
+      "prefix": "Viking",
+      "required_parts": "np_cm_pal_leg_05"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_cm_pal_leg_06",
+      "prefix": "Forge Master",
+      "required_parts": "np_cm_pal_leg_06"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_complex_root",
+      "prefix": "Complex Root",
+      "required_parts": "np_complex_root"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_convergence",
+      "prefix": "Convergence",
+      "required_parts": "np_convergence"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_CrowdSourced",
+      "prefix": "Midnight Defiance",
+      "required_parts": "np_CrowdSourced"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery",
+      "prefix": "Fusillade",
+      "required_parts": "np_gren_aug_artillery"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery_duration",
+      "prefix": "Suppressing",
+      "required_parts": "np_gren_aug_artillery_duration"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery_maglock",
+      "prefix": "Relentless",
+      "required_parts": "np_gren_aug_artillery_maglock"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery_micromissiles",
+      "prefix": "Barrage",
+      "required_parts": "np_gren_aug_artillery_micromissiles"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery_mortar",
+      "prefix": "Artillery",
+      "required_parts": "np_gren_aug_artillery_mortar"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_artillery_ricochet",
+      "prefix": "Anti-Infantry",
+      "required_parts": "np_gren_aug_artillery_ricochet"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_damage_amp",
+      "prefix": "Wounding",
+      "required_parts": "np_gren_aug_damage_amp"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_damage_amp_Bouncing",
+      "prefix": "Caroming",
+      "required_parts": "np_gren_aug_damage_amp_Bouncing"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_damage_amp_penetrator",
+      "prefix": "Vivisecting",
+      "required_parts": "np_gren_aug_damage_amp_penetrator"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_damage_amp_suppressor",
+      "prefix": "Maiming",
+      "required_parts": "np_gren_aug_damage_amp_suppressor"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider",
+      "prefix": "Duplicating",
+      "required_parts": "np_gren_aug_divider"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider_children",
+      "prefix": "Multiplying",
+      "required_parts": "np_gren_aug_divider_children"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider_repeater",
+      "prefix": "Bombing Run",
+      "required_parts": "np_gren_aug_divider_repeater"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider_seeker",
+      "prefix": "Pack-Hunter",
+      "required_parts": "np_gren_aug_divider_seeker"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider_singularity",
+      "prefix": "Binary",
+      "required_parts": "np_gren_aug_divider_singularity"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_divider_spring",
+      "prefix": "Coursing",
+      "required_parts": "np_gren_aug_divider_spring"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering",
+      "prefix": "Hazard",
+      "required_parts": "np_gren_aug_lingering"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering_alchemic",
+      "prefix": "Potent",
+      "required_parts": "np_gren_aug_lingering_alchemic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering_duration",
+      "prefix": "Ruinous",
+      "required_parts": "np_gren_aug_lingering_duration"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering_fracture",
+      "prefix": "Tectonic",
+      "required_parts": "np_gren_aug_lingering_fracture"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering_pulse",
+      "prefix": "Erupting",
+      "required_parts": "np_gren_aug_lingering_pulse"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_lingering_splat",
+      "prefix": "Bubbling",
+      "required_parts": "np_gren_aug_lingering_splat"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv",
+      "prefix": "MIRV",
+      "required_parts": "np_gren_aug_mirv"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv_bouncer",
+      "prefix": "Festive",
+      "required_parts": "np_gren_aug_mirv_bouncer"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv_children",
+      "prefix": "Clonal",
+      "required_parts": "np_gren_aug_mirv_children"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv_micro_mirv",
+      "prefix": "Bountiful",
+      "required_parts": "np_gren_aug_mirv_micro_mirv"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv_spring",
+      "prefix": "Bouquet",
+      "required_parts": "np_gren_aug_mirv_spring"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity",
+      "prefix": "Singularity",
+      "required_parts": "np_gren_aug_singularity"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity_collapsing",
+      "prefix": "Supermassive",
+      "required_parts": "np_gren_aug_singularity_collapsing"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity_duration",
+      "prefix": "Stable",
+      "required_parts": "np_gren_aug_singularity_duration"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity_lingering",
+      "prefix": "Spaghettifying",
+      "required_parts": "np_gren_aug_singularity_lingering"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity_repulsor",
+      "prefix": "White Hole",
+      "required_parts": "np_gren_aug_singularity_repulsor"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring",
+      "prefix": "Spring-Loaded",
+      "required_parts": "np_gren_aug_spring"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring_apex",
+      "prefix": "Daisy Cutter",
+      "required_parts": "np_gren_aug_spring_apex"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring_artillery",
+      "prefix": "Blossoming",
+      "required_parts": "np_gren_aug_spring_artillery"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring_bouncer",
+      "prefix": "Mad Hatter",
+      "required_parts": "np_gren_aug_spring_bouncer"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring_compounded",
+      "prefix": "Crescendo",
+      "required_parts": "np_gren_aug_spring_compounded"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_spring_springs",
+      "prefix": "Rebounding",
+      "required_parts": "np_gren_aug_spring_springs"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_bor",
+      "prefix": "Reaver Grenade",
+      "required_parts": "np_gren_manu_bor"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_dad",
+      "prefix": "Frag Grenade",
+      "required_parts": "np_gren_manu_dad"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_jak",
+      "prefix": "Throwing Knife",
+      "required_parts": "np_gren_manu_jak"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_mal",
+      "prefix": "Plasma Grenade",
+      "required_parts": "np_gren_manu_mal"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_ord",
+      "prefix": "Seeker",
+      "required_parts": "np_gren_manu_ord"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_ted",
+      "prefix": "Satchel Charge",
+      "required_parts": "np_gren_manu_ted"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_tor",
+      "prefix": "EXPLODER",
+      "required_parts": "np_gren_manu_tor"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_manu_vla",
+      "prefix": "Impact Grenade",
+      "required_parts": "np_gren_manu_vla"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_cooldown",
+      "prefix": "Rapid",
+      "required_parts": "np_gren_stat_cooldown"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_crit_chance",
+      "prefix": "Bullseye",
+      "required_parts": "np_gren_stat_crit_chance"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_crit_damage",
+      "prefix": "Killshot",
+      "required_parts": "np_gren_stat_crit_damage"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_damage",
+      "prefix": "Booming",
+      "required_parts": "np_gren_stat_damage"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_elemental_power",
+      "prefix": "Ancient",
+      "required_parts": "np_gren_stat_elemental_power"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_extra_charge",
+      "prefix": "Fully Loaded",
+      "required_parts": "np_gren_stat_extra_charge"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_force",
+      "prefix": "Concussive",
+      "required_parts": "np_gren_stat_force"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_nuke",
+      "prefix": "Atomic",
+      "required_parts": "np_gren_stat_nuke"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_oversized",
+      "prefix": "Augmented",
+      "required_parts": "np_gren_stat_oversized"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_radius",
+      "prefix": "Collateral",
+      "required_parts": "np_gren_stat_radius"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_transfusion",
+      "prefix": "Vampiric",
+      "required_parts": "np_gren_stat_transfusion"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_stat_wideload",
+      "prefix": "Double-Wide",
+      "required_parts": "np_gren_stat_wideload"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_hellfire",
+      "prefix": "Hellfire",
+      "required_parts": "np_hellfire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Kaleidosplode",
+      "prefix": "Kaleidosplode",
+      "required_parts": "np_Kaleidosplode"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_katagawa",
+      "prefix": "Katagawa's Revenge",
+      "required_parts": "np_katagawa"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_kickballer",
+      "prefix": "Kickballer",
+      "required_parts": "np_kickballer"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Luty",
+      "prefix": "Luty Madlad",
+      "required_parts": "np_Luty"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_NoisyCricket",
+      "prefix": "Noisy Cricket",
+      "required_parts": "NP_NoisyCricket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_OM",
+      "prefix": "Oscar Mike",
+      "required_parts": "np_OM"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_on_the_go",
+      "prefix": "On The Go",
+      "required_parts": "np_on_the_go"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_ravenfire",
+      "prefix": "Ravenfire",
+      "required_parts": "np_ravenfire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_aoe_heal",
+      "prefix": "Aerosolized",
+      "required_parts": "np_repkit_aug_d_aoe_heal"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_damage_reduction",
+      "prefix": "Reinforcing",
+      "required_parts": "np_repkit_aug_d_damage_reduction"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_immune_corrosive",
+      "prefix": "Neutralizing",
+      "required_parts": "np_repkit_aug_d_elem_immune_corrosive"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_immune_cryo",
+      "prefix": "Thermal",
+      "required_parts": "np_repkit_aug_d_elem_immune_cryo"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_immune_fire",
+      "prefix": "Insulating",
+      "required_parts": "np_repkit_aug_d_elem_immune_fire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_immune_radiation",
+      "prefix": "Radioprotectant",
+      "required_parts": "np_repkit_aug_d_elem_immune_radiation"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_immune_shock",
+      "prefix": "Grounding",
+      "required_parts": "np_repkit_aug_d_elem_immune_shock"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_resist_corrosive",
+      "prefix": "Anionic",
+      "required_parts": "np_repkit_aug_d_elem_resist_corrosive"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_resist_cryo",
+      "prefix": "Warming",
+      "required_parts": "np_repkit_aug_d_elem_resist_cryo"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_resist_fire",
+      "prefix": "Tempered",
+      "required_parts": "np_repkit_aug_d_elem_resist_fire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_resist_radiation",
+      "prefix": "Leaded",
+      "required_parts": "np_repkit_aug_d_elem_resist_radiation"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_elem_resist_shock",
+      "prefix": "Rubberized",
+      "required_parts": "np_repkit_aug_d_elem_resist_shock"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_healing",
+      "prefix": "High Dosage",
+      "required_parts": "np_repkit_aug_d_healing"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_health_burst",
+      "prefix": "Fast-Acting",
+      "required_parts": "np_repkit_aug_d_health_burst"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_lifesteal",
+      "prefix": "Parasitic",
+      "required_parts": "np_repkit_aug_d_lifesteal"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_overshield",
+      "prefix": "Synergizing",
+      "required_parts": "np_repkit_aug_d_overshield"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_d_shield_charge",
+      "prefix": "Instigating",
+      "required_parts": "np_repkit_aug_d_shield_charge"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_amp",
+      "prefix": "Amplified",
+      "required_parts": "np_repkit_aug_o_amp"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_elem_damage",
+      "prefix": "Reactive",
+      "required_parts": "np_repkit_aug_o_elem_damage"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_firerate",
+      "prefix": "Spasmodic",
+      "required_parts": "np_repkit_aug_o_firerate"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_melee",
+      "prefix": "Steroidal",
+      "required_parts": "np_repkit_aug_o_melee"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_nova_corrosive",
+      "prefix": "Caustic",
+      "required_parts": "np_repkit_aug_o_nova_corrosive"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_nova_cryo",
+      "prefix": "Cryogenic",
+      "required_parts": "np_repkit_aug_o_nova_cryo"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_nova_fire",
+      "prefix": "Combustible",
+      "required_parts": "np_repkit_aug_o_nova_fire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_nova_radiation",
+      "prefix": "Fissile",
+      "required_parts": "np_repkit_aug_o_nova_radiation"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_nova_shock",
+      "prefix": "Plasmic",
+      "required_parts": "np_repkit_aug_o_nova_shock"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_reload",
+      "prefix": "Dextrous",
+      "required_parts": "np_repkit_aug_o_reload"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splash",
+      "prefix": "Explosive",
+      "required_parts": "np_repkit_aug_o_splash"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splat_corrosive",
+      "prefix": "Digesting",
+      "required_parts": "np_repkit_aug_o_splat_corrosive"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splat_cryo",
+      "prefix": "Supercooling",
+      "required_parts": "np_repkit_aug_o_splat_cryo"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splat_fire",
+      "prefix": "Igneous",
+      "required_parts": "np_repkit_aug_o_splat_fire"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splat_radiation",
+      "prefix": "Radiant",
+      "required_parts": "np_repkit_aug_o_splat_radiation"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_o_splat_shock",
+      "prefix": "Conductive",
+      "required_parts": "np_repkit_aug_o_splat_shock"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_all_dmg",
+      "prefix": "Experimental",
+      "required_parts": "np_repkit_aug_u_all_dmg"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_cooldown",
+      "prefix": "Quick-Charging",
+      "required_parts": "np_repkit_aug_u_cooldown"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_duration",
+      "prefix": "Slow Release",
+      "required_parts": "np_repkit_aug_u_duration"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_gadget_cooldown",
+      "prefix": "Nootropic",
+      "required_parts": "np_repkit_aug_u_gadget_cooldown"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_movespeed",
+      "prefix": "Caffienated",
+      "required_parts": "np_repkit_aug_u_movespeed"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_aug_u_skill_cooldown",
+      "prefix": "Adrenalized",
+      "required_parts": "np_repkit_aug_u_skill_cooldown"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_BOR",
+      "prefix": "Scabber",
+      "required_parts": "np_repkit_manu_BOR"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_DAD",
+      "prefix": "Stim",
+      "required_parts": "np_repkit_manu_DAD"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_JAK",
+      "prefix": "Tonic",
+      "required_parts": "np_repkit_manu_JAK"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_MAL",
+      "prefix": "Refresher",
+      "required_parts": "np_repkit_manu_MAL"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_ORD",
+      "prefix": "Recorporator",
+      "required_parts": "np_repkit_manu_ORD"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_TED",
+      "prefix": "Pocket Doc",
+      "required_parts": "np_repkit_manu_TED"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_TOR",
+      "prefix": "Juicer",
+      "required_parts": "np_repkit_manu_TOR"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_manu_VLA",
+      "prefix": "Sobirat",
+      "required_parts": "np_repkit_manu_VLA"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_payload_huge",
+      "prefix": "Mega",
+      "required_parts": "np_repkit_payload_huge"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_payload_large",
+      "prefix": "Large",
+      "required_parts": "np_repkit_payload_large"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_payload_medium",
+      "prefix": "Standard",
+      "required_parts": "np_repkit_payload_medium"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_payload_small",
+      "prefix": "Mini",
+      "required_parts": "np_repkit_payload_small"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_BOR_Augmenter",
+      "prefix": "Augmenter AF1000",
+      "required_parts": "np_repkit_uni_BOR_Augmenter"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_MAL_BloodAnalyzer",
+      "prefix": "Blood Analyzer",
+      "required_parts": "np_repkit_uni_MAL_BloodAnalyzer"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_TED_KillSpring",
+      "prefix": "Kill Spring",
+      "required_parts": "np_repkit_uni_TED_KillSpring"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_TOR_ShinyWarPaint",
+      "prefix": "Shiny War Paint",
+      "required_parts": "np_repkit_uni_TOR_ShinyWarPaint"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_VLA_AdrenalinePump",
+      "prefix": "Adrenaline Pump",
+      "required_parts": "np_repkit_uni_VLA_AdrenalinePump"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_VLA_Pacemaker",
+      "prefix": "Pacemaker",
+      "required_parts": "np_repkit_uni_VLA_Pacemaker"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_seventh_sense",
+      "prefix": "Seventh Sense",
+      "required_parts": "np_seventh_sense"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_sidewinder",
+      "prefix": "Sidewinder",
+      "required_parts": "np_sidewinder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_spinning_blade",
+      "prefix": "Spinning Blade",
+      "required_parts": "np_spinning_blade"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_star_helix",
+      "prefix": "Star Helix",
+      "required_parts": "np_star_helix"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_supernova",
+      "prefix": "Extra Medium",
+      "required_parts": "np_supernova"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_BOR",
+      "prefix": "BOR Term",
+      "required_parts": "np_term_name_BOR"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_DAD",
+      "prefix": "DAD Term",
+      "required_parts": "np_term_name_DAD"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_JAK",
+      "prefix": "JAK Term",
+      "required_parts": "np_term_name_JAK"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_MAL",
+      "prefix": "MAL Term",
+      "required_parts": "np_term_name_MAL"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_ORD",
+      "prefix": "ORD Term",
+      "required_parts": "np_term_name_ORD"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_TED",
+      "prefix": "TED Term",
+      "required_parts": "np_term_name_TED"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_TOR",
+      "prefix": "TOR Term",
+      "required_parts": "np_term_name_TOR"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_name_VLA",
+      "prefix": "VLA Term",
+      "required_parts": "np_term_name_VLA"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_barredaggression",
+      "prefix": "Barred1",
+      "required_parts": "np_term_pri_barr_barredaggression"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_bulletamp",
+      "prefix": "BulletAmp1",
+      "required_parts": "np_term_pri_barr_bulletamp"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_dome",
+      "prefix": "Dome1",
+      "required_parts": "np_term_pri_barr_dome"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_elementalfield",
+      "prefix": "ElementalField1",
+      "required_parts": "np_term_pri_barr_elementalfield"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_health",
+      "prefix": "Health1",
+      "required_parts": "np_term_pri_barr_health"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_reflection",
+      "prefix": "Reflection1",
+      "required_parts": "np_term_pri_barr_reflection"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_scopesup",
+      "prefix": "ScopesUp1",
+      "required_parts": "np_term_pri_barr_scopesup"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_barr_speedgate",
+      "prefix": "Speedgate1",
+      "required_parts": "np_term_pri_barr_speedgate"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_coldshoulder",
+      "prefix": "ColdShoulder1",
+      "required_parts": "np_term_pri_com_coldshoulder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_contamination",
+      "prefix": "Contamination1",
+      "required_parts": "np_term_pri_com_contamination"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_killclip",
+      "prefix": "Killclip1",
+      "required_parts": "np_term_pri_com_killclip"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_orbiting",
+      "prefix": "Orbiting1",
+      "required_parts": "np_term_pri_com_orbiting"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_power",
+      "prefix": "ComPower1",
+      "required_parts": "np_term_pri_com_power"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_radius",
+      "prefix": "ComRadius1",
+      "required_parts": "np_term_pri_com_radius"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_reverb",
+      "prefix": "Reverb1",
+      "required_parts": "np_term_pri_com_reverb"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_com_tothenth",
+      "prefix": "ToTheNth1",
+      "required_parts": "np_term_pri_com_tothenth"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_ironskin",
+      "prefix": "Ironskin1",
+      "required_parts": "np_term_pri_heal_ironskin"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_leechseed",
+      "prefix": "Leechseed1",
+      "required_parts": "np_term_pri_heal_leechseed"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_life_steal",
+      "prefix": "Lifesteal1",
+      "required_parts": "np_term_pri_heal_life_steal"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_overshield",
+      "prefix": "Overshield1",
+      "required_parts": "np_term_pri_heal_overshield"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_power",
+      "prefix": "HealPower1",
+      "required_parts": "np_term_pri_heal_power"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_radius",
+      "prefix": "HealRadius1",
+      "required_parts": "np_term_pri_heal_radius"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_shield_recharge",
+      "prefix": "ShieldRecharge1",
+      "required_parts": "np_term_pri_heal_shield_recharge"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_pri_heal_thorns",
+      "prefix": "Thorns1",
+      "required_parts": "np_term_pri_heal_thorns"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_barredaggression",
+      "prefix": "Barred2",
+      "required_parts": "np_term_sec_barr_barredaggression"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_bulletamp",
+      "prefix": "BulletAmp2",
+      "required_parts": "np_term_sec_barr_bulletamp"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_dome",
+      "prefix": "Dome2",
+      "required_parts": "np_term_sec_barr_dome"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_elementalfield",
+      "prefix": "ElementalField2",
+      "required_parts": "np_term_sec_barr_elementalfield"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_health",
+      "prefix": "Health2",
+      "required_parts": "np_term_sec_barr_health"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_reflection",
+      "prefix": "Reflection2",
+      "required_parts": "np_term_sec_barr_reflection"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_scopesup",
+      "prefix": "ScopesUp2",
+      "required_parts": "np_term_sec_barr_scopesup"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_barr_speedgate",
+      "prefix": "Speedgate2",
+      "required_parts": "np_term_sec_barr_speedgate"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_coldshoulder",
+      "prefix": "ColdShoulder2",
+      "required_parts": "np_term_sec_com_coldshoulder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_contamination",
+      "prefix": "Contamination2",
+      "required_parts": "np_term_sec_com_contamination"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_killclip",
+      "prefix": "KillClip2",
+      "required_parts": "np_term_sec_com_killclip"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_orbiting",
+      "prefix": "Orbiting2",
+      "required_parts": "np_term_sec_com_orbiting"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_power",
+      "prefix": "ComPower2",
+      "required_parts": "np_term_sec_com_power"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_radius",
+      "prefix": "ComRadius2",
+      "required_parts": "np_term_sec_com_radius"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_reverb",
+      "prefix": "Reverb2",
+      "required_parts": "np_term_sec_com_reverb"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_com_tothenth",
+      "prefix": "ToTheNth2",
+      "required_parts": "np_term_sec_com_tothenth"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_ironskin",
+      "prefix": "Ironskin2",
+      "required_parts": "np_term_sec_heal_ironskin"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_leechseed",
+      "prefix": "Leechseed2",
+      "required_parts": "np_term_sec_heal_leechseed"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_life_steal",
+      "prefix": "Lifesteal2",
+      "required_parts": "np_term_sec_heal_life_steal"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_overshield",
+      "prefix": "Overshield2",
+      "required_parts": "np_term_sec_heal_overshield"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_power",
+      "prefix": "HealPower2",
+      "required_parts": "np_term_sec_heal_power"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_radius",
+      "prefix": "HealRadius2",
+      "required_parts": "np_term_sec_heal_radius"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_shield_recharge",
+      "prefix": "ShieldRecharge2",
+      "required_parts": "np_term_sec_heal_shield_recharge"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_term_sec_heal_thorns",
+      "prefix": "Thorns2",
+      "required_parts": "np_term_sec_heal_thorns"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_basic",
+      "prefix": "BORBASIC",
+      "required_parts": "np_turret_name_BOR_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_Beam",
+      "prefix": "BORBEAM",
+      "required_parts": "np_turret_name_BOR_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_Chaingun",
+      "prefix": "BORCHAIN",
+      "required_parts": "np_turret_name_BOR_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_LongBarrel",
+      "prefix": "BORLONG",
+      "required_parts": "np_turret_name_BOR_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_Rocket",
+      "prefix": "BORRocket",
+      "required_parts": "np_turret_name_BOR_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_BOR_Shotgun",
+      "prefix": "BORSHOTGUN",
+      "required_parts": "np_turret_name_BOR_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_basic",
+      "prefix": "DADBASIC",
+      "required_parts": "np_turret_name_DAD_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_Beam",
+      "prefix": "DADBEAM",
+      "required_parts": "np_turret_name_DAD_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_Chaingun",
+      "prefix": "DADCHAIN",
+      "required_parts": "np_turret_name_DAD_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_LongBarrel",
+      "prefix": "DADLONG",
+      "required_parts": "np_turret_name_DAD_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_Rocket",
+      "prefix": "DADRocket",
+      "required_parts": "np_turret_name_DAD_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_DAD_Shotgun",
+      "prefix": "DADSHOTGUN",
+      "required_parts": "np_turret_name_DAD_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_basic",
+      "prefix": "JAKBASIC",
+      "required_parts": "np_turret_name_JAK_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_Beam",
+      "prefix": "JAKBEAM",
+      "required_parts": "np_turret_name_JAK_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_Chaingun",
+      "prefix": "JAKCHAIN",
+      "required_parts": "np_turret_name_JAK_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_LongBarrel",
+      "prefix": "JAKLONG",
+      "required_parts": "np_turret_name_JAK_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_Rocket",
+      "prefix": "JAKRocket",
+      "required_parts": "np_turret_name_JAK_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_JAK_Shotgun",
+      "prefix": "JAKSHOTGUN",
+      "required_parts": "np_turret_name_JAK_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_basic",
+      "prefix": "MALBASIC",
+      "required_parts": "np_turret_name_MAL_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_Beam",
+      "prefix": "MALBEAM",
+      "required_parts": "np_turret_name_MAL_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_Chaingun",
+      "prefix": "MALCHAIN",
+      "required_parts": "np_turret_name_MAL_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_LongBarrel",
+      "prefix": "MALLONG",
+      "required_parts": "np_turret_name_MAL_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_Rocket",
+      "prefix": "MALRocket",
+      "required_parts": "np_turret_name_MAL_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_MAL_Shotgun",
+      "prefix": "MALSHOTGUN",
+      "required_parts": "np_turret_name_MAL_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_basic",
+      "prefix": "ORDBASIC",
+      "required_parts": "np_turret_name_ORD_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_Beam",
+      "prefix": "ORDBEAM",
+      "required_parts": "np_turret_name_ORD_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_Chaingun",
+      "prefix": "ORDCHAIN",
+      "required_parts": "np_turret_name_ORD_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_LongBarrel",
+      "prefix": "ORDLONG",
+      "required_parts": "np_turret_name_ORD_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_Rocket",
+      "prefix": "ORDRocket",
+      "required_parts": "np_turret_name_ORD_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_ORD_Shotgun",
+      "prefix": "ORDSHOTGUN",
+      "required_parts": "np_turret_name_ORD_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_basic",
+      "prefix": "TEDBASIC",
+      "required_parts": "np_turret_name_TED_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_Beam",
+      "prefix": "TEDBEAM",
+      "required_parts": "np_turret_name_TED_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_Chaingun",
+      "prefix": "TEDCHAIN",
+      "required_parts": "np_turret_name_TED_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_LongBarrel",
+      "prefix": "TEDLONG",
+      "required_parts": "np_turret_name_TED_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_Rocket",
+      "prefix": "TEDRocket",
+      "required_parts": "np_turret_name_TED_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TED_Shotgun",
+      "prefix": "TEDSHOTGUN",
+      "required_parts": "np_turret_name_TED_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_basic",
+      "prefix": "TORBASIC",
+      "required_parts": "np_turret_name_TOR_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_Beam",
+      "prefix": "TORBEAM",
+      "required_parts": "np_turret_name_TOR_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_Chaingun",
+      "prefix": "TORCHAIN",
+      "required_parts": "np_turret_name_TOR_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_LongBarrel",
+      "prefix": "TORLONG",
+      "required_parts": "np_turret_name_TOR_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_Rocket",
+      "prefix": "TORRocket",
+      "required_parts": "np_turret_name_TOR_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_TOR_Shotgun",
+      "prefix": "TORSHOTGUN",
+      "required_parts": "np_turret_name_TOR_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_basic",
+      "prefix": "VLABASIC",
+      "required_parts": "np_turret_name_VLA_basic"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_Beam",
+      "prefix": "VLABEAM",
+      "required_parts": "np_turret_name_VLA_Beam"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_Chaingun",
+      "prefix": "VLACHAIN",
+      "required_parts": "np_turret_name_VLA_Chaingun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_LongBarrel",
+      "prefix": "VLALONG",
+      "required_parts": "np_turret_name_VLA_LongBarrel"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_Rocket",
+      "prefix": "VLARocket",
+      "required_parts": "np_turret_name_VLA_Rocket"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_turret_name_VLA_Shotgun",
+      "prefix": "VLASHOTGUN",
+      "required_parts": "np_turret_name_VLA_Shotgun"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SG_B01",
+      "prefix": "Weldwyrm",
+      "required_parts": "np_weap_BOR_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SG_B02",
+      "prefix": "Hellhound",
+      "required_parts": "np_weap_BOR_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SM_B01",
+      "prefix": "Phage",
+      "required_parts": "np_weap_BOR_SM_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SM_B02",
+      "prefix": "Infestation",
+      "required_parts": "np_weap_BOR_SM_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SR_B01",
+      "prefix": "Nullsaint",
+      "required_parts": "np_weap_BOR_SR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_BOR_SR_B02",
+      "prefix": "Daemon",
+      "required_parts": "np_weap_BOR_SR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_AR_B01",
+      "prefix": "Spec-Tec",
+      "required_parts": "np_weap_DAD_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_AR_B02",
+      "prefix": "F.A.N.G.",
+      "required_parts": "np_weap_DAD_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_PS_B01",
+      "prefix": "S23",
+      "required_parts": "np_weap_DAD_PS_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_PS_B02",
+      "prefix": "Bonn-91",
+      "required_parts": "np_weap_DAD_PS_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_SG_B01",
+      "prefix": "Caliburn",
+      "required_parts": "np_weap_DAD_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_SG_B02",
+      "prefix": "Durendal",
+      "required_parts": "np_weap_DAD_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_SM_B01",
+      "prefix": "GCX",
+      "required_parts": "np_weap_DAD_SM_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_DAD_SM_B02",
+      "prefix": "Painter",
+      "required_parts": "np_weap_DAD_SM_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_AR_B01",
+      "prefix": "Karkadann",
+      "required_parts": "np_weap_JAK_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_AR_B02",
+      "prefix": "Rougarou",
+      "required_parts": "np_weap_JAK_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_PS_B01",
+      "prefix": "Cuca",
+      "required_parts": "np_weap_JAK_PS_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_PS_B02",
+      "prefix": "Muki",
+      "required_parts": "np_weap_JAK_PS_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_SG_B01",
+      "prefix": "Dullahan",
+      "required_parts": "np_weap_JAK_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_SG_B02",
+      "prefix": "Balor",
+      "required_parts": "np_weap_JAK_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_SR_B01",
+      "prefix": "Inkanyamba",
+      "required_parts": "np_weap_JAK_SR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_JAK_SR_B02",
+      "prefix": "Xiuhcoatl",
+      "required_parts": "np_weap_JAK_SR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SG_B01",
+      "prefix": "Stellium",
+      "required_parts": "np_weap_MAL_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SG_B02",
+      "prefix": "Vertex",
+      "required_parts": "np_weap_MAL_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SM_B01",
+      "prefix": "Ephemeris",
+      "required_parts": "np_weap_MAL_SM_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SM_B02",
+      "prefix": "Synastry",
+      "required_parts": "np_weap_MAL_SM_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SR_B01",
+      "prefix": "Midheaven",
+      "required_parts": "np_weap_MAL_SR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_MAL_SR_B02",
+      "prefix": "Transit",
+      "required_parts": "np_weap_MAL_SR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_AR_B01",
+      "prefix": "Indiction",
+      "required_parts": "np_weap_ORD_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_AR_B02",
+      "prefix": "Schema",
+      "required_parts": "np_weap_ORD_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_PS_B01",
+      "prefix": "Punct",
+      "required_parts": "np_weap_ORD_PS_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_PS_B02",
+      "prefix": "Lemma",
+      "required_parts": "np_weap_ORD_PS_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_SR_B01",
+      "prefix": "Yuga",
+      "required_parts": "np_weap_ORD_SR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_ORD_SR_B02",
+      "prefix": "Piktun",
+      "required_parts": "np_weap_ORD_SR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_AR_B01",
+      "prefix": "Assaultomatic",
+      "required_parts": "np_weap_TED_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_AR_B02",
+      "prefix": "Perforator",
+      "required_parts": "np_weap_TED_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_PS_B01",
+      "prefix": "Pocketshot",
+      "required_parts": "np_weap_TED_PS_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_PS_B02",
+      "prefix": "Widget",
+      "required_parts": "np_weap_TED_PS_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_SG_B01",
+      "prefix": "EZ-Blast",
+      "required_parts": "np_weap_TED_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TED_SG_B02",
+      "prefix": "Omnibore",
+      "required_parts": "np_weap_TED_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_AR_B01",
+      "prefix": "Handle",
+      "required_parts": "np_weap_TOR_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_AR_B02",
+      "prefix": "Truncheon",
+      "required_parts": "np_weap_TOR_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_PS_B01",
+      "prefix": "Kitty",
+      "required_parts": "np_weap_TOR_PS_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_PS_B02",
+      "prefix": "Lotus",
+      "required_parts": "np_weap_TOR_PS_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_SG_B01",
+      "prefix": "Rider",
+      "required_parts": "np_weap_TOR_SG_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_TOR_SG_B02",
+      "prefix": "Crank",
+      "required_parts": "np_weap_TOR_SG_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_AR_B01",
+      "prefix": "Buzzymuzz",
+      "required_parts": "np_weap_VLA_AR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_AR_B02",
+      "prefix": "Gruppagrak",
+      "required_parts": "np_weap_VLA_AR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_SM_B01",
+      "prefix": "Boory",
+      "required_parts": "np_weap_VLA_SM_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_SM_B02",
+      "prefix": "Flewdy",
+      "required_parts": "np_weap_VLA_SM_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_SR_B01",
+      "prefix": "Ragoon",
+      "required_parts": "np_weap_VLA_SR_B01"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_weap_VLA_SR_B02",
+      "prefix": "Vyudazy",
+      "required_parts": "np_weap_VLA_SR_B02"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_zadra_weapon",
+      "prefix": "Absolution",
+      "required_parts": "np_zadra_weapon"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Breadth",
+      "prefix": "Hardpoint",
+      "required_parts": "np_Breadth"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Inscriber",
+      "prefix": "Inscriber",
+      "required_parts": "np_Inscriber"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "NP_misslaser",
+      "prefix": "Missilaser",
+      "required_parts": "NP_misslaser"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Murder",
+      "prefix": "Murmur",
+      "required_parts": "np_Murder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_DAD_healthraiser",
+      "prefix": "Healthraiser",
+      "required_parts": "np_repkit_uni_DAD_healthraiser"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Roil",
+      "prefix": "Roil",
+      "required_parts": "np_Roil"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Rowdy",
+      "prefix": "Rowdy Rider",
+      "required_parts": "np_Rowdy"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Seamstress",
+      "prefix": "Rooker",
+      "required_parts": "np_Seamstress"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_skully",
+      "prefix": "Skully",
+      "required_parts": "np_skully"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_mirv_swarm",
+      "prefix": "Swarming",
+      "required_parts": "np_gren_aug_mirv_swarm"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_gren_aug_singularity_zeroG",
+      "prefix": "Microgravitic",
+      "required_parts": "np_gren_aug_singularity_zeroG"
+    },
+    {
+      "source": "preferredparts",
+      "type": "legendary_required",
+      "id": "PrefParts_DAD_AR_Unique_OM",
+      "prefix": "DAD AR",
+      "required_parts": [
+        "DAD_AR.part_barrel_unique_OM",
+        "DAD_AR.part_underbarrel_01_grenade"
+      ]
+    }
+  ]
+}

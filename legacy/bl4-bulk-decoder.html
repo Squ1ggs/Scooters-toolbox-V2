@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="stx-analytics-endpoint" content=""/>
+<meta name="stx-counter-url" content=""/>
+<meta name="stx-items-bump-url" content=""/>
+<meta name="stx-items-bump-key" content=""/>
+<title>BL4 Bulk Decoder — Scooter's Toolbox</title>
+<style>
+:root { color-scheme: dark; --bg:#0b1020; --card:#121933; --muted:#9fb0d0; --text:#eef3ff; --accent:#76a8ff; --ok:#8ae6b0; --warn:#ffd479; --bad:#ff9f9f; --line:#253053; }
+* { box-sizing:border-box; }
+body { margin:0; font:14px/1.45 Inter, system-ui, sans-serif; background:linear-gradient(180deg,#09101e,#0b1020 20%,#0b1020); color:var(--text); }
+main { max-width:1280px; margin:0 auto; padding:24px; }
+h1 { margin:0 0 6px; font-size:28px; }
+p, li { color:var(--muted); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.22); }
+.grid { display:grid; gap:16px; }
+.grid.cols { grid-template-columns:1.15fr .85fr; }
+textarea { width:100%; min-height:180px; resize:vertical; background:#0a0f1d; color:var(--text); border:1px solid var(--line); border-radius:14px; padding:12px; font:13px/1.45 ui-monospace, SFMono-Regular, monospace; }
+input[type=file], select, button { font:inherit; }
+button { border:0; border-radius:12px; padding:10px 14px; background:var(--accent); color:#09101e; font-weight:700; cursor:pointer; }
+button.secondary { background:#1a2345; color:var(--text); border:1px solid var(--line); }
+button:disabled { opacity:.6; cursor:not-allowed; }
+.row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+.small { font-size:12px; color:var(--muted); }
+.kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.kpi { background:#0a0f1d; border:1px solid var(--line); border-radius:14px; padding:10px 12px; }
+.kpi strong { display:block; font-size:20px; color:var(--text); }
+.status { min-height:22px; color:var(--muted); }
+.table-wrap { overflow:auto; border:1px solid var(--line); border-radius:16px; }
+table { width:100%; border-collapse:collapse; min-width:1100px; }
+th, td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:top; text-align:left; }
+th { position:sticky; top:0; background:#0e1630; z-index:1; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.chip { display:inline-flex; gap:6px; align-items:center; border:1px solid var(--line); background:#0a0f1d; border-radius:999px; padding:4px 8px; font-size:12px; }
+.good { color:var(--ok); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+.details { display:grid; gap:8px; }
+.part { border:1px solid var(--line); border-radius:12px; padding:8px; background:#0a0f1d; }
+.part h4 { margin:0 0 4px; font-size:13px; }
+.part .meta { font-size:12px; color:var(--muted); }
+code { font-family:ui-monospace, SFMono-Regular, monospace; word-break:break-word; }
+#bulk-table-wrap { max-height: min(72vh, 820px); }
+@media (max-width: 980px) { .grid.cols { grid-template-columns:1fr; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+</style>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="../assets/favicon.ico" sizes="any" type="image/x-icon"/>
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png"/>
+
+<style id="bl4-bulk-legacy-skin">
+/* Overrides: same DOM as assets decoder, Toolbox BL4 look */
+:root {
+  --bg:#060a12;
+  --card:#121933;
+  --muted: rgba(233, 254, 255, 0.72);
+  --text: #e9feff;
+  --accent: #00e8f0;
+  --line: rgba(0, 243, 255, 0.22);
+  --ok:#8ae6b0; --warn:#ffd479; --bad:#ff9f9f;
+}
+body.bl4-bulk-body {
+  margin:0;
+  font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 10%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 20% 90%, rgba(255, 0, 200, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 80% at 90% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+    linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
+}
+.bl4-bulk-topbar {
+  display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+  padding:12px 16px; margin:16px auto 0; max-width:1280px;
+  background:linear-gradient(135deg,rgba(0,243,255,0.1) 0%,rgba(255,0,200,0.06) 100%);
+  border:1px solid rgba(0,243,255,0.22); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.45), 0 0 20px rgba(255,0,200,0.08);
+}
+.bl4-bulk-topbar img { width:48px; height:48px; border-radius:10px;
+  filter:drop-shadow(0 0 12px rgba(0,243,255,0.45)) drop-shadow(0 0 8px rgba(255,0,200,0.25)); }
+.bl4-bulk-topbar-text { display:flex; flex-direction:column; gap:2px; flex:1; min-width:200px; }
+.bl4-bulk-topbar-brand { font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:rgba(233,254,255,0.45); }
+.bl4-bulk-topbar-title { font-size:1.12rem; font-weight:700; color:var(--text);
+  text-shadow:0 0 12px rgba(0,243,255,0.35), 0 0 6px rgba(255,0,200,0.2); }
+.bl4-bulk-back {
+  margin-left:auto; padding:8px 16px; border-radius:10px; font-weight:600; font-size:13px; text-decoration:none; color:var(--text);
+  border:1px solid rgba(0,243,255,0.35);
+  background:linear-gradient(135deg, rgba(0,243,255,0.14) 0%, rgba(255,0,200,0.1) 100%);
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+}
+.bl4-bulk-back:hover { border-color:rgba(0,255,200,0.55); box-shadow:0 0 16px rgba(0,243,255,0.2); }
+.support-menu {
+  position: relative;
+  display: inline-block;
+}
+.support-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.support-menu > summary::-webkit-details-marker { display: none; }
+.support-menu.instructions-menu[open] {
+  z-index: 10050;
+}
+.support-menu__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 230px;
+  z-index: 100;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,243,255,0.28);
+  background: linear-gradient(145deg, rgba(5,12,24,0.94) 0%, rgba(10,8,22,0.9) 100%);
+  box-shadow:0 8px 24px rgba(0,0,0,0.45), 0 0 18px rgba(0,243,255,0.16);
+}
+.support-menu__link {
+  display: block;
+  padding: 7px 9px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+  font-size: 0.86rem;
+}
+.support-menu__link:hover { border-color: rgba(0,243,255,0.35); text-decoration: none; }
+.stx-counter-menu[open] { z-index: 10040; }
+.stx-counter-menu__panel {
+  min-width: min(288px, 92vw);
+  max-width: min(320px, 94vw);
+  padding: 12px 14px;
+  gap: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.stx-counter-menu__panel h4 {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #00f3ff;
+}
+.stx-counter-menu__panel .stx-counter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 5px 0;
+}
+.stx-counter-menu__panel .stx-counter-val {
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+.stx-counter-menu__panel .stx-counter-note {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: rgba(233,254,255,0.52);
+  line-height: 1.45;
+}
+.stx-counter-menu__panel .stx-counter-note code {
+  font-size: 0.85em;
+  color: rgba(0, 243, 255, 0.75);
+}
+.stx-counter-menu__panel hr.stx-counter-hr {
+  border: none;
+  border-top: 1px solid rgba(0, 243, 255, 0.16);
+  margin: 12px 0;
+}
+.instructions-menu__panel {
+  min-width: min(920px, 92vw);
+  max-width: min(920px, 94vw);
+  max-height: min(85vh, calc(100dvh - 88px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.instructions-menu__text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font: 12px/1.45 ui-monospace, Consolas, monospace;
+  color: var(--muted);
+}
+main.grid { padding-top:8px; }
+.bl4-bulk-hero-title {
+  margin:0 0 6px; font-size:1.35rem; font-weight:800; color:#00f3ff;
+  text-shadow:0 0 18px rgba(0,243,255,0.25);
+}
+.card {
+  background:linear-gradient(145deg, rgba(5,12,24,0.88) 0%, rgba(10,8,22,0.78) 100%) !important;
+  border:1px solid rgba(0,243,255,0.2) !important;
+  box-shadow:0 10px 40px rgba(0,0,0,.45), inset 0 0 24px rgba(0,243,255,0.03) !important;
+}
+textarea, .kpi {
+  background:rgba(5,10,20,0.75) !important;
+  border-color:rgba(0,243,255,0.18) !important;
+}
+button:not(.secondary) {
+  background:linear-gradient(135deg, rgba(0,243,255,0.35) 0%, rgba(255,0,200,0.2) 100%) !important;
+  color:#061018 !important;
+  border:1px solid rgba(0,255,200,0.35) !important;
+}
+button.secondary {
+  background:rgba(8,14,28,0.9) !important;
+  color:var(--text) !important;
+  border:1px solid rgba(0,243,255,0.2) !important;
+}
+.status {
+  min-height:24px;
+  padding:8px 12px;
+  border-radius:8px;
+  background:rgba(0,0,0,0.22);
+  border:1px solid rgba(0,243,255,0.12);
+  font-size:13px;
+  color:rgba(0,255,200,0.88) !important;
+}
+.table-wrap { border-color:rgba(0,243,255,0.15) !important; }
+th { background:rgba(8,18,32,0.95) !important; border-color:rgba(0,243,255,0.12) !important; }
+td { border-color:rgba(0,243,255,0.1) !important; }
+.stx-site-stats-hidden { display: none !important; }
+</style>
+
+</head>
+<body class="bl4-bulk-body">
+<div class="bl4-bulk-topbar" role="banner">
+  <img src="../assets/favicon.ico" width="48" height="48" alt="" />
+  <div class="bl4-bulk-topbar-text">
+    <div class="bl4-bulk-topbar-brand">Scooter's Toolbox</div>
+    <div class="bl4-bulk-topbar-title">BL4 Bulk Decoder</div>
+  </div>
+  <a class="bl4-bulk-back" href="../index.html">← Toolbox</a>
+  <a class="bl4-bulk-back" href="../assets/stx-save-yaml-full.html">Save / YAML</a>
+  <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
+    <summary class="bl4-bulk-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
+    <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
+      <h4>Site (server)</h4>
+      <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+      <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+      <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+      <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in <code>&lt;head&gt;</code> (see <code>api/SETUP.md</code>).</p>
+      <hr class="stx-counter-hr"/>
+      <h4>Your browser</h4>
+      <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+      <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+      <p class="stx-counter-note">World: <code>stx-items-bump-url</code>. Admin: <code>counter-admin.php</code> only (never in HTML).</p>
+    </div>
+  </details>
+  <details class="support-menu instructions-menu" id="stxInstructionsMenuBulk">
+    <summary class="bl4-bulk-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
+    <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox instructions">
+      <pre class="instructions-menu__text" id="stxInstructionsTextBulk">Loading instructions…</pre>
+    </div>
+  </details>
+  <details class="support-menu">
+    <summary class="bl4-bulk-back" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+    <div class="support-menu__panel" role="menu" aria-label="Support links">
+      <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" target="_blank" rel="noopener noreferrer" role="menuitem">Ko-fi</a>
+      <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" target="_blank" rel="noopener noreferrer" role="menuitem">Buy Me a Coffee</a>
+      <a class="support-menu__link" href="https://paypal.me/ScootersToolbox" target="_blank" rel="noopener noreferrer" role="menuitem">PayPal.me</a>
+    </div>
+  </details>
+</div>
+<script>
+(function () {
+  var menu = document.getElementById('stxInstructionsMenuBulk');
+  var out = document.getElementById('stxInstructionsTextBulk');
+  var loaded = false;
+  if (!menu || !out) return;
+  menu.addEventListener('toggle', function () {
+    if (!menu.open || loaded) return;
+    loaded = true;
+    fetch('../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+      .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
+      .then(function (txt) { out.textContent = txt; })
+      .catch(function () { out.textContent = 'Could not load instructions file.'; });
+  });
+})();
+(function () {
+  var stats = document.getElementById('stxPublicCounterMenu');
+  if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
+  var hdr = document.querySelector('.header-bar, .legit-header, .bl4-bulk-topbar[role="banner"], header.stx-page-topbar, header.stx-topbar');
+  var logo = hdr && hdr.querySelector('img');
+  try {
+    if (sessionStorage.getItem('stx-stats-dev-visible') === '1') stats.classList.remove('stx-site-stats-hidden');
+  } catch (e1) {}
+  if (!logo) return;
+  logo.addEventListener('click', function (e) {
+    if (!(e.shiftKey || e.ctrlKey)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    stats.classList.toggle('stx-site-stats-hidden');
+    var on = !stats.classList.contains('stx-site-stats-hidden');
+    stats.open = on;
+    try {
+      if (on) sessionStorage.setItem('stx-stats-dev-visible', '1');
+      else sessionStorage.removeItem('stx-stats-dev-visible');
+    } catch (e2) {}
+  });
+})();
+</script>
+
+<main class="grid">
+  <section>
+    <h1 class="bl4-bulk-hero-title">Offline serial decode</h1>
+    <p>Reads serials from YAML, TXT, or JSON, decodes them locally, and resolves part refs against your local parts datasets.</p>
+  </section>
+  <section class="grid cols">
+    <div class="card grid">
+      <div class="row">
+        <input id="fileInput" type="file" accept=".yaml,.yml,.txt,.json,.log,.save">
+        <select id="modeSelect">
+          <option value="auto">Auto detect</option>
+          <option value="yaml">YAML serial fields only</option>
+          <option value="json">JSON serial fields only</option>
+          <option value="txt">TXT / pasted serial lines</option>
+        </select>
+      </div>
+      <textarea id="inputBox" placeholder="Paste YAML, TXT, or JSON here. YAML and JSON modes extract only serial fields."></textarea>
+      <div class="row">
+        <button id="decodeBtn">Decode serials</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+        <button id="exportBtn" class="secondary" disabled>Export JSON</button>
+        <button id="openEditorBtn" class="secondary" type="button">Open editor</button>
+        <button id="sendFirstBtn" class="secondary" type="button" disabled>Send first decoded to editor</button>
+      </div>
+      <div id="status" class="status">Loading WASM bundle (first open may take a few seconds)…</div>
+    </div>
+    <div class="card grid">
+      <div class="small">How resolution works</div>
+      <ul>
+        <li>The decoder runs fully offline; WebAssembly is loaded from this folder (no inline blob).</li>
+        <li>Bare part refs like <code>{80}</code> resolve as <code>{itemTypeId:80}</code>.</li>
+        <li>Typed refs like <code>{246:22}</code> keep their own family id.</li>
+        <li>When multiple dataset rows share the same id, the resolver prefers the current manufacturer and item type.</li>
+      </ul>
+    </div>
+  </section>
+  <section class="card grid">
+    <div class="kpis">
+      <div class="kpi"><span class="small">Serials found</span><strong id="kTotal">0</strong></div>
+      <div class="kpi"><span class="small">Decoded</span><strong id="kDecoded">0</strong></div>
+      <div class="kpi"><span class="small">Part rows resolved</span><strong id="kResolved">0</strong></div>
+      <div class="kpi"><span class="small">Unresolved part rows</span><strong id="kUnresolved">0</strong></div>
+    </div>
+    <div class="row" id="bulk-results-pagination" style="display:none;align-items:center;gap:10px;margin-bottom:10px;">
+      <button type="button" class="secondary" id="bulk-prev-btn">Previous 50</button>
+      <button type="button" class="secondary" id="bulk-next-btn">Next 50</button>
+      <span id="bulk-page-info" class="small"></span>
+    </div>
+    <div class="table-wrap" id="bulk-table-wrap"><table>
+      <thead><tr><th style="width:14%">Item</th><th style="width:12%">Serial</th><th style="width:16%">Decoded</th><th style="width:20%">Resolved parts</th><th style="width:18%">Notes</th><th style="width:12%">Drop</th><th style="width:8%">Action</th></tr></thead>
+      <tbody id="resultsBody"><tr><td colspan="7" class="small">No results yet.</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+<script>
+(function () {
+  var el = document.getElementById('status');
+  if (el) el.textContent = 'Loading decoder (WASM + datasets)…';
+})();
+</script>
+<script src="../assets/js/stx-wasm-inline.js"></script>
+<script src="../assets/js/stx-bulk-decoder-deps.js"></script>
+<script src="../assets/js/cc-base85-rebuild.js"></script>
+<script>
+(function () {
+  const fileInput = document.getElementById("fileInput");
+  const inputBox = document.getElementById("inputBox");
+  if (!fileInput || !inputBox) return;
+  fileInput.addEventListener("change", function () {
+    const f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = function () {
+      inputBox.value = String(reader.result || "");
+      // Programmatic value changes do not fire `input`/`change`; the WASM UI syncs on those events.
+      inputBox.dispatchEvent(new Event("input", { bubbles: true }));
+      inputBox.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    reader.readAsText(f);
+  });
+})();
+</script>
+
+<script src="../assets/js/stx-go-wasm-polyfill.js"></script>
+<script src="../assets/js/stx-parts-db.js"></script>
+<script src="../assets/data/stx_dataset.js"></script>
+<script src="../assets/data/part_ref_meta.js"></script>
+<script src="../assets/js/stx-bulk-decoder-main.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-v8.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-v9.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-v10.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-v11.js"></script>
+<script src="../assets/js/stx-decode-bridge-shared.js"></script>
+
+<script>
+(function stxToolboxPrefill(){
+  try {
+    var ib = document.getElementById('inputBox');
+    var mode = document.getElementById('modeSelect');
+    var st = document.getElementById('status');
+    function setStatus(msg, kind) {
+      if (!st) return;
+      st.textContent = msg;
+      st.className = 'status' + (kind ? ' ' + kind : '');
+    }
+    if (/\bprefill_yaml=1\b/i.test(location.search || '')) {
+      var y = sessionStorage.getItem('stx_bulk_decoder_prefill_yaml');
+      if (y) {
+        sessionStorage.removeItem('stx_bulk_decoder_prefill_yaml');
+        if (ib && (!ib.value || !String(ib.value).trim())) {
+          ib.value = y;
+          if (mode) mode.value = 'yaml';
+          ib.dispatchEvent(new Event('input', { bubbles: true }));
+          ib.dispatchEvent(new Event('change', { bubbles: true }));
+          setStatus('Loaded full YAML from Toolbox. Click Decode serials when ready.', 'good');
+        }
+      }
+      return;
+    }
+    if (/\bprefill=1\b/i.test(location.search || '')) {
+      var raw = sessionStorage.getItem('stx_bulk_decoder_prefill');
+      if (raw) {
+        sessionStorage.removeItem('stx_bulk_decoder_prefill');
+        if (ib && (!ib.value || !String(ib.value).trim())) {
+          ib.value = raw;
+          if (mode) mode.value = 'txt';
+          ib.dispatchEvent(new Event('input', { bubbles: true }));
+          ib.dispatchEvent(new Event('change', { bubbles: true }));
+          setStatus('Loaded serial lines from Toolbox (TXT). Click Decode serials.', 'good');
+        }
+      }
+    }
+  } catch (_) {}
+})();
+</script>
+
+<script>
+(function stxDecoderIframeBridge(){
+  if (window === window.top) return;
+  window.addEventListener('message', async function(ev){
+    var d = ev.data && ev.data.type === 'stx-decode-request' ? ev.data : null;
+    if (!d || !Array.isArray(d.serials)) return;
+    try {
+      if (typeof window.__stxDecodeSerialsBatch !== 'function') {
+        throw new Error('__stxDecodeSerialsBatch missing');
+      }
+      var results = await window.__stxDecodeSerialsBatch(d.serials, { enrichResolved: !!d.enrichResolved });
+      window.parent.postMessage({ type: 'stx-decode-response', id: d.id, results: results }, '*');
+    } catch (err) {
+      window.parent.postMessage({ type: 'stx-decode-response', id: d.id, results: [], error: String(err && err.message || err) }, '*');
+    }
+  });
+  Promise.resolve().then(async function(){
+    try {
+      if (typeof window.initDecoder === 'function') await window.initDecoder();
+      try { window.parent.postMessage({ type: 'stx-decoder-ready' }, '*'); } catch (_) {}
+    } catch (err) {
+      try { window.parent.postMessage({ type: 'stx-decoder-init-error', message: String(err && err.message || err) }, '*'); } catch (_) {}
+    }
+  });
+})();
+</script>
+<script src="../assets/js/cc-toolbox-analytics.js"></script>
+<script src="../assets/js/cc-toolbox-items-made.js"></script>
+<script src="../assets/js/cc-toolbox-public-counter.js"></script>
+
+</body>
+
+</html>
+

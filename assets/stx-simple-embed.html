@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="stx-analytics-endpoint" content=""/>
+  <meta name="stx-counter-url" content=""/>
+  <meta name="stx-items-bump-url" content=""/>
+  <meta name="stx-items-bump-key" content=""/>
+  <title>Simple Builder — Scooter's Toolbox</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="./favicon.ico" sizes="any" type="image/x-icon"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
+  <style>
+    :root {
+      --bg-base: #060a12;
+      --panel: rgba(5, 12, 24, 0.82);
+      --border: rgba(0, 243, 255, 0.22);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(220, 240, 255, 0.72);
+      --accent: #00f3ff;
+      --glow-mix: 0 0 16px rgba(0, 243, 255, 0.2), 0 0 12px rgba(255, 0, 200, 0.12);
+    }
+    * { box-sizing: border-box; }
+    .stx-embed-page {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      color: var(--text);
+      padding: 16px;
+      background:
+        radial-gradient(ellipse 120% 80% at 70% 10%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 20% 90%, rgba(255, 0, 200, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse 60% 80% at 90% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+        linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
+    }
+    .stx-topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(255, 0, 200, 0.05) 100%);
+      border: 1px solid rgba(0, 243, 255, 0.22);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 20px rgba(255, 0, 200, 0.08);
+    }
+    .stx-topbar img {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.45)) drop-shadow(0 0 8px rgba(255, 0, 200, 0.25));
+    }
+    .stx-topbar-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 160px; }
+    .stx-topbar-brand { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(233, 254, 255, 0.48); }
+    .stx-topbar-title { font-size: 1.08rem; font-weight: 700; color: var(--text); text-shadow: 0 0 12px rgba(0, 243, 255, 0.3), 0 0 6px rgba(255, 0, 200, 0.15); }
+    .stx-embed-back {
+      margin-left: auto;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.12) 0%, rgba(255, 0, 200, 0.08) 100%);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+    }
+    .stx-embed-back:hover { border-color: rgba(0, 255, 200, 0.55); box-shadow: var(--glow-mix); transform: translateY(-1px); }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    .card {
+      background: linear-gradient(145deg, rgba(5, 12, 24, 0.88) 0%, rgba(12, 8, 28, 0.75) 100%);
+      border: 1px solid rgba(0, 243, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 243, 255, 0.06);
+      backdrop-filter: blur(8px);
+    }
+    .hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .k { font-weight: 700; font-size: 13px; color: var(--accent); text-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+    .pill { font-size: 11px; color: var(--muted); }
+    label { display: block; margin: 8px 0 4px; font-size: 12px; color: var(--muted); }
+    select, input[type="number"] {
+      width: 100%;
+      max-width: 280px;
+      padding: 9px 10px;
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+    }
+    select:focus, input[type="number"]:focus {
+      outline: none;
+      border-color: rgba(0, 243, 255, 0.55);
+      box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.12);
+    }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
+    .toggle { margin: 10px 0; }
+    .toggle label { display: inline; margin-left: 8px; }
+    .small.muted { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .muted { color: var(--muted); }
+    .btnbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    button {
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 200, 0.4);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.28) 0%, rgba(255, 0, 200, 0.16) 100%);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: filter 0.15s, transform 0.12s;
+    }
+    button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    button.primary { border-color: rgba(0, 255, 200, 0.55); }
+    button.danger {
+      background: rgba(90, 40, 50, 0.85);
+      border-color: rgba(255, 120, 120, 0.45);
+      color: #ffaaaa;
+    }
+    #builder { min-height: 80px; }
+    .slot { margin: 10px 0; padding: 10px; background: rgba(0, 0, 0, 0.22); border-radius: 8px; border: 1px solid rgba(0, 243, 255, 0.12); }
+    textarea {
+      width: 100%;
+      min-height: 60px;
+      padding: 10px;
+      background: rgba(8, 12, 22, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 11px;
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: rgba(0, 243, 255, 0.5); box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.1); }
+    .sep { height: 1px; background: rgba(0, 243, 255, 0.15); margin: 12px 0; }
+    .stx-topbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .stx-topbar-actions .stx-embed-back { margin-left: 0; }
+    .support-menu {
+      position: relative;
+      display: inline-block;
+    }
+    .support-menu > summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .support-menu > summary::-webkit-details-marker { display: none; }
+    .stx-counter-menu[open] { z-index: 10040; }
+    .support-menu__panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 230px;
+      z-index: 100;
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 243, 255, 0.28);
+      background: linear-gradient(145deg, rgba(5,12,24,0.94) 0%, rgba(10,8,22,0.9) 100%);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 18px rgba(0,243,255,0.16);
+    }
+    .stx-counter-menu__panel {
+      min-width: min(288px, 92vw);
+      max-width: min(320px, 94vw);
+      padding: 12px 14px;
+      gap: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .stx-counter-menu__panel h4 {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .stx-counter-menu__panel .stx-counter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin: 5px 0;
+    }
+    .stx-counter-menu__panel .stx-counter-val {
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+    .stx-counter-menu__panel .stx-counter-note {
+      margin: 10px 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .stx-counter-menu__panel .stx-counter-note code {
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .stx-counter-menu__panel hr.stx-counter-hr {
+      border: none;
+      border-top: 1px solid rgba(0, 243, 255, 0.16);
+      margin: 12px 0;
+    }
+    .stx-site-stats-hidden { display: none !important; }
+    @media (max-width: 600px) {
+      .stx-topbar-actions { width: 100%; justify-content: center; margin-left: 0; }
+      .stx-embed-back { width: auto; text-align: center; margin-left: 0; }
+    }
+  </style>
+  <script src="data/stx_dataset.js"></script>
+  <script src="data/stx_rarities.js"></script>
+</head>
+<body class="stx-embed-page">
+  <div class="wrap">
+  <header class="stx-topbar" role="banner">
+    <img src="./favicon.ico" alt="" width="48" height="48"/>
+    <div class="stx-topbar-text">
+      <span class="stx-topbar-brand">Scooter's Toolbox</span>
+      <span class="stx-topbar-title">Simple Builder</span>
+    </div>
+    <div class="stx-topbar-actions">
+      <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
+        <summary class="stx-embed-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
+        <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
+          <h4>Site (server)</h4>
+          <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+          <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+          <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+          <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in <code>&lt;head&gt;</code> (see <code>api/SETUP.md</code>).</p>
+          <hr class="stx-counter-hr"/>
+          <h4>Your browser</h4>
+          <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+          <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+          <p class="stx-counter-note">This page shares the main builder’s local craft tally. World: <code>stx-items-bump-url</code>.</p>
+        </div>
+      </details>
+      <a class="stx-embed-back" href="./stx-save-yaml-full.html">Save / YAML</a>
+      <a class="stx-embed-back" href="../index.html">← Main toolbox</a>
+    </div>
+  </header>
+  <script>
+  (function () {
+    var stats = document.getElementById('stxPublicCounterMenu');
+    if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
+    var hdr = document.querySelector('.header-bar, .legit-header, .bl4-bulk-topbar[role="banner"], header.stx-page-topbar, header.stx-topbar');
+    var logo = hdr && hdr.querySelector('img');
+    try {
+      if (sessionStorage.getItem('stx-stats-dev-visible') === '1') stats.classList.remove('stx-site-stats-hidden');
+    } catch (e1) {}
+    if (!logo) return;
+    logo.addEventListener('click', function (e) {
+      if (!(e.shiftKey || e.ctrlKey)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      stats.classList.toggle('stx-site-stats-hidden');
+      var on = !stats.classList.contains('stx-site-stats-hidden');
+      stats.open = on;
+      try {
+        if (on) sessionStorage.setItem('stx-stats-dev-visible', '1');
+        else sessionStorage.removeItem('stx-stats-dev-visible');
+      } catch (e2) {}
+    });
+  })();
+  </script>
+  <section class="card" id="leftCard">
+    <div class="hd">
+      <div class="k">Start</div>
+      <div class="pill"><span>Mode</span> <b id="modeLabel">ID</b></div>
+    </div>
+    <div class="bd">
+      <label for="stx_itemType">Item Type</label>
+      <select id="stx_itemType">
+        <option value="">Select item type...</option>
+        <option value="Weapon">Weapon</option>
+        <option value="Shield">Shield</option>
+        <option value="Repkit">Repkit</option>
+        <option value="Grenade">Grenade</option>
+        <option value="Gadget">Gadget</option>
+        <option value="Enhancement">Enhancement</option>
+        <option value="Class Mod">Class Mod</option>
+      </select>
+      <label id="manufacturerLabel" for="stx_manufacturer">Manufacturer</label>
+      <select id="stx_manufacturer"><option value="">Select manufacturer...</option></select>
+      <div class="row" id="weaponTypeRow" style="display:none;">
+        <div>
+          <label for="weaponType">Weapon Type</label>
+          <select id="weaponType">
+            <option value="Assault Rifle">Assault Rifle</option>
+            <option value="Pistol">Pistol</option>
+            <option value="Shotgun">Shotgun</option>
+            <option value="SMG">SMG</option>
+            <option value="Sniper Rifle">Sniper Rifle</option>
+            <option value="Heavy Weapon">Heavy Weapon</option>
+          </select>
+        </div>
+        <div>
+          <label for="level">Item level</label>
+          <input id="level" type="number" min="1" max="60" value="60"/>
+        </div>
+      </div>
+      <div class="row" id="weaponExtrasRow" style="display:none;">
+        <div>
+          <label for="skinSelect">Skin / Rarity ID (optional)</label>
+          <select id="skinSelect"><option value="">-- None --</option></select>
+        </div>
+        <div>
+          <label for="camoSelect">Camo (optional)</label>
+          <select id="camoSelect"><option value="">-- None --</option></select>
+        </div>
+        <div>
+          <label for="seedInput">Seed (optional)</label>
+          <input id="seedInput" type="number" placeholder="random"/>
+        </div>
+      </div>
+      <div class="row" id="nonWeaponRow">
+        <div id="stxRarityTierWrap">
+          <label for="rarity">Rarity</label>
+          <select id="rarity"><option value="">(select rarity tier)</option></select>
+        </div>
+        <div>
+          <label for="level2">Item level</label>
+          <input id="level2" type="number" min="1" max="60" value="60"/>
+        </div>
+      </div>
+      <label id="mainPartLabel" for="mainPart">Main / Prefix Part (Body)</label>
+      <select id="mainPart"><option value="">Select Body...</option></select>
+      <div class="toggle">
+        <div>
+          <div style="font-weight:700;font-size:12px">Numeric ID mode</div>
+          <div class="small muted">Spawn vs numeric ID output</div>
+        </div>
+        <input id="idMode" type="checkbox" checked/>
+      </div>
+      <div class="toggle">
+        <div>
+          <div style="font-weight:700;font-size:12px">Buyback flag</div>
+          <div class="small muted">Append <code>| 9, 1|</code> after level</div>
+        </div>
+        <input id="buybackFlag" type="checkbox"/>
+      </div>
+      <div class="toggle">
+        <div>
+          <div style="font-weight:700;font-size:12px">All manufacturers parts</div>
+        </div>
+        <input id="allPartsToggle" type="checkbox"/>
+      </div>
+      <div class="sep"></div>
+      <div class="btnbar">
+        <button class="primary" id="btnNew">New</button>
+        <button id="btnCopyList">Copy Parts List</button>
+        <button id="btnCopyJson">Copy JSON</button>
+        <button class="danger" id="btnClear">Clear Parts</button>
+      </div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="hd">
+      <div class="k">Builder</div>
+      <div class="pill"><span>Detected</span> <b id="detectedCat">—</b></div>
+    </div>
+    <div class="bd">
+      <div class="muted" id="builderEmpty">Pick a Rarity ID Part to open the builder.</div>
+      <div id="builder"></div>
+      <div class="sep"></div>
+      <div class="row">
+        <div style="flex:1;min-width:200px;">
+          <label>Full Deserialized Code</label>
+          <textarea id="outCode" readonly></textarea>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label>Ordered Parts List</label>
+          <textarea id="outList" readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+  <script>
+    try{ if(!window.STX_DATASET&&window.parent&&window.parent.STX_DATASET) window.STX_DATASET=window.parent.STX_DATASET; }catch(_){}
+    try{ if(!window.STX_RARITIES&&window.parent&&window.parent.STX_RARITIES) window.STX_RARITIES=window.parent.STX_RARITIES; }catch(_){}
+  </script>
+  <script src="js/cc-item-slug.js"></script>
+  <script src="js/cc-toolbox-analytics.js"></script>
+  <script src="js/cc-toolbox-items-made.js"></script>
+  <script src="js/cc-toolbox-public-counter.js"></script>
+  <script src="js/stx-simple-builder-core.js"></script>
+</body>
+</html>

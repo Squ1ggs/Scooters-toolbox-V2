@@ -1,0 +1,42 @@
+{
+  "name": "scooters-toolbox-electron",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "@netlify/functions": "^3.1.6"
+  },
+  "version": "2.0.0",
+  "description": "Scooters Toolbox desktop app",
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis portable"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.scooterstoolbox.desktop",
+    "productName": "Scooters Toolbox",
+    "files": [
+      "index.html",
+      "assets/**/*",
+      "legacy/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark"/>
+<!-- Optional server analytics / public stats — same as index.html; see api/SETUP.md -->
+<meta name="stx-analytics-endpoint" content=""/>
+<meta name="stx-counter-url" content=""/>
+<meta name="stx-items-bump-url" content=""/>
+<meta name="stx-items-bump-key" content=""/>
+<title>Bulk serial validator — Scooter's Toolbox</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="./favicon.ico" sizes="any" type="image/x-icon"/>
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>
+<style>
+/* Aligned with index.html visual spec (cyan / pink toolbox) */
+:root {
+  color-scheme: dark;
+  --bg-base: #060a12;
+  --bg-panel: rgba(5, 12, 24, 0.75);
+  --bg-panel-border: rgba(255, 255, 255, 0.08);
+  --accent-cyan: #00f3ff;
+  --accent-cyan-dim: rgba(0, 243, 255, 0.7);
+  --accent-blue: #008cff;
+  --accent-pink: #ff00c8;
+  --accent-pink-dim: rgba(255, 0, 200, 0.7);
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --radius-panel: 10px;
+  --radius-btn: 8px;
+  --radius-pill: 999px;
+  --glow-mix: 0 0 16px rgba(0, 243, 255, 0.25), 0 0 12px rgba(255, 0, 200, 0.2);
+  --shadow-depth: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --transition-fast: 120ms ease;
+  --line-soft: rgba(0, 243, 255, 0.12);
+  --ok: #6ee7a8;
+  --warn: #f5d07a;
+  --bad: #ff8a8a;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition-fast: 0ms; }
+  .btn:hover { transform: none; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font: 13px/1.45 system-ui, Segoe UI, Roboto, sans-serif;
+  color: var(--text-primary);
+  color-scheme: dark;
+}
+.editor-page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 10%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 20% 90%, rgba(255, 0, 200, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 80% at 90% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+    linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
+}
+.app-shell {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 16px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.header-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(0, 243, 255, 0.06) 0%, rgba(255, 0, 200, 0.04) 100%);
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-depth), 0 0 20px rgba(255, 0, 200, 0.08);
+}
+.header-icon {
+  flex-shrink: 0;
+  display: block;
+  width: 48px;
+  height: 48px;
+  filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.4)) drop-shadow(0 0 8px rgba(255, 0, 200, 0.25));
+}
+.header-main { flex: 1; min-width: 200px; }
+.header-title {
+  margin: 0 0 6px;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 12px rgba(0, 243, 255, 0.35), 0 0 8px rgba(255, 0, 200, 0.2);
+}
+.header-bar p {
+  margin: 0;
+  max-width: 900px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+a { color: var(--accent-cyan-dim); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.layout {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr 300px;
+}
+@media (max-width: 1020px) { .layout { grid-template-columns: 1fr; } }
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid rgba(0, 243, 255, 0.15);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-depth), 0 0 20px rgba(255, 0, 200, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  padding: 12px 14px;
+}
+.panel__title {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.3), 0 0 4px rgba(255, 0, 200, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 0, 200, 0.15);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  min-height: 34px;
+  border-radius: var(--radius-btn);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+.btn:hover {
+  background: linear-gradient(135deg, rgba(0, 243, 255, 0.12) 0%, rgba(255, 0, 200, 0.08) 100%);
+  border-color: rgba(255, 0, 200, 0.4);
+  box-shadow: var(--glow-mix);
+  transform: translateY(-1px);
+}
+.btn:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+.btn--brand {
+  border-color: rgba(255, 0, 200, 0.5);
+  background: linear-gradient(135deg, rgba(0, 243, 255, 0.25) 0%, rgba(0, 140, 255, 0.15) 50%, rgba(255, 0, 200, 0.2) 100%);
+  color: #fff;
+}
+.btn--brand:hover {
+  border-color: var(--accent-pink-dim);
+  box-shadow: 0 0 18px rgba(0, 243, 255, 0.4), 0 0 14px rgba(255, 0, 200, 0.3);
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.dropzone {
+  border: 1px dashed rgba(0, 243, 255, 0.28);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+.dropzone strong { color: var(--text-primary); }
+textarea#bv-input {
+  width: 100%;
+  min-height: 200px;
+  resize: vertical;
+  font: 12px/1.4 ui-monospace, Consolas, monospace;
+  padding: 12px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--line-soft);
+  background: rgba(4, 8, 16, 0.85);
+  color: var(--text-primary);
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+label { font-size: 0.85rem; color: var(--text-muted); }
+select, input[type="number"], input[type="file"] {
+  font: inherit;
+  padding: 6px 10px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--line-soft);
+  background: rgba(4, 8, 16, 0.85);
+  color: var(--text-primary);
+}
+.bv-status { min-height: 22px; font-size: 0.88rem; margin-top: 10px; color: var(--text-muted); flex: 1; min-width: 0; }
+.bv-status.ok { color: var(--ok); }
+.bv-status.warn { color: var(--warn); }
+.bv-status.bad { color: var(--bad); }
+.bv-inv-tag-badge {
+  font-size: 0.75rem;
+  color: var(--accent-cyan-dim);
+  flex-shrink: 0;
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+.kpi {
+  background: rgba(4, 8, 16, 0.65);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+}
+.kpi span { display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.kpi strong { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); }
+.table-wrap {
+  overflow: auto;
+  max-height: min(72vh, 900px);
+  border: 1px solid rgba(0, 243, 255, 0.12);
+  border-radius: var(--radius-panel);
+  background: rgba(0, 0, 0, 0.15);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+th, td { padding: 10px 8px; border-bottom: 1px solid rgba(0, 243, 255, 0.08); text-align: left; vertical-align: top; }
+th {
+  position: sticky;
+  top: 0;
+  background: rgba(8, 12, 22, 0.97);
+  z-index: 1;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+tr:hover td { background: rgba(0, 243, 255, 0.04); }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; word-break: break-all; color: var(--accent-cyan-dim); }
+.tag { font-size: 0.72rem; padding: 2px 8px; border-radius: var(--radius-pill); font-weight: 700; }
+.tag.ok { background: rgba(110, 231, 168, 0.15); color: var(--ok); }
+.tag.bad { background: rgba(255, 138, 138, 0.15); color: var(--bad); }
+.legit-ok { color: var(--ok); font-weight: 600; }
+.legit-warn, .legit-nomap, .legit-idle { color: var(--warn); }
+.legit-err, .legit-decode, .legit-nomanifest { color: var(--bad); }
+.mono { font-family: ui-monospace, Consolas, monospace; }
+.small { font-size: 0.78rem; color: var(--text-secondary); }
+.muted { color: var(--text-muted); }
+aside ul { margin: 0; padding-left: 18px; color: var(--text-secondary); font-size: 0.88rem; }
+aside li { margin-bottom: 6px; }
+.bv-back-link { white-space: nowrap; align-self: center; }
+.bv-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: 1;
+  min-width: min(100%, 220px);
+}
+.stx-counter-menu[open] { z-index: 10040; }
+.stx-counter-menu__panel {
+  min-width: min(288px, 92vw);
+  max-width: min(320px, 94vw);
+  padding: 12px 14px;
+  gap: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+.stx-counter-menu__panel h4 {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+}
+.stx-counter-menu__panel .stx-counter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 5px 0;
+}
+.stx-counter-menu__panel .stx-counter-val {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+.stx-counter-menu__panel .stx-counter-note {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.stx-counter-menu__panel .stx-counter-note code {
+  font-size: 0.85em;
+  color: var(--accent-cyan-dim);
+}
+.stx-counter-menu__panel hr.stx-counter-hr {
+  border: none;
+  border-top: 1px solid rgba(0, 243, 255, 0.16);
+  margin: 12px 0;
+}
+.support-menu {
+  position: relative;
+  display: inline-block;
+}
+.support-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.support-menu > summary::-webkit-details-marker { display: none; }
+.support-menu.instructions-menu[open] {
+  z-index: 10050;
+}
+.support-menu__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 240px;
+  z-index: 90;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 243, 255, 0.28);
+  background: linear-gradient(145deg, rgba(5,12,24,0.94) 0%, rgba(10,8,22,0.9) 100%);
+  box-shadow: var(--shadow-depth), 0 0 18px rgba(0, 243, 255, 0.14);
+}
+.support-menu__link {
+  display: block;
+  padding: 7px 9px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  font-size: 0.86rem;
+}
+.support-menu__link:hover {
+  text-decoration: none;
+  border-color: rgba(0,243,255,0.35);
+}
+.instructions-menu__panel {
+  min-width: min(920px, 92vw);
+  max-width: min(920px, 94vw);
+  max-height: min(85vh, calc(100dvh - 88px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.instructions-menu__text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font: 12px/1.45 ui-monospace, Consolas, monospace;
+  color: var(--text-secondary);
+}
+.instructions-menu__embed {
+  width: 100%;
+  min-height: 280px;
+  height: min(70vh, 640px);
+  border: 0;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+.instructions-menu__hint {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.stx-site-stats-hidden { display: none !important; }
+</style>
+</head>
+<body class="editor-page">
+<div class="app-shell">
+<header class="header-bar">
+  <img src="./favicon.ico" alt="" class="header-icon" width="48" height="48" aria-hidden="true"/>
+  <div class="header-main">
+    <h1 class="header-title">Bulk serial validator</h1>
+    <p>
+      Paste <code>@U</code> Base85 serials or <strong>Gibbed-style deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). That text is not the same bytes as WASM <code>@U</code>; the decoder iframe parses it when WASM cannot. YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
+      then checked with the same <strong>data-backed</strong> rules as <a href="../legacy/legit-builder.html" target="_blank" rel="noopener">Legit Builder</a>
+      (manifest, NCS, <strong>inv composition tags</strong> from <code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>, loot schedules, weights, source tables, stats coverage). Parts not on the manifest loot-pool export are listed as <strong>FYI</strong> only (rewards/vendors/quests are still valid). Drop hints use <code>SOURCE_PATHS_DATA</code> when applicable.
+    </p>
+  </div>
+  <div class="bv-header-actions">
+  <a class="btn btn--brand bv-back-link" href="../index.html">Scooter's Toolbox</a>
+  <a class="btn btn--brand bv-back-link" href="./stx-save-yaml-full.html">Save / YAML</a>
+  <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
+    <summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
+    <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
+      <h4>Site (server)</h4>
+      <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+      <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+      <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+      <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in this file’s <code>&lt;head&gt;</code> (see <code>api/SETUP.md</code>).</p>
+      <hr class="stx-counter-hr"/>
+      <h4>Your browser</h4>
+      <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+      <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+      <p class="stx-counter-note">World bumps: <code>stx-items-bump-url</code>. Owner-only fixes: <code>counter-admin.php</code> (never put admin key in HTML).</p>
+    </div>
+  </details>
+  <details class="support-menu instructions-menu" id="stxInstructionsMenuBv">
+    <summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
+    <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox user guide">
+      <iframe class="instructions-menu__embed" id="stxInstructionsFrameBv" title="Scooter's Toolbox user guide"></iframe>
+      <p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" target="_blank" rel="noopener">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
+    </div>
+  </details>
+  <details class="support-menu">
+    <summary class="btn btn--brand" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+    <div class="support-menu__panel" role="menu" aria-label="Support links">
+      <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" target="_blank" rel="noopener noreferrer" role="menuitem">Ko-fi</a>
+      <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" target="_blank" rel="noopener noreferrer" role="menuitem">Buy Me a Coffee</a>
+      <a class="support-menu__link" href="https://paypal.me/ScootersToolbox" target="_blank" rel="noopener noreferrer" role="menuitem">PayPal.me</a>
+    </div>
+  </details>
+  </div>
+</header>
+<script>
+(function () {
+  var menu = document.getElementById('stxInstructionsMenuBv');
+  var frame = document.getElementById('stxInstructionsFrameBv');
+  if (!menu || !frame) return;
+  menu.addEventListener('toggle', function () {
+    if (!menu.open || frame.getAttribute('data-wired') === '1') return;
+    frame.setAttribute('data-wired', '1');
+    try {
+      frame.src = new URL('SCOOTERS_TOOLBOX_USER_GUIDE.txt', document.baseURI || location.href).href;
+    } catch (e) {
+      frame.src = 'SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+    }
+  });
+})();
+(function () {
+  var stats = document.getElementById('stxPublicCounterMenu');
+  if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
+  var hdr = document.querySelector('.header-bar, .legit-header, .bl4-bulk-topbar[role="banner"], header.stx-page-topbar, header.stx-topbar');
+  var logo = hdr && hdr.querySelector('img');
+  try {
+    if (sessionStorage.getItem('stx-stats-dev-visible') === '1') stats.classList.remove('stx-site-stats-hidden');
+  } catch (e1) {}
+  if (!logo) return;
+  logo.addEventListener('click', function (e) {
+    if (!(e.shiftKey || e.ctrlKey)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    stats.classList.toggle('stx-site-stats-hidden');
+    var on = !stats.classList.contains('stx-site-stats-hidden');
+    stats.open = on;
+    try {
+      if (on) sessionStorage.setItem('stx-stats-dev-visible', '1');
+      else sessionStorage.removeItem('stx-stats-dev-visible');
+    } catch (e2) {}
+  });
+})();
+</script>
+
+<div class="layout">
+  <div class="panel">
+    <div class="panel__title">Input</div>
+    <div id="bv-dropzone" class="dropzone"><strong>Drop a file</strong> here or use the file picker — or paste below.</div>
+    <div class="row">
+      <input type="file" id="bv-file" accept=".yaml,.yml,.txt,.json,.log,.save">
+      <label>Format <select id="bv-mode">
+        <option value="auto">Auto</option>
+        <option value="yaml">YAML</option>
+        <option value="json">JSON</option>
+        <option value="txt">Plain lines</option>
+      </select></label>
+      <label>Item level <input type="number" id="bv-level" value="60" min="1" max="60" style="width:4rem;"></label>
+      <label><input type="checkbox" id="bv-strict" checked> Strict (fail if below LootSchedule stage)</label>
+    </div>
+    <textarea id="bv-input" placeholder="Paste YAML (serial: @U…), JSON, or one serial per line…"></textarea>
+    <div class="row" style="flex-wrap:wrap;align-items:center;">
+      <button type="button" class="btn btn--brand" id="bv-run">Validate all</button>
+      <button type="button" class="btn" id="bv-clear">Clear</button>
+      <label class="small" style="display:inline-flex;align-items:center;gap:6px;margin-left:4px;">
+        <input type="checkbox" id="bv-export-filtered" />
+        Export only rows matching the table filter below
+      </label>
+    </div>
+    <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
+      <button type="button" class="btn" id="bv-export-json">Export JSON (report)</button>
+      <button type="button" class="btn" id="bv-export-csv">Export CSV</button>
+      <button type="button" class="btn" id="bv-export-md">Export Markdown summary</button>
+    </div>
+    <div class="row" style="align-items:center;gap:10px;flex-wrap:wrap;">
+      <div id="bv-status" class="bv-status">Idle. Same validation core as Legit Builder (manifest, NCS, inv tags, schedules, weights, stats) — no iframe; works from file:// or http://.</div>
+      <span id="bv-inv-tag-badge" class="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
+    </div>
+  </div>
+
+  <aside class="panel">
+    <div class="panel__title">How it works</div>
+    <ul>
+      <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
+      <li><strong>Inv tags</strong>: Nexus-derived <strong>composition basetags</strong> and per-slot tag chains — same <code>computeTagCompositionIssues</code> path as Legit Builder. Failures appear in <strong>Notes</strong> (e.g. lines starting with <code>Inv tags:</code>).</li>
+      <li><strong>Legit</strong>: Same stack as Legit Builder — <code>tag-comp-validation.js</code> + <code>inv_comp_tag_data.js</code> + <code>legit-builder-core.js</code> + <code>LegitDecodeHelpers.validateDecodedSerial</code> (no cross-frame access; avoids <code>file://</code> blocking).</li>
+      <li><strong>Loot-pool FYI</strong>: Off-export parts are not treated as uncertain by themselves. <strong>Notes</strong> / exports still list slot, name, and index under <code>off_pool_*</code> and the FYI line.</li>
+      <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
+      <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
+      <li><strong>Per-part clarity</strong>: Legit Builder shows a <em>Selected parts</em> table (drop pool vs inv-tag columns). Here, <strong>Notes</strong> lists real failure lines (inv tag graph, weights, NCS, etc.) — not the footer stats block.</li>
+      <li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check &ldquo;Export only rows matching&hellip;&rdquo; to export e.g. uncertain-only after choosing the filter.</li>
+      <li><strong>Alignment flags</strong> (<code>align_*</code>): Extra booleans + <code>alignment_summary</code> / <code>alignment_definitions</code> in JSON so you can compare strict <strong>OK (data)</strong> to looser row buckets in the same export (e.g. &ldquo;not Fail (data)&rdquo; or ok/warn-only). Definitions are specific to Scooter&rsquo;s Toolbox / this validator.</li>
+    </ul>
+    <p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
+  </aside>
+
+  <div class="panel" style="grid-column: 1 / -1;">
+    <div class="panel__title">Summary</div>
+    <p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
+    <div class="kpis">
+      <div class="kpi"><span>Serials</span><strong id="k-total">0</strong></div>
+      <div class="kpi"><span>Decoded OK</span><strong id="k-decoded">0</strong></div>
+      <div class="kpi"><span>OK (data)</span><strong id="k-ok">0</strong></div>
+      <div class="kpi"><span>Uncertain / map</span><strong id="k-warn">0</strong></div>
+      <div class="kpi"><span>Decode failed</span><strong id="k-decode-fail">0</strong></div>
+      <div class="kpi"><span>No manifest</span><strong id="k-nomanifest">0</strong></div>
+      <div class="kpi"><span>Fail (data)</span><strong id="k-legit-err">0</strong></div>
+    </div>
+    <details class="bv-kpi-key" style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid var(--line-soft);">
+      <summary class="small" style="cursor:pointer;color:var(--accent-cyan-dim);">What do these mean?</summary>
+      <dl class="small" style="margin:10px 0 0 16px;line-height:1.6;">
+        <dt><strong>Serials</strong></dt>
+        <dd>Total unique serials extracted from the input.</dd>
+        <dt><strong>Decoded OK</strong></dt>
+        <dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn&rsquo;t be parsed.</dd>
+        <dt><strong>OK (data)</strong></dt>
+        <dd>Decoded + manifest item found + slot map matched + passes all checks (inv tags, schedules, sources). Strict pass.</dd>
+        <dt><strong>Uncertain / map</strong></dt>
+        <dd>Decoded but no slot map match, or inv-tag/schedule warnings. Not a hard fail; use Notes to judge.</dd>
+        <dt><strong>Decode failed</strong></dt>
+        <dd>WASM couldn&rsquo;t decode (bad Base85, corrupted, or unknown format).</dd>
+        <dt><strong>No manifest</strong></dt>
+        <dd>Decoded but manufacturer/item type don&rsquo;t match any known manifest item.</dd>
+        <dt><strong>Fail (data)</strong></dt>
+        <dd>Decoded + manifest + mapped but validation failed (inv tags wrong, off loot schedule, etc.). See Notes.</dd>
+      </dl>
+    </details>
+    <div class="row" style="margin-top:14px;">
+      <label>Show <select id="bv-filter">
+        <option value="all">All rows</option>
+        <option value="ok">OK (data) only</option>
+        <option value="warn">Uncertain only</option>
+        <option value="err">Failures only</option>
+      </select></label>
+      <button type="button" class="btn" id="bv-prev">Previous page</button>
+      <button type="button" class="btn" id="bv-next">Next page</button>
+      <span id="bv-page" class="small"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Serial</th>
+            <th>Decode</th>
+            <th>Item</th>
+            <th>Legit</th>
+            <th>Stats</th>
+            <th>Drop hint</th>
+            <th>Notes (inv tags, NCS, weights, …)</th>
+          </tr>
+        </thead>
+        <tbody id="bv-tbody">
+          <tr><td colspan="7" class="muted">Paste serials and click Validate all.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Same data + validation core as legacy/legit-builder.html (decoder: same-page WASM + bridge-shared, no iframe) -->
+<input type="hidden" id="item-level" value="60" aria-hidden="true">
+
+<script>
+window.STX_WASM_URL_OVERRIDE = './wasm/stx-deserializer.wasm';
+window.STX_DECODER_USE_INLINE = true;
+</script>
+<script src="js/stx-wasm-inline.js"></script>
+<script src="js/stx-bulk-decoder-deps.js"></script>
+<script src="js/cc-base85-rebuild.js"></script>
+<script src="js/stx-go-wasm-polyfill.js"></script>
+<script src="js/stx-parts-db.js"></script>
+<script src="data/stx_dataset.js"></script>
+<script src="data/part_ref_meta.js"></script>
+<script src="js/stx-bulk-decoder-main.js"></script>
+<script src="js/stx-bulk-decoder-patch-v8.js"></script>
+<script src="js/stx-bulk-decoder-patch-v9.js"></script>
+<script src="js/stx-bulk-decoder-patch-v10.js"></script>
+<script src="js/stx-bulk-decoder-patch-v11.js"></script>
+<script src="js/stx-decode-bridge-shared.js"></script>
+
+<script src="../legacy/bl4_manifest.js"></script>
+<script src="../legacy/ncs_extra.js"></script>
+<script src="../legacy/ncs_slot_map.js"></script>
+<script src="../legacy/ncs_parts.js"></script>
+<script src="data/weapon_stats_data.js"></script>
+<script src="data/parts_stats_data.js"></script>
+<script src="data/enemy_drops_data.js"></script>
+<script src="data/itempoollist_droprows_data.js"></script>
+<script src="data/source_paths_data.js"></script>
+<script src="data/legit_schedule_data.js"></script>
+<script src="data/classmod_manifest_items.js"></script>
+<script src="js/cc-item-slug.js"></script>
+<script src="js/tag-comp-validation.js"></script>
+<script src="data/inv_comp_tag_data.js"></script>
+<script src="js/legit-builder-core.js"></script>
+<script src="js/legit-decode-validate.js"></script>
+<script src="js/cc-stx-decoder-bridge.js"></script>
+<script src="js/cc-itempool-drop-check.js"></script>
+<script src="js/bulk-serial-input-parse.js"></script>
+<script src="js/bulk-serial-validator-app.js"></script>
+<script src="js/cc-toolbox-analytics.js"></script>
+<script src="js/cc-toolbox-items-made.js"></script>
+<script src="js/cc-toolbox-public-counter.js"></script>
+</body>
+</html>

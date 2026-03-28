@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark"/>
+  <!-- Server analytics: set full URL to track.php — see ../api/SETUP.md -->
+  <meta name="stx-analytics-endpoint" content=""/>
+  <!-- Optional: public counter URL — see ../api/SETUP.md -->
+  <meta name="stx-counter-url" content=""/>
+  <meta name="stx-items-bump-url" content=""/>
+  <meta name="stx-items-bump-key" content=""/>
+  <title>Legit Builder (data checks) — Scooter's Toolbox</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <link rel="icon" href="../assets/favicon.ico" sizes="any" type="image/x-icon"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      color: #e9feff;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    body.legit-page {
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse 120% 80% at 70% 10%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse 80% 60% at 20% 90%, rgba(255, 0, 200, 0.12) 0%, transparent 45%),
+        radial-gradient(ellipse 60% 80% at 90% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(180, 0, 100, 0.06) 0%, transparent 60%),
+        linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
+    }
+    .legit-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 32px;
+    }
+
+    .legit-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(255, 0, 200, 0.05) 100%);
+      border: 1px solid rgba(0, 243, 255, 0.22);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 20px rgba(255, 0, 200, 0.08);
+    }
+    .legit-back {
+      margin-left: auto;
+      align-self: flex-start;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      color: #e9feff;
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.12) 0%, rgba(255, 0, 200, 0.08) 100%);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+      flex-shrink: 0;
+    }
+    .legit-back:hover {
+      border-color: rgba(0, 255, 200, 0.55);
+      box-shadow: 0 0 16px rgba(0, 243, 255, 0.2), 0 0 12px rgba(255, 0, 200, 0.12);
+      transform: translateY(-1px);
+    }
+    .legit-header-logo {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      filter: drop-shadow(0 0 12px rgba(0, 243, 255, 0.45)) drop-shadow(0 0 8px rgba(255, 0, 200, 0.25));
+    }
+    .legit-header-main { flex: 1; min-width: 220px; }
+    .legit-header h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #00f3ff;
+      margin-bottom: 4px;
+      text-shadow: 0 0 14px rgba(0, 243, 255, 0.25);
+    }
+    .legit-header .legit-brand-line {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(233,254,255,0.45);
+      margin-bottom: 6px;
+    }
+    .legit-header .subtitle {
+      color: rgba(233,254,255,0.55);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .legit-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      font-size: 0.78rem;
+    }
+    .legit-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .legit-legend .leg-ok { color: #00ffc8; }
+    .legit-legend .leg-warn { color: #ffb347; }
+    .legit-legend .leg-err { color: #ff6b6b; }
+
+    .legit-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 16px;
+    }
+    @media (max-width: 920px) {
+      .legit-layout { grid-template-columns: 1fr; }
+      .legit-back { width: 100%; text-align: center; margin-left: 0; }
+    }
+
+    .legit-panel {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(5, 12, 24, 0.82) 0%, rgba(8, 6, 22, 0.72) 100%);
+      padding: 16px 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 243, 255, 0.06);
+      backdrop-filter: blur(8px);
+    }
+    .legit-panel-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #00c8ff;
+      margin-bottom: 12px;
+    }
+
+    .legit-item-select-wrap {
+      margin-bottom: 16px;
+    }
+    .legit-item-select-wrap label {
+      display: block;
+      font-size: 0.8rem;
+      color: rgba(233,254,255,0.6);
+      margin-bottom: 5px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(10,18,28,0.6);
+      border: 1px solid rgba(0,243,255,0.4);
+      border-radius: 8px;
+      color: #e9feff;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300c8ff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    select:hover, select:focus {
+      border-color: rgba(0,243,255,0.7);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0,243,255,0.1);
+    }
+    select option {
+      background: #101828;
+      color: #e9feff;
+    }
+
+    .slots-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .slots-grid { grid-template-columns: 1fr; }
+    }
+    .slot-card {
+      border: 1px solid rgba(0,243,255,0.18);
+      border-radius: 10px;
+      background: rgba(0,243,255,0.03);
+      padding: 10px 12px;
+      transition: border-color 0.15s;
+    }
+    .slot-card:hover {
+      border-color: rgba(0,243,255,0.35);
+    }
+    .slot-card label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #00c8ff;
+      text-transform: capitalize;
+      margin-bottom: 6px;
+    }
+    .slot-card select {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+
+    .output-box {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.82rem;
+      background: rgba(10,18,28,0.7);
+      border: 1px solid rgba(0,243,255,0.25);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 100px;
+      max-height: 260px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.6;
+      color: rgba(233,254,255,0.85);
+    }
+    .output-box .o-slot { color: #00ffc8; font-weight: 600; }
+    .output-box .o-idx { color: #00c8ff; }
+    .output-box .o-name { color: #e9feff; }
+    .output-box .o-empty { color: rgba(233,254,255,0.35); font-style: italic; }
+
+    .validation-bar {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      border: 1px solid transparent;
+    }
+    .validation-bar.v-idle {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+      color: rgba(233,254,255,0.4);
+    }
+    .validation-bar.v-ok {
+      background: rgba(0,255,200,0.08);
+      border-color: rgba(0,255,200,0.35);
+      color: #00ffc8;
+    }
+    .validation-bar.v-warn {
+      background: rgba(255,179,71,0.08);
+      border-color: rgba(255,179,71,0.35);
+      color: #ffb347;
+    }
+    .validation-bar.v-err {
+      background: rgba(255,107,107,0.08);
+      border-color: rgba(255,107,107,0.35);
+      color: #ff6b6b;
+    }
+    .validation-bar strong {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+    .validation-bar .v-details {
+      font-size: 0.78rem;
+      opacity: 0.95;
+      margin-top: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .validation-bar .v-detail-line {
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      line-height: 1.4;
+    }
+    .validation-bar .v-detail-line:last-child { border-bottom: none; }
+    .validation-bar .v-detail-meta {
+      opacity: 0.55;
+      font-size: 0.72rem;
+    }
+
+    .inv-tag-hint {
+      display: inline-block;
+      font-size: 0.72rem;
+      color: rgba(0, 255, 200, 0.6);
+      margin-top: 6px;
+      margin-left: 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-legit {
+      padding: 8px 16px;
+      border: 1px solid rgba(0, 255, 200, 0.45);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.28) 0%, rgba(255, 0, 200, 0.18) 100%);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 243, 255, 0.12);
+      transition: background 0.15s, border-color 0.15s, filter 0.15s, transform 0.12s;
+    }
+    .btn-legit:hover {
+      filter: brightness(1.08);
+      border-color: rgba(0, 255, 200, 0.65);
+      transform: translateY(-1px);
+    }
+    .btn-legit.secondary {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(233,254,255,0.7);
+    }
+    .btn-legit.secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    .mode-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: rgba(233,254,255,0.6);
+      margin-left: auto;
+    }
+    .mode-toggle .mode-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    .mode-toggle .mode-switch input { opacity: 0; width: 0; height: 0; }
+    .mode-toggle .mode-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: rgba(0,255,200,0.18);
+      border: 1px solid rgba(0,255,200,0.55);
+      border-radius: 999px;
+      transition: 0.2s;
+    }
+    .mode-toggle .mode-slider:before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #00f3ff;
+      border-radius: 50%;
+      transition: 0.2s;
+      box-shadow: 0 0 6px rgba(0,243,255,0.4);
+    }
+    .mode-toggle .mode-switch input:checked + .mode-slider {
+      background: rgba(0,243,255,0.18);
+      border-color: rgba(0,243,255,0.75);
+    }
+    .mode-toggle .mode-switch input:checked + .mode-slider:before {
+      transform: translate(18px, -50%);
+    }
+    .mode-label { cursor: pointer; user-select: none; }
+    .mode-label.active { color: #00f3ff; font-weight: 600; }
+
+    .code-box {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 0.82rem;
+      background: rgba(10,18,28,0.7);
+      border: 1px solid rgba(0,243,255,0.25);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 60px;
+      max-height: 140px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+      color: #00ffc8;
+      margin-top: 10px;
+      user-select: all;
+    }
+    .code-box.empty { color: rgba(233,254,255,0.3); font-style: italic; }
+
+    .output-label {
+      font-size: 0.75rem;
+      color: rgba(233,254,255,0.45);
+      margin-top: 10px;
+      margin-bottom: 2px;
+    }
+
+    .stats-ref {
+      margin-top: 12px;
+      font-size: 0.72rem;
+      color: rgba(233,254,255,0.35);
+    }
+
+    .slot-empty-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 24px;
+      color: rgba(233,254,255,0.3);
+      font-size: 0.85rem;
+    }
+
+    .item-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .item-stat-card {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,243,255,0.15);
+      background: rgba(0,243,255,0.04);
+    }
+    .item-stat-card .stat-value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #00f3ff;
+      line-height: 1.2;
+    }
+    .item-stat-card .stat-label {
+      font-size: 0.72rem;
+      color: rgba(233,254,255,0.5);
+      margin-top: 2px;
+    }
+    .item-stat-card.stat-highlight .stat-value { color: #00ffc8; }
+    .item-stat-card.stat-warn .stat-value { color: #ffb347; }
+    .item-stat-card.stat-err .stat-value { color: #ff6b6b; }
+    .legit-legend-sep { color: rgba(233,254,255,0.25); margin: 0 6px; }
+    .part-diag-wrap {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,243,255,0.12);
+    }
+    .part-diag-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #00c8ff;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .part-diag-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.74rem;
+      line-height: 1.35;
+    }
+    .part-diag-table th {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(0,243,255,0.2);
+      color: rgba(233,254,255,0.55);
+      font-weight: 600;
+    }
+    .part-diag-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      vertical-align: top;
+    }
+    .part-diag-table .pd-name {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.72rem;
+      color: rgba(233,254,255,0.92);
+      word-break: break-word;
+    }
+    .pd-pool-in { color: #6ee7a8; }
+    .pd-pool-out { color: #ffb347; }
+    .pd-pool-ncs { color: #c4a5ff; }
+    .pd-tag-ok { color: #6ee7a8; }
+    .pd-tag-bad { color: #ff8a8a; }
+    .pd-tag-warn { color: #d4c4a0; }
+    .pd-tag-neutral { color: rgba(233,254,255,0.45); }
+    .part-diag-foot {
+      margin-top: 10px;
+      font-size: 0.7rem;
+      line-height: 1.45;
+      color: rgba(233,254,255,0.45);
+    }
+    .part-diag-foot code { font-size: 0.68rem; color: rgba(0,200,255,0.75); }
+    .slot-breakdown {
+      margin-top: 10px;
+    }
+    .slot-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.78rem;
+    }
+    .slot-breakdown-row:last-child { border-bottom: none; }
+    .slot-breakdown-row .sbr-name {
+      color: rgba(233,254,255,0.7);
+      text-transform: capitalize;
+    }
+    .slot-breakdown-row .sbr-val {
+      color: #00c8ff;
+      font-weight: 600;
+      font-family: 'Consolas', monospace;
+    }
+    .slot-breakdown-row .sbr-filled { color: #00ffc8; }
+    .stats-empty {
+      text-align: center;
+      padding: 16px;
+      color: rgba(233,254,255,0.3);
+      font-size: 0.82rem;
+    }
+
+    .slot-section-label {
+      grid-column: 1 / -1;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 6px 0 2px;
+      margin-top: 4px;
+      border-top: 1px solid rgba(0,243,255,0.1);
+    }
+    .slot-section-label.cat-core { color: #00f3ff; }
+    .slot-section-label.cat-accessory { color: #b388ff; }
+    .slot-section-label.cat-ammo { color: #ffb347; }
+    .slot-section-label.cat-visual { color: rgba(233,254,255,0.4); }
+    .slot-section-label.cat-endgame { color: #ff6bff; }
+    .slot-section-label.cat-other { color: rgba(233,254,255,0.5); }
+
+    .slot-card.ncs-only {
+      border-color: rgba(179,136,255,0.25);
+      background: rgba(179,136,255,0.04);
+    }
+    .slot-card.ncs-only label { color: #b388ff; }
+    .ncs-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(179,136,255,0.2);
+      color: #b388ff;
+      font-weight: 600;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .stat-effects-panel { margin-top: 0; }
+    .stat-effect-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.78rem;
+    }
+    .stat-effect-row:last-child { border-bottom: none; }
+    .stat-effect-name { color: rgba(233,254,255,0.75); }
+    .stat-effect-val { font-family: 'Consolas', monospace; font-weight: 600; }
+    .stat-effect-val.positive { color: #00ffc8; }
+    .stat-effect-val.negative { color: #ff6b6b; }
+    .stat-effect-val.neutral { color: rgba(233,254,255,0.5); }
+    .stat-mfr-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.75rem;
+      color: rgba(233,254,255,0.6);
+    }
+    .stat-mfr-val { color: #00c8ff; font-family: 'Consolas', monospace; }
+    .slot-cat-summary {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .cat-chip {
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .cat-chip.cc-core { background: rgba(0,243,255,0.12); color: #00f3ff; }
+    .cat-chip.cc-acc { background: rgba(179,136,255,0.12); color: #b388ff; }
+    .cat-chip.cc-ammo { background: rgba(255,179,71,0.12); color: #ffb347; }
+    .cat-chip.cc-vis { background: rgba(255,255,255,0.06); color: rgba(233,254,255,0.45); }
+    .cat-chip.cc-end { background: rgba(255,107,255,0.12); color: #ff6bff; }
+    .cat-chip.cc-oth { background: rgba(255,255,255,0.06); color: rgba(233,254,255,0.5); }
+    .data-lineage-panel { font-size: 0.78rem; }
+    .data-lineage-text { color: rgba(233,254,255,0.55); line-height: 1.5; }
+    .data-lineage-text a { color: #00c8ff; text-decoration: underline; text-underline-offset: 2px; }
+    .data-lineage-text a:hover { color: #00ffc8; }
+    .lineage-note { display: block; margin-top: 6px; font-size: 0.72rem; color: rgba(233,254,255,0.4); }
+    .drop-sources-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,243,255,0.15); }
+    .drop-sources-title { font-size: 0.72rem; font-weight: 700; color: #00c8ff; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .drop-source-chip { display: inline-block; padding: 3px 8px; margin: 2px 4px 2px 0; border-radius: 6px; font-size: 0.72rem; background: rgba(0,243,255,0.08); color: rgba(233,254,255,0.8); }
+    .health-box { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,243,255,0.15); font-size: 0.73rem; color: rgba(233,254,255,0.72); line-height: 1.45; }
+    .health-row { margin: 4px 0; }
+    .health-chip { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 7px; border-radius: 999px; background: rgba(0,243,255,0.08); color: rgba(233,254,255,0.85); font-size: 0.7rem; }
+    .strict-toggle { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 0.75rem; color: rgba(233,254,255,0.7); }
+    .strict-toggle input { accent-color: #00c8ff; }
+    .item-level-row {
+      display: flex; align-items: center; gap: 8px; margin-top: 10px;
+      font-size: 0.78rem; color: rgba(233,254,255,0.65);
+    }
+    .item-level-row input[type="number"] {
+      width: 64px; padding: 6px 8px; border-radius: 6px;
+      border: 1px solid rgba(0,243,255,0.35); background: rgba(10,18,28,0.6); color: #e9feff;
+      font-family: inherit; font-size: 0.85rem;
+    }
+    .item-level-row input[type="number"]:focus {
+      outline: none; border-color: rgba(0,243,255,0.65);
+      box-shadow: 0 0 0 2px rgba(0,243,255,0.12);
+    }
+    .support-menu {
+      position: relative;
+      display: inline-block;
+    }
+    .support-menu > summary {
+      list-style: none;
+      cursor: pointer;
+    }
+    .support-menu > summary::-webkit-details-marker { display: none; }
+    .support-menu.instructions-menu[open] {
+      z-index: 10050;
+    }
+    .support-menu__panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 240px;
+      z-index: 90;
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,243,255,0.28);
+      background: linear-gradient(145deg, rgba(5,12,24,0.94) 0%, rgba(10,8,22,0.9) 100%);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 18px rgba(0,243,255,0.16);
+    }
+    .support-menu__link {
+      display: block;
+      padding: 7px 9px;
+      border-radius: 8px;
+      color: #e9feff;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.02);
+      font-size: 0.84rem;
+    }
+    .support-menu__link:hover { text-decoration: none; border-color: rgba(0,243,255,0.35); }
+    .stx-counter-menu[open] { z-index: 10040; }
+    .stx-counter-menu__panel {
+      min-width: min(288px, 92vw);
+      max-width: min(320px, 94vw);
+      padding: 12px 14px;
+      gap: 0;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: rgba(233,254,255,0.88);
+    }
+    .stx-counter-menu__panel h4 {
+      margin: 0 0 8px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(0, 243, 255, 0.88);
+    }
+    .stx-counter-menu__panel .stx-counter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin: 5px 0;
+    }
+    .stx-counter-menu__panel .stx-counter-val {
+      font-weight: 700;
+      color: #e9feff;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+    }
+    .stx-counter-menu__panel .stx-counter-note {
+      margin: 10px 0 0;
+      font-size: 0.78rem;
+      color: rgba(233,254,255,0.52);
+      line-height: 1.45;
+    }
+    .stx-counter-menu__panel .stx-counter-note code {
+      font-size: 0.85em;
+      color: rgba(0, 243, 255, 0.75);
+    }
+    .stx-counter-menu__panel hr.stx-counter-hr {
+      border: none;
+      border-top: 1px solid rgba(0, 243, 255, 0.16);
+      margin: 12px 0;
+    }
+    .instructions-menu__panel {
+      min-width: min(920px, 92vw);
+      max-width: min(920px, 94vw);
+      max-height: min(85vh, calc(100dvh - 88px));
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .instructions-menu__text {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      max-width: 100%;
+      font: 12px/1.45 ui-monospace, Consolas, monospace;
+      color: rgba(233,254,255,0.7);
+    }
+    .stx-site-stats-hidden { display: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .legit-back, .legit-back:hover,
+      .legit-legend a:hover, .btn-validate:hover,
+      .stx-toggle-btn:hover, .stx-toggle-btn.open { transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body class="legit-page">
+
+  <div class="legit-wrap">
+  <div class="legit-header">
+    <img class="legit-header-logo" src="../assets/favicon.ico" alt="" width="48" height="48"/>
+    <div class="legit-header-main">
+      <div class="legit-brand-line">Scooter's Toolbox</div>
+      <h1>Legit Builder</h1>
+      <div class="subtitle">This tool does <strong>not</strong> mirror every rule the game uses internally&mdash;only the live game is truly authoritative. What we <strong>do</strong> is compare your item to <strong>bundled reference data</strong> shipped with this site: loot-pool manifests, catalog slots, inventory composition tags, loot timing and minimum-level hints, weapon part-weight tables, and &ldquo;where this kind of item might come from&rdquo; source hints. <strong>OK (data)</strong> means those checks passed and we found a matching source <em>hint</em>; we still <strong>do not</strong> guarantee that this exact serial can spawn in-game.</div>
+      <div class="legit-legend">
+      <span class="leg-ok">In pool</span> = listed in manifest drop-pool data (<code>in_pool</code>)
+      <span class="legit-legend-sep">·</span>
+      <span class="leg-warn">Off-pool</span> = not on manifest loot-pool export (<code>in_pool</code>); quests/vendors/rewards still possible — see validation FYI + Sources
+      <span class="legit-legend-sep">·</span>
+      <span style="color:#7dd3fc;">Inv tags</span> = composition basetags + per-slot tag chain from exported inv data; failures show as <code>Inv tags: …</code> in validation
+      <span class="legit-legend-sep">·</span>
+      <span style="color:#b388ff;">NCS</span> = raw catalog slot (no pool filter)
+      <span class="legit-legend-sep">·</span>
+      <span class="leg-err">Fail (data)</span> = breaks a rule in the validation panel (not &ldquo;illegal in-game&rdquo;)
+    </div>
+    </div>
+    <a class="legit-back" href="../index.html">← Main toolbox</a>
+    <a class="legit-back" href="../assets/stx-save-yaml-full.html">Save / YAML</a>
+    <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
+      <summary class="legit-back" title="Site visits &amp; your local craft tally">📊 Stats</summary>
+      <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
+        <h4>Site (server)</h4>
+        <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+        <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+        <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+        <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in this page’s <code>&lt;head&gt;</code> to your hosted <code>api/counter.php?key=…</code> (see <code>api/SETUP.md</code>).</p>
+        <hr class="stx-counter-hr"/>
+        <h4>Your browser</h4>
+        <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+        <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+        <p class="stx-counter-note">World total: <code>stx-items-bump-url</code> → <code>items-bump.php</code>. Owner tweaks: <code>counter-admin.php</code> + admin key only (never in HTML).</p>
+      </div>
+    </details>
+    <details class="support-menu instructions-menu" id="stxInstructionsMenuLegit">
+      <summary class="legit-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
+      <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox instructions">
+        <pre class="instructions-menu__text" id="stxInstructionsTextLegit">Loading instructions…</pre>
+      </div>
+    </details>
+    <details class="support-menu">
+      <summary class="legit-back" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+      <div class="support-menu__panel" role="menu" aria-label="Support links">
+        <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" target="_blank" rel="noopener noreferrer" role="menuitem">Ko-fi</a>
+        <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" target="_blank" rel="noopener noreferrer" role="menuitem">Buy Me a Coffee</a>
+        <a class="support-menu__link" href="https://paypal.me/ScootersToolbox" target="_blank" rel="noopener noreferrer" role="menuitem">PayPal.me</a>
+      </div>
+    </details>
+  </div>
+  <script>
+  (function () {
+    var menu = document.getElementById('stxInstructionsMenuLegit');
+    var out = document.getElementById('stxInstructionsTextLegit');
+    var loaded = false;
+    if (!menu || !out) return;
+    menu.addEventListener('toggle', function () {
+      if (!menu.open || loaded) return;
+      loaded = true;
+      fetch('../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+        .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
+        .then(function (txt) { out.textContent = txt; })
+        .catch(function () { out.textContent = 'Could not load instructions file.'; });
+    });
+  })();
+  (function () {
+    var stats = document.getElementById('stxPublicCounterMenu');
+    if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
+    var hdr = document.querySelector('.header-bar, .legit-header, .bl4-bulk-topbar[role="banner"], header.stx-page-topbar, header.stx-topbar');
+    var logo = hdr && hdr.querySelector('img');
+    try {
+      if (sessionStorage.getItem('stx-stats-dev-visible') === '1') stats.classList.remove('stx-site-stats-hidden');
+    } catch (e1) {}
+    if (!logo) return;
+    logo.addEventListener('click', function (e) {
+      if (!(e.shiftKey || e.ctrlKey)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      stats.classList.toggle('stx-site-stats-hidden');
+      var on = !stats.classList.contains('stx-site-stats-hidden');
+      stats.open = on;
+      try {
+        if (on) sessionStorage.setItem('stx-stats-dev-visible', '1');
+        else sessionStorage.removeItem('stx-stats-dev-visible');
+      } catch (e2) {}
+    });
+  })();
+  </script>
+
+  <div class="legit-layout">
+    <div class="legit-left-stack" style="display:flex;flex-direction:column;gap:14px;">
+      <div class="legit-panel">
+        <div class="legit-panel-title">Item &amp; Parts</div>
+        <div class="legit-item-select-wrap">
+          <label for="item-type">Item Type</label>
+          <select id="item-type"></select>
+        </div>
+        <div class="slots-grid" id="slots">
+          <div class="slot-empty-msg">Select an item type above to see available slots.</div>
+        </div>
+      </div>
+      <div class="legit-panel">
+        <div class="legit-panel-title">Part Stat Effects</div>
+        <div id="stat-effects"><div class="stats-empty">Select parts to see their stat effects.</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="legit-panel" style="flex:1;">
+        <div class="legit-panel-title">Output</div>
+        <div class="output-box" id="output"><span class="o-empty">Select an item type and parts to begin.</span></div>
+        <div class="output-label">Deserialized Code</div>
+        <div class="code-box empty" id="code-output">No code generated yet.</div>
+        <div class="btn-row">
+          <button class="btn-legit" id="copy-btn">Copy Code</button>
+          <button class="btn-legit secondary" id="reset-btn">Reset</button>
+          <div class="mode-toggle">
+            <span class="mode-label active" id="mode-label-num">Numeric</span>
+            <label class="mode-switch"><input type="checkbox" id="spawn-toggle"><span class="mode-slider"></span></label>
+            <span class="mode-label" id="mode-label-spawn">Spawn</span>
+          </div>
+        </div>
+        <div class="item-level-row">
+          <label for="item-level">Item level (for code &amp; LootSchedule checks)</label>
+          <input type="number" id="item-level" min="1" max="60" value="60" title="Must be ≥ MinGameStage gates from LootSchedule when strict mode is on">
+        </div>
+        <div class="stats-ref" id="stats-ref"></div>
+      </div>
+
+      <div class="legit-panel">
+        <div class="legit-panel-title">Decode @U serial &amp; check data</div>
+        <p style="font-size:0.75rem;color:rgba(233,254,255,0.55);margin:0 0 8px;line-height:1.45;">Paste an <code>@U</code> serial. The STX decoder (same as BL4 Bulk Deserializer) resolves <code>resolvedParts</code>, maps names to manifest slots (best-effort), then runs the <strong>same</strong> data checks as manual selection — including <strong>inv composition tags</strong> when <code>inv_comp_tag_data.js</code> is loaded. Empty or partial mapping still runs checks on whatever matched.</p>
+        <textarea id="legit-decode-input" rows="3" style="width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:0.78rem;padding:8px;border-radius:6px;border:1px solid rgba(0,200,255,0.25);background:rgba(0,0,0,0.35);color:#e9feff;" placeholder="@U…"></textarea>
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button type="button" class="btn-legit" id="legit-decode-btn">Decode &amp; check</button>
+          <span id="legit-decode-status" style="font-size:0.72rem;color:rgba(233,254,255,0.5);"></span>
+        </div>
+        <div id="legit-decode-out" class="validation-bar v-idle" style="margin-top:10px;white-space:normal;">Paste a serial and click Decode &amp; check.</div>
+      </div>
+
+      <div class="legit-panel">
+        <div class="legit-panel-title">Data validation</div>
+        <p style="font-size:0.72rem;color:rgba(233,254,255,0.5);margin:0 0 8px;line-height:1.45;">Uses manifest / NCS / schedules / weights / stats <em>and</em> inv tag composition rules; panel lines starting with <code>Inv tags:</code> come from the tag graph.</p>
+        <div class="validation-bar v-idle" id="validation">Select parts to validate.</div>
+        <span id="inv-tag-rules-hint" class="inv-tag-hint" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Inv NCS tag rules active</span>
+        <label class="strict-toggle"><input type="checkbox" id="strict-mode" checked> Strict mode (0% weight or level &lt; LootSchedule MinGameStage &rarr; Fail (data))</label>
+      </div>
+
+      <div class="legit-panel">
+        <div class="legit-panel-title">Item info &amp; part checklist</div>
+        <div id="item-stats"><div class="stats-empty">Select an item type to see info.</div></div>
+      </div>
+
+      <div class="legit-panel">
+        <div class="legit-panel-title">Evidence (from data)</div>
+        <div id="proof-evidence"><div class="stats-empty">Select parts to view proof details.</div></div>
+      </div>
+
+      <div class="legit-panel data-lineage-panel">
+        <div class="legit-panel-title">Data Sources</div>
+        <div class="data-lineage-text">
+          bl4_manifest &middot; NCS (itempool, gbx_ue_data_table, GbxActorPart) &middot; PARTS_STATS_DATA (<code>parts_stats_data.js</code>) &middot; WEAPON_STATS_DATA &middot; LootSchedule &amp; weapon_part_weight_table &middot; inv tag rules (<code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>)
+          <span class="lineage-note">LootSchedule / weapon_part_weight_table come from extracts; mapping a chosen part to a schedule row still uses heuristics we maintain.</span>
+          <span class="lineage-note">Status labels (OK / Fail / Uncertain) describe agreement with <strong>our</strong> tables and rules, not a private &ldquo;legit&rdquo; verdict from the game. Stats by idRaw / Stats known come only from PARTS_STATS_DATA here. For full part lookup (same STX idRaw layer), use <a href="../index.html#ccAdvancedPartsSearch">Advanced Part Search</a> in the main toolbox. For many serials at once (same checks + export alignment flags), use <a href="../assets/bulk-serial-validator.html">Bulk serial validator</a>.</span>
+          <span class="lineage-note">Slot names are checked against NCS (with manifest aliases: mag/magazine, shield/hyperion_secondary_acc, multi/tediore_acc). Element overlap across slots is a <strong>consistency heuristic we chose</strong> (same element token in two slots); the engine may differ. Rainbow / multi-element single parts are skipped for overlap checks.</span>
+        </div>
+        <div id="drop-sources" class="drop-sources-box"></div>
+        <div id="data-health" class="health-box"></div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script src="bl4_manifest.js"></script>
+  <script src="ncs_extra.js"></script>
+  <script src="ncs_slot_map.js"></script>
+  <script src="ncs_parts.js"></script>
+  <script src="../assets/data/weapon_stats_data.js"></script>
+  <script src="../assets/data/parts_stats_data.js"></script>
+  <script src="../assets/data/enemy_drops_data.js"></script>
+  <script src="../assets/data/itempoollist_droprows_data.js"></script>
+  <script src="../assets/data/source_paths_data.js"></script>
+  <script src="../assets/data/legit_schedule_data.js"></script>
+  <script src="../assets/data/classmod_manifest_items.js"></script>
+  <script src="../assets/js/cc-item-slug.js"></script>
+  <script src="../assets/js/tag-comp-validation.js"></script>
+  <script src="../assets/data/inv_comp_tag_data.js"></script>
+  <script src="../assets/js/legit-builder-core.js"></script>
+  <script src="../assets/js/legit-builder-ui.js"></script>
+  <script src="../assets/js/cc-toolbox-analytics.js"></script>
+  <script src="../assets/js/cc-toolbox-items-made.js"></script>
+  <script src="../assets/js/cc-toolbox-public-counter.js"></script>
+  <script>window.STX_DECODER_IFRAME_URL = 'bl4-bulk-decoder.html';</script>
+  <script src="../assets/js/cc-stx-decoder-bridge.js"></script>
+  <script src="../assets/js/legit-decode-validate.js"></script>
+</body>
+</html>

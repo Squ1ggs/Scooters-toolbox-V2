@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="color-scheme" content="dark">
+<meta name="stx-analytics-endpoint" content=""/>
+<meta name="stx-counter-url" content=""/>
+<meta name="stx-items-bump-url" content=""/>
+<meta name="stx-items-bump-key" content=""/>
+<title>BL4 Prefix Lookup — Scooter's Toolbox</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="../assets/favicon.ico" sizes="any" type="image/x-icon"/>
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png"/>
+<style>
+:root { color-scheme: dark; --stx-cyan:#00f3ff; --stx-cyan-dim:rgba(0,243,255,0.45); --stx-cyan-glow:rgba(0,255,200,0.22); --stx-bg:rgba(10,18,28,0.6); --stx-card:linear-gradient(145deg, rgba(5,10,15,0.9) 0%, rgba(10,20,30,0.8) 100%); --stx-text:#e9feff; --stx-muted:rgba(233,254,255,0.7); }
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; width:100%; min-height:100%; overflow-x:hidden; }
+body.stx-prefix-page {
+  font:14px/1.45 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color:var(--stx-text);
+  background:
+    radial-gradient(ellipse 120% 80% at 70% 10%, rgba(0, 100, 200, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 20% 90%, rgba(255, 0, 200, 0.12) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 80% at 90% 50%, rgba(0, 243, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(180, 0, 100, 0.06) 0%, transparent 60%),
+    linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
+}
+.stx-page-topbar {
+  display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+  padding:12px 16px; margin:16px auto 0; max-width:1400px;
+  background:linear-gradient(135deg,rgba(0,243,255,0.08) 0%,rgba(255,0,200,0.05) 100%);
+  border:1px solid rgba(0,243,255,0.22); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.45), 0 0 20px rgba(255,0,200,0.08);
+}
+.stx-page-topbar img { width:48px; height:48px; border-radius:10px; filter:drop-shadow(0 0 12px rgba(0,243,255,0.45)) drop-shadow(0 0 8px rgba(255,0,200,0.25)); }
+.stx-page-topbar-text { display:flex; flex-direction:column; gap:2px; flex:1; min-width:200px; }
+.stx-page-topbar-brand { font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:rgba(233,254,255,0.45); }
+.stx-page-topbar-title { font-size:1.12rem; font-weight:700; color:var(--stx-text); text-shadow:0 0 12px rgba(0,243,255,0.3), 0 0 6px rgba(255,0,200,0.15); }
+.stx-back {
+  margin-left:auto; padding:8px 16px; border-radius:10px; font-weight:600; font-size:13px; text-decoration:none; color:var(--stx-text);
+  border:1px solid rgba(0,243,255,0.35);
+  background:linear-gradient(135deg, rgba(0,243,255,0.12) 0%, rgba(255,0,200,0.08) 100%);
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  transition:border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+.stx-back:hover { border-color:rgba(0,255,200,0.55); box-shadow:0 0 16px rgba(0,243,255,0.2), 0 0 12px rgba(255,0,200,0.12); transform:translateY(-1px); }
+.support-menu {
+  position: relative;
+  display: inline-block;
+}
+.support-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.support-menu > summary::-webkit-details-marker { display: none; }
+.support-menu.instructions-menu[open] {
+  z-index: 10050;
+}
+.support-menu__panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 230px;
+  z-index: 90;
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,243,255,0.28);
+  background: linear-gradient(145deg, rgba(5,12,24,0.94) 0%, rgba(10,8,22,0.9) 100%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 18px rgba(0,243,255,0.16);
+}
+.support-menu__link {
+  display: block;
+  padding: 7px 9px;
+  border-radius: 8px;
+  color: var(--stx-text);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+  font-size: 0.84rem;
+}
+.support-menu__link:hover { text-decoration: none; border-color: rgba(0,243,255,0.35); }
+.stx-counter-menu[open] { z-index: 10040; }
+.stx-counter-menu__panel {
+  min-width: min(288px, 92vw);
+  max-width: min(320px, 94vw);
+  padding: 12px 14px;
+  gap: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--stx-muted);
+}
+.stx-counter-menu__panel h4 {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0, 243, 255, 0.88);
+}
+.stx-counter-menu__panel .stx-counter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 5px 0;
+}
+.stx-counter-menu__panel .stx-counter-val {
+  font-weight: 700;
+  color: var(--stx-text);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+.stx-counter-menu__panel .stx-counter-note {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: rgba(233,254,255,0.52);
+  line-height: 1.45;
+}
+.stx-counter-menu__panel .stx-counter-note code {
+  font-size: 0.85em;
+  color: rgba(0, 243, 255, 0.75);
+}
+.stx-counter-menu__panel hr.stx-counter-hr {
+  border: none;
+  border-top: 1px solid rgba(0, 243, 255, 0.16);
+  margin: 12px 0;
+}
+.instructions-menu__panel {
+  min-width: min(920px, 92vw);
+  max-width: min(920px, 94vw);
+  max-height: min(85vh, calc(100dvh - 88px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.instructions-menu__text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  font: 12px/1.45 ui-monospace, Consolas, monospace;
+  color: rgba(233,254,255,0.7);
+}
+main { max-width:1400px; margin:0 auto; padding:16px 24px 24px; }
+h1, .lookup-title {
+  margin:0 0 6px; font-size:28px; font-weight:800; color:var(--stx-cyan); text-shadow:0 0 20px rgba(0,243,255,0.3);
+  position:relative; padding-bottom:10px;
+}
+h1::after, .lookup-title::after {
+  content:""; position:absolute; left:0; right:0; bottom:0; height:2px; border-radius:999px;
+  background:linear-gradient(90deg, transparent, rgba(0,255,200,0.75), rgba(0,200,255,0.75), transparent); opacity:0.8;
+}
+p { color:var(--stx-muted); margin:0 0 16px; }
+.card {
+  background:linear-gradient(145deg, rgba(5,12,24,0.88) 0%, rgba(10,8,22,0.78) 100%);
+  border:1px solid rgba(0,243,255,0.22);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(0,243,255,0.06), inset 0 0 24px rgba(0,243,255,0.03);
+  backdrop-filter:blur(8px);
+}
+input[type=search] {
+  width:100%; max-width:400px; padding:10px 14px;
+  background:var(--stx-bg); color:var(--stx-text);
+  border:1px solid var(--stx-cyan-dim); border-radius:10px; font:inherit;
+  box-shadow:inset 0 0 0 1px rgba(0,243,255,0.05);
+}
+input[type=search]:focus {
+  outline:none; border-color:rgba(0,243,255,0.85);
+  box-shadow:0 0 0 2px rgba(0,243,255,0.18), inset 0 0 0 1px rgba(0,243,255,0.15);
+}
+.toolbar { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:12px; }
+.filters { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.filters label { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px; color:var(--stx-muted); }
+.filters input[type=checkbox] { accent-color:var(--stx-cyan); }
+.sort-wrap { display:flex; align-items:center; gap:6px; }
+.sort-wrap select {
+  padding:8px 12px; background:var(--stx-bg); color:var(--stx-text);
+  border:1px solid var(--stx-cyan-dim); border-radius:10px; font:inherit;
+  box-shadow:inset 0 0 0 1px rgba(0,243,255,0.05);
+}
+.sort-wrap select:focus { outline:none; border-color:rgba(0,243,255,0.85); }
+.btn {
+  padding:10px 16px; border-radius:12px; font:inherit; font-weight:700; cursor:pointer; text-decoration:none;
+  border:1px solid rgba(0,255,200,0.4);
+  background:linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%);
+  color:var(--stx-text);
+  box-shadow:0 4px 16px rgba(0,0,0,0.35), 0 0 12px rgba(0,243,255,0.12);
+  transition:border-color 0.2s, filter 0.2s, transform 0.12s, box-shadow 0.2s;
+}
+.btn:hover { border-color:rgba(0,255,200,0.75); filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 0 16px rgba(0,243,255,0.2), 0 6px 20px rgba(0,0,0,0.35); }
+.btn-export { margin-left:auto; }
+.table-wrap {
+  overflow:auto; border-radius:12px; margin-top:16px; max-height:70vh;
+  border:1px solid var(--stx-cyan-dim);
+  box-shadow:inset 0 0 0 1px rgba(0,243,255,0.05);
+}
+table { width:100%; border-collapse:collapse; min-width:700px; }
+th, td { padding:10px 12px; border-bottom:1px solid rgba(0,243,255,0.15); vertical-align:top; text-align:left; }
+th {
+  position:sticky; top:0; z-index:1; cursor:pointer; user-select:none;
+  background:linear-gradient(180deg, rgba(10,25,45,0.95) 0%, rgba(5,15,30,0.9) 100%);
+  color:var(--stx-cyan); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.5px;
+}
+th:hover { color:#fff; text-shadow:0 0 10px rgba(0,243,255,0.5); }
+tr:hover { background:rgba(0,243,255,0.04); }
+.prefix { font-weight:600; color:var(--stx-cyan); cursor:pointer; }
+.prefix:hover { text-decoration:underline; text-shadow:0 0 8px rgba(0,243,255,0.4); }
+.type { font-size:12px; color:var(--stx-muted); }
+.parts { font-family:ui-monospace, SFMono-Regular, monospace; font-size:12px; word-break:break-word; }
+.exact-parts { color:#00ffc8; text-shadow:0 0 8px rgba(0,255,200,0.2); }
+.raw-parts { font-size:11px; color:var(--stx-muted); cursor:pointer; padding:2px 4px; margin:-2px -4px; border-radius:4px; }
+.raw-parts:hover { background:rgba(0,243,255,0.1); }
+.status { font-size:12px; color:var(--stx-muted); margin-top:8px; }
+.checklist { list-style:none; margin:4px 0 0; padding:0; }
+.checklist li { padding:4px 0; font-size:12px; word-break:break-all; }
+.checklist li { cursor:pointer; padding-left:4px; margin-left:-4px; border-radius:4px; }
+.checklist li:hover { background:rgba(0,243,255,0.1); }
+.checklist li::before { content:'☐ '; color:var(--stx-cyan); }
+.build-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center; }
+.build-guide { margin-top:12px; padding:12px; background:rgba(0,243,255,0.06); border:1px solid rgba(0,243,255,0.2); border-radius:8px; font-size:12px; color:var(--stx-muted); }
+.build-guide strong { color:var(--stx-cyan); }
+.build-guide ol { margin:6px 0 0 16px; padding:0; }
+.build-guide li { margin:4px 0; }
+.build-guide code { background:rgba(0,0,0,0.3); padding:2px 6px; border-radius:4px; font-size:0.9em; }
+.paste-flash { animation: copyFlash 0.4s ease; }
+@keyframes copyFlash { 50% { background:rgba(0,255,200,0.3); } }
+.detail-panel {
+  margin-top:12px; padding:12px; border-radius:10px; font-size:13px;
+  background:rgba(0,0,0,0.25); border:1px solid rgba(0,243,255,0.2);
+}
+.detail-panel h4 { margin:0 0 8px; font-size:14px; color:var(--stx-cyan); }
+.part-link { color:var(--stx-cyan); text-decoration:none; }
+.part-link:hover { text-decoration:underline; text-shadow:0 0 8px rgba(0,243,255,0.4); }
+#detailModal { background:rgba(0,5,15,0.85); backdrop-filter:blur(8px); }
+.fav-btn { background:none; border:none; cursor:pointer; font-size:1.2em; padding:2px 6px; opacity:0.6; }
+.fav-btn:hover { opacity:1; }
+.fav-btn.faved { opacity:1; color:#ffd700; }
+.rarity-badge { font-size:10px; padding:2px 6px; border-radius:6px; display:inline-block; }
+.rarity-legendary { background:rgba(255,215,0,0.2); color:#ffd700; }
+.rarity-part { background:rgba(0,243,255,0.15); color:var(--stx-cyan); }
+.rarity-slot { background:rgba(120,220,255,0.14); color:#9ee8ff; }
+.rarity-stat { background:rgba(255,100,200,0.15); color:#ff64c8; }
+.rarity-licensed { background:rgba(180,100,255,0.2); color:#d4a5ff; }
+.rarity-body { background:rgba(255,170,80,0.18); color:#ffb347; }
+.rarity-enh-core { background:rgba(60,200,180,0.18); color:#50e0c8; }
+.index-section { margin-top:16px; }
+.index-section details { margin-bottom:8px; }
+.index-section summary { cursor:pointer; padding:10px 12px; background:rgba(0,243,255,0.06); border-radius:8px; font-weight:700; color:var(--stx-cyan); }
+.index-section summary:hover { background:rgba(0,243,255,0.1); }
+.index-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:8px; margin-top:8px; }
+.index-item { padding:6px 10px; background:rgba(0,0,0,0.2); border-radius:6px; font-size:12px; }
+.index-item a { color:var(--stx-cyan); text-decoration:none; }
+.index-item a:hover { text-decoration:underline; }
+.prefix-note { margin-top:8px; }
+.prefix-note textarea { width:100%; min-height:50px; padding:8px; background:var(--stx-bg); border:1px solid var(--stx-cyan-dim); border-radius:8px; color:var(--stx-text); font:inherit; resize:vertical; }
+.compare-panel { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.compare-panel .compare-col { padding:12px; background:rgba(0,0,0,0.2); border-radius:8px; }
+.search-history { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.search-history span { padding:4px 10px; background:rgba(0,243,255,0.1); border-radius:6px; font-size:12px; cursor:pointer; }
+.search-history span:hover { background:rgba(0,243,255,0.2); }
+@media (max-width: 768px) {
+  .toolbar { flex-direction:column; align-items:stretch; }
+  .filters { flex-wrap:wrap; }
+  .table-wrap { max-height:50vh; }
+  table { min-width:500px; font-size:12px; }
+  th, td { padding:6px 8px; }
+  .compare-panel { grid-template-columns:1fr; }
+  .stx-back { width:100%; text-align:center; margin-left:0; }
+}
+.compare-panel label { display:block; margin-bottom:4px; font-weight:700; color:var(--stx-cyan); }
+.compare-panel select { width:100%; padding:8px; margin-bottom:8px; background:var(--stx-bg); border:1px solid var(--stx-cyan-dim); border-radius:8px; color:var(--stx-text); }
+.simple-list-section h3 { margin:0 0 8px; font-size:1.05rem; color:var(--stx-cyan); }
+.simple-list-section .type { margin-bottom:10px; }
+.simple-list-search-wrap { margin-bottom:12px; }
+.simple-list-search-wrap input[type=search] { max-width:420px; }
+.simple-prefix-list {
+  max-height:55vh;
+  overflow-y:auto;
+  border:1px solid var(--stx-cyan-dim);
+  border-radius:12px;
+  padding:12px 14px;
+  box-shadow:inset 0 0 0 1px rgba(0,243,255,0.05);
+}
+.simple-prefix-block {
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(0,243,255,0.12);
+}
+.simple-prefix-block:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+.simple-prefix-name {
+  font-weight:700;
+  color:var(--stx-cyan);
+  cursor:pointer;
+  margin-bottom:6px;
+  font-size:15px;
+}
+.simple-prefix-name:hover { text-decoration:underline; text-shadow:0 0 8px rgba(0,243,255,0.35); }
+.simple-prefix-block ul { margin:0; padding-left:1.25em; color:var(--stx-muted); font-size:13px; line-height:1.55; }
+.simple-prefix-block li { margin:3px 0; word-break:break-word; }
+.simple-prefix-weapon { font-size:11px; color:rgba(233,254,255,0.45); margin-left:4px; }
+#simpleListStatus { font-size:12px; color:var(--stx-muted); margin-top:6px; }
+@media print {
+  body { background:#fff; color:#111; }
+  .card { background:#fff; border-color:#ccc; box-shadow:none; }
+  .toolbar, #detailModal, #compareModal, .index-section, #searchHistory { display:none !important; }
+  .table-wrap { max-height:none; overflow:visible; }
+  .fav-btn { display:none !important; }
+  .exact-parts { color:#0a0; }
+  .raw-parts { color:#666; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stx-back:hover { transform: none; transition: none; }
+}
+.stx-site-stats-hidden { display: none !important; }
+</style>
+</head>
+<body class="stx-prefix-page">
+<header class="stx-page-topbar" role="banner">
+  <img src="../assets/favicon.ico" alt="" width="48" height="48"/>
+  <div class="stx-page-topbar-text">
+    <span class="stx-page-topbar-brand">Scooter's Toolbox</span>
+    <span class="stx-page-topbar-title">BL4 Prefix Lookup</span>
+  </div>
+  <a class="stx-back" href="../index.html">← Main toolbox</a>
+  <a class="stx-back" href="../assets/stx-save-yaml-full.html">Save / YAML</a>
+  <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
+    <summary class="stx-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
+    <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
+      <h4>Site (server)</h4>
+      <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+      <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+      <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+      <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Set <code>stx-counter-url</code> in <code>&lt;head&gt;</code> (see <code>api/SETUP.md</code>).</p>
+      <hr class="stx-counter-hr"/>
+      <h4>Your browser</h4>
+      <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
+      <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
+      <p class="stx-counter-note">World: <code>stx-items-bump-url</code>. Admin: <code>counter-admin.php</code> only (never in HTML).</p>
+    </div>
+  </details>
+  <details class="support-menu instructions-menu" id="stxInstructionsMenuPrefix">
+    <summary class="stx-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
+    <div class="support-menu__panel instructions-menu__panel" role="region" aria-label="Scooter's Toolbox instructions">
+      <pre class="instructions-menu__text" id="stxInstructionsTextPrefix">Loading instructions…</pre>
+    </div>
+  </details>
+  <details class="support-menu">
+    <summary class="stx-back" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+    <div class="support-menu__panel" role="menu" aria-label="Support links">
+      <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" target="_blank" rel="noopener noreferrer" role="menuitem">Ko-fi</a>
+      <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" target="_blank" rel="noopener noreferrer" role="menuitem">Buy Me a Coffee</a>
+      <a class="support-menu__link" href="https://paypal.me/ScootersToolbox" target="_blank" rel="noopener noreferrer" role="menuitem">PayPal.me</a>
+    </div>
+  </details>
+</header>
+<script>
+(function () {
+  var menu = document.getElementById('stxInstructionsMenuPrefix');
+  var out = document.getElementById('stxInstructionsTextPrefix');
+  var loaded = false;
+  if (!menu || !out) return;
+  menu.addEventListener('toggle', function () {
+    if (!menu.open || loaded) return;
+    loaded = true;
+    fetch('../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+      .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
+      .then(function (txt) { out.textContent = txt; })
+      .catch(function () { out.textContent = 'Could not load instructions file.'; });
+  });
+})();
+(function () {
+  var stats = document.getElementById('stxPublicCounterMenu');
+  if (!stats || stats.getAttribute('data-stx-stats-dev') !== '1') return;
+  var hdr = document.querySelector('.header-bar, .legit-header, .bl4-bulk-topbar[role="banner"], header.stx-page-topbar, header.stx-topbar');
+  var logo = hdr && hdr.querySelector('img');
+  try {
+    if (sessionStorage.getItem('stx-stats-dev-visible') === '1') stats.classList.remove('stx-site-stats-hidden');
+  } catch (e1) {}
+  if (!logo) return;
+  logo.addEventListener('click', function (e) {
+    if (!(e.shiftKey || e.ctrlKey)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    stats.classList.toggle('stx-site-stats-hidden');
+    var on = !stats.classList.contains('stx-site-stats-hidden');
+    stats.open = on;
+    try {
+      if (on) sessionStorage.setItem('stx-stats-dev-visible', '1');
+      else sessionStorage.removeItem('stx-stats-dev-visible');
+    } catch (e2) {}
+  });
+})();
+</script>
+<main>
+  <section class="card">
+    <h2 class="lookup-title">Search &amp; table</h2>
+    <p>Search prefixes and parts. Reverse lookup: search by part ID (e.g. jak_barrel_acc, CritDamage) to see which prefixes use it. <strong>Click a prefix</strong> to see exact parts. <span id="totalCountHint" class="type"></span></p>
+    <p class="type" id="datasetMeta" style="margin-top:6px;"></p>
+    <p class="type" style="margin-top:6px;">Share a search: add <code>?q=</code> to this page&rsquo;s URL (e.g. <code>prefix-lookup.html?q=crit</code>).</p>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search prefix or part (e.g. Slutty, Lethal, jak_barrel_acc, CritDamage)" autofocus>
+      <div class="filters">
+        <label><input type="checkbox" id="filter-legendary" checked> Legendary</label>
+        <label><input type="checkbox" id="filter-part-display" checked> Part display</label>
+        <label><input type="checkbox" id="filter-part-slot" checked> Part slot / mag</label>
+        <label><input type="checkbox" id="filter-stat" checked> Stat-based</label>
+        <label><input type="checkbox" id="filter-favorites"> Favorites only</label>
+      </div>
+      <div class="sort-wrap">
+        <label for="weaponFilter">Weapon:</label>
+        <select id="weaponFilter">
+          <option value="">All</option>
+        </select>
+      </div>
+      <div class="sort-wrap">
+        <label for="sort">Sort:</label>
+        <select id="sort">
+          <option value="prefix">Prefix A–Z</option>
+          <option value="prefix-desc">Prefix Z–A</option>
+          <option value="type">Type</option>
+          <option value="weapon">Weapon family</option>
+          <option value="source">Source</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-export" id="exportCsv">Export CSV</button>
+      <button type="button" class="btn" id="exportTsv">Export TSV</button>
+      <a href="../index.html#legit-section" class="btn" target="_blank">Legit Builder →</a>
+      <a href="./bl4-bulk-decoder.html" class="btn" target="_blank">Bulk decoder</a>
+      <button type="button" class="btn" id="compareBtn">Compare</button>
+    </div>
+    <div id="searchHistory" class="search-history"></div>
+    <div id="status" class="status">Loading...</div>
+    <div class="index-section">
+      <details><summary>Prefixes by stat</summary><div id="statIndex" class="index-grid"></div></details>
+      <details><summary>Prefixes by part slot</summary><div id="slotIndex" class="index-grid"></div></details>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th data-sort="prefix">Prefix</th><th data-sort="type">Type</th><th>Weapon</th><th>Exact Parts Required</th><th>Source</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+  <section class="card simple-list-section" id="simplePrefixListSection" aria-labelledby="simpleListHeading">
+    <h2 class="lookup-title" id="simpleListHeading">Simple prefix list</h2>
+    <p class="type">Every prefix in one scrollable list. Each bullet is a separate rule/variant (slot, stats, legendary parts, etc.). Click a prefix name to open the full detail panel.</p>
+    <div class="simple-list-search-wrap">
+      <label for="simpleListSearch" class="type" style="display:block;margin-bottom:6px;">Filter this list</label>
+      <input type="search" id="simpleListSearch" placeholder="Filter by prefix or requirement text…" autocomplete="off">
+    </div>
+    <div id="simpleListStatus" class="status" aria-live="polite"></div>
+    <div class="simple-prefix-list" id="simpleListBody"></div>
+  </section>
+</main>
+<div id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center; padding:24px; box-sizing:border-box;">
+  <div class="card" style="max-width:600px; max-height:80vh; overflow:auto;">
+    <h2 id="detailTitle" style="margin:0 0 12px;"></h2>
+    <div id="detailBody"></div>
+    <div class="prefix-note" id="detailNoteWrap" style="margin-top:12px;">
+      <label for="detailNote">Your note:</label>
+      <textarea id="detailNote" placeholder="Add a note for this prefix..."></textarea>
+    </div>
+    <button type="button" class="btn" id="detailClose" style="margin-top:16px;">Close</button>
+  </div>
+</div>
+<div id="compareModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center; padding:24px; box-sizing:border-box;">
+  <div class="card" style="max-width:900px; max-height:85vh; overflow:auto;">
+    <h2 style="margin:0 0 12px;">Compare prefixes</h2>
+    <div class="compare-panel" id="comparePanel"></div>
+    <button type="button" class="btn" id="compareClose" style="margin-top:16px;">Close</button>
+  </div>
+</div>
+<script src="../assets/js/prefix_parts_table_data.js"></script>
+<script src="../assets/js/stat_parts_lookup_data.js"></script>
+<script>
+(function(){
+  const searchEl = document.getElementById('search');
+  const tbody = document.getElementById('tbody');
+  const statusEl = document.getElementById('status');
+  const exportCsvBtn = document.getElementById('exportCsv');
+  const exportTsvBtn = document.getElementById('exportTsv');
+  const detailModal = document.getElementById('detailModal');
+  const detailTitle = document.getElementById('detailTitle');
+  const detailBody = document.getElementById('detailBody');
+  const detailClose = document.getElementById('detailClose');
+  let data = [];
+  let filteredData = [];
+  const STORAGE_FAV = 'prefix_lookup_favorites';
+  const STORAGE_NOTES = 'prefix_lookup_notes';
+  const STORAGE_HISTORY = 'prefix_lookup_search_history';
+  const MAX_HISTORY = 10;
+
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_FAV) || '[]'); } catch(_) { return []; }
+  }
+  function setFavorites(arr) {
+    try { localStorage.setItem(STORAGE_FAV, JSON.stringify(arr)); } catch(_) {}
+  }
+  function getNotes() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_NOTES) || '{}'); } catch(_) { return {}; }
+  }
+  function setNote(prefix, note) {
+    const n = getNotes();
+    if (note) n[prefix] = note; else delete n[prefix];
+    try { localStorage.setItem(STORAGE_NOTES, JSON.stringify(n)); } catch(_) {}
+  }
+  function getSearchHistory() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_HISTORY) || '[]'); } catch(_) { return []; }
+  }
+  function addSearchHistory(q) {
+    if (!q || q.length < 2) return;
+    let h = getSearchHistory().filter(function(x) { return x !== q; });
+    h.unshift(q);
+    h = h.slice(0, MAX_HISTORY);
+    try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(h)); } catch(_) {}
+  }
+
+  const STAT_LABELS = {
+    CritDamage: 'Critical Hit Damage', critdamage: 'Critical Hit Damage',
+    Damage: 'Damage', damage: 'Damage',
+    FireRate: 'Fire Rate', firerate: 'Fire Rate',
+    ReloadSpeed: 'Reload Speed', reloadspeed: 'Reload Speed',
+    MagSize: 'Magazine Size', magsize: 'Magazine Size',
+    EquipSpeed: 'Equip Speed', equipspeed: 'Equip Speed',
+    Accuracy: 'Accuracy', accuracy: 'Accuracy',
+    ElementalPower: 'Elemental Power', elementalpower: 'Elemental Power',
+    ADSProficiency: 'ADS Proficiency', adsproficiency: 'ADS Proficiency',
+    SplashDmg: 'Splash Damage', splashdamage: 'Splash Damage',
+    StatusEffect_Chance: 'Status Effect Chance', statuseffect_chance: 'Status Effect Chance',
+    StatusEffect_Damage: 'Status Effect Damage', statuseffect_damage: 'Status Effect Damage',
+    single: 'Single stat only (no secondary)',
+    default: 'Single stat only',
+  };
+
+  const SLOT_LABELS = {
+    jak_barrel_acc: 'Jakobs barrel accessory',
+    hyp_shield: 'Hyperion shield',
+    licensed_ted: 'Tediore licensed part',
+    ted_mirv: 'Tediore MIRV',
+    ted_shooting: 'Tediore shooting',
+    ted_combo: 'Tediore combo',
+    ted_replicator: 'Tediore replicator',
+    ted_mirv_plus: 'Tediore MIRV + combo',
+    default: 'Default mag',
+    cov_mag: 'COV mag',
+    tor_mag: 'Torgue mag',
+    borg_mag: 'Borg mag',
+    body_mod_a: 'Body mod A', body_mod_b: 'Body mod B', body_mod_c: 'Body mod C', body_mod_d: 'Body mod D',
+    barrel_mod_a: 'Barrel mod A', barrel_mod_b: 'Barrel mod B', barrel_mod_c: 'Barrel mod C', barrel_mod_d: 'Barrel mod D',
+    moda: 'Mod A', modb: 'Mod B', modc: 'Mod C', modd: 'Mod D',
+    singleornomod: 'Single or no mod',
+    comment: 'Comment / special',
+    aggrovator: 'Aggrovator (grenade)',
+    atlien: 'Atlien (Tediore)',
+    core_boxmagazine: 'Core: Box Magazine',
+    core_recycler: 'Core: Recycler',
+    core_trackerantenna: 'Core: Tracker Antenna',
+    core_highroller: 'Core: High Roller',
+    core_coldopen: 'Core: Cold Open',
+    core_boompuppy: 'Core: Boompuppy',
+    core_stimconverter: 'Core: Stim Converter',
+    core_stockpiler: 'Core: Stockpiler',
+    core_freecharger: 'Core: Free Charger',
+    core_mixologist: 'Core: Mixologist',
+    core_leaper: 'Core: Leaper',
+    core_bulletfabricator: 'Core: Bullet Fabricator',
+    core_primedpotency: 'Core: Primed Potency',
+    core_bullethose: 'Core: Bullet Hose',
+    core_traumabond: 'Core: Trauma Bond',
+    core_freeloader: 'Core: Free Loader',
+    core_shockguard: 'Core: Shock Guard',
+    core_muzzlebrake: 'Core: Muzzle Brake',
+    core_underdog: 'Core: Underdog',
+    core_sureshot: 'Core: Sure Shot',
+    core_hardcharger: 'Core: Hard Charger',
+    core_shortcircuit: 'Core: Short Circuit',
+    core_ventilator: 'Core: Ventilator',
+    core_smelter: 'Core: Smelter',
+    core_accelerator: 'Core: Accelerator',
+    core_backupplan: 'Core: Backup Plan',
+    core_bulwark: 'Core: Bulwark',
+    core_stabilizer: 'Core: Stabilizer',
+    core_piercer: 'Core: Piercer',
+    core_sequencer: 'Core: Sequencer',
+    core_synthesizer: 'Core: Synthesizer',
+    core_transfuser: 'Core: Transfuser',
+    core_powershot: 'Core: Power Shot',
+    core_headringer: 'Core: Head Ringer',
+    core_bottomfeeder: 'Core: Bottom Feeder',
+    core_protractor: 'Core: Protractor',
+    core_ammogenerator: 'Core: Ammo Generator',
+    core_banger: 'Core: Banger',
+    core_extendafriend: 'Core: Extenda Friend',
+    core_digidivider: 'Core: Digi Divider',
+    customdesc1: 'Custom description',
+  };
+
+  function humanizeSlotKey(k) {
+    if (!k || typeof k !== 'string') return k;
+    return k.split(/[_\s]+/).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+  }
+  function labelStat(s) {
+    var k = (s || '').trim();
+    if (STAT_LABELS[k] || STAT_LABELS[k.toLowerCase()]) return STAT_LABELS[k] || STAT_LABELS[k.toLowerCase()];
+    var tail = k.replace(/^Part_Stat_(Weapon|StatusEffect)_/i, '').replace(/^part_stat_(weapon|statuseffect)_/i, '');
+    if (tail) return STAT_LABELS[tail] || STAT_LABELS[tail.toLowerCase()] || humanizeSlotKey(tail);
+    return k;
+  }
+  function labelSlot(s) {
+    var k = (s || '').trim();
+    if (!k) return k;
+    var low = k.toLowerCase();
+    if (SLOT_LABELS[k] || SLOT_LABELS[low]) return SLOT_LABELS[k] || SLOT_LABELS[low];
+    var norm = low.replace(/^part_core_[a-z]+_/, 'core_').replace(/^part_core_/, 'core_');
+    if (SLOT_LABELS[norm]) return SLOT_LABELS[norm];
+    return humanizeSlotKey(k);
+  }
+
+  function getWeaponFamily(r) {
+    if (r.table) {
+      const m = r.table.match(/^([A-Z]+)_Weapon/);
+      if (m) return m[1];
+      if (/^Enhancement|^Part_Stat_|StatPrefix/i.test(r.table)) return '';
+      var tbl = r.table.split('_')[0];
+      if (tbl && /^(JAK|BOR|DAD|MAL|ORD|TED|TOR|VLA|HYP)$/i.test(tbl)) return tbl.toUpperCase();
+      return '';
+    }
+    if (r.id) {
+      const m = r.id.match(/^PrefParts_([A-Z]+)_/);
+      return m ? m[1] : '';
+    }
+    if (r.part_id) {
+      const m = r.part_id.match(/_(bor|dad|jak|mal|ord|ted|tor|vla|hyp)_/i);
+      return m ? m[1].toUpperCase() : '';
+    }
+    if (r.type === 'part_slot_mag' && (r.required_parts || r.row_key || r.col_key)) {
+      var s = [r.required_parts, r.row_key, r.col_key].filter(Boolean).join(' ').toLowerCase();
+      var w = s.match(/\b(jak|bor|dad|mal|ord|ted|tor|vla|hyp)_(ar|ps|sg|sm|sr|hw)\b/);
+      return w ? w[1].toUpperCase() + '_' + w[2].toUpperCase() : '';
+    }
+    return '';
+  }
+
+  function getTypeCategory(r) {
+    if (r.type === 'legendary_required') return 'legendary';
+    if (r.type === 'part_display_name') return 'part-display';
+    if (r.type === 'part_slot_mag' && r.table) {
+      var t = (r.table || '');
+      if (t.indexOf('StatPrefix') >= 0 || t.indexOf('StatCombinations') >= 0) return 'stat';
+      if (t.indexOf('CoreCombinations') >= 0) return 'part-slot';
+      return (r.row_key || '').indexOf('Part_Stat_') >= 0 || (r.col_key || '').indexOf('part_stat_') >= 0 ? 'stat' : 'part-slot';
+    }
+    return r.type || '';
+  }
+
+  function getRarity(r) {
+    if (r.type === 'legendary_required') return { label: 'Legendary', cls: 'rarity-legendary' };
+    if (r.type === 'part_display_name') return { label: 'Part', cls: 'rarity-part' };
+    var t = (r.table || '');
+    if (t.indexOf('StatPrefix') >= 0 || t.indexOf('StatCombinations') >= 0) {
+      return { label: 'Stat', cls: 'rarity-stat' };
+    }
+    if (t.indexOf('LicensedPartPrefix') >= 0) return { label: 'Licensed', cls: 'rarity-licensed' };
+    if (/HeavyWeaponNamingBodyPrefix|NamingBodyPrefix/i.test(t)) return { label: 'Body', cls: 'rarity-body' };
+    if (t.indexOf('EnhancementNamingCoreCombinations') >= 0) return { label: 'Enh core', cls: 'rarity-enh-core' };
+    if (getTypeCategory(r) === 'stat') return { label: 'Stat', cls: 'rarity-stat' };
+    return { label: 'Slot', cls: 'rarity-slot' };
+  }
+
+  function getExactPartsRequired(r) {
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+      return 'Exact parts: ' + r.required_parts.join(', ');
+    }
+    if (r.type === 'part_display_name' && r.part_id) {
+      return 'Exact part: ' + r.part_id;
+    }
+    if (r.type === 'part_slot_mag' && r.table) {
+      const isStat = (r.table || '').indexOf('StatPrefix') >= 0;
+      if (isStat && r.row_key && r.col_key) {
+        const primary = labelStat(r.row_key);
+        const secondary = labelStat(r.col_key);
+        return 'Stats-based: Primary = ' + primary + ', Secondary = ' + secondary + '. Use parts that give these as top stats.';
+      }
+      const slot = labelSlot(r.row_key);
+      const mag = labelSlot(r.col_key);
+      return 'Part slot: ' + slot + ' + Mag: ' + mag;
+    }
+    return null;
+  }
+
+  function formatParts(rp) {
+    if (Array.isArray(rp)) return rp.join('; ');
+    return String(rp || '');
+  }
+
+  function getPartIdsForBuild(r) {
+    if (!r) return [];
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) return r.required_parts.filter(Boolean);
+    if (r.type === 'part_display_name' && r.part_id) return [r.part_id];
+    if (getTypeCategory(r) === 'part-slot' && r.required_parts) {
+      var s = Array.isArray(r.required_parts) ? r.required_parts.join(' ') : String(r.required_parts);
+      return s.split(/[\s;+]+/).map(function(x) { return x.trim(); }).filter(Boolean);
+    }
+    return [];
+  }
+
+  function escapeHtml(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function applyFiltersAndSort(rows) {
+    const q = (searchEl.value || '').trim().toLowerCase();
+    const fl = document.getElementById('filter-legendary').checked;
+    const fp = document.getElementById('filter-part-display').checked;
+    const fpSlot = document.getElementById('filter-part-slot').checked;
+    const fStat = document.getElementById('filter-stat').checked;
+    const fFav = document.getElementById('filter-favorites').checked;
+    const weaponFilter = (document.getElementById('weaponFilter') || {}).value || '';
+
+    let out = rows.filter(function(r) {
+      const cat = getTypeCategory(r);
+      if (cat === 'legendary' && !fl) return false;
+      if (cat === 'part-display' && !fp) return false;
+      if (cat === 'part-slot' && !fpSlot) return false;
+      if (cat === 'stat' && !fStat) return false;
+      if (fFav) {
+        const favs = getFavorites();
+        const prefix = (r.prefix || '').trim();
+        if (!favs.includes(prefix)) return false;
+      }
+      if (weaponFilter) {
+        const w = getWeaponFamily(r);
+        if (w !== weaponFilter) return false;
+      }
+      if (q) {
+        const parts = formatParts(r.required_parts).toLowerCase();
+        const exact = (getExactPartsRequired(r) || '').toLowerCase();
+        const weapon = getWeaponFamily(r).toLowerCase();
+        const match = (r.prefix || '').toLowerCase().replace(/\s+/g,' ').includes(q) ||
+          parts.includes(q) || exact.includes(q) || weapon.includes(q) ||
+          (r.row_key || '').toLowerCase().includes(q) || (r.col_key || '').toLowerCase().includes(q) ||
+          (r.part_id || '').toLowerCase().includes(q);
+        if (!match) return false;
+      }
+      return true;
+    });
+
+    const sortVal = document.getElementById('sort').value;
+    out.sort(function(a, b) {
+      if (sortVal === 'prefix') return (a.prefix || '').localeCompare(b.prefix || '');
+      if (sortVal === 'prefix-desc') return (b.prefix || '').localeCompare(a.prefix || '');
+      if (sortVal === 'type') return (getTypeCategory(a) || '').localeCompare(getTypeCategory(b) || '');
+      if (sortVal === 'weapon') return (getWeaponFamily(a) || '').localeCompare(getWeaponFamily(b) || '');
+      if (sortVal === 'source') return (a.source || '').localeCompare(b.source || '');
+      return 0;
+    });
+
+    return out;
+  }
+
+  const BUCKET_STAT_LABELS = { ammo_mag:'Ammo', damage:'Damage', elemental:'Elemental', ads:'ADS', accuracy:'Accuracy', firerate:'Fire Rate', projectiles:'Projectiles', misc:'Misc', reload_time:'Reload', crit:'Crit' };
+  var _partToStatsCache = null;
+  function getPartToStatsMap() {
+    if (_partToStatsCache) return _partToStatsCache;
+    try {
+      var sl = window.STAT_PARTS_LOOKUP;
+      if (!sl || !sl.bucket_to_parts) return null;
+      var out = Object.create(null);
+      var buckets = sl.bucket_to_parts;
+      for (var bucket in buckets) {
+        var arr = buckets[bucket];
+        if (!Array.isArray(arr)) continue;
+        for (var i = 0; i < arr.length; i++) {
+          var code = (arr[i] || '').toLowerCase().trim();
+          if (!code) continue;
+          if (!out[code]) out[code] = [];
+          var lbl = BUCKET_STAT_LABELS[bucket] || bucket;
+          if (out[code].indexOf(lbl) === -1) out[code].push(lbl);
+        }
+      }
+      _partToStatsCache = out;
+      return out;
+    } catch (_) {}
+    return null;
+  }
+  function getStatsForPart(partCode) {
+    const map = getPartToStatsMap();
+    if (!map) return [];
+    const key = (partCode || '').toLowerCase().trim();
+    return map[key] || [];
+  }
+
+  function renderChecklist(parts, withCopy) {
+    if (!Array.isArray(parts)) return '';
+    return '<ul class="checklist">' + parts.map(function(p) {
+      const safe = escapeHtml(p);
+      let title = '';
+      if (withCopy) {
+        const stats = getStatsForPart(p);
+        if (stats.length) {
+          title = 'Stats: ' + stats.join(', ') + ' — Click to copy';
+        } else {
+          title = 'Click to copy';
+        }
+      }
+      return withCopy ? '<li data-copy="' + safe + '" title="' + escapeHtml(title) + '">' + safe + '</li>' : '<li>' + safe + '</li>';
+    }).join('') + '</ul>';
+  }
+
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+  }
+
+  function statKeyToBucket(k) {
+    if (!k) return null;
+    var lookup = window.STAT_PARTS_LOOKUP;
+    if (!lookup || !lookup.stat_to_bucket) return null;
+    var b = lookup.stat_to_bucket[k] || lookup.stat_to_bucket[k.toLowerCase()];
+    if (b) return b;
+    var tail = (k || '').replace(/^Part_Stat_(Weapon|StatusEffect)_/i, '').replace(/^part_stat_(weapon|statuseffect)_/i, '');
+    return tail ? (lookup.stat_to_bucket[tail] || lookup.stat_to_bucket[tail.toLowerCase()]) : null;
+  }
+  function getEstimatedPartsForStat(rowKey, colKey, weaponFamily, maxPerStat) {
+    const lookup = window.STAT_PARTS_LOOKUP;
+    if (!lookup || !lookup.bucket_to_parts || !lookup.stat_to_bucket) return [];
+    const bucket1 = statKeyToBucket(rowKey);
+    const bucket2 = (colKey === 'single' || colKey === 'default') ? null : statKeyToBucket(colKey);
+    const limit = maxPerStat || 30;
+    const w = (weaponFamily || '').toLowerCase();
+    function getFilteredFromBucket(b, useWeaponFilter) {
+      const arr = lookup.bucket_to_parts[b] || [];
+      let filtered = arr;
+      if (useWeaponFilter && w) {
+        filtered = arr.filter(function(p) { const pl = p.toLowerCase(); return pl.startsWith(w + '_') || pl.startsWith(w + '.'); });
+        if (filtered.length === 0) filtered = arr;
+      }
+      return filtered.slice(0, limit);
+    }
+    var arr1 = bucket1 ? getFilteredFromBucket(bucket1, true) : [];
+    var arr2 = (bucket2 && bucket2 !== bucket1) ? getFilteredFromBucket(bucket2, true) : [];
+    const seen = {};
+    const result = [];
+    const maxLen = Math.max(arr1.length, arr2.length);
+    for (var i = 0; i < maxLen; i++) {
+      if (i < arr1.length && !seen[arr1[i]]) { seen[arr1[i]] = 1; result.push(arr1[i]); }
+      if (i < arr2.length && !seen[arr2[i]]) { seen[arr2[i]] = 1; result.push(arr2[i]); }
+    }
+    return result;
+  }
+
+  function getBuildGuide(r) {
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+      return '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select Manufacturer + Item Type for this weapon</li><li>Use Advanced Part Search to find each part by ID, or paste a code if you have one</li><li>Copy the part IDs above and search for them in STX</li></ol></div>';
+    }
+    if (r.type === 'part_display_name' && r.part_id) {
+      return '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select the matching item type (e.g. Shield for shield parts)</li><li>Search for part ID: <code>' + escapeHtml(r.part_id) + '</code></li></ol></div>';
+    }
+    if (getTypeCategory(r) === 'stat' || getTypeCategory(r) === 'part-slot') {
+      let guide = '';
+      if (getTypeCategory(r) === 'stat' && r.row_key && r.col_key) {
+        const est = getEstimatedPartsForStat(r.row_key, r.col_key, getWeaponFamily(r));
+        if (est.length) {
+          guide += '<div class="build-guide" style="margin-bottom:12px;"><strong>Estimated parts that may contribute:</strong> <em>(click to copy)</em>' + renderChecklist(est.slice(0, 20), true) + (est.length > 20 ? '<p class="type">+' + (est.length - 20) + ' more. Use Copy estimated parts for full list.</p>' : '') + '</div>';
+        }
+      }
+      guide += '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select Manufacturer + Item Type</li><li>Choose parts that give the stats/slots shown above</li><li>Use Advanced Search to filter by stat or part slot</li></ol></div>';
+      return guide;
+    }
+    return '';
+  }
+
+  function render(rows) {
+    filteredData = rows;
+    const favs = getFavorites();
+    tbody.innerHTML = rows.map(function(r) {
+      const exact = getExactPartsRequired(r);
+      const raw = formatParts(r.required_parts);
+      const rawSafe = raw ? escapeHtml(raw) : '';
+      const partsCell = exact
+        ? '<span class="exact-parts">' + escapeHtml(exact) + '</span>' + (raw ? '<br><span class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</span>' : '')
+        : (raw ? '<span class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</span>' : '');
+      const weapon = getWeaponFamily(r);
+      const prefix = (r.prefix || '').trim();
+      const isFav = favs.includes(prefix);
+      const rarity = getRarity(r);
+      const prefixCell = '<span class="prefix" data-prefix="' + escapeHtml(prefix) + '">' + escapeHtml(prefix) + '</span>';
+      const favCell = '<button type="button" class="fav-btn' + (isFav ? ' faved' : '') + '" data-prefix="' + escapeHtml(prefix) + '" title="' + (isFav ? 'Remove from favorites' : 'Add to favorites') + '">' + (isFav ? '★' : '☆') + '</button>';
+      const typeCell = '<span class="rarity-badge ' + rarity.cls + '">' + escapeHtml(rarity.label) + '</span> ' + escapeHtml(getTypeCategory(r));
+      return '<tr><td>' + favCell + '</td><td>' + prefixCell + '</td><td class="type">' + typeCell + '</td><td class="type">' + escapeHtml(weapon) + '</td><td class="parts">' + partsCell + '</td><td class="type">' + escapeHtml(r.source || '') + '</td></tr>';
+    }).join('');
+
+    tbody.querySelectorAll('.fav-btn').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const p = el.getAttribute('data-prefix');
+        let favs = getFavorites();
+        const i = favs.indexOf(p);
+        if (i >= 0) favs.splice(i, 1);
+        else favs.push(p);
+        setFavorites(favs);
+        filter();
+      });
+    });
+    tbody.querySelectorAll('.prefix').forEach(function(el) {
+      el.addEventListener('click', function() {
+        const prefix = el.getAttribute('data-prefix');
+        var q = (searchEl.value || '').trim();
+        if (q) addSearchHistory(q);
+        showPrefixDetail(prefix);
+      });
+    });
+    tbody.querySelectorAll('.parts [data-copy]').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const t = el.getAttribute('data-copy');
+        if (t) { copyToClipboard(t); el.classList.add('paste-flash'); setTimeout(function() { el.classList.remove('paste-flash'); }, 400); }
+      });
+    });
+  }
+
+  function showPrefixDetail(prefix) {
+    lastFocusBeforeModal = document.activeElement;
+    const matches = data.filter(function(r) { return (r.prefix || '').trim() === prefix; });
+    if (matches.length === 0) return;
+    const favs = getFavorites();
+    const isFav = favs.includes(prefix);
+    detailTitle.innerHTML = 'Prefix: ' + escapeHtml(prefix) + ' <button type="button" class="fav-btn' + (isFav ? ' faved' : '') + '" id="detailFavBtn" data-prefix="' + escapeHtml(prefix) + '">' + (isFav ? '★ Favorited' : '☆ Add to favorites') + '</button>';
+    const noteEl = document.getElementById('detailNote');
+    const noteWrap = document.getElementById('detailNoteWrap');
+    if (noteWrap) noteWrap.style.display = 'block';
+    if (noteEl) {
+      noteEl.value = getNotes()[prefix] || '';
+      noteEl.oninput = function() { setNote(prefix, noteEl.value.trim() || null); };
+    }
+    document.getElementById('detailFavBtn').addEventListener('click', function() {
+      let f = getFavorites();
+      const i = f.indexOf(prefix);
+      if (i >= 0) f.splice(i, 1);
+      else f.push(prefix);
+      setFavorites(f);
+      this.textContent = f.includes(prefix) ? '★ Favorited' : '☆ Add to favorites';
+      this.classList.toggle('faved', f.includes(prefix));
+      filter();
+    });
+    let html = '<p>' + matches.length + ' variant(s) for this prefix.</p>';
+    matches.forEach(function(r, i) {
+      const raw = formatParts(r.required_parts);
+      const partIds = Array.isArray(r.required_parts) ? r.required_parts : (r.part_id ? [r.part_id] : []);
+      const partsText = partIds.join('\n');
+      html += '<div class="detail-panel">';
+      html += '<h4>#' + (i + 1) + ' – ' + escapeHtml(getTypeCategory(r)) + (getWeaponFamily(r) ? ' (' + getWeaponFamily(r) + ')' : '') + '</h4>';
+      html += '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>';
+      if (raw) html += '<p class="raw-parts" data-copy="' + escapeHtml(raw) + '" title="Click to copy">' + escapeHtml(raw) + '</p>';
+      if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+        html += '<p><strong>Checklist (click part to copy):</strong></p>' + renderChecklist(r.required_parts, true);
+      }
+      if (r.part_id) {
+        html += '<p><strong>Part ID (click to copy):</strong> <span class="part-id-copy" data-copy="' + escapeHtml(r.part_id) + '" title="Click to copy">' + escapeHtml(r.part_id) + '</span></p>';
+      }
+      html += '<div class="build-actions">';
+      if (getTypeCategory(r) === 'part-slot') {
+        var buildPartIds = getPartIdsForBuild(r);
+        var buildHref = '../index.html';
+        if (buildPartIds.length) buildHref += '?parts=' + encodeURIComponent(buildPartIds.join(','));
+        buildHref += '#ccAdvancedPartsSearch';
+        html += '<a href="' + buildHref + '" class="btn" target="_blank">Build in STX (Advanced Part Search) →</a>';
+      }
+      if (partsText) {
+        const safe = partsText.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        html += '<button type="button" class="btn copy-parts-btn" data-parts="' + safe + '">Copy part IDs</button>';
+      }
+      if (getTypeCategory(r) === 'stat' && r.row_key && r.col_key) {
+        const est = getEstimatedPartsForStat(r.row_key, r.col_key, getWeaponFamily(r));
+        if (est.length) {
+          const estSafe = est.join('\n').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+          html += '<button type="button" class="btn copy-parts-btn" data-parts="' + estSafe + '">Copy estimated parts</button>';
+        }
+      }
+      html += '</div>';
+      html += getBuildGuide(r);
+      html += '</div>';
+    });
+    detailBody.innerHTML = html;
+    detailModal.style.display = 'flex';
+    var closeBtn = document.getElementById('detailClose');
+    if (closeBtn) { closeBtn.focus(); }
+    detailBody.querySelectorAll('[data-copy]').forEach(function(el) {
+      el.addEventListener('click', function() {
+        const t = el.getAttribute('data-copy');
+        if (t) { copyToClipboard(t); el.classList.add('paste-flash'); setTimeout(function() { el.classList.remove('paste-flash'); }, 400); }
+      });
+    });
+    detailBody.querySelectorAll('.copy-parts-btn').forEach(function(el) {
+      el.addEventListener('click', function() {
+        const t = (el.getAttribute('data-parts') || '').replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<');
+        if (t) {
+          copyToClipboard(t);
+          const orig = el.textContent;
+          el.textContent = 'Copied!';
+          setTimeout(function() { el.textContent = orig; }, 1200);
+        }
+      });
+    });
+  }
+
+  function buildStatIndex() {
+    const byStat = {};
+    data.forEach(function(r) {
+      if (getTypeCategory(r) === 'stat' && r.row_key) {
+        const k = (r.row_key || '').toLowerCase();
+        if (!byStat[k]) byStat[k] = new Set();
+        byStat[k].add((r.prefix || '').trim());
+      }
+    });
+    const el = document.getElementById('statIndex');
+    if (!el) return;
+    const keys = Object.keys(byStat).sort();
+    el.innerHTML = keys.map(function(k) {
+      const prefs = [...byStat[k]].sort();
+      const label = labelStat(k) || k;
+      return '<div class="index-item"><strong>' + escapeHtml(label) + '</strong><br>' + prefs.slice(0, 5).map(function(p) {
+        return '<a href="#" data-prefix="' + escapeHtml(p) + '">' + escapeHtml(p) + '</a>';
+      }).join(', ') + (prefs.length > 5 ? ' +' + (prefs.length - 5) + ' more' : '') + '</div>';
+    }).join('');
+    el.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function(e) { e.preventDefault(); var p = a.getAttribute('data-prefix'); searchEl.value = p; if (p) addSearchHistory(p); filter(); showPrefixDetail(p); });
+    });
+  }
+
+  function buildSlotIndex() {
+    const bySlot = {};
+    data.forEach(function(r) {
+      if (getTypeCategory(r) === 'part-slot' && r.row_key) {
+        const k = (r.row_key || '').toLowerCase();
+        if (!bySlot[k]) bySlot[k] = new Set();
+        bySlot[k].add((r.prefix || '').trim());
+      }
+    });
+    const el = document.getElementById('slotIndex');
+    if (!el) return;
+    const keys = Object.keys(bySlot).sort();
+    el.innerHTML = keys.map(function(k) {
+      const prefs = [...bySlot[k]].sort();
+      const label = labelSlot(k) || k;
+      return '<div class="index-item"><strong>' + escapeHtml(label) + '</strong><br>' + prefs.slice(0, 5).map(function(p) {
+        return '<a href="#" data-prefix="' + escapeHtml(p) + '">' + escapeHtml(p) + '</a>';
+      }).join(', ') + (prefs.length > 5 ? ' +' + (prefs.length - 5) + ' more' : '') + '</div>';
+    }).join('');
+    el.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function(e) { e.preventDefault(); var p = a.getAttribute('data-prefix'); searchEl.value = p; if (p) addSearchHistory(p); filter(); showPrefixDetail(p); });
+    });
+  }
+
+  function renderSearchHistory() {
+    const el = document.getElementById('searchHistory');
+    if (!el) return;
+    const h = getSearchHistory();
+    if (h.length === 0) { el.innerHTML = ''; el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    el.innerHTML = 'Recent: ' + h.map(function(q) {
+      return '<span data-q="' + escapeHtml(q) + '">' + escapeHtml(q) + '</span>';
+    }).join('');
+    el.querySelectorAll('span').forEach(function(s) {
+      s.addEventListener('click', function() {
+        searchEl.value = s.getAttribute('data-q');
+        filter();
+        var rows = applyFiltersAndSort(data);
+        if (rows.length === 1) showPrefixDetail((rows[0].prefix || '').trim());
+      });
+    });
+  }
+
+  function filter() {
+    const q = (searchEl.value || '').trim();
+    const rows = applyFiltersAndSort(data);
+    render(rows);
+    statusEl.textContent = 'Showing ' + rows.length + ' of ' + data.length + ' entries.';
+    updateUrl();
+    renderSearchHistory();
+  }
+
+  function updateUrl() {
+    const q = (searchEl.value || '').trim();
+    const url = new URL(window.location.href);
+    if (q) url.searchParams.set('q', q);
+    else url.searchParams.delete('q');
+    window.history.replaceState({}, '', url);
+
+  }
+
+  function variantLinesForPrefix(prefix) {
+    const matches = data.filter(function(r) { return (r.prefix || '').trim() === prefix; });
+    const out = [];
+    const seen = Object.create(null);
+    matches.forEach(function(r) {
+      const main = getExactPartsRequired(r) || formatParts(r.required_parts) || '';
+      const display = main || '(see raw table row — no parsed requirement)';
+      const w = getWeaponFamily(r);
+      const key = display + '\0' + (w || '');
+      if (seen[key]) return;
+      seen[key] = 1;
+      out.push({ main: display, weapon: w });
+    });
+    return out;
+  }
+
+  function renderSimplePrefixList() {
+    const body = document.getElementById('simpleListBody');
+    const st = document.getElementById('simpleListStatus');
+    const inp = document.getElementById('simpleListSearch');
+    if (!body) return;
+    if (!data.length) {
+      body.innerHTML = '<p class="type">No data loaded.</p>';
+      if (st) st.textContent = '';
+      return;
+    }
+    const q = (inp && inp.value || '').trim().toLowerCase();
+    const prefs = [...new Set(data.map(function(r) { return (r.prefix || '').trim(); }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b); });
+    let lineCount = 0;
+    const blocks = [];
+    prefs.forEach(function(pref) {
+      const lines = variantLinesForPrefix(pref);
+      const hay = (pref.toLowerCase() + ' ' + lines.map(function(L) { return (L.main + ' ' + (L.weapon || '')).toLowerCase(); }).join(' ')).replace(/\s+/g, ' ');
+      if (q && hay.indexOf(q) === -1) return;
+      lineCount += lines.length;
+      const liHtml = lines.map(function(L) {
+        return '<li>' + escapeHtml(L.main) + (L.weapon ? ' <span class="simple-prefix-weapon">(' + escapeHtml(L.weapon) + ')</span>' : '') + '</li>';
+      }).join('');
+      blocks.push('<div class="simple-prefix-block"><div class="simple-prefix-name" data-prefix="' + escapeHtml(pref) + '" role="button" tabindex="0">' + escapeHtml(pref) + '</div><ul>' + liHtml + '</ul></div>');
+    });
+    body.innerHTML = blocks.length ? blocks.join('') : '<p class="type">No prefixes match this filter.</p>';
+    if (st) {
+      const nPref = blocks.length;
+      if (q) {
+        st.textContent = nPref + ' prefix' + (nPref === 1 ? '' : 'es') + ' · ' + lineCount + ' requirement line' + (lineCount === 1 ? '' : 's') + ' (filtered)';
+      } else {
+        st.textContent = nPref + ' prefixes · ' + lineCount + ' requirement lines (all variants)';
+      }
+    }
+    body.querySelectorAll('.simple-prefix-name').forEach(function(el) {
+      el.addEventListener('click', function() {
+        const p = el.getAttribute('data-prefix');
+        if (p) showPrefixDetail(p);
+      });
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const p = el.getAttribute('data-prefix');
+          if (p) showPrefixDetail(p);
+        }
+      });
+    });
+  }
+
+  function escapeCsv(s) {
+    const t = String(s || '').replace(/"/g, '""');
+    return t.indexOf(',') >= 0 || t.indexOf('"') >= 0 || t.indexOf('\n') >= 0 ? '"' + t + '"' : t;
+  }
+
+  function exportCsv() {
+    const q = (searchEl.value || '').trim().toLowerCase();
+    const rows = applyFiltersAndSort(data);
+    const headers = ['Prefix','Type','Weapon','Exact Parts Required','Raw','Source'];
+    const lines = [headers.map(escapeCsv).join(',')];
+    rows.forEach(function(r) {
+      const exact = getExactPartsRequired(r) || '';
+      const raw = formatParts(r.required_parts);
+      lines.push([r.prefix, getTypeCategory(r), getWeaponFamily(r), exact, raw, r.source].map(escapeCsv).join(','));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'prefix_parts_' + (q ? q.replace(/\s+/g, '_') + '_' : '') + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 100);
+  }
+
+  function exportTsv() {
+    const q = (searchEl.value || '').trim().toLowerCase();
+    const rows = applyFiltersAndSort(data);
+    const headers = ['Prefix','Type','Weapon','Exact Parts Required','Raw','Source'];
+    const lines = [headers.join('\t')];
+    rows.forEach(function(r) {
+      const exact = getExactPartsRequired(r) || '';
+      const raw = formatParts(r.required_parts);
+      lines.push([r.prefix, getTypeCategory(r), getWeaponFamily(r), exact, raw, r.source].join('\t'));
+    });
+    const blob = new Blob([lines.join('\n')], { type: 'text/tab-separated-values;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'prefix_parts_' + (q ? q.replace(/\s+/g, '_') + '_' : '') + new Date().toISOString().slice(0,10) + '.tsv';
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 100);
+  }
+
+  searchEl.addEventListener('input', filter);
+  searchEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { searchEl.value = ''; filter(); }
+    else if (e.key === 'Enter') { var q = (searchEl.value || '').trim(); if (q) addSearchHistory(q); filter(); }
+  });
+
+  var simpleListSearchEl = document.getElementById('simpleListSearch');
+  if (simpleListSearchEl) {
+    simpleListSearchEl.addEventListener('input', renderSimplePrefixList);
+    simpleListSearchEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { simpleListSearchEl.value = ''; renderSimplePrefixList(); }
+    });
+  }
+
+  ['filter-legendary','filter-part-display','filter-part-slot','filter-stat','filter-favorites'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', filter);
+  });
+  const weaponFilterEl = document.getElementById('weaponFilter');
+  if (weaponFilterEl) weaponFilterEl.addEventListener('change', filter);
+  document.getElementById('sort').addEventListener('change', filter);
+  exportCsvBtn.addEventListener('click', exportCsv);
+  exportTsvBtn.addEventListener('click', exportTsv);
+
+  var lastFocusBeforeModal = null;
+  function closeDetailModal() {
+    detailModal.style.display = 'none';
+    if (lastFocusBeforeModal && lastFocusBeforeModal.focus) try { lastFocusBeforeModal.focus(); } catch(_) {}
+  }
+  detailClose.addEventListener('click', closeDetailModal);
+  detailModal.addEventListener('click', function(e) {
+    if (e.target === detailModal) closeDetailModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      if (detailModal.style.display === 'flex') closeDetailModal();
+      else if (document.getElementById('compareModal').style.display === 'flex') document.getElementById('compareModal').style.display = 'none';
+    }
+  });
+
+  function formatDatasetDate(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+    } catch (e) {
+      return String(iso);
+    }
+  }
+
+  function updateDatasetMeta(prefixJson, statJson) {
+    var meta = document.getElementById('datasetMeta');
+    if (!meta) return;
+    var parts = [];
+    if (prefixJson && prefixJson.generated) {
+      parts.push('Prefix table generated: ' + formatDatasetDate(prefixJson.generated));
+    }
+    if (statJson && statJson.generated) {
+      parts.push('Stat part index: ' + formatDatasetDate(statJson.generated));
+    }
+    meta.textContent = parts.join(' · ');
+  }
+
+  function loadData(json) {
+    try {
+      if (!json || typeof json !== 'object') {
+        throw new Error('Invalid data: expected object');
+      }
+      data = json.flat || [];
+      const byPrefix = json.by_prefix || {};
+      if (data.length === 0 && Object.keys(byPrefix).length) {
+        data = [];
+        for (const prefix in byPrefix) {
+          (byPrefix[prefix] || []).forEach(function(r) { data.push(r); });
+        }
+      }
+    const weapons = [...new Set(data.map(getWeaponFamily).filter(Boolean))].sort();
+    const wEl = document.getElementById('weaponFilter');
+    if (wEl) {
+      wEl.innerHTML = '<option value="">All</option>' + weapons.map(function(w) {
+        return '<option value="' + escapeHtml(w) + '">' + escapeHtml(w) + '</option>';
+      }).join('');
+    }
+    buildStatIndex();
+    buildSlotIndex();
+    var hint = document.getElementById('totalCountHint');
+    if (hint) {
+      var total = json.total_entries != null ? json.total_entries : data.length;
+      var unique = [...new Set(data.map(function(r) { return (r.prefix || '').trim(); }).filter(Boolean))].length;
+      hint.textContent = total + ' entries (' + unique + ' unique prefixes).';
+    }
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) { searchEl.value = q; }
+    filter();
+    renderSimplePrefixList();
+    } catch (e) {
+      if (statusEl) statusEl.textContent = 'Error loading data: ' + (e && e.message ? e.message : String(e));
+      console.error('loadData error:', e);
+    }
+  }
+
+  let compareInitialized = false;
+  function showCompareModal() {
+    const panel = document.getElementById('comparePanel');
+    if (!compareInitialized && panel) {
+      compareInitialized = true;
+      const prefs = [...new Set(data.map(function(r) { return (r.prefix || '').trim(); }).filter(Boolean))].sort();
+      const optsA = prefs.map(function(p) { return '<option value="' + escapeHtml(p) + '">' + escapeHtml(p) + '</option>'; }).join('');
+      const defaultB = prefs.length > 1 ? prefs[1] : prefs[0];
+      const optsB = prefs.map(function(p) { return '<option value="' + escapeHtml(p) + '"' + (p === defaultB ? ' selected' : '') + '>' + escapeHtml(p) + '</option>'; }).join('');
+      panel.innerHTML = '<div class="compare-col"><label>Prefix A:</label><select id="compareSelectA">' + optsA + '</select><div id="compareContentA" style="margin-top:8px;"></div></div><div class="compare-col"><label>Prefix B:</label><select id="compareSelectB">' + optsB + '</select><div id="compareContentB" style="margin-top:8px;"></div></div>';
+      const sA = document.getElementById('compareSelectA');
+      const sB = document.getElementById('compareSelectB');
+      function updateCompare() {
+        const a = data.filter(function(r) { return (r.prefix || '').trim() === sA.value; });
+        const b = data.filter(function(r) { return (r.prefix || '').trim() === sB.value; });
+        const cA = document.getElementById('compareContentA');
+        const cB = document.getElementById('compareContentB');
+        if (cA) cA.innerHTML = a.map(function(r) { var raw = formatParts(r.required_parts); var rawSafe = raw ? escapeHtml(raw) : ''; return '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>' + (raw ? '<p class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</p>' : ''); }).join('') || '<p class="type">No data</p>';
+        if (cB) cB.innerHTML = b.map(function(r) { var raw = formatParts(r.required_parts); var rawSafe = raw ? escapeHtml(raw) : ''; return '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>' + (raw ? '<p class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</p>' : ''); }).join('') || '<p class="type">No data</p>';
+      }
+      sA.addEventListener('change', updateCompare);
+      sB.addEventListener('change', updateCompare);
+      updateCompare();
+      panel.addEventListener('click', function(ev) {
+        var t = ev.target && ev.target.closest ? ev.target.closest('[data-copy]') : null;
+        if (t) { var v = t.getAttribute('data-copy'); if (v) { copyToClipboard(v); t.classList.add('paste-flash'); setTimeout(function() { t.classList.remove('paste-flash'); }, 400); } }
+      });
+    }
+    document.getElementById('compareModal').style.display = 'flex';
+  }
+
+  document.getElementById('compareBtn').addEventListener('click', showCompareModal);
+  document.getElementById('compareClose').addEventListener('click', function() {
+    document.getElementById('compareModal').style.display = 'none';
+  });
+  document.getElementById('compareModal').addEventListener('click', function(e) {
+    if (e.target.id === 'compareModal') document.getElementById('compareModal').style.display = 'none';
+  });
+
+  var PREFIX_DATA_URL = '../assets/data/prefix_parts_table.json';
+  var STAT_DATA_URL = '../assets/data/stat_parts_lookup.json';
+
+  function finishLoad(prefixJson, statJson) {
+    if (!statJson || typeof statJson !== 'object') {
+      if (statusEl) statusEl.textContent = 'Invalid stat lookup data.';
+      return;
+    }
+    window.STAT_PARTS_LOOKUP = statJson;
+    updateDatasetMeta(prefixJson, statJson);
+    loadData(prefixJson);
+  }
+
+  statusEl.textContent = 'Loading...';
+  try {
+    if (window.PREFIX_PARTS_TABLE && window.STAT_PARTS_LOOKUP) {
+      finishLoad(window.PREFIX_PARTS_TABLE, window.STAT_PARTS_LOOKUP);
+    } else if (typeof location !== 'undefined' && location.protocol !== 'file:') {
+      Promise.all([
+        fetch(PREFIX_DATA_URL).then(function(res) { return res.ok ? res.json() : Promise.reject('prefix ' + res.status); }),
+        fetch(STAT_DATA_URL).then(function(res) { return res.ok ? res.json() : Promise.reject('stat ' + res.status); })
+      ]).then(function(pair) { finishLoad(pair[0], pair[1]); })
+        .catch(function(err) {
+          statusEl.textContent = 'Failed to load data (' + err + '). Ensure assets/js/prefix_parts_table_data.js and stat_parts_lookup_data.js exist, or serve the repo and keep assets/data/*.json.';
+        });
+    } else {
+      statusEl.textContent = 'Prefix data scripts missing. From the repo root run: python tools/generate_prefix_lookup_data_js.py';
+      var metaEl = document.getElementById('datasetMeta');
+      if (metaEl) metaEl.textContent = '';
+    }
+  } catch (e) {
+    statusEl.textContent = 'Error: ' + (e && e.message ? e.message : String(e));
+    console.error('Prefix lookup init error:', e);
+  }
+})();
+</script>
+<script src="../assets/js/cc-toolbox-analytics.js"></script>
+<script src="../assets/js/cc-toolbox-items-made.js"></script>
+<script src="../assets/js/cc-toolbox-public-counter.js"></script>
+</body>
+</html>
