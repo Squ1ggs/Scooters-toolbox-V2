@@ -30,11 +30,7 @@ export function options() {
 
 export async function getCounters() {
   const data = await STORE.get('counters', { type: 'json' });
-  return data ?? {
-    total: 0,
-    unique: 0,
-    items_made: 0,
-  };
+  return data ?? { total: 0, unique: 0, items_made: 0 };
 }
 
 export async function setCounters(counters) {
@@ -43,7 +39,6 @@ export async function setCounters(counters) {
     unique: Number(counters?.unique || 0) || 0,
     items_made: Number(counters?.items_made || 0) || 0,
   };
-
   await STORE.setJSON('counters', normalized);
   return normalized;
 }
@@ -63,10 +58,8 @@ export function timingSafeEqualLoose(a, b) {
 export function requireEnvKey(req, envName, headerName, queryName = 'key') {
   const expected = process.env[envName];
   if (!expected) return true;
-
   const gotHeader = req.headers.get(headerName) || '';
   const url = new URL(req.url);
   const gotQuery = url.searchParams.get(queryName) || '';
-
   return timingSafeEqualLoose(expected, gotHeader) || timingSafeEqualLoose(expected, gotQuery);
 }

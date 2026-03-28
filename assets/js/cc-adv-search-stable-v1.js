@@ -611,9 +611,14 @@
       }
     }catch(_){}
     try{
+      // Same source as Simple Builder #idMode (primary).
+      var idModeEl = document.getElementById("idMode");
+      if (idModeEl && typeof idModeEl.checked === "boolean") return !!idModeEl.checked;
+    }catch(_){}
+    try{
       var all = document.querySelectorAll("#ccPartEntryMode");
       if (all && all.length){
-        // Checkbox label: "Numeric ID" — checked => emit {fam:id} tokens; unchecked => spawn / quoted codes.
+        // Guided: checked => {fam:id}; unchecked => spawn / quoted codes.
         for (var i = 0; i < all.length; i++){
           var el = all[i];
           if (!el || typeof el.checked !== "boolean") continue;
@@ -672,11 +677,6 @@
 
       var mTxt = q(opt.textContent).match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/);
       if (mTxt) return "{" + mTxt[1] + ":" + mTxt[2] + "}";
-      if (code){
-        if (/^".*"$/.test(code)) return code;
-        code = stripQuotes(code);
-        return code ? ('"' + code + '"') : "";
-      }
       var selId = q(opt && opt.parentElement && opt.parentElement.id).toLowerCase();
       if (/^\d+$/.test(id)){
         if (selId.indexOf("element") !== -1) return "{1:" + id + "}";
@@ -685,6 +685,11 @@
       if (/^\d+$/.test(raw)){
         if (selId.indexOf("element") !== -1) return "{1:" + raw + "}";
         return "{" + raw + "}";
+      }
+      if (code){
+        if (/^".*"$/.test(code)) return code;
+        code = stripQuotes(code);
+        return code ? ('"' + code + '"') : "";
       }
       return "";
     }

@@ -8,12 +8,9 @@ export default async (req) => {
   }
 
   const body = await requireJson(req);
-  const deltaRaw = Number(body.delta);
-  const delta = Number.isFinite(deltaRaw) ? Math.trunc(deltaRaw) : 1;
-  const safeDelta = Math.min(100, Math.max(1, delta));
-
+  const delta = Math.max(1, Math.min(1000, Number(body.delta || 1) || 1));
   const counters = await getCounters();
-  counters.items_made += safeDelta;
+  counters.items_made += delta;
   const saved = await setCounters(counters);
   return json({ ok: true, items_made: saved.items_made, total: saved.total, unique: saved.unique });
 };

@@ -777,12 +777,12 @@
     if (!code) return;
     var outCode = byId('outCode');
     var guidedOut = byId('guidedOutputDeserialized');
-    if (outCode) outCode.value = code;
     if (guidedOut) guidedOut.value = code;
+    else if (outCode) outCode.value = code;
     try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
   }
 
   function getSelectedCharacter() {

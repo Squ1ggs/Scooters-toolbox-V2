@@ -4,12 +4,12 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
-  <!-- Server analytics: set full URL to track.php on your PHP host — see api/SETUP.md -->
-  <meta name="stx-analytics-endpoint" content="/.netlify/functions/track"/>
-  <!-- Optional public visit counter: full URL to counter.php?key=YOUR_counter_public_key — see api/SETUP.md -->
-  <meta name="stx-counter-url" content="/.netlify/functions/counter"/>
-  <!-- Optional global items counter: POST URL for items-bump.php — see api/SETUP.md -->
-  <meta name="stx-items-bump-url" content="/.netlify/functions/items-bump"/>
+  <!-- Server analytics: set full URL to track.php on your PHP host — see Netlify functions -->
+  <meta name="stx-analytics-endpoint" content="https://scooters-toolbox.netlify.app/.netlify/functions/track"/>
+  <!-- Optional public visit counter: full URL to counter.php?key=YOUR_counter_public_key — see Netlify functions -->
+  <meta name="stx-counter-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/counter"/>
+  <!-- Optional global items counter: POST URL for /.netlify/functions/items-bump — see Netlify functions -->
+  <meta name="stx-items-bump-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump"/>
   <!-- If api/config.php items_bump_secret is set, paste same value here (deters abuse; not a true secret once deployed) -->
   <meta name="stx-items-bump-key" content=""/>
   <title>Scooter's Toolbox – Rebuild</title>
@@ -42,6 +42,7 @@
   <script src="./assets/vendor/pako-inline.js" defer></script>
   <script src="./assets/vendor/jsyaml-inline.js" defer></script>
   <script src="./assets/js/cc-base85-rebuild.js" defer></script>
+  <script src="./assets/js/cc-serial-nicnl-rebuild.js" defer></script>
   <script src="./assets/js/cc-sav-crypto-rebuild.js" defer></script>
   <script src="./assets/js/cc-yaml-save-rebuild.js" defer></script>
   <script src="./assets/js/cc-stx-decoder-bridge.js" defer></script>
@@ -291,7 +292,7 @@
       border-top: 1px solid rgba(0, 243, 255, 0.16);
       margin: 12px 0;
     }
-    /* Hide 📊 Stats until live: remove data-stx-stats-dev + stx-site-stats-hidden from #stxPublicCounterMenu; set meta stx-counter-url (api/SETUP.md). */
+    /* Hide 📊 Stats until live: remove data-stx-stats-dev + stx-site-stats-hidden from #stxPublicCounterMenu; set meta stx-counter-url (Netlify functions). */
     .stx-site-stats-hidden { display: none !important; }
     .instructions-menu__panel {
       min-width: min(920px, 92vw);
@@ -1706,7 +1707,7 @@
         <button type="button" class="btn egg-off-btn" id="eggOffBtn" title="Turn off easter egg theme">Reset theme</button>
         <button type="button" class="btn btn--brand" id="scrollToPasteCodeBtn">Have a code to import/edit? Click here</button>
         <button type="button" class="btn btn--brand" id="scrollToSavBtn">💾 Using a .Sav/.yaml? Click here</button>
-        <!-- Public Stats: remove data-stx-stats-dev + stx-site-stats-hidden, set stx-counter-url in <head> (api/SETUP.md). Until then: Shift/Ctrl+click header favicon toggles Stats (session persists across toolbox pages). -->
+        <!-- Public Stats: remove data-stx-stats-dev + stx-site-stats-hidden, set stx-counter-url in <head> (Netlify functions). Until then: Shift/Ctrl+click header favicon toggles Stats (session persists across toolbox pages). -->
         <details class="support-menu stx-counter-menu stx-site-stats-hidden" id="stxPublicCounterMenu" data-stx-stats-dev="1">
           <summary class="btn btn--brand" title="Site visits &amp; your local craft tally">📊 Stats</summary>
           <div class="support-menu__panel stx-counter-menu__panel" role="region" aria-label="Toolbox stats">
@@ -1714,11 +1715,12 @@
             <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
             <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
             <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-<hr class="stx-counter-hr"/>
+            <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
+            <hr class="stx-counter-hr"/>
             <h4>Your browser</h4>
             <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
             <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-</div>
+          </div>
         </details>
         <details class="support-menu instructions-menu" id="stxInstructionsMenuMain">
           <summary class="btn btn--brand" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
@@ -1897,7 +1899,7 @@
                   </div>
                 </div>
                 <div class="form-row" style="margin:10px 0;">
-                  <label style="min-width:auto;"><input id="idMode" name="idMode" type="checkbox" checked/> <span id="modeLabel">ID</span> (Spawn vs numeric)</label>
+                  <label style="min-width:auto;"><input id="idMode" name="idMode" type="checkbox" checked/> <span id="modeLabel">Numeric</span> IDs in output (off = spawn codes)</label>
                 </div>
                 <div class="form-row" style="margin:10px 0;">
                   <label style="min-width:auto;"><input id="buybackFlag" name="buybackFlag" type="checkbox"/> Buyback flag</label>
@@ -2016,7 +2018,7 @@
         </div>
       </div>
       <div id="ccPartEntryModeWrap" style="margin-bottom:10px;">
-        <label style="min-width:auto;"><input id="ccPartEntryMode" name="ccPartEntryMode" type="checkbox" checked/> Numeric ID (Spawn vs numeric output)</label>
+        <label style="min-width:auto;"><input id="ccPartEntryMode" name="ccPartEntryMode" type="checkbox" checked/> Numeric IDs in output (off = spawn codes)</label>
         <label style="min-width:auto; margin-left:16px;"><input id="ccGuidedAllManufacturers" name="ccGuidedAllManufacturers" type="checkbox"/> All manufacturers' parts in dropdowns</label>
       </div>
       <div id="seedOverrideRow" style="margin-top:8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
@@ -2757,6 +2759,23 @@
       'use strict';
       function byId(id) { return document.getElementById(id); }
 
+      /** Prefer Nicnl-compatible API (matches BL4 save editors); fallback to local serializeToBase85 (offline / CORS). */
+      function serializeDeserializedToBase85BestEffort(code) {
+        code = String(code || '').trim();
+        if (!code) return Promise.resolve('');
+        function localSer() {
+          if (typeof window.serializeToBase85 !== 'function') return '';
+          try { return String(window.serializeToBase85(code, undefined, true) || '').trim(); } catch (_) { return ''; }
+        }
+        if (typeof window.ccSerializeDeserializedRemote !== 'function') {
+          return Promise.resolve(localSer());
+        }
+        return window.ccSerializeDeserializedRemote(code).then(function (remote) {
+          var s = String(remote || '').trim();
+          return s || localSer();
+        }).catch(function () { return localSer(); });
+      }
+
       function initSplash() {
         var splash = byId('splash');
         var btn = byId('splashDismiss');
@@ -2892,7 +2911,7 @@
           setTimeout(function () {
             try { if (window.refreshOutputs) window.refreshOutputs(); } catch (_) {}
             try { if (window.refreshBuilder) window.refreshBuilder(); } catch (_) {}
-            try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(); } catch (_) {}
+            try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
             if (pasteSection) pasteSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             if (importFeedback) {
               var count = 0;
@@ -2937,7 +2956,8 @@
           if (serialEl) {
             if (code && typeof window.serializeToBase85 === 'function') {
               try {
-                var b85 = window.serializeToBase85(code);
+                // Third arg enables round-trip bit length so @U decodes cleanly (avoid padding → garbage tokens).
+                var b85 = window.serializeToBase85(code, undefined, true);
                 serialEl.value = (b85 && String(b85).trim()) || '—';
               } catch (_) { serialEl.value = '—'; }
             } else {
@@ -2963,19 +2983,29 @@
         if (toSerialBtn) toSerialBtn.addEventListener('click', function () {
           var code = (deserEl && deserEl.value || '').trim();
           if (!code) return;
-          if (typeof window.serializeToBase85 !== 'function') { alert('serializeToBase85 is not available.'); return; }
-          try {
-            var b85 = window.serializeToBase85(code);
-            if (serialEl && b85) serialEl.value = String(b85).trim();
-          } catch (e) { alert('Convert failed: ' + (e && e.message)); }
+          serializeDeserializedToBase85BestEffort(code).then(function (b85) {
+            if (!b85) {
+              alert('Convert to Serial failed. Try online mode (Nicnl API) or check cc-base85-rebuild.js / network.');
+              return;
+            }
+            if (serialEl) serialEl.value = b85;
+          });
         });
         if (toDeserBtn) toDeserBtn.addEventListener('click', function () {
           var code = (serialEl && serialEl.value || '').trim();
           if (!code) return;
+          function applyDeser(deser) {
+            if (deserEl && deser) deserEl.value = String(deser).trim();
+            else if (!deser) alert('Convert failed: could not decode this serial (try again after the decoder loads, or open Bulk Serial Validator).');
+          }
+          if (typeof window.ccDecodeSerialToDesktop === 'function') {
+            window.ccDecodeSerialToDesktop(code).then(applyDeser);
+            return;
+          }
           if (typeof window.deserializeBase85 !== 'function') { alert('deserializeBase85 is not available.'); return; }
           try {
             var deser = window.deserializeBase85(code);
-            if (deserEl && deser) deserEl.value = String(deser).trim();
+            applyDeser(deser);
           } catch (e) { alert('Convert failed: ' + (e && e.message)); }
         });
         var copySerialBtn = byId('btnCopyGuidedSerial');
@@ -2996,18 +3026,28 @@
         var dragHandle = byId('floating-panel-drag-handle');
         var floatingCode = byId('floating-output-code');
         var outCode = byId('outCode');
-        /** Match cc-guided-builder-rebuild getGuidedOutputEl: guided mode uses guidedOutputDeserialized. */
+        /** Generated Item Code section is canonical for this panel; never mirror from Simple Builder #outCode. */
         function getPrimaryOutputEl() {
-          var guidedItem = byId('ccGuidedItemType');
-          var guidedActive = guidedItem && (guidedItem.value || '').trim();
           var deser = byId('guidedOutputDeserialized');
-          return (guidedActive && deser) ? deser : (outCode || deser);
+          return deser || outCode;
         }
-        /** When true, interval sync must not overwrite (e.g. after Convert buttons). Cleared on open panel or syncFloatingOutput(true). */
+        var guidedSerialEl = byId('guidedOutputSerial');
+        var guidedDeserEl = byId('guidedOutputDeserialized');
+        function guidedModeActive() {
+          var guidedItem = byId('ccGuidedItemType');
+          return !!(guidedItem && (guidedItem.value || '').trim());
+        }
+        /** When true, interval sync must not overwrite (e.g. after Convert). Cleared when opening the panel or syncFloatingOutput(true). */
         var floatingSyncPaused = false;
+        /** Guided mode: floating was switched to show BL-base85 from Convert; sync from Serial not Deserialized until reset. */
+        var floatingShowsSerial = false;
         function syncFromOutCode() {
           if (floatingSyncPaused) return;
           if (floatingCode && document.activeElement === floatingCode) return;
+          if (floatingShowsSerial && guidedModeActive() && guidedSerialEl && floatingCode) {
+            floatingCode.value = (guidedSerialEl.value || '').trim();
+            return;
+          }
           var primary = getPrimaryOutputEl();
           if (primary && floatingCode) floatingCode.value = (primary.value || '').trim();
         }
@@ -3021,6 +3061,8 @@
         function openPanel() {
           if (panel) panel.classList.add('open');
           if (btn) btn.style.display = 'none';
+          floatingSyncPaused = false;
+          floatingShowsSerial = false;
           syncFromOutCode();
           if (pollId) clearInterval(pollId);
           pollId = setInterval(syncFromOutCode, 600);
@@ -3060,8 +3102,11 @@
           });
           document.addEventListener('mouseup', function () { dragging = false; });
         }
-        window.syncFloatingOutput = function () {
-          floatingSyncPaused = false;
+        window.syncFloatingOutput = function (force) {
+          if (force) {
+            floatingSyncPaused = false;
+            floatingShowsSerial = false;
+          }
           syncFromOutCode();
         };
         if (floatingCode) {
@@ -3087,30 +3132,55 @@
           var txt = getEffectiveCodeForYamlOrCopy();
           try { navigator.clipboard.writeText(txt); } catch (_) {}
         });
+        function pushSerialToPrimary(val) {
+          val = String(val || '').trim();
+          if (!val) return;
+          if (guidedSerialEl) guidedSerialEl.value = val;
+          else if (outCode) outCode.value = val;
+        }
+        function pushDeserializedToPrimary(val) {
+          val = String(val || '').trim();
+          if (!val) return;
+          if (guidedDeserEl) guidedDeserEl.value = val;
+          else if (outCode) outCode.value = val;
+        }
         var conv85 = byId('floatingConvertBase85');
         var convDes = byId('floatingConvertDeserialized');
         if (conv85) conv85.addEventListener('click', function () {
           var txt = (floatingCode && floatingCode.value || '').trim();
           if (!txt) return;
-          if (typeof window.serializeToBase85 !== 'function') { alert('serializeToBase85 is not available (load cc-base85-rebuild.js).'); return; }
-          try {
-            var b85 = window.serializeToBase85(txt);
-            if (floatingCode && b85 != null) {
-              floatingCode.value = String(b85).trim();
-              floatingSyncPaused = true;
-            }
-          } catch (e) { alert('Convert to BL-base85 failed: ' + (e && e.message)); }
+          var head = txt.trim();
+          if (/^@U/i.test(head) && head.length > 3) {
+            alert('This already looks like BL-base85 (@U…).');
+            return;
+          }
+          serializeDeserializedToBase85BestEffort(txt).then(function (s85) {
+            s85 = String(s85 || '').trim();
+            if (!s85) { alert('Convert to BL-base85 produced an empty result.'); return; }
+            if (floatingCode) floatingCode.value = s85;
+            pushSerialToPrimary(s85);
+            floatingSyncPaused = true;
+            if (guidedModeActive()) floatingShowsSerial = true;
+          });
         });
         if (convDes) convDes.addEventListener('click', function () {
           var txt = (floatingCode && floatingCode.value || '').trim();
           if (!txt) return;
+          function applyFloatingDeser(deser) {
+            var d = String(deser || '').trim();
+            if (!d) { alert('Convert to Deserialized produced an empty result.'); return; }
+            if (floatingCode) floatingCode.value = d;
+            pushDeserializedToPrimary(d);
+            floatingSyncPaused = true;
+            floatingShowsSerial = false;
+          }
+          if (typeof window.ccDecodeSerialToDesktop === 'function') {
+            window.ccDecodeSerialToDesktop(txt).then(applyFloatingDeser);
+            return;
+          }
           if (typeof window.deserializeBase85 !== 'function') { alert('deserializeBase85 is not available (load cc-base85-rebuild.js).'); return; }
           try {
-            var deser = window.deserializeBase85(txt);
-            if (floatingCode && deser != null) {
-              floatingCode.value = String(deser).trim();
-              floatingSyncPaused = true;
-            }
+            applyFloatingDeser(window.deserializeBase85(txt));
           } catch (e) { alert('Convert to Deserialized failed: ' + (e && e.message)); }
         });
       }
@@ -3131,7 +3201,7 @@
             sel.dispatchEvent(new Event('change', { bubbles: true }));
           }
         }
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(); } catch (_) {}
+        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
       }
       function init() {
         clearRebuildOnLoad();

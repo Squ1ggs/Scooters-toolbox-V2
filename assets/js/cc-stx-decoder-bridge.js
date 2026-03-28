@@ -126,4 +126,47 @@
   } else {
     initStxDecoderBridge();
   }
+
+  /**
+   * Decode one @U / game serial to desktop text using the same WASM path as the bulk decoder (canonical vs JS bitstream).
+   * Falls back to deserializeBase85 when the bridge is unavailable or decode fails.
+   * @param {string} serial
+   * @returns {Promise<string>}
+   */
+  window.ccDecodeSerialToDesktop = function (serial) {
+    var s = String(serial || '').trim();
+    if (!s) return Promise.resolve('');
+    return new Promise(function (resolve) {
+      function fallback() {
+        if (typeof window.deserializeBase85 === 'function') {
+          try {
+            var d = window.deserializeBase85(s);
+            if (d && String(d).trim()) return resolve(String(d).trim());
+          } catch (_) {}
+        }
+        resolve('');
+      }
+      if (typeof window.decodeSerialsViaBridge !== 'function') {
+        fallback();
+        return;
+      }
+      var attempts = 0;
+      function run() {
+        if (typeof window.stxDecoderBridgeReady === 'function' && !window.stxDecoderBridgeReady() && attempts < 50) {
+          attempts++;
+          setTimeout(run, 120);
+          return;
+        }
+        window.decodeSerialsViaBridge([s], null, { enrichResolved: false }).then(function (results) {
+          var r = results && results[0];
+          if (r && r.success && r.deserialized && String(r.deserialized).trim()) {
+            resolve(String(r.deserialized).trim());
+            return;
+          }
+          fallback();
+        }).catch(function () { fallback(); });
+      }
+      run();
+    });
+  };
 })();

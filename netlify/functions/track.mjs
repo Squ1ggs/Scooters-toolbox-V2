@@ -9,7 +9,7 @@ export default async (req) => {
 
   const body = await requireJson(req);
   const visitorId = String(body.visitor_id || '').trim().slice(0, 200);
-  const path = String(body.path || '/').trim().slice(0, 500) || '/';
+  const pagePath = String(body.path || '/').trim().slice(0, 500) || '/';
   if (!visitorId) return json({ ok: false, error: 'visitor_id_required' }, 400);
 
   const visitorKey = `visitors/${encodeURIComponent(visitorId)}`;
@@ -24,7 +24,7 @@ export default async (req) => {
     await STORE.set(visitorKey, new Date().toISOString());
   }
   await STORE.set(visitCountKey, String(priorVisits + 1));
-  await STORE.set(`paths/${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, JSON.stringify({ t: new Date().toISOString(), path, visitor_id: visitorId }));
+  await STORE.set(`paths/${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, JSON.stringify({ t: new Date().toISOString(), path: pagePath, visitor_id: visitorId }));
   const saved = await setCounters(counters);
 
   return json({ ok: true, total: saved.total, unique: saved.unique, items_made: saved.items_made, your_visits: priorVisits + 1 });

@@ -17,7 +17,7 @@
     weaponType: '',
     level: 60,
     rarity: '',
-    idMode: false,
+    idMode: true,
     allParts: false,
     swapBodyLegendary: false,
 
@@ -218,31 +218,43 @@
     if (s.startsWith('"') && s.endsWith('"')) return s.slice(1,-1);
     return s;
   }
-  function tokenForPart(p){
+  /** Emit `{fam:id}` / `{id}` style token when dataset metadata allows; else ''. */
+  function numericTokenFromPart(p){
     if (!p) return '';
-    if (!state.idMode) return normCode(p.code);
-
-    // ID mode: prefer brace-family syntax like the main page/classmod UI:
-    //   raw "259:58" -> "{259:58}"
-    // This allows later compression into "{259:[58 71 109]}".
     var raw = String((p.idRaw ?? p.id ?? '') || '').trim();
     if (/^\d+\s*:\s*\d+$/.test(raw)){
       var parts = raw.split(':');
       var fam = String(parts[0]).trim();
-      var id  = String(parts[1]).trim();
-      return `{${fam}:${id}}`;
+      var idn = String(parts[1]).trim();
+      return `{${fam}:${idn}}`;
     }
-    // Also accept bare numeric item ids (e.g. "57") and family list syntax (e.g. "259:[58 71]") in ID mode.
-    if (/^\d+$/.test(raw)){
-      return `{${raw}}`;
+    if (/^\d+$/.test(raw)) return `{${raw}}`;
+    if (/^\d+\s*:\s*\[[^\]]+\]$/.test(raw)) return `{${raw.replace(/\s+/g, ' ').trim()}}`;
+    if (/^\{.*\}$/.test(raw)) return raw;
+    var fam2 = p.family != null ? String(p.family) : (p.familyId != null ? String(p.familyId) : '');
+    var id2 = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
+    if (/^\d+$/.test(fam2) && /^\d+$/.test(id2)) return `{${fam2}:${id2}}`;
+    if (/^\d+$/.test(id2) && !String(fam2).trim()) return `{${id2}}`;
+    return '';
+  }
+
+  function spawnTokenFromPart(p){
+    if (!p) return '';
+    const c = normCode(p.code || p.spawnCode || '');
+    return c || '';
+  }
+
+  /** Default numeric `{fam:id}`; unchecked (spawn mode) uses spawn strings. Mutual fallback when one form is missing. */
+  function tokenForPart(p){
+    if (!p) return '';
+    if (state.idMode){
+      const n = numericTokenFromPart(p);
+      if (n) return n;
+      return spawnTokenFromPart(p);
     }
-    if (/^\d+\s*:\s*\[[^\]]+\]$/.test(raw)){
-      return `{${raw.replace(/\s+/g,' ').trim()}}`;
-    }
-    if (/^\{.*\}$/.test(raw)){
-      return raw;
-    }
-    return raw;
+    const s = spawnTokenFromPart(p);
+    if (s) return s;
+    return numericTokenFromPart(p);
   }
 
   function parseIdToken(tok){
@@ -683,7 +695,13 @@ function getAllParts(){
     const level = Number(guided.level) || 60;
     const buybackEl = document.getElementById('ccGuidedBuybackFlag');
     const buyback = !!(buybackEl && buybackEl.checked);
-    return `${pick.familyId}, 0, 1, ${level}|` + (buyback ? ' 9, 1|' : '') + '||';
+    let header = `${pick.familyId}, 0, 1, ${level}|`;
+    if (buyback) header += ' 9, 1|';
+    const seedBase = { familyId: Number(pick.familyId), itemId: Number(pick.itemId) };
+    const seed = getSeed(seedBase);
+    if (Number(seed) !== 0) header += ` 2, ${seed}||`;
+    else header += '|';
+    return header;
   }
 
   function partFamilyIdOf(p){
@@ -3774,7 +3792,7 @@ function computeFullDeserializedCode(){
   let out = `${base.familyId}, 0, 1, ${level}|`;
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
     if (Number(seed) !== 0) out += ` 2, ${seed}||`;
-    else out += `||`;
+    else out += '|';
     if (tail){
       out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
     } else {
@@ -3811,7 +3829,7 @@ function computeFullDeserializedCode(){
   let out = `${base.familyId}, 0, 1, ${level}|`;
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
   if (Number(seed) !== 0) out += ` 2, ${seed}||`;
-  else out += `||`;
+  else out += '|';
   out += (tail ? ` ${tail}|` : `|`);
   return out;
 }
@@ -3839,7 +3857,9 @@ function computeFullDeserializedCode(){
     const listTokens = normalizeIdTokensForBaseFamily(listTokensRaw, listFamily);
     $('outList').value = listTokens.join(', ');
     const code = computeFullDeserializedCode();
-    if ($('outCode')) $('outCode').value = code;
+    // When Main Guided Builder is active, Generated Item Code uses #guidedOutputDeserialized — do not
+    // overwrite Simple Builder's #outCode (avoids pasted/converted serials "leaking" into that panel).
+    if ($('outCode') && !guidedType) $('outCode').value = code;
     const guidedOut = document.getElementById('guidedOutputDeserialized');
     if (guidedOut) {
       if (guidedType === 'Class Mod') {
@@ -3849,20 +3869,22 @@ function computeFullDeserializedCode(){
         const hasAppendedParts = existing.indexOf('||') >= 0 && existing.slice(existing.indexOf('||') + 2).trim().length > 0;
         // Only push Simple Builder code when non-empty; do not wipe prefix from refreshGuidedOutput / computeGuidedPrefix.
         if (!hasAppendedParts && code) guidedOut.value = code;
-      } else if (code) {
-        // Simple Builder: sync output to Generated Item Code section so rarity and all parts show
-        guidedOut.value = code;
       }
+      // When no guided item type: do not mirror Simple Builder into #guidedOutputDeserialized — that panel is separate.
     }
     $('outJson').value = JSON.stringify(json, null, 2);
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
     try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch(_){}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(); } catch(_){}
+    if (guidedType && guidedType !== 'Class Mod' && typeof window.refreshGuidedOutput === 'function') {
+      try { window.refreshGuidedOutput(); } catch (_){}
+    }
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
   }
 
   function updateModeLabel(){
-    $('modeLabel').textContent = state.idMode ? 'ID' : 'Code';
+    const el = $('modeLabel');
+    if (el) el.textContent = state.idMode ? 'Numeric' : 'Spawn';
   }
 
 
@@ -4021,7 +4043,7 @@ function resetAll(){
       for (const p of partsLeft){
         const s = want.get(p.partType);
         if (!s){
-          state.extras.push(state.idMode ? String(p.idRaw ?? p.id ?? '') : normCode(p.code));
+          state.extras.push(tokenForPart(p) || normCode(p.code));
           continue;
         }
         if (s.multi){
@@ -4031,7 +4053,7 @@ function resetAll(){
           state.slots[s.key] = arr;
         } else {
           if (!state.slots[s.key]) state.slots[s.key] = p;
-          else state.extras.push(state.idMode ? String(p.idRaw ?? p.id ?? '') : normCode(p.code));
+          else state.extras.push(tokenForPart(p) || normCode(p.code));
         }
       }
 
@@ -4110,7 +4132,7 @@ function resetAll(){
         for (const p of partsLeft){
           const s = pickShieldSlot(p);
           if (!assignSlot(s, p)){
-            state.extras.push(state.idMode ? String(p.idRaw ?? p.id ?? '') : normCode(p.code));
+            state.extras.push(tokenForPart(p) || normCode(p.code));
           }
         }
 
@@ -4145,7 +4167,7 @@ function resetAll(){
             s = matches.find(x => x.multi) || matches.find(x => !state.slots[x.key]) || matches[0];
           }
           if (!assignSlot(s, p)){
-            state.extras.push(state.idMode ? String(p.idRaw ?? p.id ?? '') : normCode(p.code));
+            state.extras.push(tokenForPart(p) || normCode(p.code));
           }
         }
       }
@@ -4344,15 +4366,32 @@ function resetAll(){
       refreshBuilder();
     });
 
-    $('idMode').addEventListener('change', ()=>{
-      state.idMode = $('idMode').checked;
-      updateModeLabel();
-      // Re-render all dropdown labels and outputs
-      refreshTopSelectors();
-      refreshBuilder();
-      try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
-      try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
-    });
+    const idModeEl = $('idMode');
+    if (idModeEl){
+      idModeEl.addEventListener('change', ()=>{
+        state.idMode = !!idModeEl.checked;
+        var ccPart = document.getElementById('ccPartEntryMode');
+        if (ccPart) ccPart.checked = state.idMode;
+        updateModeLabel();
+        refreshTopSelectors();
+        refreshBuilder();
+        try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+        try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
+      });
+    }
+
+    var ccPartMode = document.getElementById('ccPartEntryMode');
+    if (ccPartMode){
+      ccPartMode.addEventListener('change', ()=>{
+        state.idMode = !!ccPartMode.checked;
+        if ($('idMode')) $('idMode').checked = state.idMode;
+        updateModeLabel();
+        refreshTopSelectors();
+        refreshBuilder();
+        try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+        try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
+      });
+    }
 
     if ($('buybackFlag')) $('buybackFlag').addEventListener('change', ()=>{
       state.buybackFlag = $('buybackFlag').checked;
@@ -4387,8 +4426,17 @@ function resetAll(){
     // attach __idx once
     for (let i=0;i<all.length;i++) all[i].__idx = i;
 
-    state.idMode = false;
-    $('idMode').checked = false;
+    {
+      const idEl = $('idMode');
+      if (idEl && typeof idEl.checked === 'boolean'){
+        state.idMode = !!idEl.checked;
+      } else {
+        state.idMode = true;
+        if (idEl) idEl.checked = true;
+      }
+      const ccEl = document.getElementById('ccPartEntryMode');
+      if (ccEl) ccEl.checked = state.idMode;
+    }
     // Buyback flag (appends "| 9, 1|" after level)
     state.buybackFlag = false;
     if ($('buybackFlag')) $('buybackFlag').checked = false;

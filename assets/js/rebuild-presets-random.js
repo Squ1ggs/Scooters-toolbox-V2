@@ -396,7 +396,7 @@
     }
     g.value = code;
     try { if (typeof window.refreshGuidedOutputPreview === "function") window.refreshGuidedOutputPreview(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === "function") window.syncFloatingOutput(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === "function") window.syncFloatingOutput(true); } catch (_) {}
     refreshImportedInspector();
     try { if (typeof window.refreshBuildStatsCore === "function") window.refreshBuildStatsCore(); } catch (_) {}
   }

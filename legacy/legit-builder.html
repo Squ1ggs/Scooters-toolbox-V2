@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark"/>
-  <!-- Server analytics: set full URL to track.php — see ../api/SETUP.md -->
-  <meta name="stx-analytics-endpoint" content="/.netlify/functions/track"/>
-  <!-- Optional: public counter URL — see ../api/SETUP.md -->
-  <meta name="stx-counter-url" content="/.netlify/functions/counter"/>
-  <meta name="stx-items-bump-url" content="/.netlify/functions/items-bump"/>
+  <!-- Server analytics: set full URL to track.php — see ../Netlify functions -->
+  <meta name="stx-analytics-endpoint" content="https://scooters-toolbox.netlify.app/.netlify/functions/track"/>
+  <!-- Optional: public counter URL — see ../Netlify functions -->
+  <meta name="stx-counter-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/counter"/>
+  <meta name="stx-items-bump-url" content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump"/>
   <meta name="stx-items-bump-key" content=""/>
   <title>Legit Builder (data checks) — Scooter's Toolbox</title>
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
@@ -759,11 +759,12 @@
         <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
         <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
         <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
-<hr class="stx-counter-hr"/>
+        <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
+        <hr class="stx-counter-hr"/>
         <h4>Your browser</h4>
         <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
         <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
-</div>
+      </div>
     </details>
     <details class="support-menu instructions-menu" id="stxInstructionsMenuLegit">
       <summary class="legit-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>

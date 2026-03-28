@@ -43,12 +43,22 @@
     return (ds && Array.isArray(ds.ALL_PARTS)) ? ds.ALL_PARTS : (Array.isArray(window.ALL_PARTS) ? window.ALL_PARTS : []);
   }
 
-  /** Keep Simple Builder state.idMode aligned with the #idMode checkbox (same source of truth as tokenForPart). */
+  /** Align state.idMode + both checkboxes (#idMode Simple, #ccPartEntryMode Guided/advanced). */
   function syncIdModeFromCheckbox() {
     try {
-      var el = document.getElementById('idMode');
+      var idEl = document.getElementById('idMode');
+      var ccEl = document.getElementById('ccPartEntryMode');
       var st = window.state || window.__STX_SIMPLE_STATE;
-      if (el && st && typeof st === 'object') st.idMode = !!el.checked;
+      var v;
+      if (idEl && typeof idEl.checked === 'boolean') {
+        v = !!idEl.checked;
+        if (ccEl && ccEl.checked !== v) ccEl.checked = v;
+      } else if (ccEl && typeof ccEl.checked === 'boolean') {
+        v = !!ccEl.checked;
+      } else {
+        v = true;
+      }
+      if (st && typeof st === 'object') st.idMode = v;
     } catch (_) {}
   }
 
@@ -64,20 +74,21 @@
     var st = window.state || window.__STX_SIMPLE_STATE;
     var idMode = !!(st && st.idMode);
     var c = (p.code || p.spawnCode || p.raw || '').trim();
+    var unwrap = function (s) { return (s.startsWith('"') && s.endsWith('"')) ? s.slice(1, -1) : s; };
     if (!idMode) {
-      if (c.startsWith('"') && c.endsWith('"')) return c.slice(1, -1);
-      return c;
+      if (c) return unwrap(c);
+    } else {
+      var raw = (p.idRaw || p.idraw || '').trim();
+      var fam = p.family != null ? String(p.family) : (p.familyId != null ? String(p.familyId) : (p.typeId != null ? String(p.typeId) : ''));
+      var id = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
+      if (raw && /^\d+\s*:\s*\d+$/.test(raw.replace(/\s+/g, ' '))) {
+        var parts = raw.split(':');
+        return '{' + String(parts[0]).trim() + ':' + String(parts[1]).trim() + '}';
+      }
+      if (fam && id && /^\d+$/.test(fam) && /^\d+$/.test(id)) return '{' + fam + ':' + id + '}';
     }
-    var raw = (p.idRaw || p.idraw || '').trim();
-    var fam = p.family != null ? String(p.family) : (p.familyId != null ? String(p.familyId) : (p.typeId != null ? String(p.typeId) : ''));
-    var id = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
-    if (raw && /^\d+\s*:\s*\d+$/.test(raw.replace(/\s+/g, ' '))) {
-      var parts = raw.split(':');
-      return '{' + String(parts[0]).trim() + ':' + String(parts[1]).trim() + '}';
-    }
-    if (fam && id) return '{' + fam + ':' + id + '}';
-    if (c.startsWith('"') && c.endsWith('"')) return c.slice(1, -1);
-    return c;
+    if (c) return unwrap(c);
+    return '';
   }
 
   function filterByPartType(parts, partType, category, manufacturer, weaponType) {
@@ -417,10 +428,8 @@
   }
 
   function getGuidedOutputEl() {
-    var guidedItem = byId('ccGuidedItemType');
-    var guidedActive = guidedItem && (guidedItem.value || '').trim();
     var el = byId('guidedOutputDeserialized');
-    return (guidedActive && el) ? el : (byId('outCode') || el);
+    return el || byId('outCode');
   }
 
   function getBaseFamilyFromPrefix(prefixStr) {
@@ -470,7 +479,7 @@
     if (isGuided && !prefixStr && typeof window.computeGuidedPrefix === 'function') {
       prefixStr = window.computeGuidedPrefix();
       if (prefixStr) {
-        serial = prefixStr + '||';
+        serial = prefixStr + '|| ';
         dbl = serial.indexOf('||');
       }
     }
@@ -514,7 +523,7 @@
     if (isGuided && !prefixStr && typeof window.computeGuidedPrefix === 'function') {
       prefixStr = window.computeGuidedPrefix();
       if (prefixStr) {
-        serial = prefixStr + '||';
+        serial = prefixStr + '|| ';
         dbl = serial.indexOf('||');
         tail = '';
       }
@@ -544,7 +553,7 @@
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
     return true;
   }
 
@@ -874,7 +883,17 @@
       }
       var existing = (deserEl.value || '').trim();
       var dbl = existing.indexOf('||');
-      var tail = dbl >= 0 ? existing.slice(dbl + 2).trim() : '';
+      if (dbl < 0) {
+        if (existing) {
+          try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+          return;
+        }
+        deserEl.value = prefix;
+        try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        return;
+      }
+      var tail = existing.slice(dbl + 2).trim();
+      while (tail.charAt(0) === '|') tail = tail.replace(/^\|+\s*/, '').trim();
       if (tail) {
         var tokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\S+/g) || []);
         tail = normalizeGuidedTail(prefix, tokens);
@@ -1244,9 +1263,7 @@
         return;
       }
       var guidedItem = byId('ccGuidedItemType');
-      var guidedActive = guidedItem && (guidedItem.value || '').trim();
-      var out = guidedActive ? byId('guidedOutputDeserialized') : byId('outCode');
-      if (!out) out = byId('guidedOutputDeserialized') || byId('outCode');
+      var out = byId('guidedOutputDeserialized') || byId('outCode');
       var existingCode = (out && out.value || '').trim();
       var familyId = parsePrefixFromCode(existingCode);
       var appendOnly = false;
@@ -1338,7 +1355,7 @@
       setTimeout(function () {
         var st = getGuidedState();
         addRandomPartsForItemType(st.itemType, st.manufacturer, st.weaponType, appendOnly, appendOnly ? targetOut : null);
-        if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput();
+        if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
         if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput();
         if (typeof window.refreshOutputs === 'function') window.refreshOutputs();
       }, appendOnly ? 100 : 200);
@@ -1357,10 +1374,7 @@
     var i = 0;
     function step() {
       if (i >= count) return;
-      var gi = byId('ccGuidedItemType');
-      var gActive = gi && (gi.value || '').trim();
-      var out = gActive ? byId('guidedOutputDeserialized') : byId('outCode');
-      if (!out) out = byId('guidedOutputDeserialized') || byId('outCode');
+      var out = byId('guidedOutputDeserialized') || byId('outCode');
       if (out) out.value = '';
       randomFullBuild();
       i++;

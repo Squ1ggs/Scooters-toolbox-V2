@@ -1,31 +1,34 @@
 {
-  "name": "scooters-toolbox-electron",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@netlify/blobs": "^8.1.0",
-    "@netlify/functions": "^3.1.6"
-  },
-  "version": "2.0.0",
-  "description": "Scooters Toolbox desktop app",
+  "name": "scooters-toolbox-v2",
+  "version": "2.5.0",
+  "description": "Scooters Toolbox desktop app and Netlify site",
   "main": "desktop/main.cjs",
+  "author": "You",
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win nsis portable"
+    "dist": "electron-builder --win nsis",
+    "dist:portable": "electron-builder --win portable"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "@netlify/functions": "^4.2.0"
   },
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "com.scooterstoolbox.desktop",
+    "appId": "com.scooterstoolbox.v2",
     "productName": "Scooters Toolbox",
     "files": [
       "index.html",
       "assets/**/*",
       "legacy/**/*",
       "desktop/**/*",
-      "package.json"
+      "netlify/**/*",
+      "package.json",
+      "netlify.toml"
     ],
     "win": {
       "target": [

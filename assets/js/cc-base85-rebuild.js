@@ -5,8 +5,8 @@
 (function () {
   'use strict';
 
-  // Per borderlands4-serials spec: {/} not {|}; alphabet has / not |
-  var CUSTOM_B85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{/}~';
+  // Match BL4 save editor / nicnl toolchain: alphabet uses `{|}`; game strings use `/` instead of `|`.
+  var CUSTOM_B85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~';
 
   function reverseBitsInByte(b) {
     var rev = 0;
@@ -31,7 +31,9 @@
   }
 
   function customBase85Decode(data) {
-    if (data && data.indexOf('@U') === 0) data = data.slice(2);
+    data = String(data || '');
+    if (data.indexOf('@U') === 0) data = data.slice(2);
+    data = data.replace(/\//g, '|');
     var padLen = (5 - (data.length % 5)) % 5;
     var lastChar = CUSTOM_B85_ALPHABET.charAt(CUSTOM_B85_ALPHABET.length - 1);
     for (var p = 0; p < padLen; p++) data += lastChar;
@@ -86,11 +88,14 @@
   var TOK_PART = 4;
   var TOK_STRING = 5;
 
-  function BitReader(data) {
+  function BitReader(data, maxBits) {
     this.data = data;
     this.pos = 0;
+    var cap = data.length * 8;
+    this.maxBits = maxBits == null ? cap : Math.min(cap, maxBits >>> 0);
   }
   BitReader.prototype.read = function () {
+    if (this.pos >= this.maxBits) return null;
     if (this.pos >= this.data.length * 8) return null;
     var byteIdx = this.pos >> 3;
     var bitIdx = 7 - (this.pos & 7);
@@ -216,8 +221,14 @@
     return s;
   }
 
-  function bitstreamToDeserialized(bytes) {
-    var br = new BitReader(bytes);
+  function bytesEqual(a, b) {
+    if (!a || !b || a.length !== b.length) return false;
+    for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+    return true;
+  }
+
+  function bitstreamToDeserialized(bytes, maxBits) {
+    var br = new BitReader(bytes, maxBits);
     for (var i = 0; i < 7; i++) br.read();
     var parts = [];
     var current = [];
@@ -274,6 +285,20 @@
     return out.trim();
   }
 
+  /**
+   * JS bitstream omits explicit `||` before `{…}` / quoted tail; WASM / nicnl always use `||`.
+   * Only touch strings that look like a numeric header then a single space before the first `{`.
+   */
+  function ensureDoublePipeBeforeTailText(s) {
+    s = String(s || '').trim();
+    if (!s || s.indexOf('||') >= 0) return s;
+    var m = s.match(/^([\s\S]+?)(\s+)(\{[\s\S]*)$/);
+    if (!m) return s;
+    var head = m[1];
+    if (!/^[\d\s,|]+$/.test(head.replace(/\s+$/, ''))) return s;
+    return head + '||' + m[2] + m[3];
+  }
+
   function deserializeBase85(b85, headerWords) {
     headerWords = headerWords || 17;
     b85 = stripOuterQuotes(b85);
@@ -286,27 +311,49 @@
       return b85;
     }
     try {
-      return bitstreamToDeserialized(bytes);
+      var maxBits = null;
+      var rt = null;
+      try {
+        rt = window.__ccStxRoundtrip;
+        if (rt && typeof rt.bitsLen === 'number' && rt.bytes && bytesEqual(bytes, rt.bytes)) {
+          maxBits = rt.bitsLen;
+        }
+      } catch (_) {}
+      var out = ensureDoublePipeBeforeTailText(bitstreamToDeserialized(bytes, maxBits));
+      if (maxBits != null && rt && bytesEqual(bytes, rt.bytes)) {
+        try { delete window.__ccStxRoundtrip; } catch (_) {}
+      }
+      return out;
     } catch (e) {
       console.warn('Failed to parse bitstream:', e);
       return b85;
     }
   }
 
-  function serializeToBase85(deser, headerWords) {
+  function serializeToBase85(deser, headerWords, trackRoundtrip) {
     headerWords = headerWords || 17;
     deser = stripOuterQuotes(deser);
+    deser = ensureDoublePipeBeforeTailText(deser);
     if (!deser) return '';
     try {
       var bits = deserializedToBitstream(deser);
+      var bitsLen = bits.length;
       var bytes = bitsToBytes(bits);
       var mirrored = new Uint8Array(bytes.length);
       for (var i = 0; i < bytes.length; i++) mirrored[i] = reverseBitsInByte(bytes[i]);
+      if (trackRoundtrip) {
+        try {
+          // Must match customBase85Decode output (per-byte bit-reversed), not raw bitsToBytes, or round-trip maxBits never applies.
+          window.__ccStxRoundtrip = { bitsLen: bitsLen, bytes: new Uint8Array(mirrored) };
+        } catch (_) {}
+      }
       var b85 = bytesToCustomB85(mirrored);
-      // Game serials use the @U prefix; decode path strips it in customBase85Decode().
-      return b85 ? ('@U' + b85) : '';
+      if (!b85) return '';
+      b85 = String(b85).replace(/\|/g, '/');
+      return '@U' + b85;
     } catch (e) {
       console.warn('Failed to serialize to base85:', e);
+      try { if (window.__ccStxRoundtrip) delete window.__ccStxRoundtrip; } catch (_) {}
       return '';
     }
   }
@@ -348,47 +395,140 @@
     return bits;
   }
 
+  function emitPartTokenBits(bits, braceTok) {
+    var tok = String(braceTok || '').trim();
+    var m = tok.slice(1, -1).match(/^(\d+)(?::(\d+))?(?::\[([^\]]*)\])?$/);
+    if (!m) return bits;
+    bits += '101';
+    bits = writeVarint(bits, parseInt(m[1], 10));
+    if (m[2] != null) {
+      bits += '1';
+      bits = writeVarint(bits, parseInt(m[2], 10));
+      bits += '000';
+    } else if (m[3] != null) {
+      bits += '001';
+      bits += '01';
+      var vals = (m[3] || '').match(/\d+/g) || [];
+      for (var v = 0; v < vals.length; v++) {
+        bits += '100';
+        bits = writeVarint(bits, parseInt(vals[v], 10));
+      }
+      bits += '00';
+    } else {
+      bits += '010';
+    }
+    return bits;
+  }
+
+  /** TOK_STRING in nextToken is 7 → bits 111, then varint length, then 7 bits per char (matches readString). */
+  function emitStringTokenBits(bits, s) {
+    bits += '111';
+    bits = writeVarint(bits, s.length);
+    for (var i = 0; i < s.length; i++) {
+      var code = s.charCodeAt(i) & 0x7f;
+      for (var b = 0; b < 7; b++) bits += String((code >> b) & 1);
+    }
+    return bits;
+  }
+
+  function emitNumericSegmentBits(bits, seg) {
+    seg = String(seg || '').trim();
+    if (!seg) {
+      bits += '00';
+      return bits;
+    }
+    var nums = seg.match(/\d+/g) || [];
+    for (var n = 0; n < nums.length; n++) {
+      bits += '100';
+      bits = writeVarint(bits, parseInt(nums[n], 10));
+      if (n < nums.length - 1) bits += '01';
+    }
+    bits += '00';
+    return bits;
+  }
+
+  function tokenizeSegmentContent(seg) {
+    var out = [];
+    var re = /"([^"]*)"|(\{[^}]+\})|(\d+)/g;
+    var m;
+    while ((m = re.exec(seg))) {
+      if (m[1] !== undefined) out.push({ type: 'str', v: m[1] });
+      else if (m[2]) out.push({ type: 'part', v: m[2] });
+      else if (m[3]) out.push({ type: 'num', v: parseInt(m[3], 10) });
+    }
+    return out;
+  }
+
+  function emitMixedSegmentBits(bits, seg) {
+    var toks = tokenizeSegmentContent(seg);
+    if (!toks.length) {
+      bits += '00';
+      return bits;
+    }
+    var i = 0;
+    while (i < toks.length && toks[i].type === 'num') i++;
+    var numRun = toks.slice(0, i);
+    var rest = toks.slice(i);
+    for (var n = 0; n < numRun.length; n++) {
+      bits += '100';
+      bits = writeVarint(bits, numRun[n].v);
+      if (n < numRun.length - 1) bits += '01';
+    }
+    for (var j = 0; j < rest.length; j++) {
+      if (rest[j].type === 'str') bits = emitStringTokenBits(bits, rest[j].v);
+      else if (rest[j].type === 'part') bits = emitPartTokenBits(bits, rest[j].v);
+    }
+    bits += '00';
+    return bits;
+  }
+
+  function emitTailAfterDoublePipe(bits, tail) {
+    if (!tail || !String(tail).trim()) return bits;
+    tail = String(tail).trim();
+    var re = /"([^"]*)"|(\{[^}]+\})/g;
+    var m;
+    var any = false;
+    while ((m = re.exec(tail))) {
+      any = true;
+      if (m[1] !== undefined) bits = emitStringTokenBits(bits, m[1]);
+      else if (m[2]) bits = emitPartTokenBits(bits, m[2]);
+    }
+    if (any) {
+      bits += '00';
+      return bits;
+    }
+    return emitMixedSegmentBits(bits, tail);
+  }
+
+  function isNumericOnlySegment(seg) {
+    var s = String(seg || '').trim();
+    if (!s) return true;
+    return /^\d+(\s*,\s*\d+)*\s*$/.test(s);
+  }
+
   function deserializedToBitstream(deser) {
     var MAGIC = '0010000';
     var bits = MAGIC;
-    var segs = deser.replace(/\|\s*$/, '').split(/\|/);
-    for (var i = 0; i < segs.length; i++) {
-      var seg = segs[i].trim();
-      var partTokens = seg.match(/\{[^}]+\}/g);
-      var hasBraces = seg.indexOf('{') >= 0;
-      var nums = hasBraces ? null : (seg.match(/\d+/g) || []);
-      if (partTokens && partTokens.length > 0) {
-        for (var t = 0; t < partTokens.length; t++) {
-          var tok = partTokens[t];
-          var m = tok.slice(1, -1).match(/^(\d+)(?::(\d+))?(?::\[([^\]]*)\])?$/);
-          if (!m) continue;
-          bits += '101';
-          bits = writeVarint(bits, parseInt(m[1], 10));
-          if (m[2] != null) {
-            bits += '1';
-            bits = writeVarint(bits, parseInt(m[2], 10));
-            bits += '000';
-          } else if (m[3] != null) {
-            bits += '001';
-            bits += '01';
-            var vals = (m[3] || '').match(/\d+/g) || [];
-            for (var v = 0; v < vals.length; v++) {
-              bits += '100';
-              bits = writeVarint(bits, parseInt(vals[v], 10));
-            }
-            bits += '00';
-          } else {
-            bits += '010';
-          }
-        }
-      } else if (nums && nums.length > 0) {
-        for (var n = 0; n < nums.length; n++) {
-          bits += '100';
-          bits = writeVarint(bits, parseInt(nums[n], 10));
-          if (n < nums.length - 1) bits += '01';
-        }
+    deser = String(deser || '').replace(/\|\s*$/, '').trim();
+    if (!deser) return bits;
+
+    var dp = deser.indexOf('||');
+    if (dp >= 0) {
+      var left = deser.slice(0, dp).trim();
+      var right = deser.slice(dp + 2).trim();
+      var leftSegs = left.split('|').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+      for (var si = 0; si < leftSegs.length; si++) {
+        bits = emitNumericSegmentBits(bits, leftSegs[si]);
       }
-      bits += '00';
+      if (right) bits = emitTailAfterDoublePipe(bits, right);
+      return bits;
+    }
+
+    var segs = deser.split('|').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+    for (var i = 0; i < segs.length; i++) {
+      var seg = segs[i];
+      if (isNumericOnlySegment(seg)) bits = emitNumericSegmentBits(bits, seg);
+      else bits = emitMixedSegmentBits(bits, seg);
     }
     return bits;
   }
