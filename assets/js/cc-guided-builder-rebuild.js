@@ -8,6 +8,11 @@
 
   function byId(id) { return document.getElementById(id); }
 
+  function syncGuidedCustomSelectIfWrapped(sel) {
+    if (!sel || typeof sel.__customSelectSync !== 'function') return;
+    try { sel.__customSelectSync(); } catch (_) {}
+  }
+
   function isGuidedClassModItemType(val) {
     return /class\s*mod|classmod/i.test(String(val || '').trim());
   }
@@ -42,12 +47,606 @@
 
   var ELEMENTS = [
     { key: 'None', code: '' },
-    { key: 'Corrosive', code: '{1:10}' },
-    { key: 'Cryo', code: '{1:11}' },
-    { key: 'Fire', code: '{1:12}' },
-    { key: 'Radiation', code: '{1:13}' },
-    { key: 'Shock', code: '{1:14}' }
+    { key: 'Corrosive', code: '{1:10}', iconFile: 'pearl_elemental_corrosive.png' },
+    { key: 'Cryo', code: '{1:11}', iconFile: 'pearl_elemental_cryo.png' },
+    { key: 'Fire', code: '{1:12}', iconFile: 'pearl_elemental_fire.png' },
+    { key: 'Radiation', code: '{1:13}', iconFile: 'pearl_elemental_radiation.png' },
+    { key: 'Shock', code: '{1:14}', iconFile: 'pearl_elemental_shock.png' }
   ];
+
+  /** In-repo textures only (see assets/img/elements/). */
+  var CC_ELEMENT_ICON_BASE = './assets/img/elements/';
+  /** Multi-element UI art for “no element selected” row (weapon Element stack). */
+  var CC_ELEMENT_PLACEHOLDER_ICON_FILE = 'ico_elemental_all.png';
+  /** Manufacturer logomarks + weapon-type chips (see assets/img/guided-dropdowns/). */
+  var CC_GUIDED_DROPDOWN_BASE = './assets/img/guided-dropdowns/';
+  /** BL UI: ico_ui_art_item_augments / legendary_augments — for legendary barrel rows. */
+  var CC_GUIDED_LEGENDARY_AUG_BASE = CC_GUIDED_DROPDOWN_BASE + 'legendary-augments/';
+  /** DLC pearl slot icons (dlc_rarity_pips) — weapon/gear class for pearlescent rows. */
+  var CC_GUIDED_PEARL_ITEMTYPE_BASE = CC_GUIDED_DROPDOWN_BASE + 'pearl-item-types/';
+
+  var CC_GUIDED_RARITY_SELECT_IDS = { ccRaritySelect: 1, ccHeavyRaritySelect: 1, ccRepkitRaritySelect: 1 };
+  var CC_GUIDED_ELEMENTISH_SELECT_IDS = {
+    ccWeaponBodyEleSelect: 1,
+    ccElementSwitchSelect: 1,
+    ccElementPartSelect: 1,
+    ccGrenadeElementSelect: 1,
+    ccHeavyElementSelect: 1,
+    ccHeavyElementSwitchSelect: 1,
+    ccShieldElementSelect: 1,
+    ccRepkitElementSelect: 1,
+    ccClassModElementSelect: 1,
+    toolsDualElementSelect: 1
+  };
+
+  /** Pearl / part_pearl rows: generic pearl icon on the empty first option. */
+  var CC_GUIDED_PEARL_SELECT_IDS = {
+    ccWeaponPearlSelect: 1,
+    toolsPearlElementSelect: 1
+  };
+
+  var CC_GUIDED_LEGENDARY_PERK_SELECT_IDS = {
+    ccRepkitLegendarySelect: true,
+    ccHeavyLegendarySelect: true,
+    ccGuidedLegendaryPerkSelect: true
+  };
+
+  function ccPartMatchesPearlRarityAllowlist(p) {
+    if (typeof window.stxPartMatchesPearlRarityIdAllowlist === 'function') {
+      return window.stxPartMatchesPearlRarityIdAllowlist(p);
+    }
+    return false;
+  }
+
+  function ccPartLooksPearlRarityId(p) {
+    return ccPartMatchesPearlRarityAllowlist(p);
+  }
+
+  function ccPartLooksLegendaryRarityId(p) {
+    if (!p) return false;
+    var its = String(p.itemTypeString || '').toLowerCase();
+    var code = String(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+    var nm = String((p.legendaryName || p.name || '')).toLowerCase();
+    if (/comp_05_legendary/.test(its) || /comp_05_legendary/.test(code) || /comp_05_legendary/.test(nm)) return true;
+    // Fallback: treat as legendary only if it says legendary but not pearlescent/pearl rarity-id.
+    if (its.indexOf('legendary') !== -1 && !ccPartLooksPearlRarityId(p) && nm.indexOf('pearlescent') === -1) return true;
+    return false;
+  }
+
+  /** Weapon / heavy body + body accessory: same pearl / legendary aug icons as barrels. */
+  var GUIDED_BODY_SLOT_IDS = {
+    ccBodySelect: true,
+    ccBodyAccSelect: true,
+    ccHeavyBodySelect: true,
+    ccHeavyBodyAccSelect: true
+  };
+
+  function maybeDecoratedGuidedSelectPlaceholder(sel) {
+    if (!sel || !sel.id) return;
+    var fo = sel.options[0];
+    if (!fo || String(fo.value || '').trim() !== '') return;
+    var id = String(sel.id);
+    if (CC_GUIDED_PEARL_SELECT_IDS[id]) {
+      applyDataCcIconFullUrl(fo, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+      return;
+    }
+    if (CC_GUIDED_ELEMENTISH_SELECT_IDS[id]) {
+      applyDataCcIconIfAny(fo, CC_ELEMENT_PLACEHOLDER_ICON_FILE);
+    }
+  }
+
+  function guessElementIconFromBlob(blob) {
+    var s = String(blob || '').toLowerCase();
+    if (!s) return '';
+    if (s.indexOf('corrosive') !== -1) return 'pearl_elemental_corrosive.png';
+    if (s.indexOf('cryo') !== -1) return 'pearl_elemental_cryo.png';
+    if (s.indexOf('radiation') !== -1 || s.indexOf('_rad_') !== -1 || /\brad_shock\b/.test(s) || /\brad_cryo\b/.test(s)) return 'pearl_elemental_radiation.png';
+    if (s.indexOf('shock') !== -1) return 'pearl_elemental_shock.png';
+    if (s.indexOf('kinetic') !== -1) return 'pearl_elemental_kinetic.png';
+    if (s.indexOf('incendiary') !== -1 || s.indexOf('ele_fire') !== -1 || /\b_fire\b/.test(s) || /\bfire_rad\b/.test(s) || /\bfire_shock\b/.test(s)) return 'pearl_elemental_fire.png';
+    return '';
+  }
+
+  function ccResolveElementIconFilename(p) {
+    if (!p) return '';
+    var its = String(p.itemTypeString != null ? p.itemTypeString : '').toLowerCase();
+    var code = String(p.code != null ? p.code : '').toLowerCase();
+    var nm = String((p.name || p.legendaryName || '')).toLowerCase();
+    var blob = its + ' ' + code + ' ' + nm;
+
+    if (/\bpearl_(damage|reload|firerate|handling)\b/.test(blob)) return 'ico_misc_pearl.png';
+
+    var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire)\b/);
+    if (pe) {
+      if (pe[1] === 'normal') return 'pearl_elemental_kinetic.png';
+      return 'pearl_elemental_' + pe[1] + '.png';
+    }
+
+    if (/part_pearl/i.test(code)) {
+      var g = guessElementIconFromBlob(blob);
+      return g || 'ico_misc_pearl.png';
+    }
+
+    return guessElementIconFromBlob(blob);
+  }
+
+  /** Legendary augment PNG (`legendary_augments/`) by gear category + weapon class. */
+  function ccLegendaryAugIconUrlForPartGear(p) {
+    if (!p) return '';
+    if (ccSpawnCodeLooksLikeWeaponFamily(p)) {
+      var gunAugFirst = ccLegendaryAugIconUrlFromWeaponKey(ccNormalizedWeaponTypeKey(p));
+      if (gunAugFirst) return gunAugFirst;
+    }
+    var cat = String(p.category || '').trim().toLowerCase();
+    if (cat === 'character') cat = 'class mod';
+    var byCat = {
+      shield: 'ico_legendary_aug_shield.png',
+      repkit: 'ico_legendary_aug_repkit.png',
+      grenade: 'ico_legendary_aug_grenade.png',
+      'class mod': 'ico_legendary_aug_classmod.png',
+      'heavy weapon': 'ico_legendary_aug_heavy.png',
+      gadget: 'ico_legendary_aug_heavy.png'
+    };
+    if (byCat[cat]) return CC_GUIDED_LEGENDARY_AUG_BASE + byCat[cat];
+    var fn = ccLegendaryAugIconUrlFromWeaponKey(ccNormalizedWeaponTypeKey(p));
+    if (fn) return fn;
+    // Last resort so legendary-perk dropdowns always have an icon.
+    return CC_GUIDED_LEGENDARY_AUG_BASE + 'ico_legendary_aug_gun_assault.png';
+  }
+
+  /** Rarity ID dropdown: show comp tier icons (common->tinted, legendary->gold, pearlescent->pearl). */
+  function applyGuidedRarityPartOptionIcon(opt, p) {
+    if (!opt || !p) return;
+    opt.removeAttribute('data-cc-icon-filter');
+
+    var its = String(p.itemTypeString || '').toLowerCase();
+    var code = String(p.code || '').toLowerCase();
+    var nm = String((p.legendaryName || p.name || '')).toLowerCase();
+    var blob = its + ' ' + code + ' ' + nm;
+
+    // Infer BL comp tier (0..5) from row tokens.
+    var tier = null;
+    // Pearlescent tier only for user-curated pearlescent rarity-id names (shared allowlist).
+    if (ccPartMatchesPearlRarityAllowlist(p)) tier = 5;
+    if (tier == null) {
+      if (blob.indexOf('comp_01_common') !== -1) tier = 0;
+      else if (blob.indexOf('comp_02_uncommon') !== -1) tier = 1;
+      else if (blob.indexOf('comp_03_rare') !== -1) tier = 2;
+      else if (blob.indexOf('comp_04_epic') !== -1) tier = 3;
+      else if (blob.indexOf('comp_05_legendary') !== -1) tier = 4;
+    }
+    if (tier == null) return;
+
+    // Pearl tier: elemental art, then pearl slot icon by gear class, then fallback.
+    if (tier === 5) {
+      if (/\bpearl_(damage|reload|firerate|handling)\b/.test(blob)) {
+        applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+        return;
+      }
+      var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire)\b/);
+      if (pe) {
+        applyDataCcIconIfAny(
+          opt,
+          pe[1] === 'normal' ? 'pearl_elemental_kinetic.png' : 'pearl_elemental_' + pe[1] + '.png'
+        );
+        return;
+      }
+      var slotUrl = ccPearlSlotAugFullUrl(p);
+      if (slotUrl) {
+        applyDataCcIconFullUrl(opt, slotUrl);
+        return;
+      }
+      var g = guessElementIconFromBlob(blob);
+      if (g) applyDataCcIconIfAny(opt, g);
+      else applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+      return;
+    }
+
+    // Legendary comp tier: `legendary_augments` art (per gear class), then tinted weapon chip fallback.
+    if (tier === 4) {
+      var legAug = ccLegendaryAugIconUrlForPartGear(p);
+      if (legAug) {
+        applyDataCcIconFullUrl(opt, legAug);
+        return;
+      }
+    }
+
+    // Non-pearl comp tiers (common..epic): weapon-type icon with tint.
+    var tierFilters = [
+      'grayscale(0.5) brightness(0.85)',                                // common
+      'sepia(0.45) saturate(1.7) hue-rotate(48deg) brightness(0.9)',    // uncommon
+      'sepia(0.32) saturate(2.1) hue-rotate(195deg) brightness(0.94)',  // rare
+      'sepia(0.38) saturate(2.6) hue-rotate(268deg) brightness(1.0)'    // epic
+    ];
+    var filter = tierFilters[tier] || '';
+
+    var k = ccNormalizedWeaponTypeKey(p);
+    if (!k) return;
+    var png = ccGuidedWeaponTypePngUrlFromKey(k);
+    var iconUrl = png || ccGuidedWeaponTypeIconDataUrl(p);
+    if (!iconUrl) return;
+    applyDataCcIconFullUrl(opt, iconUrl);
+    if (filter) opt.setAttribute('data-cc-icon-filter', filter);
+  }
+
+  function applyDataCcIconIfAny(opt, filename) {
+    if (!opt || !filename) return;
+    opt.setAttribute('data-cc-icon', CC_ELEMENT_ICON_BASE + filename);
+  }
+
+  function applyDataCcIconFullUrl(opt, url) {
+    if (!opt || !url) return;
+    opt.setAttribute('data-cc-icon', String(url).trim());
+  }
+
+  /** Letter chips as inline SVG (no external PNGs required). */
+  var CC_WEAPON_TYPE_ICON_LABELS = {
+    'assault rifle': 'AR',
+    pistol: 'PS',
+    shotgun: 'SG',
+    smg: 'SMG',
+    'submachine gun': 'SMG',
+    'sniper rifle': 'SR',
+    sniper: 'SR',
+    'heavy weapon': 'HW',
+    heavy: 'HW'
+  };
+
+  function ccEscapeSvgText(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /** Resolve weapon class from fields, then spawn code (legendary rows often omit itemType). */
+  function ccNormalizedWeaponTypeKey(p) {
+    if (!p) return '';
+    var wt = String(p.weaponType || p.itemType || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (wt === 'submachine gun') wt = 'smg';
+    if (CC_WEAPON_TYPE_ICON_LABELS[wt]) return wt;
+
+    var c = String(p.code || p.spawnCode || p.importCode || '').replace(/^["']|["']$/g, '').toUpperCase();
+    if (!c) return '';
+    if (/_HW\.|\bMAL_HW\b|\bTOR_HW\b|\bBOR_HW\b|\bVLA_HW\b|\bJAK_HW\b|\bTED_HW\b/i.test(c)) return 'heavy weapon';
+    if (/_AR\.|\bDAD_AR\b|\bJAK_AR\b|\bATL_AR\b|\bVLA_AR\b|\bMAL_AR\b|\bTED_AR\b|\bHYP_AR\b/i.test(c)) return 'assault rifle';
+    if (/_SM\.|\bDAD_SM\b|\bJAK_SM\b|\bMAL_SM\b|\bVLA_SM\b|\bTED_SM\b|\bHYP_SM\b/i.test(c)) return 'smg';
+    if (/_SG\.|\bDAD_SG\b|\bJAK_SG\b|\bMAL_SG\b|\bVLA_SG\b|\bTED_SG\b|\bHYP_SG\b/i.test(c)) return 'shotgun';
+    if (/_PS\.|\bDAD_PS\b|\bJAK_PS\b|\bMAL_PS\b|\bVLA_PS\b|\bTED_PS\b|\bHYP_PS\b/i.test(c)) return 'pistol';
+    if (/_SR\.|\bDAD_SR\b|\bJAK_SR\b|\bMAL_SR\b|\bVLA_SR\b|\bTED_SR\b|\bHYP_SR\b/i.test(c)) return 'sniper rifle';
+    return '';
+  }
+
+  /** Weapon / HW spawn prefixes — never use shield/repkit/class-mod aug art for these rows. */
+  function ccSpawnCodeLooksLikeWeaponFamily(p) {
+    if (!p) return false;
+    var c = String(p.code || p.spawnCode || p.importCode || '').replace(/^["']|["']$/g, '').toLowerCase();
+    return /\.(ar|ps|sg|sm|sr|hw)\./.test(c);
+  }
+
+  function ccWeaponFamilyPearlAugFilename(p) {
+    var kw = ccNormalizedWeaponTypeKey(p);
+    if (kw === 'submachine gun') kw = 'smg';
+    var map = {
+      'assault rifle': 'ico_pearl_aug_gun_assault.png',
+      pistol: 'ico_pearl_aug_gun_pistol.png',
+      shotgun: 'ico_pearl_aug_gun_shotgun.png',
+      smg: 'ico_pearl_aug_gun_smg.png',
+      'sniper rifle': 'ico_pearl_aug_gun_sniper.png',
+      sniper: 'ico_pearl_aug_gun_sniper.png',
+      'heavy weapon': 'ico_pearl_aug_gun_heavy.png',
+      heavy: 'ico_pearl_aug_gun_heavy.png'
+    };
+    return map[kw] || 'ico_pearl_aug_gun_assault.png';
+  }
+
+  /** DLC pearl slot art (ico_pearl_aug_gun_*) by gear category / weapon class. */
+  function ccPearlSlotAugFullUrl(p) {
+    if (!p) return '';
+    if (ccSpawnCodeLooksLikeWeaponFamily(p)) {
+      return CC_GUIDED_PEARL_ITEMTYPE_BASE + ccWeaponFamilyPearlAugFilename(p);
+    }
+    var cat = String(p.category || '').trim().toLowerCase();
+    if (cat === 'character') cat = 'class mod';
+    var fn = '';
+    if (cat === 'class mod') fn = 'ico_pearl_aug_gun_classmod.png';
+    else if (cat === 'grenade') fn = 'ico_pearl_aug_gun_grenade.png';
+    else if (cat === 'repkit') fn = 'ico_pearl_aug_gun_repkit.png';
+    else if (cat === 'shield') fn = 'ico_pearl_aug_gun_shield.png';
+    else if (cat === 'heavy weapon' || cat === 'gadget') fn = 'ico_pearl_aug_gun_heavy.png';
+    else if (cat === 'weapon') {
+      fn = ccWeaponFamilyPearlAugFilename(p);
+      if (fn === 'ico_pearl_aug_gun_assault.png' && !ccNormalizedWeaponTypeKey(p)) fn = '';
+    }
+    if (!fn) return '';
+    return CC_GUIDED_PEARL_ITEMTYPE_BASE + fn;
+  }
+
+  // Legend/pearlescent icons can be tied to base parts by name.
+  // Example: base barrel "Rowan's Charge" does not contain `comp_05_legendary`
+  // in its own `code`, but a separate rarity-id row exists whose `effects` is
+  // exactly "Rowan's Charge". For UI purposes, we want the base part to use
+  // the rarity-id icon.
+  var CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL = null;
+  var CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL = null;
+
+  function ccInitRarityIdIconLookups() {
+    if (CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL) return;
+    CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL = Object.create(null);
+    CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL = Object.create(null);
+
+    var all = getAllParts();
+    if (!all || !all.length) return;
+
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      var pt = String(p.partType || '').trim().toLowerCase();
+      if (pt !== 'rarity') continue;
+
+      var code = String(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+      var catLow = String(p.category || '').trim().toLowerCase();
+      if (catLow === 'classmod' || catLow === 'class mod') continue;
+      if (code.indexOf('classmod_') !== -1) continue;
+
+      var effectsRaw = String(p.effects || p.effect || p.name || '').trim();
+      if (!effectsRaw) continue;
+      var effectsKeyNorm = effectsRaw.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      var rarityTokenFromCode = '';
+      var compLegendIdx = code.indexOf('comp_05_legendary_');
+      if (compLegendIdx !== -1) {
+        rarityTokenFromCode = code.slice(compLegendIdx + 'comp_05_legendary_'.length);
+      } else {
+        // Fallback for non-legendary rarity-id rows: keep last underscore chunk.
+        rarityTokenFromCode = String(code || '')
+          .replace(/^["']|["']$/g, '')
+          .split('_')
+          .pop();
+      }
+      // Normalize so `crowd_sourced`, `Crowd-Sourced`, `CrowdSourced` all match.
+      rarityTokenFromCode = String(rarityTokenFromCode || '')
+        .replace(/[^a-z0-9]/g, '')
+        .toLowerCase();
+
+      // Legendary rarity-id: uses `comp_05_legendary` in code.
+      if (code.indexOf('comp_05_legendary') !== -1) {
+        var iconUrl = ccLegendaryAugIconUrlForPartGear(p);
+        if (iconUrl) CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL[effectsKeyNorm] = iconUrl;
+        if (rarityTokenFromCode && iconUrl) CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[rarityTokenFromCode] = iconUrl;
+      }
+    }
+  }
+
+  function ccLegendaryAugIconUrlForPartIfTiedByName(p) {
+    if (!p) return '';
+    var pt = String(p.partType || '').trim().toLowerCase();
+    if (!/barrel|body/.test(pt)) return '';
+    ccInitRarityIdIconLookups();
+    var token = '';
+    var code = String(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+    code = code.replace(/^["']|["']$/g, '');
+    var partBarrelIdx = code.indexOf('part_barrel_');
+    if (partBarrelIdx !== -1) {
+      // Capture after `part_barrel_<something>_` preserving internal underscores.
+      var m = code.match(/part_barrel_[0-9a-z]+_(.+)$/);
+      token = m ? m[1] : code.slice(partBarrelIdx + 'part_barrel_'.length);
+    } else {
+      var partBodyIdx = code.indexOf('part_body_');
+      if (partBodyIdx !== -1) {
+        var m2 = code.match(/part_body_[0-9a-z]+_(.+)$/);
+        token = m2 ? m2[1] : code.slice(partBodyIdx + 'part_body_'.length);
+      } else {
+        token = code.split('_').pop();
+      }
+    }
+    token = String(token || '')
+      .replace(/[^a-z0-9]/g, '')
+      .toLowerCase();
+    var isW = ccSpawnCodeLooksLikeWeaponFamily(p);
+    var shortNumericTok = /^[0-9]+$/.test(token) && token.length <= 2;
+    if (token && !shortNumericTok && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token]) {
+      var uTok = CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token];
+      if (!isW || !/ico_legendary_aug_classmod/i.test(uTok)) return uTok;
+    }
+
+    // Fallback: match by rarity-id effects naming.
+    var k = String(p.name || p.legendaryName || '').trim().toLowerCase();
+    if (!k) return '';
+    var kNorm = k.replace(/[^a-z0-9]/g, '');
+    var uEff = CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL[kNorm] || '';
+    if (uEff && isW && /ico_legendary_aug_classmod/i.test(uEff)) return '';
+    return uEff;
+  }
+
+  function ccIsPearlByRarityIdEffectName(p) {
+    if (!p) return false;
+    var pt = String(p.partType || '').trim().toLowerCase();
+    if (!/barrel|body/.test(pt)) return false;
+    return ccPartMatchesPearlRarityAllowlist(p);
+  }
+
+  function ccPartLooksLegendaryBarrel(p) {
+    if (!p) return false;
+    // Keep explicit Legendary name/partType matches as a fallback,
+    // but prefer the rarity-id signal for correctness (avoid misclassifying incidental text).
+    if (String(p.legendaryName || '').trim()) return true;
+    if (/legendary/i.test(String(p.partType || ''))) return true;
+    // Prefer explicit rarity-id signal so we only show legendary aug art for rows
+    // that are truly tied to Legendary rarity-id items.
+    if (ccPartLooksLegendaryRarityId(p)) return true;
+    // Base barrel (partType: Barrel) can be tied to legendary rarity-id via name match.
+    if (ccLegendaryAugIconUrlForPartIfTiedByName(p)) return true;
+    var c = String(p.code || p.spawnCode || p.importCode || '').replace(/^["']|["']$/g, '').toLowerCase();
+    return c.indexOf('comp_05_legendary') !== -1;
+  }
+
+  function ccLegendaryAugIconUrlFromWeaponKey(key) {
+    var k = String(key || '').trim().toLowerCase();
+    if (k === 'submachine gun') k = 'smg';
+    var map = {
+      'assault rifle': 'ico_legendary_aug_gun_assault.png',
+      pistol: 'ico_legendary_aug_gun_pistol.png',
+      shotgun: 'ico_legendary_aug_gun_shotgun.png',
+      smg: 'ico_legendary_aug_gun_smg.png',
+      'sniper rifle': 'ico_legendary_aug_gun_sniper.png',
+      sniper: 'ico_legendary_aug_gun_sniper.png',
+      'heavy weapon': 'ico_legendary_aug_heavy.png',
+      heavy: 'ico_legendary_aug_heavy.png'
+    };
+    var fn = map[k];
+    return fn ? CC_GUIDED_LEGENDARY_AUG_BASE + fn : '';
+  }
+
+  function ccGuidedLegendaryAugIconUrlForPart(p) {
+    if (!ccPartLooksLegendaryBarrel(p)) return '';
+    return ccLegendaryAugIconUrlForPartGear(p);
+  }
+
+  function ccGuidedWeaponTypeIconDataUrl(p) {
+    var key = ccNormalizedWeaponTypeKey(p);
+    if (!key) return '';
+    var label = CC_WEAPON_TYPE_ICON_LABELS[key];
+    if (!label) return '';
+    var fs = label.length >= 3 ? 6.5 : 8.5;
+    var svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">' +
+      '<rect x="1" y="1" width="20" height="20" rx="5" fill="rgba(6,22,38,0.92)" stroke="#00e5ff" stroke-width="1.1"/>' +
+      '<text x="11" y="14.5" text-anchor="middle" font-size="' + fs + '" font-family="system-ui,Segoe UI,sans-serif" font-weight="700" fill="#c8fbff">' +
+      ccEscapeSvgText(label) +
+      '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  function ccGuidedWeaponTypePngUrlFromKey(key) {
+    var files = {
+      'assault rifle': 'weapon-type/ico_ui_art_assault_small.png',
+      pistol: 'weapon-type/ico_ui_art_pistol_small.png',
+      shotgun: 'weapon-type/ico_ui_art_shotgun_small.png',
+      smg: 'weapon-type/ico_ui_art_smg_small.png',
+      'sniper rifle': 'weapon-type/ico_ui_art_sniper_small.png',
+      sniper: 'weapon-type/ico_ui_art_sniper_small.png',
+      'heavy weapon': 'weapon-type/ico_ui_art_heavy_small.png',
+      heavy: 'weapon-type/ico_ui_art_heavy_small.png'
+    };
+    var rel = files[key];
+    return rel ? CC_GUIDED_DROPDOWN_BASE + rel : '';
+  }
+
+  /** Prefer shipped UI PNGs for barrel rows; legendary barrels use BL legendary augment art. */
+  function ccGuidedWeaponTypeIconForPart(p) {
+    if (ccPartLooksLegendaryBarrel(p)) {
+      var leg = ccGuidedLegendaryAugIconUrlForPart(p);
+      if (leg) return leg;
+    }
+    var k = ccNormalizedWeaponTypeKey(p);
+    if (k) {
+      var png = ccGuidedWeaponTypePngUrlFromKey(k);
+      if (png) return png;
+    }
+    return ccGuidedWeaponTypeIconDataUrl(p);
+  }
+
+  function applyGuidedPartOptionIcon(sel, opt, p) {
+    if (!sel || !opt || !p) return;
+    var sid = String(sel.id || '');
+    if (CC_GUIDED_RARITY_SELECT_IDS[sid]) {
+      applyGuidedRarityPartOptionIcon(opt, p);
+      return;
+    }
+    if (CC_GUIDED_LEGENDARY_PERK_SELECT_IDS[sid]) {
+      // Legendary perks inherit the rarity-id style:
+      // - pearlescent rows get pearl pip/aug art (from DLC rarity packs)
+      // - legendary rows get legendary aug art (gold augment logos)
+      if (ccPartLooksPearlRarityId(p)) {
+        var fp = ccResolveElementIconFilename(p);
+        if (fp && /^pearl_elemental_/.test(fp)) {
+          applyDataCcIconIfAny(opt, fp);
+          return;
+        }
+        var slotUrl = ccPearlSlotAugFullUrl(p);
+        if (slotUrl) applyDataCcIconFullUrl(opt, slotUrl);
+        else applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+        return;
+      }
+
+      // Default for Legendary Perk sections: use legendary aug art even when
+      // the row lacks explicit `comp_05_legendary` text tokens.
+      var leg = ccLegendaryAugIconUrlForPartGear(p);
+      if (leg) {
+        applyDataCcIconFullUrl(opt, leg);
+        return;
+      }
+
+      // Fallback to tier icon inference if category/weapon type was missing.
+      applyGuidedRarityPartOptionIcon(opt, p);
+      return;
+    }
+    if (CC_GUIDED_PEARL_SELECT_IDS[sid]) {
+      var fp = ccResolveElementIconFilename(p);
+      if (fp && /^pearl_elemental_/.test(fp)) {
+        applyDataCcIconIfAny(opt, fp);
+        return;
+      }
+      var pAug = ccPearlSlotAugFullUrl(p);
+      if (pAug) {
+        applyDataCcIconFullUrl(opt, pAug);
+        return;
+      }
+      if (fp === 'ico_misc_pearl.png') applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + fp);
+      else if (fp) applyDataCcIconIfAny(opt, fp);
+      return;
+    }
+    if (CC_GUIDED_ELEMENTISH_SELECT_IDS[sid]) {
+      var f2 = guessElementIconFromBlob(String((p.itemTypeString || '') + ' ' + (p.code || '') + ' ' + (p.name || p.legendaryName || '')).toLowerCase());
+      if (f2) applyDataCcIconIfAny(opt, f2);
+    }
+    if (GUIDED_BARREL_ACCESSORY_SELECT_IDS[sid]) {
+      opt.removeAttribute('data-cc-icon');
+      opt.removeAttribute('data-cc-icon-filter');
+      return;
+    }
+    if (GUIDED_BARREL_FAMILY_SELECT_IDS[sid] || GUIDED_BODY_SLOT_IDS[sid]) {
+      // If this base barrel/body is tied to a rarity-id by name,
+      // prefer the rarity-id icons over any weapon-type fallback.
+      if (ccIsPearlByRarityIdEffectName(p)) {
+        applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+        return;
+      }
+      var tiedLegendUrl = ccLegendaryAugIconUrlForPartIfTiedByName(p);
+      if (tiedLegendUrl) {
+        applyDataCcIconFullUrl(opt, tiedLegendUrl);
+        return;
+      }
+
+      // Pearlescent body/barrel rows: pearl pip / elemental art.
+      var its2 = String(p.itemTypeString || '').toLowerCase();
+      var code2 = String(p.code || '').toLowerCase();
+      var nm2 = String((p.legendaryName || p.name || '')).toLowerCase();
+      var blob2 = its2 + ' ' + code2 + ' ' + nm2;
+      if (ccPartMatchesPearlRarityAllowlist(p)) {
+        applyGuidedRarityPartOptionIcon(opt, p);
+        return;
+      }
+
+      // Legendary body/barrel rows: `legendary_augments` art (per gear class).
+      var looksLegendary2 =
+        ccPartLooksLegendaryBarrel(p) ||
+        /comp_05_legendary/.test(blob2) ||
+        nm2.indexOf('legendary') !== -1;
+      if (looksLegendary2) {
+        var leg2 = ccLegendaryAugIconUrlForPartGear(p);
+        if (leg2) {
+          applyDataCcIconFullUrl(opt, leg2);
+          return;
+        }
+      }
+
+      var wu = ccGuidedWeaponTypeIconForPart(p);
+      if (wu) applyDataCcIconFullUrl(opt, wu);
+    }
+  }
 
   /** Preset element row for weapon stack: show human name + universal `{1:10}` token in the list. */
   function guidedPresetElementOptionLabel(row) {
@@ -241,29 +840,8 @@
     return getPartToken(p) || rawCode || '-';
   }
 
-  /** Barrel-family dropdown line: compact row plus truncated effect / perk text. */
-  function guidedBarrelFamilyOptionLabel(p) {
-    if (!p) return '-';
-    var base = compactGuidedPartLabel(p);
-    var ef = String(p.effects != null ? p.effects : (p.effect || p.effects_text || '')).trim();
-    if (!ef) return base;
-    var split = splitGuidedEffectPerkBody(ef);
-    var extra = '';
-    if (split.perk && split.body) {
-      extra = split.perk + ': ' + (split.body.length > 72 ? split.body.slice(0, 71) + '…' : split.body);
-    } else if (split.body) {
-      extra = split.body.length > 96 ? split.body.slice(0, 95) + '…' : split.body;
-    } else {
-      extra = split.perk;
-    }
-    if (!extra) return base;
-    var out = base + ' · ' + extra;
-    if (out.length > 220) out = out.slice(0, 217) + '…';
-    return out;
-  }
-
   function guidedOptionLabelForSelect(sel, p) {
-    if (sel && isGuidedBarrelFamilySelect(sel)) return guidedBarrelFamilyOptionLabel(p);
+    if (sel && isGuidedBarrelFamilySelect(sel)) return guidedBarrelOptionPrimaryText(p);
     return compactGuidedPartLabel(p);
   }
 
@@ -342,8 +920,7 @@
         var slugH = opts.slugHint != null ? opts.slugHint : '';
         var fb = window.getFullStatLinesForPart(p, slugH);
         if (fb && fb.lines && fb.lines.length) {
-          lines.push('<div class="stx-part-preview__fullstats-head" style="margin-top:8px;"><span class="muted">Full stats</span> '
-            + '<span class="small muted">(' + ccEscapeHtml(fb.source) + ')</span></div>');
+          lines.push('<div class="stx-part-preview__fullstats-head" style="margin-top:8px;"><span class="muted">Full stats</span></div>');
           lines.push('<ul class="stx-part-preview__fullstats-list">');
           for (var fi = 0; fi < fb.lines.length; fi++) {
             lines.push('<li>' + ccEscapeHtml(fb.lines[fi]) + '</li>');
@@ -374,6 +951,11 @@
     ccHeavyBarrelSelect: true,
     ccHeavyBarrelAccSelect: true
   };
+  /** No dropdown icons for barrel accessory rows (main barrel keeps pearl/legendary aug art). */
+  var GUIDED_BARREL_ACCESSORY_SELECT_IDS = {
+    ccBarrelAccSelect: true,
+    ccHeavyBarrelAccSelect: true
+  };
 
   function isGuidedBarrelFamilySelect(sel) {
     return !!(sel && sel.id && GUIDED_BARREL_FAMILY_SELECT_IDS[sel.id]);
@@ -383,9 +965,26 @@
   function splitGuidedEffectPerkBody(ef) {
     var s = String(ef || '').trim();
     if (!s) return { perk: '', body: '' };
-    var idx = s.indexOf(' - ');
+    // Dataset / exports sometimes use ASCII " - ", Unicode en/em dash, or thin spaces.
+    var idx = -1;
+    var sepLen = 0;
+    var seps = [' - ', ' – ', ' — ', ' \u2013 ', ' \u2014 '];
+    for (var si = 0; si < seps.length; si++) {
+      var j = s.indexOf(seps[si]);
+      if (j >= 0 && (idx < 0 || j < idx)) {
+        idx = j;
+        sepLen = seps[si].length;
+      }
+    }
+    if (idx < 0) {
+      var m = s.match(/\s[\u2013\u2014\-]\s/);
+      if (m && m.index != null) {
+        idx = m.index;
+        sepLen = m[0].length;
+      }
+    }
     if (idx >= 0) {
-      return { perk: s.slice(0, idx).trim(), body: s.slice(idx + 3).trim() };
+      return { perk: s.slice(0, idx).trim(), body: s.slice(idx + sepLen).trim() };
     }
     if (s.length <= 52 && s.indexOf('.') === -1 && s.split(/\s+/).length <= 6) {
       return { perk: s, body: '' };
@@ -403,16 +1002,101 @@
     return rest || st;
   }
 
+  function escapeRegExp(s) {
+    return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function guidedBarrelEffectMeta(p) {
+    var ef = String(p && (p.effects != null ? p.effects : (p.effect || p.effects_text || ''))).trim();
+    var split = splitGuidedEffectPerkBody(ef);
+    return { ef: ef, perk: split.perk || '', red: split.body || '' };
+  }
+
+  function stripRedundantParenBarrelName(displayName, perkHeadline) {
+    var n = String(displayName || '').trim();
+    var ph = String(perkHeadline || '').trim();
+    if (!n || !ph) return n;
+    try {
+      var re = new RegExp('\\s*\\(\\s*' + escapeRegExp(ph) + '\\s*\\)\\s*$', 'i');
+      if (re.test(n)) return n.replace(re, '').trim();
+    } catch (_) {}
+    return n;
+  }
+
+  /** One-line barrel row: item headline, id, stat numbers — no duplicate name, no flavor (flavor → data-cc-barrel-sub). */
+  function guidedBarrelOptionPrimaryText(p) {
+    if (!p) return '-';
+    var meta = guidedBarrelEffectMeta(p);
+    var stRaw = String(p.stats != null ? p.stats : (p.statText || '')).replace(/\s+/g, ' ').trim();
+
+    var head = '';
+    if (stRaw && stRaw.indexOf(',') > 0) {
+      var seg = stRaw.slice(0, stRaw.indexOf(',')).trim();
+      if (seg.length >= 3 && seg.length <= 88) head = seg;
+    }
+
+    var displayName = String((p.legendaryName || p.name || '').trim());
+    if (!head) {
+      head = stripRedundantParenBarrelName(displayName, meta.perk)
+        || displayName
+        || guidedSpawnSegmentFromCode(guidedNormCode(p))
+        || String(getPartToken(p) || '').trim();
+    }
+    if (!head || head === '-') head = String(getPartToken(p) || guidedNormCode(p) || '-').trim();
+
+    var statTail = stRaw ? stripStatsHeadlineIfRedundant(stRaw, head) : '';
+    if (/^barrel\s+part\s+for\s+/i.test(statTail) || /^barrel\s+part\s+for\s+/i.test(stRaw)) statTail = '';
+    if (meta.red && statTail.toLowerCase() === meta.red.toLowerCase()) statTail = '';
+    if (meta.perk && statTail.toLowerCase() === meta.perk.toLowerCase()) statTail = '';
+    if (meta.ef && statTail === meta.ef) statTail = '';
+    if (meta.red && statTail.toLowerCase().indexOf(meta.red.toLowerCase()) === 0) statTail = '';
+
+    var bits = [head];
+    var id = String(p.idRaw != null && p.idRaw !== '' ? p.idRaw : (p.idraw != null ? p.idraw : (p.family != null && p.id != null ? (p.family + ':' + p.id) : ''))).trim();
+    if (id) bits.push(id);
+
+    if (statTail) {
+      var stOne = statTail.length > 88 ? statTail.slice(0, 87) + '…' : statTail;
+      bits.push(stOne);
+    }
+
+    var line = bits.join(' · ');
+    if (line.length > 180) line = line.slice(0, 177) + '…';
+    return line || '-';
+  }
+
+  /** Flavor / long perk body for coral “red text” row under the main label (custom select). */
+  function guidedBarrelOptionSubText(p) {
+    if (!p) return '';
+    var meta = guidedBarrelEffectMeta(p);
+    var line = '';
+    if (meta.red) line = meta.perk ? (meta.perk + ' — ' + meta.red) : meta.red;
+    else if (meta.perk && meta.ef.length > 52) line = meta.ef;
+    var out = line.replace(/\s+/g, ' ').trim();
+    if (out.length > 240) out = out.slice(0, 237) + '…';
+    return out;
+  }
+
+  function applyGuidedBarrelOptionDataAttrs(sel, opt, p) {
+    if (!opt || !isGuidedBarrelFamilySelect(sel)) return;
+    opt.textContent = guidedBarrelOptionPrimaryText(p);
+    var sub = guidedBarrelOptionSubText(p);
+    if (sub) opt.setAttribute('data-cc-barrel-sub', sub);
+    else opt.removeAttribute('data-cc-barrel-sub');
+  }
+
   /** Prefer "Star Helix Barrel"-style lead from stats; else display name. */
   function guidedBarrelHeadlineTitle(p) {
     if (!p) return '';
+    var meta = guidedBarrelEffectMeta(p);
     var st = String(p.stats != null ? p.stats : (p.stats_text || '')).replace(/\s+/g, ' ').trim();
     if (st && st.indexOf(',') > 0) {
       var head = st.slice(0, st.indexOf(',')).trim();
       if (head.length >= 3 && head.length <= 88) return head;
     }
     var nm = String((p.legendaryName || p.name || '').trim());
-    if (nm) return nm;
+    var cleaned = stripRedundantParenBarrelName(nm, meta.perk);
+    if (cleaned) return cleaned;
     try { return String(getPartToken(p) || '').trim(); } catch (_) { return ''; }
   }
 
@@ -426,17 +1110,17 @@
     var efRaw = String(p.effects != null ? p.effects : (p.effect || p.effects_text || '')).trim();
     var split = splitGuidedEffectPerkBody(efRaw);
     if (split.perk) lines.push('<div class="stx-part-preview__barrel-perk">' + ccEscapeHtml(split.perk) + '</div>');
+    if (split.body) {
+      lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:2px;">' + ccEscapeHtml(split.body.length > 420 ? split.body.slice(0, 419) + '…' : split.body) + '</div>');
+    }
     var descParts = [];
-    if (split.body) descParts.push(split.body);
     var statsRaw = String(p.stats != null ? p.stats : (p.stats_text || '')).replace(/\s+/g, ' ').trim();
     var statsTail = statsRaw ? stripStatsHeadlineIfRedundant(statsRaw, title) : '';
+    if (/^barrel\s+part\s+for\s+/i.test(statsTail) || /^barrel\s+part\s+for\s+/i.test(statsRaw)) statsTail = '';
     if (statsTail) descParts.push(statsTail);
     var descMerge = descParts.filter(Boolean);
     if (descMerge.length) {
-      var descText = descMerge.length === 2 && split.body
-        ? (split.body + '\n\n' + statsTail)
-        : descMerge.join('\n\n');
-      lines.push('<div class="stx-part-preview__barrel-desc">' + ccEscapeHtml(descText) + '</div>');
+      lines.push('<div class="stx-part-preview__barrel-desc">' + ccEscapeHtml(descMerge.join('\n\n')) + '</div>');
     }
 
     lines.push('<div class="stx-part-preview__barrel-meta">');
@@ -457,8 +1141,7 @@
         var slugH = opts.slugHint != null ? opts.slugHint : '';
         var fb = window.getFullStatLinesForPart(p, slugH);
         if (fb && fb.lines && fb.lines.length) {
-          lines.push('<div class="stx-part-preview__fullstats-head" style="margin-top:8px;"><span class="muted">Full stats</span> '
-            + '<span class="small muted">(' + ccEscapeHtml(fb.source) + ')</span></div>');
+          lines.push('<div class="stx-part-preview__fullstats-head" style="margin-top:8px;"><span class="muted">Full stats</span></div>');
           lines.push('<ul class="stx-part-preview__fullstats-list">');
           for (var fi = 0; fi < fb.lines.length; fi++) {
             lines.push('<li>' + ccEscapeHtml(fb.lines[fi]) + '</li>');
@@ -601,6 +1284,8 @@
       var opt = new Option(guidedOptionLabelForSelect(sel, p), tok);
       var tit = guidedOptionTitleForSelect(sel, p);
       if (tit) opt.title = tit;
+      applyGuidedPartOptionIcon(sel, opt, p);
+      applyGuidedBarrelOptionDataAttrs(sel, opt, p);
       sel.appendChild(opt);
     }
     if (!listForPreview.length && emptyHint) {
@@ -609,8 +1294,10 @@
       sel.appendChild(hi);
     }
     sel.__ccGuidedPartsList = listForPreview;
+    maybeDecoratedGuidedSelectPlaceholder(sel);
     bindGuidedSelectPreviewIfNeeded(sel);
     updateGuidedSelectPreview(sel);
+    syncGuidedCustomSelectIfWrapped(sel);
   }
 
   function normPartCodeForSort(p) {
@@ -622,6 +1309,92 @@
     return parts.slice().sort(function (a, b) {
       return normPartCodeForSort(a).localeCompare(normPartCodeForSort(b), undefined, { numeric: true });
     });
+  }
+
+  var GUIDED_HINT_EMPTY_STANDALONE_DUAL =
+    '(Empty) Dataset not loaded yet, or no dual / switch parts. Turn on "All manufacturers\' parts in dropdowns" and try again.';
+
+  function countElementTokensInCodeLower(c) {
+    var hits = 0;
+    if (c.indexOf('_cor_') !== -1 || c.indexOf('corrosive') !== -1) hits++;
+    if (c.indexOf('_cryo') !== -1 || c.indexOf('cryo') !== -1) hits++;
+    if (c.indexOf('_rad_') !== -1 || c.indexOf('radiation') !== -1) hits++;
+    if (c.indexOf('_fire') !== -1 || c.indexOf('incendiary') !== -1 || c.indexOf('ele_fire') !== -1) hits++;
+    if (c.indexOf('_shock') !== -1 || c.indexOf('shock') !== -1) hits++;
+    return hits;
+  }
+
+  function collectStandaloneDualElementParts() {
+    var all = getAllParts();
+    var out = [];
+    var seen = Object.create(null);
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      var cat = String(p.category || '').trim();
+      if (cat !== 'Weapon' && cat !== 'Gadget' && cat !== 'Heavy Weapon') continue;
+      var pt = String(p.partType || '').trim().toLowerCase();
+      var c = String(p.code || '').toLowerCase();
+      var ok = false;
+      if (pt === 'element switch') ok = true;
+      else if (pt === 'body' && c.indexOf('rainbowvomit') !== -1) ok = true;
+      else if (pt === 'body' && c.indexOf('part_body_ele') !== -1 && countElementTokensInCodeLower(c) >= 2) ok = true;
+      if (!ok) continue;
+      var tok = getPartToken(p);
+      if (!tok || seen[tok]) continue;
+      seen[tok] = true;
+      out.push(p);
+    }
+    return sortGuidedPartsByCode(out);
+  }
+
+  function collectStandalonePearlParts() {
+    var all = getAllParts();
+    var out = [];
+    var seen = Object.create(null);
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      if (String(p.category || '').trim() !== 'Weapon') continue;
+      if (!/part_pearl/i.test(String(p.code || ''))) continue;
+      var tok = getPartToken(p);
+      if (!tok || seen[tok]) continue;
+      seen[tok] = true;
+      out.push(p);
+    }
+    return sortGuidedPartsByCode(out);
+  }
+
+  function refreshToolsStandaloneElementDropdowns() {
+    var te = byId('toolsElementSelect');
+    if (te) {
+      te.innerHTML = '';
+      var ph = new Option('-- Element --', '');
+      applyDataCcIconIfAny(ph, CC_ELEMENT_PLACEHOLDER_ICON_FILE);
+      te.appendChild(ph);
+      for (var j = 0; j < ELEMENTS.length; j++) {
+        var ej = ELEMENTS[j];
+        if (!ej.code) continue;
+        var o = new Option(guidedPresetElementOptionLabel(ej), ej.code);
+        o.title = 'Output token: ' + ej.code;
+        if (ej.iconFile) applyDataCcIconIfAny(o, ej.iconFile);
+        te.appendChild(o);
+      }
+      te.__ccGuidedPartsList = null;
+      bindGuidedSelectPreviewIfNeeded(te);
+      updateGuidedSelectPreview(te);
+      syncGuidedCustomSelectIfWrapped(te);
+    }
+    var td = byId('toolsDualElementSelect');
+    if (td) {
+      var dual = collectStandaloneDualElementParts();
+      fillSelect(td, dual, 500, GUIDED_HINT_EMPTY_STANDALONE_DUAL);
+    }
+    var tp = byId('toolsPearlElementSelect');
+    if (tp) {
+      var pearls = collectStandalonePearlParts();
+      fillSelect(tp, pearls, 120, '(Empty) No pearl parts in dataset.');
+    }
   }
 
   function fillSelectWithLegendaryGroups(sel, parts) {
@@ -650,6 +1423,8 @@
       try { opt.setAttribute('data-part', JSON.stringify(p)); } catch (_) {}
       var t = guidedOptionTitleForSelect(sel, p);
       if (t) opt.title = t;
+      applyGuidedPartOptionIcon(sel, opt, p);
+      applyGuidedBarrelOptionDataAttrs(sel, opt, p);
       group.appendChild(opt);
     };
     if (heavy.length) {
@@ -665,8 +1440,10 @@
       sel.appendChild(g2);
     }
     sel.__ccGuidedPartsList = listed;
+    maybeDecoratedGuidedSelectPlaceholder(sel);
     bindGuidedSelectPreviewIfNeeded(sel);
     updateGuidedSelectPreview(sel);
+    syncGuidedCustomSelectIfWrapped(sel);
   }
 
   function getGuidedState() {
@@ -734,6 +1511,67 @@
     return m;
   }
 
+  function classModCharacterIconUrl(internalMfr) {
+    var m = String(internalMfr || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    var base = './assets/img/vault-hunters/';
+    if (m === 'siren') return base + 'player_class_dark_siren.png';
+    if (m === 'paladin') return base + 'player_class_paladin.png';
+    if (m === 'exo soldier' || m === 'exosoldier') return base + 'player_class_exo_soldier.png';
+    if (m === 'gravitar') return base + 'player_class_gravitar.png';
+    if (m === 'robodealer' || m === 'c4sh') return base + 'player_robodealer.png';
+    return '';
+  }
+
+  function manufacturerLogomarkUrl(rawMfr) {
+    var m = String(rawMfr || '').trim().toLowerCase();
+    var map = {
+      atlas: 'manufacturer/ui_art_manu_logomark_atlas_small.png',
+      cov: 'manufacturer/ui_art_manu_logomark_cov_small.png',
+      daedalus: 'manufacturer/ui_art_manu_logomark_daedalus_small.png',
+      hyperion: 'manufacturer/ui_art_manu_logomark_hyperion_small.png',
+      jakobs: 'manufacturer/ui_art_manu_logomark_jakobs_small.png',
+      maliwan: 'manufacturer/ui_art_manu_logomark_maliwan_small.png',
+      order: 'manufacturer/ui_art_manu_logomark_order_small.png',
+      ripper: 'manufacturer/ui_art_manu_logomark_ripper_small.png',
+      tediore: 'manufacturer/ui_art_manu_logomark_tediore_small.png',
+      torgue: 'manufacturer/ui_art_manu_logomark_torgue_small.png',
+      vladof: 'manufacturer/ui_art_manu_logomark_vladof_small.png',
+      borg: 'manufacturer/ui_art_manu_logomark_ripper_small.png'
+    };
+    var rel = map[m];
+    return rel ? CC_GUIDED_DROPDOWN_BASE + rel : '';
+  }
+
+  function decorateGuidedManufacturerOption(opt, rawValue, itemType) {
+    if (!opt) return;
+    var it = String(itemType || '').trim();
+    var url = it === 'Class Mod' ? classModCharacterIconUrl(rawValue) : manufacturerLogomarkUrl(rawValue);
+    if (url) applyDataCcIconFullUrl(opt, url);
+    else opt.removeAttribute('data-cc-icon');
+  }
+
+  function appendGuidedManufacturerOption(manSel, stxMan, fromStx, label, value, itemType) {
+    var opt = new Option(label, value);
+    decorateGuidedManufacturerOption(opt, value, itemType);
+    manSel.appendChild(opt);
+    if (stxMan && fromStx) {
+      var o2 = new Option(label, value);
+      decorateGuidedManufacturerOption(o2, value, itemType);
+      stxMan.appendChild(o2);
+    }
+  }
+
+  function syncGuidedManufacturerSelects(manSel, stxMan, fromStx) {
+    syncGuidedCustomSelectIfWrapped(manSel);
+    if (stxMan && fromStx) syncGuidedCustomSelectIfWrapped(stxMan);
+  }
+
+  function guidedWeaponTypeSelectIconUrl(displayValue) {
+    var k = String(displayValue || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (k === 'submachine gun') k = 'smg';
+    return ccGuidedWeaponTypePngUrlFromKey(k);
+  }
+
   function loadGuidedWeaponTypes() {
     var wtSel = byId('ccGuidedWeaponType');
     var manSel = byId('ccGuidedManufacturer');
@@ -759,10 +1597,15 @@
     wtypes.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); });
     wtSel.innerHTML = '<option value="">Select weapon type...</option>';
     for (var j = 0; j < wtypes.length; j++) {
-      if (wtypes[j]) wtSel.appendChild(new Option(wtypes[j], wtypes[j]));
+      if (!wtypes[j]) continue;
+      var wOpt = new Option(wtypes[j], wtypes[j]);
+      var wIcon = guidedWeaponTypeSelectIconUrl(wtypes[j]);
+      if (wIcon) applyDataCcIconFullUrl(wOpt, wIcon);
+      wtSel.appendChild(wOpt);
     }
     var cur = (wtSel.value || '').trim();
     if (cur && wtypes.indexOf(cur) >= 0) { wtSel.value = cur; } else if (wtypes.length) { wtSel.value = wtypes[0]; }
+    syncGuidedCustomSelectIfWrapped(wtSel);
   }
 
   function loadGuidedManufacturers() {
@@ -776,6 +1619,7 @@
     if (itemType === 'Enhancement') {
       manSel.innerHTML = '<option value="">Choose below</option>';
       manSel.disabled = true;
+      syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
       return;
     }
     var fromStx = !!(stxItem && stxItem.value) && (!itemSel || !itemSel.value || itemSel.value === stxItem.value);
@@ -784,7 +1628,10 @@
     manSel.innerHTML = '<option value="">' + placeholder + '</option>';
     manSel.disabled = false;
     if (stxMan && fromStx) stxMan.innerHTML = '<option value="">' + placeholder + '</option>';
-    if (!itemType) return;
+    if (!itemType) {
+      syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
+      return;
+    }
 
     // For Heavy Weapon, use fast STX_RARITIES path first to avoid blocking; getManufacturersForCategory does expensive filterParts
     if (itemType === 'Heavy Weapon') {
@@ -797,8 +1644,7 @@
           var m = String(row.manufacturer || '').trim();
           if (m && !seen[m] && m.toLowerCase() !== 'characters' && m.toLowerCase() !== 'weapon' && m.toLowerCase() !== 'heavy weapon') {
             seen[m] = true;
-            manSel.appendChild(new Option(m, m));
-            if (stxMan && fromStx) stxMan.appendChild(new Option(m, m));
+            appendGuidedManufacturerOption(manSel, stxMan, fromStx, m, m, itemType);
           }
         }
         if (Object.keys(seen).length > 0) {
@@ -806,17 +1652,18 @@
             manSel.value = preserveMan;
             if (stxMan && fromStx) stxMan.value = preserveMan;
           }
+          syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
           return;
         }
       }
       for (var f = 0; f < HEAVY_FALLBACK_MANS.length; f++) {
-        manSel.appendChild(new Option(HEAVY_FALLBACK_MANS[f], HEAVY_FALLBACK_MANS[f]));
-        if (stxMan && fromStx) stxMan.appendChild(new Option(HEAVY_FALLBACK_MANS[f], HEAVY_FALLBACK_MANS[f]));
+        appendGuidedManufacturerOption(manSel, stxMan, fromStx, HEAVY_FALLBACK_MANS[f], HEAVY_FALLBACK_MANS[f], itemType);
       }
       if (preserveMan && Array.prototype.some.call(manSel.options, function (o) { return (o.value || '').trim() === preserveMan; })) {
         manSel.value = preserveMan;
         if (stxMan && fromStx) stxMan.value = preserveMan;
       }
+      syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
       return;
     }
 
@@ -831,14 +1678,14 @@
             var m = String(mans[k]).trim();
             if (m) {
               var displayName = (itemType === 'Class Mod') ? getClassModDisplayName(m) : m;
-              manSel.appendChild(new Option(displayName, m));
-              if (stxMan && fromStx) stxMan.appendChild(new Option(displayName, m));
+              appendGuidedManufacturerOption(manSel, stxMan, fromStx, displayName, m, itemType);
             }
           }
           if (preserveMan && Array.prototype.some.call(manSel.options, function(o){ return (o.value||'').trim() === preserveMan; })) {
             manSel.value = preserveMan;
             if (stxMan && fromStx) stxMan.value = preserveMan;
           }
+          syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
           return;
         }
       } catch (_e) {}
@@ -862,8 +1709,7 @@
         if (m && !seen[m] && m.toLowerCase() !== 'characters' && m.toLowerCase() !== 'weapon' && m.toLowerCase() !== 'heavy weapon') {
           seen[m] = true;
           var displayName = (itemType === 'Class Mod') ? getClassModDisplayName(m) : m;
-          manSel.appendChild(new Option(displayName, m));
-          if (stxMan && fromStx) stxMan.appendChild(new Option(displayName, m));
+          appendGuidedManufacturerOption(manSel, stxMan, fromStx, displayName, m, itemType);
         }
       }
     }
@@ -886,9 +1732,7 @@
         if (pm && !seen[pmLower] && !skipMans[pmLower]) {
           seen[pmLower] = true;
           var displayName = (itemType === 'Class Mod') ? getClassModDisplayName(pm) : pm;
-          var opt = new Option(displayName, pm);
-          manSel.appendChild(opt);
-          if (stxMan && fromStx) stxMan.appendChild(new Option(opt.text, opt.value));
+          appendGuidedManufacturerOption(manSel, stxMan, fromStx, displayName, pm, itemType);
         }
       }
     }
@@ -898,8 +1742,7 @@
         for (var f = 0; f < fallback.length; f++) {
           var value = fallback[f];
           var label = (itemType === 'Class Mod') ? getClassModDisplayName(value) : value;
-          manSel.appendChild(new Option(label, value));
-          if (stxMan && fromStx) stxMan.appendChild(new Option(label, value));
+          appendGuidedManufacturerOption(manSel, stxMan, fromStx, label, value, itemType);
         }
       }
     }
@@ -907,9 +1750,16 @@
       manSel.value = preserveMan;
       if (stxMan && fromStx) stxMan.value = preserveMan;
     }
+    syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
   }
 
   function getGuidedOutputEl() {
+    if (typeof window.getCodeAppendOutputEl === 'function') {
+      try {
+        var ap = window.getCodeAppendOutputEl();
+        if (ap) return ap;
+      } catch (_) {}
+    }
     var el = byId('guidedOutputDeserialized');
     return el || byId('outCode');
   }
@@ -924,14 +1774,16 @@
   }
   function normalizeGuidedTail(prefixStr, tokens) {
     if (!tokens || !tokens.length) return '';
-    var baseFamily = null;
-    for (var i = 0; i < tokens.length; i++) {
-      baseFamily = getFamilyFromToken(tokens[i]);
-      if (baseFamily != null) break;
+    // Item family always comes from the header (e.g. "13, 0, 1, 60| … ||"), not from the first {fam:id} in the tail.
+    var baseFamily = getBaseFamilyFromPrefix(prefixStr);
+    if (baseFamily == null) {
+      for (var i = 0; i < tokens.length; i++) {
+        baseFamily = getFamilyFromToken(tokens[i]);
+        if (baseFamily != null) break;
+      }
     }
-    if (baseFamily == null) baseFamily = getBaseFamilyFromPrefix(prefixStr);
     if (baseFamily == null || !window.normalizeIdTokensForBaseFamily) return tokens.join(' ');
-    var norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily);
+    var norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily, { compactSameFamily: false });
     return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
   }
   function isRarityToken(tok) {
@@ -976,6 +1828,9 @@
     var newTail = normalizeGuidedTail(prefixStr, tokens);
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
     out.value = newSerial;
+    try {
+      window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
+    } catch (_) {}
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
   }
@@ -1036,6 +1891,9 @@
     var newTail = normalizeGuidedTail(prefixStr, tokens);
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
     out.value = newSerial;
+    try {
+      window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
+    } catch (_) {}
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
@@ -1146,16 +2004,21 @@
         continue;
       }
       if (slot.partType === 'Element' && slot.key === 'element') {
-        sel.innerHTML = '<option value="">-- Element --</option>';
+        sel.innerHTML = '';
+        var phEl = new Option('-- Element --', '');
+        applyDataCcIconIfAny(phEl, CC_ELEMENT_PLACEHOLDER_ICON_FILE);
+        sel.appendChild(phEl);
         for (var j = 0; j < ELEMENTS.length; j++) {
           var ej = ELEMENTS[j];
           var optEl = new Option(guidedPresetElementOptionLabel(ej), ej.code);
           if (ej.code) optEl.title = 'Output token: ' + ej.code;
+          if (ej.iconFile) applyDataCcIconIfAny(optEl, ej.iconFile);
           sel.appendChild(optEl);
         }
         sel.__ccGuidedPartsList = null;
         bindGuidedSelectPreviewIfNeeded(sel);
         updateGuidedSelectPreview(sel);
+        syncGuidedCustomSelectIfWrapped(sel);
         continue;
       }
       var filtered;
@@ -1560,6 +2423,7 @@
     loadGuidedManufacturers();
     if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
     syncGuidedVisibility();
+    setTimeout(function () { refreshToolsStandaloneElementDropdowns(); }, 0);
     setTimeout(function () {
       var it = (guidedItem && guidedItem.value) || (byId('stx_itemType') && byId('stx_itemType').value);
       if (it) {
@@ -1569,6 +2433,7 @@
       }
       if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
       if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput();
+      refreshToolsStandaloneElementDropdowns();
     }, 500);
     var randBtn = byId('rebuildRandomFullBuildBtn');
     if (randBtn && typeof randomFullBuild === 'function') {
@@ -1630,6 +2495,7 @@
       var pool = window[s.poolKey];
       fillPartSectionSelect(sel, pool || [], 1200);
     }
+    refreshToolsStandaloneElementDropdowns();
   }
 
   function wirePartSectionAdd(selectId) {
@@ -1680,6 +2546,30 @@
     var sel = byId('ccGuidedLegendaryPerkSelect');
     if (typeof window.populateLegendaryPerks === 'function') {
       window.populateLegendaryPerks(sel, getPartToken);
+      try {
+        // `populateLegendaryPerks` only writes token text; map options back to parts
+        // so custom-select can render rarity-aware icons in this standalone section.
+        var all = getAllParts();
+        var tokToPart = Object.create(null);
+        for (var i = 0; i < all.length; i++) {
+          var p = all[i];
+          if (!p) continue;
+          if (!/legendary\s*perk/i.test(String(p.partType || ''))) continue;
+          var tok = getPartToken(p);
+          if (!tok || tokToPart[tok]) continue;
+          tokToPart[tok] = p;
+        }
+        if (sel && sel.options) {
+          for (var j = 0; j < sel.options.length; j++) {
+            var opt = sel.options[j];
+            if (!opt || !opt.value) continue;
+            var pp = tokToPart[String(opt.value || '')];
+            if (!pp) continue;
+            applyGuidedPartOptionIcon(sel, opt, pp);
+          }
+        }
+      } catch (_) {}
+      syncGuidedCustomSelectIfWrapped(sel);
     }
   }
 
@@ -1827,6 +2717,7 @@
   }
 
   window.refreshGuidedBuilderDropdowns = refreshWeaponDropdowns;
+  window.refreshToolsStandaloneElementDropdowns = refreshToolsStandaloneElementDropdowns;
   window.syncGuidedVisibility = syncGuidedVisibility;
   window.refreshPartSections = refreshPartSections;
   window.loadGuidedManufacturers = loadGuidedManufacturers;

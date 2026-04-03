@@ -5,11 +5,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
-<!-- Server analytics: set full URL to track.php on your PHP host — see Netlify functions -->
+<!-- Netlify Functions (static site — no PHP). Point to your deploy or leave empty for local file:// -->
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
-<!-- Optional public visit counter: full URL to counter.php?key=YOUR_counter_public_key — see Netlify functions -->
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
-<!-- Optional global items counter: POST URL for /.netlify/functions/items-bump — see Netlify functions -->
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
 <!-- If api/config.php items_bump_secret is set, paste same value here (deters abuse; not a true secret once deployed) -->
 <meta content="" name="stx-items-bump-key"/>
@@ -47,6 +45,7 @@
 <script defer="" src="./assets/data/legacy_classmod_names.js"></script>
 <script defer="" src="./assets/data/legacy_classmod_skills_full.js"></script>
 <script defer="" src="./assets/data/classmod_perk_meta.js"></script>
+<script defer="" src="./assets/data/perk_thumb_urls.js"></script>
 <script defer="" src="./assets/data/enhancement_data.js"></script>
 <script defer="" src="./assets/js/cc-rebuild-bootstrap.js"></script>
 <script defer="" src="./legacy/ncs_slot_map.js"></script>
@@ -660,6 +659,39 @@
     body.badley-reskin .expander-bar { background: linear-gradient(90deg, rgba(155,110,255,0.2) 0%, rgba(255,185,230,0.12) 100%) !important; border-color: rgba(155,110,255,0.4) !important; color: #9b6eff !important; }
     body.scooter-reskin .expander-bar { background: linear-gradient(90deg, rgba(0,255,120,0.2) 0%, rgba(255,40,40,0.12) 100%) !important; border-color: rgba(0,255,120,0.4) !important; color: #00ff78 !important; }
     body.ynot-reskin .expander-bar { background: linear-gradient(90deg, rgba(0,212,232,0.22) 0%, rgba(6,8,12,0.92) 100%) !important; border-color: rgba(0,212,232,0.42) !important; color: #00d4e8 !important; }
+    .stx-vh-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    .stx-vh-btn__icon {
+      width: 28px;
+      height: 28px;
+      object-fit: cover;
+      object-position: center top;
+      flex-shrink: 0;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 243, 255, 0.35);
+      background: rgba(0, 0, 0, 0.35);
+      pointer-events: none;
+    }
+    .custom-select-display-icon,
+    .custom-select-option-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+    .custom-select-display .custom-select-display-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     body.mattmab-reskin .custom-select-display, body.mattmab-reskin .custom-select-list { background: linear-gradient(135deg, rgba(50,40,20,0.98) 0%, rgba(35,28,15,0.98) 100%) !important; border-color: rgba(255,215,0,0.45) !important; color: #f0e8d0 !important; }
     body.mattmab-reskin .custom-select-option { color: #f0e8d0 !important; }
     body.mattmab-reskin .custom-select-option:hover { background: rgba(255,215,0,0.25) !important; }
@@ -977,7 +1009,8 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
-    #buildStatsCoreEstimates .cc-core-card-title { font-size: 12px; margin-bottom: 4px; color: var(--accent-cyan); }
+    #buildStatsCoreEstimates .cc-core-card-title { font-size: 12px; margin-bottom: 4px; color: var(--accent-cyan); display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    #buildStatsCoreEstimates .cc-core-card-scale-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(200, 230, 255, 0.75); margin-bottom: 2px; }
     #buildStatsCoreEstimates .cc-core-card-scale { font-weight: 700; font-size: 20px; line-height: 1.2; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
     #buildStatsCoreEstimates .cc-core-card-pct { font-size: 11px; font-weight: 500; margin-top: 4px; letter-spacing: 0.01em; color: rgba(245, 252, 255, 0.88); font-variant-numeric: tabular-nums; line-height: 1.3; }
     #buildStatsCoreEstimates .cc-core-card-meta { font-size: 11px; margin-top: 8px; font-weight: 500; color: rgba(248, 252, 255, 0.9); }
@@ -1140,8 +1173,36 @@
     #classmodChecklistSection .cm-check-row:hover { border-color: rgba(0,243,255,0.55); box-shadow: 0 0 0 2px rgba(0,243,255,0.12); }
     #classmodChecklistSection .cm-check-row input[type="checkbox"] { margin-top: 2px; width: 18px; height: 18px; accent-color: #00f3ff; }
     #classmodChecklistSection .cm-check-code { font-family: monospace; opacity: .85; font-size: .85em; margin-top: 2px; }
-    #classmodChecklistSection .cm-perk-meta { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
-    #classmodChecklistSection .cm-perk-desc { color: rgba(210,244,255,0.92); font-size: 11px; line-height: 1.35; max-height: 2.7em; overflow: hidden; text-overflow: ellipsis; }
+    #classmodChecklistSection .cm-tree-header-row,
+    #classmodQuickChecklistSection .cm-tree-header-row {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(0,243,255,0.95);
+      padding: 10px 10px 4px;
+      margin-top: 6px;
+      border-bottom: 1px solid rgba(0,243,255,0.22);
+      user-select: none;
+      pointer-events: none;
+    }
+    #classmodChecklistSection .cm-tree-header-row:first-child,
+    #classmodQuickChecklistSection .cm-tree-header-row:first-child { margin-top: 0; }
+    #classmodChecklistSection .cm-perk-thumb,
+    #classmodQuickChecklistSection .cm-perk-thumb {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 243, 255, 0.28);
+      background: rgba(0, 0, 0, 0.35);
+      align-self: flex-start;
+    }
+    #classmodChecklistSection .cm-perk-meta,
+    #classmodQuickChecklistSection .cm-perk-meta { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
+    #classmodChecklistSection .cm-perk-desc,
+    #classmodQuickChecklistSection .cm-perk-desc { color: rgba(210,244,255,0.92); font-size: 11px; line-height: 1.35; max-height: 2.7em; overflow: hidden; text-overflow: ellipsis; }
     #classmodChecklistSection .cm-checked { border-color: rgba(0,255,200,0.75); background: rgba(0,255,200,0.08); box-shadow: 0 0 0 2px rgba(0,255,200,0.18), 0 0 18px rgba(0,255,200,0.12); }
     #classmodChecklistSection .classmod-class-selected { box-shadow: 0 0 0 2px rgba(0,255,200,0.55), 0 0 18px rgba(0,255,200,0.22) !important; }
     #classmodChecklistSection :where(button, .btn) { transform: none !important; transition: box-shadow .18s ease, filter .18s ease, opacity .18s ease !important; }
@@ -1732,6 +1793,20 @@
       color: #b8e6f0 !important;
     }
     #yaml-stats-section { background: rgba(26, 35, 50, 0.6) !important; color: #b8e6f0; }
+    #yaml-stats-section .yaml-stat-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #00c8ff;
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    #yaml-stats-section .yaml-stat-label img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
     #ccExtraYamlEditors { background: rgba(26, 35, 50, 0.5) !important; color: #b8e6f0; }
     #ccMissionsEditor { background: rgba(26, 35, 50, 0.5) !important; color: #b8e6f0; }
 
@@ -2252,7 +2327,7 @@
 <button class="btn egg-off-btn" id="eggOffBtn" title="Turn off easter egg theme" type="button">Reset theme</button>
 <button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button">Have a code to import/edit? Click here</button>
 <button class="btn btn--brand" id="scrollToSavBtn" type="button">💾 Using a .Sav/.yaml? Click here</button>
-<!-- Public Stats: remove data-stx-stats-dev + stx-site-stats-hidden, set stx-counter-url in <head> (Netlify functions). Until then: Shift/Ctrl+click header favicon toggles Stats (session persists across toolbox pages). -->
+<!-- Public Stats: hidden until Shift/Ctrl+click header logo; set stx-counter-url in <head> (Netlify functions). Session can keep Stats visible via stx-stats-dev-visible. -->
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; your local craft tally">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
@@ -2443,14 +2518,14 @@
 <div class="form-row"><label for="stx_itemType">Item Type</label></div>
 <select class="editor-select" id="stx_itemType" name="stx_itemType" style="width:100%;margin-bottom:10px;">
 <option value="">Select item type...</option>
-<option value="Weapon">Weapon</option>
-<option value="Heavy Weapon">Heavy Weapon</option>
-<option value="Shield">Shield</option>
-<option value="Repkit">Repkit</option>
-<option value="Grenade">Grenade</option>
-<option value="Gadget">Gadget</option>
-<option value="Enhancement">Enhancement</option>
-<option value="Class Mod">Class Mod</option>
+<option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
+<option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Heavy Weapon</option>
+<option value="Shield" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_shield.png">Shield</option>
+<option value="Repkit" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_repkit.png">Repkit</option>
+<option value="Grenade" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_grenade.png">Grenade</option>
+<option value="Gadget" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Gadget</option>
+<option value="Enhancement" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Enhancement</option>
+<option value="Class Mod" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Class Mod</option>
 </select>
 <div class="form-row"><label for="stx_manufacturer" id="manufacturerLabel">Manufacturer</label></div>
 <select class="editor-select" id="stx_manufacturer" name="stx_manufacturer" style="width:100%;margin-bottom:10px;"><option value="">Select manufacturer...</option></select>
@@ -2458,12 +2533,12 @@
 <label for="weaponType">Weapon Type</label>
 <select class="editor-select" id="weaponType" name="weaponType" style="width:100%;">
 <option value="">Select weapon type...</option>
-<option value="Assault Rifle">Assault Rifle</option>
-<option value="Pistol">Pistol</option>
-<option value="Shotgun">Shotgun</option>
-<option value="SMG">SMG</option>
-<option value="Sniper Rifle">Sniper Rifle</option>
-<option value="Heavy Weapon">Heavy Weapon</option>
+<option value="Assault Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_assault_small.png">Assault Rifle</option>
+<option value="Pistol" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_pistol_small.png">Pistol</option>
+<option value="Shotgun" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_shotgun_small.png">Shotgun</option>
+<option value="SMG" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_smg_small.png">SMG</option>
+<option value="Sniper Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_sniper_small.png">Sniper Rifle</option>
+<option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_heavy_small.png">Heavy Weapon</option>
 </select>
 <label for="level">Item level</label>
 <input class="editor-input" id="level" max="60" min="1" name="level" style="width:100%;" type="number" value="60"/>
@@ -2574,13 +2649,13 @@
 <label for="ccGuidedItemType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Item Type</label>
 <select class="editor-select" id="ccGuidedItemType" name="ccGuidedItemType" style="width:100%;">
 <option value="">Select item type...</option>
-<option value="Weapon">Weapon</option>
-<option value="Shield">Shield</option>
-<option value="Repkit">Repkit</option>
-<option value="Grenade">Grenade</option>
-<option value="Enhancement">Enhancement</option>
-<option value="Class Mod">Class Mod</option>
-<option value="Heavy Weapon">Heavy Weapon</option>
+<option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
+<option value="Shield" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_shield.png">Shield</option>
+<option value="Repkit" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_repkit.png">Repkit</option>
+<option value="Grenade" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_grenade.png">Grenade</option>
+<option value="Enhancement" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Enhancement</option>
+<option value="Class Mod" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Class Mod</option>
+<option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Heavy Weapon</option>
 </select>
 </div>
 <div>
@@ -2591,12 +2666,12 @@
 <label for="ccGuidedWeaponType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Weapon Type</label>
 <select class="editor-select" id="ccGuidedWeaponType" name="ccGuidedWeaponType" style="width:100%;">
 <option value="">Select weapon type...</option>
-<option value="Assault Rifle">Assault Rifle</option>
-<option value="Pistol">Pistol</option>
-<option value="Shotgun">Shotgun</option>
-<option value="SMG">SMG</option>
-<option value="Sniper Rifle">Sniper Rifle</option>
-<option value="Heavy Weapon">Heavy Weapon</option>
+<option value="Assault Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_assault_small.png">Assault Rifle</option>
+<option value="Pistol" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_pistol_small.png">Pistol</option>
+<option value="Shotgun" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_shotgun_small.png">Shotgun</option>
+<option value="SMG" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_smg_small.png">SMG</option>
+<option value="Sniper Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_sniper_small.png">Sniper Rifle</option>
+<option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_heavy_small.png">Heavy Weapon</option>
 </select>
 </div>
 <div>
@@ -2632,7 +2707,7 @@
 <div><label for="ccRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRaritySelect" name="ccRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddRarity" type="button">Add</button></div></div>
 <div><label for="ccBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBodySelect" name="ccBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBody" type="button">Add</button></div></div>
 <div><label for="ccBodyAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBodyAccSelect" name="ccBodyAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBodyAcc" type="button">Add</button></div></div>
-<div><label for="ccWeaponBodyEleSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponBodyEleSelect" name="ccWeaponBodyEleSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponBodyEle" type="button">Add</button></div></div>
+<div><label for="ccWeaponBodyEleSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccWeaponBodyEleSelect" name="ccWeaponBodyEleSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponBodyEle" type="button">Add</button></div></div>
 <div><label for="ccBarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBarrelSelect" name="ccBarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBarrel" type="button">Add</button></div></div>
 <div><label for="ccBarrelAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBarrelAccSelect" name="ccBarrelAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBarrelAcc" type="button">Add</button></div></div>
 <div><label for="ccWeaponHypShieldSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Hyperion Shield</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponHypShieldSelect" name="ccWeaponHypShieldSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponHypShield" type="button">Add</button></div></div>
@@ -2645,10 +2720,10 @@
 <div><label for="ccUnderbarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Underbarrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccUnderbarrelSelect" name="ccUnderbarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddUnderbarrel" type="button">Add</button></div></div>
 <div><label for="ccForegripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Foregrip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccForegripSelect" name="ccForegripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddForegrip" type="button">Add</button></div></div>
 <div><label for="ccWeaponSecondaryAmmoSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Ammo</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponSecondaryAmmoSelect" name="ccWeaponSecondaryAmmoSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponSecondaryAmmo" type="button">Add</button></div></div>
-<div><label for="ccElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Element (Maliwan)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
-<div><label for="ccWeaponPearlSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Pearl Parts</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponPearlSelect" name="ccWeaponPearlSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponPearl" type="button">Add</button></div></div>
+<div><label for="ccElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Element (Maliwan)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
+<div><label for="ccWeaponPearlSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Pearl Parts</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccWeaponPearlSelect" name="ccWeaponPearlSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponPearl" type="button">Add</button></div></div>
 <div><label for="ccLicensedSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Licensed Manufacturer Part</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccLicensedSelect" name="ccLicensedSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddLicensed" type="button">Add</button></div></div>
-<div><label for="ccElementPartSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccElementPartSelect" name="ccElementPartSelect" style="flex:1;min-width:180px;"><option value="">-- Element --</option></select><button class="btn" id="ccAddElementStack" type="button">Add</button></div></div>
+<div><label for="ccElementPartSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccElementPartSelect" name="ccElementPartSelect" style="flex:1;min-width:180px;"><option value="" data-cc-icon="./assets/img/elements/ico_elemental_all.png">-- Element --</option></select><button class="btn" id="ccAddElementStack" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -2665,7 +2740,7 @@
 <div><label for="ccShieldArmorSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Armor 237</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldArmorSelect" name="ccShieldArmorSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldArmorAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldEnergySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Energy 248</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldEnergySelect" name="ccShieldEnergySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldEnergyAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware 246</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldFirmwareSelect" name="ccShieldFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldFirmwareAdd" type="button">Add</button></div></div>
-<div><label for="ccShieldElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element (TypeID 1)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldElementSelect" name="ccShieldElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldElementAdd" type="button">Add</button></div></div>
+<div><label for="ccShieldElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element (TypeID 1)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccShieldElementSelect" name="ccShieldElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldElementAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -2677,7 +2752,7 @@
 <div><label for="ccGrenadeFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeFirmwareSelect" name="ccGrenadeFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeFirmwareAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadePayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadePayloadSelect" name="ccGrenadePayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadePayloadAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadeAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeAugmentSelect" name="ccGrenadeAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeAugmentAdd" type="button">Add</button></div></div>
-<div><label for="ccGrenadeElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeElementSelect" name="ccGrenadeElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeElementAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccGrenadeElementSelect" name="ccGrenadeElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeElementAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadeSpecialSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Special / Unique</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeSpecialSelect" name="ccGrenadeSpecialSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeSpecialAdd" type="button">Add</button></div></div>
 </div>
 </details>
@@ -2691,7 +2766,7 @@
 <div><label for="ccRepkitAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitAugmentSelect" name="ccRepkitAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitAugmentAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitPerkSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Perk</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkSelect" name="ccRepkitPerkSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitFirmwareSelect" name="ccRepkitFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitFirmwareAdd" type="button">Add</button></div></div>
-<div><label for="ccRepkitElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitElementSelect" name="ccRepkitElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitElementAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccRepkitElementSelect" name="ccRepkitElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitElementAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitLegendarySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary Perks</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitLegendarySelect" name="ccRepkitLegendarySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitLegendaryAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitSpecialSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Special / Unique</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitSpecialSelect" name="ccRepkitSpecialSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitSpecialAdd" type="button">Add</button></div></div>
 </div>
@@ -2751,8 +2826,8 @@
 <div><label for="ccHeavyBarrelAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyBarrelAccSelect" name="ccHeavyBarrelAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyBarrelAccAdd" type="button">Add</button></div></div>
 <div class="cc-heavy-slot-empty" data-slot="payload"><label for="ccHeavyPayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyPayloadSelect" name="ccHeavyPayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyPayloadAdd" type="button">Add</button></div></div>
 <div class="cc-heavy-slot-empty" data-slot="augment"><label for="ccHeavyAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyAugmentSelect" name="ccHeavyAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyAugmentAdd" type="button">Add</button></div></div>
-<div><label for="ccHeavyElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyElementSelect" name="ccHeavyElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementAdd" type="button">Add</button></div></div>
-<div><label for="ccHeavyElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Maliwan Switch (2nd element)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyElementSwitchSelect" name="ccHeavyElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementSwitchAdd" type="button">Add</button></div></div>
+<div><label for="ccHeavyElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccHeavyElementSelect" name="ccHeavyElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementAdd" type="button">Add</button></div></div>
+<div><label for="ccHeavyElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Maliwan Switch (2nd element)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccHeavyElementSwitchSelect" name="ccHeavyElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementSwitchAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyFirmwareSelect" name="ccHeavyFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyFirmwareAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyLegendarySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary Perks</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyLegendarySelect" name="ccHeavyLegendarySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyLegendaryAdd" type="button">Add</button></div></div>
 </div>
@@ -2784,11 +2859,11 @@
 </div>
 </div>
 <div id="classmodChecklistButtons" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
-<button class="btn btn-Firmware classmod-class-btn" data-cm-class="Vex" type="button">Vex</button>
-<button class="btn btn-Firmware classmod-class-btn" data-cm-class="Amon" type="button">Amon</button>
-<button class="btn btn-Firmware classmod-class-btn" data-cm-class="Rafa" type="button">Rafa</button>
-<button class="btn btn-Firmware classmod-class-btn" data-cm-class="Harlowe" type="button">Harlowe</button>
-<button class="btn btn-Firmware classmod-class-btn" data-cm-class="C4sh" type="button">C4sh</button>
+<button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Vex" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Vex</span></button>
+<button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Amon" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Amon</span></button>
+<button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Rafa" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Rafa</span></button>
+<button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Harlowe" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Harlowe</span></button>
+<button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="C4sh" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button>
 <button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button>
 </div>
 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:12px;">
@@ -2980,9 +3055,18 @@
 </details>
 <details class="rebuild-details" id="rebuildElementDetails">
 <summary>Element (standalone)</summary>
-<div style="margin-top:10px;display:flex;gap:10px;align-items:flex-end;">
-<div style="min-width:160px;"><label for="toolsElementSelect" style="color:var(--accent-cyan);font-size:12px;">Element</label><select class="editor-select" id="toolsElementSelect" name="toolsElementSelect" style="width:100%;"><option value="">None</option><option value="{1:10}">Corrosive</option><option value="{1:11}">Cryo</option><option value="{1:12}">Fire</option><option value="{1:13}">Radiation</option><option value="{1:14}">Shock</option></select></div>
+<p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Same presets and icons as the Guided weapon <strong>Element</strong> row, plus dataset picks for Maliwan switch / multi-element bodies and pearl element parts. All append to the builder output.</p>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+<div style="min-width:160px;flex:1;"><label for="toolsElementSelect" style="color:var(--accent-cyan);font-size:12px;display:block;margin-bottom:4px;">Element</label><select class="editor-select" id="toolsElementSelect" name="toolsElementSelect" style="width:100%;"><option value="">-- Element --</option></select></div>
 <button class="btn" id="btnAddElement" type="button">Add to code</button>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+<div style="min-width:200px;flex:1;"><label for="toolsDualElementSelect" style="color:var(--accent-cyan);font-size:12px;display:block;margin-bottom:4px;">Dual / switch / multi-element</label><select class="editor-select" id="toolsDualElementSelect" name="toolsDualElementSelect" style="width:100%;"><option value="">-- None --</option></select></div>
+<button class="btn" id="btnAddDualElement" type="button">Add to code</button>
+</div>
+<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+<div style="min-width:200px;flex:1;"><label for="toolsPearlElementSelect" style="color:var(--accent-cyan);font-size:12px;display:block;margin-bottom:4px;">Pearl (element-related)</label><select class="editor-select" id="toolsPearlElementSelect" name="toolsPearlElementSelect" style="width:100%;"><option value="">-- None --</option></select></div>
+<button class="btn" id="btnAddPearlElement" type="button">Add to code</button>
 </div>
 </details>
 <details class="rebuild-details" id="rebuildPartSectionsDetails">
@@ -2993,7 +3077,7 @@
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsShield"><summary>Shield</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectShield" name="partSelectShield" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddShield" type="button">Add</button></div><div class="rebuild-part-list" id="partListShield"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsRepkit"><summary>Repkit</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectRepkit" name="partSelectRepkit" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddRepkit" type="button">Add</button></div><div class="rebuild-part-list" id="partListRepkit"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsEnhancement"><summary>Enhancement</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectEnhancement" name="partSelectEnhancement" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddEnhancement" type="button">Add</button></div><div class="rebuild-part-list" id="partListEnhancement"></div></details>
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Vex" type="button">Vex</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Amon" type="button">Amon</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Rafa" type="button">Rafa</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Harlowe" type="button">Harlowe</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="C4sh" type="button">C4sh</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickPrimaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickSecondaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickUniversalList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist" id="cmQuickFirmwareList"></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Vex" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Vex</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Amon" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Amon</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Rafa" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Rafa</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Harlowe" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Harlowe</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="C4sh" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickPrimaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickSecondaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickUniversalList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist" id="cmQuickFirmwareList"></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsHeavy"><summary>Heavy</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectHeavy" name="partSelectHeavy" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddHeavy" type="button">Add</button></div><div class="rebuild-part-list" id="partListHeavy"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsGun"><summary>Gun</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectGun" name="partSelectGun" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddGun" type="button">Add</button></div><div class="rebuild-part-list" id="partListGun"></div></details>
 </div>
@@ -3109,11 +3193,11 @@
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
 <input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Set Amon (Forge Knight)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Set Vex (Siren)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Set Harlowe (Gravitar)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Set Rafa (Exo-Soldier)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button>
 </div>
 <div style="margin-top: 10px;">
 <div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
@@ -3182,7 +3266,7 @@
 <input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" name="yaml-char-level" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
-<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Experience Points:</label>
+<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ico_reward_exp.png" width="22"/>Experience Points:</label>
 <input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
 </div>
 <div>
@@ -3195,11 +3279,11 @@
 </div>
 </div>
 <div>
-<label for="yaml-cash" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Cash:</label>
+<label class="yaml-stat-label" for="yaml-cash"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ui/cash.png" width="22"/>Cash:</label>
 <input aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
-<label for="yaml-eridium" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Eridium:</label>
+<label class="yaml-stat-label" for="yaml-eridium"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ui/eridium.png" width="22"/>Eridium:</label>
 <input aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div id="ccExtraYamlEditors" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.28); background: rgba(0,0,0,0.18);">

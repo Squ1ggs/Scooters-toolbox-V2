@@ -91,17 +91,32 @@
   // Define it early so we don't depend on rebuild-presets-random.js (syntax error).
   try { window.loadPresetOptions = function () { loadPresetSectionFallback(); }; } catch (_) {}
 
+  function getCodeAppendOutputEl() {
+    var last = window.__CC_LAST_CODE_TARGET;
+    var g = byId('guidedOutputDeserialized');
+    var o = byId('outCode');
+    if (last === 'guided' && g) return g;
+    if (last === 'simple' && o) return o;
+    if (g && o) {
+      var gv = String(g.value || '').trim();
+      var ov = String(o.value || '').trim();
+      if (gv && !ov) return g;
+      if (ov && !gv) return o;
+    }
+    return g || o;
+  }
+  try { window.getCodeAppendOutputEl = getCodeAppendOutputEl; } catch (_) {}
+
   // Ensure Quick Add "Add preset" always appends tokens with braces.
   try {
     window.addPresetPart = function () {
       var partSel = byId('presetPartSelect');
       var qty = byId('presetQuantity');
-      var out = byId('outCode');
+      var out = (typeof window.getCodeAppendOutputEl === 'function') ? window.getCodeAppendOutputEl() : byId('outCode');
       if (!partSel || !out) return;
       var code = String(partSel.value || '').trim();
       if (!code) return;
 
-      // Normalize "22:72" => "{22:72}"
       if (/^\d+:\d+$/.test(code)) code = '{' + code + '}';
       if (/^\d+$/.test(code)) code = '{' + code + '}';
       code = code.replace(/^"+|"+$/g, '');
@@ -119,22 +134,28 @@
         baseFamilyId = m ? Number(m[1]) : null;
       } catch (_) {}
       var tokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\S+/g) || []);
-
-      // Append normalized token n times
-      var mTok = String(code).match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
-      if (baseFamilyId != null && mTok) {
-        var fam = Number(mTok[1]);
-        var id = Number(mTok[2]);
-        if (fam === baseFamilyId) code = '{' + id + '}';
+      var boot = /^\{\s*\d+\s*\}$/.test(String(code).trim());
+      if (boot) {
+        tokens = tokens.filter(function (t) { return !/^\{\s*\d+\s*\}$/.test(String(t || '').trim()); });
       }
       for (var i = 0; i < n; i++) tokens.push(code);
+      if (typeof window.normalizeIdTokensForBaseFamily === 'function' && baseFamilyId != null) {
+        tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId, { compactSameFamily: false });
+      }
       var newTail = tokens.join(' ');
       var newSerial = dbl >= 0
         ? serial.slice(0, dbl + 2) + newTail
         : (serial ? (serial + ' || ' + newTail) : ('|| ' + newTail));
 
       out.value = newSerial;
-      try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+      try { window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided'; } catch (_) {}
+      try {
+        if (out.id === 'outCode') { if (window.refreshOutputs) window.refreshOutputs(); }
+        else {
+          if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview();
+          if (window.syncFloatingOutput) window.syncFloatingOutput(true);
+        }
+      } catch (_) {}
       try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     };
   } catch (_) {}
@@ -289,6 +310,13 @@
       setTimeout(function () {
         runValidation();
         initPersistLastBuild();
+        try {
+          var g = byId('guidedOutputDeserialized');
+          var o = byId('outCode');
+          function mark(which) { try { window.__CC_LAST_CODE_TARGET = which; } catch (_) {} }
+          if (g) { ['focus', 'input', 'click'].forEach(function (ev) { g.addEventListener(ev, function () { mark('guided'); }); }); }
+          if (o) { ['focus', 'input', 'click'].forEach(function (ev) { o.addEventListener(ev, function () { mark('simple'); }); }); }
+        } catch (_) {}
       }, 500);
     });
   } else {
@@ -297,6 +325,13 @@
     setTimeout(function () {
       runValidation();
       initPersistLastBuild();
+      try {
+        var g = byId('guidedOutputDeserialized');
+        var o = byId('outCode');
+        function mark(which) { try { window.__CC_LAST_CODE_TARGET = which; } catch (_) {} }
+        if (g) { ['focus', 'input', 'click'].forEach(function (ev) { g.addEventListener(ev, function () { mark('guided'); }); }); }
+        if (o) { ['focus', 'input', 'click'].forEach(function (ev) { o.addEventListener(ev, function () { mark('simple'); }); }); }
+      } catch (_) {}
     }, 500);
   }
 })();

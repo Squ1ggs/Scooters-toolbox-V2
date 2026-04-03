@@ -20,10 +20,12 @@
 
   function getPartTokenForPopulate(p) {
     if (!p) return '';
-    var raw = (p.idRaw || p.idraw || '').trim();
+    var raw = (p.idRaw || p.idraw || '').trim().replace(/\s+/g, '');
     var fam = p.family != null ? String(p.family) : '';
     var id = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
-    return raw && /^\d+:\d+$/.test(raw) ? '{' + raw + '}' : (fam && id ? '{' + fam + ':' + id + '}' : (p.code || '').trim());
+    if (raw && /^\d+:\d+$/.test(raw)) return '{' + raw + '}';
+    if (fam && id) return '{' + fam + ':' + id + '}';
+    return (p.code || '').trim();
   }
 
   /** Full label in native tooltip when the closed select truncates text. */
@@ -231,6 +233,14 @@
         if (tok) {
           var human = (p.name || p.legendaryName || '').substring(0, 40);
           var ef = String(p.effects || p.effect || '').trim();
+          // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"
+          // If the effects string is already present inside parentheses in the name,
+          // suppress the effects suffix.
+          if (ef) {
+            var humanLower = String(human || '').toLowerCase();
+            var efLower = String(ef || '').toLowerCase();
+            if (humanLower.indexOf('(' + efLower + ')') !== -1) ef = '';
+          }
           var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
           var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
           var o = document.createElement('option');
@@ -274,17 +284,82 @@
     try {
       var leg = all.filter(function (p) { return p && /legendary\s*perk/i.test(String(p.partType || '')); });
       var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
+      var LEG_BASE = './assets/img/guided-dropdowns/legendary-augments/';
+      var PEARL_BASE = './assets/img/guided-dropdowns/pearl-item-types/';
+
+      function legendaryIconUrlForPart(p){
+        if (!p) return '';
+
+        if (typeof window.stxPartMatchesPearlRarityIdAllowlist === 'function' && window.stxPartMatchesPearlRarityIdAllowlist(p)) {
+          return PEARL_BASE + 'ico_misc_pearl.png';
+        }
+
+        // Category-driven gold augment logos.
+        var cat = String(p.category || '').trim().toLowerCase();
+        if (cat === 'character') cat = 'class mod';
+        var byCat = {
+          shield: 'ico_legendary_aug_shield.png',
+          repkit: 'ico_legendary_aug_repkit.png',
+          grenade: 'ico_legendary_aug_grenade.png',
+          'class mod': 'ico_legendary_aug_classmod.png',
+          'heavy weapon': 'ico_legendary_aug_heavy.png',
+          gadget: 'ico_legendary_aug_heavy.png'
+        };
+        if (byCat[cat]) return LEG_BASE + byCat[cat];
+
+        // Weapon-class fallback (when category is "weapon" or missing).
+        var wt = String(p.weaponType || p.itemType || '').trim().toLowerCase();
+        if (wt === 'submachine gun') wt = 'smg';
+        if (wt === 'heavy') wt = 'heavy weapon';
+        if (wt === 'sniper') wt = 'sniper rifle';
+        if (wt === 'sniper rifle') wt = 'sniper rifle';
+
+        var c = String(p.code || p.spawnCode || p.importCode || '').replace(/^["']|["']$/g, '').toUpperCase();
+        if (/_HW\.|\bMAL_HW\b|\bTOR_HW\b|\bBOR_HW\b|\bVLA_HW\b|\bJAK_HW\b|\bTED_HW\b/i.test(c)) wt = 'heavy weapon';
+        else if (/_AR\.|\bDAD_AR\b|\bJAK_AR\b|\bATL_AR\b|\bVLA_AR\b|\bMAL_AR\b|\bTED_AR\b|\bHYP_AR\b/i.test(c)) wt = 'assault rifle';
+        else if (/_SM\.|\bDAD_SM\b|\bJAK_SM\b|\bMAL_SM\b|\bVLA_SM\b|\bTED_SM\b|\bHYP_SM\b/i.test(c)) wt = 'smg';
+        else if (/_SG\.|\bDAD_SG\b|\bJAK_SG\b|\bMAL_SG\b|\bVLA_SG\b|\bTED_SG\b|\bHYP_SG\b/i.test(c)) wt = 'shotgun';
+        else if (/_PS\.|\bDAD_PS\b|\bJAK_PS\b|\bMAL_PS\b|\bVLA_PS\b|\bTED_PS\b|\bHYP_PS\b/i.test(c)) wt = 'pistol';
+        else if (/_SR\.|\bDAD_SR\b|\bJAK_SR\b|\bMAL_SR\b|\bVLA_SR\b|\bTED_SR\b|\bHYP_SR\b/i.test(c)) wt = 'sniper rifle';
+
+        var map = {
+          'assault rifle': 'ico_legendary_aug_gun_assault.png',
+          pistol: 'ico_legendary_aug_gun_pistol.png',
+          shotgun: 'ico_legendary_aug_gun_shotgun.png',
+          smg: 'ico_legendary_aug_gun_smg.png',
+          'sniper rifle': 'ico_legendary_aug_gun_sniper.png',
+          sniper: 'ico_legendary_aug_gun_sniper.png',
+          'heavy weapon': 'ico_legendary_aug_heavy.png',
+          heavy: 'ico_legendary_aug_heavy.png'
+        };
+        return LEG_BASE + (map[wt] || map['assault rifle']);
+      }
+
       for (var i = 0; i < Math.min(leg.length, 150); i++) {
         var p = leg[i];
         var tok = tokFn(p);
         if (tok) {
           var human = (p.name || p.legendaryName || '').substring(0, 40);
           var ef = String(p.effects || p.effect || '').trim();
-          var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
+          var efSuffix = '';
+          if (ef) {
+            // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"
+            // If the human name already contains the effects string, don't append it again.
+            var humanCompact = String(human || '').toLowerCase().replace(/\s+/g, '');
+            var efCompact = String(ef || '').toLowerCase().replace(/\s+/g, '');
+            var efAlreadyInName = efCompact && humanCompact.indexOf(efCompact) !== -1;
+            if (!efAlreadyInName) {
+              efSuffix = ' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef);
+            }
+          }
           var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
           var o = document.createElement('option');
           o.value = tok;
           o.textContent = label;
+          try {
+            var iconUrl = legendaryIconUrlForPart(p);
+            if (iconUrl) o.setAttribute('data-cc-icon', iconUrl);
+          } catch (_) {}
           if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
           sel.appendChild(o);
         }

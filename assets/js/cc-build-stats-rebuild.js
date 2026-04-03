@@ -516,7 +516,7 @@
       } catch (_) {}
       if (raw) {
         lines = raw.split(/(?:\r?\n|\r|;|\u2022|\u25AA|\u25CF)+/).map(function (t) { return t.trim(); }).filter(Boolean);
-        if (source === 'embedded stat text' && lines.length) source = 'embedded stat text (dataset / ZIP)';
+        if (source === 'embedded stat text' && lines.length) source = 'Item stats';
       }
     }
     return { source: source, lines: lines, excelRows: excelRows };

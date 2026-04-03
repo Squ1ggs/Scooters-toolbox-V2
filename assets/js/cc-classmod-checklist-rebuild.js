@@ -69,13 +69,15 @@
     }
     return parts
       .map(function (p) { return toChecklistItem(p, source || String(partType || '').toLowerCase(), 'Classmod Perk'); })
-      .filter(isGuidedPerkEntry)
-      .sort(alphaByName);
+      .filter(isGuidedPerkEntry);
   }
 
-  function normalizeSkillGroupName(name) {
-    return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
-  }
+  /** Dataset strings → actual `assets/img/classmod-firmware/<stem>.png` filenames. */
+  var CM_FIRMWARE_ICON_STEM_ALIASES = {
+    atlasinfinum: 'atlasinfinium',
+    atlasinfiniumm: 'atlasinfinium',
+    daeddyo: 'daedyo'
+  };
 
   function normalizePerkNameForMeta(name) {
     if (typeof window.__normalizePerkName === 'function') {
@@ -110,33 +112,89 @@
     return null;
   }
 
-  function getPrimaryTreeLabel(item) {
-    var meta = getClassmodPerkMetaForItem(item);
-    var tree = String((meta && meta.tree) || '').trim();
-    if (!tree) return 'Other';
-    return tree;
+  function getPerkTreeLabel(it) {
+    var m = getClassmodPerkMetaForItem(it);
+    var t = m && m.tree ? String(m.tree).trim() : '';
+    return t || 'Other';
   }
 
-  function getPrimaryTreeColor(label) {
-    var t = String(label || '').toLowerCase();
-    if (t.indexOf('red') !== -1) return '#ff6b6b';
-    if (t.indexOf('blue') !== -1) return '#6aa9ff';
-    if (t.indexOf('green') !== -1) return '#66d17a';
-    if (t.indexOf('purple') !== -1) return '#b589ff';
-    if (t.indexOf('orange') !== -1) return '#ffb15e';
-    if (t.indexOf('roll the bones') !== -1) return '#ff6b6b';
-    if (t.indexOf('luck of the draw') !== -1) return '#6aa9ff';
-    if (t.indexOf('chaos walking') !== -1) return '#66d17a';
-    return '#00f3ff';
+  function resolvePerkThumbKey(it) {
+    if (!it) return '';
+    var meta = getClassmodPerkMetaForItem(it);
+    var tryNames = [];
+    if (meta && meta.name) tryNames.push(String(meta.name).trim());
+    if (it.name) tryNames.push(String(it.name).trim());
+    if (Array.isArray(it._cmGroupParts)) {
+      for (var gi = 0; gi < it._cmGroupParts.length; gi++) {
+        var gp = it._cmGroupParts[gi];
+        tryNames.push(String((gp && (gp.name || gp.legendaryName)) || '').trim());
+      }
+    }
+    if (it.part) tryNames.push(String(it.part.name || it.part.legendaryName || '').trim());
+    for (var j = 0; j < tryNames.length; j++) {
+      var k = normalizePerkNameForMeta(tryNames[j]);
+      if (k) return k;
+    }
+    return '';
   }
 
-  function sortPrimaryItemsByTree(items) {
-    return (Array.isArray(items) ? items.slice() : []).sort(function (a, b) {
-      var ta = getPrimaryTreeLabel(a);
-      var tb = getPrimaryTreeLabel(b);
-      if (ta !== tb) return ta.localeCompare(tb);
-      return alphaByName(a, b);
+  function perkThumbUrlCandidates(it, key) {
+    if (!key) return [];
+    var src = String(it._cmSource || '').toLowerCase();
+    var isFw = src.indexOf('firmware') !== -1;
+    var fwStem = isFw ? (CM_FIRMWARE_ICON_STEM_ALIASES[key] || key) : key;
+    var map = window.__PERK_THUMB_URL_BY_KEY || {};
+    var remote = map[fwStem] || map[key];
+    if (remote) return [remote];
+    /* Local PNG packs (optional). Off by default so file:// / missing bundles do not spam 404s. */
+    if (!window.__CM_USE_LOCAL_PERK_THUMBS) return [];
+    var rels;
+    if (isFw) {
+      rels = [
+        'assets/img/classmod-firmware/' + encodeURIComponent(fwStem) + '.png',
+        'assets/img/classmod-perks/' + encodeURIComponent(fwStem) + '.png'
+      ];
+    } else {
+      rels = [
+        'assets/img/classmod-passive/' + encodeURIComponent(key) + '.png',
+        'assets/img/classmod-perks/' + encodeURIComponent(key) + '.png',
+        'assets/img/classmod-firmware/' + encodeURIComponent(key) + '.png'
+      ];
+    }
+    var out = [];
+    for (var u = 0; u < rels.length; u++) {
+      try {
+        out.push(new URL(rels[u], window.location.href).href);
+      } catch (_) {}
+    }
+    return out;
+  }
+
+  function appendPerkThumbToRow(labelWrap, it) {
+    var key = resolvePerkThumbKey(it);
+    if (!key) return;
+    var urls = perkThumbUrlCandidates(it, key);
+    if (!urls.length) return;
+    var img = document.createElement('img');
+    img.className = 'cm-perk-thumb';
+    img.alt = '';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    var idx = 0;
+    img.addEventListener('error', function tryNext() {
+      idx++;
+      if (idx >= urls.length) {
+        img.remove();
+        return;
+      }
+      img.src = urls[idx];
     });
+    img.src = urls[0];
+    labelWrap.appendChild(img);
+  }
+
+  function normalizeSkillGroupName(name) {
+    return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
   function sortClassModSkillParts(parts) {
@@ -330,7 +388,7 @@
       };
     }).filter(function (item) {
       return item && Array.isArray(item._cmGroupParts) && item._cmGroupParts.length;
-    }).sort(alphaByName);
+    }).sort(classmodTreeThenNameCompare);
   }
 
   function isChecked(code) {
@@ -407,17 +465,15 @@
   }
 
   function setActiveClassButton(cls) {
-    var wraps = [byId('classmodChecklistButtons'), byId('classmodQuickChecklistButtons')].filter(Boolean);
-    if (!wraps.length) return;
+    var wrap = byId('classmodChecklistButtons');
+    if (!wrap) return;
     var key = charToKey(cls);
     var display = KEY_TO_DISPLAY[key] || String(cls || '').trim();
-    for (var w = 0; w < wraps.length; w++) {
-      var btns = wraps[w].querySelectorAll('button[data-cm-class]');
-      for (var b = 0; b < btns.length; b++) {
-        var btn = btns[b];
-        var active = String(btn.getAttribute('data-cm-class') || '').trim() === display;
-        btn.classList.toggle('classmod-class-selected', active);
-      }
+    var btns = wrap.querySelectorAll('button[data-cm-class]');
+    for (var b = 0; b < btns.length; b++) {
+      var btn = btns[b];
+      var active = String(btn.getAttribute('data-cm-class') || '').trim() === display;
+      btn.classList.toggle('classmod-class-selected', active);
     }
   }
 
@@ -439,8 +495,7 @@
     var listId = String(listEl.id || '');
     if (!listId) return;
 
-    var isPrimaryList = listId === 'cmPrimaryList' || listId === 'cmQuickPrimaryList';
-    var allItems = isPrimaryList ? sortPrimaryItemsByTree(items) : (Array.isArray(items) ? items.slice() : []);
+    var allItems = Array.isArray(items) ? items.slice() : [];
     listEl.__cmAllItems = allItems;
     listEl.innerHTML = '';
     if (!allItems.length) {
@@ -457,19 +512,18 @@
     var end = Math.min(start + CM_ROWS_PER_PAGE, allItems.length);
     var pageItems = allItems.slice(start, end);
 
+    var treeHeaders = shouldEmitPerkTreeHeaders(listId, allItems);
     var frag = document.createDocumentFragment();
-    var lastTreeLabel = '';
     for (var i = 0; i < pageItems.length; i++) {
       var it = pageItems[i];
-      if (isPrimaryList) {
-        var treeLabel = getPrimaryTreeLabel(it);
-        if (treeLabel !== lastTreeLabel) {
-          lastTreeLabel = treeLabel;
-          var treeHdr = document.createElement('div');
-          treeHdr.style.cssText = 'margin:8px 0 6px; padding:4px 8px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); font-weight:700; font-size:0.9em;';
-          treeHdr.style.color = getPrimaryTreeColor(treeLabel);
-          treeHdr.textContent = treeLabel;
-          frag.appendChild(treeHdr);
+      var idxGlobal = start + i;
+      if (treeHeaders) {
+        if (idxGlobal === 0 || getPerkTreeLabel(it) !== getPerkTreeLabel(allItems[idxGlobal - 1])) {
+          var hRow = document.createElement('div');
+          hRow.className = 'cm-tree-header-row';
+          hRow.setAttribute('data-cm-tree-header', '1');
+          hRow.textContent = getPerkTreeLabel(it);
+          frag.appendChild(hRow);
         }
       }
       var selected = isChecklistItemSelected(it);
@@ -511,6 +565,7 @@
         labelInner.appendChild(metaWrap);
       }
       labelWrap.appendChild(cb);
+      appendPerkThumbToRow(labelWrap, it);
       labelWrap.appendChild(labelInner);
       row.appendChild(labelWrap);
 
@@ -571,6 +626,32 @@
       nav.appendChild(next);
       listEl.appendChild(nav);
     }
+  }
+
+  function getChecklistItemsForListId(listId) {
+    var id = String(listId || '');
+    if (id === 'cmPrimaryList') return window.__cmChecklistPrimaryItems;
+    if (id === 'cmSecondaryList') return window.__cmChecklistSecondaryItems;
+    if (id === 'cmUniversalList') return window.__cmChecklistUniversalItems;
+    if (id === 'cmFirmwareList') return window.__cmChecklistFirmwareItems;
+    return null;
+  }
+
+  /** Re-render a single paged checklist (keeps other class mod lists untouched). */
+  function renderChecklistByListId(listId) {
+    var el = byId(listId);
+    var items = getChecklistItemsForListId(listId);
+    if (!el || !Array.isArray(items)) {
+      renderUI();
+      return;
+    }
+    renderChecklist(el, items);
+  }
+
+  function refreshChecklistSerialOutputs() {
+    try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+    try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
+    syncChecklistClassModOutputs();
   }
 
   function isClassmodSelected() {
@@ -910,6 +991,32 @@
     return String((a && a.name) || '').localeCompare(String((b && b.name) || ''), undefined, { sensitivity: 'base' });
   }
 
+  function classmodTreeThenNameCompare(a, b) {
+    var ta = getPerkTreeLabel(a);
+    var tb = getPerkTreeLabel(b);
+    if (ta !== tb) return ta.localeCompare(tb, undefined, { sensitivity: 'base' });
+    return alphaByName(a, b);
+  }
+
+  function sortClassmodChecklistByTreeThenName(items) {
+    return (items || []).slice().sort(classmodTreeThenNameCompare);
+  }
+
+  function classmodListUsesTreeHeaders(listId) {
+    return listId === 'cmPrimaryList' || listId === 'cmSecondaryList' || listId === 'cmUniversalList';
+  }
+
+  function shouldEmitPerkTreeHeaders(listId, allItems) {
+    if (!classmodListUsesTreeHeaders(listId) || !allItems || !allItems.length) return false;
+    var seen = {};
+    for (var i = 0; i < allItems.length; i++) {
+      seen[getPerkTreeLabel(allItems[i])] = true;
+    }
+    var keys = Object.keys(seen);
+    if (keys.length === 1 && keys[0] === 'Other') return false;
+    return true;
+  }
+
   function isGuidedPerkEntry(it) {
     var nm = String((it && it.name) || '').toLowerCase();
     var kd = String((it && it.kind) || '').toLowerCase();
@@ -1147,8 +1254,8 @@
     applyRarityAndName();
 
     var primaryItems = getClassModPrimaryItems(cls);
-    var secondaryItems = dedupeList(getFilteredClassModItems(cls, 'Secondary', 'secondary')).sort(alphaByName);
-    var universalItems = dedupeList(getFilteredClassModItems(cls, 'Universal', 'universal')).sort(alphaByName);
+    var secondaryItems = sortClassmodChecklistByTreeThenName(dedupeList(getFilteredClassModItems(cls, 'Secondary', 'secondary')));
+    var universalItems = sortClassmodChecklistByTreeThenName(dedupeList(getFilteredClassModItems(cls, 'Universal', 'universal')));
     var firmwareItems = dedupeList(getFilteredClassModItems(cls, 'Firmware', 'firmware')).sort(alphaByName);
 
     function dedupeList(items) {
@@ -1174,10 +1281,6 @@
     renderChecklist(byId('cmSecondaryList'), secondaryItems);
     renderChecklist(byId('cmUniversalList'), universalItems);
     renderChecklist(byId('cmFirmwareList'), firmwareItems);
-    renderChecklist(byId('cmQuickPrimaryList'), primaryItems);
-    renderChecklist(byId('cmQuickSecondaryList'), secondaryItems);
-    renderChecklist(byId('cmQuickUniversalList'), universalItems);
-    renderChecklist(byId('cmQuickFirmwareList'), firmwareItems);
 
     try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
     try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
@@ -1185,26 +1288,8 @@
   }
 
   function installHandlers() {
-    function removePrimaryAddAllButton(addBtnId) {
-      var existing = byId(addBtnId);
-      if (existing && existing.parentElement) existing.parentElement.removeChild(existing);
-    }
-    function ensureTogglePrimaryPosition(toggleBtnId) {
-      var toggleBtn = byId(toggleBtnId);
-      if (!toggleBtn) return;
-      var host = toggleBtn.parentElement;
-      if (!host) return;
-      try { host.appendChild(toggleBtn); } catch (_e) {}
-    }
-
-    removePrimaryAddAllButton('cmAddAllPrimaryBtn');
-    removePrimaryAddAllButton('cmQuickAddAllPrimaryBtn');
-    ensureTogglePrimaryPosition('cmToggleAllPrimaryBtn');
-    ensureTogglePrimaryPosition('cmQuickToggleAllPrimaryBtn');
-
     var section = byId('classmodChecklistSection');
-    var quickSection = byId('classmodQuickChecklistSection');
-    if (!section && !quickSection) return;
+    if (!section) return;
 
     var raritySel = byId('cmRaritySelect');
     var nameSel = byId('cmNameSelect');
@@ -1241,7 +1326,7 @@
       });
     }
 
-    function onSectionClick(e) {
+    section.addEventListener('click', function (e) {
       var btn = e.target.closest('button[data-cm-class]');
       if (btn) {
         e.preventDefault();
@@ -1273,7 +1358,7 @@
         var dir = pageBtn.getAttribute('data-cm-page');
         var delta = dir === 'next' ? 1 : -1;
         setListPage(targetId, getListPage(targetId) + delta);
-        renderUI();
+        renderChecklistByListId(targetId);
         return;
       }
 
@@ -1294,8 +1379,9 @@
         if (cb) cb.checked = next;
         row.classList.toggle('cm-checked', next);
       }
-    }
-    function onSectionChange(e) {
+    }, true);
+
+    section.addEventListener('change', function (e) {
       var qtySel = e.target.closest('select[data-cm-skill-qty]');
       if (qtySel) {
         var item = getChecklistItemByCode(qtySel.getAttribute('data-cm-skill-qty'));
@@ -1306,7 +1392,8 @@
         if (isChecklistItemSelected(item)) {
           setPrimarySkillCount(item, qty);
         }
-        renderUI();
+        renderChecklistByListId('cmPrimaryList');
+        refreshChecklistSerialOutputs();
         return;
       }
 
@@ -1323,17 +1410,7 @@
       var it = getChecklistItemByCode(code);
       setChecked(code, cb.checked, it || { name: name, category: category, _cmSource: src, _primary: primaryItems.some(function (x) { return x && x.code === code; }) });
       row.classList.toggle('cm-checked', isChecklistItemSelected(it || { code: code }));
-    }
-    if (section && !section.__cmEventsBound) {
-      section.__cmEventsBound = true;
-      section.addEventListener('click', onSectionClick, true);
-      section.addEventListener('change', onSectionChange, true);
-    }
-    if (quickSection && !quickSection.__cmEventsBound) {
-      quickSection.__cmEventsBound = true;
-      quickSection.addEventListener('click', onSectionClick, true);
-      quickSection.addEventListener('change', onSectionChange, true);
-    }
+    }, true);
 
     var togglePrimary = byId('cmToggleAllPrimaryBtn');
     if (togglePrimary && !togglePrimary.__bound) {
@@ -1343,7 +1420,8 @@
         if (!items.length) return;
         var anyUnchecked = items.some(function (it) { return !isChecklistItemSelected(it); });
         setCheckedBulk(items, anyUnchecked);
-        renderUI();
+        renderChecklistByListId('cmPrimaryList');
+        refreshChecklistSerialOutputs();
       });
     }
 
@@ -1359,7 +1437,8 @@
         if (!items.length) return;
         var anyUnchecked = items.some(function (it) { return !isChecked(it.code); });
         setCheckedBulk(items, anyUnchecked);
-        renderUI();
+        renderChecklistByListId('cmSecondaryList');
+        refreshChecklistSerialOutputs();
       });
     }
 
@@ -1371,51 +1450,23 @@
         if (!raw.length) return;
         var anyUnchecked = raw.some(function (it) { return !isChecked(it.code); });
         setCheckedBulk(raw, anyUnchecked);
-        renderUI();
+        renderChecklistByListId('cmUniversalList');
+        refreshChecklistSerialOutputs();
       });
     }
 
-    // Firmware intentionally has no "toggle all" button (single pick intent).
-
-    var toggleQuickPrimary = byId('cmQuickToggleAllPrimaryBtn');
-    if (toggleQuickPrimary && !toggleQuickPrimary.__bound) {
-      toggleQuickPrimary.__bound = true;
-      toggleQuickPrimary.addEventListener('click', function () {
-        var items = Array.isArray(window.__cmChecklistPrimaryItems) ? window.__cmChecklistPrimaryItems.slice() : [];
-        if (!items.length) return;
-        var anyUnchecked = items.some(function (it) { return !isChecklistItemSelected(it); });
-        setCheckedBulk(items, anyUnchecked);
-        renderUI();
-      });
-    }
-    var toggleQuickSecondary = byId('cmQuickToggleAllSecondaryBtn');
-    if (toggleQuickSecondary && !toggleQuickSecondary.__bound) {
-      toggleQuickSecondary.__bound = true;
-      toggleQuickSecondary.addEventListener('click', function () {
-        var raw = Array.isArray(window.__cmChecklistSecondaryItems) ? window.__cmChecklistSecondaryItems : [];
-        var items = raw.filter(function (it) {
-          var src = String((it && it._cmSource) || '').toLowerCase();
-          return src.indexOf('firmware') === -1;
-        });
-        if (!items.length) return;
-        var anyUnchecked = items.some(function (it) { return !isChecked(it.code); });
-        setCheckedBulk(items, anyUnchecked);
-        renderUI();
-      });
-    }
-    var toggleQuickUniversal = byId('cmQuickToggleAllUniversalBtn');
-    if (toggleQuickUniversal && !toggleQuickUniversal.__bound) {
-      toggleQuickUniversal.__bound = true;
-      toggleQuickUniversal.addEventListener('click', function () {
-        var raw = Array.isArray(window.__cmChecklistUniversalItems) ? window.__cmChecklistUniversalItems : [];
+    var toggleFirmware = byId('cmToggleAllFirmwareBtn');
+    if (toggleFirmware && !toggleFirmware.__bound) {
+      toggleFirmware.__bound = true;
+      toggleFirmware.addEventListener('click', function () {
+        var raw = Array.isArray(window.__cmChecklistFirmwareItems) ? window.__cmChecklistFirmwareItems : [];
         if (!raw.length) return;
         var anyUnchecked = raw.some(function (it) { return !isChecked(it.code); });
         setCheckedBulk(raw, anyUnchecked);
-        renderUI();
+        renderChecklistByListId('cmFirmwareList');
+        refreshChecklistSerialOutputs();
       });
     }
-    // Quick checklist firmware list intentionally has no "toggle all" button
-    // because class mods effectively use a single firmware pick.
   }
 
   function boot() {

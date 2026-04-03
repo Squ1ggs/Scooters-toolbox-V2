@@ -15,17 +15,9 @@
     if (!catSel || !partSel) return;
     if (typeof window.populatePresetParts === 'function') window.populatePresetParts(catSel, partSel);
   }
+  /** Only bare {n} tokens participate in legacy "rarity slot" replacement — not full {fam:id} parts. */
   function isRarityTokenBootstrap(t) {
-    var s = String(t || "").trim();
-    var m = s.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
-    if (m) {
-      var fam = Number(m[1]);
-      var id = Number(m[2]);
-      if (fam === 1 && id >= 10 && id <= 14) return false;
-      if (fam === 1 && id >= 55 && id <= 60) return false;
-      return true;
-    }
-    return !!s.match(/^\{\s*\d+\s*\}$/);
+    return /^\{\s*\d+\s*\}$/.test(String(t || "").trim());
   }
 
   function getBaseFamilyIdFromSerial(serial) {
@@ -64,13 +56,13 @@
   function addPresetPart(){
     var partSel = byId("presetPartSelect");
     var qty = byId("presetQuantity");
-    var outCode = byId("outCode");
-    if (!partSel || !outCode) return;
+    var out = (typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode");
+    if (!partSel || !out) return;
     var code = (partSel.value || "").trim();
     if (!code) return;
     code = normalizeBracedIdToken(code);
     var n = Math.max(1, parseInt((qty && qty.value) || "1", 10) || 1);
-    var serial = (outCode.value || "").trim();
+    var serial = (out.value || "").trim();
     var dbl = serial.indexOf("||");
     var tail = dbl >= 0 ? serial.slice(dbl + 2) : "";
     var baseFamilyId = getBaseFamilyIdFromSerial(serial);
@@ -78,14 +70,28 @@
     if (isRarityTokenBootstrap(code)) {
       tokens = tokens.filter(function(t){ return !isRarityTokenBootstrap(t); });
     }
-    for (var i = 0; i < n; i++) tokens.push(normalizeIdTokenForBaseFamily(code, baseFamilyId));
+    for (var i = 0; i < n; i++) tokens.push(code);
+    if (typeof window.normalizeIdTokensForBaseFamily === "function" && baseFamilyId != null) {
+      tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId, { compactSameFamily: false });
+    } else {
+      for (var j = 0; j < tokens.length; j++) {
+        tokens[j] = normalizeIdTokenForBaseFamily(tokens[j], baseFamilyId);
+      }
+    }
     var newTail = tokens.join(" ");
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + " || " + newTail : "|| " + newTail);
-    outCode.value = newSerial;
-    try { if (window.refreshOutputs) window.refreshOutputs(); } catch(_){}
+    out.value = newSerial;
+    try { window.__CC_LAST_CODE_TARGET = (out.id === "outCode") ? "simple" : "guided"; } catch (_) {}
+    try {
+      if (out.id === "outCode") { if (window.refreshOutputs) window.refreshOutputs(); }
+      else {
+        if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview();
+        if (window.syncFloatingOutput) window.syncFloatingOutput(true);
+      }
+    } catch (_) {}
   }
   function appendToOutCode(tok) {
-    var out = byId("outCode");
+    var out = (typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode");
     if (!out) return;
     var serial = (out.value || "").trim();
     var dbl = serial.indexOf("||");
@@ -96,11 +102,23 @@
     if (isRarityTokenBootstrap(token)) {
       tokens = tokens.filter(function(t){ return !isRarityTokenBootstrap(t); });
     }
-    tokens.push(normalizeIdTokenForBaseFamily(token, baseFamilyId));
+    tokens.push(token);
+    if (typeof window.normalizeIdTokensForBaseFamily === "function" && baseFamilyId != null) {
+      tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId, { compactSameFamily: false });
+    } else {
+      tokens[tokens.length - 1] = normalizeIdTokenForBaseFamily(token, baseFamilyId);
+    }
     var newTail = tokens.join(" ");
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + " || " + newTail : "|| " + newTail);
     out.value = newSerial;
-    try { if (window.refreshOutputs) window.refreshOutputs(); } catch(_){}
+    try { window.__CC_LAST_CODE_TARGET = (out.id === "outCode") ? "simple" : "guided"; } catch (_) {}
+    try {
+      if (out.id === "outCode") { if (window.refreshOutputs) window.refreshOutputs(); }
+      else {
+        if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview();
+        if (window.syncFloatingOutput) window.syncFloatingOutput(true);
+      }
+    } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
   }
   function loadLegendaryPerks() {
@@ -482,6 +500,16 @@
     });
     var btnElem = byId("btnAddElement");
     if (btnElem) btnElem.addEventListener("click", function(){ var s=byId("toolsElementSelect"); if(s&&s.value) appendToOutCode(s.value); });
+    var btnDual = byId("btnAddDualElement");
+    if (btnDual) btnDual.addEventListener("click", function(){ var s=byId("toolsDualElementSelect"); if(s&&s.value) appendToOutCode(s.value); });
+    var btnPearl = byId("btnAddPearlElement");
+    if (btnPearl) btnPearl.addEventListener("click", function(){ var s=byId("toolsPearlElementSelect"); if(s&&s.value) appendToOutCode(s.value); });
+    setTimeout(function () {
+      try { if (typeof window.refreshToolsStandaloneElementDropdowns === "function") window.refreshToolsStandaloneElementDropdowns(); } catch (_) {}
+    }, 0);
+    setTimeout(function () {
+      try { if (typeof window.refreshToolsStandaloneElementDropdowns === "function") window.refreshToolsStandaloneElementDropdowns(); } catch (_) {}
+    }, 700);
     var btnSkin = byId("btnAddSkinCamo");
     if (btnSkin) btnSkin.addEventListener("click", function(){
       var skin=byId("toolsSkinSelect"); var camo=byId("toolsCamoSelect");
@@ -583,8 +611,8 @@
     }
     if (core && core.items && core.items.length) {
     sub.innerHTML = (core.detectedParts > 0)
-      ? "<span>Model estimate — " + Number(core.detectedParts) + " stat line(s) rolled into buckets (compare builds; not exact DPS).</span><span class=\"cc-stats-disclaimer\"><strong>1\xD7 = baseline.</strong> Shown scale is the combined multiplier for that bucket; the line below is the equivalent % change from 1\xD7. Uses PARTS_STATS_DATA when available, else weapon init tables (if <code>weapon_stats_data.js</code> loads + item slug in output), else parsed text.</span>"
-      : "<span>Model estimate — no stat lines detected yet.</span><span class=\"cc-stats-disclaimer\"><strong>1\xD7 = baseline.</strong> Paste a serial, pick parts in Guided Builder, or ensure output lists an item slug (e.g. <code>maliwan_pistol</code>) for manufacturer / barrel-mag tables.</span>";
+      ? "<span>Model estimate — " + Number(core.detectedParts) + " stat line(s) rolled into buckets (compare builds; not exact DPS).</span><span class=\"cc-stats-disclaimer\"><strong>Scale 1.000 = baseline.</strong> Each card is a <strong>combined scale</strong> vs baseline (same bucket idea as in-game <code>_scale</code>), not a gear score. The % line is vs that baseline. Uses PARTS_STATS_DATA when available, else weapon init tables (if <code>weapon_stats_data.js</code> loads + item slug in output), else parsed text.</span>"
+      : "<span>Model estimate — no stat lines detected yet.</span><span class=\"cc-stats-disclaimer\"><strong>Scale 1.000 = baseline.</strong> Paste a serial, pick parts in Guided Builder, or ensure output lists an item slug (e.g. <code>maliwan_pistol</code>) for manufacturer / barrel-mag tables.</span>";
     var pal = function(lbl) {
       var k = String(lbl||"").toLowerCase().replace(/\s+/g,"");
       if (k.indexOf("critical") >= 0) return { border: "rgba(255,179,71,0.42)", bgTop: "rgba(255,179,71,0.16)", bgBottom: "rgba(45,26,6,0.34)", title: "#ffd7a0", value: "#fff1d8", pos: "#ffc76a", neg: "#ff9a7a", meta: "rgba(255,236,210,0.9)" };
@@ -603,14 +631,13 @@
       var hits = Number(it.hits || 0);
       var nn = Number(it.nonNumeric || 0);
       var delta = (mult - 1) * 100;
-      var absDelta = Math.abs(delta);
       var deltaCapped = Math.max(-500, Math.min(500, delta));
-      var suffix = absDelta > 500 ? (delta > 0 ? "+" : "\u2212") : "";
-      var pctText = "\u2248 " + (deltaCapped >= 0 ? "+" : "") + deltaCapped.toFixed(1) + "%";
-      var scaleText = "\xD7" + (mult >= 1000 ? mult.toExponential(2) : mult.toFixed(4));
+      var pctText = "vs baseline: " + (deltaCapped >= 0 ? "+" : "") + deltaCapped.toFixed(1) + "%";
+      var scaleNum = mult >= 1000 ? mult.toExponential(3) : mult.toFixed(3);
       var meta = hits ? ("Lines: " + hits + (nn ? " | non-numeric: " + nn : "")) : "—";
       var p = pal(it.label);
-      return "<div class=\"cc-core-card\" style=\"border-color:" + p.border + ";background:linear-gradient(180deg," + p.bgTop + " 0%," + p.bgBottom + " 100%);\"><div class=\"cc-core-card-title\" style=\"color:" + p.title + "\">" + esc(it.label) + "</div><div class=\"cc-core-card-scale\" style=\"color:" + (delta >= 0 ? p.pos : p.neg) + "\">" + scaleText + "</div><div class=\"cc-core-card-pct\">" + pctText + "</div><div class=\"cc-core-card-meta\" style=\"color:" + p.meta + "\">" + esc(meta) + "</div></div>";
+      var titleRow = esc(it.label);
+      return "<div class=\"cc-core-card\" style=\"border-color:" + p.border + ";background:linear-gradient(180deg," + p.bgTop + " 0%," + p.bgBottom + " 100%);\"><div class=\"cc-core-card-title\" style=\"color:" + p.title + "\">" + titleRow + "</div><div class=\"cc-core-card-scale-label\">Scale</div><div class=\"cc-core-card-scale\" style=\"color:" + (delta >= 0 ? p.pos : p.neg) + "\" title=\"Combined scale vs 1.000 baseline\">" + scaleNum + "</div><div class=\"cc-core-card-pct\">" + pctText + "</div><div class=\"cc-core-card-meta\" style=\"color:" + p.meta + "\">" + esc(meta) + "</div></div>";
     }).join("");
     var fullPanel = byId("buildStatsFullStats");
     if (fullPanel) {
@@ -622,7 +649,7 @@
           var chunks = ["<div class=\"cc-full-stats-heading\">Full stat lines (per resolved part)</div>"];
           for (var fi = 0; fi < br.entries.length; fi++) {
             var en = br.entries[fi];
-            chunks.push("<div class=\"cc-full-stats-part\"><div class=\"cc-full-stats-part-title\">" + esc(en.name) + " <span class=\"cc-full-stats-src\">" + esc(en.source || "") + "</span></div>");
+            chunks.push("<div class=\"cc-full-stats-part\"><div class=\"cc-full-stats-part-title\">" + esc(en.name) + "</div>");
             if (!en.lines || !en.lines.length) {
               chunks.push("<p class=\"cc-full-stats-empty cc-full-stats-none\">No stat lines for this part.</p>");
             } else {
@@ -651,7 +678,7 @@
             ["ads", "ADS / Handling"], ["firerate", "Fire Rate"], ["reload_time", "Reload (time)"], ["reload_speed", "Reload (speed)"],
             ["ammo_mag", "Ammo / Mag"], ["projectiles", "Projectiles"]
           ];
-          var parts = ["<details class=\"cc-bucket-details\"><summary>How multipliers were combined (per source line)</summary>"];
+          var parts = ["<details class=\"cc-bucket-details\"><summary>How scale contributions combine (per source line)</summary>"];
           var any = false;
           for (var bi = 0; bi < order.length; bi++) {
             var bk = lastBuckets[order[bi][0]];
@@ -661,7 +688,7 @@
             for (var ci = 0; ci < bk.contributions.length; ci++) {
               var c = bk.contributions[ci];
               var ma = "";
-              if (c.multApplied != null && Number.isFinite(Number(c.multApplied))) ma = " \u2192 applied \xD7" + Number(c.multApplied).toFixed(4);
+              if (c.multApplied != null && Number.isFinite(Number(c.multApplied))) ma = " \u2192 applied scale " + Number(c.multApplied).toFixed(4);
               else if (c.combine) ma = " [" + esc(c.combine) + "]";
               parts.push("<div class=\"cc-bucket-line\"><strong>" + esc(c.part || "") + "</strong> <span class=\"cc-bucket-src\">" + esc(c.source || "") + "</span><br>" + esc(c.detail || "") + ma + "</div>");
             }

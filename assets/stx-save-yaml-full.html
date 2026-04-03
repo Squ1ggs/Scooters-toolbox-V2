@@ -5,18 +5,10 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
-<title>BL4 save YAML editor — .sav decrypt &amp; encrypt | Scooter's Toolbox</title>
-<meta content="BL4 .sav to YAML editor in the browser: decrypt numbered saves and Profile.sav with your Steam ID, edit YAML, encrypt back. Part of Scooter's Toolbox." name="description"/>
-<meta content="index,follow" name="robots"/>
-<meta content="BL4 YAML editor, BL4 sav decrypt, sav encrypt, profile sav, Steam ID save" name="keywords"/>
-<link href="https://scooters-toolbox.netlify.app/assets/stx-save-yaml-full.html" rel="canonical"/>
-<meta content="website" property="og:type"/>
-<meta content="https://scooters-toolbox.netlify.app/assets/stx-save-yaml-full.html" property="og:url"/>
-<meta content="BL4 save YAML editor — .sav decrypt &amp; encrypt" property="og:title"/>
-<meta content="In-browser BL4 .sav ↔ YAML: decrypt with Steam ID, edit inventory and profile data, re-encrypt." property="og:description"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<title>Save / YAML — Scooter's Toolbox</title>
+<meta content="" name="stx-analytics-endpoint"/>
+<meta content="" name="stx-counter-url"/>
+<meta content="" name="stx-items-bump-url"/>
 <meta content="" name="stx-items-bump-key"/>
 <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -43,6 +35,25 @@
   --shadow-depth: 0 8px 24px rgba(0, 0, 0, 0.4);
   --transition-fast: 120ms ease;
   --line-soft: rgba(0, 243, 255, 0.12);
+}
+.stx-vh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+.stx-vh-btn__icon {
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
+  object-position: center top;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 243, 255, 0.35);
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) {
   :root { --transition-fast: 0ms; }
@@ -486,11 +497,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
 <input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_paladin.png"/><span>Set Amon (Forge Knight)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_dark_siren.png"/><span>Set Vex (Siren)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_gravitar.png"/><span>Set Harlowe (Gravitar)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_exo_soldier.png"/><span>Set Rafa (Exo-Soldier)</span></button>
+<button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button>
 </div>
 <div style="margin-top: 10px;">
 <div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
@@ -559,7 +570,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" name="yaml-char-level" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
-<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Experience Points:</label>
+<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ico_reward_exp.png" width="22"/>Experience Points:</label>
 <input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
 </div>
 <div>

@@ -1,20 +1,18 @@
 {
   "name": "scooters-toolbox-v2",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Scooters Toolbox desktop app and Netlify site",
   "main": "desktop/main.cjs",
-  "author": "You",
+  "author": "RDPSqu1ggs",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win nsis",
     "dist:portable": "electron-builder --win portable",
-    "smoke:inv": "node scripts/smoke-raw-inv-check.cjs"
+    "smoke:inv": "node scripts/smoke-raw-inv-check.cjs",
+    "export-game-icons": "node scripts/export-game-icons-from-folder.mjs"
   },
-  "dependencies": {
-    "@netlify/blobs": "^8.1.0",
-    "@netlify/functions": "^4.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12"
@@ -27,7 +25,6 @@
       "assets/**/*",
       "legacy/**/*",
       "desktop/**/*",
-      "netlify/**/*",
       "package.json",
       "netlify.toml"
     ],

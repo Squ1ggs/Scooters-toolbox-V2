@@ -302,6 +302,57 @@
     if (s.startsWith('"') && s.endsWith('"')) return s.slice(1,-1);
     return s;
   }
+
+  /**
+   * Curated pearlescent rarity-id names (normalized: lowercase, alphanumeric only).
+   * Pearl pip / aug art in rarity and related dropdowns is limited to these rows.
+   */
+  window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM = {
+    iigenburst: true,
+    eigenburst: true,
+    handcannon: true,
+    vestigialconflux: true,
+    conflux: true,
+    soulsurvivor: true,
+    crazedearl: true,
+    crowsourced: true,
+    crowdsourced: true,
+    shalashaska: true
+  };
+
+  function stxNormPearlAllowKey(s){
+    return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  function stxRarityLegendTokenFromPart(p){
+    if (!p) return '';
+    const code = normCode(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+    const i = code.indexOf('comp_05_legendary_');
+    if (i !== -1) return stxNormPearlAllowKey(code.slice(i + 'comp_05_legendary_'.length));
+    return '';
+  }
+
+  function stxPartMatchesPearlRarityIdAllowlist(p){
+    const allow = window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM;
+    if (!p || !allow) return false;
+    const keys = [
+      stxNormPearlAllowKey(p.effects),
+      stxNormPearlAllowKey(p.effect),
+      stxNormPearlAllowKey(p.name),
+      stxNormPearlAllowKey(p.legendaryName),
+      stxRarityLegendTokenFromPart(p)
+    ];
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] && allow[keys[i]]) return true;
+    }
+    const eff0 = String(p.effects || p.effect || '').split(/\s*-\s*/)[0];
+    if (eff0 && allow[stxNormPearlAllowKey(eff0)]) return true;
+    const n0 = String(p.name || '').split(/\s*-\s*/)[0];
+    if (n0 && allow[stxNormPearlAllowKey(n0)]) return true;
+    return false;
+  }
+  try { window.stxPartMatchesPearlRarityIdAllowlist = stxPartMatchesPearlRarityIdAllowlist; } catch (_e) {}
+
   /** Emit `{fam:id}` / `{id}` style token when dataset metadata allows; else ''. */
   function numericTokenFromPart(p){
     if (!p) return '';
@@ -367,11 +418,12 @@
     return null;
   }
 
-  function normalizeIdTokensForBaseFamily(tokens, baseFamily){
+  function normalizeIdTokensForBaseFamily(tokens, baseFamily, opts){
     const src = Array.isArray(tokens) ? tokens : [];
     const out = [];
     const bf = Number(baseFamily);
     const hasBase = Number.isFinite(bf);
+    const compactSame = !(opts && opts.compactSameFamily === false);
 
     let pendingFamily = null;
     let pendingIds = [];
@@ -397,7 +449,13 @@
 
       if (parsed.kind === 'id'){
         flushPending();
-        out.push(`{${parsed.id}}`);
+        if (compactSame && hasBase){
+          out.push(`{${parsed.id}}`);
+        } else if (hasBase){
+          out.push(`{${bf}:${parsed.id}}`);
+        } else {
+          out.push(`{${parsed.id}}`);
+        }
         continue;
       }
 
@@ -410,9 +468,12 @@
       }
 
       if (hasBase && fam === bf){
-        // Same family as the built item: emit compact id-only tokens.
         flushPending();
-        for (const id of ids) out.push(`{${id}}`);
+        if (compactSame){
+          for (const id of ids) out.push(`{${id}}`);
+        } else {
+          for (const id of ids) out.push(`{${bf}:${id}}`);
+        }
         continue;
       }
 
@@ -662,6 +723,7 @@ function getAllParts(){
     const t = String(raw || '').toLowerCase();
     const item = Number(row && ((row.itemId != null) ? row.itemId : row.id));
     if (Number.isFinite(item) && item >= 51 && item <= 60) return 5;
+    if (t.includes('part_pearl')) return 5;
     if (t.includes('pearl_') || t.includes('pearlescent') || /(?:^|[._])comp_06_pearlescent/.test(t)) return 5;
     if (t.includes('comp_01_common')) return 0;
     if (t.includes('comp_02_uncommon')) return 1;
@@ -775,6 +837,475 @@ function getAllParts(){
       weaponType: getVal(gw),
       level: Number(gl && gl.value || 60) || 60
     };
+  }
+
+  /** Guided-dropdown art (same paths as cc-guided-builder-rebuild.js). */
+  const STX_CC_WEAPON_TYPE_DIR = './assets/img/guided-dropdowns/weapon-type/';
+  const STX_CC_LEGENDARY_AUG_BASE = './assets/img/guided-dropdowns/legendary-augments/';
+  const STX_CC_PEARL_ITEMTYPE_BASE = './assets/img/guided-dropdowns/pearl-item-types/';
+  const STX_CC_ELEMENT_ICON_BASE = './assets/img/elements/';
+  const STX_WEAPON_TYPE_ICON_FILES = {
+    'assault rifle': 'ico_ui_art_assault_small.png',
+    pistol: 'ico_ui_art_pistol_small.png',
+    shotgun: 'ico_ui_art_shotgun_small.png',
+    smg: 'ico_ui_art_smg_small.png',
+    'sniper rifle': 'ico_ui_art_sniper_small.png',
+    sniper: 'ico_ui_art_sniper_small.png',
+    'heavy weapon': 'ico_ui_art_heavy_small.png',
+    heavy: 'ico_ui_art_heavy_small.png'
+  };
+  const STX_COMP_TIER_FILTERS = [
+    'grayscale(0.5) brightness(0.85)',
+    'sepia(0.45) saturate(1.7) hue-rotate(48deg) brightness(0.9)',
+    'sepia(0.32) saturate(2.1) hue-rotate(195deg) brightness(0.94)',
+    'sepia(0.38) saturate(2.6) hue-rotate(268deg) brightness(1.0)'
+  ];
+
+  const STX_GUIDED_DROPDOWN_BASE = './assets/img/guided-dropdowns/';
+  /** Simple Builder top row: same art as Guided / index.html static options. */
+  const STX_ITEM_TYPE_ICONS = {
+    Weapon: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_gun_assault.png',
+    'Heavy Weapon': STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_heavy.png',
+    Shield: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_shield.png',
+    Repkit: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_repkit.png',
+    Grenade: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_grenade.png',
+    Gadget: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_heavy.png',
+    Enhancement: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png',
+    'Class Mod': STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png',
+    Other: STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_gun_assault.png'
+  };
+
+  function stxItemTypeIconUrl(cat){
+    const c = String(cat || '').trim();
+    if (!c) return '';
+    if (STX_ITEM_TYPE_ICONS[c]) return STX_ITEM_TYPE_ICONS[c];
+    const low = c.toLowerCase().replace(/\s+/g, ' ');
+    if (low === 'character' || low === 'classmod' || low === 'class mod') return STX_ITEM_TYPE_ICONS['Class Mod'];
+    if (low === 'heavy') return STX_ITEM_TYPE_ICONS['Heavy Weapon'];
+    return '';
+  }
+
+  function stxManufacturerIconUrl(rawMfr, itemTypeCat){
+    const it = String(itemTypeCat || '').trim();
+    if (/class\s*mod/i.test(it)){
+      const m = String(rawMfr || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      const base = './assets/img/vault-hunters/';
+      if (m === 'siren') return base + 'player_class_dark_siren.png';
+      if (m === 'paladin') return base + 'player_class_paladin.png';
+      if (m === 'exo soldier' || m === 'exosoldier') return base + 'player_class_exo_soldier.png';
+      if (m === 'gravitar') return base + 'player_class_gravitar.png';
+      if (m === 'robodealer' || m === 'c4sh') return base + 'player_robodealer.png';
+      return '';
+    }
+    const m = String(rawMfr || '').trim().toLowerCase();
+    const map = {
+      atlas: 'manufacturer/ui_art_manu_logomark_atlas_small.png',
+      cov: 'manufacturer/ui_art_manu_logomark_cov_small.png',
+      daedalus: 'manufacturer/ui_art_manu_logomark_daedalus_small.png',
+      hyperion: 'manufacturer/ui_art_manu_logomark_hyperion_small.png',
+      jakobs: 'manufacturer/ui_art_manu_logomark_jakobs_small.png',
+      maliwan: 'manufacturer/ui_art_manu_logomark_maliwan_small.png',
+      order: 'manufacturer/ui_art_manu_logomark_order_small.png',
+      ripper: 'manufacturer/ui_art_manu_logomark_ripper_small.png',
+      tediore: 'manufacturer/ui_art_manu_logomark_tediore_small.png',
+      torgue: 'manufacturer/ui_art_manu_logomark_torgue_small.png',
+      vladof: 'manufacturer/ui_art_manu_logomark_vladof_small.png',
+      borg: 'manufacturer/ui_art_manu_logomark_ripper_small.png'
+    };
+    const rel = map[m];
+    return rel ? STX_GUIDED_DROPDOWN_BASE + rel : '';
+  }
+
+  function stxSyncCustomSelectIfWrapped(sel){
+    if (!sel || typeof sel.__customSelectSync !== 'function') return;
+    try { sel.__customSelectSync(); } catch (_) {}
+  }
+
+  function stxNormWeaponKeyFromUi(wtRaw){
+    let wt = String(wtRaw || '').trim().toLowerCase();
+    if (wt === 'submachine gun') wt = 'smg';
+    if (wt === 'heavy') wt = 'heavy weapon';
+    if (wt === 'sniper') wt = 'sniper rifle';
+    return wt;
+  }
+
+  function stxWeaponTypeIconUrl(wtRaw){
+    const k = stxNormWeaponKeyFromUi(wtRaw);
+    const fn = STX_WEAPON_TYPE_ICON_FILES[k];
+    return fn ? STX_CC_WEAPON_TYPE_DIR + fn : '';
+  }
+
+  /** Match cc-guided-builder `ccNormalizedWeaponTypeKey` so barrel icons align with Guided. */
+  function stxNormalizedWeaponTypeKeyFromPart(p){
+    if (!p) return '';
+    let wt = String(p.weaponType || p.itemType || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (wt === 'submachine gun') wt = 'smg';
+    if (STX_WEAPON_TYPE_ICON_FILES[wt]) return wt;
+
+    const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toUpperCase();
+    if (!c) return '';
+    if (/_HW\.|\bMAL_HW\b|\bTOR_HW\b|\bBOR_HW\b|\bVLA_HW\b|\bJAK_HW\b|\bTED_HW\b/i.test(c)) return 'heavy weapon';
+    if (/_AR\.|\bDAD_AR\b|\bJAK_AR\b|\bATL_AR\b|\bVLA_AR\b|\bMAL_AR\b|\bTED_AR\b|\bHYP_AR\b/i.test(c)) return 'assault rifle';
+    if (/_SM\.|\bDAD_SM\b|\bJAK_SM\b|\bMAL_SM\b|\bVLA_SM\b|\bTED_SM\b|\bHYP_SM\b/i.test(c)) return 'smg';
+    if (/_SG\.|\bDAD_SG\b|\bJAK_SG\b|\bMAL_SG\b|\bVLA_SG\b|\bTED_SG\b|\bHYP_SG\b/i.test(c)) return 'shotgun';
+    if (/_PS\.|\bDAD_PS\b|\bJAK_PS\b|\bMAL_PS\b|\bVLA_PS\b|\bTED_PS\b|\bHYP_PS\b/i.test(c)) return 'pistol';
+    if (/_SR\.|\bDAD_SR\b|\bJAK_SR\b|\bMAL_SR\b|\bVLA_SR\b|\bTED_SR\b|\bHYP_SR\b/i.test(c)) return 'sniper rifle';
+    return '';
+  }
+
+  function stxSpawnCodeLooksLikeWeaponFamily(p){
+    if (!p) return false;
+    const c = normCode(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+    return /\.(ar|ps|sg|sm|sr|hw)\./.test(c);
+  }
+
+  function stxWeaponFamilyPearlFilename(p){
+    let kw = stxNormalizedWeaponTypeKeyFromPart(p);
+    if (kw === 'submachine gun') kw = 'smg';
+    const map = {
+      'assault rifle': 'ico_pearl_aug_gun_assault.png',
+      pistol: 'ico_pearl_aug_gun_pistol.png',
+      shotgun: 'ico_pearl_aug_gun_shotgun.png',
+      smg: 'ico_pearl_aug_gun_smg.png',
+      'sniper rifle': 'ico_pearl_aug_gun_sniper.png',
+      sniper: 'ico_pearl_aug_gun_sniper.png',
+      'heavy weapon': 'ico_pearl_aug_gun_heavy.png',
+      heavy: 'ico_pearl_aug_gun_heavy.png'
+    };
+    return map[kw] || 'ico_pearl_aug_gun_assault.png';
+  }
+
+  function stxPartLooksLegendaryBarrel(p){
+    if (!p) return false;
+    if (String(p.legendaryName || '').trim()) return true;
+    if (/legendary/i.test(String(p.partType || ''))) return true;
+    const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    return c.indexOf('comp_05_legendary') !== -1;
+  }
+
+  function stxLegendaryAugFilenameFromWeaponKey(key){
+    const wt = stxNormWeaponKeyFromUi(key);
+    const map = {
+      'assault rifle': 'ico_legendary_aug_gun_assault.png',
+      pistol: 'ico_legendary_aug_gun_pistol.png',
+      shotgun: 'ico_legendary_aug_gun_shotgun.png',
+      smg: 'ico_legendary_aug_gun_smg.png',
+      'sniper rifle': 'ico_legendary_aug_gun_sniper.png',
+      sniper: 'ico_legendary_aug_gun_sniper.png',
+      'heavy weapon': 'ico_legendary_aug_heavy.png',
+      heavy: 'ico_legendary_aug_heavy.png'
+    };
+    return map[wt] || map['assault rifle'] || '';
+  }
+
+  /** Full URL for pearl slot art from part category + spawn code (like ccPearlSlotAugFullUrl). */
+  function stxPearlAugFullUrlFromPart(p){
+    if (!p) return '';
+    if (stxSpawnCodeLooksLikeWeaponFamily(p)) {
+      return STX_CC_PEARL_ITEMTYPE_BASE + stxWeaponFamilyPearlFilename(p);
+    }
+    let cat = String(p.category || '').trim().toLowerCase();
+    if (cat === 'character') cat = 'class mod';
+    let fn = '';
+    if (cat === 'class mod') fn = 'ico_pearl_aug_gun_classmod.png';
+    else if (cat === 'grenade') fn = 'ico_pearl_aug_gun_grenade.png';
+    else if (cat === 'repkit') fn = 'ico_pearl_aug_gun_repkit.png';
+    else if (cat === 'shield') fn = 'ico_pearl_aug_gun_shield.png';
+    else if (cat === 'heavy weapon' || cat === 'gadget'){
+      fn = 'ico_pearl_aug_gun_heavy.png';
+    } else if (cat === 'weapon'){
+      fn = stxWeaponFamilyPearlFilename(p);
+      if (fn === 'ico_pearl_aug_gun_assault.png' && !stxNormalizedWeaponTypeKeyFromPart(p)) fn = '';
+    }
+    return fn ? STX_CC_PEARL_ITEMTYPE_BASE + fn : '';
+  }
+
+  function stxCompIconContext(){
+    const guided = getGuidedContext();
+    if (guided && guided.itemType){
+      const catUi = guided.itemType;
+      const cat = (catUi === 'Heavy') ? 'Weapon' : catUi;
+      let wtr = (cat === 'Weapon' && catUi === 'Heavy') ? 'Heavy Weapon' : (guided.weaponType || (cat === 'Weapon' ? 'Assault Rifle' : ''));
+      if (String(wtr) === 'Heavy') wtr = 'Heavy Weapon';
+      return { cat, catUi, weaponType: String(wtr || '') };
+    }
+    const catUi = state.itemType || '';
+    const cat = (catUi === 'Heavy') ? 'Weapon' : catUi;
+    let wtr = (cat === 'Weapon' && catUi === 'Heavy') ? 'Heavy Weapon' : (($('weaponType') && $('weaponType').value) || state.weaponType || '');
+    if (String(wtr) === 'Heavy') wtr = 'Heavy Weapon';
+    return { cat, catUi, weaponType: String(wtr || '') };
+  }
+
+  function stxResolveGearCategoryForCompIcons(ctx){
+    let cat = String(ctx && ctx.cat || '').trim().toLowerCase();
+    if (cat === 'enhancement' && state.mainPart){
+      const mc = String(state.mainPart.category || state.detectedCategory || '').trim().toLowerCase();
+      if (mc === 'weapon') cat = 'weapon';
+      else if (mc === 'shield') cat = 'shield';
+      else if (mc === 'grenade') cat = 'grenade';
+      else if (mc === 'repkit') cat = 'repkit';
+      else if (mc === 'character' || mc === 'class mod') cat = 'class mod';
+      else if (mc === 'gadget' || mc === 'heavy weapon') cat = 'gadget';
+    }
+    return cat;
+  }
+
+  function stxPearlSlotIconFilenameFromContext(ctx){
+    if (!ctx) return '';
+    let cat = stxResolveGearCategoryForCompIcons(ctx);
+    if (cat === 'character') cat = 'class mod';
+    const wt = stxNormWeaponKeyFromUi(ctx.weaponType);
+    if (cat === 'class mod' || cat === 'classmod') return 'ico_pearl_aug_gun_classmod.png';
+    if (cat === 'grenade') return 'ico_pearl_aug_gun_grenade.png';
+    if (cat === 'repkit') return 'ico_pearl_aug_gun_repkit.png';
+    if (cat === 'shield') return 'ico_pearl_aug_gun_shield.png';
+    if (cat === 'heavy weapon' || cat === 'gadget') return 'ico_pearl_aug_gun_heavy.png';
+    if (cat === 'weapon'){
+      const map = {
+        'assault rifle': 'ico_pearl_aug_gun_assault.png',
+        pistol: 'ico_pearl_aug_gun_pistol.png',
+        shotgun: 'ico_pearl_aug_gun_shotgun.png',
+        smg: 'ico_pearl_aug_gun_smg.png',
+        'sniper rifle': 'ico_pearl_aug_gun_sniper.png',
+        sniper: 'ico_pearl_aug_gun_sniper.png',
+        'heavy weapon': 'ico_pearl_aug_gun_heavy.png',
+        heavy: 'ico_pearl_aug_gun_heavy.png'
+      };
+      return map[wt] || map['assault rifle'];
+    }
+    return '';
+  }
+
+  /** Legendary aug file by resolved UI gear category + weapon class (rarity comp tier + slots). */
+  function stxLegendaryAugFilenameFromCategoryWeapon(catRaw, weaponTypeStr, normWeaponKey, partHint){
+    if (partHint && stxSpawnCodeLooksLikeWeaponFamily(partHint)) {
+      const wk = normWeaponKey || stxNormalizedWeaponTypeKeyFromPart(partHint);
+      return stxLegendaryAugFilenameFromWeaponKey(wk || weaponTypeStr || 'Assault Rifle');
+    }
+    const c0 = String(catRaw || '').trim().toLowerCase();
+    const c = (c0 === 'character' || c0 === 'classmod') ? 'class mod' : c0;
+    const byCat = {
+      shield: 'ico_legendary_aug_shield.png',
+      repkit: 'ico_legendary_aug_repkit.png',
+      grenade: 'ico_legendary_aug_grenade.png',
+      'class mod': 'ico_legendary_aug_classmod.png'
+    };
+    if (byCat[c]) return byCat[c];
+    const wk = normWeaponKey || stxNormalizedWeaponTypeKeyFromPart({ weaponType: weaponTypeStr, itemType: weaponTypeStr });
+    return stxLegendaryAugFilenameFromWeaponKey(wk || weaponTypeStr || 'Assault Rifle');
+  }
+
+  function stxGuessPearlElementIconFilename(p){
+    const its = String(p && p.itemTypeString || '').toLowerCase();
+    const code = String(p && p.code || '').toLowerCase();
+    const nm = String((p && (p.legendaryName || p.name)) || '').toLowerCase();
+    const blob = its + ' ' + code + ' ' + nm;
+    if (/\bpearl_(damage|reload|firerate|handling)\b/.test(blob)) return 'ico_misc_pearl.png';
+    const pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire)\b/);
+    if (pe) return pe[1] === 'normal' ? 'pearl_elemental_kinetic.png' : 'pearl_elemental_' + pe[1] + '.png';
+    if (blob.includes('corrosive')) return 'pearl_elemental_corrosive.png';
+    if (blob.includes('cryo')) return 'pearl_elemental_cryo.png';
+    if (blob.includes('radiation') || blob.includes('_rad_')) return 'pearl_elemental_radiation.png';
+    if (blob.includes('shock')) return 'pearl_elemental_shock.png';
+    if (blob.includes('kinetic')) return 'pearl_elemental_kinetic.png';
+    if (blob.includes('incendiary') || /\bfire\b/.test(blob)) return 'pearl_elemental_fire.png';
+    return '';
+  }
+
+  /** True only for rarity *component* rows (comp_01…comp_06 / pearl ids), not every partType:Rarity barrel/etc. */
+  function isStxCompRarityComponentPart(p){
+    if (!p) return false;
+    const code = String(p.code || '').toLowerCase();
+    const its = String(p.itemTypeString || '').toLowerCase();
+    const blob = its + ' ' + code;
+    const item = Number((p.itemId != null) ? p.itemId : p.id);
+    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
+    if (/(^|[._])(comp_0[1-6]_|pearl_)/.test(code)) return true;
+    if (/\bpearl_[a-z0-9]+\b/.test(its)) return true;
+    if (code.includes('.comp_') || code.includes('enhancement.comp_')) return true;
+    if (/(?:^|[._])comp_06_pearlescent/.test(code) || /(?:^|[._])comp_06_pearlescent/.test(its)) return true;
+    if (/\bcomp_0[1-6]_/.test(blob) || /\bpearl_/.test(blob)) return true;
+    return false;
+  }
+
+  /** Rarity ID dropdown (#mainPart): comp rows + any remaining dataset row tagged partType Rarity. */
+  function isStxRarityIdCompIconPart(p){
+    if (!p) return false;
+    if (isStxCompRarityComponentPart(p)) return true;
+    return String(p.partType || '').trim().toLowerCase() === 'rarity';
+  }
+
+  function stxCodeBlobForCompTier(p){
+    if (!p) return '';
+    const its = String(p.itemTypeString || '').toLowerCase();
+    const c = normCode(p.code).toLowerCase();
+    const sp = normCode(p.spawnCode).toLowerCase();
+    const nm = String((p.legendaryName || p.name || '')).toLowerCase();
+    return `${its} ${c} ${sp} ${nm}`;
+  }
+
+  function stxCompTierFromCodeBlob(blob){
+    const t = String(blob || '').toLowerCase();
+    const m = t.match(/comp_0([1-6])_/);
+    if (!m) return null;
+    const n = Number(m[1]);
+    if (n >= 1 && n <= 6) return n - 1;
+    return null;
+  }
+
+  function stxInferCompTier(p){
+    if (!p) return null;
+    let t = rarityTierFromItemTypeString(p.itemTypeString, p);
+    if (Number.isFinite(t)) return t;
+    const blob = stxCodeBlobForCompTier(p);
+    t = rarityTierFromItemTypeString(blob, p);
+    if (Number.isFinite(t)) return t;
+    t = stxCompTierFromCodeBlob(blob);
+    if (Number.isFinite(t)) return t;
+    if (isStxRarityIdCompIconPart(p)){
+      const ui = getSelectedRarityTier();
+      if (Number.isFinite(ui)) return ui;
+    }
+    return null;
+  }
+
+  function stxApplyCompPartOptionDecoration(opt, p){
+    if (!opt || !p || !isStxRarityIdCompIconPart(p)) return;
+    const tier = stxInferCompTier(p);
+    if (!Number.isFinite(tier)) return;
+
+    opt.removeAttribute('data-cc-icon');
+    opt.removeAttribute('data-cc-icon-filter');
+
+    const ctx = stxCompIconContext();
+    const wtFallback = ctx.weaponType || 'Assault Rifle';
+
+    if (tier === 5){
+      if (!stxPartMatchesPearlRarityIdAllowlist(p)) {
+        const catLow = stxResolveGearCategoryForCompIcons(ctx);
+        const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
+        if (legFn) opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
+        return;
+      }
+      const elFn = stxGuessPearlElementIconFilename(p);
+      if (elFn){
+        const base = (elFn === 'ico_misc_pearl.png') ? STX_CC_PEARL_ITEMTYPE_BASE : STX_CC_ELEMENT_ICON_BASE;
+        opt.setAttribute('data-cc-icon', base + elFn);
+        return;
+      }
+      const pfn = stxPearlSlotIconFilenameFromContext(ctx);
+      if (pfn){
+        opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + pfn);
+        return;
+      }
+      opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+      return;
+    }
+
+    if (tier === 4){
+      const catLow = stxResolveGearCategoryForCompIcons(ctx);
+      const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
+      if (legFn){
+        opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
+        return;
+      }
+      return;
+    }
+
+    if (tier >= 0 && tier <= 3){
+      const flt = STX_COMP_TIER_FILTERS[tier] || '';
+      const catLow = stxResolveGearCategoryForCompIcons(ctx);
+      if (catLow === 'weapon' || catLow === 'heavy weapon' || catLow === 'heavy'){
+        const wurl = stxWeaponTypeIconUrl(wtFallback);
+        if (wurl){
+          opt.setAttribute('data-cc-icon', wurl);
+          if (flt) opt.setAttribute('data-cc-icon-filter', flt);
+        }
+        return;
+      }
+      const pfn = stxPearlSlotIconFilenameFromContext(ctx);
+      if (pfn){
+        opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + pfn);
+        if (flt) opt.setAttribute('data-cc-icon-filter', flt);
+        return;
+      }
+      const wurl = stxWeaponTypeIconUrl(wtFallback);
+      if (wurl){
+        opt.setAttribute('data-cc-icon', wurl);
+        if (flt) opt.setAttribute('data-cc-icon-filter', flt);
+      }
+    }
+  }
+
+  /** Main barrel + body slots (not barrel accessory): pearl / legendary aug / weapon-type chip. */
+  function isStxBodyBarrelPearlLegendIconSlot(schemaItem, category){
+    if (!schemaItem) return false;
+    const k = schemaItem.key;
+    const cat = String(category || '').trim();
+    if (k === 'barrel') return cat === 'Weapon' || cat === 'Gadget';
+    if (k === 'body' || k === 'bodyAcc') return cat === 'Weapon' || cat === 'Gadget' || cat === 'Shield';
+    return false;
+  }
+
+  function stxApplySlotPartOptionDecoration(opt, p, schemaItem, category){
+    if (!opt || !p || !schemaItem) return;
+    if (!isStxBodyBarrelPearlLegendIconSlot(schemaItem, category)) return;
+    opt.removeAttribute('data-cc-icon');
+    opt.removeAttribute('data-cc-icon-filter');
+    const its = String(p.itemTypeString || '').toLowerCase();
+    const code = String(p.code || '').toLowerCase();
+    const nm = String((p.legendaryName || p.name || '')).toLowerCase();
+    const blob = its + ' ' + code + ' ' + nm;
+
+    if (stxPartMatchesPearlRarityIdAllowlist(p)){
+      const elFn = stxGuessPearlElementIconFilename(p);
+      if (elFn){
+        opt.setAttribute('data-cc-icon', STX_CC_ELEMENT_ICON_BASE + elFn);
+        return;
+      }
+      const pearlUrl = stxPearlAugFullUrlFromPart(p);
+      if (pearlUrl){
+        opt.setAttribute('data-cc-icon', pearlUrl);
+        return;
+      }
+      opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
+      return;
+    }
+
+    // Legendary body/barrel rows: `legendary_augments` art.
+    const looksLegendary =
+      stxPartLooksLegendaryBarrel(p) ||
+      /comp_05_legendary/.test(blob) ||
+      nm.indexOf('legendary') !== -1;
+
+    if (looksLegendary){
+      const catPart = String(p.category || '').trim().toLowerCase();
+      const legFn = stxLegendaryAugFilenameFromCategoryWeapon(
+        catPart,
+        p.weaponType || p.itemType,
+        stxNormalizedWeaponTypeKeyFromPart(p),
+        p
+      );
+      if (legFn){
+        opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
+        return;
+      }
+      const ctx = stxCompIconContext();
+      const legFn2 = stxLegendaryAugFilenameFromCategoryWeapon(
+        stxResolveGearCategoryForCompIcons(ctx),
+        ctx.weaponType || 'Assault Rifle',
+        ''
+      );
+      if (legFn2) opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn2);
+      return;
+    }
+
+    // Default: weapon-type chip (no rarity tint).
+    const k2 = stxNormalizedWeaponTypeKeyFromPart(p);
+    if (k2){
+      const fn2 = STX_WEAPON_TYPE_ICON_FILES[k2];
+      if (fn2) opt.setAttribute('data-cc-icon', STX_CC_WEAPON_TYPE_DIR + fn2);
+    }
   }
 
   function getRarityRowsForCurrentContext(){
@@ -903,7 +1434,7 @@ function getAllParts(){
     return false;
   }
 
-  function setSelectOptions(sel, options, {placeholder='Select...', getLabel=(x)=>x, getValue=(x)=>x, groupBy=null, getTitle=null}={}){
+  function setSelectOptions(sel, options, {placeholder='Select...', getLabel=(x)=>x, getValue=(x)=>x, groupBy=null, getTitle=null, decorateOption=null}={}){
     sel.innerHTML = '';
     const ph = document.createElement('option');
     ph.value = '';
@@ -941,6 +1472,7 @@ function getAllParts(){
           if (typeof getTitle === 'function') { try{ tip = String(getTitle(o) || '').trim(); }catch(_e){} }
           if (!tip && typeof window.partTooltipText === 'function') { try{ tip = String(window.partTooltipText(o) || '').trim(); }catch(_e){} }
           if (tip) opt.title = tip;
+          if (typeof decorateOption === 'function') { try{ decorateOption(opt, o); }catch(_e){} }
           og.appendChild(opt);
         }
         sel.appendChild(og);
@@ -965,6 +1497,7 @@ function getAllParts(){
       if (typeof getTitle === 'function') { try{ tip = String(getTitle(o) || '').trim(); }catch(_e){} }
       if (!tip && typeof window.partTooltipText === 'function') { try{ tip = String(window.partTooltipText(o) || '').trim(); }catch(_e){} }
       if (tip) opt.title = tip;
+      if (typeof decorateOption === 'function') { try{ decorateOption(opt, o); }catch(_e){} }
       sel.appendChild(opt);
     }
   }
@@ -1388,9 +1921,17 @@ const all = getAllParts();
     if (!ordered.includes('Weapon')) ordered.unshift('Weapon');
     if (hasClassMod && !ordered.includes('Class Mod')) ordered.push('Class Mod');
 
-    setSelectOptions($('itemType'), ordered, {placeholder:'Select item type...'});
+    setSelectOptions($('itemType'), ordered, {
+      placeholder: 'Select item type...',
+      decorateOption(opt, cat){
+        const url = stxItemTypeIconUrl(cat);
+        if (url) opt.setAttribute('data-cc-icon', url);
+        else opt.removeAttribute('data-cc-icon');
+      }
+    });
     if (state.itemType && !ordered.includes(state.itemType)) state.itemType = ordered[0] || '';
     $('itemType').value = state.itemType || '';
+    stxSyncCustomSelectIfWrapped($('itemType'));
 
     refreshManufacturer();
     refreshWeaponType();
@@ -1402,6 +1943,47 @@ const all = getAllParts();
   /** Canonical weapon manufacturers from dataset/rarities - ensures none are ever missing from dropdowns. */
   const CANONICAL_WEAPON_MANS = ['Daedalus','Jakobs','Maliwan','Order','Ripper','Tediore','Torgue','Vladof'];
   const CANONICAL_HEAVY_MANS = ['Maliwan','Ripper','Torgue','Vladof'];
+
+  /** Rarity-sheet row `itemType` values that are weapon families (not shields, class mods, etc.). */
+  const STX_RARITY_WEAPON_ITEM_TYPES = new Set([
+    'Assault Rifle', 'Pistol', 'Shotgun', 'SMG', 'Sniper Rifle', 'Sniper', 'Heavy Weapon', 'Submachine Gun'
+  ]);
+
+  /**
+   * Rows from STX_RARITIES used to build the "allowed manufacturers" set for the final guard.
+   * Must NOT mix in Class Mod / Character rows — that leaked Siren, Robodealer, etc. into Weapon.
+   */
+  function stxRarityRowsForManufacturerAllowlist(cat, wtNormForWeapon){
+    const rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
+    const catStr = String(cat || '').trim();
+    if (catStr === 'Weapon'){
+      const wn = String(wtNormForWeapon || '').trim();
+      const wfixed = (wn === 'Heavy') ? 'Heavy Weapon' : wn;
+      if (wfixed){
+        return rows.filter(function (r){
+          return String(r && r.itemType || '').trim() === wfixed;
+        });
+      }
+      return rows.filter(function (r){
+        return STX_RARITY_WEAPON_ITEM_TYPES.has(String(r && r.itemType || '').trim());
+      });
+    }
+    const gear = { Shield: 1, Grenade: 1, Repkit: 1, Gadget: 1, Enhancement: 1 };
+    if (gear[catStr]){
+      return rows.filter(function (r){
+        return String(r && r.itemType || '').trim() === catStr;
+      });
+    }
+    if (catStr === 'Other') return [];
+    return rows.filter(function (r){
+      return String(r && r.itemType || '').trim() === catStr;
+    });
+  }
+
+  /** Vault-hunter / class-mod family names — never show in non–Class Mod manufacturer lists. */
+  const STX_CLASS_MOD_ONLY_MANUFACTURERS = new Set([
+    'siren', 'paladin', 'exo soldier', 'exosoldier', 'gravitar', 'robodealer', 'c4sh', 'universal'
+  ]);
 
   /** Returns {mans: string[], isClassMod: boolean} for a given category. Use from Guided Builder via window.getManufacturersForCategory. */
   function computeManufacturersForCategory(catUi, weaponTypeForCat){
@@ -1505,10 +2087,11 @@ const all = getAllParts();
         }
       }
 
-      // Final guard: if the rarity sheet provides a known-manufacturer list, only keep those.
+      // Final guard: allow only manufacturers that appear in STX_RARITIES for *this* category
+      // (and weapon itemType when Weapon). A global allowlist previously pulled Class Mod names into Weapon.
       try{
-        const rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
-        const allowed = unique(rows.map(r => String(r && r.manufacturer || '').trim()).filter(Boolean));
+        const scopedRows = stxRarityRowsForManufacturerAllowlist(cat, wtNorm);
+        const allowed = unique(scopedRows.map(r => String(r && r.manufacturer || '').trim()).filter(Boolean));
         if (allowed.length){
           const allow = new Set(allowed.map(a => String(a).trim().toLowerCase()));
           mans = mans.filter(m => allow.has(String(m || '').trim().toLowerCase()));
@@ -1523,6 +2106,11 @@ const all = getAllParts();
           mans.sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
         }
       }catch(_e){}
+
+      mans = mans.filter(function (m){
+        const ml = String(m || '').trim().toLowerCase();
+        return ml && !STX_CLASS_MOD_ONLY_MANUFACTURERS.has(ml);
+      });
 }
     return { mans, isClassMod };
   }
@@ -1543,9 +2131,25 @@ const all = getAllParts();
       // Display BL4 character names while keeping internal STX mapping (familyId) intact.
       const DISP = {'Siren':'Vex','Paladin':'Amon','Exo Soldier':'Rafa','Gravitar':'Harlowe','Robodealer':'C4sh','C4sh':'C4sh'};
       const opts = mans.map(v=>({value:v, label:(DISP[v] || v)}));
-      setSelectOptions($('manufacturer'), opts, {placeholder:'Select character...', getLabel:(o)=>o.label, getValue:(o)=>o.value});
+      setSelectOptions($('manufacturer'), opts, {
+        placeholder: 'Select character...',
+        getLabel: (o)=>o.label,
+        getValue: (o)=>o.value,
+        decorateOption(opt, o){
+          const url = stxManufacturerIconUrl(o.value, 'Class Mod');
+          if (url) opt.setAttribute('data-cc-icon', url);
+          else opt.removeAttribute('data-cc-icon');
+        }
+      });
     } else {
-      setSelectOptions($('manufacturer'), mans, {placeholder:'Select manufacturer...'});
+      setSelectOptions($('manufacturer'), mans, {
+        placeholder: 'Select manufacturer...',
+        decorateOption(opt, m){
+          const url = stxManufacturerIconUrl(m, catUi);
+          if (url) opt.setAttribute('data-cc-icon', url);
+          else opt.removeAttribute('data-cc-icon');
+        }
+      });
     }
     // Safety: remove any disallowed pseudo-manufacturers that may slip in (e.g. Firmware)
     try{
@@ -1570,6 +2174,7 @@ const all = getAllParts();
     // attempt to keep previous (only fix when invalid, not when empty)
     if (state.manufacturer && !mans.includes(state.manufacturer)) state.manufacturer = mans[0] || '';
     $('manufacturer').value = state.manufacturer || '';
+    stxSyncCustomSelectIfWrapped($('manufacturer'));
 
     // show weapon type row only for weapon
     const isWeapon = (cat === 'Weapon');
@@ -1583,6 +2188,7 @@ const all = getAllParts();
       $('weaponType').disabled = true;
       $('weaponType').value = '';
       state.weaponType = 'Heavy Weapon';
+      stxSyncCustomSelectIfWrapped($('weaponType'));
     } else if ($('weaponType')) {
       $('weaponType').disabled = false;
     }
@@ -1605,10 +2211,18 @@ const all = getAllParts();
       if (hasHeavy) wtypes.push('Heavy Weapon');
     }catch(_e){}
     wtypes = unique(wtypes).sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
-    setSelectOptions($('weaponType'), wtypes, {placeholder:'Select weapon type...'});
+    setSelectOptions($('weaponType'), wtypes, {
+      placeholder: 'Select weapon type...',
+      decorateOption(opt, wt){
+        const url = stxWeaponTypeIconUrl(wt);
+        if (url) opt.setAttribute('data-cc-icon', url);
+        else opt.removeAttribute('data-cc-icon');
+      }
+    });
     if (state.weaponType === 'Heavy') state.weaponType = 'Heavy Weapon';
     if (state.weaponType && !wtypes.includes(state.weaponType)) state.weaponType = wtypes[0] || '';
     $('weaponType').value = state.weaponType || '';
+    stxSyncCustomSelectIfWrapped($('weaponType'));
     syncBuildStatsItemSlug();
   }
 
@@ -1941,7 +2555,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         ? `Select rarity ID part (${rarityTierLabel(selectedTier)})...`
         : 'Select rarity ID part...',
       getLabel: dropdownLabelCompactForPart,
-      getValue: (p)=>String((p && p.__mainOptKey) ? p.__mainOptKey : '')
+      getValue: (p)=>String((p && p.__mainOptKey) ? p.__mainOptKey : ''),
+      decorateOption: stxApplyCompPartOptionDecoration
     });
 
     // keep selected mainPart if still matches
@@ -2734,7 +3349,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         : (schemaItem.multi ? '(add one or more...)' : '(optional)'),
       getLabel: barrelSlot ? barrelFamilyDropdownLabelCompact : dropdownLabelCompactForPart,
       getValue: (p)=>String((p && p.__slotOptKey) ? p.__slotOptKey : ''),
-      getTitle: barrelSlot ? barrelFamilyOptionTitle : null
+      getTitle: barrelSlot ? barrelFamilyOptionTitle : null,
+      decorateOption: (opt, p)=>{ stxApplySlotPartOptionDecoration(opt, p, schemaItem, category); }
     });
     slot.appendChild(sel);
 
@@ -4227,6 +4843,7 @@ function computeFullDeserializedCode(){
     const code = computeFullDeserializedCode();
     // Simple Builder owns #outCode. Guided/global panels are managed by guided-builder scripts.
     if ($('outCode')) $('outCode').value = code;
+    try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
     $('outJson').value = JSON.stringify(json, null, 2);
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
