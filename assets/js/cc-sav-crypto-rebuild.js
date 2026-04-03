@@ -641,6 +641,7 @@
         fr.readAsArrayBuffer(saveFile);
       });
       var rawYaml = decryptSavBytesToYaml(bytes, steamId);
+      if (typeof window.sanitizeYamlForParse === 'function') rawYaml = window.sanitizeYamlForParse(rawYaml);
       persistSteamId(steamId);
       var downloadName = getNextStbxFilename('yaml', rawYaml);
       var ta = document.getElementById('yamlInput') || document.getElementById('fullYamlInput');
@@ -755,6 +756,10 @@
       var yamlTa = document.getElementById('yamlInput') || document.getElementById('fullYamlInput') || document.querySelector('textarea[id*="yaml"]');
       var yamlDataStr = (yamlTa && yamlTa.value ? yamlTa.value : '').trim();
       if (!yamlDataStr) return alert('No YAML found in the editor to convert.');
+      if (typeof window.sanitizeYamlForParse === 'function') {
+        yamlDataStr = window.sanitizeYamlForParse(yamlDataStr);
+        if (yamlTa) yamlTa.value = yamlDataStr;
+      }
       var enc = new TextEncoder();
       var yamlBytes = enc.encode(yamlDataStr);
       var comp = pako.deflate(yamlBytes);

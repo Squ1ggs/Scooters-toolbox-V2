@@ -101,6 +101,11 @@
 
   window.commitYamlDataToEditor = function (data) {
     try {
+      if (typeof window.normalizeYamlExperiencePointsInData === 'function') {
+        try {
+          window.normalizeYamlExperiencePointsInData(data);
+        } catch (_) {}
+      }
       var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
       if (!y || typeof y.dump !== 'function') return null;
       var newYaml = y.dump(data, { lineWidth: -1, noRefs: true });
@@ -125,7 +130,19 @@
   if (typeof window.sanitizeYamlForSave !== 'function') {
     window.sanitizeYamlForSave = function (yaml) {
       if (!yaml || typeof yaml !== 'string') return yaml;
-      return yaml.replace(/:\s*!tags\s*$/gm, ':').replace(/^\s*!tags\s*$/gm, '');
+      yaml = yaml.replace(/:\s*!tags\s*$/gm, ':').replace(/^\s*!tags\s*$/gm, '');
+      /** Large uint64 `points` are carried as strings in JS; dump may quote them — game expects plain decimal. */
+      yaml = yaml.replace(/^(\s*points\s*:\s*)["'](\d{10,})["'](\s*)$/gm, '$1$2$3');
+      if (typeof BigInt !== 'undefined') {
+        yaml = yaml.replace(/^(\s*points\s*:\s*)(0x[0-9a-fA-F]+)(\s*)$/gm, function (full, lead, hex, tail) {
+          try {
+            return lead + BigInt(hex).toString(10) + tail;
+          } catch (_) {
+            return full;
+          }
+        });
+      }
+      return yaml;
     };
   }
 
@@ -377,9 +394,11 @@
     if (!yamlText) return;
     var data;
     try {
+      if (typeof window.sanitizeYamlForParse === 'function') yamlText = window.sanitizeYamlForParse(yamlText);
       var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
       if (!y || typeof y.load !== 'function') return;
       data = y.load(yamlText);
+      if (typeof window.normalizeYamlExperiencePointsInData === 'function') window.normalizeYamlExperiencePointsInData(data);
     } catch (e) { return; }
     if (!data) return;
     data.missions = data.missions || {};

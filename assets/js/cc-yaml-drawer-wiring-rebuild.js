@@ -28,9 +28,78 @@
       yaml = yaml.replace(/:\s*!tags\s*$/gm, ':');
       yaml = yaml.replace(/^\s*!tags\s*$/gm, '');
       yaml = yaml.replace(/:\s*!tags\s*(?=\n)/g, ':');
+      /** js-yaml parses 0x… ints with parseInt and loses uint64 precision; game expects decimal. */
+      if (typeof BigInt !== 'undefined') {
+        yaml = yaml.replace(/^(\s*points\s*:\s*)(0x[0-9a-fA-F]+)(\s*(?:#.*)?)$/gm, function (_full, lead, hex, tail) {
+          try {
+            return lead + BigInt(hex).toString(10) + tail;
+          } catch (_) {
+            return _full;
+          }
+        });
+      }
       return yaml;
     } catch (_) { return yaml; }
   }
+  window.sanitizeYamlForParse = sanitizeYamlForParse;
+
+  /** Walk save object; normalize experience `points` (VaultCard / Character / etc.) for safe YAML round-trip. */
+  function normalizeYamlExperiencePointsInData(data) {
+    if (!data || typeof data !== 'object' || typeof BigInt === 'undefined') return;
+    function isExperienceEntryType(t) {
+      var s = String(t || '');
+      if (!s) return false;
+      if (s === 'Character' || s === 'Specialization') return true;
+      return /experience/i.test(s);
+    }
+    function normalizePointsScalar(v) {
+      if (v == null) return v;
+      if (typeof v === 'string') {
+        var st = v.trim();
+        if (/^\d+$/.test(st)) return st;
+        if (/^0x[0-9a-fA-F]+$/i.test(st)) {
+          try {
+            return BigInt(st).toString(10);
+          } catch (_) {
+            return v;
+          }
+        }
+        return v;
+      }
+      if (typeof v === 'number' && Number.isFinite(v)) {
+        if (v >= 0 && Number.isSafeInteger(v)) return v;
+        if (Number.isInteger(v) && v < 0) {
+          try {
+            var u = (BigInt(v) + (1n << 64n)) & ((1n << 64n) - 1n);
+            return u.toString(10);
+          } catch (_) {}
+        }
+      }
+      return v;
+    }
+    var seen = new WeakSet();
+    function walk(o) {
+      if (!o || typeof o !== 'object') return;
+      if (Array.isArray(o)) {
+        for (var i = 0; i < o.length; i++) {
+          var item = o[i];
+          if (item && typeof item === 'object' && isExperienceEntryType(item.type) && Object.prototype.hasOwnProperty.call(item, 'points')) {
+            item.points = normalizePointsScalar(item.points);
+          }
+          walk(item);
+        }
+        return;
+      }
+      if (seen.has(o)) return;
+      seen.add(o);
+      for (var k in o) {
+        if (Object.prototype.hasOwnProperty.call(o, k)) walk(o[k]);
+      }
+    }
+    walk(data);
+  }
+  window.normalizeYamlExperiencePointsInData = normalizeYamlExperiencePointsInData;
+
   window.getYamlDataFromEditor = function () {
     var t = window.getYamlText();
     var text = (t && typeof t === 'object' && t.text !== undefined) ? t.text : (typeof t === 'string' ? t : '');
@@ -47,7 +116,10 @@
     for (var i = 0; i < attempts.length; i++) {
       try {
         var data = y.load(text, attempts[i]);
-        if (data && typeof data === 'object') return data;
+        if (data && typeof data === 'object') {
+          normalizeYamlExperiencePointsInData(data);
+          return data;
+        }
       } catch (e) {
         lastErr = e;
       }
