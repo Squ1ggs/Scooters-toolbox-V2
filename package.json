@@ -8,7 +8,8 @@
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win nsis",
-    "dist:portable": "electron-builder --win portable"
+    "dist:portable": "electron-builder --win portable",
+    "smoke:inv": "node scripts/smoke-raw-inv-check.cjs"
   },
   "dependencies": {
     "@netlify/blobs": "^8.1.0",

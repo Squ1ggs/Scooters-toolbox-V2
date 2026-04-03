@@ -50,6 +50,14 @@
     {key:'Shock', label:'Shock', code:'{1:14}'}
   ];
 
+  function stxPresetElementDropdownLabel(e){
+    if (!e) return '-';
+    const label = e.label != null ? String(e.label) : String(e.key || '');
+    const code = e.code != null ? String(e.code).trim() : '';
+    if (!code) return label;
+    return label + ' (' + code + ')';
+  }
+
   const CLASSMOD_ELEMENT_OVERRIDES = [
     {key:'Kinetic Override', label:'Kinetic Override', code:'{1:55}'},
     {key:'Shock Override', label:'Shock Override', code:'{1:56}'},
@@ -128,6 +136,7 @@
     return out;
   }
 
+  /** Fallback when slug missing from `NCS_SLOT_MAP` (e.g. offline). */
   const WEAPON_SLOT_SCHEMA = [
     {key:'body', label:'Body', partType:'Body'},
     {key:'bodyAcc', label:'Body Accessory', partType:'Body Accessory'},
@@ -141,11 +150,86 @@
     {key:'underbarrel', label:'Underbarrel', partType:'Underbarrel'},
     {key:'rarity', label:'Rarity ID Override (optional)', partType:'Rarity'},
     {key:'licensed', label:'Licensed Manufacturer Part', partType:'Manufacturer Part'},
-    // "Stat modifier" is not explicit in dataset; best-fit is Rarity (and/or Legendary Perks).
     {key:'statMod', label:'Stat Modifier', partType:'Stat Modifier'},
     {key:'firmware', label:'Firmware', partType:'Firmware'},
     {key:'legendary', label:'Legendary Perks', partType:'Legendary Perks', multi:true},
   ];
+
+  function getActiveWeaponSlotSchema(){
+    try{
+      const slug = typeof window.computeSimpleBuilderItemSlug === 'function' ? window.computeSimpleBuilderItemSlug(state) : '';
+      const built = typeof window.buildWeaponSlotSchemaFromNcs === 'function' ? window.buildWeaponSlotSchemaFromNcs(slug) : null;
+      if (built && built.length) return built;
+    }catch(_e){}
+    return WEAPON_SLOT_SCHEMA;
+  }
+
+  function applyWeaponNcsSlotOptionFilter(ncsSlot, rawOpts){
+    if (!ncsSlot || !Array.isArray(rawOpts)) return rawOpts;
+    const lower = (p)=> String(normCode(p && p.code)||'').toLowerCase();
+    const filt = (pred)=>{ const o = rawOpts.filter(pred); return o.length ? o : rawOpts; };
+    switch (ncsSlot){
+      case 'hyperion_secondary_acc': return filt(p => lower(p).includes('part_shield'));
+      case 'body':
+        return rawOpts.filter(p => {
+          const lo = lower(p);
+          return !lo.includes('part_body_bolt') && !lo.includes('part_body_flap');
+        });
+      case 'magazine_ted_thrown': return filt(p => lower(p).includes('mag_ted_thrown'));
+      case 'magazine_borg': return filt(p => /mag_05_borg|mag_.*_borg/i.test(lower(p)));
+      case 'magazine_acc': {
+        const o = rawOpts.filter(p => {
+          const lo = lower(p);
+          if (typeof window.magazineAccessoryCodeMatchLo === 'function') return window.magazineAccessoryCodeMatchLo(lo);
+          return /mag_acc|magazine_acc/i.test(lo) || (lo.includes('part_mag') && lo.includes('acc'));
+        });
+        return o.length ? o : rawOpts;
+      }
+      case 'secondary_ammo': return filt(p => lower(p).includes('part_secondary_ammo'));
+      case 'barrel_licensed': return filt(p => lower(p).includes('barrel_licensed'));
+      case 'body_mag': return filt(p => lower(p).includes('part_body_mag'));
+      case 'underbarrel_acc':
+        return (()=>{ const o = rawOpts.filter(p => /underbarrel_.*_acc/i.test(lower(p)) && !/acc_vis/i.test(lower(p))); return o.length ? o : rawOpts; })();
+      case 'underbarrel_acc_vis': return filt(p => /underbarrel_.*acc_vis/i.test(lower(p)));
+      case 'body_bolt': return filt(p => lower(p).includes('bolt'));
+      case 'tediore_acc': return filt(p => /TED_.*part_.*(multi|mirv|homing|jav|legs)/i.test(lower(p)) || /barrel_licensed_multi/i.test(lower(p)));
+      case 'tediore_secondary_acc': return filt(p => /TED_.*part_.*secondary/i.test(lower(p)));
+      default:
+        if (ncsSlot === 'pearl_elem' || ncsSlot === 'pearl_stat') return filt(p => /part_pearl/i.test(lower(p)));
+        return rawOpts;
+    }
+  }
+
+  function weaponPartMatchesNcsSlot(p, ncsSlot){
+    if (!p || !ncsSlot) return true;
+    const lo = String(normCode(p.code)||'').toLowerCase();
+    switch (ncsSlot){
+      case 'hyperion_secondary_acc': return lo.includes('part_shield');
+      case 'magazine_ted_thrown': return lo.includes('mag_ted_thrown');
+      case 'magazine_borg': return /mag_05_borg|mag_.*_borg/i.test(lo);
+      case 'magazine_acc':
+        if (typeof window.magazineAccessoryCodeMatchLo === 'function') return window.magazineAccessoryCodeMatchLo(lo);
+        return /mag_acc|magazine_acc/i.test(lo) || (lo.includes('part_mag') && lo.includes('acc'));
+      case 'secondary_ammo': return lo.includes('part_secondary_ammo');
+      case 'barrel_licensed': return lo.includes('barrel_licensed');
+      case 'body_mag': return lo.includes('part_body_mag');
+      case 'underbarrel_acc': return /underbarrel_.*_acc/i.test(lo) && !/acc_vis/i.test(lo);
+      case 'underbarrel_acc_vis': return /underbarrel_.*acc_vis/i.test(lo);
+      case 'body':
+        if (lo.includes('part_body_bolt') || lo.includes('part_body_flap')) return false;
+        return true;
+      case 'body_acc':
+        return true;
+      case 'body_bolt':
+        return lo.includes('part_body_bolt') || lo.includes('part_body_flap');
+      case 'secondary_ele': return lo.includes('part_secondary_elem') && lo.includes('_mal');
+      case 'pearl_elem':
+      case 'pearl_stat': return /part_pearl/i.test(lo);
+      case 'tediore_acc': return /TED_.*part_.*(multi|mirv|homing|jav|legs)/i.test(lo) || /barrel_licensed_multi/i.test(lo);
+      case 'tediore_secondary_acc': return /TED_.*part_.*secondary/i.test(lo);
+      default: return true;
+    }
+  }
 
   const SIMPLE_SCHEMA_BY_CATEGORY = {
     Shield: [
@@ -387,6 +471,88 @@
     if (stats) chunks.push(`Stats: ${stats}`);
 
     return chunks.length ? `${name} - ${chunks.join(' - ')}` : name;
+  }
+
+  /** Last segment of spawn path for readable part names in long dropdowns. */
+  function spawnSegmentFromNormCode(rawCode){
+    const c = String(rawCode || '').replace(/^["']|["']$/g, '').trim();
+    if (!c) return '';
+    const seg = c.indexOf('.') >= 0 ? c.slice(c.lastIndexOf('.') + 1) : c;
+    return String(seg).replace(/^["']|["']$/g, '').trim();
+  }
+
+  /** Short list label: spawn part id + dataset name + id + stats (preview has full detail). */
+  function dropdownLabelCompactForPart(p){
+    if (!p) return '-';
+    const rawCode = normCode(p.code);
+    const spawnSeg = spawnSegmentFromNormCode(rawCode);
+    let datasetName = (p.name && String(p.name).trim()) ? String(p.name).trim() : '';
+    const id = String(p.idRaw ?? p.idraw ?? p.id ?? '').trim();
+    let stats = (p.stats != null) ? String(p.stats).replace(/\s+/g, ' ').trim() : '';
+    if (stats.length > 44) stats = stats.slice(0, 43) + '…';
+
+    const bits = [];
+    if (spawnSeg) bits.push(spawnSeg);
+    else if (rawCode) bits.push(rawCode.length <= 52 ? rawCode : rawCode.slice(0, 49) + '…');
+
+    if (datasetName) {
+      let d = datasetName.length > 56 ? datasetName.slice(0, 55) + '…' : datasetName;
+      const spawnLc = (spawnSeg || '').toLowerCase();
+      const dLc = d.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const sLc = spawnLc.replace(/[^a-z0-9]/g, '');
+      if (!spawnSeg || (dLc !== sLc && !dLc.includes(sLc) && d.toLowerCase().indexOf(spawnLc) === -1)) {
+        bits.push(d);
+      }
+    }
+
+    if (/pearl/i.test(String(p.stats || '')) && bits.join(' · ').indexOf('(Pearl)') === -1) bits.push('(Pearl)');
+    if (id) {
+      const ptypeLo = String(p.partType || '').trim().toLowerCase().replace(/\s+/g, '');
+      const idNorm = String(id).replace(/\s+/g, ' ').trim();
+      const useBracedId = (ptypeLo === 'element' || ptypeLo === 'status' || ptypeLo === 'typeid1element' || ptypeLo === 'elementswitch')
+        && /^\d+\s*:\s*\d+$/.test(idNorm);
+      if (useBracedId) {
+        const idParts = idNorm.split(':');
+        bits.push('{' + String(idParts[0]).trim() + ':' + String(idParts[1]).trim() + '}');
+      } else {
+        bits.push(id);
+      }
+    }
+    if (stats) bits.push(stats);
+
+    let line = bits.filter(Boolean).join(' · ');
+    if (line.length > 150) line = line.slice(0, 147) + '…';
+    return line || rawCode || '-';
+  }
+
+  function barrelFamilyDropdownLabelCompact(p){
+    if (!p) return '-';
+    const base = dropdownLabelCompactForPart(p);
+    const ef = String(p.effects ?? p.effect ?? p.effects_text ?? '').trim();
+    if (!ef) return base;
+    const split = splitEffectPerkBodyForPreview(ef);
+    let extra = '';
+    if (split.perk && split.body) {
+      extra = split.perk + ': ' + (split.body.length > 72 ? split.body.slice(0, 71) + '…' : split.body);
+    } else if (split.body) {
+      extra = split.body.length > 96 ? split.body.slice(0, 95) + '…' : split.body;
+    } else {
+      extra = split.perk;
+    }
+    if (!extra) return base;
+    let out = base + ' · ' + extra;
+    if (out.length > 220) out = out.slice(0, 217) + '…';
+    return out;
+  }
+
+  function barrelFamilyOptionTitle(p){
+    let base = '';
+    try{
+      if (typeof window.partTooltipText === 'function') base = String(window.partTooltipText(p) || '').trim();
+    }catch(_){}
+    const ef = String(p.effects ?? p.effect ?? p.effects_text ?? '').trim();
+    if (ef && !base.includes(ef)) return base ? (base + ' | ' + ef) : ef;
+    return base;
   }
 
   // ---- Parent dropdown label bridge (re-uses the same part lists/labels as the main page) ----
@@ -737,7 +903,7 @@ function getAllParts(){
     return false;
   }
 
-  function setSelectOptions(sel, options, {placeholder='Select...', getLabel=(x)=>x, getValue=(x)=>x, groupBy=null}={}){
+  function setSelectOptions(sel, options, {placeholder='Select...', getLabel=(x)=>x, getValue=(x)=>x, groupBy=null, getTitle=null}={}){
     sel.innerHTML = '';
     const ph = document.createElement('option');
     ph.value = '';
@@ -771,7 +937,10 @@ function getAllParts(){
               opt.textContent = `${opt.textContent} [${String(__idRaw).trim()}]`;
             }
           }catch(_e){}
-          if (typeof window.partTooltipText === 'function') { const t = window.partTooltipText(o); if (t) opt.title = t; }
+          let tip = '';
+          if (typeof getTitle === 'function') { try{ tip = String(getTitle(o) || '').trim(); }catch(_e){} }
+          if (!tip && typeof window.partTooltipText === 'function') { try{ tip = String(window.partTooltipText(o) || '').trim(); }catch(_e){} }
+          if (tip) opt.title = tip;
           og.appendChild(opt);
         }
         sel.appendChild(og);
@@ -792,7 +961,10 @@ function getAllParts(){
           opt.textContent = `${opt.textContent} [${String(__idRaw).trim()}]`;
         }
       }catch(_e){}
-      if (typeof window.partTooltipText === 'function') { const t = window.partTooltipText(o); if (t) opt.title = t; }
+      let tip = '';
+      if (typeof getTitle === 'function') { try{ tip = String(getTitle(o) || '').trim(); }catch(_e){} }
+      if (!tip && typeof window.partTooltipText === 'function') { try{ tip = String(window.partTooltipText(o) || '').trim(); }catch(_e){} }
+      if (tip) opt.title = tip;
       sel.appendChild(opt);
     }
   }
@@ -1158,6 +1330,16 @@ const all = getAllParts();
           const pm = String(p.manufacturer||'').trim().toLowerCase();
           if (pm !== 'maliwan') return false;
           if (!codeL.includes('part_secondary_elem') || !codeL.includes('_mal')) return false;
+        } else if (String(category||'') === 'Weapon' && String(partType||'').trim().toLowerCase() === 'body') {
+          const codeL = String(code||'').toLowerCase();
+          if (String(pt||'').trim().toLowerCase() !== 'body') return false;
+          if (codeL.includes('part_body_bolt') || codeL.includes('part_body_flap')) return false;
+        } else if (String(category||'') === 'Weapon' && String(partType||'').trim().toLowerCase() === 'body accessory') {
+          const codeL = String(code||'').toLowerCase();
+          const ptNorm = String(pt||'').trim().toLowerCase();
+          const isAcc = ptNorm === 'body accessory';
+          const isBoltSlotMis = ptNorm === 'body' && (codeL.includes('part_body_bolt') || codeL.includes('part_body_flap'));
+          if (!(isAcc || isBoltSlotMis)) return false;
         } else {
           if (String(p.partType||'') !== String(partType||'')) return false;
         }
@@ -1448,7 +1630,8 @@ const all = getAllParts();
     }
 
     const cur = String(sel.value || state.rarity || '').trim();
-    const order = [0,1,2,3,4,5];
+    const isClassModTierFilter = String(state.itemType || '') === 'Class Mod';
+    const order = isClassModTierFilter ? [0,1,2,3,4] : [0,1,2,3,4,5];
     // Always show the full tier list so Legendary/Pearlescent are consistently available in the main rarity dropdown.
     // Part availability is still enforced later when selecting the rarity-id part.
     const opts = order.map(t => ({ value: String(t), label: rarityTierLabel(t) }));
@@ -1505,11 +1688,15 @@ function refreshMainPart(){
     if (!Number.isFinite(selectedTier) && pearlTierSelected) selectedTier = 5;
     if (!useTierFilter) selectedTier = null;
     if (useTierFilter && !Number.isFinite(selectedTier)){
-      $('mainPartLabel').textContent = 'Rarity ID Part (select rarity tier first)';
+      const pendingLabel = (cat === 'Class Mod')
+        ? 'Body - Classmod Name (select rarity tier first)'
+        : 'Rarity ID Part (select rarity tier first)';
+      $('mainPartLabel').textContent = pendingLabel;
       setSelectOptions($('mainPart'), [], {placeholder:'Select rarity tier first...'});
       $('mainPart').disabled = true;
       state.mainPart = null;
       refreshBuilder();
+      syncMainPartPreview();
       return;
     }
     $('mainPart').disabled = false;
@@ -1529,7 +1716,7 @@ function refreshMainPart(){
       state.__mainPartByOptionKey = mainPartByOptionKey;
       setSelectOptions($('mainPart'), aicarList, {
         placeholder: 'Select AI / car / guns preset...',
-        getLabel: dropdownLabelForPart,
+        getLabel: dropdownLabelCompactForPart,
         getValue: (p) => String((p && p.__mainOptKey) ? p.__mainOptKey : '')
       });
       if (state.mainPart){
@@ -1541,6 +1728,7 @@ function refreshMainPart(){
         $('mainPart').value = '';
       }
       refreshBuilder();
+      syncMainPartPreview();
       return;
     }
 
@@ -1554,9 +1742,15 @@ function refreshMainPart(){
       const isLegendary = useTierFilter ? (selectedTier === 4) : false;
       corePt = isLegendary ? '' : 'Body';
     }
-    $('mainPartLabel').textContent = (useTierFilter && Number.isFinite(selectedTier))
-      ? `Rarity ID Part (${rarityTierLabel(selectedTier)})`
-      : 'Rarity ID Part';
+    if (cat === 'Class Mod'){
+      $('mainPartLabel').textContent = (useTierFilter && Number.isFinite(selectedTier))
+        ? `Body - Classmod Name (${rarityTierLabel(selectedTier)})`
+        : 'Body - Classmod Name';
+    } else {
+      $('mainPartLabel').textContent = (useTierFilter && Number.isFinite(selectedTier))
+        ? `Rarity ID Part (${rarityTierLabel(selectedTier)})`
+        : 'Rarity ID Part';
+    }
 
     let partsList = filterParts({category: cat, manufacturer: man, weaponType: (cat==='Weapon'? state.weaponType : ''), partType: corePt});
 
@@ -1567,6 +1761,19 @@ function refreshMainPart(){
         const c = String((p && p.code) ? p.code : '').toLowerCase();
         const isLeg = c.includes('leg_body_');
         return wantLegendary ? isLeg : !isLeg;
+      });
+      const seenMain = new Set();
+      partsList = partsList.filter(p => {
+        const iid = Number(partItemIdOf(p));
+        const key = [
+          Number.isFinite(iid) ? String(iid) : '',
+          String((p && p.idRaw) || '').trim().toLowerCase(),
+          String((p && p.code) || '').trim().toLowerCase(),
+          String((p && p.name) || '').trim().toLowerCase()
+        ].join('|');
+        if (!key || seenMain.has(key)) return false;
+        seenMain.add(key);
+        return true;
       });
     }
 
@@ -1610,6 +1817,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       $('mainPart').disabled = true;
       state.mainPart = null;
       refreshBuilder();
+      syncMainPartPreview();
       return;
     }
 
@@ -1732,7 +1940,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       placeholder:(useTierFilter && Number.isFinite(selectedTier))
         ? `Select rarity ID part (${rarityTierLabel(selectedTier)})...`
         : 'Select rarity ID part...',
-      getLabel: dropdownLabelForPart,
+      getLabel: dropdownLabelCompactForPart,
       getValue: (p)=>String((p && p.__mainOptKey) ? p.__mainOptKey : '')
     });
 
@@ -1748,6 +1956,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       if (checklistCompRarity) {
         // Guided checklist sets comp-rarity tokens; #mainPart only lists Body parts — do not clear synthetic rarity.
         refreshBuilder();
+        syncMainPartPreview();
         return;
       }
       const prevTok = tokenForPart(state.mainPart);
@@ -1762,6 +1971,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     }
 
     refreshBuilder();
+    syncMainPartPreview();
   }
 
   function clearBuilderState(keepTop=false){
@@ -1787,6 +1997,147 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
   if (/classmod_/i.test(code)) return 'Class Mod';
   return p.category || null;
 }
+
+  function isBarrelFamilySchemaSlot(schemaItem, category){
+    if (!schemaItem) return false;
+    if (schemaItem.key !== 'barrel' && schemaItem.key !== 'barrelAcc') return false;
+    return category === 'Weapon' || category === 'Gadget';
+  }
+
+  function splitEffectPerkBodyForPreview(ef){
+    const s = String(ef || '').trim();
+    if (!s) return { perk: '', body: '' };
+    const idx = s.indexOf(' - ');
+    if (idx >= 0){
+      return { perk: s.slice(0, idx).trim(), body: s.slice(idx + 3).trim() };
+    }
+    if (s.length <= 52 && s.indexOf('.') === -1 && s.split(/\s+/).length <= 6){
+      return { perk: s, body: '' };
+    }
+    return { perk: '', body: s };
+  }
+
+  function stripStatsHeadlineIfRedundantForPreview(statsRaw, title){
+    const st = String(statsRaw || '').replace(/\s+/g, ' ').trim();
+    const tl = String(title || '').replace(/\s+/g, ' ').trim();
+    if (!st || !tl) return st;
+    if (st.toLowerCase().indexOf(tl.toLowerCase()) !== 0) return st;
+    const rest = st.slice(tl.length).replace(/^,\s*/, '').trim();
+    return rest || st;
+  }
+
+  function barrelHeadlineTitleForPreview(p){
+    if (!p) return '';
+    const st = String(p.stats != null ? p.stats : (p.stats_text || '')).replace(/\s+/g, ' ').trim();
+    if (st && st.indexOf(',') > 0){
+      const head = st.slice(0, st.indexOf(',')).trim();
+      if (head.length >= 3 && head.length <= 88) return head;
+    }
+    const nm = String((p.legendaryName || p.name || '')).trim();
+    if (nm) return nm;
+    return String(displayForPart(p) || '').trim();
+  }
+
+  /** Rich preview for barrel / barrel accessory slots: title from stats, perk line, then detail + meta. */
+  function formatBarrelFamilyPartPreviewHtml(part){
+    if (!part) return '';
+    const lines = [];
+    const title = barrelHeadlineTitleForPreview(part);
+    if (title) lines.push('<div class="stx-part-preview__title">' + escapeHtml(title) + '</div>');
+    const efRaw = String(part.effects != null ? part.effects : (part.effect ?? part.effects_text ?? '')).trim();
+    const split = splitEffectPerkBodyForPreview(efRaw);
+    if (split.perk) lines.push('<div class="stx-part-preview__barrel-perk">' + escapeHtml(split.perk) + '</div>');
+    const statsRaw = String(part.stats != null ? part.stats : (part.stats_text || '')).replace(/\s+/g, ' ').trim();
+    const statsTail = statsRaw ? stripStatsHeadlineIfRedundantForPreview(statsRaw, title) : '';
+    const descParts = [];
+    if (split.body) descParts.push(split.body);
+    if (statsTail) descParts.push(statsTail);
+    if (descParts.length){
+      const descText = (descParts.length === 2 && split.body)
+        ? (split.body + '\n\n' + statsTail)
+        : descParts.join('\n\n');
+      lines.push('<div class="stx-part-preview__barrel-desc">' + escapeHtml(descText) + '</div>');
+    }
+    lines.push('<div class="stx-part-preview__barrel-meta">');
+    try{
+      const tok = tokenForPart(part);
+      if (tok) lines.push('<div><span class="muted">Token</span> <code>' + escapeHtml(tok) + '</code></div>');
+    }catch(_){}
+    const id = String(part.idRaw ?? part.idraw ?? '').trim();
+    if (id) lines.push('<div><span class="muted">ID</span> <code>' + escapeHtml(id) + '</code></div>');
+    const code = normCode(part.code);
+    if (code) lines.push('<div><span class="muted">Spawn</span> <code>' + escapeHtml(code) + '</code></div>');
+    if (part.manufacturer) lines.push('<div><span class="muted">Mfr</span> ' + escapeHtml(String(part.manufacturer)) + '</div>');
+    if (part.partType) lines.push('<div><span class="muted">Part type</span> ' + escapeHtml(String(part.partType)) + '</div>');
+    lines.push('</div>');
+    return lines.join('');
+  }
+
+  /** Rich preview HTML for the slot under the dropdown (IDs, codes, stats) — complements long option labels. */
+  function formatPartPreviewHtml(part){
+    if (!part) return '';
+    const lines = [];
+    const name = displayForPart(part);
+    if (name) lines.push('<div class="stx-part-preview__title">' + escapeHtml(name) + '</div>');
+    try{
+      const tok = tokenForPart(part);
+      if (tok) lines.push('<div><span class="muted">Token</span> <code>' + escapeHtml(tok) + '</code></div>');
+    }catch(_){}
+    const id = String(part.idRaw ?? part.idraw ?? '').trim();
+    if (id) lines.push('<div><span class="muted">ID</span> <code>' + escapeHtml(id) + '</code></div>');
+    const code = normCode(part.code);
+    if (code) lines.push('<div><span class="muted">Spawn</span> <code>' + escapeHtml(code) + '</code></div>');
+    if (part.manufacturer) lines.push('<div><span class="muted">Mfr</span> ' + escapeHtml(String(part.manufacturer)) + '</div>');
+    if (part.partType) lines.push('<div><span class="muted">Part type</span> ' + escapeHtml(String(part.partType)) + '</div>');
+    const statsRaw = part.stats != null ? String(part.stats) : '';
+    const stats = statsRaw.replace(/\s+/g, ' ').trim();
+    if (stats) lines.push('<div><span class="muted">Stats</span> ' + escapeHtml(stats.length > 520 ? stats.slice(0, 519) + '…' : stats) + '</div>');
+    const ef = String(part.effects ?? part.effect ?? '').trim();
+    if (ef) lines.push('<div><span class="muted">Effect</span> ' + escapeHtml(ef.length > 360 ? ef.slice(0, 359) + '…' : ef) + '</div>');
+    let tip = '';
+    try{
+      if (typeof window.partTooltipText === 'function'){
+        tip = String(window.partTooltipText(part) || '').trim();
+      }
+    }catch(_){}
+    if (tip && tip.length > 12){
+      const clipped = tip.length > 520 ? tip.slice(0, 519) + '…' : tip;
+      const n = String(name || '').trim();
+      const tipRedundant = n && (clipped === n || (clipped.startsWith(n) && clipped.length < n.length + 25));
+      if (!tipRedundant) lines.push('<div class="small muted" style="margin-top:6px;opacity:.92;">' + escapeHtml(clipped) + '</div>');
+    }
+    return lines.join('');
+  }
+
+  function syncMainPartPreview(){
+    const el = document.getElementById('stxMainPartPreview');
+    if (!el) return;
+    const sel = $('mainPart');
+    if (!sel){
+      el.innerHTML = '';
+      return;
+    }
+    if (sel.disabled){
+      const ph = (sel.options && sel.options[0]) ? String(sel.options[0].textContent || '').trim() : '';
+      el.innerHTML = '<span class="muted">' + escapeHtml(ph || 'Complete the steps above first.') + '</span>';
+      return;
+    }
+    const k = sel.value;
+    const map = state.__mainPartByOptionKey;
+    const p = (k && map && typeof map.get === 'function') ? map.get(k) : null;
+    if (!k || !p){
+      el.innerHTML = '<span class="muted">Select a main / prefix part to see token, IDs, spawn code, and stats.</span>';
+      return;
+    }
+    if (p.__isAicarFullItem && p.__fullDeserialized){
+      const fs = String(p.__fullDeserialized || '').trim();
+      el.innerHTML = '<div class="stx-part-preview__title">' + escapeHtml(displayForPart(p)) + '</div>'
+        + '<div class="small muted" style="margin-bottom:6px;">Full deserialized payload (trimmed)</div>'
+        + '<code>' + escapeHtml(fs.length > 900 ? fs.slice(0, 899) + '…' : fs) + '</code>';
+      return;
+    }
+    el.innerHTML = formatPartPreviewHtml(p);
+  }
 
   function buildSlotControl(schemaItem, category){
     const slot = document.createElement('div');
@@ -1859,6 +2210,13 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           };
         })
         .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+    } else if (category === 'Weapon' && schemaItem && schemaItem.customType === 'weaponPearl'){
+      rawOpts = getAllParts().filter(p => {
+        if (!p || String(p.category||'').trim() !== 'Weapon') return false;
+        const c = String((p && p.code) ? p.code : '').trim();
+        if (/^\{\s*27\s*:\s*\d+\s*\}$/.test(c)) return false;
+        return /part_pearl/i.test(normCode(p.code));
+      }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else {
       const manufacturerForSlot = (isShieldBodyLegendarySlot || isShieldMainBodySlot) ? '' : state.manufacturer;
       const partTypeForSlot = (category === 'Shield' && (isShieldBodyLegendarySlot || isShieldMainBodySlot))
@@ -1870,6 +2228,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         weaponType: (category==='Weapon' ? state.weaponType : ''),
         partType: partTypeForSlot
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+      if (category === 'Weapon' && schemaItem && schemaItem.ncsSlot){
+        rawOpts = applyWeaponNcsSlotOptionFilter(schemaItem.ncsSlot, rawOpts);
+      }
       if (isShieldMainBodySlot && !rawOpts.length){
         rawOpts = filterParts({
           category,
@@ -2366,14 +2727,36 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       partByOptionKey.set(key, p);
       try{ p.__slotOptKey = key; }catch(_e){}
     }
+    const barrelSlot = isBarrelFamilySchemaSlot(schemaItem, category);
     setSelectOptions(sel, opts, {
       placeholder: isShieldSimpleSlot
         ? 'Select a part to add...'
         : (schemaItem.multi ? '(add one or more...)' : '(optional)'),
-      getLabel: dropdownLabelForPart,
-      getValue: (p)=>String((p && p.__slotOptKey) ? p.__slotOptKey : '')
+      getLabel: barrelSlot ? barrelFamilyDropdownLabelCompact : dropdownLabelCompactForPart,
+      getValue: (p)=>String((p && p.__slotOptKey) ? p.__slotOptKey : ''),
+      getTitle: barrelSlot ? barrelFamilyOptionTitle : null
     });
     slot.appendChild(sel);
+
+    const partPreview = document.createElement('div');
+    partPreview.className = 'stx-part-preview small';
+    partPreview.setAttribute('role', 'status');
+    partPreview.setAttribute('aria-live', 'polite');
+    function syncPartPreview(){
+      const k = sel.value;
+      const p = k ? partByOptionKey.get(k) : null;
+      const barrelish = !!(p && isBarrelFamilySchemaSlot(schemaItem, category));
+      partPreview.classList.toggle('stx-part-preview--barrel', barrelish);
+      if (!p){
+        partPreview.classList.remove('stx-part-preview--barrel');
+        partPreview.innerHTML = '<span class="muted">Select a part above to see token, IDs, spawn code, and stats.</span>';
+        return;
+      }
+      partPreview.innerHTML = barrelish ? formatBarrelFamilyPartPreviewHtml(p) : formatPartPreviewHtml(p);
+    }
+    sel.addEventListener('change', syncPartPreview);
+    syncPartPreview();
+    slot.appendChild(partPreview);
 
     const addBtn = document.createElement('button');
     addBtn.type = 'button';
@@ -2520,8 +2903,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     primary.setAttribute('aria-label', 'Primary element');
     setSelectOptions(primary, ELEMENTS, {
       placeholder:'Primary element...',
-      getLabel:(e)=>e.label,
-      getValue:(e)=>e.key
+      getLabel: stxPresetElementDropdownLabel,
+      getValue:(e)=>e.key,
+      getTitle: (e) => (e && e.code) ? ('Output token: ' + String(e.code)) : ''
     });
     primary.value = state.primaryElement || 'None';
     primary.addEventListener('change', ()=>{
@@ -2537,7 +2921,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     addSel.id = 'stxAddElement';
     addSel.name = addSel.id;
     addSel.setAttribute('aria-label', 'Add element to stack');
-    setSelectOptions(addSel, ELEMENTS.filter(e=>e.key!=='None'), {placeholder:'Add element...', getLabel:e=>e.label, getValue:e=>e.key});
+    setSelectOptions(addSel, ELEMENTS.filter(e=>e.key!=='None'), {
+      placeholder:'Add element...',
+      getLabel: stxPresetElementDropdownLabel,
+      getValue:e=>e.key,
+      getTitle: (e) => (e && e.code) ? ('Output token: ' + String(e.code)) : ''
+    });
 
     const addBtn = document.createElement('button');
     addBtn.type='button';
@@ -2655,7 +3044,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     top.className='top';
     const name = document.createElement('div');
     name.className='name';
-    name.textContent = main.__isAicarFullItem ? 'Full item' : 'Rarity ID Part';
+    var mainLabel = 'Rarity ID Part';
+    if (String(cat || '').trim() === 'Class Mod') mainLabel = 'Body - Classmod Name';
+    name.textContent = main.__isAicarFullItem ? 'Full item' : mainLabel;
     const change = document.createElement('div');
     change.className='muted small';
     change.textContent = main.__isAicarFullItem ? 'Complete deserialized serial (AI / car / guns).' : 'Selected in the left panel.';
@@ -2679,7 +3070,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       grid.className = 'grid';
 
       // Weapon slots
-      for (const s of WEAPON_SLOT_SCHEMA){
+      for (const s of getActiveWeaponSlotSchema()){
         grid.appendChild(buildSlotControl(s, 'Weapon'));
       }
 
@@ -2712,28 +3103,18 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     if (cat === 'Weapon'){
       const ordered = [];
       const pushIf = (p)=>{ if (p) ordered.push(p); };
-      // Main selector is the rarity-id part for weapons.
-      pushIf(state.mainPart); // rarity id
-      pushIf(state.slots.body);
-      pushIf(state.slots.bodyAcc);
-      pushIf(state.slots.barrel);
-      pushIf(state.slots.barrelAcc);
-      pushIf(state.slots.mag);
-      pushIf(state.slots.scope);
-      pushIf(state.slots.scopeAcc);
-      pushIf(state.slots.grip);
-      pushIf(state.slots.foregrip);
-      pushIf(state.slots.underbarrel);
-      pushIf(state.slots.rarity);
-      pushIf(state.slots.statMod);
-      pushIf(state.slots.licensed);
-
-      // multi legendary perks
-      if (Array.isArray(state.slots.legendary)){
-        for (const p of state.slots.legendary) pushIf(p);
+      pushIf(state.mainPart);
+      const schema = getActiveWeaponSlotSchema();
+      for (const s of schema){
+        if (s.multi && s.key === 'legendary'){
+          if (Array.isArray(state.slots.legendary)){
+            for (const p of state.slots.legendary) pushIf(p);
+          }
+          continue;
+        }
+        if (s.multi) continue;
+        pushIf(state.slots[s.key]);
       }
-
-      // Elements are not dataset parts; represent as pseudo tokens at end
       return ordered.filter(Boolean);
     } else {
       const schema = SIMPLE_SCHEMA_BY_CATEGORY[cat] || [];
@@ -3835,19 +4216,6 @@ function computeFullDeserializedCode(){
 }
   function refreshOutputs(){
     if (typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return;
-    const guidedSel = document.getElementById('ccGuidedItemType');
-    const guidedVal = guidedSel ? ((guidedSel.value || '').trim() || (guidedSel.options[guidedSel.selectedIndex] && (guidedSel.options[guidedSel.selectedIndex].value || '').trim()) || '') : '';
-    const guidedType = guidedVal ? String(guidedVal).trim() : '';
-    const preserveClassModMainPart = (guidedType === 'Class Mod' && state.mainPart && String((state.mainPart && state.mainPart.partType) || '').trim().toLowerCase() === 'rarity')
-      ? Object.assign({}, state.mainPart)
-      : null;
-    if (guidedType && typeof window.syncGuidedToSimple === 'function') {
-      try { window.syncGuidedToSimple(); } catch(_){}
-    }
-    if (preserveClassModMainPart) {
-      state.mainPart = preserveClassModMainPart;
-      if (!state.detectedCategory) state.detectedCategory = 'Class Mod';
-    }
     const {tokens, json} = computeOutputTokens();
     const listBase = getSelectedBaseItem();
     const listFamily = Number(listBase && listBase.familyId);
@@ -3857,28 +4225,11 @@ function computeFullDeserializedCode(){
     const listTokens = normalizeIdTokensForBaseFamily(listTokensRaw, listFamily);
     $('outList').value = listTokens.join(', ');
     const code = computeFullDeserializedCode();
-    // When Main Guided Builder is active, Generated Item Code uses #guidedOutputDeserialized — do not
-    // overwrite Simple Builder's #outCode (avoids pasted/converted serials "leaking" into that panel).
-    if ($('outCode') && !guidedType) $('outCode').value = code;
-    const guidedOut = document.getElementById('guidedOutputDeserialized');
-    if (guidedOut) {
-      if (guidedType === 'Class Mod') {
-        if (code) guidedOut.value = code;
-      } else if (guidedType) {
-        const existing = (guidedOut.value || '').trim();
-        const hasAppendedParts = existing.indexOf('||') >= 0 && existing.slice(existing.indexOf('||') + 2).trim().length > 0;
-        // Only push Simple Builder code when non-empty; do not wipe prefix from refreshGuidedOutput / computeGuidedPrefix.
-        if (!hasAppendedParts && code) guidedOut.value = code;
-      }
-      // When no guided item type: do not mirror Simple Builder into #guidedOutputDeserialized — that panel is separate.
-    }
+    // Simple Builder owns #outCode. Guided/global panels are managed by guided-builder scripts.
+    if ($('outCode')) $('outCode').value = code;
     $('outJson').value = JSON.stringify(json, null, 2);
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
-    try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch(_){}
-    if (guidedType && guidedType !== 'Class Mod' && typeof window.refreshGuidedOutput === 'function') {
-      try { window.refreshGuidedOutput(); } catch (_){}
-    }
     try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
   }
 
@@ -4036,25 +4387,48 @@ function resetAll(){
     const partsLeft = partTokens.slice(1).map(x=>x.p);
 
     if (cat === 'Weapon'){
-      const want = new Map();
-      for (const s of WEAPON_SLOT_SCHEMA){
-        want.set(s.partType, s);
-      }
-      for (const p of partsLeft){
-        const s = want.get(p.partType);
-        if (!s){
-          state.extras.push(tokenForPart(p) || normCode(p.code));
+      const schema = getActiveWeaponSlotSchema();
+      let pool = partsLeft.slice();
+      const takeIndex = (pred)=>{
+        const idx = pool.findIndex(pred);
+        if (idx < 0) return null;
+        const p = pool[idx];
+        pool.splice(idx, 1);
+        return p;
+      };
+      for (const s of schema){
+        if (s.multi && s.key === 'legendary'){
+          for (let i = pool.length - 1; i >= 0; i--){
+            const p = pool[i];
+            if (String(p.partType||'').trim() !== 'Legendary Perks') continue;
+            const arr = state.slots.legendary || [];
+            const tok = tokenForPart(p);
+            if (!arr.some(x => tokenForPart(x) === tok)) arr.push(p);
+            state.slots.legendary = arr;
+            pool.splice(i, 1);
+          }
           continue;
         }
-        if (s.multi){
-          const arr = state.slots[s.key] || [];
-          const tok = tokenForPart(p);
-          if (!arr.some(x => tokenForPart(x) === tok)) arr.push(p);
-          state.slots[s.key] = arr;
-        } else {
-          if (!state.slots[s.key]) state.slots[s.key] = p;
-          else state.extras.push(tokenForPart(p) || normCode(p.code));
-        }
+        if (s.multi) continue;
+        if (state.slots[s.key]) continue;
+        const p = takeIndex(part => {
+          const pt = String(part.partType||'').trim();
+          const wantPt = String(s.partType||'').trim();
+          if (wantPt !== pt){
+            if (s.customType === 'weaponPearl' && !pt && /part_pearl/i.test(normCode(part.code))) { /* ok */ }
+            else if (wantPt === 'Body Accessory' && pt === 'Body') {
+              const c = normCode(part.code).toLowerCase();
+              if (!(c.includes('part_body_bolt') || c.includes('part_body_flap'))) return false;
+            } else return false;
+          }
+          if (s.customType === 'weaponPearl' && !/part_pearl/i.test(normCode(part.code))) return false;
+          if (s.ncsSlot && !weaponPartMatchesNcsSlot(part, s.ncsSlot)) return false;
+          return true;
+        });
+        if (p) state.slots[s.key] = p;
+      }
+      for (const p of pool){
+        state.extras.push(tokenForPart(p) || normCode(p.code));
       }
 
       // parse elements ({1:10}-{1:14})
@@ -4364,6 +4738,7 @@ function resetAll(){
       state.elementStack = [];
       state.extras = [];
       refreshBuilder();
+      syncMainPartPreview();
     });
 
     const idModeEl = $('idMode');

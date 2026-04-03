@@ -11,13 +11,28 @@
   function setEggsEnabled(on){ try { localStorage.setItem(EGGS_KEY, on ? '1' : '0'); } catch(_){} }
   function eggsEnabled(){ try { return localStorage.getItem(EGGS_KEY) !== '0'; } catch(_){ return true; } }
   function currentTheme(){ try { return localStorage.getItem(THEME_KEY) || 'default'; } catch(_){ return 'default'; } }
-
+  function fullAnimEnabled(){
+    try {
+      var v = String(localStorage.getItem(FULLANIM_KEY) || '').toLowerCase();
+      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+    } catch(_){ return false; }
+  }
+  function isEggThemeActive(){
+    var b = document.body;
+    if(!b) return false;
+    return b.classList.contains('mattmab-reskin') ||
+      b.classList.contains('mac10-reskin') ||
+      b.classList.contains('badley-reskin') ||
+      b.classList.contains('scooter-reskin') ||
+      b.classList.contains('ynot-reskin');
+  }
   function setTheme(theme){
     var body = document.body;
     Object.keys(THEME_CLASS_BY_VALUE).forEach(function(k){ var c = THEME_CLASS_BY_VALUE[k]; if(c) body.classList.remove(c); });
     var cls = THEME_CLASS_BY_VALUE[theme] || '';
     if(cls) body.classList.add(cls);
     try { localStorage.setItem(THEME_KEY, theme); } catch(_){}
+    syncFullAnim();
   }
 
   function toggleWithThanks(){
@@ -47,7 +62,7 @@
   function initCredits(){
     var toggle = byId('withThanksToggle');
     if(toggle) toggle.addEventListener('click', toggleWithThanks);
-    shuffleContributors();
+    // Keep contributor order stable across reloads.
 
     byId('mattmabName') && byId('mattmabName').addEventListener('dblclick', function(){
       setEggsEnabled(true);
@@ -90,19 +105,21 @@
 
     var fullAnimToggle = byId('fullAnimToggle');
     if(fullAnimToggle) {
-      try { fullAnimToggle.checked = localStorage.getItem(FULLANIM_KEY) === '1'; } catch(_){}
+      fullAnimToggle.checked = fullAnimEnabled();
       syncFullAnim();
-      fullAnimToggle.addEventListener('change', function(){
+      function onAnimToggleChange(){
         try { localStorage.setItem(FULLANIM_KEY, fullAnimToggle.checked ? '1' : '0'); } catch(_){}
         syncFullAnim();
-      });
+      }
+      fullAnimToggle.addEventListener('change', onAnimToggleChange);
+      fullAnimToggle.addEventListener('input', onAnimToggleChange);
     }
   }
   function syncFullAnim(){
     var cb = byId('fullAnimToggle');
-    if(!cb) return;
-    if(cb.checked) document.documentElement.classList.add('fullAnimButtons');
-    else document.documentElement.classList.remove('fullAnimButtons');
+    var enabled = cb ? !!cb.checked : fullAnimEnabled();
+    document.documentElement.classList.toggle('fullAnimButtons', enabled);
+    document.documentElement.classList.toggle('stxEggFullAnim', enabled && isEggThemeActive());
   }
 
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCredits);

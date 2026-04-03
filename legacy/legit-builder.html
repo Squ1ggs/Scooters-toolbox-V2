@@ -17,6 +17,7 @@
 <link href="../assets/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="../assets/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="../assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="../assets/css/cc-build-stats-panel.css" rel="stylesheet"/>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -769,7 +770,12 @@
 <details class="support-menu instructions-menu" id="stxInstructionsMenuLegit">
 <summary class="legit-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="legit-back active" id="stxInstructionsExpandedBtnLegit" style="padding:6px 10px;" type="button">Expanded</button>
+<button class="legit-back" id="stxInstructionsSimpleBtnLegit" style="padding:6px 10px;" type="button">Simple</button>
+</div>
 <pre class="instructions-menu__text" id="stxInstructionsTextLegit">Loading instructions…</pre>
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameLegit" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
 </div>
 </details>
 <details class="support-menu">
@@ -785,15 +791,61 @@
   (function () {
     var menu = document.getElementById('stxInstructionsMenuLegit');
     var out = document.getElementById('stxInstructionsTextLegit');
-    var loaded = false;
+    var frame = document.getElementById('stxInstructionsFrameLegit');
+    var expandedBtn = document.getElementById('stxInstructionsExpandedBtnLegit');
+    var simpleBtn = document.getElementById('stxInstructionsSimpleBtnLegit');
+    var loaded = { expanded: false, simple: false };
+    var cache = { expanded: '', simple: '' };
+    var mode = 'expanded';
     if (!menu || !out) return;
-    menu.addEventListener('toggle', function () {
-      if (!menu.open || loaded) return;
-      loaded = true;
-      fetch('../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+    function setMode(nextMode) {
+      mode = nextMode;
+      if (expandedBtn) expandedBtn.classList.toggle('active', mode === 'expanded');
+      if (simpleBtn) simpleBtn.classList.toggle('active', mode === 'simple');
+    }
+    function loadText(nextMode) {
+      var url = nextMode === 'simple'
+        ? '../assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
+        : '../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+      if (location && location.protocol === 'file:') {
+        if (out) out.style.display = 'none';
+        if (frame) {
+          frame.style.display = 'block';
+          frame.src = url;
+        }
+        return;
+      }
+      if (frame) frame.style.display = 'none';
+      if (out) out.style.display = 'block';
+      if (loaded[nextMode]) {
+        out.textContent = cache[nextMode] || 'Could not load instructions file.';
+        return;
+      }
+      out.textContent = 'Loading instructions...';
+      fetch(url)
         .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
-        .then(function (txt) { out.textContent = txt; })
-        .catch(function () { out.textContent = 'Could not load instructions file.'; });
+        .then(function (txt) {
+          loaded[nextMode] = true;
+          cache[nextMode] = txt;
+          if (mode === nextMode) out.textContent = txt;
+        })
+        .catch(function () {
+          loaded[nextMode] = true;
+          cache[nextMode] = 'Could not load instructions file.';
+          if (mode === nextMode) out.textContent = cache[nextMode];
+        });
+    }
+    if (expandedBtn) expandedBtn.addEventListener('click', function () {
+      setMode('expanded');
+      if (menu.open) loadText('expanded');
+    });
+    if (simpleBtn) simpleBtn.addEventListener('click', function () {
+      setMode('simple');
+      if (menu.open) loadText('simple');
+    });
+    menu.addEventListener('toggle', function () {
+      if (!menu.open) return;
+      loadText(mode);
     });
   })();
   (function () {
@@ -835,6 +887,20 @@
 <div class="legit-panel-title">Part Stat Effects</div>
 <div id="stat-effects"><div class="stats-empty">Select parts to see their stat effects.</div></div>
 </div>
+<details class="rebuild-details cc-build-stats-panel" id="rebuildBuildStatsSection" open="">
+<summary>Build stats (core snapshot)</summary>
+<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
+<div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Uses PARTS_STATS_DATA, weapon init tables when a slug appears in output, or parsed text. Full lines and per-bucket breakdown below.</div>
+<div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
+<div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
+<div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
+<details class="rebuild-details" id="buildStatsDebugDetails" style="margin-top:10px;">
+<summary style="cursor:pointer;color:#00f3ff;font-size:11px;">Debug</summary>
+<div id="buildStatsDebugBody" style="margin-top:8px;font-size:11px;font-family:ui-monospace,monospace;max-height:280px;overflow:auto;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.9);"></div>
+</details>
+</div>
+</details>
 </div>
 <div style="display:flex;flex-direction:column;gap:14px;">
 <div class="legit-panel" style="flex:1;">
@@ -906,6 +972,7 @@
 <script src="../assets/data/itempoollist_droprows_data.js"></script>
 <script src="../assets/data/source_paths_data.js"></script>
 <script src="../assets/data/legit_schedule_data.js"></script>
+<script src="../assets/data/stx_rarities.js"></script>
 <script src="../assets/data/classmod_manifest_items.js"></script>
 <script src="../assets/js/cc-item-slug.js"></script>
 <script src="../assets/js/tag-comp-validation.js"></script>
@@ -918,5 +985,9 @@
 <script>window.STX_DECODER_IFRAME_URL = 'bl4-bulk-decoder.html';</script>
 <script src="../assets/js/cc-stx-decoder-bridge.js"></script>
 <script src="../assets/js/legit-decode-validate.js"></script>
+<script src="../assets/data/stx_dataset.js"></script>
+<script src="../assets/data/part_ref_meta.js"></script>
+<script src="../assets/js/cc-build-stats-rebuild.js"></script>
+<script src="../assets/js/rebuild-presets-random.js"></script>
 </body>
 </html>

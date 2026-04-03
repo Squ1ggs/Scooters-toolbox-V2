@@ -15,6 +15,14 @@
   function byId(id) { try { return document.getElementById(id); } catch (_) { return null; } }
   function q(s) { return String(s == null ? '' : s).trim(); }
 
+  /** Text fields scanned for part refs + slug hints (standalone builders + main toolbox). */
+  var BUILD_STATS_TEXT_SOURCE_IDS = [
+    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'deserialized-code-output',
+    'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml',
+    'output-code-live', 'output-code-yaml', 'output-code', 'importBox', 'code-output',
+    'yamlInput', 'bv-input', 'yamlAddSerialsInput', 'serialLibraryPasteArea'
+  ];
+
   function addRefsFromText(text, refs) {
     var s = String(text || '');
     var ms = s.match(/\b\d{1,6}:\d{1,6}\b/g);
@@ -151,6 +159,8 @@
     maxaccuracy_scale: 'accuracy',
     spread_scale: 'accuracy',
     zoomtime_scale: 'ads',
+    /** Init tables use zoomduration_scale (e.g. Dad_UB); treat like zoom time → ADS. */
+    zoomduration_scale: 'ads',
     sway_scale: 'ads',
     recoil_scale: 'ads',
     accimpulse_scale: 'ads',
@@ -168,7 +178,31 @@
    * - _scale: direct multiplier (e.g. damage_scale 0.95)
    * - _add: additive (e.g. critdamage_add 0.35 = +35% crit damage -> mult 1.35)
    * - _value: additive offset to base stat, NOT a multiplier — exclude from mult display
+   *
+   * For core cards, combined mult is meant to track “direction of benefit” (higher ≈ better).
+   * Scales that worsen handling when the raw number goes up use benefitMult = 1/val (same idea
+   * as spread_scale). Not inverted: damage, firerate, projpershot, elemental, crit add,
+   * reloadtime (reload card uses speed/time explicitly).
    */
+  var WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT = {
+    spread_scale: 1,
+    maxaccuracy_scale: 1,
+    accuracy_scale: 1,
+    recoil_scale: 1,
+    accimpulse_scale: 1,
+    sway_scale: 1,
+    equiptime_scale: 1,
+    putdowntime_scale: 1,
+    zoomtime_scale: 1,
+    zoomduration_scale: 1
+  };
+
+  function wstatRawScaleToBenefitMult(key, val) {
+    if (val === 0 || !Number.isFinite(val)) return null;
+    if (WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[key]) return 1 / val;
+    return val;
+  }
+
   function applyWstatsObjectToBuckets(obj, buckets, record, partLabel) {
     if (!obj || typeof obj !== 'object') return;
     var pl = partLabel || '';
@@ -183,10 +217,9 @@
       var mult;
       if (k.indexOf('_add') !== -1) {
         mult = 1 + val;
-      } else if (k === 'spread_scale') {
-        mult = 1 / val;
       } else {
-        mult = val;
+        mult = wstatRawScaleToBenefitMult(k, val);
+        if (mult == null) continue;
       }
       record(bucket, k, mult, { part: pl, source: 'WEAPON_STATS_DATA', detail: k + ': ' + obj[k], multApplied: mult });
     }
@@ -289,9 +322,8 @@
         if (sd.item && sd.item.slug) return String(sd.item.slug);
       }
     } catch (_) {}
-    var outIds = ['guidedOutputDeserialized', 'outCode', 'deserialized-code-output', 'deserialized-code-output-yaml', 'importBox'];
-    for (var i = 0; i < outIds.length; i++) {
-      var el = byId(outIds[i]);
+    for (var si = 0; si < BUILD_STATS_TEXT_SOURCE_IDS.length; si++) {
+      var el = byId(BUILD_STATS_TEXT_SOURCE_IDS[si]);
       if (!el) continue;
       var t = String(el.value != null ? el.value : el.textContent || '').slice(0, 120000);
       var m = t.match(/\b([a-z]+_(?:pistol|shotgun|ar|smg|sniper|heavy_weapon)(?:_[a-z0-9]+)*)\b/i);
@@ -375,12 +407,11 @@
   /** Shared by accumulateFromSelected + getFullStatsBreakdown */
   function collectRefsAndDedupedParts() {
     var refs = new Set();
-    var outIds = ['guidedOutputDeserialized', 'outCode', 'deserialized-code-output', 'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml', 'output-code-live', 'output-code-yaml', 'output-code', 'importBox'];
-    for (var i = 0; i < outIds.length; i++) {
-      var el = byId(outIds[i]);
-      if (!el) continue;
-      var txt = String(el.value != null ? el.value : el.textContent || '').slice(0, 200000);
-      addRefsFromText(txt, refs);
+    for (var ci = 0; ci < BUILD_STATS_TEXT_SOURCE_IDS.length; ci++) {
+      var elC = byId(BUILD_STATS_TEXT_SOURCE_IDS[ci]);
+      if (!elC) continue;
+      var txtC = String(elC.value != null ? elC.value : elC.textContent || '').slice(0, 200000);
+      addRefsFromText(txtC, refs);
     }
     try {
       var selects = document.querySelectorAll('select');
@@ -453,6 +484,128 @@
     return line;
   }
 
+  /**
+   * Same resolution order as the full-stats panel: PARTS_STATS_DATA → barrel/mag init → embedded text.
+   * @returns {{ source: string, lines: string[], excelRows: Array|null }}
+   */
+  function computeFullStatLinesForPart(part, slug) {
+    var excelStats = null;
+    try {
+      excelStats = getExcelStatsForPart(part);
+    } catch (_) {}
+    var source = 'embedded stat text';
+    var lines = [];
+    var excelRows = null;
+    if (excelStats && excelStats.length) {
+      source = 'PARTS_STATS_DATA';
+      excelRows = excelStats;
+      for (var j = 0; j < excelStats.length; j++) {
+        lines.push(formatExcelStatRow(excelStats[j]));
+      }
+    } else if (slug) {
+      var wRow = tryBarrelMagWstats(part, slug);
+      if (wRow) {
+        source = 'WEAPON_STATS_DATA (barrel/mag init)';
+        lines = wstatsObjectToLines(wRow);
+      }
+    }
+    if (!lines.length) {
+      var raw = '';
+      try {
+        raw = displayStatsFor(part) || '';
+      } catch (_) {}
+      if (raw) {
+        lines = raw.split(/(?:\r?\n|\r|;|\u2022|\u25AA|\u25CF)+/).map(function (t) { return t.trim(); }).filter(Boolean);
+        if (source === 'embedded stat text' && lines.length) source = 'embedded stat text (dataset / ZIP)';
+      }
+    }
+    return { source: source, lines: lines, excelRows: excelRows };
+  }
+
+  function excelRowImpactScore(s) {
+    if (!s || typeof s !== 'object') return 0;
+    var comb = String(s.combine || '').trim();
+    if (comb === 'value') return -1;
+    var val = Number(s.stat_value);
+    if (!Number.isFinite(val)) return 0;
+    if (comb === 'mul') {
+      if (val === 0) return 0;
+      return Math.abs(Math.log(Math.max(1e-9, Math.abs(val))));
+    }
+    return Math.abs(val);
+  }
+
+  function wstatLineImpactScore(line) {
+    var m = String(line || '').match(/^([^:]+):\s*(.+)$/);
+    if (!m) return textLineImpactScore(line);
+    var key = m[1].trim();
+    if (/_value$/i.test(key)) return -1;
+    var v = parseFloat(String(m[2]).trim().replace(/,/g, ''));
+    if (!Number.isFinite(v) || v === 0) return 0;
+    if (/_add$/i.test(key)) return Math.abs(v);
+    if (/_scale$/i.test(key)) {
+      if (WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[key]) {
+        if (v === 0) return 0;
+        return Math.abs(Math.log(Math.max(1e-9, 1 / Math.abs(v))));
+      }
+      return Math.abs(Math.log(Math.max(1e-9, Math.abs(v))));
+    }
+    return Math.abs(v);
+  }
+
+  function textLineImpactScore(line) {
+    var mult = parseNumericEffect(line);
+    if (mult != null && Number.isFinite(mult) && mult > 0) {
+      return Math.abs(Math.log(Math.max(1e-9, mult)));
+    }
+    var s = String(line || '');
+    var best = 0;
+    var re = /([+-]?\d+(?:\.\d+)?)\s*%/g;
+    var mm;
+    while ((mm = re.exec(s)) !== null) {
+      var left = s.slice(Math.max(0, mm.index - 18), mm.index).toLowerCase();
+      var right = s.slice(mm.index, Math.min(s.length, mm.index + 26)).toLowerCase();
+      if (/(chance|proc)/.test(left) || /(chance|proc)/.test(right)) continue;
+      var x = Math.abs(parseFloat(String(mm[1]).replace(/\s+/g, '')));
+      if (Number.isFinite(x) && x > best) best = x;
+    }
+    return best;
+  }
+
+  /** Largest / most multiplicative changes first; stable tie-break on original index. */
+  function sortFullStatLinesByImpact(lines, source, excelRows) {
+    if (!lines || lines.length <= 1) return lines.slice();
+    var decorated = [];
+    for (var i = 0; i < lines.length; i++) {
+      var sc;
+      if (excelRows && excelRows[i]) {
+        sc = excelRowImpactScore(excelRows[i]);
+      } else if (String(source || '').indexOf('WEAPON_STATS') >= 0) {
+        sc = wstatLineImpactScore(lines[i]);
+      } else {
+        sc = textLineImpactScore(lines[i]);
+      }
+      decorated.push({ line: lines[i], score: sc, idx: i });
+    }
+    decorated.sort(function (a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.idx - b.idx;
+    });
+    return decorated.map(function (d) { return d.line; });
+  }
+
+  /**
+   * One entry for Guided slot previews / tooling. slugHint may be '' to use inferSlugHint().
+   * @returns {{ name: string, source: string, lines: string[] }}
+   */
+  function getFullStatLinesForPart(part, slugHint) {
+    var slug = (slugHint != null && String(slugHint).trim() !== '') ? String(slugHint).trim() : inferSlugHint();
+    var name = partDisplayName(part);
+    var pack = computeFullStatLinesForPart(part, slug);
+    var lines = sortFullStatLinesByImpact(pack.lines, pack.source, pack.excelRows);
+    return { name: name, source: pack.source, lines: lines };
+  }
+
   /** Per-part lines for the full-stats panel (PARTS_STATS_DATA → weapon init tables → embedded text). Matches Legit Builder priority where possible. */
   function getFullStatsBreakdown() {
     var col = collectRefsAndDedupedParts();
@@ -464,43 +617,19 @@
     for (var i = 0; i < col.deduped.length; i++) {
       var part = col.deduped[i];
       var name = partDisplayName(part);
-      var excelStats = null;
-      try {
-        excelStats = getExcelStatsForPart(part);
-      } catch (_) {}
-      var source = 'embedded stat text';
-      var lines = [];
-      if (excelStats && excelStats.length) {
-        source = 'PARTS_STATS_DATA';
-        for (var j = 0; j < excelStats.length; j++) {
-          lines.push(formatExcelStatRow(excelStats[j]));
-        }
-      } else if (slug) {
-        var wRow = tryBarrelMagWstats(part, slug);
-        if (wRow) {
-          source = 'WEAPON_STATS_DATA (barrel/mag init)';
-          lines = wstatsObjectToLines(wRow);
-        }
-      }
-      if (!lines.length) {
-        var raw = '';
-        try {
-          raw = displayStatsFor(part) || '';
-        } catch (_) {}
-        if (raw) {
-          lines = raw.split(/(?:\r?\n|\r|;|\u2022|\u25AA|\u25CF)+/).map(function (t) { return t.trim(); }).filter(Boolean);
-          if (source === 'embedded stat text' && lines.length) source = 'embedded stat text (dataset / ZIP)';
-        }
-      }
-      entries.push({ name: name, source: source, lines: lines });
+      var pack = computeFullStatLinesForPart(part, slug);
+      var lines = sortFullStatLinesByImpact(pack.lines, pack.source, pack.excelRows);
+      entries.push({ name: name, source: pack.source, lines: lines });
     }
     if (slug) {
       var mfr = lookupMfrStats(slug);
       if (mfr && Object.keys(mfr).length) {
+        var mlines = wstatsObjectToLines(mfr);
+        mlines = sortFullStatLinesByImpact(mlines, 'WEAPON_STATS_DATA (manufacturer init)', null);
         entries.unshift({
           name: 'Manufacturer (' + (getMfrFromSlug(slug) || slug) + ')',
           source: 'WEAPON_STATS_DATA (manufacturer init)',
-          lines: wstatsObjectToLines(mfr)
+          lines: mlines
         });
       }
     }
@@ -598,12 +727,11 @@
 
   function getBuildStatsDebugInfo() {
     var refs = new Set();
-    var outIds = ['guidedOutputDeserialized', 'outCode', 'deserialized-code-output', 'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml', 'output-code-live', 'output-code-yaml', 'output-code', 'importBox'];
-    for (var i = 0; i < outIds.length; i++) {
-      var el = byId(outIds[i]);
-      if (!el) continue;
-      var txt = String(el.value != null ? el.value : el.textContent || '').slice(0, 200000);
-      addRefsFromText(txt, refs);
+    for (var di = 0; di < BUILD_STATS_TEXT_SOURCE_IDS.length; di++) {
+      var elD = byId(BUILD_STATS_TEXT_SOURCE_IDS[di]);
+      if (!elD) continue;
+      var txtD = String(elD.value != null ? elD.value : elD.textContent || '').slice(0, 200000);
+      addRefsFromText(txtD, refs);
     }
     try {
       var selects = document.querySelectorAll('select');
@@ -662,6 +790,8 @@
   window.displayStatsFor = displayStatsFor;
   window.getBuildStatsDebugInfo = getBuildStatsDebugInfo;
   window.getFullStatsBreakdown = getFullStatsBreakdown;
+  window.getFullStatLinesForPart = getFullStatLinesForPart;
+  window.sortFullStatLinesByImpact = sortFullStatLinesByImpact;
 
   function triggerRefresh() {
     try {
@@ -707,13 +837,12 @@
           window.refreshGuidedOutput.__buildStatsWrapped = true;
         }
       }
-      var outIds = ['guidedOutputDeserialized', 'outCode'];
-      for (var i = 0; i < outIds.length; i++) {
-        var el = byId(outIds[i]);
-        if (el && !el.__buildStatsInputBound) {
-          el.addEventListener('input', function () { setTimeout(triggerRefresh, 80); });
-          el.addEventListener('change', function () { setTimeout(triggerRefresh, 80); });
-          el.__buildStatsInputBound = true;
+      for (var bi = 0; bi < BUILD_STATS_TEXT_SOURCE_IDS.length; bi++) {
+        var elB = byId(BUILD_STATS_TEXT_SOURCE_IDS[bi]);
+        if (elB && !elB.__buildStatsInputBound) {
+          elB.addEventListener('input', function () { setTimeout(triggerRefresh, 80); });
+          elB.addEventListener('change', function () { setTimeout(triggerRefresh, 80); });
+          elB.__buildStatsInputBound = true;
         }
       }
     } catch (_) {}

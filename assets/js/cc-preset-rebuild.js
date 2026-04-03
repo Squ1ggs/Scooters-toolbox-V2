@@ -6,6 +6,9 @@
 (function () {
   'use strict';
 
+  /** How long preset success/error toasts and the floating tooltip stay visible (ms). */
+  var PRESET_MESSAGE_VISIBLE_MS = 12000;
+
   function byId(id) { return document.getElementById(id); }
 
   function yamlTextarea() {
@@ -135,16 +138,68 @@
     setTimeout(function () { ta.style.boxShadow = prev; }, 420);
   }
 
+  var __ccToastHideTimer = null;
   function __ccToast(msg, ok) {
     try {
-      var el = byId('yaml-status');
-      if (el) {
-        el.style.display = 'block';
-        el.textContent = msg;
-        el.style.color = ok ? 'rgba(0,255,200,0.9)' : 'rgba(255,150,120,0.95)';
-        setTimeout(function () { el.style.display = 'none'; }, 1800);
+      if (__ccToastHideTimer) {
+        clearTimeout(__ccToastHideTimer);
+        __ccToastHideTimer = null;
       }
+      var el = byId('yaml-status');
+      var presetBar = byId('ccPresetActionStatus');
+      function apply(node) {
+        if (!node) return;
+        node.style.display = 'block';
+        node.textContent = msg;
+        if (node.id === 'ccPresetActionStatus') {
+          node.style.color = ok ? 'rgba(200,255,240,0.95)' : 'rgba(255,200,190,0.98)';
+          node.style.border = ok ? '1px solid rgba(0,255,200,0.35)' : '1px solid rgba(255,120,100,0.45)';
+          node.style.background = ok ? 'rgba(0,45,40,0.45)' : 'rgba(55,20,25,0.5)';
+        } else {
+          node.style.color = ok ? 'rgba(0,255,200,0.9)' : 'rgba(255,150,120,0.95)';
+        }
+      }
+      apply(el);
+      apply(presetBar);
+      __ccToastHideTimer = setTimeout(function () {
+        if (el) el.style.display = 'none';
+        if (presetBar) presetBar.style.display = 'none';
+        __ccToastHideTimer = null;
+      }, PRESET_MESSAGE_VISIBLE_MS);
     } catch (_) {}
+  }
+
+  var PRESET_ACTION_SUCCESS = {
+    clearMapFog: 'Map fog data written.',
+    discoverAllLocations: 'Location discovery updated.',
+    completeAllSafehouseMissions: 'Safehouse/silo mission sets merged.',
+    completeAllStoryMissions: 'Story missions merged; epilogue staged.',
+    completeAllMissions: 'All mission sets merged; extras applied.',
+    unlockPostgame: 'Postgame / UVHM globals updated.',
+    setCharacterToMaxLevel: 'Character level and XP updated.',
+    setMaxSDU: 'SDU progression maxed.',
+    unlockVaultPowers: 'Vault power collectibles set.',
+    unlockAllHoverDrives: 'Hover drive unlock list merged.',
+    unlockAllSpecialization: 'Specialization XP and tokens updated.',
+    maxCurrency: 'Cash and eridium maxed.',
+    maxAmmo: 'Ammo pools maxed.',
+    unlockMaxEverything: 'Full unlock preset applied.',
+    completeAllCollectibles: 'Collectibles merged from preset data.',
+    completeAllChallenges: 'Challenge stats updated.',
+    completeAllAchievements: 'Achievement counters updated.',
+    updateAllSerialLevels: 'Item serial levels synced to character level.',
+    setAllItemsToSpecificLevel: 'Item levels set to target.',
+    unlockNewGameShortcuts: 'Profile shared_progress entries merged.',
+    unlockAllCosmetics: 'Profile cosmetic unlock lists merged.'
+  };
+
+  function presetOutcomeMessage(fnName, changed, capturedAlert) {
+    if (capturedAlert) return null;
+    if (fnName && PRESET_ACTION_SUCCESS[fnName]) {
+      return changed ? PRESET_ACTION_SUCCESS[fnName] : PRESET_ACTION_SUCCESS[fnName] + ' (YAML unchanged — may already match.)';
+    }
+    if (changed) return 'Changes applied to YAML.';
+    return 'No YAML change (nothing to do or already applied).';
   }
 
   var __ccResultTooltipTimer = null;
@@ -180,7 +235,7 @@
       tip.style.opacity = '0';
       setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 200);
       __ccResultTooltipTimer = null;
-    }, 2800);
+    }, PRESET_MESSAGE_VISIBLE_MS);
   }
 
   function closestActionTarget(start) {
@@ -258,17 +313,28 @@
     __ccFlashYaml(changed);
     if (capturedAlert) {
       showResultTooltip(target, false, capturedAlert);
+      __ccToast(capturedAlert, false);
     } else {
       var fnName = target.getAttribute('data-fn') || '';
+      var act = target.getAttribute('data-action') || '';
       var msg;
       if (fnName === 'showAddItemsPopup') {
         msg = 'Add Items dialog opened. Paste serials and click Add.';
+      } else if (act === 'call' && fnName) {
+        msg = presetOutcomeMessage(fnName, changed, null) || 'Done.';
+      } else if (act === 'set-character') {
+        msg = changed ? 'Character class / name / GUID lines updated in YAML.' : 'YAML unchanged (already this class or no matching lines).';
+      } else if (act === 'set-difficulty') {
+        msg = changed ? 'player_difficulty updated in YAML.' : 'No change (line missing or already that difficulty).';
+      } else if (act === 'apply-stats') {
+        msg = changed ? 'Level, XP, spec, and currencies written to YAML.' : 'No change (same values or YAML parse failed).';
       } else if (changed) {
         msg = 'Changes applied successfully.';
       } else {
-        msg = 'No changes made (data may already be set).';
+        msg = 'No YAML change (already applied or nothing to update).';
       }
       showResultTooltip(target, true, msg);
+      __ccToast(msg, true);
     }
   }, true);
 

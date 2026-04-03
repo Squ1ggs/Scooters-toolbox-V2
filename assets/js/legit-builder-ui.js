@@ -23,6 +23,7 @@
         detailLines += '<div class="v-detail-line' + (metaRe.test(line) ? ' v-detail-meta' : '') + '">' + escapeV(line) + '</div>';
       }
       validationEl.innerHTML = '<strong>' + escapeV(st.statusText) + '</strong><div class="v-details">' + detailLines + '</div>' + st.miniLineageHtml;
+      if (typeof window.__stxRefreshLegitSlotOptionValidity === 'function') window.__stxRefreshLegitSlotOptionValidity();
     }
     itemSelect.addEventListener('change', function() {
       var slug = itemSelect.value;

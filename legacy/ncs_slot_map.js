@@ -1,6 +1,6 @@
 const NCS_SLOT_MAP = {
   _meta: {
-    source: 'NCS Parser inv4.json cross-referenced with bl4_manifest.js',
+    source: 'NCS Parser inv4.json cross-referenced with bl4_manifest.js; inv tags refreshed via ../references/json (see scripts/DATA_PIPELINE.txt)',
     note: 'True part slot definitions per item type from game data'
   },
 
@@ -37,28 +37,28 @@ const NCS_SLOT_MAP = {
   items: {
     daedalus_ar: {
       ncs_id: 'DAD_AR', type: 'Weapon_AR', manufacturer: 'Daedalus',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
     jakobs_ar: {
       ncs_id: 'JAK_AR', type: 'Weapon_AR', manufacturer: 'Jakobs',
-      ncs_slots: ['body','body_acc','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 15
+      ncs_slots: ['body','body_acc','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 16
     },
     order_ar: {
       ncs_id: 'ORD_AR', type: 'Weapon_AR', manufacturer: 'Order',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 17
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 18
     },
     tediore_ar: {
       ncs_id: 'TED_AR', type: 'Weapon_AR', manufacturer: 'Tediore',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','tediore_acc','tediore_secondary_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 19
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','tediore_acc','tediore_secondary_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 20
     },
     torgue_ar: {
       ncs_id: 'TOR_AR', type: 'Weapon_AR', manufacturer: 'Torgue',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
     vladof_ar: {
       ncs_id: 'VLA_AR', type: 'Weapon_AR', manufacturer: 'Vladof',
@@ -68,49 +68,49 @@ const NCS_SLOT_MAP = {
 
     daedalus_pistol: {
       ncs_id: 'DAD_PS', type: 'Weapon_PS', manufacturer: 'Daedalus',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 17
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 18
     },
     jakobs_pistol: {
       ncs_id: 'JAK_PS', type: 'Weapon_PS', manufacturer: 'Jakobs',
-      ncs_slots: ['body','body_acc','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 15
+      ncs_slots: ['body','body_acc','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 16
     },
     order_pistol: {
       ncs_id: 'ORD_PS', type: 'Weapon_PS', manufacturer: 'Order',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 17
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 18
     },
     tediore_pistol: {
       ncs_id: 'TED_PS', type: 'Weapon_PS', manufacturer: 'Tediore',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','tediore_acc','tediore_secondary_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 19
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','tediore_acc','tediore_secondary_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 20
     },
     torgue_pistol: {
       ncs_id: 'TOR_PS', type: 'Weapon_PS', manufacturer: 'Torgue',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
 
     ripper_shotgun: {
       ncs_id: 'BOR_SG', type: 'Weapon_SG', manufacturer: 'Borg',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_borg','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 20
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_borg','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 21
     },
     daedalus_shotgun: {
       ncs_id: 'DAD_SG', type: 'Weapon_SG', manufacturer: 'Daedalus',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
     jakobs_shotgun: {
       ncs_id: 'JAK_SG', type: 'Weapon_SG', manufacturer: 'Jakobs',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 19
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 20
     },
     maliwan_shotgun: {
       ncs_id: 'MAL_SG', type: 'Weapon_SG', manufacturer: 'Maliwan',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 19
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 20
     },
     tediore_shotgun: {
       ncs_id: 'TED_SG', type: 'Weapon_SG', manufacturer: 'Tediore',
@@ -119,24 +119,24 @@ const NCS_SLOT_MAP = {
     },
     torgue_shotgun: {
       ncs_id: 'TOR_SG', type: 'Weapon_SG', manufacturer: 'Torgue',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
 
     ripper_smg: {
       ncs_id: 'BOR_SM', type: 'Weapon_SM', manufacturer: 'Borg',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_borg','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
-      ncs_slot_count: 20
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_borg','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','secondary_ammo','pearl_elem','pearl_stat'],
+      ncs_slot_count: 21
     },
     daedalus_smg: {
       ncs_id: 'DAD_SM', type: 'Weapon_SM', manufacturer: 'Daedalus',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 18
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 19
     },
     maliwan_smg: {
       ncs_id: 'MAL_SM', type: 'Weapon_SM', manufacturer: 'Maliwan',
-      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
-      ncs_slot_count: 19
+      ncs_slots: ['body','body_acc','body_ele','barrel','barrel_acc','hyperion_secondary_acc','magazine','magazine_acc','magazine_ted_thrown','body_bolt','scope','scope_acc','grip','underbarrel','foregrip','body_mag','secondary_ammo','secondary_ele','pearl_elem','pearl_stat'],
+      ncs_slot_count: 20
     },
     vladof_smg: {
       ncs_id: 'VLA_SM', type: 'Weapon_SM', manufacturer: 'Vladof',

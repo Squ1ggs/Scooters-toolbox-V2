@@ -13,7 +13,24 @@
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
 <!-- If api/config.php items_bump_secret is set, paste same value here (deters abuse; not a true secret once deployed) -->
 <meta content="" name="stx-items-bump-key"/>
-<title>Scooter's Toolbox – Rebuild</title>
+<title>Scooter's Toolbox — BL4 save editor, YAML &amp; item serial tools</title>
+<meta content="Free browser BL4 tools: .sav ↔ YAML save editing, item serial decode/build, bulk checks, guided builder. No install — runs locally in your browser." name="description"/>
+<meta content="index,follow" name="robots"/>
+<meta content="Scooter's Toolbox" name="application-name"/>
+<meta content="#060a12" name="theme-color"/>
+<meta content="BL4 save editor, BL4 YAML editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder" name="keywords"/>
+<link href="https://scooters-toolbox.netlify.app/" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="https://scooters-toolbox.netlify.app/" property="og:url"/>
+<meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" property="og:title"/>
+<meta content="Browser BL4 save editor: decrypt and edit .sav as YAML, tweak inventory serials, bulk-decode items, guided builder — offline-friendly." property="og:description"/>
+<meta content="en_US" property="og:locale"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" name="twitter:title"/>
+<meta content="Browser BL4 save editor: .sav ↔ YAML, item serial tools, bulk decode, guided builder." name="twitter:description"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","url":"https://scooters-toolbox.netlify.app/","applicationCategory":"GameApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based BL4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools."}
+</script>
 <link href="./assets/favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./assets/favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
 <link href="./assets/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -29,25 +46,29 @@
 <script src="./assets/js/cc-rebuild-populate.js"></script>
 <script defer="" src="./assets/data/legacy_classmod_names.js"></script>
 <script defer="" src="./assets/data/legacy_classmod_skills_full.js"></script>
+<script defer="" src="./assets/data/classmod_perk_meta.js"></script>
 <script defer="" src="./assets/data/enhancement_data.js"></script>
 <script defer="" src="./assets/js/cc-rebuild-bootstrap.js"></script>
+<script defer="" src="./legacy/ncs_slot_map.js"></script>
 <script defer="" src="./assets/js/cc-item-slug.js"></script>
 <script defer="" src="./assets/js/stx-simple-builder-core.js"></script>
 <script defer="" src="./assets/js/cc-guided-builder-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-classmod-checklist-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-enhancement-checklist-rebuild.js"></script>
-<script defer="" src="./assets/js/cc-adv-search-stable-v1.js"></script>
+<script defer="" src="./assets/js/cc-adv-search-stable.js"></script>
 <script defer="" src="./assets/data/weapon_stats_data.js"></script>
 <script defer="" src="./assets/js/cc-build-stats-rebuild.js"></script>
 <script defer="" src="./assets/vendor/cryptojs-inline.js"></script>
 <script defer="" src="./assets/vendor/pako-inline.js"></script>
 <script defer="" src="./assets/vendor/jsyaml-inline.js"></script>
 <script defer="" src="./assets/js/cc-base85-rebuild.js"></script>
+<script defer="" src="./assets/js/stx-nicnl-serial-pack.js"></script>
 <script defer="" src="./assets/js/cc-serial-nicnl-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-sav-crypto-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-yaml-save-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-stx-decoder-bridge.js"></script>
 <script src="./assets/data/serials_data.js"></script>
+<script src="./assets/data/godroll_serials_data.js"></script>
 <script src="./assets/data/bl4_spawncodes_bundle_serials.js"></script>
 <script src="./assets/data/bl4_spawncodes_bundle_notes.js"></script>
 <script src="./assets/data/parts_stats_data.js"></script>
@@ -94,8 +115,6 @@
 
     @media (prefers-reduced-motion: reduce) {
       :root { --transition-fast: 0ms; --transition-mid: 0ms; }
-      html.fullAnimButtons :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn),
-      html.fullAnimButtons .with-thanks-list .contributor-name { animation: none !important; }
     }
 
     * { box-sizing: border-box; }
@@ -371,8 +390,22 @@
       from { background-position: 0% 50%; }
       to   { background-position: 100% 50%; }
     }
-    html.fullAnimButtons
-    :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
+    /* Easter-egg full anim: wide gradient layer slides via transform (no background-position fight). */
+    /* Slide by 2/3 of the 300%-wide layer so all gradient stops (incl. right-side dark bands) cross the viewport; -33% only cycled the first ~66% of the strip. */
+    @keyframes stxEggSheenSlide {
+      from { transform: translateX(0); }
+      to { transform: translateX(-66.666%); }
+    }
+    /* Explicit selectors (not :where) so class specificity beats ID-scoped panel rules + static egg fills. */
+    html.fullAnimButtons .btn:not(.egg-off-btn),
+    html.fullAnimButtons .btn--brand:not(.egg-off-btn),
+    html.fullAnimButtons .btn-primary:not(.egg-off-btn),
+    html.fullAnimButtons .btn-Firmware:not(.egg-off-btn),
+    html.fullAnimButtons a.btn:not(.egg-off-btn),
+    html.fullAnimButtons .rebuild-floating-btn,
+    html.fullAnimButtons #rp-saveyaml-tab,
+    html.fullAnimButtons .with-thanks-toggle,
+    html.fullAnimButtons .credits-discord-btns .btn:not(.egg-off-btn) {
       background-image: linear-gradient(90deg, #00f3ff 0%, #00f3ff 20%, #ff00c8 50%, #00f3ff 80%, #00f3ff 100%) !important;
       background-size: 300% 100% !important;
       background-repeat: no-repeat !important;
@@ -383,52 +416,39 @@
       text-shadow: none !important;
       border-color: rgba(255,0,200,0.5) !important;
     }
-    html.fullAnimButtons body.mattmab-reskin :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
+    /* Contributor pills: default toolbox sweep when Full anim on (no easter-egg theme). */
+    html.fullAnimButtons body:not(.mattmab-reskin):not(.mac10-reskin):not(.badley-reskin):not(.scooter-reskin):not(.ynot-reskin) .with-thanks-list .contributor-name {
       background: none !important;
-      background-image: linear-gradient(90deg, #ffd700 0%, #468cff 25%, #ff6b6b 50%, #468cff 75%, #ffd700 100%) !important;
+      background-image: linear-gradient(90deg, rgba(0,243,255,0.55) 0%, rgba(0,243,255,0.65) 20%, rgba(255,0,200,0.65) 50%, rgba(0,243,255,0.65) 80%, rgba(0,243,255,0.55) 100%) !important;
       background-size: 300% 100% !important;
       background-repeat: no-repeat !important;
       background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-    }
-    html.fullAnimButtons body.mac10-reskin :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
-      background: none !important;
-      background-image: linear-gradient(90deg, #ff5050 0%, #1a1414 30%, #ff6060 50%, #1a1414 70%, #ff5050 100%) !important;
-      background-size: 300% 100% !important;
-      background-repeat: no-repeat !important;
-      background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-    }
-    html.fullAnimButtons body.badley-reskin :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
-      background: none !important;
-      background-image: linear-gradient(90deg, #9b6eff 0%, #ffb9e6 30%, #9b6eff 50%, #ffb9e6 70%, #9b6eff 100%) !important;
-      background-size: 300% 100% !important;
-      background-repeat: no-repeat !important;
-      background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-    }
-    html.fullAnimButtons body.scooter-reskin :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
-      background: none !important;
-      background-image: linear-gradient(90deg, #00ff78 0%, #ff2828 30%, #00ff78 50%, #ff2828 70%, #00ff78 100%) !important;
-      background-size: 300% 100% !important;
-      background-repeat: no-repeat !important;
-      background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-    }
-    html.fullAnimButtons body.ynot-reskin :where(.btn, .btn--brand, .btn-primary, .btn-Firmware, a.btn, .rebuild-floating-btn, #rp-saveyaml-tab, .with-thanks-toggle, .credits-discord-btns .btn):not(.egg-off-btn):not([id*="Add"]) {
-      background: none !important;
-      background-image: linear-gradient(90deg, #00e5ff 0%, #0a0a0c 22%, #00c8e0 50%, #0a0a0c 78%, #00e5ff 100%) !important;
-      background-size: 300% 100% !important;
-      background-repeat: no-repeat !important;
-      background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-    }
-    html.fullAnimButtons .with-thanks-list .contributor-name {
-      background-image: linear-gradient(90deg, rgba(0,243,255,0.4) 0%, rgba(0,243,255,0.5) 25%, rgba(255,0,200,0.5) 50%, rgba(0,243,255,0.5) 75%, rgba(0,243,255,0.4) 100%) !important;
-      background-size: 300% 100% !important;
-      background-repeat: no-repeat !important;
       animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: background-position;
+      color: #08151c !important;
+      border-color: rgba(255,0,200,0.45) !important;
+      text-shadow: none !important;
+    }
+    /* Same top toolbox links: keep sweep + add pulsing gold glow when Full anim is on */
+    html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
+    html.fullAnimButtons a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn),
+    html.fullAnimButtons a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn),
+    html.fullAnimButtons a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn),
+    html.fullAnimButtons a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn) {
+      animation:
+        stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate,
+        stxGoldNavGlowPulse 2.35s ease-in-out infinite !important;
+    }
+    html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn):hover,
+    html.fullAnimButtons a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn):hover,
+    html.fullAnimButtons a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn):hover,
+    html.fullAnimButtons a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn):hover,
+    html.fullAnimButtons a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn):hover {
+      border-color: rgba(255, 248, 210, 0.98) !important;
+      box-shadow:
+        0 0 0 1px rgba(255, 252, 230, 0.35) inset,
+        0 0 26px rgba(255, 220, 110, 0.65),
+        0 0 48px rgba(255, 185, 65, 0.45) !important;
     }
 
     /* ---------- Credits section ---------- */
@@ -495,21 +515,22 @@
     .credits-discord-btns { display: flex; flex-wrap: wrap; gap: 10px; }
 
     /* Easter egg reskin themes */
-    body.mattmab-reskin { --accent-cyan: #ffd700; --accent-pink: #ff6b6b; background: linear-gradient(135deg,#0a1628,#1a0a0a,#060a15,#2a1a0a,#0a2a1a,#1a2a3a,#0a1628) !important; }
+    body.mattmab-reskin { --accent-cyan: #ffd700; --accent-pink: #468cff; background: linear-gradient(135deg,#0a1628,#1a0a0a,#060a15,#2a1a0a,#0a2a1a,#1a2a3a,#0a1628) !important; }
     body.mattmab-reskin .header-bar, body.mattmab-reskin .panel { border-color: rgba(255,215,0,0.4) !important; }
-    body.mattmab-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,215,0,0.4), rgba(35,140,255,0.35), rgba(255,107,107,0.35)) !important; }
+    /* Static egg button fill only when Full anim is off (otherwise sweep rules must win cascade). */
+    html:not(.fullAnimButtons) body.mattmab-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,215,0,0.45), rgba(70,140,255,0.42)) !important; }
     body.mac10-reskin { --accent-cyan: #ff5050; --accent-pink: #1a1a1a; background: linear-gradient(135deg,#1a0505,#0a0505,#150808) !important; }
     body.mac10-reskin .header-bar, body.mac10-reskin .panel { border-color: rgba(255,80,80,0.4) !important; }
-    body.mac10-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,80,80,0.5), rgba(12,12,12,0.9)) !important; }
+    html:not(.fullAnimButtons) body.mac10-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,80,80,0.5), rgba(12,12,12,0.9)) !important; }
     body.badley-reskin { --accent-cyan: #9b6eff; --accent-pink: #ffb9e6; background: linear-gradient(135deg,#1a0a1a,#0f0515,#150a18) !important; }
     body.badley-reskin .header-bar, body.badley-reskin .panel { border-color: rgba(155,110,255,0.4) !important; }
-    body.badley-reskin .btn--brand { background: linear-gradient(135deg, rgba(155,110,255,0.4), rgba(255,185,230,0.35)) !important; }
+    html:not(.fullAnimButtons) body.badley-reskin .btn--brand { background: linear-gradient(135deg, rgba(155,110,255,0.4), rgba(255,185,230,0.35)) !important; }
     body.scooter-reskin { --accent-cyan: #00ff78; --accent-pink: #ff2828; background: linear-gradient(135deg,#051a0a,#0a1505,#0a1a08) !important; }
     body.scooter-reskin .header-bar, body.scooter-reskin .panel { border-color: rgba(0,255,120,0.4) !important; }
-    body.scooter-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,255,120,0.4), rgba(255,40,40,0.35)) !important; }
+    html:not(.fullAnimButtons) body.scooter-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,255,120,0.4), rgba(255,40,40,0.35)) !important; }
     body.ynot-reskin { --accent-cyan: #00d4e8; --accent-pink: #0a0a0c; background: linear-gradient(135deg,#030508,#050a10,#020406,#080c12) !important; }
     body.ynot-reskin .header-bar, body.ynot-reskin .panel { border-color: rgba(0,212,232,0.42) !important; }
-    body.ynot-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,212,232,0.42), rgba(10,10,14,0.92)) !important; }
+    html:not(.fullAnimButtons) body.ynot-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,212,232,0.42), rgba(10,10,14,0.92)) !important; }
 
     /* Easter egg off button – visible only when a theme is active */
     .egg-off-btn { display: none !important; }
@@ -518,7 +539,7 @@
     /* Save/YAML tab + drawer – easter egg colours */
     body.mattmab-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(255,215,0,.95), rgba(70,120,255,.95)); border-color: rgba(255,215,0,.65); box-shadow: 0 0 22px rgba(255,215,0,.35); }
     body.mattmab-reskin #rp-saveyaml-drawer { border-left-color: rgba(255,215,0,.4); }
-    body.mattmab-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(255,215,0,.2) 0%, rgba(255,107,107,.15) 100%); border-bottom-color: rgba(255,107,107,.3); }
+    body.mattmab-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(255,215,0,.2) 0%, rgba(70,120,255,.18) 100%); border-bottom-color: rgba(70,140,255,.32); }
     body.mattmab-reskin #rp-saveyaml-drawer-title { color: #ffd700; }
     body.mattmab-reskin #rp-saveyaml-drawer-close { border-color: rgba(255,215,0,.5); }
     body.mac10-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(255,80,80,.95), rgba(30,20,20,.95)); border-color: rgba(255,80,80,.65); box-shadow: 0 0 22px rgba(255,80,80,.35); }
@@ -543,28 +564,28 @@
     body.ynot-reskin #rp-saveyaml-drawer-close { border-color: rgba(0,212,232,.5); }
 
     /* Floating code panel (minimized + open) – easter egg colours */
-    body.mattmab-reskin .rebuild-floating-btn { border-color: rgba(255,215,0,.6); background: linear-gradient(135deg, rgba(255,215,0,.4), rgba(70,140,255,.4)), rgba(10,20,40,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(255,215,0,.4); }
-    body.mattmab-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(255,215,0,.5), rgba(70,140,255,.5)), rgba(10,20,40,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(255,215,0,.5); }
+    html:not(.fullAnimButtons) body.mattmab-reskin .rebuild-floating-btn { border-color: rgba(255,215,0,.6); background: linear-gradient(135deg, rgba(255,215,0,.4), rgba(70,140,255,.4)), rgba(10,20,40,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(255,215,0,.4); }
+    html:not(.fullAnimButtons) body.mattmab-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(255,215,0,.5), rgba(70,140,255,.5)), rgba(10,20,40,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(255,215,0,.5); }
     body.mattmab-reskin .rebuild-floating-panel { border-color: rgba(255,215,0,.5); box-shadow: 0 18px 42px rgba(0,0,0,.65), 0 0 24px rgba(255,215,0,.3); }
-    body.mattmab-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(255,215,0,.2) 0%, rgba(255,107,107,.15) 100%); border-bottom-color: rgba(255,107,107,.35); }
+    body.mattmab-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(255,215,0,.2) 0%, rgba(70,120,255,.18) 100%); border-bottom-color: rgba(70,140,255,.35); }
     body.mattmab-reskin #floating-output-close { border-color: rgba(255,215,0,.5); background: rgba(255,215,0,.25); }
-    body.mac10-reskin .rebuild-floating-btn { border-color: rgba(255,80,80,.6); background: linear-gradient(135deg, rgba(255,80,80,.45), rgba(20,10,10,.95)), rgba(5,5,10,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(255,80,80,.4); }
-    body.mac10-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(255,80,80,.55), rgba(20,10,10,.98)), rgba(5,5,10,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(255,80,80,.5); }
+    html:not(.fullAnimButtons) body.mac10-reskin .rebuild-floating-btn { border-color: rgba(255,80,80,.6); background: linear-gradient(135deg, rgba(255,80,80,.45), rgba(20,10,10,.95)), rgba(5,5,10,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(255,80,80,.4); }
+    html:not(.fullAnimButtons) body.mac10-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(255,80,80,.55), rgba(20,10,10,.98)), rgba(5,5,10,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(255,80,80,.5); }
     body.mac10-reskin .rebuild-floating-panel { border-color: rgba(255,80,80,.5); box-shadow: 0 18px 42px rgba(0,0,0,.65), 0 0 24px rgba(255,80,80,.3); }
     body.mac10-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(255,80,80,.25) 0%, rgba(20,10,10,.9) 100%); border-bottom-color: rgba(255,80,80,.35); }
     body.mac10-reskin #floating-output-close { border-color: rgba(255,80,80,.5); background: rgba(255,80,80,.25); }
-    body.badley-reskin .rebuild-floating-btn { border-color: rgba(155,110,255,.6); background: linear-gradient(135deg, rgba(155,110,255,.4), rgba(255,185,230,.4)), rgba(15,10,25,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(155,110,255,.4); }
-    body.badley-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(155,110,255,.5), rgba(255,185,230,.5)), rgba(15,10,25,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(155,110,255,.5); }
+    html:not(.fullAnimButtons) body.badley-reskin .rebuild-floating-btn { border-color: rgba(155,110,255,.6); background: linear-gradient(135deg, rgba(155,110,255,.4), rgba(255,185,230,.4)), rgba(15,10,25,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(155,110,255,.4); }
+    html:not(.fullAnimButtons) body.badley-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(155,110,255,.5), rgba(255,185,230,.5)), rgba(15,10,25,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(155,110,255,.5); }
     body.badley-reskin .rebuild-floating-panel { border-color: rgba(155,110,255,.5); box-shadow: 0 18px 42px rgba(0,0,0,.65), 0 0 24px rgba(155,110,255,.3); }
     body.badley-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(155,110,255,.25) 0%, rgba(255,185,230,.2) 100%); border-bottom-color: rgba(255,185,230,.35); }
     body.badley-reskin #floating-output-close { border-color: rgba(155,110,255,.5); background: rgba(155,110,255,.25); }
-    body.scooter-reskin .rebuild-floating-btn { border-color: rgba(0,255,120,.6); background: linear-gradient(135deg, rgba(0,255,120,.4), rgba(255,40,40,.4)), rgba(5,25,15,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(0,255,120,.4); }
-    body.scooter-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(0,255,120,.5), rgba(255,40,40,.5)), rgba(5,25,15,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(0,255,120,.5); }
+    html:not(.fullAnimButtons) body.scooter-reskin .rebuild-floating-btn { border-color: rgba(0,255,120,.6); background: linear-gradient(135deg, rgba(0,255,120,.4), rgba(255,40,40,.4)), rgba(5,25,15,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(0,255,120,.4); }
+    html:not(.fullAnimButtons) body.scooter-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(0,255,120,.5), rgba(255,40,40,.5)), rgba(5,25,15,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(0,255,120,.5); }
     body.scooter-reskin .rebuild-floating-panel { border-color: rgba(0,255,120,.5); box-shadow: 0 18px 42px rgba(0,0,0,.65), 0 0 24px rgba(0,255,120,.3); }
     body.scooter-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(0,255,120,.25) 0%, rgba(255,40,40,.2) 100%); border-bottom-color: rgba(255,40,40,.35); }
     body.scooter-reskin #floating-output-close { border-color: rgba(0,255,120,.5); background: rgba(0,255,120,.25); }
-    body.ynot-reskin .rebuild-floating-btn { border-color: rgba(0,212,232,.6); background: linear-gradient(135deg, rgba(0,212,232,.4), rgba(12,14,20,.95)), rgba(4,6,10,.92); box-shadow: 0 8px 24px rgba(0,0,0,.55), 0 0 18px rgba(0,212,232,.38); }
-    body.ynot-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(0,212,232,.5), rgba(16,18,24,.98)), rgba(4,6,10,.96); box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 0 24px rgba(0,212,232,.48); }
+    html:not(.fullAnimButtons) body.ynot-reskin .rebuild-floating-btn { border-color: rgba(0,212,232,.6); background: linear-gradient(135deg, rgba(0,212,232,.4), rgba(12,14,20,.95)), rgba(4,6,10,.92); box-shadow: 0 8px 24px rgba(0,0,0,.55), 0 0 18px rgba(0,212,232,.38); }
+    html:not(.fullAnimButtons) body.ynot-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(0,212,232,.5), rgba(16,18,24,.98)), rgba(4,6,10,.96); box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 0 24px rgba(0,212,232,.48); }
     body.ynot-reskin .rebuild-floating-panel { border-color: rgba(0,212,232,.5); box-shadow: 0 18px 42px rgba(0,0,0,.68), 0 0 24px rgba(0,212,232,.32); }
     body.ynot-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(0,212,232,.22) 0%, rgba(8,10,14,.92) 100%); border-bottom-color: rgba(0,212,232,.32); }
     body.ynot-reskin #floating-output-close { border-color: rgba(0,212,232,.5); background: rgba(0,212,232,.22); }
@@ -634,7 +655,7 @@
     body.badley-reskin .rebuild-details summary, body.scooter-reskin .rebuild-details summary, body.ynot-reskin .rebuild-details summary {
       color: inherit;
     }
-    body.mattmab-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, rgba(255,107,107,0.12) 100%) !important; border-color: rgba(255,215,0,0.4) !important; color: #ffd700 !important; }
+    body.mattmab-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, rgba(70,120,255,0.14) 100%) !important; border-color: rgba(255,215,0,0.4) !important; color: #ffd700 !important; }
     body.mac10-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,80,80,0.2) 0%, rgba(40,20,20,0.9) 100%) !important; border-color: rgba(255,80,80,0.4) !important; color: #ff6060 !important; }
     body.badley-reskin .expander-bar { background: linear-gradient(90deg, rgba(155,110,255,0.2) 0%, rgba(255,185,230,0.12) 100%) !important; border-color: rgba(155,110,255,0.4) !important; color: #9b6eff !important; }
     body.scooter-reskin .expander-bar { background: linear-gradient(90deg, rgba(0,255,120,0.2) 0%, rgba(255,40,40,0.12) 100%) !important; border-color: rgba(0,255,120,0.4) !important; color: #00ff78 !important; }
@@ -746,11 +767,39 @@
     #rebuildPrefixItemSearchSection > summary {
       color: #7ef8d6 !important;
     }
+    #rebuildGodrollSection {
+      border-color: rgba(255, 180, 0, 0.75) !important;
+      box-shadow: inset 0 0 0 1px rgba(255, 130, 0, 0.2), 0 0 18px rgba(255, 180, 0, 0.2);
+      background: linear-gradient(135deg, rgba(255, 130, 0, 0.12) 0%, rgba(255, 80, 160, 0.12) 55%, rgba(0, 220, 255, 0.1) 100%);
+    }
+    #rebuildGodrollSection > summary {
+      color: #ffd166 !important;
+      text-shadow: 0 0 10px rgba(255, 200, 0, 0.35);
+    }
     /* Cross-page nav links: animated aqua/green border pulse */
-    @keyframes stxAquaBorderPulse {
-      0% { border-color: rgba(0, 235, 175, 0.46); box-shadow: 0 0 0 rgba(0,0,0,0); }
-      50% { border-color: rgba(130, 255, 215, 0.9); box-shadow: 0 0 14px rgba(0, 235, 175, 0.28); }
-      100% { border-color: rgba(0, 235, 175, 0.46); box-shadow: 0 0 0 rgba(0,0,0,0); }
+    /* Top dock / cross-page nav: gold border + glow (pairs with Full anim sweep via second animation). */
+    @keyframes stxGoldNavGlowPulse {
+      0% {
+        border-color: rgba(255, 190, 75, 0.88);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.22) inset,
+          0 0 12px rgba(255, 175, 50, 0.4),
+          0 0 26px rgba(255, 145, 35, 0.28);
+      }
+      50% {
+        border-color: rgba(255, 235, 170, 0.98);
+        box-shadow:
+          0 0 0 1px rgba(255, 240, 200, 0.2) inset,
+          0 0 22px rgba(255, 210, 95, 0.62),
+          0 0 42px rgba(255, 175, 60, 0.42);
+      }
+      100% {
+        border-color: rgba(255, 190, 75, 0.88);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.22) inset,
+          0 0 12px rgba(255, 175, 50, 0.4),
+          0 0 26px rgba(255, 145, 35, 0.28);
+      }
     }
     @keyframes stxAddAquaSweep {
       0% { background-position: 0% 50%; }
@@ -774,14 +823,22 @@
       box-shadow: 0 0 20px rgba(0, 235, 175, 0.45) !important;
       filter: brightness(1.12);
     }
-    a.btn[href="./legacy/bl4-bulk-decoder.html"],
-    a.btn[href="./assets/bulk-serial-validator.html"],
-    a.btn[href="./legacy/prefix-lookup.html"],
-    a.btn[href="./legacy/legit-builder.html"],
-    a.btn[href="./assets/stx-save-yaml-full.html"] {
-      border-color: rgba(0, 235, 175, 0.58);
-      box-shadow: inset 0 0 0 1px rgba(0, 235, 175, 0.12);
-      animation: stxAquaBorderPulse 2.4s ease-in-out infinite;
+    a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
+    a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn),
+    a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn),
+    a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn),
+    a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn) {
+      border-color: rgba(255, 195, 85, 0.78);
+      box-shadow: inset 0 0 0 1px rgba(255, 210, 120, 0.18), 0 0 14px rgba(255, 175, 55, 0.35);
+      animation: none;
+    }
+    a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn):hover,
+    a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn):hover,
+    a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn):hover,
+    a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn):hover,
+    a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn):hover {
+      border-color: rgba(255, 240, 190, 0.95);
+      box-shadow: inset 0 0 0 1px rgba(255, 248, 220, 0.28), 0 0 22px rgba(255, 215, 100, 0.55), 0 0 36px rgba(255, 180, 60, 0.38);
     }
 
     /* ---------- Two-column main area ---------- */
@@ -922,24 +979,28 @@
     }
     #buildStatsCoreEstimates .cc-core-card-title { font-size: 12px; margin-bottom: 4px; color: var(--accent-cyan); }
     #buildStatsCoreEstimates .cc-core-card-scale { font-weight: 700; font-size: 20px; line-height: 1.2; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
-    #buildStatsCoreEstimates .cc-core-card-pct { font-size: 11px; font-weight: 500; margin-top: 4px; letter-spacing: 0.01em; color: rgba(255, 255, 255, 0.55); font-variant-numeric: tabular-nums; line-height: 1.3; }
-    #buildStatsCoreEstimates .cc-core-card-meta { font-size: 11px; margin-top: 8px; color: var(--text-muted); }
+    #buildStatsCoreEstimates .cc-core-card-pct { font-size: 11px; font-weight: 500; margin-top: 4px; letter-spacing: 0.01em; color: rgba(245, 252, 255, 0.88); font-variant-numeric: tabular-nums; line-height: 1.3; }
+    #buildStatsCoreEstimates .cc-core-card-meta { font-size: 11px; margin-top: 8px; font-weight: 500; color: rgba(248, 252, 255, 0.9); }
     #buildStatsCoreEstimates .cc-full-stats-wrap { margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); }
     #buildStatsCoreEstimates .cc-full-stats-heading { font-size: 12px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 10px; letter-spacing: 0.02em; }
     #buildStatsCoreEstimates .cc-full-stats-part { margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(0,243,255,0.15); background: rgba(0,0,0,0.22); }
     #buildStatsCoreEstimates .cc-full-stats-part-title { font-size: 11px; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.35; }
-    #buildStatsCoreEstimates .cc-full-stats-src { font-size: 10px; color: rgba(255,255,255,0.45); font-weight: 400; }
-    #buildStatsCoreEstimates .cc-full-stats-lines { margin: 0; padding-left: 18px; font-size: 11px; line-height: 1.45; color: rgba(233,254,255,0.9); }
+    #buildStatsCoreEstimates .cc-full-stats-src { font-size: 10px; color: rgba(220, 245, 255, 0.72); font-weight: 400; }
+    #buildStatsCoreEstimates .cc-full-stats-lines { margin: 0; padding-left: 18px; font-size: 11px; line-height: 1.45; color: rgba(236, 252, 255, 0.97); }
     #buildStatsCoreEstimates .cc-full-stats-lines li { margin-bottom: 2px; }
-    #buildStatsCoreEstimates .cc-full-stats-empty { font-size: 11px; color: rgba(255,255,255,0.55); margin: 0; }
+    #buildStatsCoreEstimates .cc-full-stats-empty { font-size: 11px; color: rgba(235, 245, 255, 0.78); margin: 0; }
     #buildStatsCoreEstimates .cc-full-stats-none { padding-left: 2px; font-style: italic; }
-    #buildStatsCoreEstimates .cc-stats-disclaimer { display: block; font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 6px; line-height: 1.45; }
+    #buildStatsCoreEstimates .cc-stats-disclaimer { display: block; font-size: 11px; color: rgba(230, 242, 255, 0.8); margin-top: 6px; line-height: 1.45; }
     #buildStatsCoreEstimates .cc-bucket-details { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); }
     #buildStatsCoreEstimates .cc-bucket-details summary { cursor: pointer; font-size: 12px; font-weight: 700; color: var(--accent-cyan); margin-bottom: 8px; }
     #buildStatsCoreEstimates .cc-bucket-block { margin-bottom: 10px; font-size: 11px; }
     #buildStatsCoreEstimates .cc-bucket-block-title { font-weight: 600; color: rgba(255,255,255,0.92); margin-bottom: 4px; }
-    #buildStatsCoreEstimates .cc-bucket-line { padding: 3px 0 3px 8px; border-left: 2px solid rgba(0,243,255,0.25); margin-bottom: 2px; color: rgba(233,254,255,0.82); line-height: 1.35; }
-    #buildStatsCoreEstimates .cc-bucket-src { font-size: 10px; color: rgba(255,255,255,0.45); margin-left: 6px; }
+    #buildStatsCoreEstimates .cc-bucket-line { padding: 3px 0 3px 8px; border-left: 2px solid rgba(0,243,255,0.35); margin-bottom: 2px; color: rgba(238, 252, 255, 0.94); line-height: 1.35; }
+    #buildStatsCoreEstimates .cc-bucket-src { font-size: 10px; color: rgba(210, 238, 255, 0.75); margin-left: 6px; }
+
+    #buildStatsCoreSubtitle,
+    #buildStatsCoreSubtitle span { color: rgba(236, 248, 255, 0.9); }
+    #buildStatsCoreSubtitle .cc-stats-disclaimer strong { color: rgba(255, 255, 255, 0.95); }
 
     /* ---------- Output / code area ---------- */
     .output-section {
@@ -1079,6 +1140,8 @@
     #classmodChecklistSection .cm-check-row:hover { border-color: rgba(0,243,255,0.55); box-shadow: 0 0 0 2px rgba(0,243,255,0.12); }
     #classmodChecklistSection .cm-check-row input[type="checkbox"] { margin-top: 2px; width: 18px; height: 18px; accent-color: #00f3ff; }
     #classmodChecklistSection .cm-check-code { font-family: monospace; opacity: .85; font-size: .85em; margin-top: 2px; }
+    #classmodChecklistSection .cm-perk-meta { display: flex; align-items: flex-start; gap: 8px; margin-top: 4px; }
+    #classmodChecklistSection .cm-perk-desc { color: rgba(210,244,255,0.92); font-size: 11px; line-height: 1.35; max-height: 2.7em; overflow: hidden; text-overflow: ellipsis; }
     #classmodChecklistSection .cm-checked { border-color: rgba(0,255,200,0.75); background: rgba(0,255,200,0.08); box-shadow: 0 0 0 2px rgba(0,255,200,0.18), 0 0 18px rgba(0,255,200,0.12); }
     #classmodChecklistSection .classmod-class-selected { box-shadow: 0 0 0 2px rgba(0,255,200,0.55), 0 0 18px rgba(0,255,200,0.22) !important; }
     #classmodChecklistSection :where(button, .btn) { transform: none !important; transition: box-shadow .18s ease, filter .18s ease, opacity .18s ease !important; }
@@ -1113,6 +1176,9 @@
       background: #0a1820;
       color: #e8fbff;
     }
+    .cm-part-perk-preview { margin-top: 8px; padding: 8px; border: 1px solid rgba(0,243,255,0.25); border-radius: 8px; background: rgba(0,0,0,0.2); display: none; gap: 8px; align-items: flex-start; flex-direction: column; }
+    .cm-part-perk-preview .cm-perk-preview-name { color: #bff9ff; font-size: 12px; font-weight: 700; }
+    .cm-part-perk-preview .cm-perk-preview-desc { color: rgba(218,245,255,0.9); font-size: 11px; line-height: 1.35; }
 
     /* ---------- Debug / schema / curve (utility drawers) ---------- */
     .utility-drawers { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -1129,7 +1195,7 @@
     }
 
     /* Reskin easter egg (body class: xxx-reskin) */
-    body.mattmab-reskin { --accent-cyan: #7b68ee; --accent-cyan-dim: rgba(123, 104, 238, 0.7); }
+    body.mattmab-reskin { --accent-cyan: #ffd700; --accent-cyan-dim: rgba(255, 215, 0, 0.72); --accent-pink: #468cff; --accent-pink-dim: rgba(70, 140, 255, 0.65); }
     body.mac10-reskin { --accent-cyan: #00ff88; --accent-cyan-dim: rgba(0, 255, 136, 0.7); }
     body.badley-reskin { --accent-pink: #ffaa00; --accent-pink-dim: rgba(255, 170, 0, 0.7); }
     body.dva11-reskin { --accent-cyan: #ff69b4; --accent-pink: #00f3ff; }
@@ -1308,33 +1374,60 @@
       accent-color: var(--accent-cyan);
       box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
     }
-    /* Simple Builder: aqua/blue buttons (plain .btn was low-contrast on dark bg) */
-    #stxSimpleBuilderPanel .btn {
+    /* Simple Builder: aqua/blue buttons — only when Full anim off (ID would otherwise beat themed sweeps). */
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn {
       min-height: 32px;
       border: 1px solid rgba(0, 220, 255, 0.45);
       background: linear-gradient(145deg, rgba(0, 90, 140, 0.55) 0%, rgba(0, 45, 85, 0.65) 100%);
       color: #b9f6ff;
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
     }
-    #stxSimpleBuilderPanel .btn:hover {
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn:hover {
       background: linear-gradient(145deg, rgba(0, 140, 190, 0.55) 0%, rgba(0, 70, 120, 0.7) 100%);
       border-color: rgba(0, 243, 255, 0.75);
       color: #e8fcff;
       box-shadow: 0 0 14px rgba(0, 200, 255, 0.22);
     }
-    #stxSimpleBuilderPanel .btn--brand {
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand {
       border-color: rgba(0, 243, 255, 0.55);
       background: linear-gradient(145deg, rgba(0, 160, 210, 0.5) 0%, rgba(0, 80, 160, 0.65) 50%, rgba(0, 40, 100, 0.55) 100%);
       color: #e8fcff;
     }
-    #stxSimpleBuilderPanel .btn--brand:hover {
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand:hover {
       border-color: rgba(120, 240, 255, 0.85);
       box-shadow: 0 0 18px rgba(0, 220, 255, 0.35);
     }
-    #stxSimpleBuilderPanel .btn-clear {
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn-clear {
       border-color: rgba(0, 200, 255, 0.4);
       background: linear-gradient(145deg, rgba(0, 70, 110, 0.5) 0%, rgba(0, 40, 75, 0.6) 100%);
       color: #9ee8ff;
+    }
+    /* Simple Builder: keep cyan border + outer glow with Full anim on (matches “anim off” polish). */
+    html.fullAnimButtons #stxSimpleBuilderPanel .btn:not(.egg-off-btn),
+    html.fullAnimButtons #stxSimpleBuilderPanel .btn--brand:not(.egg-off-btn) {
+      min-height: 32px;
+      border-color: rgba(0, 220, 255, 0.52) !important;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.28) inset,
+        0 0 14px rgba(0, 200, 255, 0.22) !important;
+    }
+    html.fullAnimButtons #stxSimpleBuilderPanel .btn:not(.egg-off-btn):hover,
+    html.fullAnimButtons #stxSimpleBuilderPanel .btn--brand:not(.egg-off-btn):hover {
+      border-color: rgba(120, 240, 255, 0.88) !important;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.22) inset,
+        0 0 22px rgba(0, 220, 255, 0.38) !important;
+    }
+    html.fullAnimButtons #stxSimpleBuilderPanel #builder button.primary {
+      border-color: rgba(0, 243, 255, 0.6) !important;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.2) inset,
+        0 0 16px rgba(0, 220, 255, 0.32) !important;
+    }
+    html.fullAnimButtons #stxSimpleBuilderPanel #builder button.primary:hover {
+      border-color: rgba(120, 240, 255, 0.9) !important;
+      box-shadow:
+        0 0 22px rgba(0, 220, 255, 0.42) !important;
     }
     #stxSimpleBuilderPanel #builder button.danger {
       border: 1px solid rgba(255, 120, 160, 0.45);
@@ -1401,8 +1494,105 @@
     }
     #stxSimpleBuilderPanel #builder .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 12px;
+      /* Fewer, wider columns so dropdown lines stay readable (was minmax(280px…) packing ~4–5 across). */
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+      gap: 14px 16px;
+    }
+    @media (min-width: 1200px) {
+      #stxSimpleBuilderPanel #builder .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    #stxSimpleBuilderPanel #builder .slot > select.editor-select,
+    #stxSimpleBuilderPanel #builder .slot > select {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview {
+      margin-top: 8px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 243, 255, 0.22);
+      background: rgba(6, 16, 28, 0.55);
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(240, 250, 255, 0.92);
+      max-height: 140px;
+      overflow: auto;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__title {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview code {
+      font-size: 10px;
+      word-break: break-all;
+      background: rgba(0, 243, 255, 0.08);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview .muted {
+      color: rgba(200, 230, 255, 0.78);
+      margin-right: 4px;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview.stx-part-preview--fullstats {
+      max-height: min(52vh, 440px);
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__fullstats-head .small.muted { color: rgba(190, 220, 245, 0.75); }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__fullstats-list {
+      margin: 4px 0 0 18px;
+      padding: 0;
+      list-style: disc;
+      font-size: 10px;
+      line-height: 1.45;
+      color: rgba(232, 252, 255, 0.96);
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__fullstats-list li {
+      margin: 3px 0;
+      color: rgba(232, 252, 255, 0.96);
+    }
+    /* Barrel pickers: headline, accent perk line, stats/description from dataset. */
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview.stx-part-preview--barrel {
+      max-height: min(38vh, 320px);
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview.stx-part-preview--barrel.stx-part-preview--fullstats {
+      max-height: min(52vh, 440px);
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__barrel-perk {
+      color: #ff7a7a;
+      font-weight: 700;
+      font-size: 12px;
+      margin: 2px 0 4px;
+      letter-spacing: 0.02em;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__barrel-desc {
+      color: rgba(230, 244, 255, 0.95);
+      font-size: 11px;
+      line-height: 1.45;
+      margin-bottom: 6px;
+      white-space: pre-wrap;
+    }
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview__barrel-meta {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(0, 243, 255, 0.14);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+    /* Guided builder weapon/gear slot grids (was inline minmax(280px…) × many columns). */
+    :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .cc-guided-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
+      gap: 14px 16px;
+    }
+    @media (min-width: 1200px) {
+      :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .cc-guided-slots-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
     #stxSimpleBuilderPanel #builder .muted,
     #stxSimpleBuilderPanel #builder .small.muted {
@@ -1510,6 +1700,22 @@
     .aqua-blue-panel { background: linear-gradient(135deg, rgba(0,107,255,0.2), rgba(0,200,255,0.1)); }
     .btn-Firmware { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%); border: 1px solid rgba(255,0,200,0.45); color: #00f3ff; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
     .btn-Firmware:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); box-shadow: var(--glow-mix); }
+    #presetButtonsExtra button.btn[data-requires]:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      filter: grayscale(0.28);
+      box-shadow: none;
+    }
+    #ccYamlKindBanner {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(0, 0, 0, 0.28);
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.82);
+    }
     .btn-clear { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%); border: 1px solid rgba(255,0,200,0.45); color: #00f3ff; }
     .btn-clear:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); box-shadow: var(--glow-mix); }
     .danger { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%) !important; border: 1px solid rgba(255,0,200,0.45) !important; color: #00f3ff !important; }
@@ -1684,6 +1890,345 @@
     #floating-output-close:hover {
       background: rgba(0, 234, 255, 0.35);
     }
+
+    /*
+     * Easter egg + Full anim (html.stxEggFullAnim toggled in rebuild-credits-eggs.js):
+     * animated gradient on ::before + translateX — same smooth sweep idea as pink/blue, no cascade fight.
+     */
+    html.stxEggFullAnim body.mattmab-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn,
+    html.stxEggFullAnim body.mattmab-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.mattmab-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mattmab-reskin button[id*="Add"],
+    html.stxEggFullAnim body.mattmab-reskin .with-thanks-list .contributor-name,
+    html.stxEggFullAnim body.mac10-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn,
+    html.stxEggFullAnim body.mac10-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.mac10-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.mac10-reskin button[id*="Add"],
+    html.stxEggFullAnim body.mac10-reskin .with-thanks-list .contributor-name,
+    html.stxEggFullAnim body.badley-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn,
+    html.stxEggFullAnim body.badley-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.badley-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.badley-reskin button[id*="Add"],
+    html.stxEggFullAnim body.badley-reskin .with-thanks-list .contributor-name,
+    html.stxEggFullAnim body.scooter-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn,
+    html.stxEggFullAnim body.scooter-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.scooter-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.scooter-reskin button[id*="Add"],
+    html.stxEggFullAnim body.scooter-reskin .with-thanks-list .contributor-name,
+    html.stxEggFullAnim body.ynot-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn,
+    html.stxEggFullAnim body.ynot-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.ynot-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.ynot-reskin button[id*="Add"],
+    html.stxEggFullAnim body.ynot-reskin .with-thanks-list .contributor-name {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+      border-color: rgba(255,0,200,0.45) !important;
+    }
+    html.stxEggFullAnim body.mattmab-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn::before,
+    html.stxEggFullAnim body.mattmab-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.mattmab-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mattmab-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.mattmab-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #ffd700 0%, #468cff 25%, #ffd700 50%, #468cff 75%, #ffd700 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.mac10-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn::before,
+    html.stxEggFullAnim body.mac10-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.mac10-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.mac10-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.mac10-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #ff5050 0%, #1a1414 30%, #ff6060 50%, #1a1414 70%, #ff5050 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.badley-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn::before,
+    html.stxEggFullAnim body.badley-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.badley-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.badley-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.badley-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #9b6eff 0%, #ffb9e6 30%, #9b6eff 50%, #ffb9e6 70%, #9b6eff 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.scooter-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn::before,
+    html.stxEggFullAnim body.scooter-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.scooter-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.scooter-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.scooter-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #00ff78 0%, #ff2828 30%, #00ff78 50%, #ff2828 70%, #00ff78 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.ynot-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn::before,
+    html.stxEggFullAnim body.ynot-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.ynot-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.ynot-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.ynot-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #00e5ff 0%, #0a0a0c 18%, #161a20 26%, #00c8e0 50%, #161a20 74%, #0a0a0c 82%, #00e5ff 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    /* Save/YAML tab: stay position:fixed; sheen on ::before (same transform sweep as other egg buttons). */
+    html.stxEggFullAnim body.mattmab-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(255,215,0,.65) !important;
+      box-shadow: 0 0 22px rgba(255,215,0,.35) !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.mattmab-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #ffd700 0%, #468cff 25%, #ffd700 50%, #468cff 75%, #ffd700 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.mac10-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(255,80,80,.65) !important;
+      box-shadow: 0 0 22px rgba(255,80,80,.35) !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.mac10-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #ff5050 0%, #1a1414 30%, #ff6060 50%, #1a1414 70%, #ff5050 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.badley-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(155,110,255,.65) !important;
+      box-shadow: 0 0 22px rgba(155,110,255,.35) !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.badley-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #9b6eff 0%, #ffb9e6 30%, #9b6eff 50%, #ffb9e6 70%, #9b6eff 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.scooter-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(0,255,120,.65) !important;
+      box-shadow: 0 0 22px rgba(0,255,120,.35) !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.scooter-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #00ff78 0%, #ff2828 30%, #00ff78 50%, #ff2828 70%, #00ff78 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.ynot-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(0,212,232,.65) !important;
+      box-shadow: 0 0 22px rgba(0,212,232,.35) !important;
+      color: #08151c !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.ynot-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #00e5ff 0%, #0a0a0c 18%, #161a20 26%, #00c8e0 50%, #161a20 74%, #0a0a0c 82%, #00e5ff 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn img,
+    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn img,
+    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn img,
+    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn img,
+    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn img {
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
 <body class="editor-page">
@@ -1691,7 +2236,7 @@
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
 <h1 class="splash__title">Scooter's Toolbox</h1>
-<p class="splash__sub">Cyber workshop · V2 - 2.5.0</p>
+<p class="splash__sub">Cyber workshop · V2 - 2.5.1</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
 <div class="app-shell">
@@ -1725,7 +2270,12 @@
 <details class="support-menu instructions-menu" id="stxInstructionsMenuMain">
 <summary class="btn btn--brand" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="btn btn--brand active" id="stxInstructionsExpandedBtn" style="padding:6px 10px;" type="button">Expanded</button>
+<button class="btn btn--brand" id="stxInstructionsSimpleBtn" style="padding:6px 10px;" type="button">Simple</button>
+</div>
 <pre class="instructions-menu__text" id="stxInstructionsTextMain">Loading instructions…</pre>
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameMain" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
 </div>
 </details>
 <details class="support-menu">
@@ -1742,15 +2292,61 @@
     (function () {
       var menu = document.getElementById('stxInstructionsMenuMain');
       var out = document.getElementById('stxInstructionsTextMain');
-      var loaded = false;
+      var frame = document.getElementById('stxInstructionsFrameMain');
+      var expandedBtn = document.getElementById('stxInstructionsExpandedBtn');
+      var simpleBtn = document.getElementById('stxInstructionsSimpleBtn');
+      var loaded = { expanded: false, simple: false };
+      var cache = { expanded: '', simple: '' };
+      var mode = 'expanded';
       if (!menu || !out) return;
-      menu.addEventListener('toggle', function () {
-        if (!menu.open || loaded) return;
-        loaded = true;
-        fetch('./assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+      function setMode(nextMode) {
+        mode = nextMode;
+        if (expandedBtn) expandedBtn.classList.toggle('active', mode === 'expanded');
+        if (simpleBtn) simpleBtn.classList.toggle('active', mode === 'simple');
+      }
+      function loadText(nextMode) {
+        var url = nextMode === 'simple'
+          ? './assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
+          : './assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+        if (location && location.protocol === 'file:') {
+          if (out) out.style.display = 'none';
+          if (frame) {
+            frame.style.display = 'block';
+            frame.src = url;
+          }
+          return;
+        }
+        if (frame) frame.style.display = 'none';
+        if (out) out.style.display = 'block';
+        if (loaded[nextMode]) {
+          out.textContent = cache[nextMode] || 'Could not load instructions file.';
+          return;
+        }
+        out.textContent = 'Loading instructions...';
+        fetch(url)
           .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
-          .then(function (txt) { out.textContent = txt; })
-          .catch(function () { out.textContent = 'Could not load instructions file.'; });
+          .then(function (txt) {
+            loaded[nextMode] = true;
+            cache[nextMode] = txt;
+            if (mode === nextMode) out.textContent = txt;
+          })
+          .catch(function () {
+            loaded[nextMode] = true;
+            cache[nextMode] = 'Could not load instructions file.';
+            if (mode === nextMode) out.textContent = cache[nextMode];
+          });
+      }
+      if (expandedBtn) expandedBtn.addEventListener('click', function () {
+        setMode('expanded');
+        if (menu.open) loadText('expanded');
+      });
+      if (simpleBtn) simpleBtn.addEventListener('click', function () {
+        setMode('simple');
+        if (menu.open) loadText('simple');
+      });
+      menu.addEventListener('toggle', function () {
+        if (!menu.open) return;
+        loadText(mode);
       });
     })();
     (function () {
@@ -1789,34 +2385,34 @@
 </button>
 </div>
 <div class="with-thanks-list hidden" id="withThanksList" role="region">
-<span class="contributor-name" data-egg="1" data-tooltip="👀" id="mattmabName" title="👀">Mattmab</span>
-<span class="contributor-name">Parksy</span>
-<span class="contributor-name">Whiteshark</span>
-<span class="contributor-name" data-egg="1" data-tooltip="👀" id="ynotName" title="👀">Ynot</span>
+<span class="contributor-name">Anro</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="badleyName" title="👀">BadleyBradley</span>
+<span class="contributor-name">Codebam</span>
+<span class="contributor-name">Cr4nkSt4r</span>
+<span class="contributor-name">CraZyMarty</span>
+<span class="contributor-name">Dinossom/Dira</span>
+<span class="contributor-name">Dura</span>
+<span class="contributor-name">Gerber</span>
+<span class="contributor-name">Glacierpiece</span>
+<span class="contributor-name">Icetracts</span>
 <span class="contributor-name">Iyre</span>
+<span class="contributor-name">imsha5</span>
+<span class="contributor-name">InflamedSebi</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="mac10Name" title="👀">Mac10onSTIX</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="mattmabName" title="👀">Mattmab</span>
+<span class="contributor-name">Narrik Synthfox</span>
+<span class="contributor-name">Nicl</span>
+<span class="contributor-name">Parksy</span>
+<span class="contributor-name">RegularLunar</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="scooterMagooNameTop" title="👀">ScooterMagoo</span>
+<span class="contributor-name">shirtnoservice</span>
 <span class="contributor-name">Skippy</span>
 <span class="contributor-name">Sparkie</span>
-<span class="contributor-name">shirtnoservice</span>
-<span class="contributor-name">Nicl</span>
-<span class="contributor-name">Icetracts</span>
-<span class="contributor-name">Dura</span>
-<span class="contributor-name">InflamedSebi</span>
 <span class="contributor-name">Super Exboom</span>
-<span class="contributor-name">XRoxas15</span>
-<span class="contributor-name">Anro</span>
-<span class="contributor-name">Glacierpiece</span>
-<span class="contributor-name" data-egg="1" data-tooltip="👀" id="badleyName" title="👀">BadleyBradley</span>
-<span class="contributor-name" data-egg="1" data-tooltip="👀" id="scooterMagooNameTop" title="👀">ScooterMagoo</span>
-<span class="contributor-name">Gerber</span>
-<span class="contributor-name">Codebam</span>
 <span class="contributor-name">ThatDonfc</span>
-<span class="contributor-name">CraZyMarty</span>
-<span class="contributor-name">Cr4nkSt4r</span>
-<span class="contributor-name">imsha5</span>
-<span class="contributor-name">Dinossom/Dira</span>
-<span class="contributor-name" data-egg="1" data-tooltip="👀" id="mac10Name" title="👀">Mac10onSTIX</span>
-<span class="contributor-name">Narrik Synthfox</span>
-<span class="contributor-name">RegularLunar</span>
+<span class="contributor-name">Whiteshark</span>
+<span class="contributor-name">XRoxas15</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="ynotName" title="👀">Ynot</span>
 </div>
 <p class="credits-msg">This project wouldn't have been made (or at least so soon) if not thanks to the contributors who helped to put this Spreadsheet below together</p>
 <p class="credits-check">Unsure what the part is? check here</p>
@@ -1881,7 +2477,8 @@
 <input class="editor-input" id="level2" max="60" min="1" name="level2" style="width:100%;" type="number" value="60"/>
 </div>
 <label for="mainPart" id="mainPartLabel">Main / Prefix Part</label>
-<select class="editor-select" id="mainPart" name="mainPart" style="width:100%;margin-bottom:10px;"><option value="">Select Body...</option></select>
+<select class="editor-select" id="mainPart" name="mainPart" style="width:100%;margin-bottom:0;"><option value="">Select Body...</option></select>
+<div id="stxMainPartPreview" class="stx-part-preview small" role="status" aria-live="polite"></div>
 <div id="optionalExtrasRow" style="margin-bottom:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
 <div>
 <label for="seedInput" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Seed (optional)</label>
@@ -1919,7 +2516,7 @@
 <div id="builder" style="min-height:60px;"></div>
 <div style="margin-top:14px;">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="outCode">Generated Code</label>
+<label for="outCode">Simple Builder Generated Code</label>
 <button class="btn" id="btnCopyCode" style="padding:4px 10px;font-size:12px;" title="Copy serial to clipboard" type="button">Copy</button>
 </div>
 <textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4"></textarea>
@@ -1954,7 +2551,7 @@
 </div>
 <div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Deserialized</label>
+<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Guided Builder Generated Code (Deserialized)</label>
 <button class="btn" id="btnCopyGuidedDeser" style="padding:2px 8px;font-size:11px;" title="Copy deserialized" type="button">Copy</button>
 </div>
 <textarea class="editor-output-code" id="guidedOutputDeserialized" name="guidedOutputDeserialized" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below"></textarea>
@@ -1972,7 +2569,7 @@
 <div class="info-box" style="margin-bottom:12px;">
         Item-type-specific guided builders. Select item type, manufacturer, and level below.
       </div>
-<div id="ccGuidedBuilderControls" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:14px; padding:12px; background: rgba(0,243,255,0.06); border-radius:8px; border: 1px solid rgba(0,243,255,0.25);">
+<div id="ccGuidedBuilderControls" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:14px; padding:12px; background: rgba(0,243,255,0.06); border-radius:8px; border: 1px solid rgba(0,243,255,0.25);">
 <div>
 <label for="ccGuidedItemType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Item Type</label>
 <select class="editor-select" id="ccGuidedItemType" name="ccGuidedItemType" style="width:100%;">
@@ -2016,6 +2613,7 @@
 <div id="ccPartEntryModeWrap" style="margin-bottom:10px;">
 <label style="min-width:auto;"><input checked="" id="ccPartEntryMode" name="ccPartEntryMode" type="checkbox"/> Numeric IDs in output (off = spawn codes)</label>
 <label style="min-width:auto; margin-left:16px;"><input id="ccGuidedAllManufacturers" name="ccGuidedAllManufacturers" type="checkbox"/> All manufacturers' parts in dropdowns</label>
+<label style="min-width:auto; margin-left:16px;" title="Shows PARTS_STATS_DATA / weapon init lines under each slot preview, sorted by strongest numeric impact"><input id="ccGuidedFullStatsPreview" name="ccGuidedFullStatsPreview" type="checkbox"/> Full stats in guided previews</label>
 </div>
 <div id="seedOverrideRow" style="margin-top:8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
 <label for="rebuildSeedOverrideInput" style="min-width:0; flex-shrink: 0;">Seed (optional)</label>
@@ -2030,21 +2628,27 @@
 </div>
 <details id="ccGunBuilderDetails" open="" style="margin-top:10px;">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Weapon slots (full order)</summary>
-<div style="margin-top:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRaritySelect" name="ccRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddRarity" type="button">Add</button></div></div>
 <div><label for="ccBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBodySelect" name="ccBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBody" type="button">Add</button></div></div>
 <div><label for="ccBodyAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBodyAccSelect" name="ccBodyAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBodyAcc" type="button">Add</button></div></div>
+<div><label for="ccWeaponBodyEleSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponBodyEleSelect" name="ccWeaponBodyEleSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponBodyEle" type="button">Add</button></div></div>
 <div><label for="ccBarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBarrelSelect" name="ccBarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBarrel" type="button">Add</button></div></div>
 <div><label for="ccBarrelAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccBarrelAccSelect" name="ccBarrelAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddBarrelAcc" type="button">Add</button></div></div>
+<div><label for="ccWeaponHypShieldSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Hyperion Shield</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponHypShieldSelect" name="ccWeaponHypShieldSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponHypShield" type="button">Add</button></div></div>
 <div><label for="ccMagazineSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Magazine</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccMagazineSelect" name="ccMagazineSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddMagazine" type="button">Add</button></div></div>
+<div><label for="ccWeaponMagAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Magazine Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponMagAccSelect" name="ccWeaponMagAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponMagAcc" type="button">Add</button></div></div>
+<div><label for="ccWeaponMagTedSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Tediore Thrown Mag</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponMagTedSelect" name="ccWeaponMagTedSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponMagTed" type="button">Add</button></div></div>
 <div><label for="ccScopeSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Scope</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccScopeSelect" name="ccScopeSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddScope" type="button">Add</button></div></div>
 <div><label for="ccScopeAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Scope Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccScopeAccSelect" name="ccScopeAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddScopeAcc" type="button">Add</button></div></div>
 <div><label for="ccGripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Grip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGripSelect" name="ccGripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddGrip" type="button">Add</button></div></div>
-<div><label for="ccForegripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Foregrip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccForegripSelect" name="ccForegripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddForegrip" type="button">Add</button></div></div>
 <div><label for="ccUnderbarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Underbarrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccUnderbarrelSelect" name="ccUnderbarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddUnderbarrel" type="button">Add</button></div></div>
+<div><label for="ccForegripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Foregrip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccForegripSelect" name="ccForegripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddForegrip" type="button">Add</button></div></div>
+<div><label for="ccWeaponSecondaryAmmoSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Ammo</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponSecondaryAmmoSelect" name="ccWeaponSecondaryAmmoSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponSecondaryAmmo" type="button">Add</button></div></div>
+<div><label for="ccElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Element (Maliwan)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
+<div><label for="ccWeaponPearlSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Pearl Parts</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponPearlSelect" name="ccWeaponPearlSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponPearl" type="button">Add</button></div></div>
 <div><label for="ccLicensedSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Licensed Manufacturer Part</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccLicensedSelect" name="ccLicensedSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddLicensed" type="button">Add</button></div></div>
 <div><label for="ccElementPartSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccElementPartSelect" name="ccElementPartSelect" style="flex:1;min-width:180px;"><option value="">-- Element --</option></select><button class="btn" id="ccAddElementStack" type="button">Add</button></div></div>
-<div><label for="ccElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Maliwan Switch (2nd element)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -2053,7 +2657,7 @@
 <div style="font-weight:800;color:#00f3ff;margin-bottom:10px;">Guided Shield Builder</div>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Shield slots</summary>
-<div style="margin-top:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccShieldMainPartSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Main Part</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldMainPartSelect" name="ccShieldMainPartSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldMainPartAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldResistanceSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Resistance</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldResistanceSelect" name="ccShieldResistanceSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldResistanceAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldPrimaryPerksSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Primary Perks 246</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldPrimaryPerksSelect" name="ccShieldPrimaryPerksSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldPrimaryPerksAdd" type="button">Add</button></div></div>
@@ -2069,7 +2673,7 @@
 <div style="font-weight:800;color:#00f3ff;margin-bottom:10px;">Guided Grenade Builder</div>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Grenade slots</summary>
-<div style="margin-top:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccGrenadeFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeFirmwareSelect" name="ccGrenadeFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeFirmwareAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadePayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadePayloadSelect" name="ccGrenadePayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadePayloadAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadeAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeAugmentSelect" name="ccGrenadeAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeAugmentAdd" type="button">Add</button></div></div>
@@ -2082,7 +2686,7 @@
 <div style="font-weight:800;color:#00f3ff;margin-bottom:10px;">Guided Repkit Builder</div>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Repkit slots</summary>
-<div style="margin-top:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccRepkitRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitRaritySelect" name="ccRepkitRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitRarityAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitAugmentSelect" name="ccRepkitAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitAugmentAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitPerkSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Perk</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkSelect" name="ccRepkitPerkSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkAdd" type="button">Add</button></div></div>
@@ -2139,7 +2743,7 @@
 <div style="font-weight:800;color:#00f3ff;margin-bottom:10px;">Guided Heavy Builder</div>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Heavy Weapon slots</summary>
-<div style="margin-top:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:12px;">
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccHeavyRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyRaritySelect" name="ccHeavyRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyRarityAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyBodySelect" name="ccHeavyBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyBodyAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyBodyAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyBodyAccSelect" name="ccHeavyBodyAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyBodyAccAdd" type="button">Add</button></div></div>
@@ -2203,7 +2807,7 @@
 <div class="cm-checklist" id="cmUniversalList"></div>
 </div>
 <div style="border:1px solid rgba(0,243,255,0.22); border-radius:12px; padding:10px; background: rgba(0,0,0,0.18);">
-<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Firmware</div><button class="btn btn-Firmware" id="cmToggleAllFirmwareBtn" style="padding:6px 10px; font-size:0.9em; width:auto;" title="Toggle all firmware" type="button">Toggle all</button></div>
+<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Firmware</div></div>
 <div class="cm-checklist" id="cmFirmwareList"></div>
 </div>
 </div>
@@ -2236,12 +2840,12 @@
 </div>
 </details>
 </div>
-<!-- Build stats (core snapshot) - own section -->
-<div class="panel" id="rebuildBuildStatsSection" style="margin-top:16px;overflow:visible;">
-<div class="panel__title">Build stats (core snapshot)</div>
-<div id="buildStatsCoreEstimates" style="margin-top:10px;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
+<!-- Build stats (core snapshot) - collapsible -->
+<details class="rebuild-details" id="rebuildBuildStatsSection" open="" style="margin-top:16px;overflow:visible;">
+<summary>Build stats (core snapshot)</summary>
+<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
-<div id="buildStatsCoreSubtitle" style="color:rgba(255,255,255,0.72);font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.</div>
 <div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
 <div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
 <div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
@@ -2250,7 +2854,7 @@
 <div id="buildStatsDebugBody" style="margin-top:8px;font-size:11px;font-family:ui-monospace,monospace;max-height:280px;overflow:auto;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.9);"></div>
 </details>
 </div>
-</div>
+</details>
 <!-- Paste code to edit - own section (between Guided Builder and Tools, at bottom of this block) -->
 <div class="panel" id="rebuildPasteCodeSection" style="margin-top:16px;">
 <div class="panel__title">Paste code to edit</div>
@@ -2276,6 +2880,23 @@
 <div id="prefixItemSearchStatus" style="color:rgba(0,200,255,0.9);font-size:0.85em;margin-bottom:6px;"></div>
 <div id="prefixItemSearchResults" style="max-height:220px;overflow-y:auto;padding:8px;background:rgba(0,0,0,0.25);border-radius:8px;border:1px solid rgba(0,200,255,0.2);">
 <div style="color:rgba(255,255,255,0.6);font-size:0.9em;">Type to search. Results appear below.</div>
+</div>
+</div>
+</details>
+<details class="rebuild-details" id="rebuildGodrollSection" style="margin-top:12px;">
+<summary>Godroll Search and Add</summary>
+<div>
+<p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Hard-to-drop community Godroll serials. Search by name, manufacturer/type, rarity, or ID and add directly to editor/YAML.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+<input id="godrollSearchInput" name="godrollSearchInput" placeholder="Search Godrolls by name, maker, rarity, or ID..." style="flex:1;min-width:220px;padding:10px 12px;background:#1a2332;border:2px solid rgba(255,190,60,0.5);border-radius:8px;color:#ffe8ba;font-size:0.95em;" type="text"/>
+<button class="btn btn--brand" id="godrollAddToEditorBtn" type="button">Add to Editor</button>
+<button class="btn btn--brand" id="godrollAddToYamlBtn" type="button">💾 Add to YAML</button>
+<button class="btn" id="godrollLoadFileBtn" type="button">Load JSON File</button>
+<input accept=".json" id="godrollFileInput" name="godrollFileInput" style="display:none;" type="file"/>
+</div>
+<div id="godrollSearchStatus" style="color:rgba(255,220,150,0.95);font-size:0.85em;margin-bottom:6px;"></div>
+<div id="godrollSearchResults" style="max-height:240px;overflow-y:auto;padding:8px;background:rgba(0,0,0,0.28);border-radius:8px;border:1px solid rgba(255,170,70,0.35);">
+<div style="color:rgba(255,255,255,0.68);font-size:0.9em;">Loading Godroll list…</div>
 </div>
 </div>
 </details>
@@ -2372,7 +2993,7 @@
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsShield"><summary>Shield</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectShield" name="partSelectShield" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddShield" type="button">Add</button></div><div class="rebuild-part-list" id="partListShield"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsRepkit"><summary>Repkit</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectRepkit" name="partSelectRepkit" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddRepkit" type="button">Add</button></div><div class="rebuild-part-list" id="partListRepkit"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsEnhancement"><summary>Enhancement</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectEnhancement" name="partSelectEnhancement" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddEnhancement" type="button">Add</button></div><div class="rebuild-part-list" id="partListEnhancement"></div></details>
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Vex" type="button">Vex</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Amon" type="button">Amon</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Rafa" type="button">Rafa</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Harlowe" type="button">Harlowe</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="C4sh" type="button">C4sh</button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickPrimaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickSecondaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickUniversalList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist" id="cmQuickFirmwareList"></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsHeavy"><summary>Heavy</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectHeavy" name="partSelectHeavy" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddHeavy" type="button">Add</button></div><div class="rebuild-part-list" id="partListHeavy"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsGun"><summary>Gun</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectGun" name="partSelectGun" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddGun" type="button">Add</button></div><div class="rebuild-part-list" id="partListGun"></div></details>
 </div>
@@ -2457,8 +3078,8 @@
 <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
-<input aria-label="Steam ID" id="steamIdInput" maxlength="17" name="steamIdInput" pattern="[0-9]{17}" placeholder="76561198012345678" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
-<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Your 17-digit Steam ID or Epic Account ID. This will be saved automatically and remembered for future use.</p>
+<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
+<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC → 17-digit SteamID64; Epic PC → Epic account id (often hex). If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
 <strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
@@ -2488,18 +3109,18 @@
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
 <input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
-<button class="btn btn-Firmware" data-action="set-character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
 </div>
 <div style="margin-top: 10px;">
 <div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
 </div>
 </div>
 <div id="presetButtonsExtra" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">
@@ -2507,14 +3128,16 @@
 <div id="ccRuntimeStatusHeader" style="font-weight:900; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;"><span>Runtime status</span><span id="ccRuntimeStatusChevron" style="opacity:0.85; font-size:12px;">&gt;</span></div>
 <div id="ccRuntimeStatusBody" style="opacity:0.92; line-height:1.5; display:none;">Loading...</div>
 </div>
+<div id="ccYamlKindBanner" role="status">Load or paste YAML — preset rows enable by save type (character vs profile).</div>
+<div aria-live="polite" id="ccPresetActionStatus" style="display:none;margin-bottom:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;"></div>
 <div style="font-weight: 700; margin-bottom: 8px;">World / Missions</div>
 <div class="btnRow" style="display: flex; flex-wrap: wrap; gap: 8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" data-requires="character" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" data-requires="character" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" data-requires="character" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" data-requires="character" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" data-requires="character" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" data-requires="character" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
@@ -2611,8 +3234,13 @@
 </div>
 <div id="ccExtraYamlMsg" style="margin-top:10px; color:#00c8ff; font-size:0.9em; opacity:0.95; display:none;"></div>
 </div>
-<button class="btn btn-Firmware" data-action="apply-stats" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
+<button class="btn btn-Firmware" data-action="apply-stats" data-requires="character" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
 <div id="yaml-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
+<div id="stxSavDecryptErrorPanel" style="display: none; margin-top: 12px; padding: 12px; border-radius: 10px; border: 1px solid rgba(255, 120, 100, 0.55); background: rgba(45, 12, 12, 0.5);">
+<div style="color: #ffb8b0; font-weight: 800; margin-bottom: 8px; font-size: 0.95em;">.sav decrypt failed — full details (select all or use Copy)</div>
+<textarea id="stxSavDecryptErrorText" readonly rows="10" style="width: 100%; box-sizing: border-box; font-family: Consolas, 'Courier New', monospace; font-size: 12px; color: #f5f5f5; background: #1a0a0a; border: 1px solid rgba(255, 150, 120, 0.45); border-radius: 6px; padding: 8px; resize: vertical; user-select: text;" title="Select and Ctrl+C, or use the button"></textarea>
+<button class="btn btn-Firmware" id="stxSavDecryptErrorCopyBtn" style="margin-top: 8px;" type="button">Copy details to clipboard</button>
+</div>
 <div id="ccMissionsEditor" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.35); background: rgba(0,0,0,0.22);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
 <div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Missions</div>
@@ -2719,7 +3347,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 </div>
 </aside>
 <!-- Floating Code Panel (draggable, closeable) - icon.ico for closed/minimized state -->
-<button aria-label="Open code panel" class="rebuild-floating-btn" id="floating-output-icon-btn" onclick="typeof window.toggleFloatingOutputPanel==='function'&amp;&amp;window.toggleFloatingOutputPanel()" title="Show Generated Item Code" type="button">
+<button aria-label="Open code panel" class="rebuild-floating-btn" id="floating-output-icon-btn" title="Show Generated Item Code" type="button">
 <img alt="Code" height="52" src="./assets/icon.ico" width="52"/>
 </button>
 <div class="rebuild-floating-panel" id="floating-output-panel">

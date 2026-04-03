@@ -1,19 +1,15 @@
 ================================================================================
-  SCOOTER'S TOOLBOX (REBUILD) — SIMPLE USER GUIDE
+  SCOOTER'S TOOLBOX V2" — EXTENDED USER GUIDE
 ================================================================================
 
 WHAT THIS IS
 ------------
-Scooter's Toolbox is a browser-based item editor for Borderlands-style gear. You
+Scooter's Toolbox is an item editor for Bl4 gear. You
 pick parts, skins, and options; the page builds the game's "item serial" for you
-and can also read serials you paste in. Everything runs locally in your browser
-(offline-friendly once the folder is on your PC).
-
-
+and can also read serials you paste in. 
 HOW TO RUN IT
 -------------
-1. Open the file:  index.html  (double-click, or drag into
-   Chrome / Edge / Firefox).
+1. Open the file: ScootersToolbox.exe or go to Webpage
 2. Dismiss the splash with "Enter" when you're ready.
 3. Use the top buttons to jump to "paste a code" or ".Sav / YAML" if that's
    what you need first.

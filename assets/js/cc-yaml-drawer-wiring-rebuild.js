@@ -187,28 +187,51 @@
     if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
   };
   function detectYamlKind(text) {
-    var t = String(text || '');
-    var hasState = /(^|\n)\s*state\s*:/m.test(t);
+    var t = String(text || '').replace(/^\uFEFF/, '');
+    if (!t.trim()) return 'unknown';
+    /** Root `state:` only — nested `  state:` under profile keys must not match (was mis-detecting Profile.sav). */
+    var hasRootState = /^state\s*:/m.test(t);
     var hasDomains = /(^|\n)\s*domains\s*:/m.test(t);
-    if (hasState) return 'character';
-    if (hasDomains || /(^|\n)\s*profile\s*:/m.test(t) || /(^|\n)\s*unlockables\s*:\s*$/m.test(t) || /profile_guid\s*:/i.test(t)) return 'profile';
+    var hasProfileHints =
+      /(^|\n)\s*profile\s*:/m.test(t) ||
+      /(^|\n)\s*unlockables\s*:/m.test(t) ||
+      /profile_guid\s*:/i.test(t);
+    if (hasRootState) return 'character';
+    if (hasDomains || hasProfileHints) return 'profile';
     return 'unknown';
   }
   window.detectYamlSaveKind = detectYamlKind;
   function updateButtons() {
-    var kind = detectYamlKind(getActiveYamlText());
+    var text = getActiveYamlText();
+    var kind = detectYamlKind(text);
     var buttons = document.querySelectorAll('button[data-requires]');
     buttons.forEach(function (btn) {
       var req = btn.getAttribute('data-requires') || 'character';
       var ok = false;
       if (kind !== 'unknown') {
-        if (req === 'both') ok = (kind === 'character' || kind === 'profile');
-        else if (req === 'profile') ok = (kind === 'profile');
-        else if (req === 'character') ok = (kind === 'character');
+        if (req === 'both') ok = kind === 'character' || kind === 'profile';
+        else if (req === 'profile') ok = kind === 'profile';
+        else if (req === 'character') ok = kind === 'character';
         else ok = true;
       }
       btn.disabled = !ok;
     });
+    var banner = byId('ccYamlKindBanner');
+    if (banner) {
+      if (!text.trim()) {
+        banner.textContent =
+          'No YAML in the editor — load or paste a file. Buttons below stay dimmed until a character or profile save is detected.';
+      } else if (kind === 'character') {
+        banner.textContent =
+          'Detected: character save (root state:). Character / world / mission presets are enabled; profile-only buttons are dimmed.';
+      } else if (kind === 'profile') {
+        banner.textContent =
+          'Detected: profile save (domains / unlockables / profile). Profile-only buttons are enabled; character / mission presets are dimmed.';
+      } else {
+        banner.textContent =
+          'Could not detect save type. Expect a root line state: (character) or domains: / profile markers (profile).';
+      }
+    }
   }
   window.__updatePresetButtonsAvailability = updateButtons;
   function boolIcon(ok) { return ok ? '&#x2713;' : '&#x2717;'; }

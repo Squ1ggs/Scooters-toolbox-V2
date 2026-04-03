@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# If you move to a custom domain, update the Sitemap URL to match your canonical host.
+Sitemap: https://scooters-toolbox.netlify.app/sitemap.xml

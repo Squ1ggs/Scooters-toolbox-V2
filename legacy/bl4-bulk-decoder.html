@@ -259,7 +259,12 @@ td { border-color:rgba(0,243,255,0.1) !important; }
 <details class="support-menu instructions-menu" id="stxInstructionsMenuBulk">
 <summary class="bl4-bulk-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="bl4-bulk-back active" id="stxInstructionsExpandedBtnBulk" style="padding:6px 10px;" type="button">Expanded</button>
+<button class="bl4-bulk-back" id="stxInstructionsSimpleBtnBulk" style="padding:6px 10px;" type="button">Simple</button>
+</div>
 <pre class="instructions-menu__text" id="stxInstructionsTextBulk">Loading instructions…</pre>
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameBulk" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
 </div>
 </details>
 <details class="support-menu">
@@ -275,15 +280,61 @@ td { border-color:rgba(0,243,255,0.1) !important; }
 (function () {
   var menu = document.getElementById('stxInstructionsMenuBulk');
   var out = document.getElementById('stxInstructionsTextBulk');
-  var loaded = false;
+  var frame = document.getElementById('stxInstructionsFrameBulk');
+  var expandedBtn = document.getElementById('stxInstructionsExpandedBtnBulk');
+  var simpleBtn = document.getElementById('stxInstructionsSimpleBtnBulk');
+  var loaded = { expanded: false, simple: false };
+  var cache = { expanded: '', simple: '' };
+  var mode = 'expanded';
   if (!menu || !out) return;
-  menu.addEventListener('toggle', function () {
-    if (!menu.open || loaded) return;
-    loaded = true;
-    fetch('../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt')
+  function setMode(nextMode) {
+    mode = nextMode;
+    if (expandedBtn) expandedBtn.classList.toggle('active', mode === 'expanded');
+    if (simpleBtn) simpleBtn.classList.toggle('active', mode === 'simple');
+  }
+  function loadText(nextMode) {
+    var url = nextMode === 'simple'
+      ? '../assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
+      : '../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+    if (location && location.protocol === 'file:') {
+      if (out) out.style.display = 'none';
+      if (frame) {
+        frame.style.display = 'block';
+        frame.src = url;
+      }
+      return;
+    }
+    if (frame) frame.style.display = 'none';
+    if (out) out.style.display = 'block';
+    if (loaded[nextMode]) {
+      out.textContent = cache[nextMode] || 'Could not load instructions file.';
+      return;
+    }
+    out.textContent = 'Loading instructions...';
+    fetch(url)
       .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
-      .then(function (txt) { out.textContent = txt; })
-      .catch(function () { out.textContent = 'Could not load instructions file.'; });
+      .then(function (txt) {
+        loaded[nextMode] = true;
+        cache[nextMode] = txt;
+        if (mode === nextMode) out.textContent = txt;
+      })
+      .catch(function () {
+        loaded[nextMode] = true;
+        cache[nextMode] = 'Could not load instructions file.';
+        if (mode === nextMode) out.textContent = cache[nextMode];
+      });
+  }
+  if (expandedBtn) expandedBtn.addEventListener('click', function () {
+    setMode('expanded');
+    if (menu.open) loadText('expanded');
+  });
+  if (simpleBtn) simpleBtn.addEventListener('click', function () {
+    setMode('simple');
+    if (menu.open) loadText('simple');
+  });
+  menu.addEventListener('toggle', function () {
+    if (!menu.open) return;
+    loadText(mode);
   });
 })();
 (function () {
@@ -372,6 +423,7 @@ td { border-color:rgba(0,243,255,0.1) !important; }
 <script src="../assets/js/stx-wasm-inline.js"></script>
 <script src="../assets/js/stx-bulk-decoder-deps.js"></script>
 <script src="../assets/js/cc-base85-rebuild.js"></script>
+<script src="../assets/js/stx-nicnl-serial-pack.js"></script>
 <script>
 (function () {
   const fileInput = document.getElementById("fileInput");
@@ -396,10 +448,10 @@ td { border-color:rgba(0,243,255,0.1) !important; }
 <script src="../assets/data/stx_dataset.js"></script>
 <script src="../assets/data/part_ref_meta.js"></script>
 <script src="../assets/js/stx-bulk-decoder-main.js"></script>
-<script src="../assets/js/stx-bulk-decoder-patch-v8.js"></script>
-<script src="../assets/js/stx-bulk-decoder-patch-v9.js"></script>
-<script src="../assets/js/stx-bulk-decoder-patch-v10.js"></script>
-<script src="../assets/js/stx-bulk-decoder-patch-v11.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-parts-lookup.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-dataset.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-classmod-aliases.js"></script>
+<script src="../assets/js/stx-bulk-decoder-patch-gap-fill.js"></script>
 <script src="../assets/js/stx-decode-bridge-shared.js"></script>
 <script>
 (function stxToolboxPrefill(){

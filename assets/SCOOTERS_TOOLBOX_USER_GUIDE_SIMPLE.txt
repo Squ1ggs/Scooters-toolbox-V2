@@ -1,0 +1,35 @@
+Simple -
+
+If you play on PC then the first step is load up your .sav or converted save (yaml) in the save/yaml section ready to start adding items and then make any changes such as level/unlock all if required  -if you do not play on pc or have a way to load a yaml/save yourself then either add serials to a note or yaml to give to a pc friend to drop the goods)
+
+On the main editor page we have a few ways of making items such as the Simple builder (An all in on builder) or you can click "simple" to minimize this
+The second and main way would be the Main guided builder section which has extra options for buyback flag/full stats per part added
+
+We also have a legit item builder for those who want a less "Modded" experience
+For those who are looking to mod items/weapons the main way would be to make an item (maybe stack some parts for stats/ammo such as accessories and mags, Try different ones for different effects)
+
+But if you want to just dive in and try it out quickly you can also go to the Prefix / Item Search and Add or Godroll Search and Add and then start adding additional parts like legendary perks (modded)
+
+By default "All manufacturers" is set off so that with it off you only see parts for selected item type and manufacturer but toggle it and you will see all parts from manufacturers
+
+next optionally add a skin/camo 
+
+Now the fun part - Go down to the legendary perks section and find some of the legendary perks which you think will go well together and add them onto it (bare in mind not all legendary perks work together it is a learning process of trial/error but has great results!)
+
+Maybe add some of the quick add pre-set parts under the legendary perks section as these are found to have a big impact for stats like - Damage/critical/reload and so on
+
+The Build stats (core snapshot) section should help you get an understanding of the item you are building in terms of stats/multipliers
+
+If you approve and think its time to test click "Add item to YAML" and it will be placed into the loaded yaml's backpack section
+If done then adding/making items maybe change character name first to something slightly different like Vex new or vex STX to be able to determined which character it is when loading game
+
+click convert to .sav and move it to your saves C:\Users\YOURPCNAME\Documents\My Games\Borderlands 4\Saved\SaveGames/YOURSTEAMID/profiles/client
+you will see numbered saves so just add the next number in sequence like "12 or 13" or just a random high number "285" and load the game!
+
+The prefix search basically does what it says, You can search a prefix and it will show what parts/stats are required or you can just look through them all
+Legit builder - for making legit roll items, This will tell you what rolls/cannot roll and also shows full stats and features a drop location section
+
+The bulk decoder can decode in bulk and also list every item with it's specific parts/elements just load a yaml/txt/json
+The bulk validator validates serials in bulk just load a yaml/txt/json
+
+If you do have any questions feel free to reach out at any of the two discord servers near the top of the main builder page 

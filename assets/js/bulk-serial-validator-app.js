@@ -26,6 +26,34 @@
       .replace(/"/g, '&quot;');
   }
 
+  function highlightBarrelTokens(text) {
+    text = String(text == null ? '' : text);
+    /* Highlight Nexus tag tokens we care about when reasoning about barrel incompatibilities. */
+    var re = /(barrel_[a-z0-9_]+)/gi;
+    var out = [];
+    var last = 0;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      var start = m.index;
+      var end = start + m[0].length;
+      out.push(escapeHtml(text.slice(last, start)));
+      out.push('<span class="bv-badtoken">' + escapeHtml(text.slice(start, end)) + '</span>');
+      last = end;
+    }
+    out.push(escapeHtml(text.slice(last)));
+    return out.join('');
+  }
+
+  function highlightReasonPhrases(htmlText) {
+    htmlText = String(htmlText == null ? '' : htmlText);
+    /* htmlText is already-escaped/annotated HTML from highlightBarrelTokens. Keep this simple. */
+    return htmlText
+      .replace(/\b(Exclusion:)/g, '<span class="bv-reason-bad">$1</span>')
+      .replace(/\b(Compatibility:)/g, '<span class="bv-reason-bad">$1</span>')
+      .replace(/\b(Inv tags(?:\\(global\\))?:)/g, '<span class="bv-reason-bad">$1</span>')
+      .replace(/\b(Fail \\(data\\))/g, '<span class="bv-reason-bad">$1</span>');
+  }
+
   function shortSerial(s, n) {
     s = String(s || '');
     if (s.length <= (n || 28)) return s;
@@ -38,6 +66,8 @@
     if (!inv) return ' · inv tags: data bundle missing';
     var n = inv.partsByName && typeof Object.keys === 'function' ? Object.keys(inv.partsByName).length : null;
     if (n != null && n > 0) return ' · inv comp tags: ' + n + ' parts indexed';
+    var ed = window.EDITOR_PART_SELECTION_DATA;
+    if (ed && typeof Object.keys === 'function') return ' · inv tags: bundle present · editor ref: ' + Object.keys(ed).length + ' archetypes';
     return ' · inv tags: bundle present';
   }
 
@@ -270,6 +300,20 @@
         note: '_meta missing on INV_COMP_TAG_DATA'
       };
     }
+    var ec = window.EDITOR_EXTRACTED_CATALOG;
+    var ps = window.EDITOR_PART_SELECTION_DATA;
+    out.editor_reference_data = {
+      loaded: !!(ec || ps),
+      extracted_catalog_weapon_rows: ec && ec.weapons ? ec.weapons.length : null,
+      part_selection_archetype_keys: ps ? Object.keys(ps).length : null,
+      exclusion_tag_rows: window.EDITOR_EXCLUSION_TAGS ? Object.keys(window.EDITOR_EXCLUSION_TAGS).length : null,
+      part_weight_rows: window.EDITOR_PART_WEIGHTS ? Object.keys(window.EDITOR_PART_WEIGHTS).length : null,
+      min_max_slot_rows: window.EDITOR_MIN_MAX_PARTS ? Object.keys(window.EDITOR_MIN_MAX_PARTS).length : null
+    };
+    out.legit_decode_helpers_version =
+      window.LegitDecodeHelpers && window.LegitDecodeHelpers.__version
+        ? String(window.LegitDecodeHelpers.__version)
+        : null;
     return out;
   }
 
@@ -280,7 +324,6 @@
       return;
     }
     var il = parseInt(($('bv-level') && $('bv-level').value) || '60', 10);
-    var strict = $('bv-strict') ? !!$('bv-strict').checked : true;
     var filtered = $('bv-export-filtered') && $('bv-export-filtered').checked;
     var flat = rows.map(flattenRowForExport);
     var payload = {
@@ -289,20 +332,26 @@
       validation_data_bundle: getValidationDataBundleMeta(),
       alignment_definitions: {
         align_strict_ok_data:
-          'Same as KPI OK (data): LegitBuilderApi status OK — full strict pass (sources, schedules, inv tags where applicable).',
+          'Same as KPI OK (data): LegitBuilderApi status OK (bulk cheat-audit: may include unmapped rows with clean raw composition).',
         align_no_fail_data:
-          'Decoded + manifest item resolved + not Fail (data). Still includes no slot map and inv-tag warns.',
+          'Decoded + manifest item resolved + not Fail (data).',
         align_mapped_no_fail_data:
-          'Decoded + manifest + at least one mapped slot + not Fail (data). Excludes no slot map rows.',
+          'Decoded + manifest + at least one mapped slot + not Fail (data). Excludes unmapped-only rows.',
         align_soft_ok_or_warn:
-          'Mapped + legit state ok or warn (not err). Relaxed proxy: counts rows that are not hard-fail even if tag/source lines are warnings.',
+          'Mapped + legit state ok or warn (not err). Counts rows that are not hard-fail even if tag/source lines are warnings.',
         alignment_flags_note:
-          'These flags compare strict vs relaxed row buckets in this export; all counts use the same bundled data and Scooter’s Toolbox validation rules.'
+          'Bulk validator uses cheat-audit mode: composition (inv tags, raw graph, weights, elements) drives Fail (data); spawn-table gaps and slot-order FYI do not reduce OK.'
       },
       alignment_summary: buildAlignmentSummary(rows),
       options: {
         item_level: Number.isFinite(il) ? il : 60,
-        strict_mode: strict,
+        validation_profile: 'bulk_cheat_audit',
+        strict_mode: true,
+        bulk_cheat_audit_mode: true,
+        relax_inv_dependencytags: false,
+        inv_tag_failures_as_err: true,
+        detect_plain_frame_uni_leg: true,
+        fail_off_pool_named_legendary_barrels: false,
         export_filtered_only: filtered,
         table_filter: state.filter
       },
@@ -380,6 +429,9 @@
     md.push('- Generated: ' + new Date().toISOString());
     md.push('- Rows in file: ' + rows.length);
     var vdm = getValidationDataBundleMeta();
+    if (vdm && vdm.legit_decode_helpers_version) {
+      md.push('- **Validator rules:** `' + String(vdm.legit_decode_helpers_version) + '`');
+    }
     if (vdm && vdm.inv_comp_tag_data && vdm.inv_comp_tag_data.source_files && vdm.inv_comp_tag_data.source_files.length) {
       md.push(
         '- **Inv tag extract:** `' +
@@ -400,13 +452,13 @@
     md.push('| Serials | ' + s.total + ' |');
     md.push('| Decoded OK | ' + s.decoded_ok + ' |');
     md.push('| OK (data) | ' + s.ok_data + ' |');
-    md.push('| Uncertain / map | ' + s.uncertain_or_map + ' |');
+    md.push('| Uncertain | ' + s.uncertain_or_map + ' |');
     md.push('| Decode failed | ' + s.decode_failed + ' |');
     md.push('| No manifest | ' + s.no_manifest + ' |');
     md.push('| Fail (data) | ' + s.fail_data + ' |');
     md.push('');
     var asum = buildAlignmentSummary(rows);
-    md.push('## Alignment flags (strict vs relaxed, this tool)');
+    md.push('## Alignment flags (export buckets)');
     md.push('');
     md.push('| Flag | Count |');
     md.push('|------|------:|');
@@ -428,8 +480,8 @@
     md.push('');
     md.push('## Sample rows (first 40)');
     md.push('');
-    md.push('| Bucket | Item | Legit | Notes (full) |');
-    md.push('|--------|------|-------|--------------|');
+    md.push('| Bucket | Item | Serial (full) | Legit | Notes (full) |');
+    md.push('|--------|------|---------------|-------|--------------|');
     var si;
     var maxS = Math.min(40, rows.length);
     for (si = 0; si < maxS; si++) {
@@ -439,6 +491,8 @@
           fr.bucket +
           ' | ' +
           String(fr.item || '—').replace(/\|/g, '\\|') +
+          ' | ' +
+          String(fr.serial || '—').replace(/\|/g, '\\|') +
           ' | ' +
           String(fr.legit_status).replace(/\|/g, '\\|') +
           ' | ' +
@@ -462,18 +516,26 @@
   }
 
   function classifyRow(row) {
+    var bulkPage = typeof window !== 'undefined' && window.STX_BULK_CHEAT_AUDIT === true;
     if (!row.decodeOk) return 'decode';
     if (!row.validation || row.validation.phase === 'manifest') return 'nomanifest';
-    if (row.validation.mapped === false) return 'nomap';
+    if (row.validation.mapped === false) {
+      var lsU = row.validation.legitState;
+      if (lsU && lsU.status === 'ok') return 'ok';
+      if (lsU && lsU.status === 'err') return 'err';
+      return 'nomap';
+    }
     var st = row.validation.legitState;
     if (!st) return 'idle';
     if (st.status === 'ok') return 'ok';
     if (st.status === 'err') return 'err';
+    /* computeLegitValidationState can leave status 'idle' when a warn path was skipped (bulk); that was counted as uncertain — treat as OK on this page only. */
+    if (bulkPage && st.status === 'idle') return 'ok';
     return 'warn';
   }
 
   /**
-   * Optional strict vs relaxed alignment counts for exports (same dataset, different row buckets).
+   * Optional alignment counts for exports (same dataset, different row buckets).
    */
   function computeAlignmentFlags(row) {
     var c = classifyRow(row);
@@ -527,21 +589,53 @@
     var v = String(s).trim().replace(/^['"]|['"]$/g, '');
     if (!v) return false;
     if (v.indexOf('@U') === 0) return false;
-    return v.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v);
+    if (v.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v)) return true;
+    if (/^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*\{/.test(v)) return true;
+    return false;
   }
 
   function toDecodeSerials(serials) {
     var out = [];
-    var serialize = typeof window.serializeToBase85 === 'function' ? window.serializeToBase85 : null;
+    var normBr =
+      typeof window.__stxNormalizeDeserializedInput === 'function'
+        ? window.__stxNormalizeDeserializedInput
+        : function (x) {
+            return String(x || '').trim().replace(/^['"]|['"]$/g, '');
+          };
     for (var i = 0; i < serials.length; i++) {
       var s = serials[i];
-      var n = String(s || '').trim().replace(/^['"]|['"]$/g, '');
-      if (looksDeserialized(s) && serialize) {
-        var b85 = serialize(n);
-        out.push(b85 || s);
+      if (looksDeserialized(s)) {
+        out.push(normBr(s));
       } else {
         out.push(s);
       }
+    }
+    return out;
+  }
+
+  function isInvalidSerialDecodeError(err) {
+    var s = String(err || '').toLowerCase();
+    return s.indexOf('not a valid borderlands 4 item serial') >= 0 || s.indexOf('magic header') >= 0;
+  }
+
+  function altDecodeCandidates(rawSerial) {
+    var out = [];
+    var raw = String(rawSerial || '').trim().replace(/^['"]|['"]$/g, '');
+    if (!raw) return out;
+    out.push(raw);
+    var normBr = typeof window.__stxNormalizeDeserializedInput === 'function' ? window.__stxNormalizeDeserializedInput : null;
+    var normed = normBr ? String(normBr(raw) || '').trim() : raw;
+    if (normed && out.indexOf(normed) < 0) out.push(normed);
+    var serialize = typeof window.serializeToBase85 === 'function' ? window.serializeToBase85 : null;
+    if (serialize) {
+      try {
+        var b1 = String(serialize(raw, 17, true) || '').trim();
+        if (b1 && out.indexOf(b1) < 0) out.push(b1);
+      } catch (_) {}
+      try {
+        var b2 = String(serialize(normed, 17, true) || '').trim();
+        if (b2 && out.indexOf(b2) < 0) out.push(b2);
+      } catch (_) {}
     }
     return out;
   }
@@ -572,9 +666,16 @@
         out.push(buildRow(serial, dr || { success: false, error: 'no result' }, null, '—'));
         continue;
       }
+      /* relaxInvUniLegDeps: false — enforce Nexus dependencytags in slot order (validateDecodedSerial no longer forces relax when bulkCheatAuditMode is on). */
       v = helpers.validateDecodedSerial(dr, {
-        strictMode: strictMode,
-        itemLevel: itemLevel
+        strictMode: strictMode !== false,
+        itemLevel: itemLevel,
+        relaxInvUniLegDeps: false,
+        invTagFailuresAsErr: true,
+        detectPlainFrameUniLeg: true,
+        failOffPoolNamedLegendaryBarrels: false,
+        rawSerial: serial,
+        bulkCheatAuditMode: true
       });
       dropTxt = '—';
       if (typeof window.CC_ITEMPOOL_DROP_CHECK !== 'undefined' && window.CC_ITEMPOOL_DROP_CHECK.getDropSource) {
@@ -598,6 +699,9 @@
     var decodeFail = 0;
     var nomanifest = 0;
     var legitErr = 0;
+    var subNomap = 0;
+    var subWarn = 0;
+    var subIdle = 0;
     var i;
     var r;
     var c;
@@ -609,7 +713,12 @@
       else if (c === 'decode') decodeFail++;
       else if (c === 'nomanifest') nomanifest++;
       else if (c === 'err') legitErr++;
-      else wrn++;
+      else {
+        wrn++;
+        if (c === 'nomap') subNomap++;
+        else if (c === 'warn') subWarn++;
+        else if (c === 'idle') subIdle++;
+      }
     }
     $('k-total').textContent = String(n);
     $('k-decoded').textContent = String(dec);
@@ -621,6 +730,32 @@
     if (elDf) elDf.textContent = String(decodeFail);
     if (elNm) elNm.textContent = String(nomanifest);
     if (elLe) elLe.textContent = String(legitErr);
+    var sum = ok + wrn + decodeFail + nomanifest + legitErr;
+    var rec = $('k-reconcile');
+    if (rec) {
+      var uncDetail = '';
+      if (wrn) {
+        var ubits = [];
+        if (subNomap) ubits.push('no map ×' + subNomap);
+        if (subWarn) ubits.push('warn ×' + subWarn);
+        if (subIdle) ubits.push('idle ×' + subIdle);
+        uncDetail = ' (' + ubits.join(', ') + ')';
+      }
+      var parts = [String(ok) + ' OK', String(wrn) + ' uncertain' + uncDetail];
+      if (decodeFail) parts.push(String(decodeFail) + ' decode fail');
+      if (nomanifest) parts.push(String(nomanifest) + ' no manifest');
+      if (legitErr) parts.push(String(legitErr) + ' fail (data)');
+      rec.textContent =
+        'Each KPI number lines up with the label above it. ' +
+        parts.join(' + ') +
+        ' = ' +
+        String(sum) +
+        ' serials' +
+        (sum === n ? '' : ' — mismatch ' + String(n) + ', report this');
+      if (dec !== n) {
+        rec.textContent += ' · decoded ' + String(dec) + ' / ' + String(n) + ' rows';
+      }
+    }
   }
 
   function renderTable() {
@@ -671,8 +806,10 @@
         '<td><code title="' +
         escapeHtml(row.serial) +
         '">' +
-        escapeHtml(shortSerial(row.serial, 36)) +
-        '</code></td>' +
+        escapeHtml(row.serial) +
+        '</code><div class="small muted">' +
+        escapeHtml((row.validation && row.validation.manifestItem && (row.validation.manifestItem.name || row.validation.manifestItem.slug)) || '—') +
+        '</div></td>' +
         '<td>' +
         (row.decodeOk ? '<span class="tag ok">OK</span>' : '<span class="tag bad">Fail</span>') +
         '</td>' +
@@ -691,7 +828,7 @@
         escapeHtml(row.dropText) +
         '</td>' +
         '<td class="small">' +
-        escapeHtml(details) +
+        highlightReasonPhrases(highlightBarrelTokens(details)) +
         '</td>' +
         '</tr>';
     }
@@ -725,7 +862,7 @@
     state.rows = [];
     var itemLevel = parseInt(($('bv-level') && $('bv-level').value) || '60', 10);
     if (!Number.isFinite(itemLevel)) itemLevel = 60;
-    var strictMode = $('bv-strict') ? !!$('bv-strict').checked : true;
+    var strictMode = true;
 
     if (!window.LegitBuilderApi || typeof window.LegitBuilderApi.computeLegitValidationState !== 'function') {
       statusLine('Legit data not loaded — include legit-builder-core.js after manifest/NCS/data (same order as Legit Builder).', 'bad');
@@ -750,9 +887,35 @@
     var allRows = [];
     var offset = 0;
 
-    async function decodeChunk(chunk) {
+    async function decodeChunk(chunk, rawChunk) {
       var dec = await window.decodeSerialsViaBridge(chunk, null, { enrichResolved: true });
-      if (dec && dec.length === chunk.length) return dec;
+      if (dec && dec.length === chunk.length) {
+        var allInvalid = true;
+        var i0;
+        for (i0 = 0; i0 < dec.length; i0++) {
+          if (dec[i0] && dec[i0].success) { allInvalid = false; break; }
+          if (!isInvalidSerialDecodeError(dec[i0] && dec[i0].error)) { allInvalid = false; break; }
+        }
+        if (!allInvalid) return dec;
+
+        // Retry one-by-one with alternate parse/serialize forms for txt/deserialized inputs.
+        var retried = [];
+        var ri;
+        for (ri = 0; ri < rawChunk.length; ri++) {
+          var src = rawChunk[ri];
+          var cands = altDecodeCandidates(src);
+          var best = null;
+          var ci;
+          for (ci = 0; ci < cands.length; ci++) {
+            var one = await window.decodeSerialsViaBridge([cands[ci]], null, { enrichResolved: true });
+            var r1 = one && one[0] ? one[0] : null;
+            if (r1 && r1.success) { best = r1; break; }
+            if (!best) best = r1;
+          }
+          retried.push(best || { success: false, error: 'decode timeout or empty' });
+        }
+        return retried;
+      }
       var out = [];
       var j;
       for (j = 0; j < chunk.length; j++) {
@@ -766,7 +929,7 @@
     while (offset < total) {
       var chunk = serials.slice(offset, offset + BATCH);
       var decodeChunkInput = toDecode.slice(offset, offset + BATCH);
-      var dec = await decodeChunk(decodeChunkInput);
+      var dec = await decodeChunk(decodeChunkInput, chunk);
       var part = processDecodeBatch(chunk, dec, itemLevel, strictMode);
       var pi;
       for (pi = 0; pi < part.length; pi++) allRows.push(part[pi]);
@@ -793,6 +956,9 @@
   }
 
   function wire() {
+    try {
+      window.STX_BULK_CHEAT_AUDIT = true;
+    } catch (eW) {}
     var invBadge = $('bv-inv-tag-badge');
     if (invBadge && window.INV_COMP_TAG_DATA && window.INV_COMP_TAG_DATA.partsByName) {
       invBadge.style.display = 'inline';

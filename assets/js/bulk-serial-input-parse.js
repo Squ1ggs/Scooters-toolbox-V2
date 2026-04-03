@@ -6,10 +6,48 @@
 
   function looksDeserialized(s) {
     if (!s || typeof s !== 'string') return false;
-    var v = s.trim().replace(/^['"]|['"]$/g, '');
+    var v = s.trim().replace(/^['"]|['"]$/g, '').replace(/^\uFEFF/, '');
     if (!v) return false;
     if (v.indexOf('@U') === 0) return false;
-    return v.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v);
+    if (v.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v)) return true;
+    if (/^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*\{/.test(v)) return true;
+    return false;
+  }
+
+  /** BL4 custom Base85 body without @U (one token per line). */
+  function looksLikeRawBase85Token(s) {
+    var v = String(s || '').trim().replace(/^['"]|['"]$/g, '').replace(/^\uFEFF/, '');
+    if (!v || v.length < 12) return false;
+    if (v.indexOf('@U') === 0) return false;
+    if (looksDeserialized(v)) return false;
+    if (/^\d+\s*,/.test(v)) return false;
+    return /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(v);
+  }
+
+  /**
+   * One STX line may be: plain serial, BOM-prefixed, quoted, TSV/CSV with junk before the code,
+   * or a comment. YAML path often only captures the value; plain .txt used to push the whole line
+   * and break WASM. Extract @U or deserialized body the same way for both.
+   */
+  function extractStxTokenFromLine(line) {
+    var trimmed = String(line || '').replace(/^\uFEFF/g, '').trim();
+    if (!trimmed) return null;
+    if (/^#/.test(trimmed)) return null;
+    if ((trimmed.charAt(0) === "'" && trimmed.charAt(trimmed.length - 1) === "'") || (trimmed.charAt(0) === '"' && trimmed.charAt(trimmed.length - 1) === '"')) {
+      trimmed = trimmed.slice(1, -1);
+    }
+    var mU = trimmed.match(/@U[^\s"'`,\]}]+/);
+    if (mU) return mU[0];
+    var mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
+    if (mRB && looksLikeRawBase85Token(mRB[1])) return mRB[1];
+    var mD = trimmed.match(/(\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*)/);
+    if (mD) {
+      var cand = mD[1].trim().replace(/\s+#.*$/, '');
+      if (looksDeserialized(cand)) return cand;
+    }
+    trimmed = trimmed.replace(/\s+#.*$/, '').trim();
+    if (looksDeserialized(trimmed)) return trimmed;
+    return null;
   }
 
   function uniqueSerials(arr) {
@@ -60,14 +98,14 @@
       } else {
         v = v.replace(/\s+#.*$/, '').trim();
       }
-      if (v.indexOf('@U') === 0 || looksDeserialized(v)) out.push(v);
+      if (v.indexOf('@U') === 0 || looksDeserialized(v) || looksLikeRawBase85Token(v)) out.push(v);
     }
     if (out.length) return uniqueSerials(out);
     var loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
     if (loose.length) return uniqueSerials(loose);
     for (li = 0; li < lines.length; li++) {
-      v = lines[li].trim().replace(/^['"]|['"]$/g, '');
-      if (v && looksDeserialized(v)) out.push(v);
+      var tok = extractStxTokenFromLine(lines[li]);
+      if (tok) out.push(tok);
     }
     return uniqueSerials(out);
   }
@@ -76,7 +114,7 @@
     if (node == null) return;
     if (typeof node === 'string') {
       var t = node.trim();
-      if (t.indexOf('@U') === 0 || looksDeserialized(t)) out.push(t);
+      if (t.indexOf('@U') === 0 || looksDeserialized(t) || looksLikeRawBase85Token(t)) out.push(t);
       return;
     }
     if (Array.isArray(node)) {
@@ -120,17 +158,14 @@
   }
 
   function extractFromTxt(raw) {
-    var text = String(raw || '').replace(/\r\n?/g, '\n');
+    var text = String(raw || '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
     var lines = text.split('\n');
     var out = [];
     var i;
-    var trimmed;
-    var match;
+    var tok;
     for (i = 0; i < lines.length; i++) {
-      trimmed = lines[i].trim();
-      if (!trimmed) continue;
-      match = trimmed.match(/@U[^\s"'`,\]}]+/);
-      out.push(match ? match[0] : trimmed.replace(/^['"]|['"]$/g, ''));
+      tok = extractStxTokenFromLine(lines[i]);
+      if (tok) out.push(tok);
     }
     return uniqueSerials(out);
   }
@@ -152,6 +187,7 @@
   window.BulkSerialInputParse = {
     extractSerials: extractSerials,
     detectMode: detectMode,
-    uniqueSerials: uniqueSerials
+    uniqueSerials: uniqueSerials,
+    extractStxTokenFromLine: extractStxTokenFromLine
   };
 })();

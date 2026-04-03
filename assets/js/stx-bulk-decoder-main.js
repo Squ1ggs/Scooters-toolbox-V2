@@ -23,6 +23,45 @@ let bulkPageIndex = 0;
 const BULK_PAGE_SIZE = 50;
 let decoderReadyPromise = null;
 
+/** Same tail fix as stx-decode-bridge-shared.ensureDoublePipeBeforePartTail (standalone page may load without bridge). */
+function ensureDoublePipeBeforePartTailBulk(s) {
+  s = String(s || '').trim();
+  if (!s || s.indexOf('||') >= 0) return s;
+  s = s.replace(/\|\s*(?=\{)/g, '|| ').replace(/\|\s*(?=")/g, '|| ');
+  if (s.indexOf('||') >= 0) return s.replace(/\s+/g, ' ').trim();
+  const m = s.match(/^([\s\S]+?)(\s+)(\{[\s\S]*)$/);
+  if (m) {
+    const head = m[1];
+    if (/^[\d\s,|]+$/.test(head.replace(/\s+$/, ''))) {
+      return (head + '||' + m[2] + m[3]).replace(/\s+/g, ' ').trim();
+    }
+  }
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+/** WASM rejects space-separated `{fam:[a b c]}`; use commas (same as stx-decode-bridge-shared). */
+function normalizeDeserializedForWasmBulk(s) {
+  if (typeof window.__stxNormalizeDeserializedInput === 'function') {
+    return window.__stxNormalizeDeserializedInput(s);
+  }
+  const t = String(s || '').trim().replace(/^['"]|['"]$/g, '');
+  if (!t || t.indexOf('@U') === 0) return s;
+  const deserShape =
+    t.indexOf('||') >= 0 ||
+    /^\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(t) ||
+    /^\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*\{/.test(t);
+  if (!deserShape) return s;
+
+  let out = t.replace(/\[([^\]]*)\]/g, (full, inner) => {
+    const parts = String(inner || '').trim().split(/\s+/).filter((x) => /^\d+$/.test(x));
+    if (parts.length <= 1) return full;
+    return '[' + parts.join(',') + ']';
+  });
+
+  out = ensureDoublePipeBeforePartTailBulk(out);
+  return out.replace(/\s+/g, ' ').trim();
+}
+
 function status(msg, kind='') {
   if (!statusEl) return;
   statusEl.className = 'status' + (kind ? ' ' + kind : '');
@@ -295,6 +334,40 @@ function uniqueSerials(arr) {
   }
   return out;
 }
+function looksDeserializedStx(s) {
+  const v = String(s || '').trim().replace(/^['"]|['"]$/g, '').replace(/^\uFEFF/, '');
+  if (!v || v.startsWith('@U')) return false;
+  if (v.includes('||') || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v)) return true;
+  if (/^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*\{/.test(v)) return true;
+  return false;
+}
+function looksLikeRawBase85TokenStx(s) {
+  const v = String(s || '').trim().replace(/^['"]|['"]$/g, '').replace(/^\uFEFF/, '');
+  if (!v || v.length < 12 || v.startsWith('@U')) return false;
+  if (looksDeserializedStx(v)) return false;
+  if (/^\d+\s*,/.test(v)) return false;
+  return /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(v);
+}
+/** Same rules as BulkSerialInputParse.extractStxTokenFromLine (BOM, # comments, TSV junk, quotes). */
+function extractStxTokenFromLineBulk(line) {
+  let trimmed = String(line || '').replace(/^\uFEFF/g, '').trim();
+  if (!trimmed || trimmed.startsWith('#')) return null;
+  if ((trimmed.startsWith("'") && trimmed.endsWith("'")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
+    trimmed = trimmed.slice(1, -1);
+  }
+  const mU = trimmed.match(/@U[^\s"'`,\]}]+/);
+  if (mU) return mU[0];
+  const mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
+  if (mRB && looksLikeRawBase85TokenStx(mRB[1])) return mRB[1];
+  const mD = trimmed.match(/(\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*)/);
+  if (mD) {
+    const cand = mD[1].trim().replace(/\s+#.*$/, '');
+    if (looksDeserializedStx(cand)) return cand;
+  }
+  trimmed = trimmed.replace(/\s+#.*$/, '').trim();
+  if (looksDeserializedStx(trimmed)) return trimmed;
+  return null;
+}
 function detectMode(raw, filename='') {
   const name = String(filename || '').toLowerCase();
   if (name.endsWith('.yaml') || name.endsWith('.yml') || name.endsWith('.save')) return 'yaml';
@@ -320,15 +393,25 @@ function extractFromYaml(raw) {
     } else {
       v = v.replace(/\s+#.*$/, '').trim();
     }
-    if (v.startsWith('@U')) out.push(v);
+    if (v.startsWith('@U') || looksDeserializedStx(v) || looksLikeRawBase85TokenStx(v)) out.push(v);
   }
   if (out.length) return uniqueSerials(out);
   const loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
-  return uniqueSerials(loose);
+  if (loose.length) return uniqueSerials(loose);
+  const fallback = [];
+  for (const ln of text.split('\n')) {
+    const t = extractStxTokenFromLineBulk(ln);
+    if (t) fallback.push(t);
+  }
+  return uniqueSerials(fallback);
 }
 function extractJsonStrings(node, out) {
   if (node == null) return;
-  if (typeof node === 'string') { if (node.trim().startsWith('@U')) out.push(node.trim()); return; }
+  if (typeof node === 'string') {
+    const t = node.trim();
+    if (t.startsWith('@U') || looksDeserializedStx(t) || looksLikeRawBase85TokenStx(t)) out.push(t);
+    return;
+  }
   if (Array.isArray(node)) { for (const item of node) extractJsonStrings(item, out); return; }
   if (typeof node === 'object') {
     for (const [key, value] of Object.entries(node)) {
@@ -349,18 +432,20 @@ function extractFromJson(raw) {
     return uniqueSerials(out);
   } catch (err) {
     const matches = text.match(/@U[^\s"'`,\]}]+/g) || [];
+    const lines = text.split(/\r?\n/);
+    for (const ln of lines) {
+      const tok = extractStxTokenFromLineBulk(ln);
+      if (tok) matches.push(tok);
+    }
     return uniqueSerials(matches);
   }
 }
 function extractFromTxt(raw) {
-  const text = String(raw || '').replace(/\r\n?/g, '\n');
-  const lines = text.split('\n');
+  const text = String(raw || '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
   const out = [];
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    const match = trimmed.match(/@U[^\s"'`,\]}]+/);
-    out.push(match ? match[0] : trimmed.replace(/^['"]|['"]$/g, ''));
+  for (const line of text.split('\n')) {
+    const t = extractStxTokenFromLineBulk(line);
+    if (t) out.push(t);
   }
   return uniqueSerials(out);
 }
@@ -447,7 +532,29 @@ async function decodeCurrent(filename='') {
   try {
     await initDecoder();
     status('Decoder ready. Decoding ' + String(serials.length) + ' serials...');
-    const results = JSON.parse(window.stxDecodeBulk(JSON.stringify(serials)) || '[]');
+    const forWasm = serials.map((x) => {
+      const t = String(x == null ? '' : x).trim();
+      if (looksLikeRawBase85TokenStx(t)) return '@U' + t;
+      if (t.startsWith('@U')) return x;
+      if (looksDeserializedStx(t)) {
+        const n = normalizeDeserializedForWasmBulk(x);
+        if (typeof window.__stxNicnlPackDeserialized === 'function') {
+          try {
+            const p = window.__stxNicnlPackDeserialized(n);
+            if (p && p.startsWith('@U') && p.length > 6) return p;
+          } catch (_e) {}
+        }
+        if (typeof window.serializeToBase85 === 'function') {
+          try {
+            const b = window.serializeToBase85(n, 17, false);
+            if (b && b.startsWith('@U') && b.length > 6) return b;
+          } catch (_e2) {}
+        }
+        return n;
+      }
+      return normalizeDeserializedForWasmBulk(x);
+    });
+    const results = JSON.parse(window.stxDecodeBulk(JSON.stringify(forWasm)) || '[]');
     render(results);
     status('Decoded ' + String(results.filter(r => r.success).length) + ' of ' + String(results.length) + ' serials locally.', 'good');
   } catch (err) {

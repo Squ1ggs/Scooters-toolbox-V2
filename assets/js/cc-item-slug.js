@@ -117,7 +117,100 @@
     return '';
   }
 
+  /** NCS slot name → Simple Builder `state.slots` key (stable across UI). */
+  function ncsNameToStateKey(ns) {
+    var map = {
+      body: 'body', body_acc: 'bodyAcc', body_ele: 'bodyEle', body_bolt: 'bodyBolt', body_mag: 'bodyMag',
+      barrel: 'barrel', barrel_acc: 'barrelAcc', barrel_licensed: 'licensed',
+      hyperion_secondary_acc: 'hyperionSecondaryAcc',
+      magazine: 'mag', magazine_acc: 'magazineAcc', magazine_ted_thrown: 'magazineTedThrown', magazine_borg: 'magazineBorg',
+      scope: 'scope', scope_acc: 'scopeAcc', grip: 'grip', foregrip: 'foregrip',
+      underbarrel: 'underbarrel', underbarrel_acc: 'underbarrelAcc', underbarrel_acc_vis: 'underbarrelAccVis',
+      secondary_ele: 'secondaryEle', secondary_ammo: 'secondaryAmmo', primary_ele: 'primaryEle',
+      tediore_acc: 'tedioreAcc', tediore_secondary_acc: 'tedioreSecondaryAcc',
+      pearl_elem: 'pearlElem', pearl_stat: 'pearlStat', firmware: 'firmware', endgame: 'endgame'
+    };
+    return map[ns] || '';
+  }
+
+  /** STX `partType` filter string (or '' for pearl rows — filtered in Simple Builder). */
+  function ncsNameToPartType(ns) {
+    var m = {
+      body: 'Body', body_acc: 'Body Accessory', body_ele: 'Element', body_bolt: 'Body Accessory', body_mag: 'Manufacturer Part',
+      barrel: 'Barrel', barrel_acc: 'Barrel Accessory', barrel_licensed: 'Manufacturer Part',
+      hyperion_secondary_acc: 'Manufacturer Part',
+      magazine: 'Magazine', magazine_acc: 'Magazine', magazine_ted_thrown: 'Magazine', magazine_borg: 'Magazine',
+      scope: 'Scope', scope_acc: 'Scope Accessory', grip: 'Grip', foregrip: 'Foregrip', underbarrel: 'Underbarrel',
+      underbarrel_acc: 'Underbarrel', underbarrel_acc_vis: 'Underbarrel',
+      secondary_ele: 'Element Switch', secondary_ammo: 'Manufacturer Part', primary_ele: 'Element',
+      tediore_acc: 'Manufacturer Part', tediore_secondary_acc: 'Manufacturer Part',
+      pearl_elem: '', pearl_stat: '', firmware: 'Firmware', endgame: 'Stat Modifier'
+    };
+    return Object.prototype.hasOwnProperty.call(m, ns) ? m[ns] : 'Body';
+  }
+
+  /**
+   * Ordered weapon slot schema for a Legit-style slug, matching `NCS_SLOT_MAP.items[slug].ncs_slots`
+   * plus trailing rarity override / stat / legendary rows. Requires `legacy/ncs_slot_map.js` on the page.
+   * @param {string} slug
+   * @returns {Array<{key:string,label:string,partType:string,ncsSlot?:string,multi?:boolean,customType?:string}>|null}
+   */
+  function buildWeaponSlotSchemaFromNcs(slug) {
+    var sm = typeof NCS_SLOT_MAP !== 'undefined' && NCS_SLOT_MAP && NCS_SLOT_MAP.items;
+    if (!slug || !sm || !sm[slug] || !Array.isArray(sm[slug].ncs_slots)) return null;
+    var labels = NCS_SLOT_MAP.slot_labels || {};
+    var slots = sm[slug].ncs_slots;
+    var hasNcs = {};
+    var i;
+    for (i = 0; i < slots.length; i++) hasNcs[slots[i]] = true;
+    var rows = [];
+    var seenKey = {};
+    for (i = 0; i < slots.length; i++) {
+      var ns = slots[i];
+      /* Fold NCS `body_bolt` into Body Accessory UI (same parts; dataset lists bolt under Body). */
+      if (ns === 'body_bolt') continue;
+      var key = ncsNameToStateKey(ns);
+      if (!key || seenKey[key]) continue;
+      seenKey[key] = true;
+      var partType = ncsNameToPartType(ns);
+      var row = {
+        key: key,
+        label: labels[ns] || String(ns).replace(/_/g, ' '),
+        partType: partType,
+        ncsSlot: ns
+      };
+      if (ns === 'pearl_elem' || ns === 'pearl_stat') row.customType = 'weaponPearl';
+      rows.push(row);
+    }
+    if (!hasNcs.firmware) {
+      rows.push({ key: 'firmware', label: labels.firmware || 'Firmware', partType: 'Firmware', ncsSlot: '' });
+    }
+    if (!hasNcs.barrel_licensed) {
+      rows.push({ key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part', ncsSlot: '' });
+    }
+    rows.push({ key: 'rarity', label: 'Rarity ID Override (optional)', partType: 'Rarity', ncsSlot: '' });
+    rows.push({ key: 'statMod', label: 'Stat Modifier', partType: 'Stat Modifier', ncsSlot: '' });
+    rows.push({ key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', multi: true, ncsSlot: '' });
+    return rows;
+  }
+
+  /**
+   * Lowercased part code — belongs in NCS `magazine_acc` (Torgue/Borg specialty mags, etc.).
+   * Not main magazine bodies; excludes `mag_ted_thrown` (separate slot).
+   */
+  function magazineAccessoryCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase();
+    if (x.indexOf('mag_ted_thrown') !== -1) return false;
+    if (/mag_acc|magazine_acc/i.test(x)) return true;
+    if (x.indexOf('part_mag') !== -1 && x.indexOf('acc') !== -1) return true;
+    if (/part_mag_torgue|part_mag_05_borg|part_mag_borg|borg_barrel/i.test(x)) return true;
+    return false;
+  }
+
   window.SLUG_TO_PREFIX = SLUG_TO_PREFIX;
   window.buildSlugPrefix = buildSlugPrefix;
   window.computeSimpleBuilderItemSlug = computeSimpleBuilderItemSlug;
+  window.ncsNameToStateKey = ncsNameToStateKey;
+  window.buildWeaponSlotSchemaFromNcs = buildWeaponSlotSchemaFromNcs;
+  window.magazineAccessoryCodeMatchLo = magazineAccessoryCodeMatchLo;
 })();

@@ -77,6 +77,68 @@
     return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
   }
 
+  function normalizePerkNameForMeta(name) {
+    if (typeof window.__normalizePerkName === 'function') {
+      try { return String(window.__normalizePerkName(name) || ''); } catch (_) {}
+    }
+    return String(name || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '').trim();
+  }
+
+  function getClassmodPerkMetaByName(name) {
+    var raw = String(name || '').trim();
+    if (!raw) return null;
+    var byName = window.__CLASSMOD_PERK_META_BY_NAME || null;
+    if (byName && byName[raw]) return byName[raw];
+    var byKey = window.__CLASSMOD_PERK_META || null;
+    var key = normalizePerkNameForMeta(raw);
+    return byKey && key ? (byKey[key] || null) : null;
+  }
+
+  function getClassmodPerkMetaForItem(item) {
+    if (!item) return null;
+    var name = String(item.name || '').trim();
+    if (!name && item.part) name = String(item.part.name || item.part.legendaryName || '').trim();
+    var meta = getClassmodPerkMetaByName(name);
+    if (meta) return meta;
+    if (Array.isArray(item._cmGroupParts)) {
+      for (var i = 0; i < item._cmGroupParts.length; i++) {
+        var p = item._cmGroupParts[i];
+        var m = getClassmodPerkMetaByName(String((p && (p.name || p.legendaryName)) || '').trim());
+        if (m) return m;
+      }
+    }
+    return null;
+  }
+
+  function getPrimaryTreeLabel(item) {
+    var meta = getClassmodPerkMetaForItem(item);
+    var tree = String((meta && meta.tree) || '').trim();
+    if (!tree) return 'Other';
+    return tree;
+  }
+
+  function getPrimaryTreeColor(label) {
+    var t = String(label || '').toLowerCase();
+    if (t.indexOf('red') !== -1) return '#ff6b6b';
+    if (t.indexOf('blue') !== -1) return '#6aa9ff';
+    if (t.indexOf('green') !== -1) return '#66d17a';
+    if (t.indexOf('purple') !== -1) return '#b589ff';
+    if (t.indexOf('orange') !== -1) return '#ffb15e';
+    if (t.indexOf('roll the bones') !== -1) return '#ff6b6b';
+    if (t.indexOf('luck of the draw') !== -1) return '#6aa9ff';
+    if (t.indexOf('chaos walking') !== -1) return '#66d17a';
+    return '#00f3ff';
+  }
+
+  function sortPrimaryItemsByTree(items) {
+    return (Array.isArray(items) ? items.slice() : []).sort(function (a, b) {
+      var ta = getPrimaryTreeLabel(a);
+      var tb = getPrimaryTreeLabel(b);
+      if (ta !== tb) return ta.localeCompare(tb);
+      return alphaByName(a, b);
+    });
+  }
+
   function sortClassModSkillParts(parts) {
     return (Array.isArray(parts) ? parts.slice() : []).sort(function (a, b) {
       var ida = Number((a && a.id != null) ? a.id : String((a && (a.idRaw || a.idraw)) || '').split(':').pop());
@@ -345,15 +407,17 @@
   }
 
   function setActiveClassButton(cls) {
-    var wrap = byId('classmodChecklistButtons');
-    if (!wrap) return;
+    var wraps = [byId('classmodChecklistButtons'), byId('classmodQuickChecklistButtons')].filter(Boolean);
+    if (!wraps.length) return;
     var key = charToKey(cls);
     var display = KEY_TO_DISPLAY[key] || String(cls || '').trim();
-    var btns = wrap.querySelectorAll('button[data-cm-class]');
-    for (var b = 0; b < btns.length; b++) {
-      var btn = btns[b];
-      var active = String(btn.getAttribute('data-cm-class') || '').trim() === display;
-      btn.classList.toggle('classmod-class-selected', active);
+    for (var w = 0; w < wraps.length; w++) {
+      var btns = wraps[w].querySelectorAll('button[data-cm-class]');
+      for (var b = 0; b < btns.length; b++) {
+        var btn = btns[b];
+        var active = String(btn.getAttribute('data-cm-class') || '').trim() === display;
+        btn.classList.toggle('classmod-class-selected', active);
+      }
     }
   }
 
@@ -375,7 +439,8 @@
     var listId = String(listEl.id || '');
     if (!listId) return;
 
-    var allItems = Array.isArray(items) ? items.slice() : [];
+    var isPrimaryList = listId === 'cmPrimaryList' || listId === 'cmQuickPrimaryList';
+    var allItems = isPrimaryList ? sortPrimaryItemsByTree(items) : (Array.isArray(items) ? items.slice() : []);
     listEl.__cmAllItems = allItems;
     listEl.innerHTML = '';
     if (!allItems.length) {
@@ -393,8 +458,20 @@
     var pageItems = allItems.slice(start, end);
 
     var frag = document.createDocumentFragment();
+    var lastTreeLabel = '';
     for (var i = 0; i < pageItems.length; i++) {
       var it = pageItems[i];
+      if (isPrimaryList) {
+        var treeLabel = getPrimaryTreeLabel(it);
+        if (treeLabel !== lastTreeLabel) {
+          lastTreeLabel = treeLabel;
+          var treeHdr = document.createElement('div');
+          treeHdr.style.cssText = 'margin:8px 0 6px; padding:4px 8px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); font-weight:700; font-size:0.9em;';
+          treeHdr.style.color = getPrimaryTreeColor(treeLabel);
+          treeHdr.textContent = treeLabel;
+          frag.appendChild(treeHdr);
+        }
+      }
       var selected = isChecklistItemSelected(it);
       var isPrimaryGroup = !!(it && Array.isArray(it._cmGroupParts) && it._cmGroupParts.length);
       var row = document.createElement('div');
@@ -423,6 +500,16 @@
       c.textContent = isPrimaryGroup ? getPrimarySkillGroupSummary(it) : it.code;
       labelInner.appendChild(t);
       labelInner.appendChild(c);
+      var perkMeta = getClassmodPerkMetaForItem(it);
+      if (perkMeta && perkMeta.description) {
+        var metaWrap = document.createElement('div');
+        metaWrap.className = 'cm-perk-meta';
+        var desc = document.createElement('div');
+        desc.className = 'cm-perk-desc';
+        desc.textContent = String(perkMeta.description);
+        metaWrap.appendChild(desc);
+        labelInner.appendChild(metaWrap);
+      }
       labelWrap.appendChild(cb);
       labelWrap.appendChild(labelInner);
       row.appendChild(labelWrap);
@@ -1087,6 +1174,10 @@
     renderChecklist(byId('cmSecondaryList'), secondaryItems);
     renderChecklist(byId('cmUniversalList'), universalItems);
     renderChecklist(byId('cmFirmwareList'), firmwareItems);
+    renderChecklist(byId('cmQuickPrimaryList'), primaryItems);
+    renderChecklist(byId('cmQuickSecondaryList'), secondaryItems);
+    renderChecklist(byId('cmQuickUniversalList'), universalItems);
+    renderChecklist(byId('cmQuickFirmwareList'), firmwareItems);
 
     try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
     try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
@@ -1094,8 +1185,26 @@
   }
 
   function installHandlers() {
+    function removePrimaryAddAllButton(addBtnId) {
+      var existing = byId(addBtnId);
+      if (existing && existing.parentElement) existing.parentElement.removeChild(existing);
+    }
+    function ensureTogglePrimaryPosition(toggleBtnId) {
+      var toggleBtn = byId(toggleBtnId);
+      if (!toggleBtn) return;
+      var host = toggleBtn.parentElement;
+      if (!host) return;
+      try { host.appendChild(toggleBtn); } catch (_e) {}
+    }
+
+    removePrimaryAddAllButton('cmAddAllPrimaryBtn');
+    removePrimaryAddAllButton('cmQuickAddAllPrimaryBtn');
+    ensureTogglePrimaryPosition('cmToggleAllPrimaryBtn');
+    ensureTogglePrimaryPosition('cmQuickToggleAllPrimaryBtn');
+
     var section = byId('classmodChecklistSection');
-    if (!section) return;
+    var quickSection = byId('classmodQuickChecklistSection');
+    if (!section && !quickSection) return;
 
     var raritySel = byId('cmRaritySelect');
     var nameSel = byId('cmNameSelect');
@@ -1132,7 +1241,7 @@
       });
     }
 
-    section.addEventListener('click', function (e) {
+    function onSectionClick(e) {
       var btn = e.target.closest('button[data-cm-class]');
       if (btn) {
         e.preventDefault();
@@ -1185,9 +1294,8 @@
         if (cb) cb.checked = next;
         row.classList.toggle('cm-checked', next);
       }
-    }, true);
-
-    section.addEventListener('change', function (e) {
+    }
+    function onSectionChange(e) {
       var qtySel = e.target.closest('select[data-cm-skill-qty]');
       if (qtySel) {
         var item = getChecklistItemByCode(qtySel.getAttribute('data-cm-skill-qty'));
@@ -1215,7 +1323,17 @@
       var it = getChecklistItemByCode(code);
       setChecked(code, cb.checked, it || { name: name, category: category, _cmSource: src, _primary: primaryItems.some(function (x) { return x && x.code === code; }) });
       row.classList.toggle('cm-checked', isChecklistItemSelected(it || { code: code }));
-    }, true);
+    }
+    if (section && !section.__cmEventsBound) {
+      section.__cmEventsBound = true;
+      section.addEventListener('click', onSectionClick, true);
+      section.addEventListener('change', onSectionChange, true);
+    }
+    if (quickSection && !quickSection.__cmEventsBound) {
+      quickSection.__cmEventsBound = true;
+      quickSection.addEventListener('click', onSectionClick, true);
+      quickSection.addEventListener('change', onSectionChange, true);
+    }
 
     var togglePrimary = byId('cmToggleAllPrimaryBtn');
     if (togglePrimary && !togglePrimary.__bound) {
@@ -1257,17 +1375,47 @@
       });
     }
 
-    var toggleFirmware = byId('cmToggleAllFirmwareBtn');
-    if (toggleFirmware && !toggleFirmware.__bound) {
-      toggleFirmware.__bound = true;
-      toggleFirmware.addEventListener('click', function () {
-        var raw = Array.isArray(window.__cmChecklistFirmwareItems) ? window.__cmChecklistFirmwareItems : [];
+    // Firmware intentionally has no "toggle all" button (single pick intent).
+
+    var toggleQuickPrimary = byId('cmQuickToggleAllPrimaryBtn');
+    if (toggleQuickPrimary && !toggleQuickPrimary.__bound) {
+      toggleQuickPrimary.__bound = true;
+      toggleQuickPrimary.addEventListener('click', function () {
+        var items = Array.isArray(window.__cmChecklistPrimaryItems) ? window.__cmChecklistPrimaryItems.slice() : [];
+        if (!items.length) return;
+        var anyUnchecked = items.some(function (it) { return !isChecklistItemSelected(it); });
+        setCheckedBulk(items, anyUnchecked);
+        renderUI();
+      });
+    }
+    var toggleQuickSecondary = byId('cmQuickToggleAllSecondaryBtn');
+    if (toggleQuickSecondary && !toggleQuickSecondary.__bound) {
+      toggleQuickSecondary.__bound = true;
+      toggleQuickSecondary.addEventListener('click', function () {
+        var raw = Array.isArray(window.__cmChecklistSecondaryItems) ? window.__cmChecklistSecondaryItems : [];
+        var items = raw.filter(function (it) {
+          var src = String((it && it._cmSource) || '').toLowerCase();
+          return src.indexOf('firmware') === -1;
+        });
+        if (!items.length) return;
+        var anyUnchecked = items.some(function (it) { return !isChecked(it.code); });
+        setCheckedBulk(items, anyUnchecked);
+        renderUI();
+      });
+    }
+    var toggleQuickUniversal = byId('cmQuickToggleAllUniversalBtn');
+    if (toggleQuickUniversal && !toggleQuickUniversal.__bound) {
+      toggleQuickUniversal.__bound = true;
+      toggleQuickUniversal.addEventListener('click', function () {
+        var raw = Array.isArray(window.__cmChecklistUniversalItems) ? window.__cmChecklistUniversalItems : [];
         if (!raw.length) return;
         var anyUnchecked = raw.some(function (it) { return !isChecked(it.code); });
         setCheckedBulk(raw, anyUnchecked);
         renderUI();
       });
     }
+    // Quick checklist firmware list intentionally has no "toggle all" button
+    // because class mods effectively use a single firmware pick.
   }
 
   function boot() {

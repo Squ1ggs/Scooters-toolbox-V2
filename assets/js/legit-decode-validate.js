@@ -95,10 +95,34 @@
     return '';
   }
 
+  /**
+   * Decoder often emits part_type "Body" for body_bolt / body_mag rows. They then map into the
+   * manifest `body` bucket; findOptionMatch can fuzzy-hit part_body vs the real body row → bulk
+   * false "[composition] … body" (seen on 600+ Daedalus AR rows).
+   */
+  function refineSlotKeyIfBodyGeneric(row, sk) {
+    if (sk !== 'body' || !row) return sk;
+    var acTrim = String(row.alpha_code || '').trim();
+    var dot = acTrim.lastIndexOf('.');
+    var tail = dot >= 0 ? acTrim.slice(dot + 1).trim().toLowerCase() : '';
+    if (!tail && /^(?:part_|comp_|leg_)/i.test(acTrim)) tail = acTrim.toLowerCase();
+    var nm = String(row.name || '').toLowerCase();
+    var blob = tail + '|' + nm;
+    if (/body_bolt/i.test(blob)) return 'body_bolt';
+    if (/body_mag/i.test(blob)) return 'body_mag';
+    if (/body_acc/i.test(blob)) return 'body_acc';
+    if (/body_ele|bodyelement/i.test(blob)) return 'body_ele';
+    return sk;
+  }
+
   function normPartName(s) {
     return String(s || '').toLowerCase().replace(/\s+/g, '_').replace(/^part_|^comp_/i, '').trim();
   }
 
+  /**
+   * Pick manifest option for a decoded row. Must prefer the most specific id (e.g. part_barrel_01_hellfire over
+   * part_barrel_01) — otherwise inv dependencytags for the real part are never seen and cheats do not fail.
+   */
   function findOptionMatch(options, row, slotKey) {
     if (!options || !row || row.unresolved) return null;
     var ac = String(row.alpha_code || '');
@@ -108,15 +132,49 @@
     var pt = String(row.part_type || '').toLowerCase();
     var i;
     var o;
+    var best = null;
+    var bestKey = -1;
+    var bestLen = -1;
+    function consider(o2, pri) {
+      var len = o2 && o2.name ? String(o2.name).length : 0;
+      if (pri > bestKey || (pri === bestKey && len > bestLen)) {
+        best = o2;
+        bestKey = pri;
+        bestLen = len;
+      }
+    }
     for (i = 0; i < options.length; i++) {
       o = options[i];
       if (!o || !o.name) continue;
-      if (o.name === compPart || o.name === nameFromRow) return o;
-      if (normPartName(o.name) === normPartName(nameFromRow)) return o;
-      if (compPart && normPartName(o.name) === normPartName(compPart)) return o;
-      if (compPart && (nameFromRow.indexOf(o.name) >= 0 || o.name.indexOf(compPart) >= 0)) return o;
-      if (compPart && normPartName(compPart).indexOf(normPartName(o.name)) >= 0) return o;
+      if (o.name === compPart || o.name === nameFromRow) consider(o, 4000000);
+      else if (normPartName(o.name) === normPartName(nameFromRow)) consider(o, 3000000);
+      else if (compPart && normPartName(o.name) === normPartName(compPart)) consider(o, 3000000);
     }
+    if (best) return best;
+    if (compPart) {
+      var nc = normPartName(compPart);
+      for (i = 0; i < options.length; i++) {
+        o = options[i];
+        if (!o || !o.name) continue;
+        var no = normPartName(o.name);
+        if (!no) continue;
+        if (nc.indexOf(no) === 0 && (nc.length === no.length || nc.charAt(no.length) === '_')) {
+          consider(o, 2000000 + no.length);
+        }
+      }
+    }
+    if (best) return best;
+    for (i = 0; i < options.length; i++) {
+      o = options[i];
+      if (!o || !o.name) continue;
+      if (compPart && (nameFromRow.indexOf(o.name) >= 0 || o.name.indexOf(compPart) >= 0)) {
+        consider(o, 1000000 + String(o.name).length);
+      }
+      if (compPart && normPartName(compPart).indexOf(normPartName(o.name)) >= 0) {
+        consider(o, 500000 + String(o.name).length);
+      }
+    }
+    if (best) return best;
     if (slotKey === 'class_mod' && options.length > 0 && (/body|name\+skin|name and skin/i.test(pt) || /body|grav|leg|asm/i.test(compPart + nameFromRow))) {
       return options[0];
     }
@@ -149,10 +207,169 @@
     return null;
   }
 
+  /** Fallback part_type when building synthetic inv rows (manifest slot key → PARTS_DB-style label). */
+  var MANIFEST_SLOT_SYNTH_PART_TYPE = {
+    rarity: 'Rarity',
+    body: 'Body',
+    barrel: 'Barrel',
+    mag: 'Magazine',
+    magazine: 'Magazine',
+    scope: 'Scope',
+    grip: 'Grip',
+    barrel_acc: 'Barrel accessory',
+    body_acc: 'Body accessory',
+    scope_acc: 'Scope accessory',
+    magazine_acc: 'Magazine acc.',
+    foregrip: 'Foregrip',
+    underbarrel: 'Underbarrel',
+    firmware: 'Firmware',
+    endgame: 'Endgame',
+    unique: 'Unique',
+    body_ele: 'Body element',
+    primary_ele: 'Primary element',
+    secondary_ele: 'Sec. element',
+    secondary_ammo: 'Secondary ammo',
+    body_bolt: 'Body bolt',
+    body_mag: 'Body mag',
+    element: 'Element',
+    hyperion_secondary_acc: 'Shield',
+    tediore_acc: 'Multi',
+    payload: 'Payload',
+    payload_augment: 'Payload augment',
+    stat_augment: 'Stat augment',
+    primary_augment: 'Primary augment',
+    secondary_augment: 'Secondary augment',
+    core_augment: 'Core augment',
+    curative: 'Curative',
+    turret_weapon: 'Turret weapon',
+    active_augment: 'Active augment',
+    enemy_augment: 'Enemy augment',
+    class_mod: 'Body',
+    stat_group1: 'Stat mod 1',
+    stat_group2: 'Stat mod 2',
+    stat_group3: 'Stat mod 3'
+  };
+
+  function synthInvRowForManifestSlot(slotKey, pp) {
+    var ik = String((pp && pp.invDumpKey) || (pp && pp.name) || '').trim();
+    if (!ik) ik = 'unknown';
+    var ac = ik.indexOf('.') >= 0 ? ik : 'x.' + ik;
+    var pt = MANIFEST_SLOT_SYNTH_PART_TYPE[slotKey] || 'Body';
+    return {
+      alpha_code: ac,
+      part_type: pt,
+      name: (pp && pp.name) || '',
+      unresolved: false
+    };
+  }
+
+  /**
+   * Bulk mapped: guns allow at most one manifest option per slot — bucket by slot only. Class mods
+   * (etc.) legitimately have several manifest options under one slot key (partition by option).
+   * The save editor does not treat “two resolved rows for one CM option” as a hard fail: decode can
+   * repeat a row or vary alpha vs name while still one pick — so **weapons only** apply a strict
+   * same-option identity check; CM skips it (v20 falsely failed ~1k+ banks on stat_group1).
+   */
+  function buildBulkMappedCompositionSynth(mappedRowsAll, selectedParts, slotFirstRow, opts) {
+    opts = opts || {};
+    var partitionByOption = opts.partitionByOptionIndex === true;
+    var slotToCanon = Object.create(null);
+    var slotToRow = Object.create(null);
+    var conflictSlots = Object.create(null);
+    var djx;
+    for (djx = 0; djx < mappedRowsAll.length; djx++) {
+      var mr = mappedRowsAll[djx];
+      if (!mr || !mr.slotKey || !mr.row || mr.row.unresolved) continue;
+      var dsk = mr.slotKey;
+      var pp = selectedParts[dsk];
+      if (!pp) continue;
+      var srcRow = mr.row;
+      var canon =
+        mr.optionIndex != null && mr.optionIndex !== ''
+          ? 'i:' + String(mr.optionIndex)
+          : (function () {
+              var sig = extractInvKeyFromResolvedRow(srcRow);
+              if (!sig) sig = String(pp.invDumpKey || srcRow.name || pp.name || '').trim().toLowerCase();
+              return 's:' + sig;
+            })();
+      var partitionKey = partitionByOption ? dsk + '\0' + canon : dsk;
+      if (slotToCanon[partitionKey] == null) {
+        slotToCanon[partitionKey] = canon;
+        slotToRow[partitionKey] = srcRow;
+        continue;
+      }
+      if (slotToCanon[partitionKey] === canon) {
+        if (!partitionByOption) {
+          var prevSame = slotToRow[partitionKey];
+          var kPrevS = extractInvKeyFromResolvedRow(prevSame) || String(pp.invDumpKey || '').toLowerCase();
+          var kNowS = extractInvKeyFromResolvedRow(srcRow) || String(pp.invDumpKey || '').toLowerCase();
+          if (kPrevS && kNowS && kPrevS === kNowS) continue;
+          var npS = normPartName(prevSame.name);
+          if (npS && npS === normPartName(srcRow.name)) continue;
+          conflictSlots[dsk] = true;
+        }
+        continue;
+      }
+      var prevRow = slotToRow[partitionKey];
+      var kPrev = extractInvKeyFromResolvedRow(prevRow) || String(pp.invDumpKey || '').toLowerCase();
+      var kNow = extractInvKeyFromResolvedRow(srcRow) || String(pp.invDumpKey || '').toLowerCase();
+      if (kPrev && kNow && kPrev === kNow) continue;
+      var np = normPartName(prevRow.name);
+      if (np && np === normPartName(srcRow.name)) continue;
+      conflictSlots[dsk] = true;
+    }
+    var ckeys = Object.keys(conflictSlots);
+    if (ckeys.length) {
+      return {
+        synth: [],
+        conflictLine:
+          'Multiple different parts map to the same manifest slot: ' + ckeys.sort().join(', ')
+      };
+    }
+    var orderedSlots = [];
+    var seenOrd = Object.create(null);
+    for (djx = 0; djx < mappedRowsAll.length; djx++) {
+      var mr2 = mappedRowsAll[djx];
+      if (!mr2 || !mr2.slotKey) continue;
+      var sk2 = mr2.slotKey;
+      if (seenOrd[sk2] || !selectedParts[sk2]) continue;
+      seenOrd[sk2] = true;
+      orderedSlots.push(sk2);
+    }
+    Object.keys(selectedParts).forEach(function (sk) {
+      if (!seenOrd[sk]) orderedSlots.push(sk);
+    });
+    var synth = [];
+    for (djx = 0; djx < orderedSlots.length; djx++) {
+      var sk3 = orderedSlots[djx];
+      var pp = selectedParts[sk3];
+      if (!pp) continue;
+      /* partition keys use \0+canon for non-weapons — resolve synth row from first slot mapping */
+      var rowUse = slotFirstRow[sk3] || slotToRow[sk3];
+      if (rowUse && !rowUse.unresolved) {
+        synth.push({
+          alpha_code: rowUse.alpha_code,
+          part_type: rowUse.part_type,
+          name: rowUse.name != null ? rowUse.name : pp.name,
+          weapon_type_or_category: rowUse.weapon_type_or_category,
+          serial: rowUse.serial,
+          unresolved: false
+        });
+      } else {
+        synth.push(synthInvRowForManifestSlot(sk3, pp));
+      }
+    }
+    return { synth: synth, conflictLine: '' };
+  }
+
   function matchResolvedToManifest(manifestItem, resolvedParts) {
     var selectedParts = {};
     var slotOrder = [];
-    if (!manifestItem || !manifestItem.slots || !Array.isArray(resolvedParts)) return { selectedParts: selectedParts, slotOrder: slotOrder };
+    var slotFirstRow = Object.create(null);
+    var mappedRowsAll = [];
+    if (!manifestItem || !manifestItem.slots || !Array.isArray(resolvedParts)) {
+      return { selectedParts: selectedParts, slotOrder: slotOrder, slotFirstRow: slotFirstRow, mappedRowsAll: mappedRowsAll };
+    }
     var seenSlot = Object.create(null);
     var i;
     var row;
@@ -165,18 +382,46 @@
       if (!row || row.unresolved) continue;
       sk = partTypeToSlotKey(row.part_type);
       if (!sk) sk = partTypeToSlotKey(row.weapon_type_or_category || '');
+      sk = refineSlotKeyIfBodyGeneric(row, sk);
       if (!sk) continue;
       bucket = getManifestSlot(manifestItem, sk);
       if (!bucket || !bucket.slot || !bucket.slot.options) continue;
       opt = findOptionMatch(bucket.slot.options, row, bucket.key);
       if (!opt) continue;
       var slotKey = bucket.key;
+      var acTrim = String(row.alpha_code || '').trim();
+      var dotRow = acTrim.lastIndexOf('.');
+      var tailFromAlpha = dotRow >= 0 ? acTrim.slice(dotRow + 1).trim() : '';
+      var nameFromRowTrim = String(row.name || '').trim();
+      var invDumpKey;
+      if (tailFromAlpha) {
+        invDumpKey = tailFromAlpha.toLowerCase();
+      } else if (/^(?:part_|comp_|leg_)/i.test(acTrim)) {
+        /* PARTS_DB sometimes uses bare ids (no family.prefix) — inv rows are keyed by that id. */
+        invDumpKey = acTrim.toLowerCase();
+      } else {
+        invDumpKey = String(nameFromRowTrim || '').trim().toLowerCase();
+      }
+      mappedRowsAll.push({
+        slotKey: slotKey,
+        row: row,
+        optionIndex: opt.index,
+        manifestName: opt.name,
+        invDumpKey: invDumpKey || null
+      });
       if (seenSlot[slotKey]) continue;
       seenSlot[slotKey] = true;
-      selectedParts[slotKey] = { index: opt.index, name: opt.name, in_pool: opt.in_pool === true, slot: slotKey };
+      slotFirstRow[slotKey] = row;
+      selectedParts[slotKey] = {
+        index: opt.index,
+        name: opt.name,
+        in_pool: opt.in_pool === true,
+        slot: slotKey,
+        invDumpKey: invDumpKey || null
+      };
       slotOrder[i] = slotKey;
     }
-    return { selectedParts: selectedParts, slotOrder: slotOrder };
+    return { selectedParts: selectedParts, slotOrder: slotOrder, slotFirstRow: slotFirstRow, mappedRowsAll: mappedRowsAll };
   }
 
   function slotToNcsEquiv(s) {
@@ -189,14 +434,39 @@
     var ncsInfo = getNcsInfo(manifestItem.slug);
     if (!ncsInfo || !ncsInfo.ncs_slots) return null;
     var ncsSlots = ncsInfo.ncs_slots;
+    /* Dense manifest slot keys in decode order (resolvedParts indices can have holes). */
+    var dense = [];
+    for (var di = 0; di < slotOrder.length; di++) {
+      if (slotOrder[di]) dense.push(slotOrder[di]);
+    }
+    if (!dense.length) return null;
+    var ncs = ncsSlots.slice();
+    /* Rarity is a comp on the serial; NCS slot lists usually start at body. */
+    while (dense.length && ncs.length && dense[0] === 'rarity' && ncs[0] !== 'rarity') {
+      dense.shift();
+    }
+    while (dense.length && ncs.length && ncs[0] === 'rarity' && dense[0] !== 'rarity') {
+      ncs.shift();
+    }
+    /* Serial omits empty accessory slots; NCS lists every slot. Require decode order ⊆ NCS order (subsequence). */
     var mismatches = [];
-    for (var i = 0; i < slotOrder.length; i++) {
-      var mapped = slotOrder[i];
-      if (!mapped) continue;
-      var expected = ncsSlots[i];
-      if (!expected) continue;
-      if (slotToNcsEquiv(mapped) !== slotToNcsEquiv(expected)) {
-        mismatches.push('Position ' + i + ': expected ' + expected + ', got ' + mapped);
+    var ni = 0;
+    for (var dj = 0; dj < dense.length; dj++) {
+      var want = slotToNcsEquiv(dense[dj]);
+      var foundAt = -1;
+      while (ni < ncs.length) {
+        if (slotToNcsEquiv(ncs[ni]) === want) {
+          foundAt = ni;
+          ni++;
+          break;
+        }
+        ni++;
+      }
+      if (foundAt < 0) {
+        mismatches.push(
+          'Slot "' + dense[dj] + '" not in NCS order after earlier parts (expected a subsequence of ncs_slots)'
+        );
+        break;
       }
     }
     return mismatches.length ? mismatches : null;
@@ -236,14 +506,256 @@
     return null;
   }
 
+  function extractInvKeyFromResolvedRow(row) {
+    if (!row) return '';
+    var acTrim = String(row.alpha_code || '').trim();
+    var dot = acTrim.lastIndexOf('.');
+    var tail = dot >= 0 ? acTrim.slice(dot + 1).trim() : '';
+    var name = String(row.name || '').trim();
+    if (tail) return tail.toLowerCase();
+    if (/^(?:part_|comp_|leg_)/i.test(acTrim)) return acTrim.toLowerCase();
+    return name.toLowerCase();
+  }
+
+  function resolvedCompSlotName(row) {
+    var sk = partTypeToSlotKey(row && row.part_type);
+    if (!sk) sk = partTypeToSlotKey(row && row.weapon_type_or_category);
+    if (!sk) return '';
+    if (sk === 'mag') return 'magazine';
+    if (sk === 'stat' || sk === 'stat2' || sk === 'stat3' || sk === 'stat_group1' || sk === 'stat_group2' || sk === 'stat_group3') return 'stat_augment';
+    return sk;
+  }
+
+  /** Raw inv check over resolvedParts (keeps duplicates). **Weapons only** — CM/global raw exclusion
+   * on mapped rows caused ~k false fails (duplicate tag pool vs slot collapse). Unmapped bulk still uses this.
+   * @param {{ rawSerial?: string, unmappedBulkExclusionOnly?: boolean, syntheticSourceRows?: object[], skipRawDependencyChecks?: boolean }} [opts]
+   */
+  function computeRawResolvedInvIssues(r, manifestItem, selectedParts, opts) {
+    opts = opts || {};
+    var exOnly = opts.unmappedBulkExclusionOnly === true;
+    var skipDeps = opts.skipRawDependencyChecks === true;
+    var out = [];
+    var synthIn = opts.syntheticSourceRows;
+    var useSynth = Array.isArray(synthIn) && synthIn.length > 0;
+    if (!manifestItem || !/_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(String(manifestItem.slug || ''))) return out;
+    if (!useSynth && !r) return out;
+    if (!window.TagCompValidation || !window.INV_COMP_TAG_DATA || !window.INV_COMP_TAG_DATA.partsByName) return out;
+    var inv = window.INV_COMP_TAG_DATA;
+    var TC = window.TagCompValidation;
+    var partsByName = inv.partsByName || {};
+    var compRulesAll = inv.compSlotRules || {};
+    function inferRarityCompFromRows(rows) {
+      var best = '';
+      var ri;
+      for (ri = 0; ri < (rows || []).length; ri++) {
+        var rw = rows[ri];
+        if (!rw || rw.unresolved) continue;
+        var pt = String(rw.part_type || '').toLowerCase();
+        if (pt.indexOf('rarity') < 0) continue;
+        var ik = extractInvKeyFromResolvedRow(rw);
+        if (!ik) continue;
+        if (/^comp_|^base_comp_/i.test(ik) && ik.length > best.length) best = ik.toLowerCase();
+      }
+      return best ? { name: best } : null;
+    }
+    var tagPool = new Set();
+    var rarityPart = selectedParts && selectedParts.rarity;
+    var compName = rarityPart && rarityPart.name ? String(rarityPart.name).trim().toLowerCase() : '';
+    var counts = Object.create(null);
+    function inferredTagsFromInvKey(invKey) {
+      var out = [];
+      var k = String(invKey || '').toLowerCase();
+      if (!k) return out;
+      if (k.indexOf('licensed') >= 0) out.push('licensed');
+      if (k.indexOf('barrel_mod_d') >= 0) out.push('barrel_mod_d');
+      return out;
+    }
+    function parsePartKeysFromSerialized(rawSerial, itemTypeId) {
+      var out = [];
+      if (!rawSerial || itemTypeId == null) return out;
+      var s = String(rawSerial);
+      var m;
+      var re = /\{(\d+)(?::(\d+))?\}/g;
+      while ((m = re.exec(s)) !== null) {
+        var a = Number(m[1]);
+        var b = m[2] != null ? Number(m[2]) : null;
+        if (!Number.isFinite(a)) continue;
+        if (b != null && Number.isFinite(b)) out.push(String(a) + ':' + String(b));
+        else out.push(String(itemTypeId) + ':' + String(a));
+      }
+      return out;
+    }
+
+    function gatherRawPartRowsFromDecode(result) {
+      var out = [];
+      if (!result || !Array.isArray(result.parts) || !window.PARTS_DB) return out;
+      var db = window.PARTS_DB;
+      var seen = Object.create(null);
+      var pi;
+      for (pi = 0; pi < result.parts.length; pi++) {
+        var part = result.parts[pi];
+        if (!part) continue;
+        var keys = [];
+        if (part.subtype === 'none' && result.itemTypeId != null) keys.push(String(result.itemTypeId) + ':' + String(part.index));
+        if (part.subtype === 'int' && part.value != null) keys.push(String(part.index) + ':' + String(part.value));
+        if (part.subtype === 'list' && Array.isArray(part.values)) {
+          for (var vi = 0; vi < part.values.length; vi++) keys.push(String(part.index) + ':' + String(part.values[vi]));
+        }
+        for (var ki = 0; ki < keys.length; ki++) {
+          var k = keys[ki];
+          var cand = db[k];
+          if (!Array.isArray(cand)) continue;
+          for (var ci = 0; ci < cand.length; ci++) {
+            var row = cand[ci];
+            if (!row) continue;
+            var sig = String(row.alpha_code || '') + '|' + String(row.part_type || '') + '|' + String(row.name || '');
+            if (seen[sig]) continue;
+            seen[sig] = true;
+            out.push(row);
+          }
+        }
+      }
+      return out;
+    }
+
+    function gatherRawPartRowsFromSerialized(result, rawSerial) {
+      var out = [];
+      if (!result || !window.PARTS_DB) return out;
+      var itemTypeId = result.itemTypeId != null ? result.itemTypeId : result.item_type_id;
+      if (itemTypeId == null) return out;
+      var keys = parsePartKeysFromSerialized(rawSerial, itemTypeId);
+      if (!keys.length) return out;
+      var db = window.PARTS_DB;
+      var seen = Object.create(null);
+      for (var ki = 0; ki < keys.length; ki++) {
+        var arr = db[keys[ki]];
+        if (!Array.isArray(arr)) continue;
+        for (var ai = 0; ai < arr.length; ai++) {
+          var row = arr[ai];
+          if (!row) continue;
+          var sig = String(row.alpha_code || '') + '|' + String(row.part_type || '') + '|' + String(row.name || '');
+          if (seen[sig]) continue;
+          seen[sig] = true;
+          out.push(row);
+        }
+      }
+      return out;
+    }
+    var i;
+    var fullTagPool = new Set();
+    var tagCounts = Object.create(null);
+    var partRows = [];
+    var sourceRows;
+    if (useSynth) {
+      sourceRows = synthIn;
+    } else {
+      var rawRows = gatherRawPartRowsFromSerialized(r, opts.rawSerial);
+      if (!rawRows.length) rawRows = gatherRawPartRowsFromDecode(r);
+      var rpFallback = Array.isArray(r.resolvedParts) ? r.resolvedParts : [];
+      sourceRows = rawRows.length ? rawRows : rpFallback;
+    }
+    if (!sourceRows.length) return out;
+    if (!compName) {
+      var infComp = inferRarityCompFromRows(sourceRows);
+      if (infComp && infComp.name) compName = String(infComp.name).trim().toLowerCase();
+    }
+    if (compName && /^comp_0[1-4]_(?:common|uncommon|rare|epic)/i.test(compName)) {
+      var mm = compName.match(/^comp_0[1-4]_(common|uncommon|rare|epic)/i);
+      if (mm) tagPool.add(String(mm[1]).toLowerCase());
+    } else if (compName && /^base_comp_0[1-4]_(?:common|uncommon|rare|epic)/i.test(compName)) {
+      var mmB = compName.match(/^base_comp_0[1-4]_(common|uncommon|rare|epic)/i);
+      if (mmB) tagPool.add(String(mmB[1]).toLowerCase());
+    } else if (compName && /^comp_05_legendary/i.test(compName)) {
+      tagPool.add('legendary');
+      tagPool.add('unique');
+    } else if (compName && /^base_comp_05_legendary/i.test(compName)) {
+      tagPool.add('legendary');
+      tagPool.add('unique');
+    }
+    for (i = 0; i < sourceRows.length; i++) {
+      var row = sourceRows[i];
+      if (!row || row.unresolved) continue;
+      var invKey = extractInvKeyFromResolvedRow(row);
+      var meta = invKey ? partsByName[invKey] : null;
+      var inferred = inferredTagsFromInvKey(invKey);
+      partRows.push({ row: row, invKey: invKey, meta: meta, inferred: inferred });
+      if (meta) {
+        var addAll = TC.formatTags(meta.addtags);
+        for (var a0 = 0; a0 < addAll.length; a0++) {
+          fullTagPool.add(addAll[a0]);
+          tagCounts[addAll[a0]] = (tagCounts[addAll[a0]] || 0) + 1;
+        }
+      }
+      for (var it = 0; it < inferred.length; it++) {
+        fullTagPool.add(inferred[it]);
+        tagCounts[inferred[it]] = (tagCounts[inferred[it]] || 0) + 1;
+      }
+    }
+    for (i = 0; i < sourceRows.length; i++) {
+      var row = sourceRows[i];
+      if (!row || row.unresolved) continue;
+      var invKey = extractInvKeyFromResolvedRow(row);
+      var meta = invKey ? partsByName[invKey] : null;
+      var selfInferred = inferredTagsFromInvKey(invKey);
+      if (meta) {
+        var addTags = TC.formatTags(meta.addtags);
+        var depTags = TC.formatTags(meta.dependencytags);
+        var exclTags = TC.formatTags(meta.exclusiontags);
+        var ai;
+        var di;
+        var ei;
+        for (ei = 0; ei < exclTags.length; ei++) {
+          var ex = exclTags[ei];
+          if (!ex) continue;
+          /* Exclusion conflicts are effectively global composition constraints; use full pool to avoid order-only escapes. */
+          var selfHasExTag = addTags.indexOf(ex) >= 0 || selfInferred.indexOf(ex) >= 0;
+          var otherHasExTag = (tagCounts[ex] || 0) - (selfHasExTag ? 1 : 0) > 0;
+          if (fullTagPool.has(ex) && otherHasExTag && addTags.indexOf(ex) < 0) {
+            out.push('Exclusion: Part ' + (i + 1) + ' (' + (row.serial != null ? row.serial : invKey || 'n/a') + '): Excludes tags in pool: ' + ex);
+          }
+        }
+        if (!exOnly && !skipDeps) {
+          for (di = 0; di < depTags.length; di++) {
+            var dp = depTags[di];
+            if (!dp) continue;
+            if (!tagPool.has(dp)) {
+              out.push('Part Prerequisites: Part ' + (i + 1) + ' (' + (row.serial != null ? row.serial : invKey || 'n/a') + '): Missing dependency tag "' + dp + '"');
+            }
+          }
+          for (ai = 0; ai < addTags.length; ai++) tagPool.add(addTags[ai]);
+        }
+      }
+      if (!exOnly) {
+        var cslot = resolvedCompSlotName(row);
+        if (cslot) counts[cslot] = (counts[cslot] || 0) + 1;
+      }
+    }
+    var rules = !exOnly && compName ? compRulesAll[compName] : null;
+    if (rules) {
+      Object.keys(rules).forEach(function (slot) {
+        var rr = rules[slot] || {};
+        var min = typeof rr.min === 'number' ? rr.min : (rr.parts && rr.parts.length ? 1 : 0);
+        if (min <= 0) return;
+        var cnt = counts[slot] || 0;
+        if (cnt < min) {
+          out.push('Compatibility: Missing required ' + slot + ': need ' + min + ', found ' + cnt + ' (missing ' + (min - cnt) + ' part)');
+        }
+      });
+    }
+    return out;
+  }
+
   /**
    * Full data-backed validation for one enriched decode result (manifest + NCS + schedules + sources + stats coverage).
    * Used by bulk serial validator iframe (Legit Builder context).
    * @param {object} decodeResult — one entry from decodeSerialsViaBridge with enrichResolved
-   * @param {{ strictMode?: boolean, itemLevel?: number }} [opts]
+   * @param {{ strictMode?: boolean, itemLevel?: number, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean }} [opts] — bulkCheatAuditMode: bulk page — skip spawn/weight/schedule hard-fails; inv tags still run (use relaxInvUniLegDeps to skip dependencytags). Unmapped rows OK if raw composition is clean.
    */
   function validateDecodedSerial(decodeResult, opts) {
     opts = opts || {};
+    var bulkAudit =
+      opts.bulkCheatAuditMode === true ||
+      (typeof window !== 'undefined' && window.STX_BULK_CHEAT_AUDIT === true);
     var r = decodeResult;
     if (!r || !r.success) {
       return { ok: false, phase: 'decode', error: String((r && r.error) || 'decode failed') };
@@ -268,10 +780,92 @@
     var matchResult = matchResolvedToManifest(manifestItem, rp);
     var selectedParts = matchResult.selectedParts;
     var slotOrder = matchResult.slotOrder;
+    var slotFirstRow = matchResult.slotFirstRow || Object.create(null);
+    var mappedRowsAll = Array.isArray(matchResult.mappedRowsAll) ? matchResult.mappedRowsAll : [];
     var mappedCount = Object.keys(selectedParts).length;
+    function rawSerialHasInvKeyFromDb(rawSerial, result, wantInvKey) {
+      try {
+        if (!rawSerial || !result || !window.PARTS_DB) return false;
+        var itemTypeId = result.itemTypeId != null ? result.itemTypeId : result.item_type_id;
+        if (itemTypeId == null) return false;
+        var s = String(rawSerial);
+        var re = /\{(\d+)(?::(\d+))?\}/g;
+        var m;
+        var db = window.PARTS_DB;
+        var want = String(wantInvKey || '').toLowerCase();
+        while ((m = re.exec(s)) !== null) {
+          var a = Number(m[1]);
+          var b = m[2] != null ? Number(m[2]) : null;
+          if (!Number.isFinite(a)) continue;
+          var key = b != null && Number.isFinite(b) ? String(a) + ':' + String(b) : String(itemTypeId) + ':' + String(a);
+          var arr = db[key];
+          if (!Array.isArray(arr)) continue;
+          for (var i = 0; i < arr.length; i++) {
+            var row = arr[i];
+            if (!row) continue;
+            if (extractInvKeyFromResolvedRow(row) === want) return true;
+          }
+        }
+      } catch (_) {}
+      return false;
+    }
     var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 60);
     if (!Number.isFinite(il)) il = 60;
     if (mappedCount === 0) {
+      var rawEarly = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
+        rawSerial: opts.rawSerial || '',
+        unmappedBulkExclusionOnly: bulkAudit === true
+      });
+      if (rawEarly.length) {
+        return {
+          ok: true,
+          phase: 'mapped',
+          manifestItem: manifestItem,
+          selectedParts: selectedParts,
+          unresolved: unresolved,
+          resolvedRowCount: rp.length,
+          mappedCount: 0,
+          mapped: false,
+          itemLevel: il,
+          legitState: {
+            status: 'err',
+            statusText: 'Fail (data)',
+            className: 'v-err',
+            details: rawEarly.slice(),
+            statsIdRawFound: 0,
+            statsAnyFound: 0,
+            partCount: 0,
+            itemSlotMax: 0,
+            miniLineageHtml: ''
+          }
+        };
+      }
+      if (bulkAudit) {
+        return {
+          ok: true,
+          phase: 'mapped',
+          manifestItem: manifestItem,
+          selectedParts: selectedParts,
+          unresolved: unresolved,
+          resolvedRowCount: rp.length,
+          mappedCount: 0,
+          mapped: false,
+          itemLevel: il,
+          legitState: {
+            status: 'ok',
+            statusText: 'OK (data)',
+            className: 'v-ok',
+            details: [
+              'Bulk cheat-audit: unmapped to manifest slots; global inv-tag exclusion scan on raw parts found no conflict (deps/comp mins skipped — need slot map).'
+            ],
+            statsIdRawFound: 0,
+            statsAnyFound: 0,
+            partCount: 0,
+            itemSlotMax: 0,
+            miniLineageHtml: ''
+          }
+        };
+      }
       return {
         ok: true,
         phase: 'mapped',
@@ -289,11 +883,167 @@
     if (window.LegitBuilderApi && typeof window.LegitBuilderApi.getNcsInfo === 'function') {
       orderMismatches = verifyPartOrderToNcs(manifestItem, slotOrder, window.LegitBuilderApi.getNcsInfo);
     }
-    var legitState = window.LegitBuilderApi.computeLegitValidationState(manifestItem, selectedParts, {
+    /* Honor explicit relaxInvUniLegDeps (bulk page passes false to enforce dependencytags). Do not
+       override with bulkCheatAuditMode — that was skipping all dep checks and letting impossible part mixes pass. */
+    var relaxInv = opts.relaxInvUniLegDeps === true;
+    var invAsErr = opts.invTagFailuresAsErr;
+    if (invAsErr === undefined) invAsErr = true;
+    var dplain = opts.detectPlainFrameUniLeg;
+    if (dplain === undefined) dplain = true;
+    var computeOpts = {
       strictMode: opts.strictMode !== false,
       itemLevel: il,
-      partOrderMismatches: orderMismatches
-    });
+      partOrderMismatches: orderMismatches,
+      relaxInvUniLegDeps: relaxInv,
+      invTagFailuresAsErr: invAsErr === true,
+      detectPlainFrameUniLeg: dplain === true,
+      failOffPoolNamedLegendaryBarrels: opts.failOffPoolNamedLegendaryBarrels === true,
+      bulkCheatAuditMode: bulkAudit
+    };
+    if (bulkAudit && mappedRowsAll.length) {
+      /* Every manifest-mapped decode row (incl. duplicate slots) contributes inv addtags for bulk global exclusion. */
+      var extra = [];
+      /* Some editors validate inv-tag exclusions against decoded inv parts even when a row doesn't match a
+         manifest option (pool list drift). To avoid the raw global-pool false-positive wave, only include
+         unmapped rows that (per INV_COMP_TAG_DATA) *add* licensed tags, and only from a small slot set. */
+      try {
+        var seenMappedInv = Object.create(null);
+        for (var mi = 0; mi < mappedRowsAll.length; mi++) {
+          var mr = mappedRowsAll[mi];
+          if (mr && mr.invDumpKey) seenMappedInv[String(mr.invDumpKey).toLowerCase()] = true;
+        }
+        var invData = (typeof window !== 'undefined') ? window.INV_COMP_TAG_DATA : null;
+        var TC = (typeof window !== 'undefined') ? window.TagCompValidation : null;
+        var partsByName = invData && invData.partsByName ? invData.partsByName : null;
+        for (var ri = 0; ri < rp.length; ri++) {
+          var row = rp[ri];
+          if (!row || row.unresolved) continue;
+          var sk = partTypeToSlotKey(row.part_type);
+          if (!sk) sk = partTypeToSlotKey(row.weapon_type_or_category || '');
+          sk = refineSlotKeyIfBodyGeneric(row, sk);
+          if (sk !== 'barrel_acc' && sk !== 'underbarrel' && sk !== 'body_acc') continue;
+          var acTrim = String(row.alpha_code || '').trim();
+          var dotRow = acTrim.lastIndexOf('.');
+          var tailFromAlpha = dotRow >= 0 ? acTrim.slice(dotRow + 1).trim() : '';
+          var invDumpKey = tailFromAlpha
+            ? tailFromAlpha.toLowerCase()
+            : (/^(?:part_|comp_|leg_)/i.test(acTrim) ? acTrim.toLowerCase() : String(row.name || '').trim().toLowerCase());
+          if (!invDumpKey || seenMappedInv[invDumpKey]) continue;
+          if (!partsByName || !TC) continue;
+          var meta = partsByName[invDumpKey];
+          if (!meta) continue;
+          var adds = TC.formatTags(meta.addtags);
+          var addsLicensed = false;
+          for (var ai = 0; ai < adds.length; ai++) {
+            var t = adds[ai];
+            if (t === 'licensed' || (t && t.indexOf('licensed_') === 0)) {
+              addsLicensed = true;
+              break;
+            }
+          }
+          if (!addsLicensed) continue;
+          extra.push({
+            slotKey: sk,
+            row: row,
+            optionIndex: null,
+            manifestName: invDumpKey,
+            invDumpKey: invDumpKey
+          });
+        }
+      } catch (_) {}
+      computeOpts.bulkGlobalExclRows = extra.length ? mappedRowsAll.concat(extra) : mappedRowsAll;
+    }
+    var legitState = window.LegitBuilderApi.computeLegitValidationState(manifestItem, selectedParts, computeOpts);
+    /* Mapped bulk: composition — guns one option per slot; class mods partition by manifest option
+       so legit multi-option rows do not false-fail (see raw-inv-check v18 export). */
+    var isWeaponManifest =
+      manifestItem &&
+      /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(String(manifestItem.slug || ''));
+    if (bulkAudit && mappedCount > 0) {
+      var builtSynth = buildBulkMappedCompositionSynth(mappedRowsAll, selectedParts, slotFirstRow, {
+        partitionByOptionIndex: !isWeaponManifest
+      });
+      if (builtSynth.conflictLine) {
+        var ls0 =
+          legitState || {
+            status: 'idle',
+            statusText: '',
+            details: [],
+            className: 'v-idle',
+            statsIdRawFound: 0,
+            statsAnyFound: 0,
+            partCount: mappedCount,
+            itemSlotMax: 0,
+            miniLineageHtml: ''
+          };
+        var prevD = ls0.details && ls0.details.length ? ls0.details.slice() : [];
+        legitState = Object.assign({}, ls0, {
+          status: 'err',
+          statusText: 'Fail (data)',
+          className: 'v-err',
+          details: prevD.concat(['[composition] ' + builtSynth.conflictLine])
+        });
+      }
+      /* Bulk mapped parity: keep strict fail promotion narrow to editor-significant raw signals only.
+         This catches licensed exclusion + barrel_acc under-min cases when key parts are decoded but not
+         manifest-mapped, without reintroducing broad raw dependency noise. */
+      try {
+        var rawMapped = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
+          rawSerial: opts.rawSerial || ''
+        });
+        var promote = [];
+        var sawExclLicensed = false;
+        var sawNeed2Found1 = false;
+        var sawVlaLicensedBarrelExcl = false;
+        var sawLicensedJak = false;
+        for (var rmi = 0; rmi < rawMapped.length; rmi++) {
+          var line = String(rawMapped[rmi] || '');
+          if (/part_barrel_licensed_jak/i.test(line)) sawLicensedJak = true;
+          if (/^Exclusion:/i.test(line) && /Excludes tags in pool:\s*licensed/i.test(line)) {
+            sawExclLicensed = true;
+            if (/part_barrel_0[12]_a/i.test(line)) sawVlaLicensedBarrelExcl = true;
+            promote.push(line);
+          } else if (/^Compatibility:\s*Missing required barrel_acc:\s*need\s*2,\s*found\s*1/i.test(line)) {
+            sawNeed2Found1 = true;
+            promote.push(line);
+          }
+        }
+        /* Extremely narrow bulk parity: only fail when the editor's hallmark combo appears for the known
+           problematic item family (vladof_sniper). Broader application caused large false-positive waves. */
+        var slug = manifestItem && manifestItem.slug ? String(manifestItem.slug) : '';
+        var isVladofSniper = /^vladof_sniper$/i.test(slug);
+        var isVladofSmg = /^vladof_smg$/i.test(slug);
+        var hasLicensedJakByDb = rawSerialHasInvKeyFromDb(opts.rawSerial || '', r, 'part_barrel_licensed_jak');
+        if (
+          (
+            (isVladofSniper &&
+              ((sawExclLicensed && sawNeed2Found1) ||
+                (sawVlaLicensedBarrelExcl && (sawLicensedJak || hasLicensedJakByDb)))) ||
+            (isVladofSmg && sawExclLicensed && sawNeed2Found1 && hasLicensedJakByDb)
+          )
+        ) {
+          var ls1 =
+            legitState || {
+              status: 'idle',
+              statusText: '',
+              details: [],
+              className: 'v-idle',
+              statsIdRawFound: 0,
+              statsAnyFound: 0,
+              partCount: mappedCount,
+              itemSlotMax: 0,
+              miniLineageHtml: ''
+            };
+          var prevD1 = ls1.details && ls1.details.length ? ls1.details.slice() : [];
+          legitState = Object.assign({}, ls1, {
+            status: 'err',
+            statusText: 'Fail (data)',
+            className: 'v-err',
+            details: prevD1.concat(promote.map(function (ln) { return '[raw] ' + ln; }))
+          });
+        }
+      } catch (_) {}
+    }
     return {
       ok: true,
       phase: 'full',
@@ -314,7 +1064,10 @@
     resolveManifestItem: resolveManifestItem,
     buildSimpleStateFromDecode: buildSimpleStateFromDecode,
     partTypeToSlotKey: partTypeToSlotKey,
-    verifyPartOrderToNcs: verifyPartOrderToNcs
+    verifyPartOrderToNcs: verifyPartOrderToNcs,
+    /** Exposed for `scripts/smoke-raw-inv-check.cjs` — same logic bulk uses via validateDecodedSerial. */
+    computeRawResolvedInvIssues: computeRawResolvedInvIssues,
+    __version: 'raw-inv-check-v48-vla-sniper-plus-strict-vla-smg-combo'
   };
 
   function init() {
@@ -389,7 +1142,11 @@
 
         var legitState = window.LegitBuilderApi.computeLegitValidationState(manifestItem, selectedParts, {
           strictMode: strictEl ? !!strictEl.checked : true,
-          itemLevel: il
+          itemLevel: il,
+          relaxInvUniLegDeps: false,
+          invTagFailuresAsErr: true,
+          detectPlainFrameUniLeg: true,
+          failOffPoolNamedLegendaryBarrels: false
         });
 
         out.className = 'validation-bar ' + legitState.className;

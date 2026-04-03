@@ -6,11 +6,13 @@
   function byId(id){ return document.getElementById(id); }
   function loadPresetCategories(){
     var sel = byId("presetCategorySelect");
+    if (!sel) return;
     if (typeof window.populatePresetCategories === 'function') window.populatePresetCategories(sel);
   }
   function loadPresetParts(){
     var catSel = byId("presetCategorySelect");
     var partSel = byId("presetPartSelect");
+    if (!catSel || !partSel) return;
     if (typeof window.populatePresetParts === 'function') window.populatePresetParts(catSel, partSel);
   }
   function isRarityTokenBootstrap(t) {
@@ -585,15 +587,15 @@
       : "<span>Model estimate — no stat lines detected yet.</span><span class=\"cc-stats-disclaimer\"><strong>1\xD7 = baseline.</strong> Paste a serial, pick parts in Guided Builder, or ensure output lists an item slug (e.g. <code>maliwan_pistol</code>) for manufacturer / barrel-mag tables.</span>";
     var pal = function(lbl) {
       var k = String(lbl||"").toLowerCase().replace(/\s+/g,"");
-      if (k.indexOf("critical") >= 0) return { border: "rgba(255,179,71,0.42)", bgTop: "rgba(255,179,71,0.16)", bgBottom: "rgba(45,26,6,0.34)", title: "#ffd7a0", value: "#fff1d8", pos: "#ffc76a", neg: "#ff9a7a", meta: "rgba(255,236,210,0.68)" };
-      if (k.indexOf("elemental") >= 0) return { border: "rgba(92,241,196,0.42)", bgTop: "rgba(92,241,196,0.14)", bgBottom: "rgba(5,38,34,0.34)", title: "#aaf8df", value: "#e8fff8", pos: "#7df0d2", neg: "#ff9aa8", meta: "rgba(222,255,245,0.68)" };
-      if (k.indexOf("accuracy") >= 0) return { border: "rgba(88,198,255,0.42)", bgTop: "rgba(88,198,255,0.14)", bgBottom: "rgba(7,27,43,0.34)", title: "#a9e8ff", value: "#effaff", pos: "#6fd8ff", neg: "#ff9ca6", meta: "rgba(224,245,255,0.68)" };
-      if (k.indexOf("ads") >= 0) return { border: "rgba(178,134,255,0.42)", bgTop: "rgba(178,134,255,0.14)", bgBottom: "rgba(29,18,47,0.34)", title: "#d9c1ff", value: "#f6efff", pos: "#caa2ff", neg: "#ff9dc9", meta: "rgba(239,228,255,0.68)" };
-      if (k.indexOf("fire") >= 0) return { border: "rgba(255,107,107,0.42)", bgTop: "rgba(255,107,107,0.16)", bgBottom: "rgba(49,12,12,0.34)", title: "#ffc2c2", value: "#fff0f0", pos: "#ff9d78", neg: "#ff8f8f", meta: "rgba(255,228,228,0.68)" };
-      if (k.indexOf("reload") >= 0) return { border: "rgba(54,225,179,0.42)", bgTop: "rgba(54,225,179,0.14)", bgBottom: "rgba(6,40,31,0.34)", title: "#98f4d6", value: "#eafff8", pos: "#67f0c1", neg: "#ff9da0", meta: "rgba(220,255,244,0.68)" };
-      if (k.indexOf("ammo") >= 0) return { border: "rgba(156,230,86,0.42)", bgTop: "rgba(156,230,86,0.14)", bgBottom: "rgba(21,39,10,0.34)", title: "#cff7a7", value: "#f7ffeb", pos: "#b8f36e", neg: "#ffb08b", meta: "rgba(238,255,216,0.68)" };
-      if (k.indexOf("projectile") >= 0) return { border: "rgba(255,122,186,0.42)", bgTop: "rgba(255,122,186,0.14)", bgBottom: "rgba(49,13,31,0.34)", title: "#ffc0df", value: "#fff0f8", pos: "#ff9ad1", neg: "#ff9f9f", meta: "rgba(255,228,241,0.68)" };
-      return { border: "rgba(255,255,255,0.2)", bgTop: "rgba(255,255,255,0.08)", bgBottom: "rgba(255,255,255,0.02)", title: "#fff", value: "#fff", pos: "#7df", neg: "#f99", meta: "rgba(255,255,255,0.7)" };
+      if (k.indexOf("critical") >= 0) return { border: "rgba(255,179,71,0.42)", bgTop: "rgba(255,179,71,0.16)", bgBottom: "rgba(45,26,6,0.34)", title: "#ffd7a0", value: "#fff1d8", pos: "#ffc76a", neg: "#ff9a7a", meta: "rgba(255,236,210,0.9)" };
+      if (k.indexOf("elemental") >= 0) return { border: "rgba(92,241,196,0.42)", bgTop: "rgba(92,241,196,0.14)", bgBottom: "rgba(5,38,34,0.34)", title: "#aaf8df", value: "#e8fff8", pos: "#7df0d2", neg: "#ff9aa8", meta: "rgba(222,255,245,0.9)" };
+      if (k.indexOf("accuracy") >= 0) return { border: "rgba(88,198,255,0.42)", bgTop: "rgba(88,198,255,0.14)", bgBottom: "rgba(7,27,43,0.34)", title: "#a9e8ff", value: "#effaff", pos: "#6fd8ff", neg: "#ff9ca6", meta: "rgba(224,245,255,0.9)" };
+      if (k.indexOf("ads") >= 0) return { border: "rgba(178,134,255,0.42)", bgTop: "rgba(178,134,255,0.14)", bgBottom: "rgba(29,18,47,0.34)", title: "#d9c1ff", value: "#f6efff", pos: "#caa2ff", neg: "#ff9dc9", meta: "rgba(239,228,255,0.9)" };
+      if (k.indexOf("fire") >= 0) return { border: "rgba(255,107,107,0.42)", bgTop: "rgba(255,107,107,0.16)", bgBottom: "rgba(49,12,12,0.34)", title: "#ffc2c2", value: "#fff0f0", pos: "#ff9d78", neg: "#ff8f8f", meta: "rgba(255,228,228,0.9)" };
+      if (k.indexOf("reload") >= 0) return { border: "rgba(54,225,179,0.42)", bgTop: "rgba(54,225,179,0.14)", bgBottom: "rgba(6,40,31,0.34)", title: "#98f4d6", value: "#eafff8", pos: "#67f0c1", neg: "#ff9da0", meta: "rgba(220,255,244,0.9)" };
+      if (k.indexOf("ammo") >= 0) return { border: "rgba(156,230,86,0.42)", bgTop: "rgba(156,230,86,0.14)", bgBottom: "rgba(21,39,10,0.34)", title: "#cff7a7", value: "#f7ffeb", pos: "#b8f36e", neg: "#ffb08b", meta: "rgba(238,255,216,0.9)" };
+      if (k.indexOf("projectile") >= 0) return { border: "rgba(255,122,186,0.42)", bgTop: "rgba(255,122,186,0.14)", bgBottom: "rgba(49,13,31,0.34)", title: "#ffc0df", value: "#fff0f8", pos: "#ff9ad1", neg: "#ff9f9f", meta: "rgba(255,228,241,0.9)" };
+      return { border: "rgba(255,255,255,0.2)", bgTop: "rgba(255,255,255,0.08)", bgBottom: "rgba(255,255,255,0.02)", title: "#fff", value: "#fff", pos: "#7df", neg: "#f99", meta: "rgba(255,255,255,0.9)" };
     };
     var esc = function(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); };
     grid.innerHTML = core.items.map(function(it) {

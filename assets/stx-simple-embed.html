@@ -15,6 +15,7 @@
 <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./css/cc-build-stats-panel.css" rel="stylesheet"/>
 <style>
     :root {
       --bg-base: #060a12;
@@ -394,12 +395,36 @@
 </div>
 </div>
 </section>
+<section class="card">
+<div class="hd">
+<div class="k">Build stats (core snapshot)</div>
+<div class="pill">PARTS_STATS_DATA · weapon init · parsed text</div>
+</div>
+<details class="rebuild-details cc-build-stats-panel" id="rebuildBuildStatsSection" open="">
+<summary>Build stats (core snapshot)</summary>
+<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
+<div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Uses output and slot selections. Full lines and per-bucket breakdown below.</div>
+<div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
+<div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
+<div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
+<details class="rebuild-details" id="buildStatsDebugDetails" style="margin-top:10px;">
+<summary style="cursor:pointer;color:#00f3ff;font-size:11px;">Debug</summary>
+<div id="buildStatsDebugBody" style="margin-top:8px;font-size:11px;font-family:ui-monospace,monospace;max-height:280px;overflow:auto;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.9);"></div>
+</details>
+</div>
+</details>
+</section>
 </div>
 <script>
     try{ if(!window.STX_DATASET&&window.parent&&window.parent.STX_DATASET) window.STX_DATASET=window.parent.STX_DATASET; }catch(_){}
     try{ if(!window.STX_RARITIES&&window.parent&&window.parent.STX_RARITIES) window.STX_RARITIES=window.parent.STX_RARITIES; }catch(_){}
   </script>
+<script src="data/weapon_stats_data.js"></script>
+<script src="data/parts_stats_data.js"></script>
 <script src="js/cc-item-slug.js"></script>
+<script src="js/cc-build-stats-rebuild.js"></script>
+<script src="js/rebuild-presets-random.js"></script>
 <script src="js/cc-toolbox-analytics.js"></script>
 <script src="js/cc-toolbox-items-made.js"></script>
 <script src="js/cc-toolbox-public-counter.js"></script>

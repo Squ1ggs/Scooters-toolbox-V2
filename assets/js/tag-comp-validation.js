@@ -55,7 +55,7 @@
   /**
    * @param {{ addtags?: unknown, dependencytags?: unknown, exclusiontags?: unknown, name?: string }} part
    * @param {Set<string>} tagPool — lowercased tags currently in pool (incl. comp + prior parts)
-   * @param {{}} [options] — reserved
+   * @param {{ skipUniqueExclusion?: boolean, skipExclusionTags?: string[], ignoreDependencyTags?: string[], skipAllDependencyChecks?: boolean, skipRarityPoolMatch?: boolean }} [options] — skipAllDependencyChecks: skip dependencytags entirely (bulk/editor parity — editors merge inv rows but do not simulate the comp tag pool, so uni_x/leg_x deps are never satisfied). skipRarityPoolMatch: save-editor-style bulk — do not fail on rarity tier mismatch vs pool (noisy with named comps).
    * @returns {{ ok: boolean, reasons: string[] }}
    */
   function partValidForPool(part, tagPool, options) {
@@ -66,19 +66,38 @@
     var addTags = toSet(formatTags(part.addtags));
     var depTags = toSet(formatTags(part.dependencytags));
     var exclTags = toSet(formatTags(part.exclusiontags));
+    var skipEx = options.skipExclusionTags;
+    var skipExSet = skipEx && skipEx.length ? skipEx : null;
 
     /* Exclusion: pool already has t, and this part does not add t → conflict.
        When evaluating a *candidate* whose addtags are not in the pool yet, build a temp pool
        or run a second pass after tag propagation (caller responsibility). */
     exclTags.forEach(function (t) {
+      if (options.skipUniqueExclusion === true && t === 'unique') return;
+      if (skipExSet && skipExSet.indexOf(t) >= 0) return;
       if (tagPool.has(t) && !addTags.has(t)) {
         reasons.push('exclusion tag "' + t + '" in pool');
       }
     });
 
-    depTags.forEach(function (t) {
-      if (!tagPool.has(t)) reasons.push('missing dependency tag "' + t + '"');
-    });
+    if (!options.skipAllDependencyChecks) {
+      var ignDep = options.ignoreDependencyTags;
+      var ignDepSet = ignDep && ignDep.length ? ignDep : null;
+      depTags.forEach(function (t) {
+        if (ignDepSet && ignDepSet.indexOf(t) >= 0) return;
+        if (tagPool.has(t)) return;
+        /* Nexus rows sometimes encode the same named legendary family with uni_* vs leg_*.
+           Accept either prefix when the suffix matches (e.g. uni_king <-> leg_king). */
+        if (t.indexOf('uni_') === 0) {
+          var altLeg = 'leg_' + t.slice(4);
+          if (tagPool.has(altLeg)) return;
+        } else if (t.indexOf('leg_') === 0) {
+          var altUni = 'uni_' + t.slice(4);
+          if (tagPool.has(altUni)) return;
+        }
+        reasons.push('missing dependency tag "' + t + '"');
+      });
+    }
 
     var poolRarities = [];
     tagPool.forEach(function (t) {
@@ -90,7 +109,7 @@
     });
     var poolHasUnique = tagPool.has('unique');
     var partHasUnique = addTags.has('unique');
-    if (poolRarities.length > 0 && !poolHasUnique && !partHasUnique && partRarities.length > 0) {
+    if (!options.skipRarityPoolMatch && poolRarities.length > 0 && !poolHasUnique && !partHasUnique && partRarities.length > 0) {
       var match = partRarities.some(function (pr) { return poolRarities.indexOf(pr) >= 0; });
       if (!match) reasons.push('rarity tags do not match pool');
     }

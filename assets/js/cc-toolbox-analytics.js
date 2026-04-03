@@ -14,6 +14,19 @@
     return m && m.content ? String(m.content).trim() : '';
   }
 
+  /** file://, iframe sandbox, etc. — remote Netlify has no CORS for Origin "null"; skip to avoid console noise. */
+  function allowRemoteAnalyticsEndpoints() {
+    if (typeof location === 'undefined') return false;
+    if (!/^https?:$/i.test(location.protocol || '')) return false;
+    try {
+      var o = String(location.origin || '');
+      if (o === 'null' || o === 'file://') return false;
+    } catch (_) {
+      return false;
+    }
+    return true;
+  }
+
   function candidateEndpoints(filename) {
     var out = [];
     var seen = Object.create(null);
@@ -25,7 +38,7 @@
     }
 
     var cfg = configuredEndpoint();
-    var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+    var isHttp = allowRemoteAnalyticsEndpoints();
 
     if (isHttp) {
       try { add(new URL(filename, location.href).href); } catch (_) {}
@@ -90,6 +103,7 @@
   }
 
   function track() {
+    if (!allowRemoteAnalyticsEndpoints()) return;
     var urls = candidateEndpoints('track.php');
     if (!urls.length) return;
 

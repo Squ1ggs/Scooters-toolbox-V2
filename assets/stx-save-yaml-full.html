@@ -5,7 +5,15 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
-<title>Save / YAML — Scooter's Toolbox</title>
+<title>BL4 save YAML editor — .sav decrypt &amp; encrypt | Scooter's Toolbox</title>
+<meta content="BL4 .sav to YAML editor in the browser: decrypt numbered saves and Profile.sav with your Steam ID, edit YAML, encrypt back. Part of Scooter's Toolbox." name="description"/>
+<meta content="index,follow" name="robots"/>
+<meta content="BL4 YAML editor, BL4 sav decrypt, sav encrypt, profile sav, Steam ID save" name="keywords"/>
+<link href="https://scooters-toolbox.netlify.app/assets/stx-save-yaml-full.html" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="https://scooters-toolbox.netlify.app/assets/stx-save-yaml-full.html" property="og:url"/>
+<meta content="BL4 save YAML editor — .sav decrypt &amp; encrypt" property="og:title"/>
+<meta content="In-browser BL4 .sav ↔ YAML: decrypt with Steam ID, edit inventory and profile data, re-encrypt." property="og:description"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
@@ -15,6 +23,7 @@
 <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./css/cc-build-stats-panel.css" rel="stylesheet"/>
 <style>
 /* Aligned with index.html + bulk-serial-validator.html (cyan / pink toolbox) */
 :root {
@@ -159,6 +168,22 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .btn-Firmware:hover {
   background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%);
   box-shadow: var(--glow-mix);
+}
+#presetButtonsExtra button.btn[data-requires]:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  filter: grayscale(0.28);
+  box-shadow: none;
+}
+#ccYamlKindBanner {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.82);
 }
 .btn-primary, .primary-save-gradient {
   border-color: rgba(0,200,255,0.5);
@@ -314,8 +339,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <details class="support-menu instructions-menu" id="stxInstructionsMenuYaml">
 <summary class="btn btn--brand" title="Expand to read SCOOTERS_TOOLBOX_USER_GUIDE.txt">Scooter's Toolbox User Guide</summary>
 <div aria-label="Scooter's Toolbox user guide" class="support-menu__panel instructions-menu__panel" role="region">
-<iframe class="instructions-menu__embed" id="stxInstructionsFrameYaml" title="Scooter's Toolbox user guide"></iframe>
-<p class="instructions-menu__hint">If this is blank (some browsers block local file previews), open <a href="SCOOTERS_TOOLBOX_USER_GUIDE.txt" rel="noopener" target="_blank">SCOOTERS_TOOLBOX_USER_GUIDE.txt</a>.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="btn btn--brand active" id="stxInstructionsExpandedBtnYaml" style="padding:6px 10px;" type="button">Expanded</button>
+<button class="btn btn--brand" id="stxInstructionsSimpleBtnYaml" style="padding:6px 10px;" type="button">Simple</button>
+</div>
+<pre class="instructions-menu__text" id="stxInstructionsTextYaml">Loading instructions...</pre>
+<iframe class="instructions-menu__embed" id="stxInstructionsFrameYaml" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
 </div>
 </details>
 </div>
@@ -323,16 +352,62 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <script>
 (function () {
   var menu = document.getElementById('stxInstructionsMenuYaml');
+  var out = document.getElementById('stxInstructionsTextYaml');
   var frame = document.getElementById('stxInstructionsFrameYaml');
-  if (!menu || !frame) return;
-  menu.addEventListener('toggle', function () {
-    if (!menu.open || frame.getAttribute('data-wired') === '1') return;
-    frame.setAttribute('data-wired', '1');
-    try {
-      frame.src = new URL('SCOOTERS_TOOLBOX_USER_GUIDE.txt', document.baseURI || location.href).href;
-    } catch (e) {
-      frame.src = 'SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+  var expandedBtn = document.getElementById('stxInstructionsExpandedBtnYaml');
+  var simpleBtn = document.getElementById('stxInstructionsSimpleBtnYaml');
+  var loaded = { expanded: false, simple: false };
+  var cache = { expanded: '', simple: '' };
+  var mode = 'expanded';
+  if (!menu || !out) return;
+  function setMode(nextMode) {
+    mode = nextMode;
+    if (expandedBtn) expandedBtn.classList.toggle('active', mode === 'expanded');
+    if (simpleBtn) simpleBtn.classList.toggle('active', mode === 'simple');
+  }
+  function loadText(nextMode) {
+    var url = nextMode === 'simple'
+      ? 'SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
+      : 'SCOOTERS_TOOLBOX_USER_GUIDE.txt';
+    if (location && location.protocol === 'file:') {
+      if (out) out.style.display = 'none';
+      if (frame) {
+        frame.style.display = 'block';
+        frame.src = url;
+      }
+      return;
     }
+    if (frame) frame.style.display = 'none';
+    if (out) out.style.display = 'block';
+    if (loaded[nextMode]) {
+      out.textContent = cache[nextMode] || 'Could not load instructions file.';
+      return;
+    }
+    out.textContent = 'Loading instructions...';
+    fetch(url)
+      .then(function (resp) { if (!resp.ok) throw new Error('HTTP ' + resp.status); return resp.text(); })
+      .then(function (txt) {
+        loaded[nextMode] = true;
+        cache[nextMode] = txt;
+        if (mode === nextMode) out.textContent = txt;
+      })
+      .catch(function () {
+        loaded[nextMode] = true;
+        cache[nextMode] = 'Could not load instructions file.';
+        if (mode === nextMode) out.textContent = cache[nextMode];
+      });
+  }
+  if (expandedBtn) expandedBtn.addEventListener('click', function () {
+    setMode('expanded');
+    if (menu.open) loadText('expanded');
+  });
+  if (simpleBtn) simpleBtn.addEventListener('click', function () {
+    setMode('simple');
+    if (menu.open) loadText('simple');
+  });
+  menu.addEventListener('toggle', function () {
+    if (!menu.open) return;
+    loadText(mode);
   });
 })();
 (function () {
@@ -380,8 +455,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
-<input aria-label="Steam ID" id="steamIdInput" maxlength="17" name="steamIdInput" pattern="[0-9]{17}" placeholder="76561198012345678" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
-<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Your 17-digit Steam ID or Epic Account ID. This will be saved automatically and remembered for future use.</p>
+<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
+<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Same store as the save: Steam PC → 17-digit SteamID64; Epic PC → Epic id (often hex). Remembered locally for next time.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
 <strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
@@ -411,18 +486,18 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
 <input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
-<button class="btn btn-Firmware" data-action="set-character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
-<button class="btn btn-Firmware" data-action="set-character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button">Set Amon (Forge Knight)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button">Set Vex (Siren)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="Gravitar" style="flex: 1; min-width: 160px;" type="button">Set Harlowe (Gravitar)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="ExoSoldier" style="flex: 1; min-width: 160px;" type="button">Set Rafa (Exo-Soldier)</button>
+<button class="btn btn-Firmware" data-action="set-character" data-requires="character" data-value="RoboDealer" style="flex: 1; min-width: 160px;" title="YAML class: Char_RoboDealer (internal Robodealer)" type="button">C4sh</button>
 </div>
 <div style="margin-top: 10px;">
 <div style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Difficulty:</div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
-<button class="btn btn-Firmware" data-action="set-difficulty" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="easy" style="flex: 1; min-width: 160px;" type="button">Set Easy</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="normal" style="flex: 1; min-width: 160px;" type="button">Set Normal</button>
+<button class="btn btn-Firmware" data-action="set-difficulty" data-requires="character" data-value="hard" style="flex: 1; min-width: 160px;" type="button">Set Hard</button>
 </div>
 </div>
 <div id="presetButtonsExtra" style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12);">
@@ -430,14 +505,16 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div id="ccRuntimeStatusHeader" style="font-weight:900; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;"><span>Runtime status</span><span id="ccRuntimeStatusChevron" style="opacity:0.85; font-size:12px;">&gt;</span></div>
 <div id="ccRuntimeStatusBody" style="opacity:0.92; line-height:1.5; display:none;">Loading...</div>
 </div>
+<div id="ccYamlKindBanner" role="status">Load or paste YAML — preset rows enable by save type (character vs profile).</div>
+<div aria-live="polite" id="ccPresetActionStatus" style="display:none;margin-bottom:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;"></div>
 <div style="font-weight: 700; margin-bottom: 8px;">World / Missions</div>
 <div class="btnRow" style="display: flex; flex-wrap: wrap; gap: 8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" data-requires="character" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="discoverAllLocations" data-requires="character" title="Marks all locations discovered (where supported)" type="button">Discover All Locations</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllSafehouseMissions" data-requires="character" title="Completes safehouse/silo mission sets (where supported)" type="button">Unlock All Safehouses</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllStoryMissions" data-requires="character" title="Completes story missions (where supported)" type="button">Skip Story Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllMissions" data-requires="character" title="Completes all missions (where supported)" type="button">Skip All Missions</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockPostgame" data-requires="character" title="Unlocks postgame/UVHM flags (minimal)" type="button">Unlock UVHM / Postgame</button>
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
@@ -534,8 +611,13 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div id="ccExtraYamlMsg" style="margin-top:10px; color:#00c8ff; font-size:0.9em; opacity:0.95; display:none;"></div>
 </div>
-<button class="btn btn-Firmware" data-action="apply-stats" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
+<button class="btn btn-Firmware" data-action="apply-stats" data-requires="character" style="margin-top: 10px; padding: 10px; width: 100%;" type="button">Apply Stats Changes</button>
 <div id="yaml-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
+<div id="stxSavDecryptErrorPanel" style="display: none; margin-top: 12px; padding: 12px; border-radius: 10px; border: 1px solid rgba(255, 120, 100, 0.55); background: rgba(45, 12, 12, 0.5);">
+<div style="color: #ffb8b0; font-weight: 800; margin-bottom: 8px; font-size: 0.95em;">.sav decrypt failed — full details (select all or use Copy)</div>
+<textarea id="stxSavDecryptErrorText" readonly rows="10" style="width: 100%; box-sizing: border-box; font-family: Consolas, 'Courier New', monospace; font-size: 12px; color: #f5f5f5; background: #1a0a0a; border: 1px solid rgba(255, 150, 120, 0.45); border-radius: 6px; padding: 8px; resize: vertical; user-select: text;"></textarea>
+<button class="btn btn-Firmware" id="stxSavDecryptErrorCopyBtn" style="margin-top: 8px;" type="button">Copy details to clipboard</button>
+</div>
 <div id="ccMissionsEditor" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.35); background: rgba(0,0,0,0.22);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
 <div style="color:#00c8ff; font-weight:900; font-size:0.95em;">Missions</div>
@@ -645,6 +727,20 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <button class="btn btn-primary primary-save-gradient" id="btnExportSav" style="grid-column: 1 / -1; width: 100%; padding: 10px;" type="button">Export .sav</button>
 </div>
 </div>
+<details class="rebuild-details cc-build-stats-panel" id="rebuildBuildStatsSection" open="" style="margin-top:16px;">
+<summary>Build stats (core snapshot)</summary>
+<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
+<div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Uses YAML, import buffer, and add-serials text. Full lines and per-bucket breakdown below.</div>
+<div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
+<div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
+<div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
+<details class="rebuild-details" id="buildStatsDebugDetails" style="margin-top:10px;">
+<summary style="cursor:pointer;color:#00f3ff;font-size:11px;">Debug</summary>
+<div id="buildStatsDebugBody" style="margin-top:8px;font-size:11px;font-family:ui-monospace,monospace;max-height:280px;overflow:auto;padding:8px;border-radius:6px;background:rgba(0,0,0,0.3);color:rgba(255,255,255,0.9);"></div>
+</details>
+</div>
+</details>
 <div class="button-group">
 <button class="btn btn-Firmware" id="goBackFromYAMLBtn" type="button">Back to Editor</button>
 </div>
@@ -662,6 +758,8 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 </script>
 <script src="data/stx_dataset.js"></script>
 <script src="data/part_ref_meta.js"></script>
+<script src="data/weapon_stats_data.js"></script>
+<script src="data/parts_stats_data.js"></script>
 <script src="data/serials_data.js"></script>
 <script src="vendor/cryptojs-inline.js"></script>
 <script src="vendor/pako-inline.js"></script>
@@ -669,11 +767,14 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="data/preset_data.js"></script>
 <script src="js/cc-preset-data-rebuild.js"></script>
 <script src="js/cc-base85-rebuild.js"></script>
+<script src="js/stx-nicnl-serial-pack.js"></script>
 <script src="js/cc-sav-crypto-rebuild.js"></script>
 <script src="js/cc-yaml-save-rebuild.js"></script>
 <script src="js/cc-preset-rebuild.js"></script>
 <script src="js/cc-stx-decoder-bridge.js"></script>
 <script src="js/cc-yaml-drawer-wiring-rebuild.js"></script>
+<script src="js/cc-build-stats-rebuild.js"></script>
+<script src="js/rebuild-presets-random.js"></script>
 <script>
 (function () {
   function byId(id) { return document.getElementById(id); }

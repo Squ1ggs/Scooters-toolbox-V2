@@ -8,6 +8,7 @@
     var SPATHS = (typeof window !== 'undefined' && window.SOURCE_PATHS_DATA) ? window.SOURCE_PATHS_DATA : null;
     var LSCHED = (typeof window !== 'undefined' && window.LEGIT_LOOT_SCHEDULE) ? window.LEGIT_LOOT_SCHEDULE : null;
     var WPWEIGHTS = (typeof window !== 'undefined' && window.LEGIT_WEAPON_PART_WEIGHTS) ? window.LEGIT_WEAPON_PART_WEIGHTS : null;
+    var STX_RAR = (typeof window !== 'undefined' && Array.isArray(window.STX_RARITIES)) ? window.STX_RARITIES : [];
     if (!M) {
       document.body.innerHTML = '<div class="legit-header"><h1 style="color:#ff6b6b">Error</h1><p style="color:rgba(233,254,255,0.6)">bl4_manifest.js not found.</p></div>';
       throw new Error('BL4_MANIFEST not loaded');
@@ -33,6 +34,8 @@
       Object.keys(NMAP.items).forEach(function(slug) {
         if (manifestSlugs[slug]) return;
         var info = NMAP.items[slug];
+        /* Avoid synthetic classmod entries without manifest slot data (causes broken/incomplete slot UI). */
+        if (String((info && info.type) || '').toLowerCase() === 'classmod') return;
         var typeCode = NMAP.category_ids[info.type] || 291;
         var name = slug.split('_').map(function(s) { return s.charAt(0).toUpperCase() + s.slice(1); }).join(' ');
         supplement.push({
@@ -79,13 +82,36 @@
       });
     }
     function getSlotCategory(slotName) {
-      if (slotName === 'rarity') return 'other';
+      if (slotName === 'rarity') return 'core';
+      if (/^(body_ele|primary_ele|secondary_ele|pearl_elem|element)$/.test(String(slotName || ''))) return 'core';
       if (SLOT_CATEGORY_MAP[slotName]) return SLOT_CATEGORY_MAP[slotName];
       if (slotName.indexOf('_acc') !== -1) return 'accessory';
       return 'other';
     }
 
-    var CAT_ORDER = ['other','core','accessory','ammo','visual','endgame'];
+    /** Map NCS slot name → manifest `item.slots` key (magazine/mag, shield/hyperion, etc.). */
+    function resolveManifestSlotKey(ns, item) {
+      if (!item || !item.slots) return null;
+      if (item.slots[ns]) return ns;
+      if (ns === 'element') {
+        if (item.slots.body_ele) return 'body_ele';
+        if (item.slots.primary_ele) return 'primary_ele';
+        if (item.slots.secondary_ele) return 'secondary_ele';
+      }
+      if ((ns === 'body_ele' || ns === 'primary_ele' || ns === 'secondary_ele') && item.slots.element) return 'element';
+      if (ns === 'magazine' && item.slots.mag) return 'mag';
+      if (ns === 'mag' && item.slots.magazine) return 'magazine';
+      if (ns === 'hyperion_secondary_acc' && item.slots.shield) return 'shield';
+      if (ns === 'shield' && item.slots.hyperion_secondary_acc) return 'hyperion_secondary_acc';
+      if (ns === 'tediore_acc' && item.slots.multi) return 'multi';
+      if (ns === 'multi' && item.slots.tediore_acc) return 'tediore_acc';
+      if (ns === 'class_mod_body' && item.slots.class_mod) return 'class_mod';
+      if (ns === 'class_mod' && item.slots.class_mod_body) return 'class_mod_body';
+      return null;
+    }
+
+    /* Show build flow first (core -> accessories) before misc properties. */
+    var CAT_ORDER = ['core','accessory','ammo','visual','endgame','other'];
     var CAT_LABELS = { core:'Core Parts', accessory:'Accessories', ammo:'Ammo / Mags', visual:'Visual', endgame:'Endgame / Firmware', other:'Item Properties' };
     var CAT_CSS = { core:'cat-core', accessory:'cat-accessory', ammo:'cat-ammo', visual:'cat-visual', endgame:'cat-endgame', other:'cat-other' };
 
@@ -101,6 +127,54 @@
       var parts = slug.split('_');
       var map = { daedalus:'Daedalus', jakobs:'Jakobs', tediore:'Tediore', torgue:'Torgue', order:'Order', vladof:'Vladof', ripper:'Borg', maliwan:'Maliwan', atlas:'Atlas', cov:'COV', hyperion:'Hyperion' };
       return map[parts[0]] || null;
+    }
+
+    function rarityTierFromRow(row) {
+      var s = String((row && row.itemTypeString) || '').toLowerCase();
+      var m = s.match(/comp_\d+_(common|uncommon|rare|epic|legendary)/);
+      if (m && m[1]) return m[1];
+      if (s.indexOf('legendary') >= 0) return 'legendary';
+      if (s.indexOf('epic') >= 0) return 'epic';
+      if (s.indexOf('rare') >= 0) return 'rare';
+      if (s.indexOf('uncommon') >= 0) return 'uncommon';
+      if (s.indexOf('common') >= 0) return 'common';
+      return '';
+    }
+
+    function getExtraRarityOptions(item, existingOptions) {
+      if (!item || !Array.isArray(STX_RAR) || !STX_RAR.length) return [];
+      var fam = Number(item.category_id);
+      if (!Number.isFinite(fam)) return [];
+      var seen = {};
+      (existingOptions || []).forEach(function (o) {
+        var idx = Number(o && o.index);
+        if (Number.isFinite(idx)) seen[idx] = true;
+      });
+      var mfr = (getNcsInfo(item.slug) && getNcsInfo(item.slug).manufacturer) || getMfrFromSlug(item.slug) || '';
+      var mfrNorm = String(mfr || '').trim().toLowerCase();
+      var out = [];
+      for (var i = 0; i < STX_RAR.length; i++) {
+        var row = STX_RAR[i];
+        if (!row) continue;
+        var rowFam = Number(row.familyId);
+        var itemId = Number(row.itemId);
+        if (!Number.isFinite(rowFam) || rowFam !== fam || !Number.isFinite(itemId) || seen[itemId]) continue;
+        var rowMfr = String(row.manufacturer || '').trim().toLowerCase();
+        if (mfrNorm && rowMfr && rowMfr !== mfrNorm) continue;
+        var tier = rarityTierFromRow(row);
+        var tierLabel = tier ? (tier.charAt(0).toUpperCase() + tier.slice(1)) : 'Rarity';
+        var legend = String(row.legendaryName || row.source || '').trim();
+        var label = tierLabel + (legend ? (' - ' + legend) : '');
+        out.push({
+          index: itemId,
+          name: label,
+          in_pool: true,
+          invDumpKey: String(row.itemTypeString || '').trim().toLowerCase(),
+          _fromStxRarity: true
+        });
+        seen[itemId] = true;
+      }
+      return out;
     }
 
     var MFR_BARREL_PREFIX = { Daedalus:'DAD', Jakobs:'JAK', Tediore:'TED', Torgue:'TOR', Order:'ORD', Vladof:'VLA', Borg:'BOR', Maliwan:'MAL' };
@@ -137,6 +211,16 @@
     function escapeHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
     function formatPartName(name) { return name.replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim(); }
     function getSlotLabel(s) { return SLOT_LABELS[s] || s.replace(/_/g, ' '); }
+    function getSlotDisplayLabel(slotKey) {
+      var raw = String(slotKey || '');
+      var base = slotBaseKey(raw);
+      var lbl = getSlotLabel(base);
+      var mDup = raw.match(/__dup(\d+)$/i);
+      if (mDup && mDup[1]) return lbl + ' #' + String(mDup[1]);
+      var mNum = raw.match(/__(\d+)$/);
+      if (mNum && mNum[1]) return lbl + ' #' + String(mNum[1]);
+      return lbl;
+    }
 
     /** Manifest slot names vs NCS: mag/magazine, shield/hyperion_secondary_acc, multi/tediore_acc. */
     function slotNameAllowedOnNcs(slotName, ncsSlots) {
@@ -165,6 +249,43 @@
       if (k === 'radiation' || k === 'rad') return 'radiation';
       if (k === 'sonic') return 'sonic';
       return null;
+    }
+
+    function isElementLikePartName(name) {
+      var n = String(name || '').toLowerCase().trim();
+      if (!n) return false;
+      if (/^part_(corrosive|cryo|fire|radiation|shock)$/.test(n)) return true;
+      if (/^part_element_/.test(n)) return true;
+      if (/^part_body_ele_/.test(n)) return true;
+      if (/^part_primary_ele_/.test(n)) return true;
+      if (/^part_secondary_elem_/.test(n)) return true;
+      if (/^part_pearl_elem_/.test(n)) return true;
+      return false;
+    }
+
+    /** Inv/NCS placeholder (not selected on legit drops; UI label "ele control"). Omit from all slot dropdowns. */
+    function isEleControlPlaceholderPartName(name) {
+      return String(name || '').toLowerCase().trim() === 'part_ele_control';
+    }
+
+    function getAllowedElementSlotSetForItem(item, ncsInfo) {
+      var set = {};
+      var add = function (s) { if (s) set[String(s).toLowerCase()] = true; };
+      if (item && item.slots) {
+        if (item.slots.element) add('element');
+        if (item.slots.body_ele) add('body_ele');
+        if (item.slots.primary_ele) add('primary_ele');
+        if (item.slots.secondary_ele) add('secondary_ele');
+        if (item.slots.pearl_elem) add('pearl_elem');
+      }
+      if (ncsInfo && Array.isArray(ncsInfo.ncs_slots)) {
+        ncsInfo.ncs_slots.forEach(function (s) {
+          var k = String(s || '').toLowerCase().trim();
+          if (!k) return;
+          if (k === 'element' || k === 'body_ele' || k === 'primary_ele' || k === 'secondary_ele' || k === 'pearl_elem') add(k);
+        });
+      }
+      return set;
     }
 
     /**
@@ -419,6 +540,18 @@
     function getNcsInfo(slug) {
       if (!NMAP || !NMAP.items) return null;
       return NMAP.items[slug] || null;
+    }
+
+    function getManifestNameAllowlistForSlot(item, slotName) {
+      if (!item || !item.slots) return null;
+      var mk = resolveManifestSlotKey(slotName, item);
+      if (!mk || !item.slots[mk] || !Array.isArray(item.slots[mk].options)) return null;
+      var set = {};
+      item.slots[mk].options.forEach(function (o) {
+        var n = String((o && o.name) || '').trim().toLowerCase();
+        if (n) set[n] = true;
+      });
+      return Object.keys(set).length ? set : null;
     }
 
     function getDropCategoryForSlug(slug) {
@@ -715,6 +848,172 @@
       }
     }
 
+    var __slotPreviewRefreshTimer = null;
+    function scheduleLegitSlotOptionValidityRefresh() {
+      if (typeof window.__stxRefreshLegitSlotOptionValidity !== 'function') return;
+      if (__slotPreviewRefreshTimer) clearTimeout(__slotPreviewRefreshTimer);
+      __slotPreviewRefreshTimer = setTimeout(function() {
+        __slotPreviewRefreshTimer = null;
+        try { window.__stxRefreshLegitSlotOptionValidity(); } catch (_) {}
+      }, 35);
+    }
+
+    function categorizePreviewReason(reasonText) {
+      var s = String(reasonText || '').toLowerCase();
+      if (s.indexOf('allowlist') >= 0) return 'ALLOWLIST';
+      if (s.indexOf('exclusion tag') >= 0 || s.indexOf('exclusion') >= 0) return 'EXCLUSION';
+      if (s.indexOf('dependency tag') >= 0 || s.indexOf('dependency') >= 0) return 'DEPENDENCY';
+      if (s.indexOf('rarity') >= 0 || s.indexOf('pool') >= 0) return 'POOL/RARITY';
+      return 'RULE';
+    }
+
+    function formatPreviewReasonsForTooltip(reasons) {
+      if (!reasons || !reasons.length) return 'RULE: mismatch';
+      return reasons.map(function(r) {
+        return '[' + categorizePreviewReason(r) + '] ' + String(r);
+      }).join('; ');
+    }
+
+    /* UI helper: mark dropdown options as ✓/✗ based on inv tag validity
+       against a global addtag pool from currently selected parts. */
+    window.__stxRefreshLegitSlotOptionValidity = function () {
+      try {
+        var inv = typeof window !== 'undefined' ? window.INV_COMP_TAG_DATA : null;
+        var TC = typeof window !== 'undefined' ? window.TagCompValidation : null;
+        if (!inv || !inv.partsByName || !TC) return;
+        var partsByName = inv.partsByName;
+        var ncsInfo = selectedItem ? getNcsInfo(selectedItem.slug) : null;
+        var ncsSlotsP = ncsInfo && ncsInfo.ncs_slots ? ncsInfo.ncs_slots : null;
+        var rpSel = selectedParts && selectedParts.rarity;
+        var compNameSel = effectiveRarityCompKey(rpSel);
+        var compKeyNormSel = compNameSel ? compNameSel.replace(/^base_comp_/i, 'comp_') : null;
+        var skipUniqueExclPreview = !!(compKeyNormSel && /^comp_0[1-6]_/i.test(compKeyNormSel));
+        var compSlotRules = inv.compSlotRules || {};
+        var previewCompRules = null;
+        if (compNameSel && selectedItem && !slugSkipsInvCompSlotRules(selectedItem.slug, selectedItem)) {
+          var previewRulesKey = compNameSel;
+          var slugForPreview = String(selectedItem.slug || '');
+          var isWeaponSlugForPreview = /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slugForPreview);
+          if (compKeyNormSel && isWeaponSlugForPreview) {
+            var baseTry = 'base_' + compKeyNormSel;
+            if (compSlotRules[baseTry]) previewRulesKey = baseTry;
+          }
+          previewCompRules = compSlotRules[previewRulesKey] || null;
+        }
+
+        var selects = slotsContainer ? slotsContainer.querySelectorAll('select[data-slot]') : [];
+        for (var si = 0; si < selects.length; si++) {
+          var sel = selects[si];
+          var slotNameUi = String((sel && sel.dataset && sel.dataset.slot) || '').toLowerCase();
+          var slotBaseUi = slotBaseKey(slotNameUi);
+          var manifestSlotUi = String((sel && sel.dataset && sel.dataset.manifestSlot) || '').toLowerCase();
+          var pool;
+          if (slotBaseUi === 'rarity') {
+            pool = new Set();
+            try {
+              if (compNameSel && inv.compBasetags && inv.compBasetags[compNameSel]) {
+                TC.formatTags(inv.compBasetags[compNameSel]).forEach(function (t) { pool.add(t); });
+              }
+              var mLegR = String(compNameSel || '').match(/^(?:base_)?comp_05_legendary_([a-z0-9_]+)$/i);
+              if (mLegR && mLegR[1]) addNamedLegendaryFamilyTagsToPool(mLegR[1], pool);
+            } catch (_) {}
+            Object.keys(selectedParts || {}).forEach(function (sk) {
+              var p = selectedParts[sk];
+              if (!p || !p.name || slotBaseKey(sk) === 'rarity') return;
+              var metaR = resolveInvPartMeta(partsByName, p);
+              if (!metaR) return;
+              TC.formatTags(metaR.addtags).forEach(function (t) { pool.add(t); });
+            });
+          } else {
+            pool = buildSyntheticTagPoolFromSelection(selectedParts, inv, ncsSlotsP, slotBaseUi);
+          }
+
+          var opts = sel && sel.options ? sel.options : [];
+          for (var oi = 0; oi < opts.length; oi++) {
+            var o = opts[oi];
+            if (!o || !o.value) continue; /* skip placeholder */
+            if (!o.dataset) continue;
+            if (!o.dataset.baseText) o.dataset.baseText = o.textContent || '';
+            var nm = String(o.dataset.name || '').trim().toLowerCase();
+            var optInvKey = String((o.dataset && o.dataset.invKey) || '').trim().toLowerCase();
+            var optIdx = parseInt(String(o.value || ''), 10);
+            var cand = { name: nm, invDumpKey: optInvKey || null, index: Number.isFinite(optIdx) ? optIdx : null };
+            if ((!cand.invDumpKey || !cand.name) && selectedItem && manifestSlotUi && selectedItem.slots && selectedItem.slots[manifestSlotUi] && selectedItem.slots[manifestSlotUi].options) {
+              var srcOpts = selectedItem.slots[manifestSlotUi].options;
+              for (var so = 0; so < srcOpts.length; so++) {
+                var src = srcOpts[so];
+                if (!src) continue;
+                if (Number.isFinite(cand.index) && Number(src.index) !== cand.index) continue;
+                cand.name = cand.name || String(src.name || '').trim().toLowerCase();
+                cand.invDumpKey = cand.invDumpKey || String(src.invDumpKey || src.inv_dump_key || src.inv_key || '').trim().toLowerCase();
+                break;
+              }
+            }
+            var metaO = resolveInvPartMeta(partsByName, cand);
+            if (!metaO) {
+              o.textContent = o.dataset.baseText;
+              o.disabled = false;
+              var dbgKeys = buildInvLookupDebugKeys(cand);
+              o.title = 'No inv-tag rule for this part row in current bundle.'
+                + (dbgKeys.length ? (' Tried keys: ' + dbgKeys.join(', ')) : '');
+              continue;
+            }
+            var skipExTags = [];
+            var pnl = String(nm || '').toLowerCase();
+            if (pnl.indexOf('secondbarrel') >= 0 || pnl.indexOf('underbarrel_07') >= 0) skipExTags.push('barrel_01');
+            if (skipExTags.indexOf('barrel_01') < 0 && metaO.exclusiontags) {
+              var exf = TC.formatTags(metaO.exclusiontags);
+              if (exf.indexOf('barrel_01') >= 0 && slotBaseUi === 'underbarrel') skipExTags.push('barrel_01');
+            }
+            var v = TC.partValidForPool(metaO, pool, {
+              skipRarityPoolMatch: true,
+              skipUniqueExclusion: skipUniqueExclPreview,
+              skipExclusionTags: skipExTags.length ? skipExTags : undefined
+            });
+            var pearlMismatch = false;
+            if (v.ok && (slotBaseUi === 'pearl_elem' || slotBaseUi === 'pearl_stat')) {
+              if (!isPearlRarityCompName(compNameSel)) {
+                pearlMismatch = true;
+                v = { ok: false, reasons: ['pearl-only slot requires pearlescent rarity comp'] };
+              }
+            }
+            /* Keep dropdown ✓/✗ aligned with final validator: comp allowlist mismatches are invalid. */
+            if (v.ok && previewCompRules) {
+              var compSlotPrev = MANIFEST_SLOT_TO_COMP_SLOT[slotBaseUi] || slotBaseUi;
+              var slotRulePrev = previewCompRules[compSlotPrev];
+              if (slotRulePrev && slotRulePrev.parts && slotRulePrev.parts.length > 0) {
+                var partNormPrev = String(nm).toLowerCase().trim();
+                var partBasePrev = partNormPrev.indexOf('.') >= 0 ? partNormPrev.split('.').pop() : partNormPrev;
+                var wildcardPrev = slotRulePrev.parts.indexOf(compSlotPrev) >= 0 ||
+                  slotRulePrev.parts.some(function (a) { return String(a).toLowerCase().trim() === compSlotPrev; });
+                if (!wildcardPrev) {
+                  var inListPrev = slotRulePrev.parts.some(function (allow) {
+                    var a = String(allow).toLowerCase().trim();
+                    if (a === compSlotPrev) return true;
+                    return partNormPrev === a ||
+                      partBasePrev === a ||
+                      partNormPrev.indexOf(a) >= 0 ||
+                      (partNormPrev.indexOf('.') >= 0 && partNormPrev.endsWith('.' + a)) ||
+                      (partNormPrev.indexOf('.') >= 0 && a.indexOf('.') >= 0 && partNormPrev.endsWith(a));
+                  });
+                  if (!inListPrev) v = { ok: false, reasons: ['comp allowlist mismatch for ' + compSlotPrev] };
+                }
+              }
+            }
+            if (v.ok) {
+              o.textContent = '✓ ' + o.dataset.baseText;
+              o.disabled = false;
+              o.title = 'Pass preview checks for current build state.';
+            } else {
+              o.textContent = '✗ ' + o.dataset.baseText;
+              o.disabled = pearlMismatch ? true : !!strictMode;
+              o.title = 'Will fail now: ' + formatPreviewReasonsForTooltip(v.reasons || []);
+            }
+          }
+        }
+      } catch (_e) {}
+    };
+
     function renderSlots(item) {
       slotsContainer.innerHTML = '';
       selectedParts = {};
@@ -725,38 +1024,58 @@
       var allSlots = [];
       var seen = {};
       var manifestSlotOrder = [
-        'rarity','body','barrel','mag','scope','grip','foregrip','underbarrel','shield',
-        'multi','secondary_ammo','body_mag','body_bolt','body_energy','body_armor',
-        'unique','secondary','unknown','class_mod','stat','stat2','stat3'
+        /* NCS weapon order: body → body accessories/visual → barrel → barrel acc (matches serial / engine). */
+        'rarity',
+        'body',
+        'body_acc','body_ele','body_mag','body_bolt','body_energy','body_armor',
+        'barrel','barrel_acc',
+        'hyperion_secondary_acc','shield',
+        'mag','magazine_acc','magazine_ted_thrown',
+        'scope','scope_acc',
+        'grip','foregrip',
+        'underbarrel','underbarrel_acc',
+        'secondary_ammo','secondary_ele',
+        'multi',
+        'firmware','payload','payload_augment','stat_augment','primary_augment','secondary_augment','active_augment','enemy_augment','core_augment','curative','turret_weapon',
+        'endgame','pearl_elem','pearl_stat',
+        'unique','secondary','unknown','class_mod','class_mod_body','stat','stat2','stat3','stat_group1','stat_group2','stat_group3'
       ];
+      function pushUniqueSlot(arr, slotName, hasManifest) {
+        if (!slotName || seen[slotName]) return;
+        arr.push({ name: slotName, hasManifest: !!hasManifest });
+        seen[slotName] = true;
+      }
       if (ncsSlots.length) {
         for (var k = 0; k < ncsSlots.length; k++) {
           var ns = ncsSlots[k];
-          var mapped = ns === 'magazine' ? 'mag' : ns;
-          var key = item.slots[ns] ? ns : (item.slots[mapped] ? mapped : null);
+          var key = resolveManifestSlotKey(ns, item);
           if (key) {
-            allSlots.push({ name: key, hasManifest: true });
-            seen[ns] = true;
-            seen[mapped] = true;
+            pushUniqueSlot(allSlots, key, true);
+            seen[ns] = true; /* mark alias as represented */
+          } else if (item.slots[ns]) {
+            pushUniqueSlot(allSlots, ns, true);
+          } else {
+            /* Keep NCS-only slot placeholders only when part data exists for it. */
+            if (NPARTS && Array.isArray(NPARTS[ns]) && NPARTS[ns].length) {
+              pushUniqueSlot(allSlots, ns, false);
+            }
           }
         }
       }
       for (var i = 0; i < manifestSlotOrder.length; i++) {
         var sn = manifestSlotOrder[i];
-        if (item.slots[sn] && !seen[sn]) { allSlots.push({ name: sn, hasManifest: true }); seen[sn] = true; }
+        if (item.slots[sn] && !seen[sn]) pushUniqueSlot(allSlots, sn, true);
       }
       for (var j = 0; j < manifestSlots.length; j++) {
-        if (!seen[manifestSlots[j]]) { allSlots.push({ name: manifestSlots[j], hasManifest: true }); seen[manifestSlots[j]] = true; }
+        if (!seen[manifestSlots[j]]) pushUniqueSlot(allSlots, manifestSlots[j], true);
       }
 
       var ncsOnly = [];
       for (var k = 0; k < ncsSlots.length; k++) {
         var ns = ncsSlots[k];
-        var mapped = ns === 'magazine' ? 'mag' : ns;
-        if (!seen[ns] && !seen[mapped]) {
-          ncsOnly.push({ name: ns, hasManifest: false });
-          seen[ns] = true;
-        }
+        if (seen[ns]) continue;
+        ncsOnly.push({ name: ns, hasManifest: false });
+        seen[ns] = true;
       }
 
       var grouped = {};
@@ -764,62 +1083,196 @@
       allSlots.forEach(function(s) { var c = getSlotCategory(s.name); if (!grouped[c]) grouped[c] = []; grouped[c].push(s); });
       ncsOnly.forEach(function(s) { var c = getSlotCategory(s.name); if (!grouped[c]) grouped[c] = []; grouped[c].push(s); });
 
+      /* Within each category, keep a stable build order: rarity → body → barrel → … */
+      var orderIndex = Object.create(null);
+      for (var oi = 0; oi < manifestSlotOrder.length; oi++) orderIndex[manifestSlotOrder[oi]] = oi;
+      Object.keys(grouped).forEach(function (cat) {
+        grouped[cat].sort(function (a, b) {
+          var aa = orderIndex[a.name];
+          var bb = orderIndex[b.name];
+          if (aa == null) aa = 9999;
+          if (bb == null) bb = 9999;
+          if (aa !== bb) return aa - bb;
+          return String(a.name).localeCompare(String(b.name));
+        });
+      });
+
+      /* Flat NCS order: matches Nexus / serial (body → body_acc → barrel → barrel_acc → mag → …). Category grouping alone put every "core" slot before all accessories. */
+      var orderedNcsFlat = null;
+      if (ncsSlots.length) {
+        var byName = Object.create(null);
+        allSlots.forEach(function(s) { byName[s.name] = s; });
+        ncsOnly.forEach(function(s) { if (!byName[s.name]) byName[s.name] = s; });
+        orderedNcsFlat = [];
+        var pushedOrd = Object.create(null);
+        function pushNcsOrd(entry) {
+          if (!entry || pushedOrd[entry.name]) return;
+          pushedOrd[entry.name] = true;
+          orderedNcsFlat.push(entry);
+        }
+        if (item.slots.rarity) {
+          if (byName.rarity) pushNcsOrd(byName.rarity);
+          else pushNcsOrd({ name: 'rarity', hasManifest: true });
+        }
+        for (var ordK = 0; ordK < ncsSlots.length; ordK++) {
+          var ncsN = ncsSlots[ordK];
+          var manK = resolveManifestSlotKey(ncsN, item);
+          if (manK && byName[manK]) pushNcsOrd(byName[manK]);
+          else if (byName[ncsN]) pushNcsOrd(byName[ncsN]);
+        }
+        allSlots.forEach(function(s) { pushNcsOrd(s); });
+        ncsOnly.forEach(function(s) { pushNcsOrd(s); });
+      }
+
       var rendered = 0;
-      for (var ci = 0; ci < CAT_ORDER.length; ci++) {
-        var cat = CAT_ORDER[ci];
-        var slots = grouped[cat];
-        if (!slots || !slots.length) continue;
+      var slotListsToWalk = [];
+      if (orderedNcsFlat && orderedNcsFlat.length) {
+        for (var wi = 0; wi < orderedNcsFlat.length; wi++) slotListsToWalk.push({ flat: true, slotInfo: orderedNcsFlat[wi] });
+      } else {
+        for (var ci = 0; ci < CAT_ORDER.length; ci++) {
+          var cat = CAT_ORDER[ci];
+          var slots = grouped[cat];
+          if (!slots || !slots.length) continue;
+          slotListsToWalk.push({ flat: false, cat: cat, slots: slots });
+        }
+      }
 
-        var sectionLabel = document.createElement('div');
-        sectionLabel.className = 'slot-section-label ' + CAT_CSS[cat];
-        sectionLabel.textContent = CAT_LABELS[cat] + ' (' + slots.length + ')';
-        slotsContainer.appendChild(sectionLabel);
+      if (orderedNcsFlat && orderedNcsFlat.length) {
+        var ncsOrderHint = document.createElement('div');
+        ncsOrderHint.className = 'slot-section-label cat-core';
+        ncsOrderHint.style.fontSize = '0.72rem';
+        ncsOrderHint.style.letterSpacing = '0.04em';
+        ncsOrderHint.textContent = 'Slot order: Nexus (NCS) — same sequence as body \u2192 body accessories \u2192 barrel \u2192 barrel accessories \u2192 mag \u2192 scope \u2026';
+        slotsContainer.appendChild(ncsOrderHint);
+      }
 
-        for (var si = 0; si < slots.length; si++) {
-          var slotInfo = slots[si];
+      for (var walkIdx = 0; walkIdx < slotListsToWalk.length; walkIdx++) {
+        var witem = slotListsToWalk[walkIdx];
+        if (!witem.flat) {
+          var sectionLabelGrp = document.createElement('div');
+          sectionLabelGrp.className = 'slot-section-label ' + CAT_CSS[witem.cat];
+          sectionLabelGrp.textContent = CAT_LABELS[witem.cat] + ' (' + witem.slots.length + ')';
+          slotsContainer.appendChild(sectionLabelGrp);
+        }
+
+        var innerSlots = witem.flat ? [witem.slotInfo] : witem.slots;
+        for (var si = 0; si < innerSlots.length; si++) {
+          var slotInfo = innerSlots[si];
           var slotName = slotInfo.name;
+          /* body_bolt options are merged into Body Accessory above; do not render a second dropdown. */
+          if (slotName === 'body_bolt') continue;
           var hasData = slotInfo.hasManifest;
           var slotId = slotName.replace(/[^a-z0-9]/g, '_');
           var div = document.createElement('div');
           div.className = 'slot-card' + (hasData ? '' : ' ncs-only');
 
           if (hasData) {
-            var manifestKey = item.slots[slotName] ? slotName : (slotName === 'magazine' && item.slots['mag'] ? 'mag' : null);
+            var manifestKey = resolveManifestSlotKey(slotName, item);
             if (!manifestKey || !item.slots[manifestKey]) { div.className = 'slot-card ncs-only'; hasData = false; }
           }
 
           if (hasData) {
             var slot = item.slots[manifestKey || slotName];
-            var options = slot.options.slice();
+            var options = slot.options.slice().filter(function (o) { return !isEleControlPlaceholderPartName(o && o.name); });
             var isRarity = (slotName === 'rarity' || manifestKey === 'rarity');
-            if (!isRarity) options = options.filter(function(o) { return o.in_pool === true; });
+            var slugLc = String((item && item.slug) || '').toLowerCase();
+            var isWeaponSlug = /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slugLc);
+            /* For non-weapon gear, manifest in_pool flags are often incomplete; keep full options visible. */
+            /* For weapons, still keep strict pool filtering except known noisy rows (rarity/barrels). */
+            var skipInPoolFilter = !isWeaponSlug || isRarity || slotName === 'barrel' || slotName === 'barrel_acc' || manifestKey === 'barrel' || manifestKey === 'barrel_acc';
+            if (!skipInPoolFilter) options = options.filter(function(o) { return o.in_pool === true; });
             /* NCS alignment: exclude accessory parts from main slot dropdowns (body_acc from body, barrel_acc from barrel). */
-            if (NPARTS && (slotName === 'body' || manifestKey === 'body')) {
+            if (isWeaponSlug && NPARTS && (slotName === 'body' || manifestKey === 'body')) {
               var bodyAccNames = (NPARTS.body_acc || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
-              options = options.filter(function(o) { return !bodyAccNames[(o.name || '').toLowerCase()]; });
-            } else if (NPARTS && (slotName === 'barrel' || manifestKey === 'barrel')) {
-              var barrelAccNames = (NPARTS.barrel_acc || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
-              options = options.filter(function(o) { return !barrelAccNames[(o.name || '').toLowerCase()]; });
+              var bodyBoltNames = (NPARTS.body_bolt || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
+              options = options.filter(function(o) {
+                var on = String(o.name || '').toLowerCase();
+                /* Never hide the canonical body row. */
+                if (on === 'part_body' || on === 'body') return true;
+                return !bodyAccNames[on] && !bodyBoltNames[on];
+              });
+            }
+            /* Merge manifest body_bolt options into Body Accessory (NCS splits bolt; UI uses one accessory list). */
+            if (item && item.slots && (slotName === 'body_acc' || manifestKey === 'body_acc')) {
+              var boltMk = resolveManifestSlotKey('body_bolt', item);
+              if (boltMk && item.slots[boltMk] && item.slots[boltMk].options && item.slots[boltMk].options.length) {
+                var boltOpts = item.slots[boltMk].options.slice();
+                var seenMerge = {};
+                options.forEach(function(o) { seenMerge[String(o.name || '').toLowerCase()] = true; });
+                for (var bi = 0; bi < boltOpts.length; bi++) {
+                  var bo = boltOpts[bi];
+                  var bn = String(bo.name || '').toLowerCase();
+                  if (bn && !seenMerge[bn]) {
+                    seenMerge[bn] = true;
+                    options.push(bo);
+                  }
+                }
+              }
+              // Keep element controls in the dedicated element slot(s), not Body Accessory.
+              var hasElementSlot = !!(
+                item.slots.body_ele || item.slots.element || item.slots.primary_ele || item.slots.secondary_ele || item.slots.pearl_elem ||
+                (ncsInfo && Array.isArray(ncsInfo.ncs_slots) && ncsInfo.ncs_slots.some(function (s) { return /(^|_)(ele|element)$/.test(String(s || '').toLowerCase()) || /^(body_ele|primary_ele|secondary_ele|pearl_elem)$/.test(String(s || '').toLowerCase()); }))
+              );
+              if (hasElementSlot) {
+                options = options.filter(function (o) {
+                  return !isElementLikePartName(o && o.name);
+                });
+              }
+            }
+            if (isRarity) {
+              var extraRarity = getExtraRarityOptions(item, options);
+              if (extraRarity.length) options = options.concat(extraRarity);
             }
             if (options.length === 0) continue;
             if (isRarity) options.forEach(function(o) { o.in_pool = true; });
             options.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
             rendered++;
-            var labelText = getSlotLabel(slotName);
+            var labelText = getSlotDisplayLabel(slotName);
             div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span style="opacity:0.45;font-weight:400;">(' + options.length + ')</span></label>'
-              + '<select id="slot_' + slotId + '" data-slot="' + slotName + '">'
+              + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="' + (manifestKey || slotName) + '">'
               + '<option value="">\u2014 None \u2014</option>'
               + options.map(function(o) {
                   var poolMark = o.in_pool === true ? 'In pool — ' : 'Off-pool — ';
-                  return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-in-pool="' + (o.in_pool === true) + '">[' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
+                  var invDumpKey = String(o.invDumpKey || o.inv_dump_key || o.inv_key || '').trim();
+                  return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + (o.in_pool === true) + '">[' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
                 }).join('')
               + '</select>';
             div.querySelector('select').addEventListener('change', function(e) {
               var sel = e.target;
               var opt = sel.options[sel.selectedIndex];
               var sn = sel.dataset.slot;
+              if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
+                sel.value = '';
+                delete selectedParts[sn];
+                updateOutput();
+                updateValidation();
+                updateItemStats();
+                updateStatEffects();
+                updateDropSources();
+                updateProofEvidence();
+                scheduleLegitSlotOptionValidityRefresh();
+                return;
+              }
+              if (strictMode && opt && opt.disabled && opt.value) {
+                sel.value = '';
+                delete selectedParts[sn];
+                updateOutput();
+                updateValidation();
+                updateItemStats();
+                updateStatEffects();
+                updateDropSources();
+                updateProofEvidence();
+                scheduleLegitSlotOptionValidityRefresh();
+                return;
+              }
               if (opt.value) {
-                selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, in_pool: opt.dataset.inPool === 'true', slot: sn };
+                selectedParts[sn] = {
+                  index: parseInt(opt.value, 10),
+                  name: opt.dataset.name,
+                  invDumpKey: String(opt.dataset.invKey || '').trim() || null,
+                  in_pool: opt.dataset.inPool === 'true',
+                  slot: sn
+                };
               } else {
                 delete selectedParts[sn];
               }
@@ -829,25 +1282,56 @@
               updateStatEffects();
               updateDropSources();
               updateProofEvidence();
+              scheduleLegitSlotOptionValidityRefresh();
             });
           } else {
             var ncsParts = NPARTS ? NPARTS[slotName] : null;
             if (ncsParts && ncsParts.length > 0) {
               rendered++;
-              var labelText = getSlotLabel(slotName);
-              div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span class="ncs-badge">NCS</span> <span style="opacity:0.45;font-weight:400;">(' + ncsParts.length + ')</span></label>'
-                + '<select id="slot_' + slotId + '" data-slot="' + slotName + '">'
+              var labelText = getSlotDisplayLabel(slotName);
+              var ncsOpts = ncsParts.slice().filter(function (o) { return !isEleControlPlaceholderPartName(o && o.name); });
+              if (slotName === 'body_acc') {
+                var hasElementSlotNcs = !!(
+                  item && item.slots && (item.slots.body_ele || item.slots.element || item.slots.primary_ele || item.slots.secondary_ele || item.slots.pearl_elem) ||
+                  (ncsInfo && Array.isArray(ncsInfo.ncs_slots) && ncsInfo.ncs_slots.some(function (s) { return /(^|_)(ele|element)$/.test(String(s || '').toLowerCase()) || /^(body_ele|primary_ele|secondary_ele|pearl_elem)$/.test(String(s || '').toLowerCase()); }))
+                );
+                if (hasElementSlotNcs) ncsOpts = ncsOpts.filter(function (o) { return !isElementLikePartName(o && o.name); });
+              }
+              var allowNames = getManifestNameAllowlistForSlot(item, slotName);
+              if (allowNames) {
+                ncsOpts = ncsOpts.filter(function (o) {
+                  var on = String((o && o.name) || '').trim().toLowerCase();
+                  return !!allowNames[on];
+                });
+              }
+              ncsOpts.sort(function(a, b) {
+                return (a.index - b.index) || String(a.name || '').localeCompare(String(b.name || ''));
+              });
+              div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span class="ncs-badge">NCS</span> <span style="opacity:0.45;font-weight:400;">(' + ncsOpts.length + ')</span></label>'
+                + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="">'
                 + '<option value="">\u2014 None \u2014</option>'
-                + ncsParts.map(function(o) {
-                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-in-pool="true">NCS — [' + o.index + '] ' + formatPartName(o.name) + '</option>';
+                + ncsOpts.map(function(o) {
+                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="" data-in-pool="false">NCS — [' + o.index + '] ' + formatPartName(o.name) + '</option>';
                   }).join('')
                 + '</select>';
               div.querySelector('select').addEventListener('change', function(e) {
                 var sel = e.target;
                 var opt = sel.options[sel.selectedIndex];
                 var sn = sel.dataset.slot;
+                if (strictMode && opt && opt.disabled && opt.value) {
+                  sel.value = '';
+                  delete selectedParts[sn];
+                  updateOutput();
+                  updateValidation();
+                  updateItemStats();
+                  updateStatEffects();
+                  updateDropSources();
+                  updateProofEvidence();
+                  scheduleLegitSlotOptionValidityRefresh();
+                  return;
+                }
                 if (opt.value) {
-                  selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, in_pool: true, slot: sn, ncs: true };
+                  selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, invDumpKey: null, in_pool: false, slot: sn, ncs: true };
                 } else {
                   delete selectedParts[sn];
                 }
@@ -857,10 +1341,11 @@
                 updateStatEffects();
                 updateDropSources();
                 updateProofEvidence();
+                scheduleLegitSlotOptionValidityRefresh();
               });
             } else {
               rendered++;
-              var labelText = getSlotLabel(slotName);
+              var labelText = getSlotDisplayLabel(slotName);
               div.innerHTML = '<label>' + escapeHtml(labelText) + ' <span class="ncs-badge">NCS</span></label>'
                 + '<div style="padding:6px 10px;font-size:0.78rem;color:rgba(179,136,255,0.6);font-style:italic;">No part data available yet</div>';
             }
@@ -875,13 +1360,17 @@
     }
 
     function updateOutput() {
-      var entries = Object.entries(selectedParts);
-      if (!entries.length) {
+      var keys = Object.keys(selectedParts);
+      if (!keys.length) {
         outputEl.innerHTML = '<span class="o-empty">No parts selected yet.</span>';
         outputEl.dataset.plain = '';
         updateCodeOutput();
         return;
       }
+      var ncsForOrder = selectedItem ? getNcsInfo(selectedItem.slug) : null;
+      var ncsSlotsOrder = ncsForOrder && ncsForOrder.ncs_slots ? ncsForOrder.ncs_slots : null;
+      var sortedKeys = sortSlotKeysForTagValidation(keys, ncsSlotsOrder);
+      var entries = sortedKeys.map(function(k) { return [k, selectedParts[k]]; });
       outputEl.innerHTML = entries.map(function(e) {
         var slot = e[0], p = e[1];
         return '<span class="o-slot">' + slot + '</span>: <span class="o-idx">' + p.index + '</span> <span class="o-name">' + escapeHtml(p.name) + '</span>';
@@ -899,7 +1388,9 @@
       var familyId = selectedItem.category_id;
       var level = getItemLevel();
       var partTokens = [];
-      var allSlotKeys = Object.keys(selectedParts);
+      var ncsOut = getNcsInfo(selectedItem.slug);
+      var ncsSlotsOut = ncsOut && ncsOut.ncs_slots ? ncsOut.ncs_slots : null;
+      var allSlotKeys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOut);
       for (var si = 0; si < allSlotKeys.length; si++) {
         var p = selectedParts[allSlotKeys[si]];
         if (!p) continue;
@@ -917,6 +1408,11 @@
       var code = familyId + ', 0, 1, ' + level + '||| ' + partTokens.join(' ') + '|';
       codeOutput.textContent = code;
       codeOutput.className = 'code-box';
+      try {
+        if (typeof window.refreshBuildStatsCore === 'function') {
+          setTimeout(function () { window.refreshBuildStatsCore(); }, 40);
+        }
+      } catch (_) {}
     }
 
     function updateItemStats() {
@@ -940,13 +1436,17 @@
       var filledClass = filled === ncsSlotCount ? 'stat-highlight' : filled > ncsSlotCount ? 'stat-err' : '';
       html += '<div class="item-stat-card ' + filledClass + '"><div class="stat-value">' + filled + ' / ' + ncsSlotCount + '</div><div class="stat-label">Parts Selected</div></div>';
 
-      var inPool = Object.values(selectedParts).filter(function(p) { return p.in_pool; }).length;
-      var notPool = filled - inPool;
+      var manifestPick = Object.values(selectedParts).filter(function(p) { return !p.ncs; });
+      var ncsPick = Object.values(selectedParts).filter(function(p) { return p.ncs; }).length;
+      var inPool = manifestPick.filter(function(p) { return p.in_pool; }).length;
+      var notPool = manifestPick.filter(function(p) { return !p.in_pool; }).length;
       var poolClass = notPool > 0 ? 'stat-warn' : filled > 0 ? 'stat-highlight' : '';
-      html += '<div class="item-stat-card ' + poolClass + '" title="Count of selected parts with manifest in_pool=true (in our drop-pool export). Off-pool selections still count in Parts Selected."><div class="stat-value">' + inPool + (notPool > 0 ? ' <span style="font-size:0.75em;color:#ffb347">(+' + notPool + ' off-pool)</span>' : '') + '</div><div class="stat-label">In drop-pool list</div></div>';
+      var poolNote = notPool > 0 ? ' <span style="font-size:0.75em;color:#ffb347">(+' + notPool + ' off-pool)</span>' : '';
+      var ncsNote = ncsPick > 0 ? ' <span style="font-size:0.75em;opacity:0.65">(+' + ncsPick + ' NCS)</span>' : '';
+      html += '<div class="item-stat-card ' + poolClass + '" title="Manifest-mapped slots: in_pool from our loot-pool export. NCS-only catalog picks are shown separately and are not &ldquo;off-pool&rdquo; drops."><div class="stat-value">' + inPool + poolNote + ncsNote + '</div><div class="stat-label">In drop-pool list</div></div>';
       html += '</div>';
 
-      html += renderPartDiagnosticPanelHtml(getPartSlotDiagnostics(selectedParts));
+      html += renderPartDiagnosticPanelHtml(getPartSlotDiagnostics(selectedParts, null, ncsInfo && ncsInfo.ncs_slots));
 
       if (mfr || typeCode) {
         html += '<div style="margin-top:8px;font-size:0.75rem;color:rgba(233,254,255,0.5);">';
@@ -969,6 +1469,13 @@
           html += '<span class="cat-chip ' + (chipCls[cat] || 'cc-oth') + '">' + CAT_LABELS[cat] + ': ' + catCounts[cat] + '</span>';
         });
         html += '</div>';
+        var elHint = ncsElementStructureHint(ncsInfo);
+        if (elHint) {
+          html += '<div style="margin-top:6px;font-size:0.72rem;color:rgba(0,200,255,0.9);">'
+            + '<strong style="color:#00c8ff;">Element structure:</strong> '
+            + escapeHtml(elHint)
+            + '</div>';
+        }
       }
 
       html += '<div class="slot-breakdown slot-breakdown-legend" style="margin-top:12px;">';
@@ -1385,11 +1892,57 @@
       statEffectsEl.innerHTML = '<div class="stat-effects-panel">' + html + '</div>';
     }
 
-    /** Slot order for inv tag pool propagation (rarity/comp first, then core, then rest). */
-    var TAG_SLOT_ORDER = ['rarity','body','barrel','mag','magazine','scope','grip','foregrip','underbarrel','shield','multi','secondary_ammo','body_mag','body_bolt','body_energy','body_armor','unique','secondary','unknown','class_mod','stat','stat2','stat3','stat_group1','stat_group2','stat_group3','body_acc','barrel_acc','magazine_acc','scope_acc','element','primary_ele','secondary_ele','body_ele','firmware','endgame','payload','payload_augment','stat_augment','pearl_elem','pearl_stat','hyperion_secondary_acc','tediore_acc','tediore_secondary_acc','underbarrel_acc','underbarrel_acc_vis','barrel_licensed','core_augment','primary_augment','secondary_augment','active_augment','enemy_augment','turret_weapon','curative','class_mod_body'];
+    /**
+     * Fallback slot order when NCS list is missing: mirror weapon NCS (body → body_acc / body_* visual → barrel → barrel_acc …).
+     * When getNcsInfo(slug).ncs_slots is set, sortSlotKeysForTagValidation uses that instead.
+     */
+    var TAG_SLOT_ORDER = ['rarity','body','body_acc','body_ele','body_mag','body_bolt','body_energy','body_armor','barrel','barrel_acc','barrel_licensed','mag','magazine','magazine_acc','magazine_ted_thrown','magazine_borg','hyperion_secondary_acc','scope','scope_acc','grip','foregrip','underbarrel','underbarrel_acc','underbarrel_acc_vis','secondary_ammo','secondary_ele','primary_ele','element','shield','multi','unique','secondary','unknown','class_mod','stat','stat2','stat3','stat_group1','stat_group2','stat_group3','firmware','endgame','payload','payload_augment','stat_augment','pearl_elem','pearl_stat','tediore_acc','tediore_secondary_acc','core_augment','primary_augment','secondary_augment','active_augment','enemy_augment','turret_weapon','curative','class_mod_body'];
+
+    function slotBaseKey(s) {
+      return String(s || '').replace(/__dup\d+$/i, '');
+    }
+
+    /** Strip manufacturer.itemtype prefix (e.g. jak_ps.comp_05_…) for comp key regexes. */
+    function normalizeCompKeyForNamedLegFam(cn) {
+      if (!cn) return '';
+      var s = String(cn).trim().toLowerCase();
+      var dot = s.lastIndexOf('.');
+      if (dot >= 0) s = s.slice(dot + 1);
+      return s;
+    }
+
+    /**
+     * Rarity dropdown may show STX labels (e.g. "Legendary - Crowdsourced") while inv / comp rules use
+     * keys like comp_05_legendary_crowdsourced. Prefer itemTypeString / invDumpKey tail when present.
+     */
+    function effectiveRarityCompKey(rp) {
+      if (!rp) return '';
+      var fromInv = normalizeCompKeyForNamedLegFam(rp.invDumpKey || '');
+      if (fromInv && /^comp_0[1-6]_/i.test(fromInv)) return fromInv;
+      var raw = String(rp.name || '').trim().toLowerCase();
+      if (!raw) return '';
+      if (/^comp_0[1-6]_/i.test(raw) || /^base_comp_0[1-6]_/i.test(raw)) return raw.replace(/^base_comp_/i, 'comp_');
+      return raw;
+    }
+
+    /**
+     * Named orange comps use comp_05_legendary_<family>; inv rows may depend on uni_/leg_ for the full
+     * suffix or a shorter prefix (e.g. phantom_flame barrel → uni_phantom). Seed every underscore prefix.
+     */
+    function addNamedLegendaryFamilyTagsToPool(famSuffix, pool) {
+      if (!famSuffix || !pool) return;
+      var parts = String(famSuffix).toLowerCase().split('_').filter(Boolean);
+      var pi;
+      for (pi = 1; pi <= parts.length; pi++) {
+        var segment = parts.slice(0, pi).join('_');
+        pool.add('leg_' + segment);
+        pool.add('uni_' + segment);
+      }
+    }
 
     /** Map manifest slot to NCS slot for order lookup. Manifest may use different names than NCS (weapons, shields, grenades, repkits, enhancements, heavy). */
     function slotToNcsEquiv(s) {
+      s = slotBaseKey(s);
       var map = {
         mag: 'magazine', class_mod_body: 'class_mod',
         shield: 'hyperion_secondary_acc', multi: 'tediore_acc'
@@ -1400,8 +1953,8 @@
     function sortSlotKeysForTagValidation(keys, ncsSlotsOpt) {
       if (!ncsSlotsOpt || !ncsSlotsOpt.length) {
         return keys.slice().sort(function(a, b) {
-          var ia = TAG_SLOT_ORDER.indexOf(a);
-          var ib = TAG_SLOT_ORDER.indexOf(b);
+          var ia = TAG_SLOT_ORDER.indexOf(slotBaseKey(a));
+          var ib = TAG_SLOT_ORDER.indexOf(slotBaseKey(b));
           if (ia === -1) ia = 1000;
           if (ib === -1) ib = 1000;
           if (ia !== ib) return ia - ib;
@@ -1411,8 +1964,10 @@
       var order = {};
       for (var i = 0; i < ncsSlotsOpt.length; i++) order[ncsSlotsOpt[i]] = i;
       return keys.slice().sort(function(a, b) {
-        if (a === 'rarity' && b !== 'rarity') return -1;
-        if (a !== 'rarity' && b === 'rarity') return 1;
+        var ab = slotBaseKey(a);
+        var bb = slotBaseKey(b);
+        if (ab === 'rarity' && bb !== 'rarity') return -1;
+        if (ab !== 'rarity' && bb === 'rarity') return 1;
         var aNcs = slotToNcsEquiv(a);
         var bNcs = slotToNcsEquiv(b);
         var ia = order[a] !== undefined ? order[a] : (order[aNcs] !== undefined ? order[aNcs] : -1);
@@ -1434,6 +1989,19 @@
       stat_group1: 'stat_augment', stat_group2: 'stat_augment', stat_group3: 'stat_augment'
     };
 
+    /** How many manifest slots can satisfy each comp slot for this item (used to drop impossible min/max noise). */
+    function getCompSlotCapacityFromItem(selectedItem) {
+      var out = Object.create(null);
+      if (!selectedItem || !selectedItem.slots) return out;
+      var slotKeys = Object.keys(selectedItem.slots);
+      for (var i = 0; i < slotKeys.length; i++) {
+        var sk = slotBaseKey(slotKeys[i]);
+        var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[sk] || sk;
+        out[compSlot] = (out[compSlot] || 0) + 1;
+      }
+      return out;
+    }
+
     /**
      * Inv dump tag rules (addtags / dependencytags / exclusiontags) via TagCompValidation.
      * Also validates compSlotRules (allowlist + min/max per slot) when present.
@@ -1442,7 +2010,289 @@
      * @param {object} invData
      * @param {string[]} [ncsSlotsOpt] — NCS slot order for this item (from getNcsInfo)
      */
-    function runInvTagProgression(selectedParts, invData, ncsSlotsOpt) {
+    /** Skip inv compSlotRules allowlist/minmax only where comp dumps are known mixed (class mods). */
+    function slugSkipsInvCompSlotRules(slug, selectedItem) {
+      var s = String(slug || '');
+      if (/^classmod_/i.test(s)) return true;
+      if (selectedItem && selectedItem.slots && selectedItem.slots.class_mod) return true;
+      return false;
+    }
+
+    /** Plain common→epic comp (incl. named non-orange variants comp_04_epic_foo — still not comp_05). */
+    function isPlainTier04RarityComp(compName) {
+      var c = String(compName || '').trim().toLowerCase();
+      if (/^comp_0[1-4]_(?:common|uncommon|rare|epic)$/i.test(c)) return true;
+      if (/^comp_0[1-4]_(?:common|uncommon|rare|epic)_[a-z0-9_]+$/i.test(c)) return true;
+      return false;
+    }
+
+    /** Any non–class mod item can carry an illegitimate plain-frame + orange-only part mix (shields, gadgets, guns). */
+    function slugEligibleForPlainFrameUniLegCheck(slug, selectedItem) {
+      if (!slug && !selectedItem) return false;
+      var s = String((selectedItem && selectedItem.slug) || slug || '');
+      if (/^classmod_/i.test(s)) return false;
+      if (selectedItem && selectedItem.slots && selectedItem.slots.class_mod) return false;
+      return true;
+    }
+
+    function normalizeInvLookupKey(raw) {
+      var s = String(raw || '').trim().toLowerCase();
+      if (!s) return '';
+      s = s.replace(/\s+/g, '_');
+      s = s.replace(/^inv'?/i, '');
+      s = s.replace(/^base_/, '');
+      return s;
+    }
+
+    function buildInvAliasIndex(partsByName) {
+      var idx = {};
+      if (!partsByName) return idx;
+      Object.keys(partsByName).forEach(function (k) {
+        var meta = partsByName[k];
+        var key = normalizeInvLookupKey(k);
+        if (key && !idx[key]) idx[key] = meta;
+        if (key.indexOf('.') >= 0) {
+          var tail = key.split('.').pop();
+          if (tail && !idx[tail]) idx[tail] = meta;
+        }
+        var noPart = key.replace(/^part_/, '');
+        if (noPart && !idx[noPart]) idx[noPart] = meta;
+      });
+      return idx;
+    }
+
+    function buildInvLookupDebugKeys(p) {
+      var keys = [];
+      function push(k) {
+        var s = String(k || '').trim();
+        if (!s) return;
+        if (keys.indexOf(s) >= 0) return;
+        keys.push(s);
+      }
+      var n1 = normalizeInvLookupKey(p && p.name);
+      var n2 = normalizeInvLookupKey(p && p.invDumpKey);
+      push(n1);
+      push(n2);
+      if (n1 && n1.indexOf('.') >= 0) push(n1.split('.').pop());
+      if (n2 && n2.indexOf('.') >= 0) push(n2.split('.').pop());
+      if (n1) push(n1.replace(/^part_/, ''));
+      if (n2) push(n2.replace(/^part_/, ''));
+      return keys;
+    }
+
+    /** Match INV_COMP_TAG_DATA row using manifest option name and/or decode invDumpKey (same keys as Nexus part ids). */
+    function resolveInvPartMeta(partsByName, p) {
+      if (!partsByName || !p) return null;
+      var meta = partsByName[String(p.name || '').toLowerCase()];
+      if (meta) return meta;
+      if (p.invDumpKey) {
+        var idk = String(p.invDumpKey).toLowerCase();
+        meta = partsByName[idk];
+        if (meta) return meta;
+        var idDot = idk.lastIndexOf('.');
+        if (idDot >= 0) {
+          var idTail = idk.slice(idDot + 1);
+          if (idTail) {
+            meta = partsByName[idTail];
+            if (meta) return meta;
+          }
+        }
+      }
+      var aliasIdx = partsByName.__aliasIndex;
+      if (!aliasIdx) {
+        aliasIdx = buildInvAliasIndex(partsByName);
+        try { partsByName.__aliasIndex = aliasIdx; } catch (_e) {}
+      }
+      var k1 = normalizeInvLookupKey(p.name || '');
+      if (k1 && aliasIdx[k1]) return aliasIdx[k1];
+      var k2 = normalizeInvLookupKey(p.invDumpKey || '');
+      if (k2 && aliasIdx[k2]) return aliasIdx[k2];
+      if (p.invDumpKey) {
+        var idk3 = String(p.invDumpKey).toLowerCase();
+        var idDot3 = idk3.lastIndexOf('.');
+        if (idDot3 >= 0) {
+          var kt3 = normalizeInvLookupKey(idk3.slice(idDot3 + 1));
+          if (kt3 && aliasIdx[kt3]) return aliasIdx[kt3];
+        }
+      }
+      return null;
+    }
+
+    /**
+     * Comp + prior slots' addtags in NCS order (same as runInvTagProgression). Omits excludeSlotKey so
+     * that slot's dropdown can preview alternates against the pool built without that row.
+     */
+    function buildSyntheticTagPoolFromSelection(selectedParts, invData, ncsSlotsOpt, excludeSlotKey) {
+      var tagPool = new Set();
+      if (!invData || !invData.partsByName || !window.TagCompValidation || !selectedParts) return tagPool;
+      var TC = window.TagCompValidation;
+      var partsByName = invData.partsByName;
+      var compBasetags = invData.compBasetags || {};
+      var sortedKeys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOpt);
+      var rp = selectedParts.rarity;
+      var compName = effectiveRarityCompKey(rp) || null;
+      var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
+      if (rp && (rp.name || rp.invDumpKey) && compName) {
+        var baseTags = compBasetags[compName];
+        if (!baseTags) {
+          var baseMatch = compKeyNorm && compKeyNorm.match(/^(comp_0[1-5]_(?:common|uncommon|rare|epic|legendary))(?:_[a-z0-9_]+)?$/i);
+          if (baseMatch) baseTags = compBasetags[baseMatch[1].toLowerCase()];
+        }
+        if (!baseTags && compKeyNorm && compKeyNorm !== compName) {
+          baseTags = compBasetags[compKeyNorm];
+        }
+        if (baseTags) TC.formatTags(baseTags).forEach(function(t) { tagPool.add(t); });
+        var cnOrange = compKeyNorm || compName;
+        if (/^comp_05_legendary/i.test(cnOrange) || /^comp_06_|pearlescent|_pearlescent/i.test(compName) || /^comp_0[1-4]_(?:common|uncommon|rare|epic)_[a-z0-9_]+$/i.test(cnOrange)) {
+          tagPool.add('unique');
+          if (!tagPool.has('legendary') && (/legendary|pearlescent|comp_06|_pearlescent/i.test(compName))) tagPool.add('legendary');
+        }
+        (function seedRarityFromCompKey(cn, pool) {
+          if (!cn) return;
+          var c = String(cn).trim().toLowerCase();
+          var tier = c.match(/^comp_0([1-4])_(common|uncommon|rare|epic)(?:$|_)/i);
+          if (tier) pool.add(tier[2].toLowerCase());
+          else if (/^comp_05_legendary/i.test(c) || /^comp_06_/i.test(c) || /pearlescent/i.test(c)) {
+            pool.add('unique');
+            pool.add('legendary');
+          } else if (/^comp_0[1-4]_(common|uncommon|rare|epic)_/i.test(c)) {
+            pool.add('unique');
+            var nt = c.match(/^comp_0[1-4]_(common|uncommon|rare|epic)_/i);
+            if (nt) pool.add(nt[1].toLowerCase());
+          }
+        })(compKeyNorm || compName, tagPool);
+        (function seedNamedLegendaryFamilyTags(cn, pool) {
+          if (!cn || !pool) return;
+          var c = normalizeCompKeyForNamedLegFam(cn);
+          var m = c.match(/^(?:base_)?comp_05_legendary_([a-z0-9_]+)$/i);
+          if (!m || !m[1]) return;
+          addNamedLegendaryFamilyTagsToPool(m[1], pool);
+        })(compName, tagPool);
+      }
+      for (var ti = 0; ti < sortedKeys.length; ti++) {
+        var sk = sortedKeys[ti];
+        if (excludeSlotKey && slotBaseKey(sk) === slotBaseKey(excludeSlotKey)) continue;
+        var skBase = slotBaseKey(sk);
+        var p = selectedParts[sk];
+        if (!p || !p.name) continue;
+        var meta = resolveInvPartMeta(partsByName, p);
+        if (!meta) continue;
+        if (skBase === 'barrel' && p && p.name) {
+          var bnm = String(p.name).toLowerCase();
+          if (/part_barrel_02|barrel_02/i.test(bnm)) tagPool.add('barrel_02');
+          if (/part_barrel_01|barrel_01|zipgun/i.test(bnm)) tagPool.add('barrel_01');
+        }
+        TC.applyPartAddTagsToPool(tagPool, meta);
+      }
+      return tagPool;
+    }
+
+    function invPartIdImpliesUniqueLegendaryRoll(invKeyLower) {
+      if (!invKeyLower) return false;
+      return /^(?:part_unique_|part_aug_unique_|part_aug_leg_|part_leg_)/.test(invKeyLower);
+    }
+
+    /** part_barrel_NN_x where x is not a single-letter variant (a–d) — Nexus uses these for orange barrels; invalid on plain comps. */
+    function invKeyLooksNamedLegendaryBarrel(invKeyLower) {
+      if (!invKeyLower) return false;
+      var m = /^part_barrel_\d{2}_([a-z0-9_]+)$/i.exec(invKeyLower);
+      if (!m) return false;
+      var tail = m[1];
+      if (tail.length < 2) return false;
+      if (/^[abcd]$/i.test(tail)) return false;
+      if (/^(common|uncommon|rare|epic|legendary)$/i.test(tail)) return false;
+      return true;
+    }
+
+    function isPearlRarityCompName(compName) {
+      var c = String(compName || '').trim().toLowerCase();
+      if (!c) return false;
+      var n = c.replace(/^base_comp_/i, 'comp_');
+      return /^comp_06_/.test(n) || /pearlescent|_pearlescent|pearl/.test(n);
+    }
+
+    /**
+     * When inv dependency simulation is relaxed, still fail obvious cheats: plain comp_01–04 + parts whose
+     * inv dump expects a named orange/unique pool (uni_*, leg_*, or dependency unique/legendary), or whose
+     * Nexus part id is clearly a unique/legendary row (part_unique_*, part_aug_unique_*, …).
+     */
+    function plainFrameUniLegViolations(selectedParts, partsByName, compName, selectedItem) {
+      var out = [];
+      if (!isPlainTier04RarityComp(compName) || !partsByName || !window.TagCompValidation) return out;
+      if (!slugEligibleForPlainFrameUniLegCheck(null, selectedItem)) return out;
+      var TC = window.TagCompValidation;
+      var keys = Object.keys(selectedParts);
+      var ki;
+      var sk;
+      var p;
+      var meta;
+      var deps;
+      var di;
+      var t;
+      var invKey;
+      for (ki = 0; ki < keys.length; ki++) {
+        sk = keys[ki];
+        var skBase = slotBaseKey(sk);
+        if (skBase === 'rarity') continue;
+        p = selectedParts[sk];
+        if (!p || !p.name) continue;
+        invKey = String((p.invDumpKey || p.name || '')).trim().toLowerCase();
+        if (invPartIdImpliesUniqueLegendaryRoll(invKey)) {
+          out.push(
+            'Frame mismatch: ' +
+              getSlotLabel(skBase) +
+              ' / ' +
+              formatPartName(p.name) +
+              ' \u2014 part id is a unique/legendary inv row, but rarity is plain ' +
+              String(compName)
+          );
+          continue;
+        }
+        if (invKeyLooksNamedLegendaryBarrel(invKey)) {
+          out.push(
+            'Frame mismatch: ' +
+              getSlotLabel(skBase) +
+              ' / ' +
+              formatPartName(p.name) +
+              ' \u2014 named legendary barrel id on plain rarity comp ' +
+              String(compName)
+          );
+          continue;
+        }
+        meta = resolveInvPartMeta(partsByName, p);
+        if (!meta || !meta.dependencytags || !meta.dependencytags.length) continue;
+        deps = TC.formatTags(meta.dependencytags);
+        for (di = 0; di < deps.length; di++) {
+          t = deps[di];
+          if (t.indexOf('uni_') === 0 || t.indexOf('leg_') === 0) {
+            out.push(
+              'Frame mismatch: ' +
+                getSlotLabel(skBase) +
+                ' / ' +
+                formatPartName(p.name) +
+                ' \u2014 inv dependencytags expect a named legendary/orange comp, but rarity is plain ' +
+                String(compName)
+            );
+            break;
+          }
+          if (t === 'legendary' || t === 'unique') {
+            out.push(
+              'Frame mismatch: ' +
+                getSlotLabel(skBase) +
+                ' / ' +
+                formatPartName(p.name) +
+                ' \u2014 inv dependencytags require unique/legendary pool, but rarity is plain ' +
+                String(compName)
+            );
+            break;
+          }
+        }
+      }
+      return out;
+    }
+
+    function runInvTagProgression(selectedParts, invData, ncsSlotsOpt, progOpts) {
+      progOpts = progOpts || {};
       var globalReasons = [];
       var bySlot = {};
       if (!invData || !invData.partsByName || !window.TagCompValidation) {
@@ -1455,48 +2305,197 @@
       var sortedKeys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOpt);
       var tagPool = new Set();
       var rp = selectedParts.rarity;
-      var compName = (rp && rp.name) ? String(rp.name).trim().toLowerCase() : null;
-      if (rp && rp.name) {
+      var compName = effectiveRarityCompKey(rp) || null;
+      /* Data + manifests use both comp_* and base_comp_* for the same rarity row — normalize for tier/regex logic. */
+      var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
+      if (rp && (rp.name || rp.invDumpKey) && compName) {
         var baseTags = compBasetags[compName];
         if (!baseTags) {
-          var baseMatch = compName.match(/^(comp_0[1-5]_(?:common|uncommon|rare|epic|legendary))(?:_[a-z0-9_]+)?$/i);
+          var baseMatch = compKeyNorm && compKeyNorm.match(/^(comp_0[1-5]_(?:common|uncommon|rare|epic|legendary))(?:_[a-z0-9_]+)?$/i);
           if (baseMatch) baseTags = compBasetags[baseMatch[1].toLowerCase()];
         }
-        if (baseTags) TC.formatTags(baseTags).forEach(function(t) { tagPool.add(t); });
-        if (/^comp_05_legendary_/.test(compName) || /^comp_0[1-4]_(?:common|uncommon|rare|epic)_[a-z0-9_]+$/i.test(compName)) {
-          tagPool.add('unique');
-          if (!tagPool.has('legendary') && /legendary/i.test(compName)) tagPool.add('legendary');
+        if (!baseTags && compKeyNorm && compKeyNorm !== compName) {
+          baseTags = compBasetags[compKeyNorm];
         }
+        if (baseTags) TC.formatTags(baseTags).forEach(function(t) { tagPool.add(t); });
+        /* Pool "unique" for orange / pearl / named lower tiers so parts that depend on it validate; base barrels exclude unique in dump — skip that exclusion when this applies (see partValidForPool skipUniqueExclusion). */
+        var cnOrange = compKeyNorm || compName;
+        if (/^comp_05_legendary/i.test(cnOrange) || /^comp_06_|pearlescent|_pearlescent/i.test(compName) || /^comp_0[1-4]_(?:common|uncommon|rare|epic)_[a-z0-9_]+$/i.test(cnOrange)) {
+          tagPool.add('unique');
+          if (!tagPool.has('legendary') && (/legendary|pearlescent|comp_06|_pearlescent/i.test(compName))) tagPool.add('legendary');
+        }
+        /* When compBasetags in the bundle is missing or corrupt, still seed tier tags from the comp key (save-editor–style pool). Plain comps must NOT pre-load uni_/leg_ from other parts — that falsely satisfies legendary deps on green frames. */
+        (function seedRarityFromCompKey(cn, pool) {
+          if (!cn) return;
+          var c = String(cn).trim().toLowerCase();
+          var tier = c.match(/^comp_0([1-4])_(common|uncommon|rare|epic)(?:$|_)/i);
+          if (tier) pool.add(tier[2].toLowerCase());
+          else if (/^comp_05_legendary/i.test(c) || /^comp_06_/i.test(c) || /pearlescent/i.test(c)) {
+            pool.add('unique');
+            pool.add('legendary');
+          } else if (/^comp_0[1-4]_(common|uncommon|rare|epic)_/i.test(c)) {
+            pool.add('unique');
+            var nt = c.match(/^comp_0[1-4]_(common|uncommon|rare|epic)_/i);
+            if (nt) pool.add(nt[1].toLowerCase());
+          }
+        })(compKeyNorm || compName, tagPool);
+        /* Named legendary comps carry a family suffix (e.g. comp_05_legendary_quickdraw).
+           Some part rows depend on leg_* / uni_* family tags; seed both aliases from comp key. */
+        (function seedNamedLegendaryFamilyTags(cn, pool) {
+          if (!cn || !pool) return;
+          var c = normalizeCompKeyForNamedLegFam(cn);
+          var m = c.match(/^(?:base_)?comp_05_legendary_([a-z0-9_]+)$/i);
+          if (!m || !m[1]) return;
+          addNamedLegendaryFamilyTagsToPool(m[1], pool);
+        })(compName, tagPool);
       }
+      /* Standard tier comps 01–06 (incl. pearlescent): base barrels exclude "unique" while lower pools never carry it — skip or bulk banks false-fail. */
+      var skipUniqueExcl = !!(compKeyNorm && /^comp_0[1-6]_/i.test(compKeyNorm));
       for (var ti = 0; ti < sortedKeys.length; ti++) {
         var sk = sortedKeys[ti];
+        var skBase = slotBaseKey(sk);
         var p = selectedParts[sk];
         if (!p || !p.name) {
           bySlot[sk] = { status: 'empty' };
           continue;
         }
-        var meta = partsByName[String(p.name).toLowerCase()];
+        var meta = resolveInvPartMeta(partsByName, p);
+        /* Rarity row is a comp_* key; Nexus inv bundle often has basetags only (no partsByName row). */
+        if (!meta && skBase === 'rarity' && (p.invDumpKey || p.name)) {
+          meta = { addtags: [], dependencytags: [], exclusiontags: [] };
+        }
         if (!meta) {
           bySlot[sk] = { status: 'no_rule', partName: p.name };
           continue;
         }
-        var v = TC.partValidForPool(meta, tagPool, {});
+        var pnl = String(p.name || '').toLowerCase();
+        var skipExTags = [];
+        if (pnl.indexOf('secondbarrel') >= 0 || pnl.indexOf('underbarrel_07') >= 0) skipExTags.push('barrel_01');
+        if (skipExTags.indexOf('barrel_01') < 0 && meta.exclusiontags) {
+          var exf = TC.formatTags(meta.exclusiontags);
+          if (exf.indexOf('barrel_01') >= 0 && skBase === 'underbarrel') skipExTags.push('barrel_01');
+        }
+        /* Match __stxRefreshLegitSlotOptionValidity / save-editor style: named comps often carry rarity addtags
+           that do not intersect the linear pool’s tier set — do not false-fail; real cheats still miss deps or hit exclusions. */
+        var pvOpts = {
+          skipUniqueExclusion: skipUniqueExcl,
+          skipExclusionTags: skipExTags.length ? skipExTags : undefined,
+          skipRarityPoolMatch: true
+        };
+        if (progOpts.relaxUniLegDeps) pvOpts.skipAllDependencyChecks = true;
+        if (skBase === 'barrel' && p && p.name) {
+          var bnm = String(p.name).toLowerCase();
+          /* Barrel rows depend on barrel_01 / barrel_02; the engine infers those from the chosen barrel
+             id. Linear slot pool used to miss them (body/comp rarely add). Pre-seed from this part’s name
+             so legit Vladof HW / Ripper rows pass; cheats using other parts still miss required tags or hit exclusions. */
+          if (/part_barrel_02|barrel_02/i.test(bnm)) tagPool.add('barrel_02');
+          if (/part_barrel_01|barrel_01|zipgun/i.test(bnm)) tagPool.add('barrel_01');
+        }
+        var v = TC.partValidForPool(meta, tagPool, pvOpts);
+        if (v.ok && (skBase === 'pearl_elem' || skBase === 'pearl_stat')) {
+          if (!isPearlRarityCompName(compName)) {
+            v = { ok: false, reasons: ['pearl-only slot requires pearlescent rarity comp'] };
+          }
+        }
         if (!v.ok) {
-          globalReasons.push('Inv tags: ' + getSlotLabel(sk) + ' / ' + formatPartName(p.name) + ' \u2014 ' + v.reasons.join('; '));
+          globalReasons.push('Inv tags: ' + getSlotLabel(skBase) + ' / ' + formatPartName(p.name) + ' \u2014 ' + v.reasons.join('; '));
           bySlot[sk] = { status: 'fail', reasons: v.reasons.slice(), partName: p.name };
         } else {
           bySlot[sk] = { status: 'ok', partName: p.name };
         }
         TC.applyPartAddTagsToPool(tagPool, meta);
       }
-      if (compName && compSlotRules[compName]) {
-        var rules = compSlotRules[compName];
+
+      if (progOpts.saveEditorLegitBulk) {
+        /* Bulk parity: order-independent exclusion-only recheck. Prefer every manifest-mapped decode row
+           (bulkGlobalExclRows) so duplicate slots (e.g. two barrel_acc) still contribute addtags; collapsing
+           to selectedParts alone dropped tags from non-first rows. Fallback: selected slots only. */
+        var globalPool = new Set();
+        var metas = [];
+        var bulkExtra = progOpts.bulkGlobalExclRows;
+        if (Array.isArray(bulkExtra) && bulkExtra.length) {
+          for (var ge = 0; ge < bulkExtra.length; ge++) {
+            var ber = bulkExtra[ge];
+            if (!ber || !ber.slotKey || !ber.manifestName) continue;
+            var bp = {
+              name: ber.manifestName,
+              invDumpKey: ber.invDumpKey != null ? ber.invDumpKey : null,
+              slot: ber.slotKey
+            };
+            var bem = resolveInvPartMeta(partsByName, bp);
+            if (!bem) continue;
+            metas.push({ sk: ber.slotKey, p: bp, meta: bem });
+          }
+        }
+        if (!metas.length) {
+          for (var gi = 0; gi < sortedKeys.length; gi++) {
+            var gsk = sortedKeys[gi];
+            var gp = selectedParts[gsk];
+            if (!gp || !gp.name) continue;
+            var gmeta = resolveInvPartMeta(partsByName, gp);
+            if (!gmeta) continue;
+            metas.push({ sk: gsk, p: gp, meta: gmeta });
+          }
+        }
+        for (var gpBuild = 0; gpBuild < metas.length; gpBuild++) {
+          var gmb = metas[gpBuild];
+          var gadds2 = TC.formatTags(gmb.meta.addtags);
+          for (var ga = 0; ga < gadds2.length; ga++) globalPool.add(gadds2[ga]);
+          var bnmG = String(gmb.p.name || '').toLowerCase();
+          if (/part_barrel_02|barrel_02/i.test(bnmG)) globalPool.add('barrel_02');
+          if (/part_barrel_01|barrel_01|zipgun/i.test(bnmG)) globalPool.add('barrel_01');
+        }
+        for (var gm = 0; gm < metas.length; gm++) {
+          var mrow = metas[gm];
+          var mskBase = slotBaseKey(mrow.sk);
+          var mp = mrow.p;
+          var mmeta = mrow.meta;
+          var skipExGlobal = [];
+          var mpn = String(mp.name || '').toLowerCase();
+          if (mpn.indexOf('secondbarrel') >= 0 || mpn.indexOf('underbarrel_07') >= 0) skipExGlobal.push('barrel_01');
+          if (skipExGlobal.indexOf('barrel_01') < 0 && mmeta.exclusiontags) {
+            var mexf = TC.formatTags(mmeta.exclusiontags);
+            if (mexf.indexOf('barrel_01') >= 0 && mskBase === 'underbarrel') skipExGlobal.push('barrel_01');
+          }
+          var gv = TC.partValidForPool(mmeta, globalPool, {
+            skipUniqueExclusion: skipUniqueExcl,
+            skipExclusionTags: skipExGlobal.length ? skipExGlobal : undefined,
+            skipAllDependencyChecks: true,
+            skipRarityPoolMatch: true
+          });
+          if (!gv.ok) {
+            var exclOnly = [];
+            for (var gr = 0; gr < gv.reasons.length; gr++) {
+              if (/^exclusion tag\s+"/i.test(String(gv.reasons[gr] || ''))) exclOnly.push(gv.reasons[gr]);
+            }
+            if (exclOnly.length) {
+              var gmsg = 'Inv tags(global): ' + getSlotLabel(mskBase) + ' / ' + formatPartName(mp.name) + ' — ' + exclOnly.join('; ');
+              globalReasons.push(gmsg);
+              var prevG = bySlot[mrow.sk];
+              var gReasons = prevG && prevG.reasons ? prevG.reasons.concat(exclOnly) : exclOnly.slice();
+              bySlot[mrow.sk] = { status: 'fail', reasons: gReasons, partName: mp.name };
+            }
+          }
+        }
+      }
+      /* INV bundle keys comp_01…06 to class-mod slot shapes; guns use base_comp_* rows (barrel_acc etc.).
+         Manifest rarity often stores comp_02_uncommon without base_ — skip wrongly enforcing class_mod_body on weapons. */
+      var compRulesKey = compName;
+      var slugForRules = String(progOpts.manifestSlug || '');
+      var isWeaponSlugForComp = /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slugForRules);
+      if (compName && compKeyNorm && isWeaponSlugForComp) {
+        var baseCompRulesTry = 'base_' + compKeyNorm;
+        if (compSlotRules[baseCompRulesTry]) compRulesKey = baseCompRulesTry;
+      }
+      if (compRulesKey && compSlotRules[compRulesKey] && !progOpts.skipCompSlotRules) {
+        var rules = compSlotRules[compRulesKey];
         for (var ti = 0; ti < sortedKeys.length; ti++) {
           var sk = sortedKeys[ti];
+          var skBase = slotBaseKey(sk);
           var p = selectedParts[sk];
           if (!p || !p.name) continue;
           if (bySlot[sk] && bySlot[sk].status === 'no_rule') continue;
-          var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[sk] || sk;
+          var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[skBase] || skBase;
           var slotRule = rules[compSlot];
           if (!slotRule) continue;
           var partNorm = String(p.name).toLowerCase().trim();
@@ -1506,44 +2505,114 @@
             if (slotAsWildcard) {
               /* Slot name in allowlist = any part in that slot allowed (Nexus wildcard). */
             } else {
-            var inList = slotRule.parts.some(function(allow) {
-              var a = String(allow).toLowerCase().trim();
-              if (a === compSlot) return true;
-              return partNorm === a || partBase === a || partNorm.indexOf(a) >= 0 || (partNorm.indexOf('.') >= 0 && partNorm.endsWith('.' + a)) || (partNorm.indexOf('.') >= 0 && a.indexOf('.') >= 0 && partNorm.endsWith(a));
-            });
-            if (!inList) {
-              var msg = 'Comp allowlist: ' + getSlotLabel(sk) + ' / ' + formatPartName(p.name) + ' not in allowed parts for ' + compSlot;
-              globalReasons.push(msg);
-              var prev = bySlot[sk];
-              var reasons = prev && prev.reasons ? prev.reasons.concat(msg) : [msg];
-              bySlot[sk] = { status: 'fail', reasons: reasons, partName: p.name };
-            }
+              /* Allowlist rows are known to be narrower than actual in-game availability; treat mismatch as FYI. */
+              var inList = slotRule.parts.some(function(allow) {
+                var a = String(allow).toLowerCase().trim();
+                if (a === compSlot) return true;
+                return partNorm === a || partBase === a || partNorm.indexOf(a) >= 0 || (partNorm.indexOf('.') >= 0 && partNorm.endsWith('.' + a)) || (partNorm.indexOf('.') >= 0 && a.indexOf('.') >= 0 && partNorm.endsWith(a));
+              });
+              if (!inList) {
+                globalReasons.push('Comp allowlist: ' + getSlotLabel(skBase) + ' / ' + formatPartName(p.name) + ' not in allowed parts for ' + compSlot);
+              }
             }
           }
         }
-        var countsByCompSlot = {};
-        for (var ti = 0; ti < sortedKeys.length; ti++) {
-          var sk = sortedKeys[ti];
-          var p = selectedParts[sk];
-          if (!p || !p.name) continue;
-          var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[sk] || sk;
-          countsByCompSlot[compSlot] = (countsByCompSlot[compSlot] || 0) + 1;
-        }
-        for (var compSlot in countsByCompSlot) {
-          if (!rules[compSlot]) continue;
-          var r = rules[compSlot];
-          var cnt = countsByCompSlot[compSlot];
-          var min = typeof r.min === 'number' ? r.min : (r.parts && r.parts.length ? 1 : 0);
-          var max = typeof r.max === 'number' ? r.max : 999;
-          if (cnt < min || cnt > max) {
-            var msg = 'Comp slot ' + compSlot + ': count ' + cnt + ' outside range [' + min + ',' + max + ']';
-            globalReasons.push(msg);
-            var skKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function(s) { return MANIFEST_SLOT_TO_COMP_SLOT[s] === compSlot; });
-            if (!skKeys.length) skKeys = [compSlot];
-            for (var si = 0; si < skKeys.length; si++) {
-              var skk = skKeys[si];
-              if (bySlot[skk] && bySlot[skk].status === 'ok') {
-                bySlot[skk] = { status: 'fail', reasons: [msg], partName: selectedParts[skk] && selectedParts[skk].name };
+        /* Bulk cheat-audit: full inv_comp min/max caused large false-positive waves. Keep strict behavior for
+           normal validation, but in bulk mode re-enable only actionable under-min on barrel_acc using every
+           mapped decode row (incl. duplicate-slot rows via bulkGlobalExclRows). */
+        if (!progOpts.saveEditorLegitBulk) {
+          var countsByCompSlot = {};
+          for (var ti = 0; ti < sortedKeys.length; ti++) {
+            var sk = sortedKeys[ti];
+            var skBase = slotBaseKey(sk);
+            var p = selectedParts[sk];
+            if (!p || !p.name) continue;
+            var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[skBase] || skBase;
+            countsByCompSlot[compSlot] = (countsByCompSlot[compSlot] || 0) + 1;
+          }
+          for (var compSlot in countsByCompSlot) {
+            if (!rules[compSlot]) continue;
+            var r = rules[compSlot];
+            var cnt = countsByCompSlot[compSlot];
+            var min = typeof r.min === 'number' ? r.min : (r.parts && r.parts.length ? 1 : 0);
+            var max = typeof r.max === 'number' ? r.max : 999;
+            /* Match Nexus/save-editor legit-builder: merged rules often imply min 1 when firmware options
+               exist, but serials and the online editor treat firmware as optional. */
+            if (compSlot === 'firmware' && min > 0) min = 0;
+            if (cnt < min || cnt > max) {
+              var msg = 'Comp slot ' + compSlot + ': count ' + cnt + ' outside range [' + min + ',' + max + ']';
+              globalReasons.push(msg);
+              var skKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function(s) { return MANIFEST_SLOT_TO_COMP_SLOT[s] === compSlot; });
+              if (!skKeys.length) skKeys = [compSlot];
+              for (var si = 0; si < skKeys.length; si++) {
+                var skk = skKeys[si];
+                if (bySlot[skk] && bySlot[skk].status === 'ok') {
+                  bySlot[skk] = { status: 'fail', reasons: [msg], partName: selectedParts[skk] && selectedParts[skk].name };
+                }
+              }
+            }
+          }
+        } else if (Array.isArray(progOpts.bulkGlobalExclRows) && progOpts.bulkGlobalExclRows.length) {
+          /* Bulk: for barrel_acc, count only parts that are exclusion-valid in the global pool.
+             This matches editor behavior where an excluded barrel_acc doesn't satisfy the slot requirement. */
+          var bulkGlobalPool = new Set();
+          var bulkResolved = [];
+          for (var bx = 0; bx < progOpts.bulkGlobalExclRows.length; bx++) {
+            var br = progOpts.bulkGlobalExclRows[bx];
+            if (!br || !br.slotKey || !br.manifestName) continue;
+            var bp = { name: br.manifestName, invDumpKey: br.invDumpKey != null ? br.invDumpKey : null, slot: br.slotKey };
+            var bmeta = resolveInvPartMeta(partsByName, bp);
+            if (!bmeta) continue;
+            bulkResolved.push({ slotKey: br.slotKey, p: bp, meta: bmeta });
+            var badds = TC.formatTags(bmeta.addtags);
+            for (var ba = 0; ba < badds.length; ba++) bulkGlobalPool.add(badds[ba]);
+            var bnm = String(bp.name || '').toLowerCase();
+            if (/part_barrel_02|barrel_02/i.test(bnm)) bulkGlobalPool.add('barrel_02');
+            if (/part_barrel_01|barrel_01|zipgun/i.test(bnm)) bulkGlobalPool.add('barrel_01');
+          }
+
+          var bulkCountsByCompSlot = {};
+          var bulkSeenByCompSlot = {};
+          for (var bc = 0; bc < bulkResolved.length; bc++) {
+            var br2 = bulkResolved[bc];
+            var bslotBase = slotBaseKey(br2.slotKey);
+            var bcompSlot = MANIFEST_SLOT_TO_COMP_SLOT[bslotBase] || bslotBase;
+            bulkSeenByCompSlot[bcompSlot] = (bulkSeenByCompSlot[bcompSlot] || 0) + 1;
+            var okForCount = true;
+            if (bcompSlot === 'barrel_acc') {
+              var bv = TC.partValidForPool(br2.meta, bulkGlobalPool, {
+                skipUniqueExclusion: skipUniqueExcl,
+                skipAllDependencyChecks: true,
+                skipRarityPoolMatch: true
+              });
+              if (!bv.ok) {
+                /* If this barrel_acc has any exclusion conflict, it does not satisfy the requirement. */
+                var hasExcl = bv.reasons.some(function (r) { return String(r).indexOf('exclusion tag "') === 0; });
+                if (hasExcl) okForCount = false;
+              }
+            }
+            if (!okForCount) continue;
+            bulkCountsByCompSlot[bcompSlot] = (bulkCountsByCompSlot[bcompSlot] || 0) + 1;
+          }
+          var bulkMinOnlySlots = { barrel_acc: true };
+          for (var bcomp in bulkMinOnlySlots) {
+            if (!bulkMinOnlySlots[bcomp]) continue;
+            var brule = rules[bcomp];
+            if (!brule) continue;
+            /* Do not invent slot requirements for items that do not map this comp slot at all. */
+            if (!(bulkSeenByCompSlot[bcomp] > 0)) continue;
+            var bcnt = bulkCountsByCompSlot[bcomp] || 0;
+            var bmin = typeof brule.min === 'number' ? brule.min : (brule.parts && brule.parts.length ? 1 : 0);
+            if (bcnt < bmin) {
+              var bmsg = 'Comp slot ' + bcomp + ': count ' + bcnt + ' outside range [' + bmin + ',999]';
+              globalReasons.push(bmsg);
+              var bskKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function(s) { return MANIFEST_SLOT_TO_COMP_SLOT[s] === bcomp; });
+              if (!bskKeys.length) bskKeys = [bcomp];
+              for (var bsi = 0; bsi < bskKeys.length; bsi++) {
+                var bsk = bskKeys[bsi];
+                var bprev = bySlot[bsk];
+                var breasons = bprev && bprev.reasons ? bprev.reasons.concat(bmsg) : [bmsg];
+                bySlot[bsk] = { status: 'fail', reasons: breasons, partName: selectedParts[bsk] && selectedParts[bsk].name };
               }
             }
           }
@@ -1557,16 +2626,17 @@
     }
 
     /** One row per selected slot: manifest pool flag + inv tag outcome (for Item Info panel). Pass tagBySlotOverride from computeLegitValidationState to avoid a second tag walk. */
-    function getPartSlotDiagnostics(selectedParts, tagBySlotOverride) {
+    function getPartSlotDiagnostics(selectedParts, tagBySlotOverride, ncsSlotsOpt) {
       var tagBySlot = tagBySlotOverride;
       if (!tagBySlot) {
         var invData = typeof window !== 'undefined' ? window.INV_COMP_TAG_DATA : null;
-        tagBySlot = runInvTagProgression(selectedParts, invData).bySlot;
+        tagBySlot = runInvTagProgression(selectedParts, invData, ncsSlotsOpt).bySlot;
       }
       var rows = [];
-      var keys = sortSlotKeysForTagValidation(Object.keys(selectedParts));
+      var keys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOpt);
       for (var i = 0; i < keys.length; i++) {
         var sk = keys[i];
+        var skBase = slotBaseKey(sk);
         var p = selectedParts[sk];
         if (!p) continue;
         var poolKind = p.ncs ? 'ncs' : (p.in_pool ? 'in' : 'out');
@@ -1596,7 +2666,7 @@
         }
         rows.push({
           slotKey: sk,
-          slotLabel: getSlotLabel(sk),
+          slotLabel: getSlotLabel(skBase),
           partName: p.name,
           poolKind: poolKind,
           poolText: poolText,
@@ -1629,39 +2699,116 @@
      * Manifest slots with in_pool=false (excludes NCS catalog rows — those are not loot-pool filtered).
      * @returns {{ slot: string, slotLabel: string, partName: string, index: number, display: string }[]}
      */
-    function describeOffPoolParts(selectedParts) {
+    function describeOffPoolParts(selectedParts, ncsSlotsOpt) {
       var list = [];
       if (!selectedParts) return list;
-      var keys = sortSlotKeysForTagValidation(Object.keys(selectedParts));
+      var keys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOpt);
       var i;
       var sk;
       var p;
       for (i = 0; i < keys.length; i++) {
         sk = keys[i];
+        var skBase = slotBaseKey(sk);
         p = selectedParts[sk];
         if (!p || p.ncs) continue;
         if (p.in_pool) continue;
         list.push({
           slot: sk,
-          slotLabel: getSlotLabel(sk),
+          slotLabel: getSlotLabel(skBase),
           partName: p.name,
           index: p.index,
-          display: getSlotLabel(sk) + ': ' + formatPartName(p.name) + ' [idx ' + p.index + ']'
+          display: getSlotLabel(skBase) + ': ' + formatPartName(p.name) + ' [idx ' + p.index + ']'
         });
       }
       return list;
     }
 
     /**
+     * Dependency basetags where linear slot→tagPool progression often disagrees with Nexus / save-editor
+     * (v23–v25). Barrel_01/02: satisfied via barrel-slot name seed above — do not mark as bulk noise or
+     * real cheats that still have other bad deps/exclusions won’t pass.
+     */
+    function bulkMissingDepTagIsEditorParityNoise(tag) {
+      var t = String(tag || '').toLowerCase();
+      if (t.indexOf('uni_') === 0) return true;
+      if (t.indexOf('leg_') === 0) return true;
+      if (t.indexOf('licensed_') === 0) return true;
+      if (t === 'elem') return true;
+      if (t === 'ted_mirv') return true;
+      return false;
+    }
+
+    /**
+     * Bulk page only: save-editor Legit–style hard-fail = impossible composition (exclusion clash or too few parts in a comp slot).
+     * Other inv lines stay in details but do not flip Fail (data) — avoids tens of thousands of false positives vs a real bank.
+     */
+    function invReasonIsSaveEditorBulkHardFail(line) {
+      var s = String(line || '');
+      if (/missing dependency tag/i.test(s)) {
+        var rxd = /missing dependency tag "([^"]+)"/gi;
+        var md;
+        var sawQuoted = false;
+        var hasActionableMissingDep = false;
+        while ((md = rxd.exec(s)) !== null) {
+          sawQuoted = true;
+          if (!bulkMissingDepTagIsEditorParityNoise(md[1])) hasActionableMissingDep = true;
+        }
+        if (hasActionableMissingDep) return true;
+        if (!sawQuoted) return true;
+        /* Else: only uni_/leg_/licensed_ deps missing — FYI, not Fail (data). */
+      }
+      if (/Exclusion:/i.test(s) && /pool/i.test(s)) return true;
+      var m = s.match(/Comp slot[^:]+: count (\d+) outside range \[(\d+),(\d+)\]/);
+      if (m) {
+        var cnt = parseInt(m[1], 10);
+        var mi = parseInt(m[2], 10);
+        if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi) return true;
+      }
+      if (s.indexOf('exclusion tag') >= 0) {
+        var tags = [];
+        var re = /exclusion tag\s+"([^"]+)"/gi;
+        var mm;
+        while ((mm = re.exec(s)) !== null) tags.push(String(mm[1]).toLowerCase());
+        if (tags.length === 0) return true;
+        /* Bulk: many FYI lines are only "unique" (or barrel tag structure) vs pool; real cheats carry other exclusion tags (licensed, …). */
+        var bulkNoiseExcl = { unique: true, barrel_01: true, barrel_02: true };
+        for (var i = 0; i < tags.length; i++) {
+          if (!bulkNoiseExcl[tags[i]]) return true;
+        }
+        return false;
+      }
+      return false;
+    }
+
+    /** Legit Builder interactive hard-fail set: bulk hard-fails + comp allowlist mismatches. */
+    function invReasonIsInteractiveHardFail(line) {
+      var s = String(line || '');
+      var m = s.match(/Comp slot[^:]+: count (\d+) outside range \[(\d+),(\d+)\]/);
+      if (m) {
+        var cnt = parseInt(m[1], 10);
+        var mi = parseInt(m[2], 10);
+        /* Interactive builder: treat under-min as "incomplete build" (not hard fail yet). */
+        if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi) return false;
+      }
+      if (invReasonIsSaveEditorBulkHardFail(s)) return true;
+      if (/^Comp allowlist:/i.test(s)) return true;
+      return false;
+    }
+
+    /**
      * Data-backed checks (same as manual slot selection). Used by updateValidation and decode-from-serial path.
-     * @param {{ strictMode?: boolean, itemLevel?: number }} opts — itemLevel overrides #item-level when set
+     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page — save-editor Legit parity: only Fail (data) from inv chain on exclusion / comp-slot under-min; other inv messages are FYI. bulkGlobalExclRows: all manifest-mapped decode rows (incl. duplicate slots) for order-independent exclusion pool; decode path sets this. When invTagFailuresAsErr is false (interactive Legit Builder UI), inv-tag globalReasons only promote Fail if invReasonIsSaveEditorBulkHardFail — matching slot-dropdown ✓/✗ (skipRarityPoolMatch) and avoiding false “Uncertain (inv tags)”.
      */
     function computeLegitValidationState(selectedItem, selectedParts, opts) {
       opts = opts || {};
+      var bulkAudit =
+        opts.bulkCheatAuditMode === true ||
+        (typeof window !== 'undefined' && window.STX_BULK_CHEAT_AUDIT === true);
+      var detectPlainFrameUniLeg = opts.detectPlainFrameUniLeg;
+      if (detectPlainFrameUniLeg === undefined) detectPlainFrameUniLeg = true;
       var v = M.validation;
       var partCount = Object.keys(selectedParts).length;
       var partsList = Object.values(selectedParts);
-      var offPoolParts = describeOffPoolParts(selectedParts);
       var selectedPartNames = new Set(partsList.map(function(p) { return (p.name || '').toLowerCase(); }));
       var status = 'idle', statusText = '', details = [];
       var familyId = selectedItem ? selectedItem.category_id : null;
@@ -1691,6 +2838,19 @@
         return { status: 'idle', statusText: '', details: [], className: 'v-idle', miniLineageHtml: '', sourceEvidence: null, statsIdRawFound: 0, statsAnyFound: 0, partCount: 0, partSlotDiagnostics: [], offPoolParts: [] };
       }
 
+      var ncsInfo = selectedItem ? getNcsInfo(selectedItem.slug) : null;
+      var compSlotCapacity = getCompSlotCapacityFromItem(selectedItem);
+      var offPoolParts = describeOffPoolParts(selectedParts, ncsInfo && ncsInfo.ncs_slots);
+      function isNonActionableCompUnderMinLine(line) {
+        var s = String(line || '');
+        var m = s.match(/Comp slot ([^:]+): count (\d+) outside range \[(\d+),(\d+)\]/);
+        if (!m) return false;
+        var compSlot = String(m[1] || '').trim();
+        var min = parseInt(m[3], 10);
+        var cap = Number(compSlotCapacity[compSlot] || 0);
+        return Number.isFinite(min) && Number.isFinite(cap) && min > cap;
+      }
+
       try {
         if (NCS && NCS.preferred_parts && NCS.preferred_parts.length && selectedItem) {
           var prefix = SLUG_TO_PREFIX[selectedItem.slug] || buildSlugPrefix(selectedItem.slug);
@@ -1704,96 +2864,262 @@
               var hasAny = Array.from(requiredNames).some(function(n) { return selectedPartNames.has(n); });
               var hasAll = Array.from(requiredNames).every(function(n) { return selectedPartNames.has(n); });
               if (hasAny && !hasAll) {
-                status = 'err';
-                statusText = 'Fail (data)';
+                /* NCS extract lists one valid combo; game allows alternates — FYI only (do not mark uncertain). */
                 var missing = Array.from(requiredNames).filter(function(n) { return !selectedPartNames.has(n); });
-                details.push(pref.id.replace(/^PrefParts_|_Unique_OM$/g, '') + ' requires: ' + Array.from(requiredNames).join(' + ') + '. Missing: ' + missing.join(', '));
+                details.push(
+                  'FYI (NCS bundled combo): ' +
+                    pref.id.replace(/^PrefParts_|_Unique_OM$/g, '') +
+                    ' lists ' +
+                    Array.from(requiredNames).join(' + ') +
+                    '; other valid mixes exist. Missing vs that bundle: ' +
+                    missing.join(', ')
+                );
               }
             }
           }
         }
       } catch(_) {}
 
-      var ncsInfo = selectedItem ? getNcsInfo(selectedItem.slug) : null;
       if (ncsInfo && ncsInfo.ncs_slots) {
         var badSlots = [];
         Object.keys(selectedParts).forEach(function(sk) {
-          if (!slotNameAllowedOnNcs(sk, ncsInfo.ncs_slots)) badSlots.push(sk);
+          var skBase = slotBaseKey(sk);
+          if (!slotNameAllowedOnNcs(skBase, ncsInfo.ncs_slots)) badSlots.push(skBase);
         });
         if (badSlots.length) {
-          status = 'err';
-          statusText = 'Fail (data)';
           details.push('Slot(s) not in NCS for this item: ' + badSlots.join(', '));
+          if (!bulkAudit) {
+            status = 'err';
+            statusText = 'Fail (data)';
+          }
         }
       }
       if (status !== 'err' && opts.partOrderMismatches && opts.partOrderMismatches.length) {
-        status = 'warn';
-        statusText = 'Uncertain (slot order)';
         details.push('Part order mismatch vs NCS: ' + opts.partOrderMismatches.join('; '));
+        if (!bulkAudit) {
+          status = 'warn';
+          statusText = 'Uncertain (slot order)';
+        }
       }
       var elemConf = analyzeElementConflicts(selectedParts);
       if (elemConf.hasConflict) {
-        status = 'err';
-        statusText = 'Fail (data)';
         for (var eci = 0; eci < elemConf.messages.length; eci++) details.push(elemConf.messages[eci]);
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
       }
+
+      // Hard legit rule: element-like parts can only be in actual element slot(s) for this item.
+      (function enforceElementSlotPlacement() {
+        var allowed = getAllowedElementSlotSetForItem(selectedItem, ncsInfo);
+        var hasAnyAllowed = Object.keys(allowed).length > 0;
+        var bad = [];
+        Object.keys(selectedParts || {}).forEach(function (sk) {
+          var p = selectedParts[sk];
+          if (!p || !isElementLikePartName(p.name)) return;
+          var base = String(slotBaseKey(sk) || '').toLowerCase();
+          if (!allowed[base]) {
+            bad.push(getSlotLabel(base) + ' / ' + formatPartName(p.name));
+          }
+        });
+        if (!hasAnyAllowed && bad.length === 0) return;
+        if (bad.length) {
+          details.push('Element control in invalid slot for this item: ' + bad.join('; '));
+          if (!bulkAudit) {
+            status = 'err';
+            statusText = 'Fail (data)';
+          }
+        }
+      })();
+
+      // Hard legit rule: pearl-only slots require a pearlescent rarity comp.
+      (function enforcePearlSlotsNeedPearlRarity() {
+        var hasPearlOnlySlot = false;
+        Object.keys(selectedParts || {}).forEach(function (sk) {
+          var base = slotBaseKey(sk);
+          if (base === 'pearl_elem' || base === 'pearl_stat') hasPearlOnlySlot = true;
+        });
+        if (!hasPearlOnlySlot) return;
+        var rp = selectedParts && selectedParts.rarity ? selectedParts.rarity : null;
+        var compEff = effectiveRarityCompKey(rp);
+        var compNm = rp && rp.name ? String(rp.name).trim().toLowerCase() : '';
+        var compInv = rp && rp.invDumpKey ? String(rp.invDumpKey).trim().toLowerCase() : '';
+        if (isPearlRarityCompName(compEff) || isPearlRarityCompName(compNm) || isPearlRarityCompName(compInv)) return;
+        details.push('Pearl-only slots selected (pearl element/stat) without pearlescent rarity comp.');
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
+      })();
 
       var tagProgResult = null;
       var tagBySlotForDiag = null;
       var tagInv = typeof window !== 'undefined' ? window.INV_COMP_TAG_DATA : null;
       if (tagInv && tagInv.partsByName && window.TagCompValidation) {
         var ncsSlotsForTag = (ncsInfo && ncsInfo.ncs_slots) ? ncsInfo.ncs_slots : null;
-        tagProgResult = runInvTagProgression(selectedParts, tagInv, ncsSlotsForTag);
+        tagProgResult = runInvTagProgression(selectedParts, tagInv, ncsSlotsForTag, {
+          skipCompSlotRules: !!(selectedItem && slugSkipsInvCompSlotRules(selectedItem.slug, selectedItem)),
+          relaxUniLegDeps: opts.relaxInvUniLegDeps === true,
+          saveEditorLegitBulk: bulkAudit === true,
+          manifestSlug: selectedItem ? selectedItem.slug : '',
+          bulkGlobalExclRows: Array.isArray(opts.bulkGlobalExclRows) ? opts.bulkGlobalExclRows : null
+        });
         tagBySlotForDiag = tagProgResult.bySlot;
-        for (var tri = 0; tri < tagProgResult.globalReasons.length; tri++) details.push(tagProgResult.globalReasons[tri]);
+        for (var tri = 0; tri < tagProgResult.globalReasons.length; tri++) {
+          var grLine = tagProgResult.globalReasons[tri];
+          if (isNonActionableCompUnderMinLine(grLine)) continue;
+          details.push(grLine);
+        }
+      }
+
+      if (detectPlainFrameUniLeg === true && tagInv && tagInv.partsByName) {
+        var rpc2 = selectedParts.rarity;
+        var compCheck = null;
+        if (rpc2) {
+          var compEff = effectiveRarityCompKey(rpc2);
+          var compNm = String(rpc2.name || '').trim().toLowerCase();
+          var compIdk = rpc2.invDumpKey ? String(rpc2.invDumpKey).trim().toLowerCase() : '';
+          if (isPlainTier04RarityComp(compEff)) compCheck = compEff;
+          else if (isPlainTier04RarityComp(compNm)) compCheck = compNm;
+          else if (isPlainTier04RarityComp(compIdk)) compCheck = compIdk;
+          else compCheck = compEff || compNm;
+        }
+        var frameViol = plainFrameUniLegViolations(selectedParts, tagInv.partsByName, compCheck, selectedItem);
+        for (var fvx = 0; fvx < frameViol.length; fvx++) details.push(frameViol[fvx]);
+        if (frameViol.length && !bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
       }
 
       var sched = selectedItem ? computeScheduleAnalysis(selectedItem.slug, selectedParts) : { gates: [], maxMinStage: 0, weightHits: [], zeroWeightParts: [] };
 
       if (status !== 'err' && sched.zeroWeightParts && sched.zeroWeightParts.length) {
-        status = 'err';
-        statusText = 'Fail (data)';
         details.push('weapon_part_weight_table: 0% roll weight for ' + sched.zeroWeightParts.map(function(z) {
           return z.slot + ':' + formatPartName(z.part) + ' [' + z.row + ']';
         }).join('; '));
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
       }
       if (status !== 'err' && useStrict && LSCHED && sched.maxMinStage > 0 && il < sched.maxMinStage) {
-        status = 'err';
-        statusText = 'Fail (data)';
         details.push('Item level ' + il + ' < LootSchedule MinGameStage ' + sched.maxMinStage);
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
       }
 
       var itemSlotMax = ncsInfo ? ncsInfo.ncs_slot_count : (selectedItem ? selectedItem.slot_count : v.part_count.max);
       if (partCount > itemSlotMax) {
-        status = 'err';
-        statusText = 'Fail (data)';
         details.push('Part count ' + partCount + ' exceeds this item\'s ' + itemSlotMax + ' slots');
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
       }
 
       if (status !== 'err') {
-        var finalSourceOk = useStrict ? sourceOk : (sourceEvidence && sourceEvidence.rowsMapped > 0);
+        var finalSourceOk = bulkAudit ? true : useStrict ? sourceOk : sourceEvidence && sourceEvidence.rowsMapped > 0;
         var schedLevelOk = !LSCHED || sched.maxMinStage === 0 || il >= sched.maxMinStage;
+        var schedBlockOk = schedLevelOk || bulkAudit;
         if (finalSourceOk) {
-          if (schedLevelOk) {
+          if (!schedLevelOk && LSCHED && sched.maxMinStage > 0) {
+            details.push('Item level ' + il + ' is below LootSchedule MinGameStage ' + sched.maxMinStage + ' (strict mode marks Fail (data))');
+          }
+          if (schedBlockOk) {
             if (tagProgResult && tagProgResult.globalReasons.length) {
-              status = 'warn';
-              statusText = 'Uncertain (inv tags)';
+              if (opts.invTagFailuresAsErr === true) {
+                if (bulkAudit) {
+                  var hasBulkHardInv = false;
+                  var hbi;
+                  for (hbi = 0; hbi < tagProgResult.globalReasons.length; hbi++) {
+                    if (invReasonIsSaveEditorBulkHardFail(tagProgResult.globalReasons[hbi])) {
+                      hasBulkHardInv = true;
+                      break;
+                    }
+                  }
+                  if (hasBulkHardInv) {
+                    status = 'err';
+                    statusText = 'Fail (data)';
+                  } else {
+                    status = 'ok';
+                    statusText = 'OK (data)';
+                    details.push(
+                      'Bulk save-editor parity: inv scan reported FYI lines only (no exclusion clash or comp-slot under-min).'
+                    );
+                  }
+                } else {
+                  status = 'err';
+                  statusText = 'Fail (data)';
+                }
+              } else {
+                /* Interactive Legit Builder (invTagFailuresAsErr off): same hard-fail bar as bulk save-editor parity —
+                   dropdown ✓/✗ uses skipRarityPoolMatch; FYI lines (allowlist, soft deps) must not force Uncertain. */
+                var legitHardInv = false;
+                var underMinSlots = [];
+                var lh;
+                for (lh = 0; lh < tagProgResult.globalReasons.length; lh++) {
+                  var gl = String(tagProgResult.globalReasons[lh] || '');
+                  if (isNonActionableCompUnderMinLine(gl)) continue;
+                  var um = gl.match(/Comp slot ([^:]+): count (\d+) outside range \[(\d+),(\d+)\]/);
+                  if (um) {
+                    var umCnt = parseInt(um[2], 10);
+                    var umMin = parseInt(um[3], 10);
+                    if (Number.isFinite(umCnt) && Number.isFinite(umMin) && umCnt < umMin) underMinSlots.push(String(um[1] || '').trim());
+                  }
+                  if (invReasonIsInteractiveHardFail(gl)) {
+                    legitHardInv = true;
+                    break;
+                  }
+                }
+                if (legitHardInv) {
+                  status = 'err';
+                  statusText = 'Fail (data)';
+                } else if (underMinSlots.length && status !== 'err') {
+                  var uniqUnderMin = Array.from(new Set(underMinSlots.filter(Boolean)));
+                  status = 'warn';
+                  statusText = 'Build incomplete';
+                  details.push('Build incomplete: add required slot parts for ' + uniqUnderMin.join(', ') + '.');
+                } else if (status !== 'warn' && status !== 'err') {
+                  status = 'ok';
+                  statusText = 'OK (data)';
+                  details.push(
+                    'Composition: no hard inv-tag fail (exclusion clash / allowlist mismatch / actionable missing dep). Other inv lines above are FYI.'
+                  );
+                }
+              }
             } else {
               status = 'ok';
               statusText = 'OK (data)';
-              details.push('Rules passed: NCS/slots, inv-tag chain (if bundle loaded), weight table, elements, preferred parts — and bundled source tables show at least one pathway for this item type (not this exact roll).');
+              details.push(
+                bulkAudit
+                  ? 'Bulk cheat-audit: composition checks passed (inv-tag chain, weights, elements, NCS slots). Spawn-pathway tables not required for OK in this mode.'
+                  : 'Rules passed: NCS/slots, inv-tag chain (if bundle loaded), weight table, elements, preferred parts — and bundled source tables show at least one pathway for this item type (not this exact roll).'
+              );
             }
           } else {
-            status = 'warn';
-            statusText = 'Uncertain (level vs schedule)';
-            details.push('Item level ' + il + ' is below LootSchedule MinGameStage ' + sched.maxMinStage + ' (strict mode marks Fail (data))');
+            /* Interactive builder parity: low level vs schedule is informational unless strict fail path above triggered. */
+            if (status !== 'warn' && status !== 'err') {
+              status = 'ok';
+              statusText = 'OK (data)';
+              details.push('FYI: item level is below LootSchedule MinGameStage (strict mode would mark Fail (data)).');
+            }
           }
         } else {
-          status = 'warn';
-          statusText = 'No source in data';
+          /* Source tables are incomplete by design; do not mark uncertain from missing source rows alone. */
+          if (!bulkAudit && status !== 'warn' && status !== 'err') {
+            status = 'ok';
+            statusText = 'OK (data)';
+            details.push('FYI: no enemy/reward/other source row matched in current source bundle.');
+          }
           details.push('No enemy/reward/other row in our source tables for this build');
         }
       }
+
+      /* Optional bulk-only audit was too noisy; keep disabled by default. */
 
       if (offPoolParts.length > 0) {
         details.push(
@@ -1809,6 +3135,12 @@
       if (statsMissingExamples.length) details.push('Missing stat examples: ' + statsMissingExamples.join(', '));
       details.push('Level range: ' + v.level.min + '\u2013' + v.level.max);
       details.push('Item level: ' + il + ' &middot; LootSchedule max MinGameStage: ' + sched.maxMinStage + (LSCHED ? '' : ' (data missing)'));
+
+      if (bulkAudit && partCount > 0 && status === 'idle') {
+        status = 'ok';
+        statusText = 'OK (data)';
+        details.push('Bulk cheat-audit: internal idle verdict coerced to OK (no err; composition gates cleared).');
+      }
 
       if (status === 'ok' || status === 'warn' || status === 'err') {
         details.push(
@@ -1831,7 +3163,7 @@
         itemSlotMax: itemSlotMax,
         sched: sched,
         il: il,
-        partSlotDiagnostics: getPartSlotDiagnostics(selectedParts, tagBySlotForDiag),
+        partSlotDiagnostics: getPartSlotDiagnostics(selectedParts, tagBySlotForDiag, ncsInfo && ncsInfo.ncs_slots),
         offPoolParts: offPoolParts
       };
     }

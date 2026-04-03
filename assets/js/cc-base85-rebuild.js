@@ -336,6 +336,10 @@
     deser = ensureDoublePipeBeforeTailText(deser);
     if (!deser) return '';
     try {
+      if (typeof window.__stxNicnlPackDeserialized === 'function') {
+        var packed = window.__stxNicnlPackDeserialized(deser);
+        if (packed && packed.indexOf('@U') === 0 && packed.length > 6) return packed;
+      }
       var bits = deserializedToBitstream(deser);
       var bitsLen = bits.length;
       var bytes = bitsToBytes(bits);
