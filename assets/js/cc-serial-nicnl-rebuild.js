@@ -15,6 +15,10 @@
   function ccSerializeDeserializedRemote(deserialized) {
     var d = String(deserialized || '').trim();
     if (!d) return Promise.resolve('');
+    if (/^@U/i.test(d)) {
+      var u = d.indexOf('@U') === 0 ? d : ('@U' + d.replace(/^@U/i, ''));
+      if (u.length >= 10 && u.indexOf(',') < 0 && u.indexOf('||') < 0) return Promise.resolve(u);
+    }
     return fetch(SERIALIZE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

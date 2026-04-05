@@ -1,10 +1,14 @@
-/**
- * cc-toolbox-public-counter.js — header "Stats" menu: server totals + local items-crafted.
- * Supports either configured endpoints (meta/window) or local PHP fallbacks such as counter.php
- * on the current page path / parent paths when hosted on a PHP server.
- */
 (function () {
   var META = 'stx-counter-url';
+  var KEY_META = 'stx-counter-key';
+
+  function counterPublicKey() {
+    if (typeof window.STX_COUNTER_PUBLIC_KEY === 'string' && window.STX_COUNTER_PUBLIC_KEY) {
+      return String(window.STX_COUNTER_PUBLIC_KEY).trim();
+    }
+    var m = document.querySelector('meta[name="' + KEY_META + '"]');
+    return m && m.content ? String(m.content).trim() : '';
+  }
 
   function configuredUrl() {
     if (typeof window.STX_COUNTER_URL === 'string' && window.STX_COUNTER_URL.trim()) {
@@ -94,10 +98,19 @@
 
   function fetchJsonFirst(urls) {
     var i = 0;
+    var hdrs = {};
+    var k = counterPublicKey();
+    if (k) hdrs['X-STX-Counter-Key'] = k;
     function next() {
       if (i >= urls.length) return Promise.reject(new Error('no_counter_endpoint'));
       var url = urls[i++];
-      return fetch(url, { method: 'GET', mode: 'cors', credentials: 'omit', cache: 'no-store' })
+      return fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'omit',
+        cache: 'no-store',
+        headers: hdrs
+      })
         .then(function (r) {
           if (!r.ok) throw new Error('http_' + r.status);
           return r.json();

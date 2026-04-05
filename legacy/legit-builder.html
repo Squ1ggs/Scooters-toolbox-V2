@@ -5,11 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="dark" name="color-scheme">
-<!-- Server analytics: set full URL to track.php — see ../Netlify functions -->
-<meta content="" name="stx-analytics-endpoint">
-<!-- Optional: public counter URL — see ../Netlify functions -->
-<meta content="" name="stx-counter-url"/>
-<meta content="" name="stx-items-bump-url"/>
+<!-- Netlify: URLs + keys — same as site root index.html (env STX_*). Empty URLs for local file://. -->
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="" name="stx-analytics-track-key"/>
+<meta content="" name="stx-counter-key"/>
 <meta content="" name="stx-items-bump-key"/>
 <title>Legit Builder (data checks) — Scooter's Toolbox</title>
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml"/>
@@ -977,6 +978,8 @@
 <script src="../assets/js/cc-item-slug.js"></script>
 <script src="../assets/js/tag-comp-validation.js"></script>
 <script src="../assets/data/inv_comp_tag_data.js"></script>
+<script src="../assets/data/inventory_item_catalog.js"></script>
+<script src="../assets/data/inv_part_layout_rules.js"></script>
 <script src="../assets/js/legit-builder-core.js"></script>
 <script src="../assets/js/legit-builder-ui.js"></script>
 <script src="../assets/js/cc-toolbox-analytics.js"></script>

@@ -2,6 +2,10 @@
  * cc-preset-data-rebuild.js
  * Decompression and lazy-loading for preset data blobs (COLLECTIBLES, MISSIONSETS, LOCATIONS, UNLOCKABLES).
  * Requires: pako, jsyaml, preset_data.js (PRESET_DATA_BLOBS)
+ *
+ * Data scope: blobs are bundled snapshots from game/toolbox extraction, not live game files.
+ * New missions/collectibles/challenges after a game patch need a regenerated assets/data/preset_data.js
+ * for "unlock all" style merges to include them.
  */
 (function () {
   'use strict';

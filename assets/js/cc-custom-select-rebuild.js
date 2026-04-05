@@ -214,7 +214,7 @@
   }
 
   function init() {
-    var selects = document.querySelectorAll('select.editor-select, .editor-page select, .workspace select');
+    var selects = document.querySelectorAll('select.editor-select, .editor-page select, .app-shell select');
     for (var i = 0; i < selects.length; i++) wrapSelect(selects[i]);
 
     var observer = new MutationObserver(function (mutations) {
@@ -223,7 +223,7 @@
         for (var j = 0; j < added.length; j++) {
           var n = added[j];
           if (n.nodeType === 1) {
-            if (n.tagName === 'SELECT' && (n.classList.contains('editor-select') || n.closest('.editor-page') || n.closest('.workspace'))) wrapSelect(n);
+            if (n.tagName === 'SELECT' && (n.classList.contains('editor-select') || n.closest('.editor-page') || n.closest('.app-shell'))) wrapSelect(n);
             var kids = n.querySelectorAll && n.querySelectorAll('select.editor-select, select');
             if (kids) for (var k = 0; k < kids.length; k++) wrapSelect(kids[k]);
           }

@@ -5,7 +5,7 @@
   var EGGS_KEY = 'stx_rebuild_eggs';
   var THEME_KEY = 'stx_rebuild_theme';
   var FULLANIM_KEY = 'stx_rebuild_fullanim';
-  var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin' };
+  var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin' };
 
   function byId(id){ return document.getElementById(id); }
   function setEggsEnabled(on){ try { localStorage.setItem(EGGS_KEY, on ? '1' : '0'); } catch(_){} }
@@ -24,7 +24,8 @@
       b.classList.contains('mac10-reskin') ||
       b.classList.contains('badley-reskin') ||
       b.classList.contains('scooter-reskin') ||
-      b.classList.contains('ynot-reskin');
+      b.classList.contains('ynot-reskin') ||
+      b.classList.contains('grimeey-reskin');
   }
   function setTheme(theme){
     var body = document.body;
@@ -95,6 +96,10 @@
     byId('ynotName') && byId('ynotName').addEventListener('click', function(){
       setEggsEnabled(true);
       setTheme('ynot');
+    });
+    byId('keepinItGrimeeyName') && byId('keepinItGrimeeyName').addEventListener('click', function(){
+      setEggsEnabled(true);
+      setTheme('grimeey');
     });
 
     if(eggsEnabled()) setTheme(currentTheme());

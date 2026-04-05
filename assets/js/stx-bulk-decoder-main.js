@@ -160,11 +160,89 @@ function candidateScore(row, result) {
   if (/Lookup Table|Weapon Parts List/.test(src)) score += 0.7;
   return score;
 }
+/** Lazy index of STX_DATASET.ALL_PARTS by idRaw — used when PARTS_DB has no row for a key. */
+let __stxIdRawPartCache = null;
+function stxPartToLookupRow(p) {
+  const rawCode = p.code;
+  const code = typeof rawCode === 'string' ? rawCode.replace(/^"(.*)"$/, '$1').replace(/\\"/g, '"') : '';
+  return {
+    manufacturer_or_group: p.manufacturer || '',
+    weapon_type_or_category: p.itemType || p.category || '',
+    part_type: p.partType || '',
+    name: p.name || '',
+    alpha_code: code,
+    stats_text: p.stats || '',
+    effects_text: '',
+    context_path: 'stx_dataset > ' + (p.category || '') + ' > ' + String(p.idRaw || ''),
+    source: 'stx_dataset'
+  };
+}
+function resolveCandidatesFromStxDataset(key) {
+  if (!key || !/^\d+:\d+$/.test(String(key))) return [];
+  if (!__stxIdRawPartCache) {
+    __stxIdRawPartCache = {};
+    const ap = (typeof window !== 'undefined' && window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS))
+      ? window.STX_DATASET.ALL_PARTS
+      : [];
+    for (let i = 0; i < ap.length; i++) {
+      const p = ap[i];
+      if (!p || p.idRaw == null) continue;
+      const k = String(p.idRaw).trim();
+      if (!/^\d+:\d+$/.test(k)) continue;
+      if (!__stxIdRawPartCache[k]) __stxIdRawPartCache[k] = [];
+      __stxIdRawPartCache[k].push(stxPartToLookupRow(p));
+    }
+  }
+  return __stxIdRawPartCache[key] || [];
+}
 function resolveCandidates(key, result) {
-  const rows = PARTS_DB[key] || [];
+  let rows = PARTS_DB[key] || [];
+  if (!rows.length) rows = resolveCandidatesFromStxDataset(key);
   if (!rows.length) return rows;
   const scored = rows.slice().sort((a, b) => candidateScore(b, result) - candidateScore(a, result));
   return dedupeResolvedRows(scored);
+}
+
+/**
+ * All lookup keys for one WASM part token (handles comma/space list brackets, {fam:idx}, bare {idx}).
+ */
+function collectPartLookupKeys(part, result) {
+  const keys = [];
+  const sub = part && part.subtype;
+  const itemTypeId = result && result.itemTypeId;
+  if ((sub === 'none' || sub == null || sub === '') && itemTypeId != null && part && part.index != null && part.index !== '') {
+    keys.push(String(itemTypeId) + ':' + String(part.index));
+  }
+  if (sub === 'int' && part && part.value != null && part.index != null && part.index !== '') {
+    keys.push(String(part.index) + ':' + String(part.value));
+  }
+  if (sub === 'list' && part && Array.isArray(part.values) && part.index != null) {
+    for (const v of part.values) keys.push(String(part.index) + ':' + String(v));
+  }
+  const text = part && typeof part.text === 'string' ? part.text.trim() : '';
+  if (text) {
+    const listM = text.match(/^\{\s*(\d+)\s*:\s*\[([\d\s,]+)\]\s*\}$/);
+    if (listM) {
+      const idx = listM[1];
+      for (const v of listM[2].split(/[\s,]+/).filter(Boolean)) {
+        if (/^\d+$/.test(v)) keys.push(idx + ':' + v);
+      }
+    }
+    const pairM = text.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (pairM) keys.push(pairM[1] + ':' + pairM[2]);
+    if (itemTypeId != null) {
+      const bareM = text.match(/^\{\s*(\d+)\s*\}$/);
+      if (bareM) keys.push(String(itemTypeId) + ':' + bareM[1]);
+    }
+  }
+  const seen = new Set();
+  const out = [];
+  for (const k of keys) {
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(k);
+  }
+  return out;
 }
 function prettyPartTitle(p) {
   const n = String(p.name || '').trim();
@@ -178,17 +256,7 @@ function resolveParts(result) {
   const out = [];
   let unresolved = 0;
   for (const part of (result.parts || [])) {
-    const keys = [];
-    if (part.subtype === 'none' && result.itemTypeId != null) keys.push(String(result.itemTypeId) + ':' + String(part.index));
-    if (part.subtype === 'int' && part.value != null) keys.push(String(part.index) + ':' + String(part.value));
-    if (part.subtype === 'list' && Array.isArray(part.values)) for (const v of part.values) keys.push(String(part.index) + ':' + String(v));
-    if (!keys.length && typeof part.text === 'string') {
-      const bracket = part.text.match(/^\{(\d+):\[([\d\s]+)\]\}$/);
-      if (bracket) {
-        const idx = bracket[1];
-        for (const v of bracket[2].trim().split(/\s+/)) if (v) keys.push(idx + ':' + v);
-      }
-    }
+    const keys = collectPartLookupKeys(part, result);
     if (!keys.length) { out.push({ raw: part.text, unresolved: true }); unresolved++; continue; }
     let foundAny = false;
     for (const key of keys) {

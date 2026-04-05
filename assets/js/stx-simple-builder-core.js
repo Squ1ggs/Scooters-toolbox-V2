@@ -2202,6 +2202,7 @@ const all = getAllParts();
 
     const parts = filterParts({category:'Weapon', manufacturer: mansel});
     let wtypes = unique(parts.map(p=>p.weaponType || p.itemType).filter(Boolean));
+    wtypes = wtypes.filter(w => String(w).trim().toLowerCase() !== 'weapon');
     // Ensure Heavy Weapon appears if the rarity sheet exposes it for this manufacturer.
     try{
       const rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];

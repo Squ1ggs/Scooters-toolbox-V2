@@ -9,7 +9,7 @@ export function json(data, status = 200, extraHeaders = {}) {
       'content-type': 'application/json; charset=utf-8',
       'cache-control': 'no-store',
       'access-control-allow-origin': '*',
-      'access-control-allow-headers': 'Content-Type, X-STX-Track-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key',
+      'access-control-allow-headers': 'Content-Type, X-STX-Track-Key, X-STX-Counter-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key',
       'access-control-allow-methods': 'GET, POST, OPTIONS',
       ...extraHeaders,
     },
@@ -21,7 +21,7 @@ export function options() {
     status: 204,
     headers: {
       'access-control-allow-origin': '*',
-      'access-control-allow-headers': 'Content-Type, X-STX-Track-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key',
+      'access-control-allow-headers': 'Content-Type, X-STX-Track-Key, X-STX-Counter-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key',
       'access-control-allow-methods': 'GET, POST, OPTIONS',
       'cache-control': 'no-store',
     },

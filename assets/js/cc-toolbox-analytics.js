@@ -1,8 +1,3 @@
-/**
- * cc-toolbox-analytics.js — optional server-side visit tracking.
- * Supports configured endpoints (meta/window) and local PHP fallbacks such as track.php
- * on the current page path / parent paths when hosted on a PHP server.
- */
 (function () {
   var META = 'stx-analytics-endpoint';
 
@@ -113,9 +108,16 @@
     });
 
     var headers = { 'Content-Type': 'application/json' };
+    var trackKey = '';
     if (typeof window.STX_ANALYTICS_TRACK_KEY === 'string' && window.STX_ANALYTICS_TRACK_KEY) {
-      headers['X-STX-Track-Key'] = window.STX_ANALYTICS_TRACK_KEY;
+      trackKey = String(window.STX_ANALYTICS_TRACK_KEY).trim();
+    } else {
+      try {
+        var mk = document.querySelector('meta[name="stx-analytics-track-key"]');
+        if (mk && mk.content) trackKey = String(mk.content).trim();
+      } catch (_) {}
     }
+    if (trackKey) headers['X-STX-Track-Key'] = trackKey;
 
     postJsonFirst(urls, payload, headers)
       .then(function (j) {

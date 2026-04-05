@@ -1,11 +1,6 @@
-/**
- * cc-base85-rebuild.js
- * BL-base85 decode/encode for item serials. Per borderlands4-serials bitstream spec.
- */
 (function () {
   'use strict';
 
-  // Match BL4 save editor / nicnl toolchain: alphabet uses `{|}`; game strings use `/` instead of `|`.
   var CUSTOM_B85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~';
 
   function reverseBitsInByte(b) {
@@ -80,7 +75,6 @@
     return out;
   }
 
-  // --- Bitstream parser (borderlands4-serials spec) ---
   var TOK_SEP1 = 0;
   var TOK_SEP2 = 1;
   var TOK_VARINT = 2;
@@ -285,10 +279,6 @@
     return out.trim();
   }
 
-  /**
-   * JS bitstream omits explicit `||` before `{…}` / quoted tail; WASM / nicnl always use `||`.
-   * Only touch strings that look like a numeric header then a single space before the first `{`.
-   */
   function ensureDoublePipeBeforeTailText(s) {
     s = String(s || '').trim();
     if (!s || s.indexOf('||') >= 0) return s;
@@ -335,6 +325,11 @@
     deser = stripOuterQuotes(deser);
     deser = ensureDoublePipeBeforeTailText(deser);
     if (!deser) return '';
+    var alreadyU = String(deser).trim();
+    if (/^@U/i.test(alreadyU)) {
+      alreadyU = alreadyU.indexOf('@U') === 0 ? alreadyU : ('@U' + alreadyU.replace(/^@U/i, ''));
+      if (alreadyU.length >= 10 && alreadyU.indexOf(',') < 0 && alreadyU.indexOf('||') < 0) return alreadyU;
+    }
     try {
       if (typeof window.__stxNicnlPackDeserialized === 'function') {
         var packed = window.__stxNicnlPackDeserialized(deser);
@@ -347,7 +342,6 @@
       for (var i = 0; i < bytes.length; i++) mirrored[i] = reverseBitsInByte(bytes[i]);
       if (trackRoundtrip) {
         try {
-          // Must match customBase85Decode output (per-byte bit-reversed), not raw bitsToBytes, or round-trip maxBits never applies.
           window.__ccStxRoundtrip = { bitsLen: bitsLen, bytes: new Uint8Array(mirrored) };
         } catch (_) {}
       }
@@ -424,7 +418,6 @@
     return bits;
   }
 
-  /** TOK_STRING in nextToken is 7 → bits 111, then varint length, then 7 bits per char (matches readString). */
   function emitStringTokenBits(bits, s) {
     bits += '111';
     bits = writeVarint(bits, s.length);
@@ -542,12 +535,12 @@
 
   function parseVarintChunks(binaryStr) {
     var idx = binaryStr.indexOf(LEVEL_PREFIX);
-    if (idx === -1) throw new Error('LEVEL_PREFIX not found in binary string');
+    if (idx === -1) return null;
     var pos = idx + LEVEL_PREFIX.length;
     var valueBits = '';
     while (true) {
       var chunk = binaryStr.slice(pos, pos + 5);
-      if (chunk.length < 5) throw new Error('Unexpected end of binary string while parsing varint');
+      if (chunk.length < 5) return null;
       var dataBits = chunk.slice(0, 4);
       var cont = chunk[4] === '1';
       valueBits += dataBits;
@@ -585,24 +578,19 @@
     var reversedBytes = new Uint8Array(decoded.length);
     for (var r = 0; r < decoded.length; r++) reversedBytes[r] = reverseBitsInByte(decoded[r]);
     var binaryStr = Array.from(reversedBytes).map(function (b) { return b.toString(2).padStart(8, '0'); }).join('');
-    var oldLevel, start, end;
     var newBinaryStr = null;
-    var maxDifferenceBytes = 3;
-    try {
-      var parsed = parseVarintChunks(binaryStr);
-      oldLevel = parsed.value;
-      start = parsed.start;
-      end = parsed.end;
-      newBinaryStr = binaryStr.slice(0, start) + encodeVarintChunks(newLevel) + binaryStr.slice(end);
-    } catch (err) {
+    var maxSerialLenDelta = 32;
+    var parsed = parseVarintChunks(binaryStr);
+    if (parsed) {
+      newBinaryStr = binaryStr.slice(0, parsed.start) + encodeVarintChunks(newLevel) + binaryStr.slice(parsed.end);
+    } else {
       var missIdx = binaryStr.indexOf(MISSING_LEVEL_PATTERN);
       if (missIdx !== -1) {
         var insertPos = missIdx + 12;
         var insertBits = '1001000001100' + encodeVarintChunks(newLevel) + '00';
         newBinaryStr = binaryStr.slice(0, insertPos) + insertBits + binaryStr.slice(insertPos);
-        maxDifferenceBytes += 4;
+        maxSerialLenDelta += 8;
       } else {
-        console.error('parseVarintChunks error for serial:', err.message);
         return serial;
       }
     }
@@ -612,24 +600,131 @@
     for (var i = 0; i < newBytes.length; i++) restoredBytes[i] = reverseBitsInByte(newBytes[i]);
     var b85Str = bytesToCustomB85(restoredBytes).replace(/\|/g, '/');
     var newSerial = '@U' + b85Str;
-    if (Math.abs(newSerial.length - serial.length) > maxDifferenceBytes) {
-      console.warn('Serial length differs by more than ' + maxDifferenceBytes + ' byte(s), keeping old value');
+    if (Math.abs(newSerial.length - serial.length) > maxSerialLenDelta) {
+      console.warn('Serial length differs by more than ' + maxSerialLenDelta + ' char(s) after level patch, keeping old value');
       return serial;
     }
     return newSerial;
   }
 
-  function processSlot(slot, level) {
-    if (Array.isArray(slot)) {
-      for (var i = 0; i < slot.length; i++) {
-        var item = slot[i];
-        if (item && typeof item === 'object' && item.serial) {
-          item.serial = updateSerialLevel(item.serial, level);
-        }
-      }
-    } else if (slot && typeof slot === 'object' && slot.serial) {
-      slot.serial = updateSerialLevel(slot.serial, level);
+  function looksLikeDeserializedItemHeader(s) {
+    s = String(s || '').trim().replace(/^["']|['"]$/g, '').replace(/^\uFEFF/, '');
+    if (!s || s.indexOf('@U') === 0) return false;
+    if (s.indexOf('||') >= 0) return true;
+    return /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(s);
+  }
+
+  function patchDeserializedHeaderLevel(raw, newLevel) {
+    var s = String(raw || '').trim().replace(/^["']|['"]$/g, '').replace(/^\uFEFF/, '');
+    var L = Math.floor(Number(newLevel));
+    if (!Number.isFinite(L)) return null;
+    var m = /^(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*)(\d+)(\s*\|[\s\S]*)$/.exec(s);
+    if (!m) return null;
+    return m[1] + String(L) + m[3];
+  }
+
+  function isLikelyPackedUserial(s) {
+    s = String(s || '').trim().replace(/^["']|['"]$/g, '').replace(/^\uFEFF/, '');
+    return s.indexOf('@U') === 0 && s.length > 8;
+  }
+
+  function deserializeSerialForLevelPatch(s0) {
+    var deser = deserializeBase85(s0, 17);
+    if (!deser || typeof deser !== 'string') return '';
+    var dt = deser.trim();
+    if (!dt) return '';
+    if (/^@U/i.test(dt) && dt.indexOf(',') < 0 && dt.indexOf('|') < 0) return '';
+    if (dt.indexOf('|') < 0 && !/^\s*\d+\s*,/.test(dt)) return '';
+    return deser;
+  }
+
+  function updateSerialLevelFlexible(serial, newLevel) {
+    if (!serial || typeof serial !== 'string') return serial;
+    var L = Math.floor(Number(newLevel));
+    if (!Number.isFinite(L)) return serial;
+    var s0 = serial;
+    var a = updateSerialLevel(s0, L);
+    if (a !== s0) return a;
+
+    var headerSource = null;
+    if (looksLikeDeserializedItemHeader(s0)) {
+      headerSource = s0;
+    } else if (isLikelyPackedUserial(s0)) {
+      headerSource = deserializeSerialForLevelPatch(s0);
+      if (!headerSource) return s0;
+    } else {
+      return s0;
     }
+
+    var patched = patchDeserializedHeaderLevel(headerSource, L);
+    if (!patched) return s0;
+    var normHeader = String(headerSource).trim().replace(/^["']|['"]$/g, '').replace(/^\uFEFF/, '');
+    if (patched === normHeader) return s0;
+
+    var b = serializeToBase85(patched, 17, false);
+    if (!b || b.length < 7) {
+      b = serializeToBase85(patched, 17, true);
+      try {
+        if (window.__ccStxRoundtrip) delete window.__ccStxRoundtrip;
+      } catch (_) {}
+    }
+    if (!b || b.length < 7 || b === s0) return s0;
+    return b;
+  }
+
+  function isSerialKey(k) {
+    return String(k).toLowerCase() === 'serial';
+  }
+
+  function processSlotDeepStats(node, level, depth) {
+    depth = depth == null ? 0 : depth;
+    if (node == null || depth > 14) return { m: 0, f: 0 };
+    if (Array.isArray(node)) {
+      var ta = { m: 0, f: 0 };
+      for (var i = 0; i < node.length; i++) {
+        var si = processSlotDeepStats(node[i], level, depth + 1);
+        ta.m += si.m;
+        ta.f += si.f;
+      }
+      return ta;
+    }
+    if (typeof node !== 'object') return { m: 0, f: 0 };
+    var out = { m: 0, f: 0 };
+    for (var k in node) {
+      if (!Object.prototype.hasOwnProperty.call(node, k)) continue;
+      if (isSerialKey(k) && typeof node[k] === 'string' && String(node[k]).trim().length > 2) {
+        out.f++;
+        var next = updateSerialLevelFlexible(node[k], level);
+        if (next !== node[k]) {
+          node[k] = next;
+          out.m++;
+        }
+      } else {
+        var sub = processSlotDeepStats(node[k], level, depth + 1);
+        out.m += sub.m;
+        out.f += sub.f;
+      }
+    }
+    return out;
+  }
+
+  function processInventorySlotContainer(container, level) {
+    if (container == null) return { m: 0, f: 0 };
+    if (Array.isArray(container)) return processSlotDeepStats(container, level, 0);
+    if (typeof container !== 'object') return { m: 0, f: 0 };
+    var tot = { m: 0, f: 0 };
+    for (var sk in container) {
+      if (container.hasOwnProperty(sk)) {
+        var s = processSlotDeepStats(container[sk], level, 0);
+        tot.m += s.m;
+        tot.f += s.f;
+      }
+    }
+    return tot;
+  }
+
+  function processSlot(slot, level) {
+    processSlotDeepStats(slot, level, 0);
   }
 
   window.customBase85Decode = customBase85Decode;
@@ -637,5 +732,7 @@
   window.deserializeBase85 = deserializeBase85;
   window.serializeToBase85 = serializeToBase85;
   window.updateSerialLevel = updateSerialLevel;
+  window.updateSerialLevelFlexible = updateSerialLevelFlexible;
   window.processSlot = processSlot;
+  window.processInventorySlotContainer = processInventorySlotContainer;
 })();

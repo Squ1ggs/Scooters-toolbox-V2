@@ -7,10 +7,12 @@
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win nsis",
-    "dist:portable": "electron-builder --win portable",
+    "dist": "electron-builder --win portable",
     "smoke:inv": "node scripts/smoke-raw-inv-check.cjs",
-    "export-game-icons": "node scripts/export-game-icons-from-folder.mjs"
+    "export-game-icons": "node scripts/export-game-icons-from-folder.mjs",
+    "scan:bl4": "node tools/scan-bl4-content-hints.mjs --with-preset --out references/bl4_content_scan_latest.json",
+    "profile:dedupe-unlockables": "node scripts/dedupe-profile-unlockables.mjs",
+    "profile:check-unlockables": "node scripts/profile-vs-bundle-unlockables.mjs"
   },
   "dependencies": {},
   "devDependencies": {
@@ -29,15 +31,8 @@
       "netlify.toml"
     ],
     "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ],
+      "target": ["portable"],
       "icon": "assets/favicon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
     }
   }
 }

@@ -56,34 +56,54 @@
   }
 
   /**
-   * Set item level on all backpack / equipped / bank slots (character save).
+   * Set item level on character save: every slot-like map under state.inventory.items (backpack,
+   * equipped_inventory.equipped, and other sibling containers the game uses), plus bank under
+   * domains.local.shared when present. Profile-only: shared bank slots only.
    * @returns {{ ok: boolean, reason?: string }}
    */
   function applyItemLevelAcrossInventory(data, level) {
-    if (!data || !data.state || !data.state.inventory || !data.state.inventory.items) {
-      return { ok: false, reason: 'Character save with state.inventory.items required.' };
+    if (!data) {
+      return { ok: false, reason: 'Load or paste YAML first.' };
     }
     var L = clampYamlItemLevel(level);
-    var processSlot = window.processSlot;
-    if (typeof processSlot !== 'function') return { ok: false, reason: 'Serial toolkit not loaded (processSlot).' };
+    var processContainer = window.processInventorySlotContainer;
+    if (typeof processContainer !== 'function') return { ok: false, reason: 'Serial toolkit not loaded (processInventorySlotContainer).' };
+    function addStats(dst, src) {
+      dst.updatedSerials += src.m;
+      dst.serialFieldsTouched += src.f;
+    }
     try {
-      var bp = data.state.inventory.items.backpack;
-      if (bp && typeof bp === 'object') {
-        for (var k in bp) { if (bp.hasOwnProperty(k)) processSlot(bp[k], L); }
+      if (data.state && data.state.inventory && data.state.inventory.items) {
+        var invItems = data.state.inventory.items;
+        var agg = { updatedSerials: 0, serialFieldsTouched: 0 };
+        for (var invKey in invItems) {
+          if (!invItems.hasOwnProperty(invKey)) continue;
+          if (invKey === 'equipped_inventory') {
+            var eqRoot = invItems.equipped_inventory;
+            var eq = eqRoot && eqRoot.equipped;
+            if (eq != null) addStats(agg, processContainer(eq, L));
+            continue;
+          }
+          var sub = invItems[invKey];
+          if (sub == null) continue;
+          addStats(agg, processContainer(sub, L));
+        }
+        if (data.domains && data.domains.local && data.domains.local.shared && data.domains.local.shared.inventory && data.domains.local.shared.inventory.items && data.domains.local.shared.inventory.items.bank) {
+          var bankChar = data.domains.local.shared.inventory.items.bank;
+          addStats(agg, processContainer(bankChar, L));
+        }
+        return { ok: true, level: L, updatedSerials: agg.updatedSerials, serialFieldsTouched: agg.serialFieldsTouched };
       }
-      var eq = data.state.inventory.equipped_inventory && data.state.inventory.equipped_inventory.equipped;
-      if (eq && typeof eq === 'object') {
-        for (var k2 in eq) { if (eq.hasOwnProperty(k2)) processSlot(eq[k2], L); }
-      }
-      if (data.domains && data.domains.local && data.domains.local.shared && data.domains.local.shared.inventory && data.domains.local.shared.inventory.items && data.domains.local.shared.inventory.items.bank) {
-        var bank = data.domains.local.shared.inventory.items.bank;
-        for (var k3 in bank) { if (bank.hasOwnProperty(k3)) processSlot(bank[k3], L); }
+      var bankOnly = data.domains && data.domains.local && data.domains.local.shared && data.domains.local.shared.inventory && data.domains.local.shared.inventory.items && data.domains.local.shared.inventory.items.bank;
+      if (bankOnly != null && typeof bankOnly === 'object') {
+        var b = processContainer(bankOnly, L);
+        return { ok: true, level: L, updatedSerials: b.m, serialFieldsTouched: b.f };
       }
     } catch (e) {
       console.error('applyItemLevelAcrossInventory', e);
       return { ok: false, reason: 'Inventory traversal failed.' };
     }
-    return { ok: true, level: L };
+    return { ok: false, reason: 'No character inventory or profile shared bank found in this YAML.' };
   }
   window.applyItemLevelAcrossInventory = applyItemLevelAcrossInventory;
 
@@ -95,6 +115,7 @@
       if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
       if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
       if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
       if (typeof window.__ccRenderRuntimeStatus === 'function') window.__ccRenderRuntimeStatus();
     } catch (_) {}
   };
@@ -200,7 +221,7 @@
     unlockAllSpecialization: 'Specialization XP and tokens updated.',
     maxCurrency: 'Cash and eridium maxed.',
     maxAmmo: 'Ammo pools maxed.',
-    unlockMaxEverything: 'Full unlock preset applied.',
+    unlockMaxEverything: 'KeepinItGrimeey full unlock applied (bundled preset data; regenerate preset_data.js after game updates for new missions/collectibles).',
     completeAllCollectibles: 'Collectibles merged from preset data.',
     completeAllChallenges: 'Challenge stats updated.',
     completeAllAchievements: 'Achievement counters updated.',
@@ -279,6 +300,10 @@
       if (typeof window.applyYAMLStatsChanges === 'function') window.applyYAMLStatsChanges();
       return;
     }
+    if (action === 'apply-profile-fields') {
+      if (typeof window.applyProfileYamlFieldChanges === 'function') window.applyProfileYamlFieldChanges();
+      return;
+    }
     if (action === 'call') {
       var fnName = target.getAttribute('data-fn') || '';
       if (!fnName) return;
@@ -345,6 +370,8 @@
         msg = changed ? 'player_difficulty updated in YAML.' : 'No change (line missing or already that difficulty).';
       } else if (act === 'apply-stats') {
         msg = changed ? 'Level, XP, spec, and currencies written to YAML.' : 'No change (same values or YAML parse failed).';
+      } else if (act === 'apply-profile-fields') {
+        msg = changed ? 'Profile globals, shared currencies, vault card levels, echo token pool, black market, and (if filled) stats.achievements lines written to YAML.' : 'No change (same values, empty fields, or YAML parse failed).';
       } else if (changed) {
         msg = 'Changes applied successfully.';
       } else {
@@ -682,16 +709,24 @@
 
   window.unlockMaxEverything = function () {
     try {
+      var fullPreset = window.ensurePresetDataLoaded && window.ensurePresetDataLoaded();
       if (typeof window.clearMapFog === 'function') window.clearMapFog();
       if (typeof window.discoverAllLocations === 'function') window.discoverAllLocations();
+      if (fullPreset) {
+        if (typeof window.completeAllMissions === 'function') window.completeAllMissions();
+        if (typeof window.completeAllCollectibles === 'function') window.completeAllCollectibles();
+        if (typeof window.completeAllChallenges === 'function') window.completeAllChallenges();
+        if (typeof window.completeAllAchievements === 'function') window.completeAllAchievements();
+      }
       if (typeof window.unlockPostgame === 'function') window.unlockPostgame();
+      if (typeof window.setCharacterToMaxLevel === 'function') window.setCharacterToMaxLevel();
+      if (typeof window.setMaxSDU === 'function') window.setMaxSDU();
+      if (typeof window.unlockVaultPowers === 'function') window.unlockVaultPowers();
       if (typeof window.unlockAllHoverDrives === 'function') window.unlockAllHoverDrives();
       if (typeof window.unlockAllSpecialization === 'function') window.unlockAllSpecialization();
       if (typeof window.maxCurrency === 'function') window.maxCurrency();
       if (typeof window.maxAmmo === 'function') window.maxAmmo();
-      if (typeof window.setCharacterToMaxLevel === 'function') window.setCharacterToMaxLevel();
-      if (typeof window.setMaxSDU === 'function') window.setMaxSDU();
-      if (typeof window.unlockVaultPowers === 'function') window.unlockVaultPowers();
+      tryApplyItemLevelsToMatchCharacter({ silent: true });
     } catch (e) { console.error(e); }
   };
 
@@ -735,6 +770,77 @@
     window.commitYamlDataToEditor(data);
   }
 
+  /** Bundled max values written to `stats.achievements` (challenge-style / profile counters). */
+  var CC_ACHIEVEMENT_COUNTERS_MAX = { '00_level_10': 1, '01_level_30': 1, '02_level_50': 1, '02_level_60': 1, '03_uvh_5': 1, '04_cosmetics_collect': 60, '05_vehicles_collect': 10, '06_legendaries_equip': 1, '07_challenges_gear': 1, '08_challenges_manufacturer': 1, '10_worldevents_colosseum': 1, '11_worldevents_airship': 1, '12_worldevents_meteor': 1, '13_contracts_complete': 80, '14_discovery_grasslands': 54, '15_discovery_mountains': 62, '16_discovery_shatteredlands': 47, '17_discovery_city': 21, '18_worldboss_defeat': 1, '19_vaultguardian_defeat': { '19_vaultguardian_grasslands': 1, '19_vaultguardian_mountains': 1, '19_vaultguardian_shatteredlands': 1 }, '20_missions_survivalist': 3, '21_missions_auger': 7, '22_missions_electi': 3, '23_missions_claptrap': 5, '24_missions_side': 98, '25_missions_grasslands': 1, '26_missions_mountains': 1, '27_missions_shatteredlands': 1, '28_missions_elpis': 1, '29_missions_main': 1, '30_moxxi_hidden': 1, '31_tannis_hidden': 1, '32_zane_hidden': 1, '33_oddman_hidden': 1, '34_dave_hidden': 1 };
+
+  window.__ccGetBundledAchievementCountersMax = function () {
+    return CC_ACHIEVEMENT_COUNTERS_MAX;
+  };
+
+  window.__ccAchievementsToLines = function (ach) {
+    if (!ach || typeof ach !== 'object') return '';
+    var keys = Object.keys(ach).sort();
+    var lines = [];
+    for (var i = 0; i < keys.length; i++) {
+      var k = keys[i];
+      var v = ach[k];
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
+        var sk = Object.keys(v).sort();
+        for (var j = 0; j < sk.length; j++) {
+          lines.push(k + '.' + sk[j] + ': ' + v[sk[j]]);
+        }
+      } else {
+        lines.push(k + ': ' + v);
+      }
+    }
+    return lines.join('\n');
+  };
+
+  window.__ccParseAchievementLines = function (text) {
+    var out = {};
+    var lines = String(text || '').split(/\r?\n/);
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line || line.charAt(0) === '#') continue;
+      var colon = line.indexOf(':');
+      if (colon < 0) continue;
+      var key = line.slice(0, colon).trim();
+      var valStr = line.slice(colon + 1).trim();
+      if (!key) continue;
+      var num = parseFloat(valStr);
+      var val = Number.isFinite(num) ? num : valStr;
+      if (key.indexOf('.') >= 0) {
+        var parts = key.split('.');
+        var parent = parts[0];
+        var child = parts.slice(1).join('.');
+        if (!child) continue;
+        out[parent] = out[parent] || {};
+        out[parent][child] = val;
+      } else {
+        out[key] = val;
+      }
+    }
+    return out;
+  };
+
+  window.__ccMergeAchievementPatch = function (existing, patch) {
+    var base = existing && typeof existing === 'object' && !Array.isArray(existing) ? existing : {};
+    var out = {};
+    for (var k in base) {
+      if (Object.prototype.hasOwnProperty.call(base, k)) out[k] = base[k];
+    }
+    for (var pk in patch) {
+      if (!Object.prototype.hasOwnProperty.call(patch, pk)) continue;
+      var pv = patch[pk];
+      if (pv && typeof pv === 'object' && !Array.isArray(pv)) {
+        out[pk] = Object.assign({}, out[pk] && typeof out[pk] === 'object' && !Array.isArray(out[pk]) ? out[pk] : {}, pv);
+      } else {
+        out[pk] = pv;
+      }
+    }
+    return out;
+  };
+
   window.completeAllChallenges = function () {
     if (!(window.ensurePresetDataLoaded && window.ensurePresetDataLoaded())) return stubNeedFullToolbox('Complete All Challenges');
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
@@ -747,13 +853,22 @@
     if (!(window.ensurePresetDataLoaded && window.ensurePresetDataLoaded())) return stubNeedFullToolbox('Complete All Achievements');
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return alert('Load or paste a YAML file first.');
-    var counters = { '00_level_10': 1, '01_level_30': 1, '02_level_50': 1, '02_level_60': 1, '03_uvh_5': 1, '04_cosmetics_collect': 60, '05_vehicles_collect': 10, '06_legendaries_equip': 1, '07_challenges_gear': 1, '08_challenges_manufacturer': 1, '10_worldevents_colosseum': 1, '11_worldevents_airship': 1, '12_worldevents_meteor': 1, '13_contracts_complete': 80, '14_discovery_grasslands': 54, '15_discovery_mountains': 62, '16_discovery_shatteredlands': 47, '17_discovery_city': 21, '18_worldboss_defeat': 1, '19_vaultguardian_defeat': { '19_vaultguardian_grasslands': 1, '19_vaultguardian_mountains': 1, '19_vaultguardian_shatteredlands': 1 }, '20_missions_survivalist': 3, '21_missions_auger': 7, '22_missions_electi': 3, '23_missions_claptrap': 5, '24_missions_side': 98, '25_missions_grasslands': 1, '26_missions_mountains': 1, '27_missions_shatteredlands': 1, '28_missions_elpis': 1, '29_missions_main': 1, '30_moxxi_hidden': 1, '31_tannis_hidden': 1, '32_zane_hidden': 1, '33_oddman_hidden': 1, '34_dave_hidden': 1 };
-    updateStatsCounters(counters, 'achievements');
+    updateStatsCounters(CC_ACHIEVEMENT_COUNTERS_MAX, 'achievements');
     if (typeof window.mergeMissionsetsWithPrefix === 'function') window.mergeMissionsetsWithPrefix('missionset_zoneactivity_');
   };
-  window.updateAllSerialLevels = function () {
+  /**
+   * Set backpack/equipped/bank item levels to the current character level (or cap).
+   * @param {{ silent?: boolean }} opts — if silent, no alerts (for bundled presets).
+   * @returns {boolean}
+   */
+  function tryApplyItemLevelsToMatchCharacter(opts) {
+    opts = opts || {};
+    var silent = !!opts.silent;
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
-    if (!data) return alert('Load or paste a YAML file first.');
+    if (!data) {
+      if (!silent) alert('Load or paste a YAML file first.');
+      return false;
+    }
     var level = __oak2CharXpProg.levelCap;
     try {
       if (data.state && Array.isArray(data.state.experience)) {
@@ -768,10 +883,25 @@
     } catch (_) {}
     var res = applyItemLevelAcrossInventory(data, level);
     if (!res.ok) {
-      if (res.reason && /Character save/.test(res.reason)) return alert(res.reason);
-      return stubNeedFullToolbox('Set All Items to Character Level');
+      if (!silent) {
+        if (res.reason) alert(res.reason);
+        else stubNeedFullToolbox('Set All Items to Character Level');
+      }
+      return false;
+    }
+    var touched = res.serialFieldsTouched != null ? res.serialFieldsTouched : 0;
+    if (touched === 0) {
+      if (!silent) {
+        alert('No item serial fields were found under inventory in this YAML (expected slot maps or lists with a serial: line per item).');
+      }
+      return false;
     }
     window.commitYamlDataToEditor(data);
+    return true;
+  }
+
+  window.updateAllSerialLevels = function () {
+    tryApplyItemLevelsToMatchCharacter({ silent: false });
   };
 
   /** Set every item serial level to the value in #yaml-items-target-level (backpack / equipped / bank). */
@@ -782,8 +912,12 @@
     var raw = el && el.value !== undefined && el.value !== null && String(el.value).trim() !== '' ? el.value : String(__yamlItemLevelCap);
     var res = applyItemLevelAcrossInventory(data, raw);
     if (!res.ok) {
-      if (res.reason && /Character save/.test(res.reason)) return alert(res.reason);
+      if (res.reason) return alert(res.reason);
       return stubNeedFullToolbox('Set All Items to Target Level');
+    }
+    var touched = res.serialFieldsTouched != null ? res.serialFieldsTouched : 0;
+    if (touched === 0) {
+      return alert('No item serial fields were found under inventory in this YAML (expected slot maps or lists with a serial: line per item).');
     }
     window.commitYamlDataToEditor(data);
   };
@@ -824,11 +958,11 @@
 
   window.insertSerials = function (serials, opts) {
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
-    if (!data) return;
+    if (!data) return false;
     var container = getContainerForInsert(data);
     if (!container) {
       alert('Could not locate backpack/bank container in this YAML.');
-      return;
+      return false;
     }
     var start = nextSlotIndexForInsert(container);
     var template = inferTemplateForInsert(container);
@@ -842,18 +976,23 @@
     var list = Array.isArray(serials) ? serials : [];
     var added = 0;
     for (var i = 0; i < list.length; i++) {
-      var s = String(list[i] || '').trim().replace(/^['"]|['"]$/g, '');
+      var s0 = String(list[i] || '').trim().replace(/^['"]|['"]$/g, '');
+      if (!s0) continue;
+      var s = (typeof window.ensureBase85SerialForYamlSave === 'function')
+        ? window.ensureBase85SerialForYamlSave(s0)
+        : s0;
       if (!s) continue;
       if (s.indexOf('@U') !== 0) s = '@U' + s.replace(/^@U/, '');
-      if (s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0 || s.indexOf('{') >= 0 || s.indexOf('}') >= 0) continue;
+      if (s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0) continue;
       container['slot_' + (start + added)] = { serial: s, flags: flags, state_flags: stateFlags };
       added++;
     }
     if (!added) {
       alert('No valid BL-base85 serials to add.');
-      return;
+      return false;
     }
     window.commitYamlDataToEditor(data);
+    return true;
   };
 
   window.showAddItemsPopup = function () {

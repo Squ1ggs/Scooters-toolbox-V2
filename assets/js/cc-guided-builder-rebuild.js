@@ -1590,10 +1590,12 @@
     var seen = {};
     for (var i = 0; i < parts.length; i++) {
       var wt = String(parts[i].weaponType || parts[i].itemType || '').trim();
-      if (wt && !seen[wt]) { seen[wt] = true; wtypes.push(wt); }
+      if (!wt || String(wt).toLowerCase() === 'weapon') continue;
+      if (!seen[wt]) { seen[wt] = true; wtypes.push(wt); }
     }
     if (seen['Sniper'] && !seen['Sniper Rifle']) wtypes.push('Sniper Rifle');
     wtypes = wtypes.filter(function (w) { return w !== 'Sniper'; });
+    wtypes = wtypes.filter(function (w) { return String(w).trim().toLowerCase() !== 'weapon'; });
     wtypes.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); });
     wtSel.innerHTML = '<option value="">Select weapon type...</option>';
     for (var j = 0; j < wtypes.length; j++) {

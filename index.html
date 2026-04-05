@@ -5,11 +5,12 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
-<!-- Netlify Functions (static site — no PHP). Point to your deploy or leave empty for local file:// -->
+
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
-<!-- If api/config.php items_bump_secret is set, paste same value here (deters abuse; not a true secret once deployed) -->
+<meta content="" name="stx-analytics-track-key"/>
+<meta content="" name="stx-counter-key"/>
 <meta content="" name="stx-items-bump-key"/>
 <title>Scooter's Toolbox — BL4 save editor, YAML &amp; item serial tools</title>
 <meta content="Free browser BL4 tools: .sav ↔ YAML save editing, item serial decode/build, bulk checks, guided builder. No install — runs locally in your browser." name="description"/>
@@ -34,7 +35,7 @@
 <link href="./assets/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="./assets/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="./assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
-<!-- Offline: no external fonts/CDN; system UI stack below -->
+
 <script defer="" src="./assets/data/stx_dataset.js"></script>
 <script defer="" src="./assets/data/part_ref_meta.js"></script>
 <script defer="" src="./assets/data/stx_rarities.js"></script>
@@ -63,11 +64,13 @@
 <script defer="" src="./assets/js/cc-base85-rebuild.js"></script>
 <script defer="" src="./assets/js/stx-nicnl-serial-pack.js"></script>
 <script defer="" src="./assets/js/cc-serial-nicnl-rebuild.js"></script>
+<script defer="" src="./assets/js/stx-decode-bridge-shared.js"></script>
 <script defer="" src="./assets/js/cc-sav-crypto-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-yaml-save-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-stx-decoder-bridge.js"></script>
 <script src="./assets/data/serials_data.js"></script>
 <script src="./assets/data/godroll_serials_data.js"></script>
+<script src="./assets/data/godroll_grimeey_serials_data.js"></script>
 <script src="./assets/data/bl4_spawncodes_bundle_serials.js"></script>
 <script src="./assets/data/bl4_spawncodes_bundle_notes.js"></script>
 <script src="./assets/data/parts_stats_data.js"></script>
@@ -84,9 +87,9 @@
 <script defer="" src="./assets/js/cc-toolbox-items-made.js"></script>
 <script defer="" src="./assets/js/cc-toolbox-public-counter.js"></script>
 <style id="editor-rebuild-spec">
-    /* ========== VISUAL SPEC REBUILD – docs/editor_visual_spec.txt ========== */
+    
     :root {
-      /* Core palette – cyan/blue + pink */
+      
       --bg-base: #060a12;
       --bg-navy: #0a0e1a;
       --bg-panel: rgba(5, 12, 24, 0.75);
@@ -130,7 +133,7 @@
       color-scheme: dark;
     }
 
-    /* ---------- Background (layered navy-black + pink/blue radial blooms) ---------- */
+    
     .editor-page {
       position: relative;
       min-height: 100vh;
@@ -142,7 +145,7 @@
         linear-gradient(165deg, #050a14 0%, #080d18 35%, #060a12 100%);
     }
 
-    /* ---------- Splash (optional boot-up layer) ---------- */
+    
     .splash {
       position: fixed;
       inset: 0;
@@ -178,7 +181,7 @@
     }
     .splash__btn:hover { background: linear-gradient(135deg, rgba(0, 243, 255, 0.25) 0%, rgba(255, 0, 200, 0.2) 100%); box-shadow: var(--glow-mix); transform: translateY(-2px); }
 
-    /* ---------- Main workspace layout ---------- */
+    
     .app-shell {
       position: relative;
       max-width: 1600px;
@@ -189,7 +192,7 @@
       gap: 16px;
     }
 
-    /* ---------- Header / top bar ---------- */
+    
     .header-bar {
       display: flex;
       flex-wrap: wrap;
@@ -230,7 +233,7 @@
       border-color: rgba(255, 0, 200, 0.55);
       box-shadow: 0 0 14px rgba(255, 0, 200, 0.24);
     }
-    /* Lift instructions dropdown above page content so it is not visually clipped */
+    
     .support-menu.instructions-menu[open] {
       z-index: 10050;
     }
@@ -311,7 +314,7 @@
       border-top: 1px solid rgba(0, 243, 255, 0.16);
       margin: 12px 0;
     }
-    /* Hide 📊 Stats until live: remove data-stx-stats-dev + stx-site-stats-hidden from #stxPublicCounterMenu; set meta stx-counter-url (Netlify functions). */
+    
     .stx-site-stats-hidden { display: none !important; }
     .instructions-menu__panel {
       min-width: min(920px, 92vw);
@@ -332,7 +335,7 @@
       color: var(--text-secondary);
     }
 
-    /* Full anim toggle switch */
+    
     .anim-toggle {
       display: inline-flex;
       align-items: center;
@@ -384,18 +387,18 @@
       .anim-toggle__slider, .anim-toggle__slider::before { transition: none; }
     }
 
-    /* Full animations: slow colour sweep – gradient flows across button */
+    
     @keyframes stxFullAnimSweepPosFluid {
       from { background-position: 0% 50%; }
       to   { background-position: 100% 50%; }
     }
-    /* Easter-egg full anim: wide gradient layer slides via transform (no background-position fight). */
-    /* Slide by 2/3 of the 300%-wide layer so all gradient stops (incl. right-side dark bands) cross the viewport; -33% only cycled the first ~66% of the strip. */
+    
+    
     @keyframes stxEggSheenSlide {
       from { transform: translateX(0); }
       to { transform: translateX(-66.666%); }
     }
-    /* Explicit selectors (not :where) so class specificity beats ID-scoped panel rules + static egg fills. */
+    
     html.fullAnimButtons .btn:not(.egg-off-btn),
     html.fullAnimButtons .btn--brand:not(.egg-off-btn),
     html.fullAnimButtons .btn-primary:not(.egg-off-btn),
@@ -415,8 +418,8 @@
       text-shadow: none !important;
       border-color: rgba(255,0,200,0.5) !important;
     }
-    /* Contributor pills: default toolbox sweep when Full anim on (no easter-egg theme). */
-    html.fullAnimButtons body:not(.mattmab-reskin):not(.mac10-reskin):not(.badley-reskin):not(.scooter-reskin):not(.ynot-reskin) .with-thanks-list .contributor-name {
+    
+    html.fullAnimButtons body:not(.mattmab-reskin):not(.mac10-reskin):not(.badley-reskin):not(.scooter-reskin):not(.ynot-reskin):not(.grimeey-reskin) .with-thanks-list .contributor-name {
       background: none !important;
       background-image: linear-gradient(90deg, rgba(0,243,255,0.55) 0%, rgba(0,243,255,0.65) 20%, rgba(255,0,200,0.65) 50%, rgba(0,243,255,0.65) 80%, rgba(0,243,255,0.55) 100%) !important;
       background-size: 300% 100% !important;
@@ -428,7 +431,7 @@
       border-color: rgba(255,0,200,0.45) !important;
       text-shadow: none !important;
     }
-    /* Same top toolbox links: keep sweep + add pulsing gold glow when Full anim is on */
+    
     html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn),
@@ -450,7 +453,7 @@
         0 0 48px rgba(255, 185, 65, 0.45) !important;
     }
 
-    /* ---------- Credits section ---------- */
+    
     .rebuild-credits {
       background: var(--bg-panel);
       border: 1px solid rgba(0, 243, 255, 0.2);
@@ -513,10 +516,10 @@
     .credits-discord { margin-top: 8px; }
     .credits-discord-btns { display: flex; flex-wrap: wrap; gap: 10px; }
 
-    /* Easter egg reskin themes */
+    
     body.mattmab-reskin { --accent-cyan: #ffd700; --accent-pink: #468cff; background: linear-gradient(135deg,#0a1628,#1a0a0a,#060a15,#2a1a0a,#0a2a1a,#1a2a3a,#0a1628) !important; }
     body.mattmab-reskin .header-bar, body.mattmab-reskin .panel { border-color: rgba(255,215,0,0.4) !important; }
-    /* Static egg button fill only when Full anim is off (otherwise sweep rules must win cascade). */
+    
     html:not(.fullAnimButtons) body.mattmab-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,215,0,0.45), rgba(70,140,255,0.42)) !important; }
     body.mac10-reskin { --accent-cyan: #ff5050; --accent-pink: #1a1a1a; background: linear-gradient(135deg,#1a0505,#0a0505,#150808) !important; }
     body.mac10-reskin .header-bar, body.mac10-reskin .panel { border-color: rgba(255,80,80,0.4) !important; }
@@ -531,11 +534,10 @@
     body.ynot-reskin .header-bar, body.ynot-reskin .panel { border-color: rgba(0,212,232,0.42) !important; }
     html:not(.fullAnimButtons) body.ynot-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,212,232,0.42), rgba(10,10,14,0.92)) !important; }
 
-    /* Easter egg off button – visible only when a theme is active */
+    
     .egg-off-btn { display: none !important; }
-    body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn { display: inline-flex !important; }
 
-    /* Save/YAML tab + drawer – easter egg colours */
+    
     body.mattmab-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(255,215,0,.95), rgba(70,120,255,.95)); border-color: rgba(255,215,0,.65); box-shadow: 0 0 22px rgba(255,215,0,.35); }
     body.mattmab-reskin #rp-saveyaml-drawer { border-left-color: rgba(255,215,0,.4); }
     body.mattmab-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(255,215,0,.2) 0%, rgba(70,120,255,.18) 100%); border-bottom-color: rgba(70,140,255,.32); }
@@ -562,7 +564,7 @@
     body.ynot-reskin #rp-saveyaml-drawer-title { color: #00d4e8; }
     body.ynot-reskin #rp-saveyaml-drawer-close { border-color: rgba(0,212,232,.5); }
 
-    /* Floating code panel (minimized + open) – easter egg colours */
+    
     html:not(.fullAnimButtons) body.mattmab-reskin .rebuild-floating-btn { border-color: rgba(255,215,0,.6); background: linear-gradient(135deg, rgba(255,215,0,.4), rgba(70,140,255,.4)), rgba(10,20,40,.9); box-shadow: 0 8px 24px rgba(0,0,0,.5), 0 0 18px rgba(255,215,0,.4); }
     html:not(.fullAnimButtons) body.mattmab-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(255,215,0,.5), rgba(70,140,255,.5)), rgba(10,20,40,.95); box-shadow: 0 10px 28px rgba(0,0,0,.6), 0 0 24px rgba(255,215,0,.5); }
     body.mattmab-reskin .rebuild-floating-panel { border-color: rgba(255,215,0,.5); box-shadow: 0 18px 42px rgba(0,0,0,.65), 0 0 24px rgba(255,215,0,.3); }
@@ -589,7 +591,7 @@
     body.ynot-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(0,212,232,.22) 0%, rgba(8,10,14,.92) 100%); border-bottom-color: rgba(0,212,232,.32); }
     body.ynot-reskin #floating-output-close { border-color: rgba(0,212,232,.5); background: rgba(0,212,232,.22); }
 
-    /* Dropdowns / selects – easter egg theme colours (readable text) */
+    
     body.mattmab-reskin .editor-select, body.mattmab-reskin .editor-input,
     body.mattmab-reskin select, body.mattmab-reskin input[type="number"],
     body.mattmab-reskin textarea, body.mattmab-reskin .editor-output-code,
@@ -650,10 +652,6 @@
       background: linear-gradient(135deg, rgba(12,24,34,0.98) 0%, rgba(6,12,18,0.98) 100%) !important;
       color: #e4f8fc !important;
     }
-    body.mattmab-reskin .rebuild-details summary, body.mac10-reskin .rebuild-details summary,
-    body.badley-reskin .rebuild-details summary, body.scooter-reskin .rebuild-details summary, body.ynot-reskin .rebuild-details summary {
-      color: inherit;
-    }
     body.mattmab-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, rgba(70,120,255,0.14) 100%) !important; border-color: rgba(255,215,0,0.4) !important; color: #ffd700 !important; }
     body.mac10-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,80,80,0.2) 0%, rgba(40,20,20,0.9) 100%) !important; border-color: rgba(255,80,80,0.4) !important; color: #ff6060 !important; }
     body.badley-reskin .expander-bar { background: linear-gradient(90deg, rgba(155,110,255,0.2) 0%, rgba(255,185,230,0.12) 100%) !important; border-color: rgba(155,110,255,0.4) !important; color: #9b6eff !important; }
@@ -713,7 +711,44 @@
     body.ynot-reskin .custom-select-option:hover { background: rgba(0,212,232,0.22) !important; }
     body.ynot-reskin .custom-select-group-header { color: #00d4e8 !important; border-bottom-color: rgba(0,212,232,0.4) !important; }
 
-    /* ---------- Buttons (utility + brand gradient) ---------- */
+    
+    body.grimeey-reskin { --accent-cyan: #448f36; --accent-pink: #f8fafc; background: linear-gradient(135deg,#0a1810,#0f2218,#07120c,#0d1a12) !important; }
+    body.grimeey-reskin .header-bar, body.grimeey-reskin .panel { border-color: rgba(68,143,54,0.45) !important; }
+    html:not(.fullAnimButtons) body.grimeey-reskin .btn--brand { background: linear-gradient(135deg, rgba(68,143,54,0.48), rgba(248,250,252,0.14)) !important; }
+    body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn, body.grimeey-reskin .egg-off-btn { display: inline-flex !important; }
+    body.grimeey-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(68,143,54,.92), rgba(248,250,252,.12)); border-color: rgba(68,143,54,.65); box-shadow: 0 0 22px rgba(68,143,54,.35); }
+    body.grimeey-reskin #rp-saveyaml-drawer { border-left-color: rgba(68,143,54,.42); }
+    body.grimeey-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(68,143,54,.2) 0%, rgba(8,18,12,.95) 100%); border-bottom-color: rgba(68,143,54,.3); }
+    body.grimeey-reskin #rp-saveyaml-drawer-title { color: #92c978; }
+    body.grimeey-reskin #rp-saveyaml-drawer-close { border-color: rgba(248,250,252,.45); }
+    html:not(.fullAnimButtons) body.grimeey-reskin .rebuild-floating-btn { border-color: rgba(68,143,54,.6); background: linear-gradient(135deg, rgba(68,143,54,.42), rgba(248,250,252,.12)), rgba(6,14,10,.92); box-shadow: 0 8px 24px rgba(0,0,0,.55), 0 0 18px rgba(68,143,54,.38); }
+    html:not(.fullAnimButtons) body.grimeey-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(68,143,54,.52), rgba(248,250,252,.18)), rgba(8,18,12,.96); box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 0 24px rgba(68,143,54,.48); }
+    body.grimeey-reskin .rebuild-floating-panel { border-color: rgba(68,143,54,.5); box-shadow: 0 18px 42px rgba(0,0,0,.68), 0 0 24px rgba(68,143,54,.32); }
+    body.grimeey-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(68,143,54,.22) 0%, rgba(8,14,10,.92) 100%); border-bottom-color: rgba(68,143,54,.32); }
+    body.grimeey-reskin #floating-output-close { border-color: rgba(248,250,252,.4); background: rgba(68,143,54,.22); }
+    body.grimeey-reskin .editor-select, body.grimeey-reskin .editor-input,
+    body.grimeey-reskin select, body.grimeey-reskin input[type="number"],
+    body.grimeey-reskin textarea, body.grimeey-reskin .editor-output-code,
+    body.grimeey-reskin #yamlInput, body.grimeey-reskin #yaml-stats-section {
+      background: linear-gradient(135deg, rgba(10,28,18,0.96) 0%, rgba(6,16,10,0.98) 100%) !important;
+      border-color: rgba(68,143,54,0.48) !important;
+      color: #ecfdf5 !important;
+    }
+    body.grimeey-reskin .editor-select option, body.grimeey-reskin select option {
+      background: linear-gradient(135deg, rgba(12,32,22,0.98) 0%, rgba(8,22,14,0.98) 100%) !important;
+      color: #f0fdf4 !important;
+    }
+    body.mattmab-reskin .rebuild-details summary, body.mac10-reskin .rebuild-details summary,
+    body.badley-reskin .rebuild-details summary, body.scooter-reskin .rebuild-details summary, body.ynot-reskin .rebuild-details summary, body.grimeey-reskin .rebuild-details summary {
+      color: inherit;
+    }
+    body.grimeey-reskin .expander-bar { background: linear-gradient(90deg, rgba(68,143,54,0.22) 0%, rgba(8,14,10,0.92) 100%) !important; border-color: rgba(68,143,54,0.42) !important; color: #92c978 !important; }
+    body.grimeey-reskin .custom-select-display, body.grimeey-reskin .custom-select-list { background: linear-gradient(135deg, rgba(12,32,22,0.98) 0%, rgba(8,20,14,0.98) 100%) !important; border-color: rgba(68,143,54,0.45) !important; color: #ecfdf5 !important; }
+    body.grimeey-reskin .custom-select-option { color: #ecfdf5 !important; }
+    body.grimeey-reskin .custom-select-option:hover { background: rgba(68,143,54,0.22) !important; }
+    body.grimeey-reskin .custom-select-group-header { color: #92c978 !important; border-bottom-color: rgba(248,250,252,0.35) !important; }
+
+    
     .btn {
       display: inline-flex;
       align-items: center;
@@ -747,7 +782,7 @@
       border-color: var(--accent-pink-dim);
       box-shadow: 0 0 18px rgba(0, 243, 255, 0.4), 0 0 14px rgba(255, 0, 200, 0.3);
     }
-    /* Stronger aqua/green style for non-main utility buttons lower on the page */
+    
     .panel .btn:not(.btn--brand):not(.btn-Firmware):not(.btn-primary):not(.egg-off-btn) {
       border-color: rgba(0, 235, 175, 0.55);
       background: linear-gradient(135deg, rgba(0, 190, 145, 0.2) 0%, rgba(0, 120, 95, 0.15) 100%);
@@ -759,7 +794,7 @@
       box-shadow: 0 0 16px rgba(0, 230, 175, 0.28);
       color: #ffffff;
     }
-    /* Legendary perk fields: gold border for quick visual targeting */
+    
     #legendaryPerkSelect,
     #ccGuidedLegendaryPerkSelect,
     #ccRepkitLegendarySelect,
@@ -769,7 +804,7 @@
       background: linear-gradient(135deg, rgba(42, 30, 10, 0.72), rgba(26, 20, 8, 0.82)) !important;
       color: #ffe9a8 !important;
     }
-    /* Expandables: color-coded borders to guide usage */
+    
     #ccGuidedLegendaryDetails,
     #ccGuidedQuickAddDetails,
     #rebuildLegendaryDetails,
@@ -808,8 +843,8 @@
       color: #ffd166 !important;
       text-shadow: 0 0 10px rgba(255, 200, 0, 0.35);
     }
-    /* Cross-page nav links: animated aqua/green border pulse */
-    /* Top dock / cross-page nav: gold border + glow (pairs with Full anim sweep via second animation). */
+    
+    
     @keyframes stxGoldNavGlowPulse {
       0% {
         border-color: rgba(255, 190, 75, 0.88);
@@ -837,7 +872,7 @@
       0% { background-position: 0% 50%; }
       100% { background-position: 100% 50%; }
     }
-    /* All Add buttons: animated aqua/green style (overrides pink/blue sweep) */
+    
     button[id*="Add"],
     button[id*="Add"].btn--brand {
       border-color: rgba(0, 235, 175, 0.72) !important;
@@ -873,7 +908,7 @@
       box-shadow: inset 0 0 0 1px rgba(255, 248, 220, 0.28), 0 0 22px rgba(255, 215, 100, 0.55), 0 0 36px rgba(255, 180, 60, 0.38);
     }
 
-    /* ---------- Two-column main area ---------- */
+    
     .main-layout {
       display: grid;
       grid-template-columns: 1fr 380px;
@@ -882,7 +917,7 @@
     }
     @media (max-width: 1100px) { .main-layout { grid-template-columns: 1fr; } }
 
-    /* ---------- Panels (glass) ---------- */
+    
     .panel {
       background: var(--bg-panel);
       border: 1px solid rgba(0, 243, 255, 0.15);
@@ -903,7 +938,7 @@
       border-bottom: 1px solid rgba(255, 0, 200, 0.15);
     }
 
-    /* ---------- Form controls ---------- */
+    
     .form-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
     .form-row:last-child { margin-bottom: 0; }
     label { color: var(--text-secondary); font-size: 12px; min-width: 90px; }
@@ -925,7 +960,7 @@
       color: #fff;
     }
     .editor-page select,
-    .workspace select {
+    .app-shell select {
       background: linear-gradient(135deg, rgba(0, 100, 180, 0.35) 0%, rgba(80, 0, 120, 0.35) 100%) !important;
       color-scheme: dark;
     }
@@ -940,7 +975,7 @@
     select[data-loading] { opacity: 0.85; }
     select[data-loading] option:first-child { color: var(--accent-cyan-dim); }
 
-    /* ---------- Parts tabs (top row) ---------- */
+    
     .parts-tabs {
       display: flex;
       flex-wrap: wrap;
@@ -961,7 +996,7 @@
     .parts-tabs__tab:hover { color: var(--text-primary); border-color: rgba(255, 0, 200, 0.4); background: linear-gradient(135deg, rgba(0, 243, 255, 0.06) 0%, rgba(255, 0, 200, 0.04) 100%); }
     .parts-tabs__tab.is-active { color: var(--accent-cyan); border-color: rgba(255, 0, 200, 0.5); background: linear-gradient(135deg, rgba(0, 243, 255, 0.12) 0%, rgba(255, 0, 200, 0.08) 100%); }
 
-    /* ---------- Expander / toggle bar (cyan + pink strip) ---------- */
+    
     .expander-bar {
       display: flex;
       align-items: center;
@@ -994,7 +1029,7 @@
     .expander-content { padding: 10px 12px; display: none; }
     .expander-content.is-open { display: block; }
 
-    /* ---------- Build stats (core snapshot grid, like old file) ---------- */
+    
     #buildStatsCoreEstimates .cc-core-snapshot-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1035,7 +1070,7 @@
     #buildStatsCoreSubtitle span { color: rgba(236, 248, 255, 0.9); }
     #buildStatsCoreSubtitle .cc-stats-disclaimer strong { color: rgba(255, 255, 255, 0.95); }
 
-    /* ---------- Output / code area ---------- */
+    
     .output-section {
       display: flex;
       flex-direction: column;
@@ -1064,7 +1099,7 @@
       box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.2), 0 0 12px rgba(255, 0, 200, 0.15);
     }
 
-    /* ---------- Floating output panel (visibility controlled by .open) ---------- */
+    
     #floating-output-panel:not(.open) {
       display: none !important;
     }
@@ -1115,7 +1150,7 @@
       border-radius: 0 0 var(--radius-panel) 0;
     }
 
-    /* ---------- Custom picker (skin-picker style) ---------- */
+    
     .cc-skin-picker { position: relative; display: inline-block; }
     .cc-skin-picker__btn {
       padding: 6px 12px;
@@ -1163,7 +1198,7 @@
     }
     .cc-skin-picker__item:hover { background: linear-gradient(135deg, rgba(0, 243, 255, 0.1) 0%, rgba(255, 0, 200, 0.08) 100%); color: var(--accent-cyan); }
 
-    /* ---------- Class Mod checklist (matches old ScootersToolbox) ---------- */
+    
     #classmodChecklistSection.cm-disabled { opacity: 0.85; filter: grayscale(0.15); }
     #classmodChecklistSection .cm-checklist { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
     #classmodChecklistSection .cm-page-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.25); background: rgba(0,0,0,0.22); }
@@ -1241,7 +1276,7 @@
     .cm-part-perk-preview .cm-perk-preview-name { color: #bff9ff; font-size: 12px; font-weight: 700; }
     .cm-part-perk-preview .cm-perk-preview-desc { color: rgba(218,245,255,0.9); font-size: 11px; line-height: 1.35; }
 
-    /* ---------- Debug / schema / curve (utility drawers) ---------- */
+    
     .utility-drawers { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .utility-drawers .panel { flex: 1 1 280px; }
     .utility-drawers .mono-block {
@@ -1255,15 +1290,16 @@
       overflow: auto;
     }
 
-    /* Reskin easter egg (body class: xxx-reskin) */
+    
     body.mattmab-reskin { --accent-cyan: #ffd700; --accent-cyan-dim: rgba(255, 215, 0, 0.72); --accent-pink: #468cff; --accent-pink-dim: rgba(70, 140, 255, 0.65); }
     body.mac10-reskin { --accent-cyan: #00ff88; --accent-cyan-dim: rgba(0, 255, 136, 0.7); }
     body.badley-reskin { --accent-pink: #ffaa00; --accent-pink-dim: rgba(255, 170, 0, 0.7); }
     body.dva11-reskin { --accent-cyan: #ff69b4; --accent-pink: #00f3ff; }
     body.scooter-reskin { --accent-cyan: #00ff78; --accent-pink: #ff2828; }
     body.ynot-reskin { --accent-cyan: #00d4e8; --accent-cyan-dim: rgba(0, 212, 232, 0.72); --accent-pink: #0a0a0c; --accent-pink-dim: rgba(12, 14, 18, 0.75); }
+    body.grimeey-reskin { --accent-cyan: #448f36; --accent-cyan-dim: rgba(68, 143, 54, 0.78); --accent-pink: #f8fafc; --accent-pink-dim: rgba(248, 250, 252, 0.88); }
 
-    /* ---------- Simple Builder dock (like main file: minimizable) ---------- */
+    
     :root { --stx-embed-h: min(96vh, 1300px); }
     #stxDockBlock { width: 100%; flex: 1 1 100%; min-width: 0; }
     .stxDockTopRow {
@@ -1349,7 +1385,7 @@
       color: var(--text-primary);
       font-size: 12px;
     }
-    /* ---------- Simple Builder panel polish (cyber workshop feel) ---------- */
+    
     #stxSimpleBuilderPanel {
       border-left: 3px solid var(--accent-cyan);
       box-shadow: var(--shadow-depth), 0 0 24px rgba(0, 243, 255, 0.1), 0 0 16px rgba(255, 0, 200, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -1435,7 +1471,7 @@
       accent-color: var(--accent-cyan);
       box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
     }
-    /* Simple Builder: aqua/blue buttons — only when Full anim off (ID would otherwise beat themed sweeps). */
+    
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn {
       min-height: 32px;
       border: 1px solid rgba(0, 220, 255, 0.45);
@@ -1463,7 +1499,7 @@
       background: linear-gradient(145deg, rgba(0, 70, 110, 0.5) 0%, rgba(0, 40, 75, 0.6) 100%);
       color: #9ee8ff;
     }
-    /* Simple Builder: keep cyan border + outer glow with Full anim on (matches “anim off” polish). */
+    
     html.fullAnimButtons #stxSimpleBuilderPanel .btn:not(.egg-off-btn),
     html.fullAnimButtons #stxSimpleBuilderPanel .btn--brand:not(.egg-off-btn) {
       min-height: 32px;
@@ -1502,7 +1538,7 @@
       border-color: rgba(255, 160, 190, 0.65);
       color: #fff;
     }
-    /* Set / Add on slot dropdowns (stx-simple-builder-core uses class "primary", not .btn) */
+    
     #stxSimpleBuilderPanel #builder button.primary {
       min-height: 32px;
       padding: 8px 14px;
@@ -1520,7 +1556,7 @@
       color: #fff;
       box-shadow: 0 0 16px rgba(0, 220, 255, 0.35);
     }
-    /* Builder slot cards (core-injected) */
+    
     #stxSimpleBuilderPanel #builder .slot {
       margin: 10px 0;
       padding: 12px 14px;
@@ -1555,7 +1591,7 @@
     }
     #stxSimpleBuilderPanel #builder .grid {
       display: grid;
-      /* Fewer, wider columns so dropdown lines stay readable (was minmax(280px…) packing ~4–5 across). */
+      
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
       gap: 14px 16px;
     }
@@ -1616,7 +1652,7 @@
       margin: 3px 0;
       color: rgba(232, 252, 255, 0.96);
     }
-    /* Barrel pickers: headline, accent perk line, stats/description from dataset. */
+    
     :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview.stx-part-preview--barrel {
       max-height: min(38vh, 320px);
     }
@@ -1644,7 +1680,7 @@
       font-size: 10px;
       line-height: 1.4;
     }
-    /* Guided builder weapon/gear slot grids (was inline minmax(280px…) × many columns). */
+    
     :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .cc-guided-slots-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
@@ -1682,7 +1718,7 @@
       }
       #stxSimpleBuilderPanel .stx-builder-grid > div:last-child { padding-left: 0; }
     }
-    /* ---------- Advanced Part Search panel & results ---------- */
+    
     #ccAdvancedMount { margin-top: 0; padding: 0; max-width: 100%; }
     #ccAdvStablePanel {
       border: 1px solid rgba(0, 243, 255, 0.4);
@@ -1726,7 +1762,7 @@
     #ccStablePartMeta { margin-top: 6px; font-size: 11px; color: var(--text-muted); line-height: 1.45; }
     #ccStablePartMeta .cc-adv-meta-source { border-left: 3px solid rgba(0, 243, 255, 0.4); }
 
-    /* ---------- Tools panel (Advanced Search, Presets, Part sections) ---------- */
+    
     .rebuild-details {
       margin-top: 10px;
       border: 1px solid rgba(255, 0, 200, 0.25);
@@ -1787,7 +1823,7 @@
     .cc-heavy-slot-empty { opacity: 0.55; }
     .cc-heavy-slot-empty label { color: #6a6a6a !important; }
 
-    /* YAML editor and sections – readable colors */
+    
     #yamlInput, textarea[aria-label="YAML editor"] {
       background: #1a2332 !important;
       color: #b8e6f0 !important;
@@ -1807,10 +1843,26 @@
       object-fit: contain;
       flex-shrink: 0;
     }
+    
+    #ccProfileYamlTools .yaml-profile-vc-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #00c8ff;
+      font-size: 0.88em;
+      margin-bottom: 4px;
+    }
+    #ccProfileYamlTools .yaml-profile-vc-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(5000%) hue-rotate(343deg) brightness(1.02) contrast(1.05);
+    }
     #ccExtraYamlEditors { background: rgba(26, 35, 50, 0.5) !important; color: #b8e6f0; }
     #ccMissionsEditor { background: rgba(26, 35, 50, 0.5) !important; color: #b8e6f0; }
 
-    /* Save/YAML slide-out drawer */
+    
     #rp-saveyaml-tab {
       position: fixed;
       right: 0;
@@ -1881,7 +1933,7 @@
       #rp-saveyaml-drawer { width: 100vw; }
     }
 
-    /* Floating Code Panel */
+    
     .rebuild-floating-btn {
       position: fixed;
       bottom: 24px;
@@ -1966,16 +2018,12 @@
       background: rgba(0, 234, 255, 0.35);
     }
 
-    /*
-     * Easter egg + Full anim (html.stxEggFullAnim toggled in rebuild-credits-eggs.js):
-     * animated gradient on ::before + translateX — same smooth sweep idea as pink/blue, no cascade fight.
-     */
+    
     html.stxEggFullAnim body.mattmab-reskin .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.mattmab-reskin .btn--brand:not(.egg-off-btn),
     html.stxEggFullAnim body.mattmab-reskin .btn-primary:not(.egg-off-btn),
     html.stxEggFullAnim body.mattmab-reskin .btn-Firmware:not(.egg-off-btn),
     html.stxEggFullAnim body.mattmab-reskin a.btn:not(.egg-off-btn),
-    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn,
     html.stxEggFullAnim body.mattmab-reskin .with-thanks-toggle,
     html.stxEggFullAnim body.mattmab-reskin .credits-discord-btns .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.mattmab-reskin button[id*="Add"],
@@ -1985,7 +2033,6 @@
     html.stxEggFullAnim body.mac10-reskin .btn-primary:not(.egg-off-btn),
     html.stxEggFullAnim body.mac10-reskin .btn-Firmware:not(.egg-off-btn),
     html.stxEggFullAnim body.mac10-reskin a.btn:not(.egg-off-btn),
-    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn,
     html.stxEggFullAnim body.mac10-reskin .with-thanks-toggle,
     html.stxEggFullAnim body.mac10-reskin .credits-discord-btns .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.mac10-reskin button[id*="Add"],
@@ -1995,7 +2042,6 @@
     html.stxEggFullAnim body.badley-reskin .btn-primary:not(.egg-off-btn),
     html.stxEggFullAnim body.badley-reskin .btn-Firmware:not(.egg-off-btn),
     html.stxEggFullAnim body.badley-reskin a.btn:not(.egg-off-btn),
-    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn,
     html.stxEggFullAnim body.badley-reskin .with-thanks-toggle,
     html.stxEggFullAnim body.badley-reskin .credits-discord-btns .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.badley-reskin button[id*="Add"],
@@ -2005,7 +2051,6 @@
     html.stxEggFullAnim body.scooter-reskin .btn-primary:not(.egg-off-btn),
     html.stxEggFullAnim body.scooter-reskin .btn-Firmware:not(.egg-off-btn),
     html.stxEggFullAnim body.scooter-reskin a.btn:not(.egg-off-btn),
-    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn,
     html.stxEggFullAnim body.scooter-reskin .with-thanks-toggle,
     html.stxEggFullAnim body.scooter-reskin .credits-discord-btns .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.scooter-reskin button[id*="Add"],
@@ -2015,7 +2060,6 @@
     html.stxEggFullAnim body.ynot-reskin .btn-primary:not(.egg-off-btn),
     html.stxEggFullAnim body.ynot-reskin .btn-Firmware:not(.egg-off-btn),
     html.stxEggFullAnim body.ynot-reskin a.btn:not(.egg-off-btn),
-    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn,
     html.stxEggFullAnim body.ynot-reskin .with-thanks-toggle,
     html.stxEggFullAnim body.ynot-reskin .credits-discord-btns .btn:not(.egg-off-btn),
     html.stxEggFullAnim body.ynot-reskin button[id*="Add"],
@@ -2030,12 +2074,30 @@
       text-shadow: none !important;
       border-color: rgba(255,0,200,0.45) !important;
     }
+    html.stxEggFullAnim body.grimeey-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.grimeey-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.grimeey-reskin button[id*="Add"],
+    html.stxEggFullAnim body.grimeey-reskin .with-thanks-list .contributor-name {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      color: #0a1f14 !important;
+      text-shadow: none !important;
+      border-color: rgba(68,143,54,0.5) !important;
+    }
     html.stxEggFullAnim body.mattmab-reskin .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin .btn--brand:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin .btn-primary:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin .btn-Firmware:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin a.btn:not(.egg-off-btn)::before,
-    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn::before,
     html.stxEggFullAnim body.mattmab-reskin .with-thanks-toggle::before,
     html.stxEggFullAnim body.mattmab-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin button[id*="Add"]::before,
@@ -2058,7 +2120,6 @@
     html.stxEggFullAnim body.mac10-reskin .btn-primary:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mac10-reskin .btn-Firmware:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mac10-reskin a.btn:not(.egg-off-btn)::before,
-    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn::before,
     html.stxEggFullAnim body.mac10-reskin .with-thanks-toggle::before,
     html.stxEggFullAnim body.mac10-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mac10-reskin button[id*="Add"]::before,
@@ -2081,7 +2142,6 @@
     html.stxEggFullAnim body.badley-reskin .btn-primary:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.badley-reskin .btn-Firmware:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.badley-reskin a.btn:not(.egg-off-btn)::before,
-    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn::before,
     html.stxEggFullAnim body.badley-reskin .with-thanks-toggle::before,
     html.stxEggFullAnim body.badley-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.badley-reskin button[id*="Add"]::before,
@@ -2104,7 +2164,6 @@
     html.stxEggFullAnim body.scooter-reskin .btn-primary:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.scooter-reskin .btn-Firmware:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.scooter-reskin a.btn:not(.egg-off-btn)::before,
-    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn::before,
     html.stxEggFullAnim body.scooter-reskin .with-thanks-toggle::before,
     html.stxEggFullAnim body.scooter-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.scooter-reskin button[id*="Add"]::before,
@@ -2127,7 +2186,6 @@
     html.stxEggFullAnim body.ynot-reskin .btn-primary:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.ynot-reskin .btn-Firmware:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.ynot-reskin a.btn:not(.egg-off-btn)::before,
-    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn::before,
     html.stxEggFullAnim body.ynot-reskin .with-thanks-toggle::before,
     html.stxEggFullAnim body.ynot-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.ynot-reskin button[id*="Add"]::before,
@@ -2145,7 +2203,29 @@
       animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: transform;
     }
-    /* Save/YAML tab: stay position:fixed; sheen on ::before (same transform sweep as other egg buttons). */
+    html.stxEggFullAnim body.grimeey-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.grimeey-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.grimeey-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.grimeey-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #355d29 0%, #f8fafc 14%, #448f36 32%, #ecfdf5 50%, #448f36 68%, #f8fafc 86%, #355d29 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    
     html.stxEggFullAnim body.mattmab-reskin #rp-saveyaml-tab {
       position: fixed !important;
       z-index: 2147483646 !important;
@@ -2296,18 +2376,40 @@
       animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: transform;
     }
-    html.stxEggFullAnim body.mattmab-reskin .rebuild-floating-btn img,
-    html.stxEggFullAnim body.mac10-reskin .rebuild-floating-btn img,
-    html.stxEggFullAnim body.badley-reskin .rebuild-floating-btn img,
-    html.stxEggFullAnim body.scooter-reskin .rebuild-floating-btn img,
-    html.stxEggFullAnim body.ynot-reskin .rebuild-floating-btn img {
-      position: relative;
-      z-index: 1;
+    html.stxEggFullAnim body.grimeey-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(68,143,54,.65) !important;
+      box-shadow: 0 0 22px rgba(68,143,54,.35) !important;
+      color: #0a1f14 !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.grimeey-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #355d29 0%, #f8fafc 14%, #448f36 32%, #ecfdf5 50%, #448f36 68%, #f8fafc 86%, #355d29 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
     }
   </style>
 </head>
 <body class="editor-page">
-<!-- Splash (dismissable) -->
+
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
 <h1 class="splash__title">Scooter's Toolbox</h1>
@@ -2327,7 +2429,7 @@
 <button class="btn egg-off-btn" id="eggOffBtn" title="Turn off easter egg theme" type="button">Reset theme</button>
 <button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button">Have a code to import/edit? Click here</button>
 <button class="btn btn--brand" id="scrollToSavBtn" type="button">💾 Using a .Sav/.yaml? Click here</button>
-<!-- Public Stats: hidden until Shift/Ctrl+click header logo; set stx-counter-url in <head> (Netlify functions). Session can keep Stats visible via stx-stats-dev-visible. -->
+
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; your local craft tally">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
@@ -2447,7 +2549,7 @@
       });
     })();
     </script>
-<!-- Credits (Made by, With Thanks To, Deserialization Spreadsheet, Discord) -->
+
 <div class="rebuild-credits" id="rebuildCredits">
 <div class="rebuild-credits-row">
 <button aria-label="Made by" class="made-by-button" type="button">
@@ -2473,6 +2575,7 @@
 <span class="contributor-name">Iyre</span>
 <span class="contributor-name">imsha5</span>
 <span class="contributor-name">InflamedSebi</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="keepinItGrimeeyName" title="👀">KeepinItGrimeey</span>
 <span class="contributor-name" data-egg="1" data-tooltip="👀" id="mac10Name" title="👀">Mac10onSTIX</span>
 <span class="contributor-name" data-egg="1" data-tooltip="👀" id="mattmabName" title="👀">Mattmab</span>
 <span class="contributor-name">Narrik Synthfox</span>
@@ -2498,7 +2601,7 @@
 <a class="btn btn--brand" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Scooters Garage (issues/ideas)</a>
 </div>
 </div>
-<!-- Simple Builder (stx-simple): buyback, numeric id/spawn, item type, manufacturer, level, seed, guided builders -->
+
 <div id="stxDockBlock">
 <div class="stxDockTopRow">
 <button aria-controls="stxDockDetails" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button">Simple Builder</button>
@@ -2610,7 +2713,7 @@
 </div>
 </details>
 </div>
-<!-- Generated Item Code (live preview above Guided Builder) -->
+
 <div class="panel" id="rebuildGeneratedItemCodeSection" style="margin-top:16px;">
 <div class="panel__title">Generated Item Code</div>
 <div class="info-box" style="margin-bottom:12px;">
@@ -2634,11 +2737,12 @@
 </div>
 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
 <button class="btn btn--brand" id="guidedAddItemToYaml" type="button">💾 Add Item to YAML</button>
+<button class="btn btn--brand" id="guidedAddItemToBank" type="button">🏦 Add Item to Bank</button>
 <button class="btn" id="guidedConvertToSerial" type="button">Convert to Serial</button>
 <button class="btn" id="guidedConvertToDeserialized" type="button">Convert to Deserialized</button>
 </div>
 </div>
-<!-- Guided Builder (extracted from ScootersToolbox.html - its own section, separate from Simple Builder) -->
+
 <div class="panel" id="rebuildGuidedBuilderSection" style="margin-top:16px;">
 <div class="panel__title">Main Guided Builder</div>
 <div class="info-box" style="margin-bottom:12px;">
@@ -2915,7 +3019,7 @@
 </div>
 </details>
 </div>
-<!-- Build stats (core snapshot) - collapsible -->
+
 <details class="rebuild-details" id="rebuildBuildStatsSection" open="" style="margin-top:16px;overflow:visible;">
 <summary>Build stats (core snapshot)</summary>
 <div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
@@ -2930,7 +3034,7 @@
 </details>
 </div>
 </details>
-<!-- Paste code to edit - own section (between Guided Builder and Tools, at bottom of this block) -->
+
 <div class="panel" id="rebuildPasteCodeSection" style="margin-top:16px;">
 <div class="panel__title">Paste code to edit</div>
 <div id="rebuildPasteCodeDetails" style="margin-top:10px;">
@@ -2942,7 +3046,7 @@
 </div>
 </div>
 </div>
-<!-- Prefix/Item Search and Add - search bundled serials by name, prefix, or ID -->
+
 <details class="rebuild-details" id="rebuildPrefixItemSearchSection" style="margin-top:16px;">
 <summary>Prefix / Item Search and Add</summary>
 <div>
@@ -2950,7 +3054,8 @@
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
 <input id="prefixItemSearchInput" name="prefixItemSearchInput" placeholder="Search by name, prefix, or ID…" style="flex:1;min-width:200px;padding:10px 12px;background:#1a2332;border:2px solid rgba(0,243,255,0.4);border-radius:8px;color:#b8e6f0;font-size:0.95em;" type="text"/>
 <button class="btn btn--brand" id="prefixItemAddToEditorBtn" type="button">Add to Editor</button>
-<button class="btn btn--brand" id="prefixItemAddToYamlBtn" type="button">💾 Add to YAML</button>
+<button class="btn btn--brand" disabled="" id="prefixItemAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">💾 Add to YAML</button>
+<button class="btn btn--brand" disabled="" id="prefixItemAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 </div>
 <div id="prefixItemSearchStatus" style="color:rgba(0,200,255,0.9);font-size:0.85em;margin-bottom:6px;"></div>
 <div id="prefixItemSearchResults" style="max-height:220px;overflow-y:auto;padding:8px;background:rgba(0,0,0,0.25);border-radius:8px;border:1px solid rgba(0,200,255,0.2);">
@@ -2962,10 +3067,19 @@
 <summary>Godroll Search and Add</summary>
 <div>
 <p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Hard-to-drop community Godroll serials. Search by name, manufacturer/type, rarity, or ID and add directly to editor/YAML.</p>
-<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
+<div style="min-width:200px;">
+<label for="godrollCategorySelect" style="color:#ffb84d;font-size:0.85em;display:block;margin-bottom:4px;">Category</label>
+<select class="editor-select" id="godrollCategorySelect" name="godrollCategorySelect" style="width:100%;padding:8px 10px;background:#1a2332;border:2px solid rgba(255,190,60,0.45);border-radius:8px;color:#ffe8ba;font-size:0.9em;">
+<option value="">All categories</option>
+<option value="community">Community godrolls (bundled)</option>
+<option title="KeepinitGrimeey worked hard to collect these God-roll items since the game released, some he used to gain top places in speedruns, and he was kind enough to share them all with everyone! Thanks, Grimeey!" value="keepinitgrimeeys">KeepinitGrimeeys God-rolls</option>
+</select>
+</div>
 <input id="godrollSearchInput" name="godrollSearchInput" placeholder="Search Godrolls by name, maker, rarity, or ID..." style="flex:1;min-width:220px;padding:10px 12px;background:#1a2332;border:2px solid rgba(255,190,60,0.5);border-radius:8px;color:#ffe8ba;font-size:0.95em;" type="text"/>
 <button class="btn btn--brand" id="godrollAddToEditorBtn" type="button">Add to Editor</button>
-<button class="btn btn--brand" id="godrollAddToYamlBtn" type="button">💾 Add to YAML</button>
+<button class="btn btn--brand" disabled="" id="godrollAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">💾 Add to YAML</button>
+<button class="btn btn--brand" disabled="" id="godrollAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 <button class="btn" id="godrollLoadFileBtn" type="button">Load JSON File</button>
 <input accept=".json" id="godrollFileInput" name="godrollFileInput" style="display:none;" type="file"/>
 </div>
@@ -2975,7 +3089,7 @@
 </div>
 </div>
 </details>
-<!-- Advanced Parts Search + Tools (outside Simple Builder) -->
+
 <div class="panel" id="rebuildToolsPanel" style="margin-top:16px;">
 <div class="panel__title">Tools &amp; Parts</div>
 <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
@@ -3055,7 +3169,6 @@
 </details>
 <details class="rebuild-details" id="rebuildElementDetails">
 <summary>Element (standalone)</summary>
-<p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Same presets and icons as the Guided weapon <strong>Element</strong> row, plus dataset picks for Maliwan switch / multi-element bodies and pearl element parts. All append to the builder output.</p>
 <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
 <div style="min-width:160px;flex:1;"><label for="toolsElementSelect" style="color:var(--accent-cyan);font-size:12px;display:block;margin-bottom:4px;">Element</label><select class="editor-select" id="toolsElementSelect" name="toolsElementSelect" style="width:100%;"><option value="">-- Element --</option></select></div>
 <button class="btn" id="btnAddElement" type="button">Add to code</button>
@@ -3133,7 +3246,7 @@
 </details>
 </div>
 </div>
-<!-- Save/YAML slide-out drawer -->
+
 <div aria-controls="rp-saveyaml-drawer" id="rp-saveyaml-tab" role="button" tabindex="0">Save/YAML</div>
 <aside aria-label="Save and YAML panel" id="rp-saveyaml-drawer">
 <div id="rp-saveyaml-drawer-header">
@@ -3141,6 +3254,7 @@
 <button aria-label="Close Save and YAML panel" id="rp-saveyaml-drawer-close" type="button">Close</button>
 </div>
 <div id="rp-saveyaml-drawer-body">
+<p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">💾</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
 <details id="saveYamlDetails" open="" style="margin-top:10px;">
 <summary style="color:#00f3ff;font-weight:700;">Save and YAML section</summary>
 <div style="margin-top:10px;">
@@ -3163,7 +3277,7 @@
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
 <input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
-<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC → 17-digit SteamID64; Epic PC → Epic account id (often hex). If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
+<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC → 17-digit SteamID64; Epic PC → Epic account id. If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
 <strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
@@ -3186,6 +3300,7 @@
 </div>
 </div>
 <textarea aria-label="YAML editor" id="yamlInput" name="yamlInput" placeholder="load or Paste your YAML file content here to extract item serials from the backpack section of the yaml" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
+<div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
 <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
 <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
@@ -3214,6 +3329,84 @@
 </div>
 <div id="ccYamlKindBanner" role="status">Load or paste YAML — preset rows enable by save type (character vs profile).</div>
 <div aria-live="polite" id="ccPresetActionStatus" style="display:none;margin-bottom:10px;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:600;"></div>
+<div style="font-weight:700;margin:14px 0 8px;">Profile Only</div>
+<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockNewGameShortcuts" data-requires="profile" title="Unlocks new game shortcuts (requires full toolbox)" type="button">Unlock New Game Shortcuts</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockAllCosmetics" data-requires="profile" title="Unlocks all cosmetics (requires full toolbox)" type="button">Unlock All Cosmetics</button>
+</div>
+<div id="ccProfileYamlTools" style="display:none;margin-top:14px;padding:12px;border-radius:12px;border:1px solid rgba(0,200,255,0.35);background:rgba(0,25,45,0.35);">
+<div style="color:#7dfff0;font-weight:800;margin-bottom:8px;font-size:0.95em;">Profile save tools</div>
+<p id="yaml-profile-bank-summary" style="color:#b8e6f0;font-size:0.85em;line-height:1.45;margin:0 0 10px;">Load a profile YAML to see shared bank stats.</p>
+<button class="btn btn-Firmware" id="ccProfileScrollBankSerialsBtn" style="margin-bottom:12px;padding:8px 12px;" type="button">Scroll to bank serial list</button>
+<p style="color:#8ac;font-size:0.78em;margin:0 0 12px;line-height:1.4;">Useful paths: <code style="font-size:0.95em;">domains.local.shared.inventory.items.bank</code>, root <code style="font-size:0.95em;">globals</code>, <code style="font-size:0.95em;">domains.local.shared.currencies</code>, Vault Card rows under <code style="font-size:0.95em;">domains.local.shared.experience</code>, echo pool <code style="font-size:0.95em;">domains.local.progression_shared.point_pools.echotokenprogresspoints</code>.</p>
+<div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
+<div>
+<label for="yaml-profile-vh-unlocked" style="color:#00c8ff;font-size:0.88em;display:block;margin-bottom:4px;">Highest unlocked VH (<code>globals</code>)</label>
+<input id="yaml-profile-vh-unlocked" max="999" min="0" name="yaml-profile-vh-unlocked" placeholder="e.g. 6" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div>
+<label for="yaml-profile-vh-current" style="color:#00c8ff;font-size:0.88em;display:block;margin-bottom:4px;">Current VH level (<code>globals</code>)</label>
+<input id="yaml-profile-vh-current" max="999" min="0" name="yaml-profile-vh-current" placeholder="e.g. 1" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_01.png" width="22"/>Vault Card 1 tokens</label>
+<input id="yaml-profile-vaultcard01-tokens" min="0" name="yaml-profile-vaultcard01-tokens" placeholder="vaultcard01_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard02-tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_02.png" width="22"/>Vault Card 2 tokens</label>
+<input id="yaml-profile-vaultcard02-tokens" min="0" name="yaml-profile-vaultcard02-tokens" placeholder="vaultcard02_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc01-level"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_01.png" width="22"/>VC01 level (<code>VaultCard01_Experience</code>)</label>
+<input id="yaml-profile-vc01-level" min="0" name="yaml-profile-vc01-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc02-level"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_02.png" width="22"/>VC02 level (<code>VaultCard02_Experience</code>)</label>
+<input id="yaml-profile-vc02-level" min="0" name="yaml-profile-vc02-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+</div>
+<div style="margin-top:10px;">
+<label for="yaml-profile-echotoken-points" style="color:#00c8ff;font-size:0.88em;display:block;margin-bottom:4px;">Echo token progress points</label>
+<input id="yaml-profile-echotoken-points" min="0" name="yaml-profile-echotoken-points" style="width:100%;max-width:360px;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<datalist id="ccBlackMarketCompDatalist"></datalist>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,200,255,0.22);">
+<div style="color:#7dfff0;font-weight:800;margin-bottom:6px;font-size:0.95em;">Black market (two rotator slots)</div>
+<p style="color:#9bc;font-size:0.75em;margin:0 0 10px;line-height:1.4;">Reads/writes <code>blackmarket_items</code> (two entries), <code>blackmarket_usedpools</code>, and <code>blackmarket_trackerstate</code> on the same object as your save’s <code>profile:</code> block (or root if those keys are at the top). <strong>Item type</strong> is the short code (e.g. <code>DAD_SM</code>). <strong>Item comp</strong> is the full component path (legendary <code>*.comp_05_legendary_*</code> or pearl <code>*.comp_06_pearl_*</code>) — pick from suggestions or paste from a decoder. <strong>Used pools</strong> is internal vendor rotation state (often starts with a large value such as <code>2147483648</code>); only change it if you know you need to; leave all three boxes empty when applying to leave pools untouched in YAML.</p>
+<p id="yaml-profile-cosmetics-preset-line" style="color:#8cf;font-size:0.78em;margin:0 0 10px;line-height:1.35;"><strong>Unlock All Cosmetics</strong> preset: <strong id="yaml-profile-cosmetics-preset-count">—</strong> unlock IDs across <strong id="yaml-profile-cosmetics-preset-cats">—</strong> bundled lists (excludes <code>shared_progress</code>).</p>
+<div style="display:grid;gap:10px;margin-bottom:10px;">
+<div style="color:#00c8ff;font-weight:700;font-size:0.88em;">Slot 1</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;align-items:end;">
+<div><label for="yaml-bm-slot1-type" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Item type</label><input id="yaml-bm-slot1-type" autocomplete="off" placeholder="DAD_SM" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="text"/></div>
+<div style="grid-column:1/-1;"><label for="yaml-bm-slot1-comp" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Item comp</label><input id="yaml-bm-slot1-comp" autocomplete="off" list="ccBlackMarketCompDatalist" placeholder="DAD_SM.comp_05_legendary_Luty" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;font-family:Consolas,monospace;font-size:0.85em;" type="text"/></div>
+<div><label for="yaml-bm-slot1-stage" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Game stage</label><input id="yaml-bm-slot1-stage" max="999" min="0" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number" value="50"/></div>
+</div>
+<div style="color:#00c8ff;font-weight:700;font-size:0.88em;margin-top:4px;">Slot 2</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;align-items:end;">
+<div><label for="yaml-bm-slot2-type" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Item type</label><input id="yaml-bm-slot2-type" autocomplete="off" placeholder="TOR_AR" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="text"/></div>
+<div style="grid-column:1/-1;"><label for="yaml-bm-slot2-comp" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Item comp</label><input id="yaml-bm-slot2-comp" autocomplete="off" list="ccBlackMarketCompDatalist" placeholder="TOR_AR.comp_05_legendary_PotatoThrower" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;font-family:Consolas,monospace;font-size:0.85em;" type="text"/></div>
+<div><label for="yaml-bm-slot2-stage" style="color:#00c8ff;font-size:0.8em;display:block;margin-bottom:3px;">Game stage</label><input id="yaml-bm-slot2-stage" max="999" min="0" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number" value="50"/></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;align-items:end;margin-bottom:10px;">
+<div style="grid-column:1/-1;color:#00c8ff;font-size:0.8em;font-weight:600;">Used pools (optional — blank = do not change)</div>
+<div><label for="yaml-bm-pool0" style="color:#00c8ff;font-size:0.75em;display:block;margin-bottom:2px;">[0]</label><input id="yaml-bm-pool0" style="width:100%;padding:8px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.45);border-radius:8px;color:#00f3ff;" type="text" inputmode="numeric"/></div>
+<div><label for="yaml-bm-pool1" style="color:#00c8ff;font-size:0.75em;display:block;margin-bottom:2px;">[1]</label><input id="yaml-bm-pool1" style="width:100%;padding:8px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.45);border-radius:8px;color:#00f3ff;" type="text" inputmode="numeric"/></div>
+<div><label for="yaml-bm-pool2" style="color:#00c8ff;font-size:0.75em;display:block;margin-bottom:2px;">[2]</label><input id="yaml-bm-pool2" style="width:100%;padding:8px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.45);border-radius:8px;color:#00f3ff;" type="text" inputmode="numeric"/></div>
+</div>
+<label style="display:flex;align-items:center;gap:8px;color:#00c8ff;font-size:0.88em;cursor:pointer;margin-bottom:4px;"><input id="yaml-bm-tracker" type="checkbox"/> Black market tracker complete (<code>blackmarket_trackerstate</code>)</label>
+</div>
+<details style="margin-top:12px;border-top:1px solid rgba(0,200,255,0.18);padding-top:10px;">
+<summary style="color:#7dfff0;font-weight:700;cursor:pointer;font-size:0.9em;user-select:none;">Challenge / achievement counts (<code>stats.achievements</code>)</summary>
+<div style="margin-top:8px;">
+<p style="color:#9bc;font-size:0.72em;margin:0 0 8px;line-height:1.35;">One <code>key: number</code> per line. Nested keys: <code>parent.child: 1</code>. Leave the box empty to leave YAML unchanged. <strong>Insert bundled max lines</strong> fills the toolbox preset; edit numbers, then use <strong>Apply profile field edits</strong>. UVH / mission challenge flags under top-level <code>stats</code> are set by <strong>Complete All Challenges</strong> (enabled for profile too).</p>
+<div style="margin-bottom:6px;"><button class="btn btn-Firmware" id="yaml-profile-ach-fill-preset" style="padding:6px 10px;font-size:0.85em;" type="button">Insert bundled max lines</button></div>
+<textarea id="yaml-profile-stats-achievements-text" aria-label="Achievement and challenge counter lines for stats.achievements" rows="5" spellcheck="false" style="width:100%;box-sizing:border-box;padding:8px;background:#141a22;border:1px solid rgba(0,243,255,0.45);border-radius:8px;color:#c4f0ff;font-family:Consolas,monospace;font-size:11px;line-height:1.35;resize:vertical;" wrap="off" placeholder="# e.g. 04_cosmetics_collect: 60"></textarea>
+</div>
+</details>
+<button class="btn btn-Firmware" data-action="apply-profile-fields" data-requires="profile" style="margin-top:14px;padding:10px;width:100%;max-width:420px;" type="button">Apply profile field edits</button>
+<p style="color:#9bc;font-size:0.75em;margin:10px 0 0;line-height:1.35;">Shared backpack/bank SDU graphs live under <code>domains.local.progression_shared.graphs</code> (Oak2 backpack nodes, etc.); edit in YAML if you need those. Unlock flags such as <code>shared_progress.vault_hunter_level</code> are under <code>domains.local.unlockables</code> — use the preset buttons above or the raw editor.</p>
+</div>
 <div style="font-weight: 700; margin-bottom: 8px;">World / Missions</div>
 <div class="btnRow" style="display: flex; flex-wrap: wrap; gap: 8px;">
 <button class="btn btn-Firmware" data-action="call" data-fn="clearMapFog" data-requires="character" title="Reveals maps / clears fog where supported" type="button">Remove Map Fog</button>
@@ -3232,13 +3425,13 @@
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllSpecialization" data-requires="character" title="Unlocks + maxes specializations" type="button">Unlock All Specializations</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="maxCurrency" data-requires="character" title="Sets cash+eridium to max" type="button">Max Currency</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="maxAmmo" data-requires="character" title="Sets ammo pools to max" type="button">Max Ammo</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="character" title="Runs the major character/world presets" type="button">Unlock / Max Everything</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="character" title="full character unlock: max level, SDU, currencies, ammo, vault powers, hover drives, spec; map/location discovery; UVHM flags; missions, collectibles, challenges, achievements from bundled preset data; sync item levels to character level" type="button">Full Unlock</button>
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">World / Challenges</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
 <button class="btn btn-Firmware" data-action="call" data-fn="completeAllCollectibles" data-requires="character" title="Unlocks all collectibles (requires full toolbox)" type="button">Unlock All Collectibles</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllChallenges" data-requires="character" title="Completes all challenges (requires full toolbox)" type="button">Complete All Challenges</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="completeAllAchievements" data-requires="character" title="Completes all achievements (requires full toolbox)" type="button">Complete All Achievements</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllChallenges" data-requires="both" title="UVH flags on stats + zone missions (character or profile when stats present; requires full toolbox)" type="button">Complete All Challenges</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="completeAllAchievements" data-requires="both" title="stats.achievements max preset (character or profile; requires full toolbox)" type="button">Complete All Achievements</button>
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">Items</div>
 <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px;">
@@ -3247,14 +3440,9 @@
 </label>
 </div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="updateAllSerialLevels" data-requires="character" title="Sets all backpack/equipped/bank item levels to your character level from this save" type="button">Set All Items to Character Level</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="setAllItemsToSpecificLevel" data-requires="character" title="Sets all items to the target level above (character level unchanged)" type="button">Set All Items to Target Level</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="showAddItemsPopup" data-requires="character" title="Add item serials to backpack" type="button">Add Item Serials</button>
-</div>
-<div style="font-weight:700;margin:14px 0 8px;">Profile Only</div>
-<div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockNewGameShortcuts" data-requires="profile" title="Unlocks new game shortcuts (requires full toolbox)" type="button">Unlock New Game Shortcuts</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockAllCosmetics" data-requires="profile" title="Unlocks all cosmetics (requires full toolbox)" type="button">Unlock All Cosmetics</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="updateAllSerialLevels" data-requires="both" title="Character: backpack/equipped/bank. Profile: shared bank only. Uses character level or level cap when no character XP block." type="button">Set All Items to Character Level</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="setAllItemsToSpecificLevel" data-requires="both" title="Character: all slot maps under state.inventory.items (backpack, equipped, lost loot, etc.) + profile bank when present. Profile: shared bank only." type="button">Set All Items to Target Level</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="showAddItemsPopup" data-requires="both" title="Character: backpack. Profile: shared bank." type="button">Add Item Serials</button>
 </div>
 <div class="info-box" style="margin-top:14px;padding:10px 12px;font-size:0.85em;opacity:0.9;">
 <strong>Two YAML types:</strong> (1) <strong>Character</strong> — begins with <code>state:</code> (e.g. inventory under <code>state.inventory</code>). Character / Items buttons apply here. (2) <strong>Profile</strong> — includes <code>domains.local.unlockables</code> (often below <code>inputprefs</code> / UI). Profile Only buttons merge into that tree; missing <code>domains</code> / <code>unlockables</code> paths are created if needed.
@@ -3292,7 +3480,7 @@
 <button class="btn btn-Firmware" id="ccSafeNormalizeBtn" style="padding:8px 10px; min-width:210px;" type="button">Normalize YAML (safe)</button>
 </div>
 <div style="margin-top:10px;">
-<label for="yaml-vh-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Vault Hunter level (globals):</label>
+<label for="yaml-vh-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Vault Hunter level (root <code>globals</code>) — syncs with Profile save tools when a profile YAML is loaded:</label>
 <input id="yaml-vh-level-unlocked" max="999" min="0" name="yaml-vh-level-unlocked" placeholder="e.g. 6" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;" type="number"/>
 </div>
 <div style="margin-top:12px;">
@@ -3364,27 +3552,45 @@
 </div>
 <div id="yaml-serials-list" style="margin-top: 15px; overflow-y: auto;">
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-<span aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em;">Found Serials (<span id="yaml-serial-count">0</span>):</span>
+<span aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em;">Found Serials (<span id="yaml-serial-count">0</span>)<span id="yaml-serials-source-badge" style="font-weight:600;opacity:0.9;"></span>:</span>
 <input accept=".json" id="loadDecodedResultsInput" name="loadDecodedResultsInput" style="display:none" type="file"/>
 <button class="btn btn-Firmware" id="loadDecodedResultsBtn" title="Load bulk decoder export (stx-decoded-results.json) for correct names/levels. Decode your serials in the bulk decoder first, export JSON, then load here." type="button">Load decoded results</button>
 <span id="decodedResultsStatus" style="font-size:0.8em;color:rgba(0,243,255,0.8);"></span>
 <span class="decoded-results-hint" style="font-size:0.75em;color:rgba(0,243,255,0.55);">— Load for names, levels &amp; deserialized codes</span>
 </div>
-<div id="yaml-serials-pagination" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
-<button class="btn" id="yaml-serials-prev-btn" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
-<button class="btn" id="yaml-serials-next-btn" style="padding:6px 12px;font-size:0.85em;" type="button">Next 50</button>
-<span id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
+<div class="yaml-serials-pagination-row" id="yaml-serials-pagination" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+<button class="btn yaml-serials-page-btn" data-yaml-serials-dir="prev" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
+<button class="btn yaml-serials-page-btn" data-yaml-serials-dir="next" style="padding:6px 12px;font-size:0.85em;" type="button">Next 50</button>
+<span class="yaml-serials-page-info" id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
 <button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials (one per line). Use TXT or Auto mode, then Decode." type="button">Open serials in bulk decoder</button>
 <button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB." type="button">Open full YAML in bulk decoder</button>
 </div>
+<div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
+<div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Duplicate backpack or bank</div>
+<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Copies every occupied slot into new slots after the last one. Original slots are unchanged. <strong>At level</strong> re-levels each copy; enter the level before using those buttons.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+<label for="yamlDupTargetLevel" style="color: #00c8ff; font-size: 0.85em; display: flex; align-items: center; gap: 8px;">Level for copies <input id="yamlDupTargetLevel" inputmode="numeric" max="999" min="1" placeholder="e.g. 60" style="width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0; box-sizing: border-box;" type="number"/></label>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+<button class="btn btn-Firmware" disabled="" id="yamlDupBackpackBtn" title="Load a character save YAML (root state:) first." type="button">Duplicate backpack (as-is)</button>
+<button class="btn btn-Firmware" disabled="" id="yamlDupBackpackLevelBtn" title="Load a character save YAML (root state:) first." type="button">Duplicate backpack at level</button>
+<button class="btn btn-Firmware" disabled="" id="yamlDupBankBtn" title="Load profile .sav or YAML first." type="button">Duplicate bank (as-is)</button>
+<button class="btn btn-Firmware" disabled="" id="yamlDupBankLevelBtn" title="Load profile .sav or YAML first." type="button">Duplicate bank at level</button>
+</div>
+</div>
 <p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Large lists: the editor only previews 50 rows and decodes in chunks. For thousands of items, use <strong>Open serials in bulk decoder</strong> or export JSON from the bulk tool and <strong>Load decoded results</strong> here for names without stressing this page.</p>
 <div id="yaml-serials-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+<div class="yaml-serials-pagination-row" id="yaml-serials-pagination-bottom" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;">
+<button class="btn yaml-serials-page-btn" data-yaml-serials-dir="prev" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
+<button class="btn yaml-serials-page-btn" data-yaml-serials-dir="next" style="padding:6px 12px;font-size:0.85em;" type="button">Next 50</button>
+<span class="yaml-serials-page-info" id="yaml-serials-page-info-bottom" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
+</div>
 </div>
 <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load files with thousands of serials, search by name or ID, then add selected items to the loaded YAML or into the editor.</p>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load a file or paste serials below, then use the search box to filter. If you type in the search box with paste filled but nothing loaded yet, the list auto-loads from the paste area.</p>
 <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
 <textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
 </details>
@@ -3397,7 +3603,8 @@
 <button class="btn btn-Firmware" id="serialSearchClearBtn" type="button">Clear</button>
 </div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
-<button class="btn btn-primary primary-save-gradient" id="serialSearchAddToYamlBtn" title="Add selected serials to loaded YAML backpack" type="button">Add Selected to YAML</button>
+<button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">Add Selected to YAML</button>
+<button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add Selected to bank</button>
 <button class="btn btn-primary primary-save-gradient" id="serialSearchAddToEditorBtn" title="Import selected serials into the paste/import editor" type="button">Add Selected to Editor</button>
 </div>
 <div id="serial-search-status" style="color: rgba(0,200,255,0.9); font-size: 0.85em; margin-bottom: 8px;"></div>
@@ -3407,12 +3614,13 @@
 </div>
 <div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
-<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste one <strong>Base85</strong> or <strong>deserialized</strong> serial per line for a quick single or bulk add into the loaded save’s <code>backpack</code>. Lines starting with <code>#</code> are ignored.</p>
+<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste one <strong>Base85</strong> serial per line. <strong>Character saves:</strong> items go to <code>backpack</code>. <strong>Profile saves:</strong> use <strong>Add to bank</strong> for <code>domains.local.shared.inventory.items.bank</code>. Lines starting with <code>#</code> are ignored.</p>
 <label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
-<textarea aria-label="Serials to add to YAML backpack" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
+<textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
 Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
-<button class="btn btn-Firmware" id="yamlAddSerialsBtn" type="button">Add to backpack</button>
+<button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBtn" title="Load a character save YAML (root state:) first." type="button">Add to backpack</button>
+<button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 <button class="btn" id="yamlAddSerialsClearBtn" type="button">Clear box</button>
 <span style="color: rgba(255,255,255,0.55); font-size: 0.8em;">Ctrl+Enter in the box also adds</span>
 </div>
@@ -3430,7 +3638,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 </details>
 </div>
 </aside>
-<!-- Floating Code Panel (draggable, closeable) - icon.ico for closed/minimized state -->
+
 <button aria-label="Open code panel" class="rebuild-floating-btn" id="floating-output-icon-btn" title="Show Generated Item Code" type="button">
 <img alt="Code" height="52" src="./assets/icon.ico" width="52"/>
 </button>
@@ -3442,8 +3650,9 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <button class="btn rebuild-floating-panel-close" id="floating-output-close" title="Minimize to logo" type="button">Close</button>
 </div>
 <div class="rebuild-floating-panel-body">
-<div style="display:flex;gap:10px;margin-bottom:10px;">
+<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
 <button class="btn btn--brand" id="floatingAddItemToYaml" type="button">💾 Add Item to YAML</button>
+<button class="btn btn--brand" disabled="" id="floatingAddItemToBank" title="Load profile .sav or YAML first." type="button">🏦 Add Item to Bank</button>
 </div>
 <textarea class="editor-output-code" id="floating-output-code" name="floating-output-code" placeholder="Paste Base85 or deserialized code, or select parts to generate" rows="6" style="width:100%;resize:vertical;" title="Editable — paste code and use Convert buttons to switch formats"></textarea>
 <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
@@ -3460,10 +3669,58 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
       'use strict';
       function byId(id) { return document.getElementById(id); }
 
-      /** Prefer Nicnl-compatible API (matches BL4 save editors); fallback to local serializeToBase85 (offline / CORS). */
+      function resolveBase85FromGuidedFields(serialEl, deserEl) {
+        if (typeof window.ensureBase85SerialForYamlSave !== 'function') {
+          return String(serialEl && serialEl.value || '').trim();
+        }
+        if (serialEl && (serialEl.value || '').trim()) {
+          var a = window.ensureBase85SerialForYamlSave(serialEl.value);
+          if (a) return a;
+        }
+        if (deserEl && (deserEl.value || '').trim()) {
+          var b = window.ensureBase85SerialForYamlSave(deserEl.value);
+          if (b) return b;
+        }
+        return '';
+      }
+
+      function injectResolvedSerialIntoYamlEditor(b85, useBank) {
+        if (!b85) {
+          alert('Could not produce a BL-base85 serial. Use Convert to BL-base85, paste an @U serial, or fix the deserialized code.');
+          return;
+        }
+        var drawer = byId('rp-saveyaml-drawer');
+        if (drawer) {
+          drawer.classList.add('rp-open');
+          document.body.classList.add('rp-saveyaml-drawer-open');
+        }
+        var ok = useBank
+          ? (window.appendSerialToProfileBank && window.appendSerialToProfileBank(b85))
+          : (window.appendSerialToYAML && window.appendSerialToYAML(b85));
+        if (!ok) {
+          alert(useBank
+            ? 'Could not add to profile bank. Load a profile YAML (shared inventory) first.'
+            : 'Could not add to backpack. Load a character save YAML (root state:) first.');
+          return;
+        }
+        if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
+      }
+
+      
       function serializeDeserializedToBase85BestEffort(code) {
         code = String(code || '').trim();
         if (!code) return Promise.resolve('');
+        if (/^@U/i.test(code)) {
+          var asU = code.indexOf('@U') === 0 ? code : ('@U' + code.replace(/^@U/i, ''));
+          var ok = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(asU) : asU;
+          return Promise.resolve(ok || '');
+        }
+        if (typeof window.__stxNormalizeDeserializedInput === 'function') {
+          try {
+            var norm0 = window.__stxNormalizeDeserializedInput(code);
+            if (norm0) code = norm0;
+          } catch (_) {}
+        }
         function localSer() {
           if (typeof window.serializeToBase85 !== 'function') return '';
           try { return String(window.serializeToBase85(code, undefined, true) || '').trim(); } catch (_) { return ''; }
@@ -3475,6 +3732,35 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           var s = String(remote || '').trim();
           return s || localSer();
         }).catch(function () { return localSer(); });
+      }
+
+      function finalizeB85ForYamlInject(b85) {
+        b85 = String(b85 || '').trim();
+        if (b85 && typeof window.ensureBase85SerialForYamlSave === 'function') {
+          b85 = window.ensureBase85SerialForYamlSave(b85) || b85;
+        }
+        return b85;
+      }
+
+      function injectFromFloatingOrGuidedRaw(raw, useBank) {
+        raw = String(raw || '').trim();
+        if (!raw) {
+          alert('Paste or generate item code first.');
+          return;
+        }
+        var sync = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(raw) : '';
+        if (sync) {
+          injectResolvedSerialIntoYamlEditor(sync, useBank);
+          return;
+        }
+        serializeDeserializedToBase85BestEffort(raw).then(function (b85) {
+          b85 = finalizeB85ForYamlInject(b85);
+          if (!b85) {
+            alert('Could not produce a BL-base85 serial. If this is deserialized text, try Convert to BL-base85, or check the header (four numbers + || + parts).');
+            return;
+          }
+          injectResolvedSerialIntoYamlEditor(b85, useBank);
+        });
       }
 
       function initSplash() {
@@ -3657,7 +3943,6 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           if (serialEl) {
             if (code && typeof window.serializeToBase85 === 'function') {
               try {
-                // Third arg enables round-trip bit length so @U decodes cleanly (avoid padding → garbage tokens).
                 var b85 = window.serializeToBase85(code, undefined, true);
                 serialEl.value = (b85 && String(b85).trim()) || '—';
               } catch (_) { serialEl.value = '—'; }
@@ -3668,16 +3953,35 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         }
         window.refreshGuidedOutputPreview = update;
         if (addBtn) addBtn.addEventListener('click', function () {
-          var drawer = byId('rp-saveyaml-drawer');
-          var code = (deserEl && deserEl.value || '').trim();
-          if (drawer) { drawer.classList.add('rp-open'); document.body.classList.add('rp-saveyaml-drawer-open'); }
-          var yamlTa = byId('yamlInput');
-          if (yamlTa && code) {
-            var cur = (yamlTa.value || '').trim();
-            var serial = (cur.match(/backpack:\s*$/m) ? cur + '\n  - serial: "' + String(code).replace(/"/g, '\\"') + '"' : cur);
-            yamlTa.value = serial;
-            if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
+          var b85 = resolveBase85FromGuidedFields(serialEl, deserEl);
+          if (b85) {
+            injectResolvedSerialIntoYamlEditor(b85, false);
+            return;
           }
+          var deserOnly = (deserEl && deserEl.value || '').trim();
+          if (!deserOnly) {
+            injectResolvedSerialIntoYamlEditor('', false);
+            return;
+          }
+          serializeDeserializedToBase85BestEffort(deserOnly).then(function (packed) {
+            injectResolvedSerialIntoYamlEditor(finalizeB85ForYamlInject(packed), false);
+          });
+        });
+        var addBankBtn = byId('guidedAddItemToBank');
+        if (addBankBtn) addBankBtn.addEventListener('click', function () {
+          var b85 = resolveBase85FromGuidedFields(serialEl, deserEl);
+          if (b85) {
+            injectResolvedSerialIntoYamlEditor(b85, true);
+            return;
+          }
+          var deserOnlyB = (deserEl && deserEl.value || '').trim();
+          if (!deserOnlyB) {
+            injectResolvedSerialIntoYamlEditor('', true);
+            return;
+          }
+          serializeDeserializedToBase85BestEffort(deserOnlyB).then(function (packed) {
+            injectResolvedSerialIntoYamlEditor(finalizeB85ForYamlInject(packed), true);
+          });
         });
         var toSerialBtn = byId('guidedConvertToSerial');
         var toDeserBtn = byId('guidedConvertToDeserialized');
@@ -3727,7 +4031,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var dragHandle = byId('floating-panel-drag-handle');
         var floatingCode = byId('floating-output-code');
         var outCode = byId('outCode');
-        /** Generated Item Code section is canonical for this panel; never mirror from Simple Builder #outCode. */
+        
         function getPrimaryOutputEl() {
           var deser = byId('guidedOutputDeserialized');
           return deser || outCode;
@@ -3738,9 +4042,9 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           var guidedItem = byId('ccGuidedItemType');
           return !!(guidedItem && (guidedItem.value || '').trim());
         }
-        /** When true, interval sync must not overwrite (e.g. after Convert). Cleared when opening the panel or syncFloatingOutput(true). */
+        
         var floatingSyncPaused = false;
-        /** Guided mode: floating was switched to show BL-base85 from Convert; sync from Serial not Deserialized until reset. */
+        
         var floatingShowsSerial = false;
         function syncFromOutCode() {
           if (floatingSyncPaused) return;
@@ -3817,16 +4121,45 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         }
         var addYamlBtn = byId('floatingAddItemToYaml');
         if (addYamlBtn) addYamlBtn.addEventListener('click', function () {
-          var drawer = byId('rp-saveyaml-drawer');
-          var code = getEffectiveCodeForYamlOrCopy();
-          if (drawer) { drawer.classList.add('rp-open'); document.body.classList.add('rp-saveyaml-drawer-open'); }
-          var yamlTa = byId('yamlInput');
-          if (yamlTa && code) {
-            var cur = (yamlTa.value || '').trim();
-            var serial = (cur.match(/backpack:\s*$/m) ? cur + '\n  - serial: "' + String(code).replace(/"/g, '\\"') + '"' : cur);
-            yamlTa.value = serial;
-            if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
+          var raw = getEffectiveCodeForYamlOrCopy();
+          if (!String(raw || '').trim()) {
+            var g = resolveBase85FromGuidedFields(guidedSerialEl, guidedDeserEl);
+            if (g) injectResolvedSerialIntoYamlEditor(g, false);
+            else injectResolvedSerialIntoYamlEditor('', false);
+            return;
           }
+          var sync = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(raw) : '';
+          if (sync) {
+            injectResolvedSerialIntoYamlEditor(sync, false);
+            return;
+          }
+          var g2 = resolveBase85FromGuidedFields(guidedSerialEl, guidedDeserEl);
+          if (g2) {
+            injectResolvedSerialIntoYamlEditor(g2, false);
+            return;
+          }
+          injectFromFloatingOrGuidedRaw(raw, false);
+        });
+        var addBankFloatingBtn = byId('floatingAddItemToBank');
+        if (addBankFloatingBtn) addBankFloatingBtn.addEventListener('click', function () {
+          var raw = getEffectiveCodeForYamlOrCopy();
+          if (!String(raw || '').trim()) {
+            var gb = resolveBase85FromGuidedFields(guidedSerialEl, guidedDeserEl);
+            if (gb) injectResolvedSerialIntoYamlEditor(gb, true);
+            else injectResolvedSerialIntoYamlEditor('', true);
+            return;
+          }
+          var syncB = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(raw) : '';
+          if (syncB) {
+            injectResolvedSerialIntoYamlEditor(syncB, true);
+            return;
+          }
+          var g2b = resolveBase85FromGuidedFields(guidedSerialEl, guidedDeserEl);
+          if (g2b) {
+            injectResolvedSerialIntoYamlEditor(g2b, true);
+            return;
+          }
+          injectFromFloatingOrGuidedRaw(raw, true);
         });
         var copyBtn = byId('floatingCopyBtn');
         if (copyBtn) copyBtn.addEventListener('click', function () {
@@ -3913,6 +4246,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         initSaveYamlDrawer();
         initGuidedOutputPreview();
         initFloatingCodePanel();
+        try { if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons(); } catch (_) {}
         var convertYamlBtn = byId('convertSAVToYAMLBtn');
         var convertSavBtn = byId('convertYAMLToSAVBtn');
         var saveYamlBtn = byId('saveYAMLToSAVBtn');

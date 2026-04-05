@@ -66,8 +66,8 @@
     if (!inv) return ' · inv tags: data bundle missing';
     var n = inv.partsByName && typeof Object.keys === 'function' ? Object.keys(inv.partsByName).length : null;
     if (n != null && n > 0) return ' · inv comp tags: ' + n + ' parts indexed';
-    var ed = window.EDITOR_PART_SELECTION_DATA;
-    if (ed && typeof Object.keys === 'function') return ' · inv tags: bundle present · editor ref: ' + Object.keys(ed).length + ' archetypes';
+    var ed = window.INV_PART_SELECTION_DATA;
+    if (ed && typeof Object.keys === 'function') return ' · inv tags: bundle present · part layout rules: ' + Object.keys(ed).length + ' keys';
     return ' · inv tags: bundle present';
   }
 
@@ -300,15 +300,15 @@
         note: '_meta missing on INV_COMP_TAG_DATA'
       };
     }
-    var ec = window.EDITOR_EXTRACTED_CATALOG;
-    var ps = window.EDITOR_PART_SELECTION_DATA;
-    out.editor_reference_data = {
+    var ec = window.INVENTORY_ITEM_CATALOG;
+    var ps = window.INV_PART_SELECTION_DATA;
+    out.inventory_layout_reference = {
       loaded: !!(ec || ps),
-      extracted_catalog_weapon_rows: ec && ec.weapons ? ec.weapons.length : null,
-      part_selection_archetype_keys: ps ? Object.keys(ps).length : null,
-      exclusion_tag_rows: window.EDITOR_EXCLUSION_TAGS ? Object.keys(window.EDITOR_EXCLUSION_TAGS).length : null,
-      part_weight_rows: window.EDITOR_PART_WEIGHTS ? Object.keys(window.EDITOR_PART_WEIGHTS).length : null,
-      min_max_slot_rows: window.EDITOR_MIN_MAX_PARTS ? Object.keys(window.EDITOR_MIN_MAX_PARTS).length : null
+      catalog_weapon_rows: ec && ec.weapons ? ec.weapons.length : null,
+      part_selection_keys: ps ? Object.keys(ps).length : null,
+      exclusion_tag_rows: window.INV_PART_EXCLUSION_TAGS ? Object.keys(window.INV_PART_EXCLUSION_TAGS).length : null,
+      part_weight_rows: window.INV_PART_WEIGHTS ? Object.keys(window.INV_PART_WEIGHTS).length : null,
+      min_max_slot_rows: window.INV_PART_MIN_MAX_SLOTS ? Object.keys(window.INV_PART_MIN_MAX_SLOTS).length : null
     };
     out.legit_decode_helpers_version =
       window.LegitDecodeHelpers && window.LegitDecodeHelpers.__version

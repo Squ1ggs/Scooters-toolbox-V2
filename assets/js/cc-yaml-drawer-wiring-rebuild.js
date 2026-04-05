@@ -146,6 +146,145 @@
     }
     return null;
   }
+  function profileObjectHasBlackMarketKeys(o) {
+    return o && typeof o === 'object' && (
+      Object.prototype.hasOwnProperty.call(o, 'blackmarket_items') ||
+      Object.prototype.hasOwnProperty.call(o, 'blackmarket_usedpools') ||
+      Object.prototype.hasOwnProperty.call(o, 'blackmarket_trackerstate')
+    );
+  }
+  /** Resolve `profile:` (or equivalent) object that holds `blackmarket_*` keys. */
+  function getProfileBlackMarketContainer(data, create) {
+    if (!data || typeof data !== 'object') return null;
+    if (profileObjectHasBlackMarketKeys(data.profile)) return data.profile;
+    if (data.domains && data.domains.local && profileObjectHasBlackMarketKeys(data.domains.local.profile)) {
+      return data.domains.local.profile;
+    }
+    if (profileObjectHasBlackMarketKeys(data)) return data;
+    if (!create) return null;
+    data.profile = data.profile && typeof data.profile === 'object' ? data.profile : {};
+    return data.profile;
+  }
+  function stripQuotedPartCode(c) {
+    if (c == null) return '';
+    var s = String(c).trim();
+    if ((s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') || (s.charAt(0) === "'" && s.charAt(s.length - 1) === "'")) {
+      s = s.slice(1, -1).replace(/\\"/g, '"');
+    }
+    return s;
+  }
+  var __ccBlackMarketDatalistFilled = false;
+  window.__ccEnsureBlackMarketCompDatalist = function () {
+    var dl = byId('ccBlackMarketCompDatalist');
+    if (!dl || __ccBlackMarketDatalistFilled) return;
+    var parts = window.STX_DATASET && window.STX_DATASET.ALL_PARTS;
+    if (!Array.isArray(parts) || !parts.length) return;
+    __ccBlackMarketDatalistFilled = true;
+    var seen = {};
+    var cap = 2800;
+    for (var i = 0; i < parts.length && Object.keys(seen).length < cap; i++) {
+      var raw = parts[i] && parts[i].code;
+      var s = stripQuotedPartCode(raw);
+      if (!s || !/\.comp_05_legendary_|\.comp_06_pearl_/.test(s)) continue;
+      if (seen[s]) continue;
+      seen[s] = true;
+      var opt = document.createElement('option');
+      opt.value = s;
+      dl.appendChild(opt);
+    }
+  };
+  function syncBlackMarketFieldsFromYamlData(data) {
+    var container = data ? getProfileBlackMarketContainer(data, false) : null;
+    function slot(idx) {
+      var tEl = byId('yaml-bm-slot' + idx + '-type');
+      var cEl = byId('yaml-bm-slot' + idx + '-comp');
+      var gEl = byId('yaml-bm-slot' + idx + '-stage');
+      var row = container && Array.isArray(container.blackmarket_items) ? container.blackmarket_items[idx - 1] : null;
+      var tt = row && row.blackmarket_itemtype != null ? String(row.blackmarket_itemtype) : '';
+      var cc = row && row.blackmarket_itemcomp != null ? String(row.blackmarket_itemcomp) : '';
+      var gg = row && row.blackmarket_gamestage != null ? String(row.blackmarket_gamestage) : '';
+      if (tEl) tEl.value = tt;
+      if (cEl) cEl.value = cc;
+      if (gEl) gEl.value = gg !== '' ? gg : '50';
+    }
+    slot(1);
+    slot(2);
+    var pools = container && Array.isArray(container.blackmarket_usedpools) ? container.blackmarket_usedpools : [];
+    for (var p = 0; p < 3; p++) {
+      var pel = byId('yaml-bm-pool' + p);
+      if (pel) pel.value = pools[p] != null ? String(pools[p]) : '';
+    }
+    var tr = byId('yaml-bm-tracker');
+    if (tr) {
+      if (!container || container.blackmarket_trackerstate == null) tr.checked = false;
+      else tr.checked = !!container.blackmarket_trackerstate;
+    }
+  }
+  function applyBlackMarketFieldsToYamlData(data) {
+    var t1 = byId('yaml-bm-slot1-type');
+    var c1 = byId('yaml-bm-slot1-comp');
+    var g1 = byId('yaml-bm-slot1-stage');
+    var t2 = byId('yaml-bm-slot2-type');
+    var c2 = byId('yaml-bm-slot2-comp');
+    var g2 = byId('yaml-bm-slot2-stage');
+    if (!t1 && !c1 && !g1 && !t2 && !c2 && !g2) return;
+    var container = getProfileBlackMarketContainer(data, true);
+    if (!container) return;
+    var gs1 = g1 && g1.value.trim() !== '' ? parseInt(g1.value, 10) : 50;
+    var gs2 = g2 && g2.value.trim() !== '' ? parseInt(g2.value, 10) : 50;
+    if (!Number.isFinite(gs1)) gs1 = 50;
+    if (!Number.isFinite(gs2)) gs2 = 50;
+    container.blackmarket_items = [
+      {
+        blackmarket_itemtype: (t1 && t1.value.trim()) || '',
+        blackmarket_itemcomp: (c1 && c1.value.trim()) || '',
+        blackmarket_gamestage: gs1
+      },
+      {
+        blackmarket_itemtype: (t2 && t2.value.trim()) || '',
+        blackmarket_itemcomp: (c2 && c2.value.trim()) || '',
+        blackmarket_gamestage: gs2
+      }
+    ];
+    var pEls = [byId('yaml-bm-pool0'), byId('yaml-bm-pool1'), byId('yaml-bm-pool2')];
+    var allPoolsEmpty = true;
+    for (var pe = 0; pe < pEls.length; pe++) {
+      if (pEls[pe] && String(pEls[pe].value).trim() !== '') { allPoolsEmpty = false; break; }
+    }
+    if (!allPoolsEmpty) {
+      container.blackmarket_usedpools = pEls.map(function (el) {
+        if (!el || String(el.value).trim() === '') return 0;
+        var n = parseInt(el.value, 10);
+        return Number.isFinite(n) ? n : 0;
+      });
+    }
+    var tr = byId('yaml-bm-tracker');
+    if (tr) container.blackmarket_trackerstate = !!tr.checked;
+  }
+  window.__ccUpdatePresetCosmeticUnlockCountUi = function () {
+    var countEl = byId('yaml-profile-cosmetics-preset-count');
+    var catsEl = byId('yaml-profile-cosmetics-preset-cats');
+    if (!countEl && !catsEl) return;
+    var n = 0;
+    var lists = 0;
+    try {
+      if (typeof window.ensurePresetDataLoaded === 'function') window.ensurePresetDataLoaded();
+      var U = typeof window.__ccPresetUnlockables === 'function' ? window.__ccPresetUnlockables() : null;
+      if (U && typeof U === 'object') {
+        for (var k in U) {
+          if (!Object.prototype.hasOwnProperty.call(U, k) || k === 'shared_progress') continue;
+          var ent = U[k] && U[k].entries;
+          if (Array.isArray(ent)) {
+            n += ent.length;
+            lists++;
+          }
+        }
+      }
+    } catch (_e) {}
+    if (countEl) countEl.textContent = n ? String(n) : '—';
+    if (catsEl) catsEl.textContent = lists ? String(lists) : '—';
+  };
+
   window.syncYamlToFields = function () {
     var t = window.getYamlText();
     var text = (t && t.text) || '';
@@ -178,6 +317,84 @@
       if (curr) {
         if (cashEl && curr.cash != null) cashEl.value = String(curr.cash);
         if (eridiumEl && curr.eridium != null) eridiumEl.value = String(curr.eridium);
+      }
+      var vhUnlockedEl = byId('yaml-vh-level-unlocked');
+      var vhProfUnlockedEl = byId('yaml-profile-vh-unlocked');
+      var vhCurrentEl = byId('yaml-profile-vh-current');
+      var vc01El = byId('yaml-profile-vc01-level');
+      var vc02El = byId('yaml-profile-vc02-level');
+      var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
+      var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
+      var echoTokEl = byId('yaml-profile-echotoken-points');
+      if (data.globals && typeof data.globals === 'object') {
+        var gvh = data.globals.highest_unlocked_vault_hunter_level;
+        if (gvh != null) {
+          if (vhUnlockedEl) vhUnlockedEl.value = String(gvh);
+          if (vhProfUnlockedEl) vhProfUnlockedEl.value = String(gvh);
+        }
+        if (vhCurrentEl && data.globals.vault_hunter_level != null) {
+          vhCurrentEl.value = String(data.globals.vault_hunter_level);
+        }
+      }
+      var kind = typeof detectYamlKind === 'function' ? detectYamlKind(text) : 'unknown';
+      var bankSum = byId('yaml-profile-bank-summary');
+      if (kind === 'profile' && bankSum) {
+        if (typeof window.__ccExtractBankSerialsSimple === 'function' && typeof window.__ccNextAvailableBankSlot === 'function') {
+          var bankSerials = window.__ccExtractBankSerialsSimple(text) || [];
+          var filled = 0;
+          for (var bi = 0; bi < bankSerials.length; bi++) {
+            if (bankSerials[bi] && String(bankSerials[bi].serial || '').trim()) filled++;
+          }
+          var nextSl = window.__ccNextAvailableBankSlot(text);
+          bankSum.textContent =
+            'Shared bank: ' + filled + ' item slot(s) with serials, ' + bankSerials.length + ' slot entrie(s) parsed — next suggested index: ' + nextSl +
+            ' (YAML path: domains.local.shared.inventory.items.bank).';
+        } else {
+          bankSum.textContent = 'Shared bank: load YAML to refresh summary.';
+        }
+      } else if (bankSum) {
+        bankSum.textContent = 'Load a profile YAML to see shared bank stats.';
+      }
+      if (kind === 'profile' && data.domains && data.domains.local && data.domains.local.shared) {
+        var sh = data.domains.local.shared;
+        function sharedExpByType(tn) {
+          var ex = sh.experience;
+          if (!Array.isArray(ex)) return null;
+          for (var k = 0; k < ex.length; k++) {
+            var en = ex[k];
+            if (en && String(en.type || '') === tn) return en;
+          }
+          return null;
+        }
+        var e1 = sharedExpByType('VaultCard01_Experience');
+        var e2 = sharedExpByType('VaultCard02_Experience');
+        if (vc01El && e1 && e1.level != null) vc01El.value = String(e1.level);
+        if (vc02El && e2 && e2.level != null) vc02El.value = String(e2.level);
+        var cur = sh.currencies || {};
+        if (vcTok1El && cur.vaultcard01_tokens != null) vcTok1El.value = String(cur.vaultcard01_tokens);
+        if (vcTok2El && cur.vaultcard02_tokens != null) vcTok2El.value = String(cur.vaultcard02_tokens);
+      }
+      var progShared = data.domains && data.domains.local && data.domains.local.progression_shared;
+      if (echoTokEl && progShared && progShared.point_pools && progShared.point_pools.echotokenprogresspoints != null) {
+        echoTokEl.value = String(progShared.point_pools.echotokenprogresspoints);
+      }
+      if (kind === 'profile') {
+        syncBlackMarketFieldsFromYamlData(data);
+        if (typeof window.__ccEnsureBlackMarketCompDatalist === 'function') window.__ccEnsureBlackMarketCompDatalist();
+        if (typeof window.__ccUpdatePresetCosmeticUnlockCountUi === 'function') window.__ccUpdatePresetCosmeticUnlockCountUi();
+        var achTa = byId('yaml-profile-stats-achievements-text');
+        if (achTa && typeof window.__ccAchievementsToLines === 'function') {
+          var achObj = data.stats && data.stats.achievements;
+          achTa.value = window.__ccAchievementsToLines(achObj && typeof achObj === 'object' ? achObj : null);
+        }
+      } else {
+        syncBlackMarketFieldsFromYamlData(null);
+        var pc = byId('yaml-profile-cosmetics-preset-count');
+        var pt = byId('yaml-profile-cosmetics-preset-cats');
+        if (pc) pc.textContent = '—';
+        if (pt) pt.textContent = '—';
+        var achTaClear = byId('yaml-profile-stats-achievements-text');
+        if (achTaClear) achTaClear.value = '';
       }
     } catch (_e) {}
   };
@@ -256,12 +473,114 @@
       if (cashEl && cashEl.value.trim() !== '') data.state.currencies.cash = parseInt(cashEl.value, 10);
       if (eridiumEl && eridiumEl.value.trim() !== '') data.state.currencies.eridium = parseInt(eridiumEl.value, 10);
     }
+    var vhUnlockedEl = byId('yaml-vh-level-unlocked');
+    if (vhUnlockedEl && vhUnlockedEl.value.trim() !== '') {
+      data.globals = data.globals || {};
+      data.globals.highest_unlocked_vault_hunter_level = parseInt(vhUnlockedEl.value, 10);
+    }
+    var vhCurEl = byId('yaml-profile-vh-current');
+    if (vhCurEl && vhCurEl.value.trim() !== '') {
+      data.globals = data.globals || {};
+      data.globals.vault_hunter_level = parseInt(vhCurEl.value, 10);
+    }
+    if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
+  };
+
+  function parseOptionalInt(el) {
+    if (!el || el.value.trim() === '') return null;
+    var n = parseInt(el.value, 10);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  window.applyProfileYamlFieldChanges = function () {
+    var data = window.getYamlDataFromEditor();
+    if (!data) return alert('Load or paste a YAML file first.');
+    if (typeof detectYamlKind !== 'function' || detectYamlKind(window.getYamlText().text || '') !== 'profile') {
+      return alert('This action is for profile saves only (domains.local / profile).');
+    }
+    var vhUnlockedEl = byId('yaml-vh-level-unlocked');
+    var vhCurrentEl = byId('yaml-profile-vh-current');
+    var vc01El = byId('yaml-profile-vc01-level');
+    var vc02El = byId('yaml-profile-vc02-level');
+    var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
+    var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
+    var echoTokEl = byId('yaml-profile-echotoken-points');
+    var vhProfUnlockedEl = byId('yaml-profile-vh-unlocked');
+    var hu = parseOptionalInt(vhProfUnlockedEl);
+    if (hu == null) hu = parseOptionalInt(vhUnlockedEl);
+    var vlc = parseOptionalInt(vhCurrentEl);
+    if (hu != null || vlc != null) {
+      data.globals = data.globals || {};
+      if (hu != null) data.globals.highest_unlocked_vault_hunter_level = hu;
+      if (vlc != null) data.globals.vault_hunter_level = vlc;
+    }
+    data.domains = data.domains || {};
+    data.domains.local = data.domains.local || {};
+    data.domains.local.shared = data.domains.local.shared || {};
+    var sh = data.domains.local.shared;
+    var t1 = parseOptionalInt(vcTok1El);
+    var t2 = parseOptionalInt(vcTok2El);
+    if (t1 != null || t2 != null) {
+      sh.currencies = sh.currencies || {};
+      if (t1 != null) sh.currencies.vaultcard01_tokens = t1;
+      if (t2 != null) sh.currencies.vaultcard02_tokens = t2;
+    }
+    var l1 = parseOptionalInt(vc01El);
+    var l2 = parseOptionalInt(vc02El);
+    if (l1 != null || l2 != null) {
+      sh.experience = Array.isArray(sh.experience) ? sh.experience : [];
+      function setVaultCardLevelIfPresent(arr, typeName, level) {
+        if (level == null || !Array.isArray(arr)) return;
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] && String(arr[i].type || '') === typeName) { arr[i].level = level; return; }
+        }
+      }
+      setVaultCardLevelIfPresent(sh.experience, 'VaultCard01_Experience', l1);
+      setVaultCardLevelIfPresent(sh.experience, 'VaultCard02_Experience', l2);
+    }
+    var echoN = parseOptionalInt(echoTokEl);
+    if (echoN != null) {
+      data.domains.local.progression_shared = data.domains.local.progression_shared || {};
+      data.domains.local.progression_shared.point_pools = data.domains.local.progression_shared.point_pools || {};
+      data.domains.local.progression_shared.point_pools.echotokenprogresspoints = echoN;
+    }
+    applyBlackMarketFieldsToYamlData(data);
+    var achTa = byId('yaml-profile-stats-achievements-text');
+    if (achTa && String(achTa.value || '').trim() !== '') {
+      if (typeof window.__ccParseAchievementLines === 'function' && typeof window.__ccMergeAchievementPatch === 'function') {
+        var patch = window.__ccParseAchievementLines(achTa.value);
+        var hasPatch = false;
+        for (var pk in patch) {
+          if (Object.prototype.hasOwnProperty.call(patch, pk)) { hasPatch = true; break; }
+        }
+        if (hasPatch) {
+          data.stats = data.stats || {};
+          data.stats.achievements = window.__ccMergeAchievementPatch(data.stats.achievements, patch);
+        }
+      }
+    }
     if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
   };
   function detectYamlKind(text) {
     var t = String(text || '').replace(/^\uFEFF/, '');
     if (!t.trim()) return 'unknown';
-    /** Root `state:` only — nested `  state:` under profile keys must not match (was mis-detecting Profile.sav). */
+    var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
+    if (y && typeof y.load === 'function') {
+      try {
+        var sanitized = typeof window.sanitizeYamlForParse === 'function' ? window.sanitizeYamlForParse(t) : t;
+        var data = y.load(sanitized, {});
+        if (data && typeof data === 'object') {
+          var st = data.state;
+          if (st && typeof st === 'object') {
+            if (st.inventory || Array.isArray(st.experience) || st.char_guid != null || st.char_name != null || data.char_name != null) {
+              return 'character';
+            }
+          }
+          if (data.domains && data.domains.local) return 'profile';
+        }
+      } catch (_) {}
+    }
+    /** Root `state:` at line start — avoids nested `state:` under profile-only trees. */
     var hasRootState = /^state\s*:/m.test(t);
     var hasDomains = /(^|\n)\s*domains\s*:/m.test(t);
     var hasProfileHints =
@@ -304,6 +623,9 @@
           'Could not detect save type. Expect a root line state: (character) or domains: / profile markers (profile).';
       }
     }
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    var profTools = byId('ccProfileYamlTools');
+    if (profTools) profTools.style.display = kind === 'profile' ? 'block' : 'none';
   }
   window.__updatePresetButtonsAvailability = updateButtons;
   function boolIcon(ok) { return ok ? '&#x2713;' : '&#x2717;'; }
@@ -347,6 +669,33 @@
     if (ta) {
       ta.addEventListener('input', function () { render(); updateButtons(); });
       ta.addEventListener('change', function () { render(); updateButtons(); });
+    }
+    var vhAdv = byId('yaml-vh-level-unlocked');
+    var vhProf = byId('yaml-profile-vh-unlocked');
+    if (vhAdv && vhProf) {
+      vhAdv.addEventListener('input', function () { vhProf.value = vhAdv.value; });
+      vhProf.addEventListener('input', function () { vhAdv.value = vhProf.value; });
+    }
+    var scrollBankBtn = byId('ccProfileScrollBankSerialsBtn');
+    if (scrollBankBtn) {
+      scrollBankBtn.addEventListener('click', function () {
+        var el = byId('yamlAddSerialsInput');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          try { el.focus(); } catch (_) {}
+        }
+      });
+    }
+    var achFill = byId('yaml-profile-ach-fill-preset');
+    if (achFill && achFill.dataset.ccWired !== '1') {
+      achFill.dataset.ccWired = '1';
+      achFill.addEventListener('click', function () {
+        var getMax = window.__ccGetBundledAchievementCountersMax;
+        var toLines = window.__ccAchievementsToLines;
+        if (typeof getMax !== 'function' || typeof toLines !== 'function') return;
+        var ta = byId('yaml-profile-stats-achievements-text');
+        if (ta) ta.value = toLines(getMax());
+      });
     }
   }
   if (document.readyState === 'loading') {

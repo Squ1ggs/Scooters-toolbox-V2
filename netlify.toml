@@ -14,6 +14,6 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Headers = "Content-Type, X-STX-Track-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key"
+    Access-Control-Allow-Headers = "Content-Type, X-STX-Track-Key, X-STX-Counter-Key, X-STX-Items-Bump-Key, X-STX-Admin-Key"
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Cache-Control = "no-store"

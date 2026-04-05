@@ -292,12 +292,25 @@
   }
 
   function getYamlText() {
-    var el = byId('yamlInput') || byId('fullYamlInput');
+    if (typeof window.getYamlText === 'function') {
+      try {
+        var w = window.getYamlText();
+        if (w && typeof w === 'object' && typeof w.text === 'string') return w;
+      } catch (_) {}
+    }
+    var el = byId('yamlInput') || byId('fullYamlInput') || document.querySelector('textarea[aria-label="YAML editor"]');
     return { text: el ? (el.value || '') : '', el: el };
   }
 
   function setYamlText(text) {
-    var el = byId('yamlInput') || byId('fullYamlInput');
+    if (typeof window.setYamlText === 'function') {
+      try {
+        window.setYamlText(text);
+        if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
+        return;
+      } catch (_) {}
+    }
+    var el = byId('yamlInput') || byId('fullYamlInput') || document.querySelector('textarea[aria-label="YAML editor"]');
     if (el) el.value = text;
     if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
   }
@@ -318,7 +331,7 @@
       var lineIndent = m ? m[1].length : 0;
       var content = line.trim();
 
-      if (/^backpack\s*:?\s*$/i.test(content)) {
+      if (/^backpack\s*:?\s*$/i.test(content) || /^backpack\s*:\s*\{\}\s*$/i.test(content)) {
         inBackpack = true;
         baseIndent = lineIndent;
         slotIdx = 0;
@@ -328,6 +341,57 @@
         inBackpack = false;
       }
       if (!inBackpack) continue;
+
+      var slotMatch = line.match(/^\s*slot_(\d+)\s*:\s*$/i) ||
+        line.match(/^\s*-\s*slot\s*:\s*(\d+)/i) ||
+        line.match(/^\s*slot\s*:\s*(\d+)/i);
+      if (slotMatch) {
+        if (slotNum != null) serials.push({ slot: slotNum, serial: serial || '' });
+        slotNum = parseInt(slotMatch[1], 10);
+        serial = '';
+      } else {
+        var dashSlot = line.match(/^\s*-\s*$/);
+        if (dashSlot && lineIndent > baseIndent) {
+          if (slotNum != null) serials.push({ slot: slotNum, serial: serial || '' });
+          slotNum = slotIdx++;
+          serial = '';
+        }
+      }
+      var serialMatch = line.match(/^\s*serial\s*:\s*(.+)/i);
+      if (serialMatch && slotNum != null) {
+        serial = String(serialMatch[1]).trim().replace(/^["']|["']$/g, '');
+      }
+    }
+    if (slotNum != null) serials.push({ slot: slotNum, serial: serial || '' });
+    return serials;
+  }
+
+  function extractBankSerialsSimple(yamlText) {
+    var serials = [];
+    var text = String(yamlText || '');
+    var lines = text.split(/\r?\n/);
+    var inBank = false;
+    var baseIndent = 999;
+    var slotNum = null;
+    var serial = '';
+    var slotIdx = 0;
+
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var m = line.match(/^(\s*)(\S?)/);
+      var lineIndent = m ? m[1].length : 0;
+      var content = line.trim();
+
+      if (/^bank\s*:?\s*$/i.test(content)) {
+        inBank = true;
+        baseIndent = lineIndent;
+        slotIdx = 0;
+        continue;
+      }
+      if (inBank && content && lineIndent <= baseIndent) {
+        inBank = false;
+      }
+      if (!inBank) continue;
 
       var slotMatch = line.match(/^\s*slot_(\d+)\s*:\s*$/i) ||
         line.match(/^\s*-\s*slot\s*:\s*(\d+)/i) ||
@@ -369,6 +433,13 @@
     return computeMaxBackpackSlotFromExtracted(extractBackpackSerialsSimple(yamlText)) + 1;
   }
 
+  function nextAvailableBankSlot(yamlText) {
+    return computeMaxBackpackSlotFromExtracted(extractBankSerialsSimple(yamlText)) + 1;
+  }
+
+  window.__ccExtractBankSerialsSimple = extractBankSerialsSimple;
+  window.__ccNextAvailableBankSlot = nextAvailableBankSlot;
+
   function updateYamlNextSlotDisplay() {
     var slotInfo = byId('yaml-auto-slot-info');
     if (!slotInfo) return;
@@ -377,7 +448,16 @@
       slotInfo.textContent = 'Next available slot: —';
       return;
     }
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
     var lines = String(yamlText).split(/\r?\n/);
+    if (kind === 'profile') {
+      if (!findBankBlock(lines)) {
+        slotInfo.textContent = 'Next available slot: — (no bank: section)';
+        return;
+      }
+      slotInfo.textContent = 'Next available slot: ' + nextAvailableBankSlot(yamlText) + ' (profile bank)';
+      return;
+    }
     if (!findBackpackBlock(lines)) {
       slotInfo.textContent = 'Next available slot: — (no backpack: section)';
       return;
@@ -475,14 +555,32 @@
     return row;
   }
 
+  function updateYamlSerialsSourceBadge() {
+    var badge = byId('yaml-serials-source-badge');
+    if (!badge) return;
+    var src = window.__yamlInventorySource;
+    if (src === 'bank') {
+      badge.textContent = ' · profile bank';
+      badge.title = 'Listing serials under bank: (domains.local.shared.inventory.items.bank)';
+    } else if (src === 'backpack') {
+      badge.textContent = ' · backpack';
+      badge.title = 'Listing serials under state.inventory.items.backpack';
+    } else {
+      badge.textContent = '';
+      badge.title = '';
+    }
+  }
+
   function refreshBackpackUI() {
     updateYamlNextSlotDisplay();
+    updateYamlSerialsSourceBadge();
     var container = byId('yaml-serials-container');
     var countEl = byId('yaml-serial-count');
-    var pageRow = byId('yaml-serials-pagination');
-    var pageInfo = byId('yaml-serials-page-info');
-    var prevBtn = byId('yaml-serials-prev-btn');
-    var nextBtn = byId('yaml-serials-next-btn');
+    var listRoot = byId('yaml-serials-list');
+    var pageRows = listRoot ? listRoot.querySelectorAll('.yaml-serials-pagination-row') : [];
+    var pageInfos = listRoot ? listRoot.querySelectorAll('.yaml-serials-page-info') : [];
+    var prevBtns = listRoot ? listRoot.querySelectorAll('[data-yaml-serials-dir="prev"]') : [];
+    var nextBtns = listRoot ? listRoot.querySelectorAll('[data-yaml-serials-dir="next"]') : [];
     if (!container) return;
 
     var list = window.extractedSerials || [];
@@ -500,17 +598,16 @@
     var start = page * YAML_SERIALS_PAGE_SIZE;
     var slice = list.slice(start, start + YAML_SERIALS_PAGE_SIZE);
 
-    if (pageRow) {
+    if (pageRows && pageRows.length) {
       if (total > YAML_SERIALS_PAGE_SIZE) {
-        pageRow.style.display = 'flex';
-        if (pageInfo) {
-          var endShown = Math.min(start + slice.length, total);
-          pageInfo.textContent = 'Showing ' + (total ? start + 1 : 0) + '–' + endShown + ' of ' + total;
-        }
-        if (prevBtn) prevBtn.disabled = page <= 0;
-        if (nextBtn) nextBtn.disabled = page >= totalPages - 1;
+        var endShown = Math.min(start + slice.length, total);
+        var infoText = 'Showing ' + (total ? start + 1 : 0) + '–' + endShown + ' of ' + total;
+        for (var pr = 0; pr < pageRows.length; pr++) pageRows[pr].style.display = 'flex';
+        for (var pi = 0; pi < pageInfos.length; pi++) pageInfos[pi].textContent = infoText;
+        for (var pb = 0; pb < prevBtns.length; pb++) prevBtns[pb].disabled = page <= 0;
+        for (var nb = 0; nb < nextBtns.length; nb++) nextBtns[nb].disabled = page >= totalPages - 1;
       } else {
-        pageRow.style.display = 'none';
+        for (var pr2 = 0; pr2 < pageRows.length; pr2++) pageRows[pr2].style.display = 'none';
       }
     }
 
@@ -523,26 +620,23 @@
   window.refreshBackpackUI = refreshBackpackUI;
 
   (function wireYamlSerialPagination() {
-    var prev = byId('yaml-serials-prev-btn');
-    var next = byId('yaml-serials-next-btn');
-    if (!prev || prev._yamlPageBound) return;
-    prev._yamlPageBound = true;
-    prev.addEventListener('click', function () {
-      if (window.__yamlSerialsPageIndex > 0) {
+    var root = byId('yaml-serials-list');
+    if (!root || root._yamlSerialPageDelegated) return;
+    root._yamlSerialPageDelegated = true;
+    root.addEventListener('click', function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest('[data-yaml-serials-dir]') : null;
+      if (!btn || !root.contains(btn)) return;
+      var dir = btn.getAttribute('data-yaml-serials-dir');
+      var list = window.extractedSerials || [];
+      var tp = list.length ? Math.ceil(list.length / YAML_SERIALS_PAGE_SIZE) : 1;
+      if (dir === 'prev' && window.__yamlSerialsPageIndex > 0) {
         window.__yamlSerialsPageIndex--;
+        refreshBackpackUI();
+      } else if (dir === 'next' && window.__yamlSerialsPageIndex < tp - 1) {
+        window.__yamlSerialsPageIndex++;
         refreshBackpackUI();
       }
     });
-    if (next) {
-      next.addEventListener('click', function () {
-        var list = window.extractedSerials || [];
-        var tp = list.length ? Math.ceil(list.length / YAML_SERIALS_PAGE_SIZE) : 1;
-        if (window.__yamlSerialsPageIndex < tp - 1) {
-          window.__yamlSerialsPageIndex++;
-          refreshBackpackUI();
-        }
-      });
-    }
   })();
 
   var SESSION_HANDOFF_MAX = 4 * 1024 * 1024 - 65536;
@@ -607,8 +701,8 @@
 
   function findBackpackBlock(lines) {
     for (var i = 0; i < lines.length; i++) {
-      var m = lines[i].match(/^(\s*)backpack\s*:?\s*$/i);
-      if (m) return { headerIndex: i, headerIndent: (m[1] || '').length };
+      var m = lines[i].match(/^(\s*)backpack\s*:?\s*$/i) || lines[i].match(/^(\s*)backpack\s*:\s*\{\}\s*$/i);
+      if (m) return { headerIndex: i, headerIndent: (m[1] || '').length, emptyInline: /\{\s*\}\s*$/.test(lines[i]) };
     }
     for (var j = 0; j < lines.length; j++) {
       if (/^\s*inventory:\s*$/.test(lines[j])) {
@@ -623,7 +717,36 @@
               if (!lines[n].trim()) continue;
               var ni = (lines[n].match(/^(\s*)/) || ['', ''])[1].length;
               if (ni <= itemsIndent) break;
-              var bm = lines[n].match(/^(\s*)backpack\s*:?\s*$/i);
+              var bm = lines[n].match(/^(\s*)backpack\s*:?\s*$/i) || lines[n].match(/^(\s*)backpack\s*:\s*\{\}\s*$/i);
+              if (bm) return { headerIndex: n, headerIndent: (bm[1] || '').length, emptyInline: /\{\s*\}\s*$/.test(lines[n]) };
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /** Profile shared bank under `...inventory.items.bank` (same slot layout as backpack). */
+  function findBankBlock(lines) {
+    for (var i = 0; i < lines.length; i++) {
+      var m = lines[i].match(/^(\s*)bank\s*:?\s*$/i);
+      if (m) return { headerIndex: i, headerIndent: (m[1] || '').length };
+    }
+    for (var j = 0; j < lines.length; j++) {
+      if (/^\s*inventory:\s*$/.test(lines[j])) {
+        var invIndentB = (lines[j].match(/^(\s*)/) || ['', ''])[1].length;
+        for (var k = j + 1; k < lines.length; k++) {
+          if (!lines[k].trim()) continue;
+          var ki = (lines[k].match(/^(\s*)/) || ['', ''])[1].length;
+          if (ki <= invIndentB) break;
+          if (/^\s*items:\s*$/.test(lines[k])) {
+            var itemsIndentB = ki;
+            for (var n = k + 1; n < lines.length; n++) {
+              if (!lines[n].trim()) continue;
+              var ni = (lines[n].match(/^(\s*)/) || ['', ''])[1].length;
+              if (ni <= itemsIndentB) break;
+              var bm = lines[n].match(/^(\s*)bank\s*:?\s*$/i);
               if (bm) return { headerIndex: n, headerIndent: (bm[1] || '').length };
             }
           }
@@ -663,7 +786,8 @@
       if (!yamlText || !String(yamlText).trim()) return false;
 
       var lines = String(yamlText).split(/\r?\n/);
-      var bp = findBackpackBlock(lines);
+      var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
+      var bp = kind === 'profile' ? findBankBlock(lines) : findBackpackBlock(lines);
       if (!bp) return false;
 
       var headerIndent = bp.headerIndent != null ? bp.headerIndent : 999;
@@ -743,12 +867,24 @@
     var yamlText = getYamlText().text;
     if (!yamlText || !String(yamlText).trim()) {
       window.extractedSerials = [];
+      window.__yamlInventorySource = '';
       window.__yamlSerialsPageIndex = 0;
       refreshBackpackUI();
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
       return;
     }
     window.__yamlSerialsPageIndex = 0;
-    window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
+    if (kind === 'profile') {
+      window.__yamlInventorySource = 'bank';
+      window.extractedSerials = extractBankSerialsSimple(yamlText);
+    } else if (kind === 'character') {
+      window.__yamlInventorySource = 'backpack';
+      window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+    } else {
+      window.__yamlInventorySource = '';
+      window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+    }
     refreshBackpackUI();
 
     var serials = window.extractedSerials || [];
@@ -760,7 +896,10 @@
       seen[s] = true;
       toDecode.push(s);
     }
-    if (toDecode.length === 0 || typeof window.decodeSerialsViaBridge !== 'function') return;
+    if (toDecode.length === 0 || typeof window.decodeSerialsViaBridge !== 'function') {
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+      return;
+    }
 
     if (typeof window.initStxDecoderBridge === 'function') window.initStxDecoderBridge();
 
@@ -786,6 +925,7 @@
       });
     }
     decodeNextChunk();
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   };
 
   var parseTimer = null;
@@ -799,8 +939,14 @@
   };
 
   (function () {
+    function onYamlInput() {
+      window.scheduleParseYAMLBackpack(150);
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    }
     var ta = byId('yamlInput');
-    if (ta) ta.addEventListener('input', function () { window.scheduleParseYAMLBackpack(150); });
+    var ta2 = byId('fullYamlInput');
+    if (ta) ta.addEventListener('input', onYamlInput);
+    if (ta2) ta2.addEventListener('input', onYamlInput);
   })();
 
   window.loadDecodedResultsFromJSON = function (jsonText) {
@@ -836,18 +982,103 @@
     }
   })();
 
+  /**
+   * YAML saves must store BL-base85 only (not deserialized pipe text).
+   * Accepts @U… Base85, compact base85, or NicNL-style deserialized; returns '' if unusable (sync only).
+   */
+  window.ensureBase85SerialForYamlSave = function (raw) {
+    var s = String(raw || '').trim().replace(/^["']|["']$/g, '');
+    if (!s || s === '—') return '';
+    function looksDeserializedOrPipe(t) {
+      t = String(t || '');
+      if (t.indexOf('||') >= 0) return true;
+      if (/^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(t)) return true;
+      if (/\{\s*\d+\s*:\s*\d+\s*\}/.test(t)) return true;
+      if (/\|\s*\{/.test(t) && /\d+\s*,\s*\d+/.test(t)) return true;
+      return false;
+    }
+    function normalizeAtU(t) {
+      t = String(t || '').trim();
+      if (t.indexOf('@U') !== 0) t = '@U' + t.replace(/^@U/i, '');
+      return t;
+    }
+    /** BL4 custom Base85 alphabet includes `{|}`; reject only deserialized markers (commas / ||). */
+    function validStoredB85(t) {
+      t = String(t || '').trim();
+      if (t.indexOf('@U') !== 0) return false;
+      if (t.length < 10) return false;
+      if (t.indexOf(',') >= 0) return false;
+      if (t.indexOf('||') >= 0) return false;
+      return true;
+    }
+    function packDeserializedToB85(deserIn) {
+      var deser = String(deserIn || '').trim();
+      if (!deser) return '';
+      if (typeof window.__stxNormalizeDeserializedInput === 'function') {
+        try {
+          var normD = window.__stxNormalizeDeserializedInput(deser);
+          if (normD) deser = normD;
+        } catch (_) {}
+      }
+      if (typeof window.__stxNicnlPackDeserialized === 'function') {
+        try {
+          var pk = window.__stxNicnlPackDeserialized(deser);
+          pk = (pk && String(pk).trim()) || '';
+          pk = normalizeAtU(pk);
+          if (validStoredB85(pk)) return pk;
+        } catch (_) {}
+      }
+      if (typeof window.serializeToBase85 === 'function') {
+        try {
+          var b = window.serializeToBase85(deser, undefined, true);
+          b = (b && String(b).trim()) || '';
+          b = normalizeAtU(b);
+          if (validStoredB85(b)) return b;
+        } catch (_) {}
+      }
+      return '';
+    }
+    if (s.charAt(0) === '@') {
+      var u = normalizeAtU(s);
+      if (validStoredB85(u)) return u;
+      if (typeof window.deserializeBase85 === 'function') {
+        try {
+          var dec = String(window.deserializeBase85(u) || '').trim();
+          if (dec && (dec.indexOf('||') >= 0 || /\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+/.test(dec))) {
+            var again = packDeserializedToB85(dec);
+            if (again) return again;
+          }
+        } catch (_) {}
+      }
+      return '';
+    }
+    if (!looksDeserializedOrPipe(s) && validStoredB85(normalizeAtU(s)) && s.length >= 10) {
+      return normalizeAtU(s);
+    }
+    if (looksDeserializedOrPipe(s)) {
+      return packDeserializedToB85(s);
+    }
+    return '';
+  };
+
   window.appendSerialToYAML = function (serial) {
-    var s = String(serial || '').trim();
+    var s = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(serial) : String(serial || '').trim();
     if (!s) return false;
     var yaml = getYamlText();
     if (!yaml.text || !yaml.text.trim()) return false;
+    /** Profile saves use shared bank, not root backpack — use appendSerialToProfileBank. */
+    if (typeof window.detectYamlSaveKind === 'function' && window.detectYamlSaveKind(yaml.text) === 'profile') return false;
     var lines = yaml.text.split(/\r?\n/);
     var bp = findBackpackBlock(lines);
     if (!bp) return false;
     var headerIndent = Number(bp.headerIndent) || 0;
+    var headerPrefix = (new Array(headerIndent + 1)).join(' ');
+    if (bp.emptyInline) {
+      lines[bp.headerIndex] = headerPrefix + 'backpack:';
+    }
     var slotIndent = headerIndent + 2;
     var slotPrefix = (new Array(slotIndent + 1)).join(' ');
-    var nextSlot = nextAvailableBackpackSlot(yaml.text);
+    var nextSlot = nextAvailableBackpackSlot(lines.join('\n'));
     var escaped = s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     var insertIdx = bp.headerIndex + 1;
     for (var j = bp.headerIndex + 1; j < lines.length; j++) {
@@ -863,46 +1094,242 @@
     return true;
   };
 
+  /** Profile `profile.sav` YAML: insert into `domains.local.shared.inventory.items.bank`. */
+  window.appendSerialToProfileBank = function (serial) {
+    var s = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(serial) : String(serial || '').trim();
+    if (!s) return false;
+    var yaml = getYamlText();
+    if (!yaml.text || !yaml.text.trim()) return false;
+    if (typeof window.detectYamlSaveKind === 'function' && window.detectYamlSaveKind(yaml.text) !== 'profile') return false;
+    if (typeof window.insertSerials !== 'function') return false;
+    return window.insertSerials([s]) === true;
+  };
+
   function normalizeSerialLineForYamlBackpack(line) {
     var c = String(line || '').trim();
     if (!c || c.charAt(0) === '#') return '';
-    var looksLikeBase85 = c.indexOf('||') < 0 && c.indexOf('{') < 0 && c.length > 20;
-    if (looksLikeBase85 && typeof window.deserializeBase85 === 'function') {
-      try {
-        var d = window.deserializeBase85(c);
-        if (d && typeof d === 'string' && d.trim().length) return d.trim();
-      } catch (_) {}
+    if (typeof window.ensureBase85SerialForYamlSave === 'function') {
+      return window.ensureBase85SerialForYamlSave(c);
     }
     return c;
   }
 
   /** Append multiple serials (one per line). Ignores empty lines and lines starting with #. Returns { added, failed }. */
   window.appendSerialLinesToYAML = function (multiline) {
+    var yamlText = getYamlText().text || '';
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
     var lines = String(multiline || '').split(/\r?\n/);
-    var added = 0;
-    var failed = 0;
+    var serials = [];
     for (var i = 0; i < lines.length; i++) {
       var s = normalizeSerialLineForYamlBackpack(lines[i]);
-      if (!s) continue;
-      if (window.appendSerialToYAML && window.appendSerialToYAML(s)) added++;
+      if (s) serials.push(s);
+    }
+    if (kind === 'profile' && typeof window.insertSerials === 'function') {
+      if (!serials.length) return { added: 0, failed: 0 };
+      var ok = window.insertSerials(serials);
+      return ok ? { added: serials.length, failed: 0 } : { added: 0, failed: serials.length };
+    }
+    var added = 0;
+    var failed = 0;
+    for (var j = 0; j < lines.length; j++) {
+      var sj = normalizeSerialLineForYamlBackpack(lines[j]);
+      if (!sj) continue;
+      if (window.appendSerialToYAML && window.appendSerialToYAML(sj)) added++;
       else failed++;
     }
     return { added: added, failed: failed };
   };
 
+  function nextSlotIndexForYamlContainer(container) {
+    var maxIdx = -1;
+    for (var k in container || {}) {
+      if (!Object.prototype.hasOwnProperty.call(container, k)) continue;
+      var m = /^slot_(\d+)$/.exec(k);
+      if (m) maxIdx = Math.max(maxIdx, parseInt(m[1], 10));
+    }
+    return maxIdx + 1;
+  }
+
+  function getYamlInventoryContainer(data, which) {
+    var w = String(which || '');
+    if (w === 'backpack') {
+      if (!data || !data.state || !data.state.inventory || !data.state.inventory.items) return null;
+      var bp = data.state.inventory.items.backpack;
+      if (bp == null || typeof bp !== 'object' || Array.isArray(bp)) return null;
+      return bp;
+    }
+    if (w === 'bank') {
+      if (!data || !data.domains || !data.domains.local || !data.domains.local.shared) return null;
+      var sh = data.domains.local.shared;
+      if (!sh.inventory || !sh.inventory.items) return null;
+      var b = sh.inventory.items.bank;
+      if (b == null || typeof b !== 'object' || Array.isArray(b)) return null;
+      return b;
+    }
+    return null;
+  }
+
+  function shallowCopySlotObject(slot) {
+    var o = {};
+    for (var k in slot) {
+      if (Object.prototype.hasOwnProperty.call(slot, k)) o[k] = slot[k];
+    }
+    return o;
+  }
+
+  window.duplicateYamlInventorySection = function (which, targetLevel) {
+    var w = String(which || '');
+    if (w !== 'backpack' && w !== 'bank') return false;
+    var yaml = getYamlText();
+    if (!yaml.text || !String(yaml.text).trim()) {
+      alert('Load or paste YAML in the editor first.');
+      return false;
+    }
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yaml.text) : 'unknown';
+    if (w === 'backpack' && kind !== 'character') {
+      alert('Duplicate backpack needs a character save (root state:).');
+      return false;
+    }
+    if (w === 'bank' && kind !== 'profile') {
+      alert('Duplicate bank needs a profile save.');
+      return false;
+    }
+    if (typeof window.getYamlDataFromEditor !== 'function' || typeof window.commitYamlDataToEditor !== 'function') {
+      alert('YAML tools are not ready yet. Reload the page.');
+      return false;
+    }
+    var data = window.getYamlDataFromEditor();
+    if (!data) {
+      alert('Could not parse YAML. Fix syntax errors and try again.');
+      return false;
+    }
+    var container = getYamlInventoryContainer(data, w);
+    if (!container) {
+      alert(w === 'backpack' ? 'No backpack object found in this save.' : 'No shared bank object found in this profile.');
+      return false;
+    }
+    var keyRows = [];
+    for (var sk in container) {
+      if (!Object.prototype.hasOwnProperty.call(container, sk)) continue;
+      var mm = /^slot_(\d+)$/.exec(sk);
+      if (mm) keyRows.push({ key: sk, n: parseInt(mm[1], 10) });
+    }
+    keyRows.sort(function (a, b) { return a.n - b.n; });
+    var toAdd = [];
+    for (var i = 0; i < keyRows.length; i++) {
+      var entry = container[keyRows[i].key];
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) continue;
+      var rawSerial = entry.serial;
+      if (rawSerial == null || !String(rawSerial).trim()) continue;
+      toAdd.push(shallowCopySlotObject(entry));
+    }
+    if (!toAdd.length) {
+      alert('No items with serials found to duplicate.');
+      return false;
+    }
+    var L = targetLevel == null || targetLevel === '' ? NaN : Math.floor(Number(targetLevel));
+    var useLevel = Number.isFinite(L);
+    var start = nextSlotIndexForYamlContainer(container);
+    var added = 0;
+    for (var j = 0; j < toAdd.length; j++) {
+      var slotObj = toAdd[j];
+      var s0 = String(slotObj.serial || '').trim().replace(/^['"]|['"]$/g, '');
+      var s = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(s0) : s0;
+      if (!s) continue;
+      if (useLevel && typeof window.updateSerialLevelFlexible === 'function') {
+        var leveled = window.updateSerialLevelFlexible(s, L);
+        if (leveled && String(leveled).trim()) {
+          s = typeof window.ensureBase85SerialForYamlSave === 'function' ? (window.ensureBase85SerialForYamlSave(leveled) || leveled) : leveled;
+        }
+      }
+      if (s.indexOf('@U') !== 0) s = '@U' + String(s).replace(/^@U/, '');
+      if (!s || s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0) continue;
+      slotObj.serial = s;
+      container['slot_' + (start + added)] = slotObj;
+      added++;
+    }
+    if (!added) {
+      alert('No valid serials could be duplicated.');
+      return false;
+    }
+    window.commitYamlDataToEditor(data);
+    if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
+    return true;
+  };
+
+  /** Enable/disable Add to YAML (character backpack) vs Add to bank (profile) by detectYamlSaveKind. */
+  window.updateYamlInjectButtons = function () {
+    var txt = '';
+    var gt = getYamlText();
+    txt = gt && gt.text ? String(gt.text) : '';
+    var kind = !txt.trim() ? 'unknown' : (typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(txt) : 'unknown');
+    var yamlIds = ['prefixItemAddToYamlBtn', 'godrollAddToYamlBtn', 'serialSearchAddToYamlBtn', 'yamlAddSerialsBtn', 'guidedAddItemToYaml', 'floatingAddItemToYaml', 'yamlDupBackpackBtn', 'yamlDupBackpackLevelBtn'];
+    var bankIds = ['prefixItemAddToBankBtn', 'godrollAddToBankBtn', 'serialSearchAddToBankBtn', 'yamlAddSerialsBankBtn', 'guidedAddItemToBank', 'floatingAddItemToBank', 'yamlDupBankBtn', 'yamlDupBankLevelBtn'];
+    var yTitleOk = 'Add to character backpack (root state: save)';
+    var yTitleNo = 'Load a character save YAML (root state:) first.';
+    var bTitleOk = 'Add to profile bank (shared inventory)';
+    var bTitleNo = 'Load profile .sav or YAML first.';
+    for (var a = 0; a < yamlIds.length; a++) {
+      var ye = byId(yamlIds[a]);
+      if (!ye) continue;
+      var yOk = kind === 'character';
+      ye.disabled = !yOk;
+      ye.title = yOk ? yTitleOk : yTitleNo;
+    }
+    for (var b = 0; b < bankIds.length; b++) {
+      var be = byId(bankIds[b]);
+      if (!be) continue;
+      var bOk = kind === 'profile';
+      be.disabled = !bOk;
+      be.title = bOk ? bTitleOk : bTitleNo;
+    }
+    var strip = byId('stx-yaml-kind-strip');
+    if (strip) {
+      if (!txt.trim()) {
+        strip.textContent = 'Detected: — paste or load YAML to classify this editor.';
+      } else if (kind === 'character') {
+        strip.textContent = 'Detected: character save — serial list = backpack; use Add to YAML / Add to backpack.';
+      } else if (kind === 'profile') {
+        strip.textContent = 'Detected: profile save — serial list = shared bank; use Add to bank.';
+      } else {
+        strip.textContent = 'Detected: unknown — expect root state: (character) or domains:/profile markers. Inventory tools may not apply.';
+      }
+    }
+  };
+
   window.initYamlAddSerialsSection = function () {
     var ta = byId('yamlAddSerialsInput');
     var btn = byId('yamlAddSerialsBtn');
+    var bankBtn = byId('yamlAddSerialsBankBtn');
     var clearBtn = byId('yamlAddSerialsClearBtn');
     var status = byId('yaml-add-serials-status');
     if (!ta || !btn) return;
-    btn.addEventListener('click', function () {
+    function runAdd(useBank) {
       var yaml = getYamlText();
       if (!yaml.text || !yaml.text.trim()) {
         if (status) {
           status.style.display = 'block';
           status.style.color = '#ff9090';
-          status.textContent = 'Load or paste YAML in the editor above first (needs a backpack: section).';
+          status.textContent = 'Load or paste YAML in the editor above first.';
+        }
+        return;
+      }
+      var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yaml.text) : 'unknown';
+      if (useBank && kind !== 'profile') {
+        if (status) {
+          status.style.display = 'block';
+          status.style.color = '#ff9090';
+          status.textContent = 'This action is for profile saves only. Load profile .sav or YAML, or use Add to backpack on a character save.';
+        }
+        return;
+      }
+      if (!useBank && kind !== 'character') {
+        if (status) {
+          status.style.display = 'block';
+          status.style.color = '#ff9090';
+          status.textContent = 'Add to backpack needs a character save (root state:). For profile, use Add to bank.';
         }
         return;
       }
@@ -919,14 +1346,17 @@
       if (status) {
         status.style.display = 'block';
         status.style.color = 'rgba(0,200,255,0.95)';
+        var where = useBank ? 'profile bank' : 'backpack';
         if (r.added > 0) {
-          status.textContent = 'Added ' + r.added + ' item(s) to backpack.' + (r.failed ? ' (' + r.failed + ' line(s) could not be added.)' : '');
+          status.textContent = 'Added ' + r.added + ' item(s) to ' + where + '.' + (r.failed ? ' (' + r.failed + ' line(s) could not be added.)' : '');
           ta.value = '';
         } else {
-          status.textContent = 'Nothing added. Use one serial per line (Base85 or deserialized), or confirm the YAML has a backpack block.';
+          status.textContent = 'Nothing added. Use one valid serial per line (Base85), or check the save type matches the button.';
         }
       }
-    });
+    }
+    btn.addEventListener('click', function () { runAdd(false); });
+    if (bankBtn) bankBtn.addEventListener('click', function () { runAdd(true); });
     if (clearBtn) {
       clearBtn.addEventListener('click', function () {
         ta.value = '';
@@ -936,9 +1366,74 @@
     ta.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        btn.click();
+        var k = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(getYamlText().text || '') : 'unknown';
+        if (k === 'profile' && bankBtn) bankBtn.click();
+        else btn.click();
       }
     });
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+  };
+
+  window.initYamlDuplicateSection = function () {
+    var root = byId('yaml-dup-section');
+    if (!root || root.dataset.yamlDupWired === '1') return;
+    root.dataset.yamlDupWired = '1';
+    var lvl = byId('yamlDupTargetLevel');
+    var bpAs = byId('yamlDupBackpackBtn');
+    var bpLv = byId('yamlDupBackpackLevelBtn');
+    var bkAs = byId('yamlDupBankBtn');
+    var bkLv = byId('yamlDupBankLevelBtn');
+    var status = byId('yaml-add-serials-status');
+    function showStatus(msg, ok) {
+      if (!status) return;
+      status.style.display = 'block';
+      status.style.color = ok ? 'rgba(0,200,255,0.95)' : '#ff9090';
+      status.textContent = msg;
+    }
+    function readLevel() {
+      if (!lvl) return NaN;
+      var n = parseInt(String(lvl.value || '').trim(), 10);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    if (bpAs) {
+      bpAs.addEventListener('click', function () {
+        if (window.duplicateYamlInventorySection && window.duplicateYamlInventorySection('backpack', null)) {
+          showStatus('Duplicated backpack (as-is).', true);
+        }
+      });
+    }
+    if (bpLv) {
+      bpLv.addEventListener('click', function () {
+        var L = readLevel();
+        if (!Number.isFinite(L)) {
+          showStatus('Enter a target level for the copies.', false);
+          return;
+        }
+        if (window.duplicateYamlInventorySection && window.duplicateYamlInventorySection('backpack', L)) {
+          showStatus('Duplicated backpack at level ' + L + '.', true);
+        }
+      });
+    }
+    if (bkAs) {
+      bkAs.addEventListener('click', function () {
+        if (window.duplicateYamlInventorySection && window.duplicateYamlInventorySection('bank', null)) {
+          showStatus('Duplicated bank (as-is).', true);
+        }
+      });
+    }
+    if (bkLv) {
+      bkLv.addEventListener('click', function () {
+        var L2 = readLevel();
+        if (!Number.isFinite(L2)) {
+          showStatus('Enter a target level for the copies.', false);
+          return;
+        }
+        if (window.duplicateYamlInventorySection && window.duplicateYamlInventorySection('bank', L2)) {
+          showStatus('Duplicated bank at level ' + L2 + '.', true);
+        }
+      });
+    }
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   };
 
   window.initSerialSearchSection = function () {
@@ -949,10 +1444,30 @@
     var selectAllBtn = byId('serialSearchSelectAllBtn');
     var clearBtn = byId('serialSearchClearBtn');
     var addToYamlBtn = byId('serialSearchAddToYamlBtn');
+    var addToBankBtn = byId('serialSearchAddToBankBtn');
     var addToEditorBtn = byId('serialSearchAddToEditorBtn');
     if (!resultsEl) return;
+    if (resultsEl.dataset.stxSerialSearchWired === '1') return;
+    resultsEl.dataset.stxSerialSearchWired = '1';
     window.serialLibrarySerials = window.serialLibrarySerials || [];
     var library = window.serialLibrarySerials;
+
+    function detectSerialTextMode(raw) {
+      var r = String(raw || '');
+      if (/^\s*[\[{]/.test(r)) return 'json';
+      if (/@U/.test(r) && /(^|\n)\s*(?:-\s*)?serial\s*:\s*/im.test(r)) return 'yaml';
+      if (/@U/.test(r) && /(^|\n)\s*[\w.\-]+\s*:\s*/m.test(r)) return 'yaml';
+      return 'txt';
+    }
+
+    function lineLooksLikeSerialLine(line) {
+      var t = String(line || '').trim();
+      if (!t || t.charAt(0) === '#') return false;
+      if (t.indexOf('@U') >= 0) return true;
+      if (t.length > 15) return true;
+      if (t.length >= 10 && !/\s/.test(t) && /[A-Za-z0-9]/.test(t)) return true;
+      return false;
+    }
 
     function extractSerialsFromText(raw, mode) {
       var out = [];
@@ -988,10 +1503,37 @@
         var txtLines = text.split(/\r?\n/);
         for (var t = 0; t < txtLines.length; t++) {
           var line = txtLines[t].trim();
-          if (line && (line.indexOf('@U') === 0 || line.length > 20)) out.push(line);
+          if (lineLooksLikeSerialLine(line)) out.push(line);
         }
       }
       return out;
+    }
+
+    function extractSerialsWithModeFallback(raw) {
+      var mode = detectSerialTextMode(raw);
+      var ex = extractSerialsFromText(raw, mode);
+      if (ex.length) return ex;
+      if (mode !== 'txt') { ex = extractSerialsFromText(raw, 'txt'); if (ex.length) return ex; }
+      if (mode !== 'yaml') { ex = extractSerialsFromText(raw, 'yaml'); if (ex.length) return ex; }
+      if (mode !== 'json') { ex = extractSerialsFromText(raw, 'json'); if (ex.length) return ex; }
+      return [];
+    }
+
+    function loadPasteIntoLibraryIfEmpty() {
+      if (library.length > 0) return;
+      var pa = byId('serialLibraryPasteArea');
+      if (!pa) return;
+      var raw = (pa.value || '').trim();
+      if (!raw) return;
+      var extracted = extractSerialsWithModeFallback(raw);
+      if (!extracted.length) return;
+      for (var e = 0; e < extracted.length; e++) {
+        var s = String(extracted[e]).trim();
+        if (s) library.push({ serial: s, selected: false });
+      }
+      if (statusEl && library.length) {
+        statusEl.textContent = 'Loaded ' + library.length + ' serial(s) from paste box (auto). Use “Load from Paste” to replace from the same box.';
+      }
     }
 
     function renderResults(filtered) {
@@ -1026,15 +1568,24 @@
     }
 
     function applyFilter() {
+      loadPasteIntoLibraryIfEmpty();
       var q = (searchInput && searchInput.value || '').trim().toLowerCase();
+      if (!library.length) {
+        resultsEl.innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:0.9em;">Load a serial file, click <strong>Load from Paste</strong>, or paste in the box and type here — the library auto-loads from the paste area when it is still empty.</div>';
+        if (statusEl) {
+          statusEl.textContent = q ? 'No serials loaded yet. Paste or load a file first.' : '';
+        }
+        return;
+      }
       var filtered = [];
       for (var i = 0; i < library.length; i++) {
         var it = library[i];
         var meta = parseSerialMeta(it.serial);
         var name = (meta.name || '').toLowerCase();
         var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
+        var idStrLower = idStr.toLowerCase();
         var serial = (it.serial || '').toLowerCase();
-        if (!q || name.indexOf(q) >= 0 || idStr.indexOf(q) >= 0 || serial.indexOf(q) >= 0) {
+        if (!q || name.indexOf(q) >= 0 || idStrLower.indexOf(q) >= 0 || serial.indexOf(q) >= 0) {
           filtered.push({ serial: it.serial, selected: it.selected, _idx: i });
         }
       }
@@ -1047,15 +1598,14 @@
       pasteBtn.addEventListener('click', function () {
         var raw = (pasteArea.value || '').trim();
         if (!raw) { if (statusEl) statusEl.textContent = 'Paste content first.'; return; }
-        var mode = /^\s*[{[]/.test(raw) ? 'json' : /(^|\n)\s*(?:-\s*)?serial\s*:\s*['"]?@U/m.test(raw) || /(^|\n)\s*[\w\-]+\s*:\s*/m.test(raw) && /@U/.test(raw) ? 'yaml' : 'txt';
-        var extracted = extractSerialsFromText(raw, mode);
+        var extracted = extractSerialsWithModeFallback(raw);
         for (var i = 0; i < library.length; i++) if (library[i]) library[i].selected = false;
         library.length = 0;
         for (var e = 0; e < extracted.length; e++) {
           var s = String(extracted[e]).trim();
           if (s) library.push({ serial: s, selected: false });
         }
-        if (statusEl) statusEl.textContent = 'Loaded ' + library.length + ' serials from paste.';
+        if (statusEl) statusEl.textContent = extracted.length ? ('Loaded ' + library.length + ' serial(s) from paste.') : 'No serial lines found — try YAML/TXT/JSON format.';
         applyFilter();
       });
     }
@@ -1069,13 +1619,16 @@
           var name = (f.name || '').toLowerCase();
           var mode = name.endsWith('.yaml') || name.endsWith('.yml') ? 'yaml' : name.endsWith('.json') ? 'json' : 'txt';
           var extracted = extractSerialsFromText(raw, mode);
+          if (!extracted.length) extracted = extractSerialsWithModeFallback(raw);
           for (var i = 0; i < library.length; i++) if (library[i]) library[i].selected = false;
           library.length = 0;
           for (var e = 0; e < extracted.length; e++) {
             var s = String(extracted[e]).trim();
             if (s) library.push({ serial: s, selected: false });
           }
-          if (statusEl) statusEl.textContent = 'Loaded ' + library.length + ' serials from ' + (f.name || 'file') + '.';
+          if (statusEl) {
+            statusEl.textContent = library.length ? ('Loaded ' + library.length + ' serial(s) from ' + (f.name || 'file') + '.') : ('No serials parsed from ' + (f.name || 'file') + ' — try another format.');
+          }
           applyFilter();
         };
         r.readAsText(f);
@@ -1085,14 +1638,16 @@
     if (searchInput) searchInput.addEventListener('input', applyFilter);
     if (searchInput) searchInput.addEventListener('keyup', applyFilter);
     if (selectAllBtn) selectAllBtn.addEventListener('click', function () {
+      loadPasteIntoLibraryIfEmpty();
       var q = (searchInput && searchInput.value || '').trim().toLowerCase();
       for (var i = 0; i < library.length; i++) {
         var it = library[i];
         var meta = parseSerialMeta(it.serial);
         var name = (meta.name || '').toLowerCase();
         var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
+        var idStrLower = idStr.toLowerCase();
         var serial = (it.serial || '').toLowerCase();
-        if (!q || name.indexOf(q) >= 0 || idStr.indexOf(q) >= 0 || serial.indexOf(q) >= 0) it.selected = true;
+        if (!q || name.indexOf(q) >= 0 || idStrLower.indexOf(q) >= 0 || serial.indexOf(q) >= 0) it.selected = true;
       }
       applyFilter();
     });
@@ -1111,7 +1666,25 @@
       for (var a = 0; a < selected.length; a++) {
         if (window.appendSerialToYAML && window.appendSerialToYAML(selected[a].serial)) added++;
       }
-      if (statusEl) statusEl.textContent = 'Added ' + added + ' serial(s) to YAML backpack.';
+      if (statusEl) statusEl.textContent = 'Added ' + added + ' serial(s) to character backpack.';
+    });
+    if (addToBankBtn) addToBankBtn.addEventListener('click', function () {
+      var selected = library.filter(function (it) { return it.selected; });
+      if (!selected.length) { alert('Select at least one serial first.'); return; }
+      var yaml = getYamlText();
+      if (!yaml.text || !yaml.text.trim()) { alert('Load a YAML file first.'); return; }
+      var serials = [];
+      for (var b = 0; b < selected.length; b++) {
+        var sb0 = String(selected[b].serial || '').trim();
+        var sb = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(sb0) : sb0;
+        if (sb) serials.push(sb);
+      }
+      if (!serials.length) { alert('No serials to add.'); return; }
+      if (typeof window.insertSerials === 'function' && window.insertSerials(serials)) {
+        if (statusEl) statusEl.textContent = 'Added ' + serials.length + ' serial(s) to profile bank.';
+      } else if (statusEl) {
+        statusEl.textContent = 'Could not add to bank (load profile YAML first).';
+      }
     });
     if (addToEditorBtn) addToEditorBtn.addEventListener('click', function () {
       var selected = library.filter(function (it) { return it.selected; });
@@ -1155,6 +1728,8 @@
       }
       if (statusEl) statusEl.textContent = 'Imported ' + codes.length + ' serial(s) into editor.';
     });
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    applyFilter();
   };
 
   if (document.readyState === 'loading') {
@@ -1162,12 +1737,14 @@
       setTimeout(function () {
         if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
         if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
+        if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
       }, 100);
     });
   } else {
     setTimeout(function () {
       if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
       if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
+      if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
     }, 100);
   }
 })();

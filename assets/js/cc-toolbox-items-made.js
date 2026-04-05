@@ -1,10 +1,3 @@
-/**
- * cc-toolbox-items-made.js — local count of "items made" across Simple / Guided (main page) and Legit Builder.
- * Heuristic: bump when a non-trivial serial/code exists and the user changes a top-level topology control
- * (item type, manufacturer, rarity, weapon type, guided mirrors) or resets Legit — same cooldown avoids double-counts.
- * UI: hidden by default; Ctrl+Alt+M toggles panel; Shift+double-click workspace header icon (main) or Legit page title;
- *     localStorage stx_items_made_show_badge=1 shows a subtle corner tally; #craft-stats opens panel once.
- */
 (function () {
   var STORAGE_KEY = 'stx_toolbox_items_made_v1';
   var BADGE_KEY = 'stx_items_made_show_badge';
@@ -325,7 +318,7 @@
   }
 
   function bindMainPageEggs() {
-    var icon = document.querySelector('.workspace__header-icon');
+    var icon = document.querySelector('.header-bar .header-icon');
     if (!icon || icon.__stxItemsMadeBound) return;
     icon.__stxItemsMadeBound = true;
     icon.addEventListener('dblclick', function (ev) {
