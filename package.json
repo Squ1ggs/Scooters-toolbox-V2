@@ -14,7 +14,9 @@
     "profile:dedupe-unlockables": "node scripts/dedupe-profile-unlockables.mjs",
     "profile:check-unlockables": "node scripts/profile-vs-bundle-unlockables.mjs"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@netlify/blobs": "^10.7.4"
+  },
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12"
@@ -31,7 +33,9 @@
       "netlify.toml"
     ],
     "win": {
-      "target": ["portable"],
+      "target": [
+        "portable"
+      ],
       "icon": "assets/favicon.ico"
     }
   }
