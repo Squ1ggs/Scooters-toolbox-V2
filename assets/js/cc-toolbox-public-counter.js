@@ -18,6 +18,20 @@
     return m && m.content ? String(m.content).trim() : '';
   }
 
+  function configuredPhpUrl() {
+    var m = document.querySelector('meta[name="stx-php-counter-url"]');
+    return m && m.content ? String(m.content).trim() : '';
+  }
+
+  function shouldPreferConfiguredCounter() {
+    try {
+      var h = String(location.hostname || '').toLowerCase();
+      return h === 'scooters-toolbox.netlify.app' || h === 'localhost' || h === '127.0.0.1';
+    } catch (_) {
+      return false;
+    }
+  }
+
   function candidateUrls(filename) {
     var out = [];
     var seen = Object.create(null);
@@ -29,19 +43,23 @@
     }
 
     var cfg = configuredUrl();
+    var php = configuredPhpUrl();
     var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+    var preferCfg = shouldPreferConfiguredCounter();
 
     /* Prefer meta / STX_COUNTER_URL (Netlify functions) first — legacy counter.php probes can return 200 with
        stale JSON and block the real endpoint (fetchJsonFirst stops on first success). */
-    if (cfg) {
-      add(cfg);
-      return out;
-    }
-
     if (isHttp) {
+      if (preferCfg && cfg) add(cfg);
+      if (php) {
+        try { add(new URL(php, location.href).href); } catch (_) { add(php); }
+      }
       try { add(new URL(filename, location.href).href); } catch (_) {}
       try { add(new URL('../' + filename, location.href).href); } catch (_) {}
       try { add(new URL('../../' + filename, location.href).href); } catch (_) {}
+      if (!preferCfg && cfg) add(cfg);
+    } else if (cfg) {
+      add(cfg);
     }
 
     return out;
