@@ -9,9 +9,9 @@
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
-<meta content="" name="stx-analytics-track-key"/>
-<meta content="" name="stx-counter-key"/>
-<meta content="" name="stx-items-bump-key"/>
+<meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
+<meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
+<meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
 <title>Bulk serial validator — Scooter's Toolbox</title>
 <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -544,6 +544,9 @@ aside li { margin-bottom: 6px; }
 <option value="txt">Plain lines</option>
 </select></label>
 <label>Item level <input id="bv-level" max="60" min="1" name="bv-level" style="width:4rem;" type="number" value="60"/></label>
+<label class="small" style="display:inline-flex;align-items:center;gap:6px;max-width:28rem;" title="Default merges identical serial strings so each unique code is validated once.">
+<input id="bv-preserve-dup-lines" name="bv-preserve-dup-lines" type="checkbox"/>
+Keep duplicate lines</label>
 </div>
 <textarea id="bv-input" name="bv-input" placeholder="Paste YAML (serial: @U…), JSON, or one serial per line…"></textarea>
 <div class="row" style="flex-wrap:wrap;align-items:center;">
@@ -569,7 +572,7 @@ aside li { margin-bottom: 6px; }
 <ul>
 <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
 <li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rule set as save-editor.be <strong>Legit Item Builder</strong>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
-<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain + comp <strong>slot counts</strong> (min/max) as the rolling tag pool in save-editor Legit; <strong>not</strong> comp allowlist hard-fails (export lists are narrower than real drops), and dependencytags are skipped like editor parity notes in <code>tag-comp-validation.js</code>. NCS “wrong slot” / schedule level / 0% weight are FYI here, not Fail. Use <a href="../legacy/legit-builder.html">Legit Builder</a> for full strict audit.</li>
+<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href="../legacy/legit-builder.html">Legit Builder</a> (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
 <li><strong>Loot-pool FYI</strong>: <code>off_pool_*</code> rows are reported for visibility only. They do not hard-fail by themselves.</li>
 <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
 <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
@@ -583,7 +586,8 @@ aside li { margin-bottom: 6px; }
 <div class="panel__title">Summary</div>
 <p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
 <div class="kpis">
-<div class="kpi" title="Unique serials in this run (after dedupe)."><span>Serials <strong id="k-total">0</strong></span></div>
+<div class="kpi" title="Rows in the table for this run (unique serial strings after default dedupe)."><span>Serials <strong id="k-total">0</strong></span></div>
+<div class="kpi" title="Input lines with the same serial text collapsed into one row when deduping. — when Keep duplicate lines is on."><span>Dup lines merged <strong id="k-dup-merged">0</strong></span></div>
 <div class="kpi" title="WASM decode succeeded."><span>Decoded OK <strong id="k-decoded">0</strong></span></div>
 <div class="kpi" title="Passed composition + cheat-audit gates."><span>OK (data) <strong id="k-ok">0</strong></span></div>
 <div class="kpi" title="Not OK and not hard-fail (warn / unmapped without clean raw pass, etc.)."><span>Uncertain <strong id="k-warn">0</strong></span></div>
@@ -596,7 +600,9 @@ aside li { margin-bottom: 6px; }
 <summary class="small" style="cursor:pointer;color:var(--accent-cyan-dim);">What do these mean?</summary>
 <dl class="small" style="margin:10px 0 0 16px;line-height:1.6;">
 <dt><strong>Serials</strong></dt>
-<dd>Total unique serials extracted from the input.</dd>
+<dd>How many rows ran (after default dedupe of identical serial text).</dd>
+<dt><strong>Dup lines merged</strong></dt>
+<dd>How many extra input lines were dropped because they repeated the same serial string. Use <strong>Keep duplicate lines</strong> to validate every line; then this shows —.</dd>
 <dt><strong>Decoded OK</strong></dt>
 <dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn’t be parsed.</dd>
 <dt><strong>OK (data)</strong></dt>
