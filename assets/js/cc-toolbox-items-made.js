@@ -6,6 +6,7 @@
   var BUMP_KEY_META = 'stx-items-bump-key';
 
   var lastBump = 0;
+  var lastCountedMainSerial = '';
 
   function configuredItemsBumpUrl() {
     if (typeof window.STX_ITEMS_BUMP_URL === 'string' && window.STX_ITEMS_BUMP_URL.trim()) {
@@ -119,6 +120,21 @@
     var compact = s.replace(/\s/g, '');
     if (compact.length >= 18 && /^[A-Za-z0-9+/=@]+$/.test(compact)) return true;
     return false;
+  }
+
+  function currentMainSerialValue() {
+    var a = byId('guidedOutputSerial');
+    var b = byId('outCode');
+    var s = (a && a.value && String(a.value).trim()) || (b && b.value && String(b.value).trim()) || '';
+    return s;
+  }
+
+  function maybeBumpOnNewMainSerial() {
+    var s = currentMainSerialValue();
+    if (!s || !mainSerialLooksComplete()) return;
+    if (s === lastCountedMainSerial) return;
+    lastCountedMainSerial = s;
+    bump(isGuidedContext() ? 'guided' : 'simple');
   }
 
   function isGuidedContext() {
@@ -353,6 +369,14 @@
 
   function initMain() {
     document.addEventListener('change', onMainTopologyChange, true);
+    document.addEventListener('input', function (ev) {
+      var t = ev && ev.target;
+      if (!t || !t.id) return;
+      if (t.id === 'guidedOutputSerial' || t.id === 'outCode') maybeBumpOnNewMainSerial();
+    }, true);
+    document.addEventListener('click', function () {
+      setTimeout(maybeBumpOnNewMainSerial, 60);
+    }, true);
     document.addEventListener('keydown', onKeyDown);
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function () {
