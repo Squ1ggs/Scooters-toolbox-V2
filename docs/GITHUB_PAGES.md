@@ -1,6 +1,6 @@
 # GitHub Pages for Scooter’s Toolbox
 
-GitHub Pages only serves **static** files. PHP (`counter_v2.php`, etc.) is **not** executed on `github.io`. This repo uses **GitHub Actions** to publish a trimmed copy of the site and patch `index.html` so counters/track/items-bump call your **shared host** (CORS must allow `https://YOURUSER.github.io` — your PHP scripts already send `Access-Control-Allow-Origin: *`).
+GitHub Pages only serves **static** files. PHP (`counter_v2.php`, etc.) is **not** executed on `github.io`. This repo uses **GitHub Actions** to publish a trimmed copy of the site and patch **every HTML file under `_site`** (main page, `legacy/`, `assets/`, etc.) so STX metas point at your **shared host** (`track.php`, `counter_v2.php`, `items-bump.php`). Upload the repo’s `track.php` to that host so `Access-Control-Allow-Headers` includes `X-STX-Track-Key` (see root `track.php`).
 
 ## One-time setup
 
@@ -26,10 +26,10 @@ STX_SHARED_API_BASE: https://your-host.example/path/to/toolbox
 ## Local test of the patch
 
 ```bash
-mkdir -p _site && cp index.html _site/
+mkdir -p _site && cp -r assets legacy index.html _site/
 export GHPAGES_SITE_URL=https://you.github.io/Scooters-toolbox-V2/
 export STX_SHARED_API_BASE=https://save-editor.be/Scooters_TBX
-node scripts/patch-index-for-github-pages.mjs _site/index.html
+node scripts/patch-index-for-github-pages.mjs _site
 ```
 
 Then serve `_site` with any static server and open `http://localhost:.../`.

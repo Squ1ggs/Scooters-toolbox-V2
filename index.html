@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -6,9 +6,9 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
 
-<meta content="track.php" name="stx-analytics-endpoint"/>
-<meta content="counter_v2.php" name="stx-counter-url"/>
-<meta content="items-bump.php" name="stx-items-bump-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
+<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
 <meta content="counter_v2.php" name="stx-php-counter-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
@@ -84,9 +84,9 @@
 <script defer="" src="./assets/js/cc-skin-mixer-rebuild.js"></script>
 <script defer="" src="./assets/js/rebuild-presets-random.js"></script>
 <script defer="" src="./assets/js/rebuild-credits-eggs.js"></script>
-<script defer="" src="./assets/js/cc-toolbox-analytics-v2.js?v=3"></script>
-<script defer="" src="./assets/js/cc-toolbox-items-made.js?v=3"></script>
-<script defer="" src="./assets/js/cc-toolbox-public-counter.js?v=3"></script>
+<script defer="" src="./assets/js/cc-toolbox-analytics-v2.js?v=6"></script>
+<script defer="" src="./assets/js/cc-toolbox-items-made.js?v=6"></script>
+<script defer="" src="./assets/js/cc-toolbox-public-counter.js?v=6"></script>
 <style id="editor-rebuild-spec">
     
     :root {
@@ -287,6 +287,15 @@
       letter-spacing: 0.08em;
       color: rgba(0, 243, 255, 0.88);
     }
+    .stx-counter-menu__panel .stx-counter-sub {
+      margin: -4px 0 10px;
+      font-size: 0.68rem;
+      line-height: 1.35;
+      color: rgba(184, 230, 240, 0.45);
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0.02em;
+    }
     .stx-counter-menu__panel .stx-counter-row {
       display: flex;
       justify-content: space-between;
@@ -317,16 +326,6 @@
     }
     
     .stx-site-stats-hidden { display: none !important; }
-    .stx-php-counter-flyout {
-      position: fixed;
-      top: 88px;
-      right: 16px;
-      z-index: 10046;
-      pointer-events: auto;
-    }
-    .stx-php-counter-flyout .stx-counter-menu__panel {
-      margin: 0;
-    }
     .instructions-menu__panel {
       min-width: min(920px, 92vw);
       max-width: min(920px, 94vw);
@@ -2444,10 +2443,12 @@
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; your local craft tally">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
-<h4>Site (server)</h4>
+<h4>Live stats</h4>
+<p class="stx-counter-sub">Global totals (PHP API — same layout as Netlify)</p>
 <div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
 <div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
 <div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
+<div class="stx-counter-row"><span>Your visits (this browser)</span><span class="stx-counter-val" id="stx-counter-your-visits">—</span></div>
 <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
 <hr class="stx-counter-hr"/>
 <h4>Your browser</h4>
@@ -2455,13 +2456,6 @@
 <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
 </div>
 </details>
-<div class="stx-php-counter-flyout stx-site-stats-hidden" id="stxPhpCounterPanel" role="region" aria-label="PHP host visit counts" aria-hidden="true">
-<div class="stx-counter-menu__panel">
-<h4>PHP host</h4>
-<div class="stx-counter-row"><span>Total visits</span><span class="stx-counter-val" id="stx-php-legacy-total">—</span></div>
-<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-php-legacy-unique">—</span></div>
-</div>
-</div>
 <details class="support-menu instructions-menu" id="stxInstructionsMenuMain">
 <summary class="btn btn--brand" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
@@ -2565,50 +2559,6 @@
           else sessionStorage.removeItem('stx-stats-dev-visible');
         } catch (e2) {}
       });
-    })();
-    (function () {
-      var panel = document.getElementById('stxPhpCounterPanel');
-      var totalEl = document.getElementById('stx-php-legacy-total');
-      var uniqueEl = document.getElementById('stx-php-legacy-unique');
-      var urlMeta = document.querySelector('meta[name="stx-php-counter-url"]');
-      var url = (urlMeta && urlMeta.content && String(urlMeta.content).trim()) ? String(urlMeta.content).trim() : 'counter.php';
-      var splashTitle = document.getElementById('stxToolboxSplashTitle');
-      var headerTitle = document.getElementById('stxToolboxHeaderTitle');
-      var fetched = false;
-      function loadPhp() {
-        if (fetched) return;
-        fetched = true;
-        fetch(url, { method: 'GET', cache: 'no-store', credentials: 'same-origin' })
-          .then(function (r) {
-            if (!r.ok) throw new Error('http');
-            return r.json();
-          })
-          .then(function (data) {
-            if (totalEl) totalEl.textContent = data && data.total != null ? data.total : '—';
-            if (uniqueEl) uniqueEl.textContent = data && data.unique != null ? data.unique : '—';
-          })
-          .catch(function () {
-            if (totalEl) totalEl.textContent = '—';
-            if (uniqueEl) uniqueEl.textContent = '—';
-          });
-      }
-      function toggleFromShiftClick(e) {
-        if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
-        if (!panel) return;
-        e.preventDefault();
-        e.stopPropagation();
-        var hide = !panel.classList.contains('stx-site-stats-hidden');
-        if (hide) {
-          panel.classList.add('stx-site-stats-hidden');
-          panel.setAttribute('aria-hidden', 'true');
-        } else {
-          panel.classList.remove('stx-site-stats-hidden');
-          panel.setAttribute('aria-hidden', 'false');
-          loadPhp();
-        }
-      }
-      if (splashTitle) splashTitle.addEventListener('click', toggleFromShiftClick);
-      if (headerTitle) headerTitle.addEventListener('click', toggleFromShiftClick);
     })();
     </script>
 

@@ -140,20 +140,47 @@
     itemsEl.textContent = Number.isFinite(im) ? formatNum(im) : '—';
   }
 
+  function yourVisitsEl() {
+    return document.getElementById('stx-counter-your-visits');
+  }
+
+  /** Netlify track returns `your_visits`; shared PHP track.php now matches. */
+  function applyYourVisitsFromAnalytics() {
+    var el = yourVisitsEl();
+    if (!el) return;
+    var j =
+      typeof window.STX_ANALYTICS_LAST === 'object' && window.STX_ANALYTICS_LAST
+        ? window.STX_ANALYTICS_LAST
+        : null;
+    var yv = j && j.your_visits != null ? Number(j.your_visits) : NaN;
+    el.textContent = Number.isFinite(yv) ? formatNum(yv) : '—';
+  }
+
+  /** Netlify-style read-only counter: ?read=1 avoids incrementing on every stats open. Key in query avoids CORS preflight for custom headers. */
+  function counterDisplayUrl(baseUrl) {
+    var k = counterPublicKey();
+    try {
+      var u = new URL(baseUrl, typeof location !== 'undefined' ? location.href : undefined);
+      u.searchParams.set('read', '1');
+      if (k) u.searchParams.set('key', k);
+      return u.href;
+    } catch (_) {
+      var sep = baseUrl.indexOf('?') === -1 ? '?' : '&';
+      var q = 'read=1' + (k ? '&key=' + encodeURIComponent(k) : '');
+      return baseUrl + sep + q;
+    }
+  }
+
   function fetchJsonFirst(urls) {
     var i = 0;
-    var hdrs = {};
-    var k = counterPublicKey();
-    if (k) hdrs['X-STX-Counter-Key'] = k;
     function next() {
       if (i >= urls.length) return Promise.reject(new Error('no_counter_endpoint'));
-      var url = urls[i++];
+      var url = counterDisplayUrl(urls[i++]);
       return fetch(url, {
         method: 'GET',
         mode: 'cors',
         credentials: 'omit',
-        cache: 'no-store',
-        headers: hdrs
+        cache: 'no-store'
       })
         .then(function (r) {
           if (!r.ok) throw new Error('http_' + r.status);
@@ -176,6 +203,8 @@
       if (totalEl) totalEl.textContent = '—';
       if (uniqueEl) uniqueEl.textContent = '—';
       if (itemsEl) itemsEl.textContent = '—';
+      var yEl0 = yourVisitsEl();
+      if (yEl0) yEl0.textContent = '—';
       if (hintEl) hintEl.style.display = 'none';
       return;
     }
@@ -201,11 +230,14 @@
         if (totalEl) totalEl.textContent = '—';
         if (uniqueEl) uniqueEl.textContent = '—';
         if (itemsEl) itemsEl.textContent = '—';
+        var yEl1 = yourVisitsEl();
+        if (yEl1) yEl1.textContent = '—';
       });
   }
 
   function refreshAll() {
     refreshLocal();
+    applyYourVisitsFromAnalytics();
     fetchServer();
   }
 
@@ -228,6 +260,9 @@
       var n = ev && ev.detail != null ? Number(ev.detail) : NaN;
       var itemsEl = document.getElementById('stx-counter-server-items');
       if (itemsEl && Number.isFinite(n)) itemsEl.textContent = formatNum(n);
+    });
+    document.addEventListener('stx-analytics', function () {
+      applyYourVisitsFromAnalytics();
     });
   }
 

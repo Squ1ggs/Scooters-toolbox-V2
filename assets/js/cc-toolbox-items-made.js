@@ -6,7 +6,8 @@
   var BUMP_KEY_META = 'stx-items-bump-key';
 
   var lastBump = 0;
-  var lastCountedMainSerial = '';
+  /** One local/server bump per "build" until topology changes; avoids counting every part add. */
+  var craftSessionCounted = false;
 
   function configuredItemsBumpUrl() {
     if (typeof window.STX_ITEMS_BUMP_URL === 'string' && window.STX_ITEMS_BUMP_URL.trim()) {
@@ -49,16 +50,29 @@
   function reportGlobalItemsBump() {
     var urls = itemsBumpUrls();
     if (!urls.length) return;
-    var headers = { 'Content-Type': 'application/json' };
     var k = itemsBumpKey();
-    if (k) headers['X-STX-Items-Bump-Key'] = k;
+    var cfg = configuredItemsBumpUrl();
+    var isNetlifyFn = cfg.indexOf('netlify.app') !== -1;
+    var headers;
+    var body;
+    if (isNetlifyFn) {
+      headers = { 'Content-Type': 'application/json' };
+      if (k) headers['X-STX-Items-Bump-Key'] = k;
+      body = JSON.stringify({ delta: 1 });
+    } else {
+      var params = new URLSearchParams();
+      params.set('delta', '1');
+      if (k) params.set('items_bump_key', k);
+      headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+      body = params.toString();
+    }
 
     (function postNext(i) {
       if (i >= urls.length) return;
       fetch(urls[i], {
         method: 'POST',
         headers: headers,
-        body: JSON.stringify({ delta: 1 }),
+        body: body,
         mode: 'cors',
         credentials: 'omit',
         cache: 'no-store'
@@ -122,18 +136,10 @@
     return false;
   }
 
-  function currentMainSerialValue() {
-    var a = byId('guidedOutputSerial');
-    var b = byId('outCode');
-    var s = (a && a.value && String(a.value).trim()) || (b && b.value && String(b.value).trim()) || '';
-    return s;
-  }
-
-  function maybeBumpOnNewMainSerial() {
-    var s = currentMainSerialValue();
-    if (!s || !mainSerialLooksComplete()) return;
-    if (s === lastCountedMainSerial) return;
-    lastCountedMainSerial = s;
+  function maybeBumpFirstCompleteThisSession() {
+    if (craftSessionCounted) return;
+    if (!mainSerialLooksComplete()) return;
+    craftSessionCounted = true;
     bump(isGuidedContext() ? 'guided' : 'simple');
   }
 
@@ -174,8 +180,9 @@
   function onMainTopologyChange(ev) {
     var t = ev.target;
     if (!t || !t.id || !MAIN_TOPOLOGY_IDS[t.id]) return;
+    craftSessionCounted = false;
     if (!mainSerialLooksComplete()) return;
-    bump(isGuidedContext() ? 'guided' : 'simple');
+    maybeBumpFirstCompleteThisSession();
   }
 
   function legitCodeComplete() {
@@ -372,10 +379,10 @@
     document.addEventListener('input', function (ev) {
       var t = ev && ev.target;
       if (!t || !t.id) return;
-      if (t.id === 'guidedOutputSerial' || t.id === 'outCode') maybeBumpOnNewMainSerial();
+      if (t.id === 'guidedOutputSerial' || t.id === 'outCode') maybeBumpFirstCompleteThisSession();
     }, true);
     document.addEventListener('click', function () {
-      setTimeout(maybeBumpOnNewMainSerial, 60);
+      setTimeout(maybeBumpFirstCompleteThisSession, 120);
     }, true);
     document.addEventListener('keydown', onKeyDown);
     if (document.readyState === 'loading') {

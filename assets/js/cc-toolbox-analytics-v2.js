@@ -83,7 +83,7 @@
     return id;
   }
 
-  function postJsonFirst(urls, payload, headers) {
+  function postWithBodyFirst(urls, headers, body) {
     var i = 0;
     function next() {
       if (i >= urls.length) return Promise.reject(new Error('no_analytics_endpoint'));
@@ -91,7 +91,7 @@
       return fetch(url, {
         method: 'POST',
         headers: headers,
-        body: payload,
+        body: body,
         mode: 'cors',
         credentials: 'omit',
         cache: 'no-store'
@@ -112,12 +112,6 @@
     var urls = candidateEndpoints('track.php');
     if (!urls.length) return;
 
-    var payload = JSON.stringify({
-      visitor_id: getOrCreateVisitorId(),
-      path: (typeof location !== 'undefined' ? location.pathname + (location.search || '') : '') || ''
-    });
-
-    var headers = { 'Content-Type': 'application/json' };
     var trackKey = '';
     if (typeof window.STX_ANALYTICS_TRACK_KEY === 'string' && window.STX_ANALYTICS_TRACK_KEY) {
       trackKey = String(window.STX_ANALYTICS_TRACK_KEY).trim();
@@ -127,9 +121,32 @@
         if (mk && mk.content) trackKey = String(mk.content).trim();
       } catch (_) {}
     }
-    if (trackKey) headers['X-STX-Track-Key'] = trackKey;
+    var visitorId = getOrCreateVisitorId();
+    var pagePath =
+      (typeof location !== 'undefined' ? location.pathname + (location.search || '') : '') || '';
 
-    postJsonFirst(urls, payload, headers)
+    /* Netlify functions expect JSON + X-STX-Track-Key; their CORS allows it. Shared PHP behind nginx: form body (no preflight). */
+    var ep0 = urls[0] || '';
+    var isNetlifyFn = ep0.indexOf('netlify.app') !== -1;
+
+    var chain;
+    if (isNetlifyFn) {
+      var payload = JSON.stringify({
+        visitor_id: visitorId,
+        path: pagePath
+      });
+      var hdrs = { 'Content-Type': 'application/json' };
+      if (trackKey) hdrs['X-STX-Track-Key'] = trackKey;
+      chain = postWithBodyFirst(urls, hdrs, payload);
+    } else {
+      var params = new URLSearchParams();
+      params.set('visitor_id', visitorId);
+      params.set('path', pagePath);
+      if (trackKey) params.set('track_key', trackKey);
+      chain = postWithBodyFirst(urls, { 'Content-Type': 'application/x-www-form-urlencoded' }, params.toString());
+    }
+
+    chain
       .then(function (j) {
         try {
           window.STX_ANALYTICS_LAST = j;
