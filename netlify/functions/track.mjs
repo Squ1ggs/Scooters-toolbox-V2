@@ -1,6 +1,7 @@
-import { STORE, getCounters, json, options, requireEnvKey, requireJson, setCounters } from './_shared.mjs';
+import { STORE, json, options, requireEnvKey, requireJson, updateCounters } from './_shared.mjs';
 
 export default async (req) => {
+  try {
   if (req.method === 'OPTIONS') return options();
   if (req.method !== 'POST') return json({ ok: false, error: 'method_not_allowed' }, 405);
   if (!requireEnvKey(req, 'STX_ANALYTICS_TRACK_KEY', 'X-STX-Track-Key')) {
@@ -17,15 +18,21 @@ export default async (req) => {
   const visitorSeen = await STORE.get(visitorKey, { type: 'text' });
   const priorVisits = Number((await STORE.get(visitCountKey, { type: 'text' })) || 0) || 0;
 
-  const counters = await getCounters();
-  counters.total += 1;
-  if (visitorSeen === null) {
-    counters.unique += 1;
-    await STORE.set(visitorKey, new Date().toISOString());
-  }
   await STORE.set(visitCountKey, String(priorVisits + 1));
   await STORE.set(`paths/${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, JSON.stringify({ t: new Date().toISOString(), path: pagePath, visitor_id: visitorId }));
-  const saved = await setCounters(counters);
+
+  const isNewVisitor = visitorSeen === null;
+  const saved = await updateCounters((c) => {
+    c.total += 1;
+    if (isNewVisitor) c.unique += 1;
+  });
+  if (isNewVisitor) {
+    await STORE.set(visitorKey, new Date().toISOString());
+  }
 
   return json({ ok: true, total: saved.total, unique: saved.unique, items_made: saved.items_made, your_visits: priorVisits + 1 });
+  } catch (_err) {
+    /* Analytics should never break user requests; return soft-success envelope instead of 502. */
+    return json({ ok: false, error: 'track_failed' }, 200);
+  }
 };

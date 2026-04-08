@@ -2739,11 +2739,13 @@
     }
 
     /**
-     * Bulk page only: save-editor Legit–style hard-fail = impossible composition (exclusion clash or too few parts in a comp slot).
-     * Other inv lines stay in details but do not flip Fail (data) — avoids tens of thousands of false positives vs a real bank.
+     * Bulk page only: hard-fail lines that match interactive Legit Builder’s inv-tag bar (exclusion clash,
+     * comp-slot under-min, comp allowlist mismatch, actionable missing deps). Dependency lines that are
+     * editor-parity noise stay FYI via bulkMissingDepTagIsEditorParityNoise.
      */
     function invReasonIsSaveEditorBulkHardFail(line) {
       var s = String(line || '');
+      if (/^Comp allowlist:/i.test(s)) return true;
       if (/missing dependency tag/i.test(s)) {
         var rxd = /missing dependency tag "([^"]+)"/gi;
         var md;
@@ -3048,7 +3050,7 @@
                     status = 'ok';
                     statusText = 'OK (data)';
                     details.push(
-                      'Bulk save-editor parity: inv scan reported FYI lines only (no exclusion clash or comp-slot under-min).'
+                      'Bulk save-editor parity: inv scan reported FYI lines only (no exclusion clash, comp-slot under-min, or comp allowlist mismatch).'
                     );
                   }
                 } else {

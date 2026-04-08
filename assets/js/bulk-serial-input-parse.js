@@ -100,14 +100,14 @@
       }
       if (v.indexOf('@U') === 0 || looksDeserialized(v) || looksLikeRawBase85Token(v)) out.push(v);
     }
-    if (out.length) return uniqueSerials(out);
+    if (out.length) return out;
     var loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
-    if (loose.length) return uniqueSerials(loose);
+    if (loose.length) return loose.slice();
     for (li = 0; li < lines.length; li++) {
       var tok = extractStxTokenFromLine(lines[li]);
       if (tok) out.push(tok);
     }
-    return uniqueSerials(out);
+    return out;
   }
 
   function extractJsonStrings(node, out) {
@@ -144,7 +144,7 @@
       var parsed = JSON.parse(text);
       var out = [];
       extractJsonStrings(parsed, out);
-      return uniqueSerials(out);
+      return out;
     } catch (err) {
       var matches = text.match(/@U[^\s"'`,\]}]+/g) || [];
       var lines = text.split(/\r?\n/);
@@ -153,7 +153,7 @@
         var t = lines[i].trim();
         if (t && looksDeserialized(t)) matches.push(t);
       }
-      return uniqueSerials(matches);
+      return matches;
     }
   }
 
@@ -167,21 +167,26 @@
       tok = extractStxTokenFromLine(lines[i]);
       if (tok) out.push(tok);
     }
-    return uniqueSerials(out);
+    return out;
   }
 
   /**
    * @param {string} raw
    * @param {'auto'|'yaml'|'json'|'txt'} mode
    * @param {string} [filename]
-   * @returns {{ serials: string[], modeUsed: string, rawLineCount: number }}
+   * @param {{ preserveDuplicateLines?: boolean }} [opts]
+   * @returns {{ serials: string[], modeUsed: string, rawLineCount: number, mergedDuplicateCount: number }}
    */
-  function extractSerials(raw, mode, filename) {
+  function extractSerials(raw, mode, filename, opts) {
+    opts = opts || {};
+    var preserveDup = !!opts.preserveDuplicateLines;
     var text = String(raw || '');
     var rawLineCount = text.replace(/\r\n?/g, '\n').split('\n').filter(function (l) { return l.trim(); }).length;
     var used = mode === 'auto' ? detectMode(raw, filename) : mode;
-    var serials = used === 'yaml' ? extractFromYaml(raw) : used === 'json' ? extractFromJson(raw) : extractFromTxt(raw);
-    return { serials: serials, modeUsed: used, rawLineCount: rawLineCount };
+    var rawSerials = used === 'yaml' ? extractFromYaml(raw) : used === 'json' ? extractFromJson(raw) : extractFromTxt(raw);
+    var serials = preserveDup ? rawSerials : uniqueSerials(rawSerials);
+    var mergedDuplicateCount = preserveDup ? 0 : Math.max(0, rawSerials.length - serials.length);
+    return { serials: serials, modeUsed: used, rawLineCount: rawLineCount, mergedDuplicateCount: mergedDuplicateCount };
   }
 
   window.BulkSerialInputParse = {

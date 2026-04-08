@@ -11,7 +11,10 @@
     rows: [],
     page: 0,
     filter: 'all',
-    running: false
+    running: false,
+    /** Input lines with identical serial text merged when deduping (0 if none or if Keep duplicate lines). */
+    inputDupMerged: 0,
+    inputPreserveDups: false
   };
 
   function $(id) {
@@ -139,6 +142,134 @@
     );
   }
 
+  /** Buckets `legitState.details` lines for JSON `flagging.detail_line_categories`. */
+  function categorizeLegitDetailLine(line) {
+    var s = String(line || '');
+    if (/^\[composition\]/i.test(s)) return 'composition';
+    if (/^\[raw\]/i.test(s)) return 'raw_composition';
+    if (/^Exclusion:/i.test(s)) return 'exclusion';
+    if (/^Comp allowlist:/i.test(s)) return 'comp_allowlist';
+    if (/^Compatibility:/i.test(s)) return 'compatibility';
+    if (/^Inv tags/i.test(s)) return 'inv_tags';
+    if (/missing dependency tag/i.test(s)) return 'dependency';
+    if (
+      /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:|Passes our checks|Rules passed:|Spawn claim:)/i.test(
+        s
+      )
+    ) {
+      return 'diagnostics';
+    }
+    if (/weight|schedule|spawn|off_pool/i.test(s)) return 'loot_meta';
+    if (/NCS|slot order|wrong slot/i.test(s)) return 'ncs';
+    return 'other';
+  }
+
+  function countDetailCategories(details) {
+    var counts = Object.create(null);
+    var arr = details || [];
+    var i;
+    for (i = 0; i < arr.length; i++) {
+      var cat = categorizeLegitDetailLine(arr[i]);
+      counts[cat] = (counts[cat] || 0) + 1;
+    }
+    return counts;
+  }
+
+  function firstActionableDetailLine(details) {
+    var i;
+    var d;
+    for (i = 0; i < (details || []).length; i++) {
+      d = String(details[i] || '');
+      if (/^(Exclusion:|Compatibility:|Inv tags|\[composition\]|\[raw\])/i.test(d)) return d;
+    }
+    return details && details[0] != null ? String(details[0]) : '';
+  }
+
+  function compactDecodeForExport(dr) {
+    if (!dr || typeof dr !== 'object') return null;
+    var rp = dr.resolvedParts;
+    var rpc = Array.isArray(rp) ? rp.length : 0;
+    var unr = 0;
+    var i;
+    if (Array.isArray(rp)) {
+      for (i = 0; i < rp.length; i++) {
+        if (rp[i] && rp[i].unresolved) unr++;
+      }
+    }
+    return {
+      success: !!dr.success,
+      error: dr.success ? '' : String(dr.error || ''),
+      manufacturer: dr.manufacturer != null ? dr.manufacturer : null,
+      item_type: dr.itemType != null ? dr.itemType : null,
+      item_type_id: dr.itemTypeId != null ? dr.itemTypeId : dr.item_type_id != null ? dr.item_type_id : null,
+      level: dr.level != null ? dr.level : null,
+      resolved_parts_count: rpc,
+      unresolved_parts_count: unr
+    };
+  }
+
+  function validationContextForExport(v) {
+    if (!v || typeof v !== 'object') return null;
+    return {
+      phase: v.phase != null ? String(v.phase) : null,
+      ok: v.ok === true,
+      error: v.error != null ? String(v.error) : null,
+      mapped: v.mapped !== false,
+      mapped_count: v.mappedCount != null ? v.mappedCount : null,
+      resolved_row_count: v.resolvedRowCount != null ? v.resolvedRowCount : null,
+      unresolved_decode_parts: v.unresolved != null ? v.unresolved : null,
+      manifest_manufacturer: v.manufacturer != null ? v.manufacturer : null,
+      manifest_item_type: v.itemType != null ? v.itemType : null,
+      item_level_used: v.itemLevel != null ? v.itemLevel : null
+    };
+  }
+
+  /**
+   * Rich failure context for JSON export (omitted when bucket is ok).
+   * Includes every `legitState.details` string (UI `notes` / CSV `notes_full` still filter some lines).
+   */
+  function buildFlaggingExport(row, bucket) {
+    var v = row.validation;
+    var ls = v && v.legitState;
+    var dr = row.rawDecode;
+    var details = ls && Array.isArray(ls.details) ? ls.details.map(function (x) { return String(x); }) : [];
+    var out = {
+      bucket: bucket,
+      legit_status_code: ls && ls.status ? String(ls.status) : null,
+      legit_status_text: ls && ls.statusText ? String(ls.statusText) : null,
+      detail_line_categories: countDetailCategories(details),
+      legit_details_all: details,
+      validation: validationContextForExport(v),
+      decode: compactDecodeForExport(dr)
+    };
+    if (!row.decodeOk) {
+      out.decode_failed = true;
+      out.primary_reason = row.decodeError ? String(row.decodeError) : 'decode_failed';
+      return out;
+    }
+    if (bucket === 'nomanifest') {
+      out.primary_reason = v && v.error ? String(v.error) : 'no_manifest';
+      out.manifest_hint = {
+        manufacturer: v && v.manufacturer != null ? v.manufacturer : null,
+        item_type: v && v.itemType != null ? v.itemType : null
+      };
+      return out;
+    }
+    if (bucket === 'nomap') {
+      out.primary_reason = firstActionableDetailLine(details) || (ls && ls.statusText ? String(ls.statusText) : 'unmapped_slot_map');
+      if (!details.length) {
+        out.slot_map_note =
+          'Decoded OK but no manifest parts matched NCS slots (layout map gap or pool drift). See decode counts in flagging.decode.';
+      }
+      return out;
+    }
+    out.primary_reason =
+      firstActionableDetailLine(details) ||
+      (ls && ls.statusText ? String(ls.statusText) : '') ||
+      bucket;
+    return out;
+  }
+
   function flattenRowForExport(row) {
     var c = classifyRow(row);
     var ls = row.validation && row.validation.legitState;
@@ -168,7 +299,8 @@
         .filter(Boolean)
         .join(' | ');
     }
-    return {
+    var align = computeAlignmentFlags(row);
+    var flat = {
       bucket: c,
       serial: row.serial,
       decode_ok: row.decodeOk,
@@ -183,8 +315,16 @@
       stats: rowStatsLine(row),
       drop_hint: row.dropText || '—',
       manufacturer: row.rawDecode && row.rawDecode.manufacturer,
-      item_type: row.rawDecode && row.rawDecode.itemType
+      item_type: row.rawDecode && row.rawDecode.itemType,
+      align_strict_ok_data: align.align_strict_ok_data,
+      align_no_fail_data: align.align_no_fail_data,
+      align_mapped_no_fail_data: align.align_mapped_no_fail_data,
+      align_soft_ok_or_warn: align.align_soft_ok_or_warn
     };
+    if (c !== 'ok') {
+      flat.flagging = buildFlaggingExport(row, c);
+    }
+    return flat;
   }
 
   function getKpiSnapshot(rows) {
@@ -215,7 +355,9 @@
       uncertain_or_map: wrn,
       decode_failed: decodeFail,
       no_manifest: nomanifest,
-      fail_data: legitErr
+      fail_data: legitErr,
+      input_dup_lines_merged: state.inputDupMerged || 0,
+      preserve_duplicate_input_lines: !!state.inputPreserveDups
     };
   }
 
@@ -330,6 +472,8 @@
       exported_at: new Date().toISOString(),
       tool: 'bulk-serial-validator',
       validation_data_bundle: getValidationDataBundleMeta(),
+      row_schema_note:
+        'Every row includes align_* booleans. If bucket is not ok, flagging holds primary_reason, full legit_details_all (every Legit Builder line, including Parts:/Stats: diagnostics omitted from notes_full), detail_line_categories counts, validation snapshot, and compact decode stats — use this to see exactly why a row failed.',
       alignment_definitions: {
         align_strict_ok_data:
           'Same as KPI OK (data): LegitBuilderApi status OK (bulk cheat-audit: may include unmapped rows with clean raw composition).',
@@ -340,7 +484,7 @@
         align_soft_ok_or_warn:
           'Mapped + legit state ok or warn (not err). Counts rows that are not hard-fail even if tag/source lines are warnings.',
         alignment_flags_note:
-          'Bulk validator uses cheat-audit mode: composition (inv tags, raw graph, weights, elements) drives Fail (data); spawn-table gaps and slot-order FYI do not reduce OK.'
+          'Bulk validator uses cheat-audit mode: composition (inv tags, comp allowlist, raw graph, weights, elements) drives Fail (data); spawn-table gaps and slot-order FYI do not reduce OK.'
       },
       alignment_summary: buildAlignmentSummary(rows),
       options: {
@@ -721,6 +865,11 @@
       }
     }
     $('k-total').textContent = String(n);
+    var elDup = $('k-dup-merged');
+    if (elDup) {
+      if (state.inputPreserveDups) elDup.textContent = '—';
+      else elDup.textContent = String(state.inputDupMerged != null ? state.inputDupMerged : 0);
+    }
     $('k-decoded').textContent = String(dec);
     $('k-ok').textContent = String(ok);
     $('k-warn').textContent = String(wrn);
@@ -754,6 +903,12 @@
         (sum === n ? '' : ' — mismatch ' + String(n) + ', report this');
       if (dec !== n) {
         rec.textContent += ' · decoded ' + String(dec) + ' / ' + String(n) + ' rows';
+      }
+      if (!state.inputPreserveDups && state.inputDupMerged > 0) {
+        rec.textContent +=
+          ' · ' + String(state.inputDupMerged) + ' duplicate input line(s) merged (same serial text; enable Keep duplicate lines for one row each).';
+      } else if (state.inputPreserveDups && n > 0) {
+        rec.textContent += ' · duplicate lines kept as separate rows';
       }
     }
   }
@@ -848,7 +1003,10 @@
     var modeSel = $('bv-mode');
     var mode = modeSel ? modeSel.value : 'auto';
     var fn = ($('bv-file') && $('bv-file').files && $('bv-file').files[0] && $('bv-file').files[0].name) || '';
-    var parsed = window.BulkSerialInputParse.extractSerials(raw, mode, fn);
+    var preserveDupLines = !!($('bv-preserve-dup-lines') && $('bv-preserve-dup-lines').checked);
+    var parsed = window.BulkSerialInputParse.extractSerials(raw, mode, fn, { preserveDuplicateLines: preserveDupLines });
+    state.inputDupMerged = parsed.mergedDuplicateCount || 0;
+    state.inputPreserveDups = preserveDupLines;
     var serials = parsed.serials;
     if (!serials.length) {
       statusLine('No serials found. Paste Base85 (@U) or deserialized format in YAML/JSON/txt, or choose a file.', 'warn');
@@ -867,11 +1025,15 @@
     if (!window.LegitBuilderApi || typeof window.LegitBuilderApi.computeLegitValidationState !== 'function') {
       statusLine('Legit data not loaded — include legit-builder-core.js after manifest/NCS/data (same order as Legit Builder).', 'bad');
       state.running = false;
+      updateKpis();
+      renderTable();
       return;
     }
     if (!window.LegitDecodeHelpers || typeof window.LegitDecodeHelpers.validateDecodedSerial !== 'function') {
       statusLine('LegitDecodeHelpers missing — load legit-decode-validate.js after legit-builder-core.js.', 'bad');
       state.running = false;
+      updateKpis();
+      renderTable();
       return;
     }
     var ilHidden = document.getElementById('item-level');
@@ -879,11 +1041,26 @@
     if (typeof window.decodeSerialsViaBridge !== 'function') {
       statusLine('decodeSerialsViaBridge missing (load cc-stx-decoder-bridge.js)', 'bad');
       state.running = false;
+      updateKpis();
+      renderTable();
       return;
     }
 
     var total = serials.length;
-    statusLine('Decoding ' + total + ' serial (' + parsed.modeUsed + ')…', '');
+    var dupMerged = parsed.mergedDuplicateCount || 0;
+    var decodeMsg =
+      'Decoding ' +
+      total +
+      ' serial' +
+      (total === 1 ? '' : 's') +
+      ' (' +
+      parsed.modeUsed +
+      ')' +
+      (dupMerged
+        ? ' — ' + dupMerged + ' duplicate line(s) merged (identical text); enable Keep duplicate lines for one row each.'
+        : '') +
+      '…';
+    statusLine(decodeMsg, dupMerged ? 'warn' : '');
     var allRows = [];
     var offset = 0;
 
@@ -941,16 +1118,10 @@
     }
     state.rows = allRows;
     state.running = false;
-    statusLine(
-      'Done. ' +
-        total +
-        ' serials · mode ' +
-        parsed.modeUsed +
-        ' · ' +
-        (total < raw.split('\n').length ? 'unique list' : 'lines parsed') +
-        invTagBundleStatusSuffix(),
-      'ok'
-    );
+    var doneParts = ['Done.', String(total), total === 1 ? 'serial' : 'serials', '· mode', parsed.modeUsed];
+    if (dupMerged) doneParts.push('·', String(dupMerged), dupMerged === 1 ? 'dup line merged' : 'dup lines merged');
+    doneParts.push(invTagBundleStatusSuffix());
+    statusLine(doneParts.join(' '), 'ok');
     updateKpis();
     renderTable();
   }
@@ -975,7 +1146,16 @@
     var next = $('bv-next');
 
     if (runBtn) runBtn.addEventListener('click', function () { runValidation(); });
-    if (clr && inp) clr.addEventListener('click', function () { inp.value = ''; if (fi) fi.value = ''; statusLine('Cleared.', ''); });
+    if (clr && inp) {
+      clr.addEventListener('click', function () {
+        inp.value = '';
+        if (fi) fi.value = '';
+        state.inputDupMerged = 0;
+        state.inputPreserveDups = false;
+        statusLine('Cleared.', '');
+        updateKpis();
+      });
+    }
     if (exJ) exJ.addEventListener('click', exportJsonReport);
     if (exC) exC.addEventListener('click', exportCsv);
     if (exM) exM.addEventListener('click', exportMarkdownSummary);

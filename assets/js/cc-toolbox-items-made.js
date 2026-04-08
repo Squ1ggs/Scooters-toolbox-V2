@@ -25,12 +25,15 @@
       out.push(u);
     }
     var isHttp = typeof location !== 'undefined' && /^https?:$/i.test(location.protocol || '');
+    var cfg = configuredItemsBumpUrl();
+    /* Prefer configured Netlify endpoint first; a same-origin legacy items-bump.php can return 200
+       and prevent fallback, which keeps world counter lower than real usage. */
+    if (cfg) add(cfg);
     if (isHttp) {
       try { add(new URL('items-bump.php', location.href).href); } catch (_) {}
       try { add(new URL('../items-bump.php', location.href).href); } catch (_) {}
       try { add(new URL('../../items-bump.php', location.href).href); } catch (_) {}
     }
-    add(configuredItemsBumpUrl());
     return out;
   }
 

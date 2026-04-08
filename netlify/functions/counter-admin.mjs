@@ -27,5 +27,23 @@ export default async (req) => {
     return json({ ok: true, ...saved });
   }
 
+  /* Replace: POST { action: 'set-counters', total?, unique?, items_made? } — omit fields to keep current. */
+  if (action === 'set-counters') {
+    if (body.total != null) counters.total = Math.max(0, Number(body.total) || 0);
+    if (body.unique != null) counters.unique = Math.max(0, Number(body.unique) || 0);
+    if (body.items_made != null) counters.items_made = Math.max(0, Number(body.items_made) || 0);
+    const saved = await setCounters(counters);
+    return json({ ok: true, ...saved });
+  }
+
+  /* Merge PHP (or other) history into existing blob: POST { action: 'add-counters', total?, unique?, items_made? } — positive deltas only. */
+  if (action === 'add-counters') {
+    if (body.total != null) counters.total += Math.max(0, Number(body.total) || 0);
+    if (body.unique != null) counters.unique += Math.max(0, Number(body.unique) || 0);
+    if (body.items_made != null) counters.items_made += Math.max(0, Number(body.items_made) || 0);
+    const saved = await setCounters(counters);
+    return json({ ok: true, ...saved });
+  }
+
   return json({ ok: false, error: 'unknown_action' }, 400);
 };

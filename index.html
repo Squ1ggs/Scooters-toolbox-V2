@@ -9,6 +9,7 @@
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="counter.php" name="stx-php-counter-url"/>
 <meta content="" name="stx-analytics-track-key"/>
 <meta content="" name="stx-counter-key"/>
 <meta content="" name="stx-items-bump-key"/>
@@ -316,6 +317,16 @@
     }
     
     .stx-site-stats-hidden { display: none !important; }
+    .stx-php-counter-flyout {
+      position: fixed;
+      top: 88px;
+      right: 16px;
+      z-index: 10046;
+      pointer-events: auto;
+    }
+    .stx-php-counter-flyout .stx-counter-menu__panel {
+      margin: 0;
+    }
     .instructions-menu__panel {
       min-width: min(920px, 92vw);
       max-width: min(920px, 94vw);
@@ -2412,14 +2423,14 @@
 
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
-<h1 class="splash__title">Scooter's Toolbox</h1>
+<h1 class="splash__title" id="stxToolboxSplashTitle">Scooter's Toolbox</h1>
 <p class="splash__sub">Cyber workshop · V2 - 2.5.1</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
 <div class="app-shell">
 <header class="header-bar">
 <img alt="" class="header-icon" height="48" src="./assets/favicon.ico" width="48"/>
-<span class="header-title">Scooter's Toolbox</span>
+<span class="header-title" id="stxToolboxHeaderTitle">Scooter's Toolbox</span>
 <div class="header-top-ctas" id="stxTopControls">
 <label class="anim-toggle" title="Enable slow colour sweeps on buttons">
 <span class="anim-toggle__label">Full anim</span>
@@ -2444,6 +2455,13 @@
 <p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
 </div>
 </details>
+<div class="stx-php-counter-flyout stx-site-stats-hidden" id="stxPhpCounterPanel" role="region" aria-label="PHP host visit counts" aria-hidden="true">
+<div class="stx-counter-menu__panel">
+<h4>PHP host</h4>
+<div class="stx-counter-row"><span>Total visits</span><span class="stx-counter-val" id="stx-php-legacy-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-php-legacy-unique">—</span></div>
+</div>
+</div>
 <details class="support-menu instructions-menu" id="stxInstructionsMenuMain">
 <summary class="btn btn--brand" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
@@ -2547,6 +2565,50 @@
           else sessionStorage.removeItem('stx-stats-dev-visible');
         } catch (e2) {}
       });
+    })();
+    (function () {
+      var panel = document.getElementById('stxPhpCounterPanel');
+      var totalEl = document.getElementById('stx-php-legacy-total');
+      var uniqueEl = document.getElementById('stx-php-legacy-unique');
+      var urlMeta = document.querySelector('meta[name="stx-php-counter-url"]');
+      var url = (urlMeta && urlMeta.content && String(urlMeta.content).trim()) ? String(urlMeta.content).trim() : 'counter.php';
+      var splashTitle = document.getElementById('stxToolboxSplashTitle');
+      var headerTitle = document.getElementById('stxToolboxHeaderTitle');
+      var fetched = false;
+      function loadPhp() {
+        if (fetched) return;
+        fetched = true;
+        fetch(url, { method: 'GET', cache: 'no-store', credentials: 'same-origin' })
+          .then(function (r) {
+            if (!r.ok) throw new Error('http');
+            return r.json();
+          })
+          .then(function (data) {
+            if (totalEl) totalEl.textContent = data && data.total != null ? data.total : '—';
+            if (uniqueEl) uniqueEl.textContent = data && data.unique != null ? data.unique : '—';
+          })
+          .catch(function () {
+            if (totalEl) totalEl.textContent = '—';
+            if (uniqueEl) uniqueEl.textContent = '—';
+          });
+      }
+      function toggleFromShiftClick(e) {
+        if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+        if (!panel) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var hide = !panel.classList.contains('stx-site-stats-hidden');
+        if (hide) {
+          panel.classList.add('stx-site-stats-hidden');
+          panel.setAttribute('aria-hidden', 'true');
+        } else {
+          panel.classList.remove('stx-site-stats-hidden');
+          panel.setAttribute('aria-hidden', 'false');
+          loadPhp();
+        }
+      }
+      if (splashTitle) splashTitle.addEventListener('click', toggleFromShiftClick);
+      if (headerTitle) headerTitle.addEventListener('click', toggleFromShiftClick);
     })();
     </script>
 

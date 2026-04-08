@@ -35,13 +35,15 @@
     var cfg = configuredEndpoint();
     var isHttp = allowRemoteAnalyticsEndpoints();
 
+    /* Prefer meta / STX_ANALYTICS_ENDPOINT (e.g. Netlify track) before same-origin track.php — avoids stale hits. */
+    if (cfg) add(cfg);
+
     if (isHttp) {
       try { add(new URL(filename, location.href).href); } catch (_) {}
       try { add(new URL('../' + filename, location.href).href); } catch (_) {}
       try { add(new URL('../../' + filename, location.href).href); } catch (_) {}
     }
 
-    add(cfg);
     return out;
   }
 
