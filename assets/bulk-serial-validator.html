@@ -438,7 +438,7 @@ aside li { margin-bottom: 6px; }
 </div>
 </details>
 <details class="support-menu">
-<summary class="btn btn--brand" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
+<summary class="btn btn--brand" title="Support the project - I wouldn't be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
 <div aria-label="Support links" class="support-menu__panel" role="menu">
 <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" rel="noopener noreferrer" role="menuitem" target="_blank">Ko-fi</a>
 <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" rel="noopener noreferrer" role="menuitem" target="_blank">Buy Me a Coffee</a>
@@ -571,13 +571,13 @@ Keep duplicate lines</label>
 <div class="panel__title">How it works</div>
 <ul>
 <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
-<li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rule set as save-editor.be <strong>Legit Item Builder</strong>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
-<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href="../legacy/legit-builder.html">Legit Builder</a> (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
+<li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part's dependencytags, exclusiontags, and comp allowlists — same rule set as save-editor.be <strong>Legit Item Builder</strong>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
+<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href="../legacy/legit-builder.html">Legit Builder</a> (a part not in the dump's allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS "wrong slot" / schedule level / 0% weight remain FYI here, not Fail.</li>
 <li><strong>Loot-pool FYI</strong>: <code>off_pool_*</code> rows are reported for visibility only. They do not hard-fail by themselves.</li>
 <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
 <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
 <li><strong>Per-part clarity</strong>: Legit Builder shows a <em>Selected parts</em> table (drop pool vs inv-tag columns). Here, <strong>Notes</strong> lists real failure lines (inv tag graph, weights, NCS, etc.) — not the footer stats block.</li>
-<li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check “Export only rows matching…” to export e.g. uncertain-only after choosing the filter.</li>
+<li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check "Export only rows matching…" to export e.g. uncertain-only after choosing the filter.</li>
 <li><strong>Alignment flags</strong> (<code>align_*</code>): Extra booleans + <code>alignment_summary</code> / <code>alignment_definitions</code> in JSON for comparing row buckets in the same export (e.g. OK vs not Fail vs mapped-only).</li>
 </ul>
 <p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
@@ -604,15 +604,15 @@ Keep duplicate lines</label>
 <dt><strong>Dup lines merged</strong></dt>
 <dd>How many extra input lines were dropped because they repeated the same serial string. Use <strong>Keep duplicate lines</strong> to validate every line; then this shows —.</dd>
 <dt><strong>Decoded OK</strong></dt>
-<dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn’t be parsed.</dd>
+<dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn't be parsed.</dd>
 <dt><strong>OK (data)</strong></dt>
 <dd>Decoded + manifest item found + slot map matched + passes all checks (inv tags, schedules, sources). Strict pass.</dd>
 <dt><strong>Uncertain</strong></dt>
-<dd>Decoded but not strict OK: usually <strong>no NCS→manifest slot map</strong> (shows “Uncertain (no slot map)”), or <strong>warnings</strong> from schedules/weights/inv tags (Legit column shows a warn state). The line under the tiles sums buckets so OK + Uncertain + failures = Serials.</dd>
+<dd>Decoded but not strict OK: usually <strong>no NCS→manifest slot map</strong> (shows "Uncertain (no slot map)"), or <strong>warnings</strong> from schedules/weights/inv tags (Legit column shows a warn state). The line under the tiles sums buckets so OK + Uncertain + failures = Serials.</dd>
 <dt><strong>Decode failed</strong></dt>
-<dd>WASM couldn’t decode (bad Base85, corrupted, or unknown format).</dd>
+<dd>WASM couldn't decode (bad Base85, corrupted, or unknown format).</dd>
 <dt><strong>No manifest</strong></dt>
-<dd>Decoded but manufacturer/item type don’t match any known manifest item.</dd>
+<dd>Decoded but manufacturer/item type don't match any known manifest item.</dd>
 <dt><strong>Fail (data)</strong></dt>
 <dd>Decoded + manifest + mapped but validation failed (inv tags wrong, off loot schedule, etc.). See Notes.</dd>
 </dl>
@@ -693,8 +693,11 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="js/cc-itempool-drop-check.js"></script>
 <script src="js/bulk-serial-input-parse.js"></script>
 <script src="js/bulk-serial-validator-app.js"></script>
-<script src="js/cc-toolbox-analytics.js"></script>
-<script src="js/cc-toolbox-items-made.js"></script>
-<script src="js/cc-toolbox-public-counter.js"></script>
+<script src="js/cc-toolbox-analytics-v2.js?v=3"></script>
+<script src="js/cc-toolbox-items-made.js?v=2"></script>
+<script src="js/cc-toolbox-public-counter.js?v=2"></script>
 </body>
 </html>
+
+
+

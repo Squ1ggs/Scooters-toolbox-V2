@@ -33,7 +33,10 @@
 
     /* Prefer meta / STX_COUNTER_URL (Netlify functions) first — legacy counter.php probes can return 200 with
        stale JSON and block the real endpoint (fetchJsonFirst stops on first success). */
-    if (cfg) add(cfg);
+    if (cfg) {
+      add(cfg);
+      return out;
+    }
 
     if (isHttp) {
       try { add(new URL(filename, location.href).href); } catch (_) {}

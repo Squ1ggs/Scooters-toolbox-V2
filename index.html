@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
-<meta content="counter.php" name="stx-php-counter-url"/>
+<meta content="counter_v2.php" name="stx-php-counter-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
@@ -84,9 +84,9 @@
 <script defer="" src="./assets/js/cc-skin-mixer-rebuild.js"></script>
 <script defer="" src="./assets/js/rebuild-presets-random.js"></script>
 <script defer="" src="./assets/js/rebuild-credits-eggs.js"></script>
-<script defer="" src="./assets/js/cc-toolbox-analytics.js"></script>
-<script defer="" src="./assets/js/cc-toolbox-items-made.js"></script>
-<script defer="" src="./assets/js/cc-toolbox-public-counter.js"></script>
+<script defer="" src="./assets/js/cc-toolbox-analytics-v2.js?v=3"></script>
+<script defer="" src="./assets/js/cc-toolbox-items-made.js?v=3"></script>
+<script defer="" src="./assets/js/cc-toolbox-public-counter.js?v=3"></script>
 <style id="editor-rebuild-spec">
     
     :root {
@@ -3209,7 +3209,7 @@
 <details class="rebuild-details" id="skinMixerDetails" style="margin-top:14px;">
 <summary style="color:var(--accent-cyan);font-weight:700;">Skin mixer</summary>
 <div style="margin-top:14px;padding:14px;border:2px solid rgba(0,255,200,0.4);border-radius:8px;">
-<label for="mixNameInput" style="color:var(--accent-cyan);font-size:1.05em;margin-bottom:8px;display:block;">Mix Generator</label>
+<label for="mixName" style="color:var(--accent-cyan);font-size:1.05em;margin-bottom:8px;display:block;">Mix Generator</label>
 <p style="color:var(--text-secondary);font-size:0.9em;margin-bottom:10px;">Select two skins to auto-generate a hybrid mix added into Special Skins.</p>
 <p style="color:var(--accent-cyan);font-size:0.85em;margin-bottom:10px;padding:8px 10px;background:rgba(0,243,255,0.08);border-radius:6px;border:1px solid rgba(0,243,255,0.25);" title="Skins use format {family:itemId} e.g. {1:2} and {1:4} share family 1">Tip: Only skins with the same type/family ID can be mixed (e.g. {1:2} and {1:4} share family 1). Hover parts to see IDs.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -4335,3 +4335,4 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <script src="./assets/js/cc-yaml-drawer-wiring-rebuild.js"></script>
 </body>
 </html>
+

@@ -861,7 +861,7 @@
     "name": "Peer Review",
     "vaultHunter": "Harlowe",
     "tree": "Seize the Day",
-    "description": "Whenever an enemy enters Stasis, spawn a homing Rejuvenating Projectile that targets Harlowe or her Allies once the enemy is Slammed, killed, or Stasis ends.Â The Rejuvenating Projectile grants decreased Action Skill Duration Rate and increased Action Skill Cooldown Rate for a Duration. If the target is in Fight for Your Life, they immediately gain Second Wind as if they killed an enemy."
+    "description": "Whenever an enemy enters Stasis, spawn a homing Rejuvenating Projectile that targets Harlowe or her Allies once the enemy is Slammed, killed, or Stasis ends. The Rejuvenating Projectile grants decreased Action Skill Duration Rate and increased Action Skill Cooldown Rate for a Duration. If the target is in Fight for Your Life, they immediately gain Second Wind as if they killed an enemy."
   },
   "periodictableflip": {
     "name": "Periodic Table Flip",
@@ -2637,19 +2637,19 @@
     "name": "Three's Company",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "C4SH gains increased Windfall Duration for every Totem. Arcane Totem: Roll 3's to create a totem that boosts nearby allies’ Action Skill Damage and instantly grants a Cleromancy charge."
+    "description": "C4SH gains increased Windfall Duration for every Totem. Arcane Totem: Roll 3's to create a totem that boosts nearby allies' Action Skill Damage and instantly grants a Cleromancy charge."
   },
   "commotionseleven": {
     "name": "Commotion's Eleven",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "Totems deal bonus damage of C4SH’s gun’s current element. Effigy Totem: Roll 11's to spawn a totem that fires Eldritch Bullets and fires extra waves when status effects are applied."
+    "description": "Totems deal bonus damage of C4SH's gun's current element. Effigy Totem: Roll 11's to spawn a totem that fires Eldritch Bullets and fires extra waves when status effects are applied."
   },
   "mightynine": {
     "name": "Mighty Nine",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "If C4SH would enter FFYL with an active Bone Totem, he instead gets a free Second Wind, a free Cleromancy charge, and destroys a Bone Totem. Tough Totem: Roll 9's to spawn a totem that adds bonus Incendiary Melee Damage and restores other totems’ duration on kill."
+    "description": "If C4SH would enter FFYL with an active Bone Totem, he instead gets a free Second Wind, a free Cleromancy charge, and destroys a Bone Totem. Tough Totem: Roll 9's to spawn a totem that adds bonus Incendiary Melee Damage and restores other totems' duration on kill."
   },
   "eightsofhel": {
     "name": "Eights of Hel",
@@ -2661,7 +2661,7 @@
     "name": "Dirty Dozen",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "C4SH’s minimum Fortune Stack Count is based on active Totems. Chaos Totem: Roll 12's to spawn a totem that draws and throws cards from his deck."
+    "description": "C4SH's minimum Fortune Stack Count is based on active Totems. Chaos Totem: Roll 12's to spawn a totem that draws and throws cards from his deck."
   },
   "easysixes": {
     "name": "Easy Sixes",
@@ -2757,7 +2757,7 @@
     "name": "Sawed-Off",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "Cross-Fire’s Dual Revolvers become Dual Shotguns; Windfall increases pellet count."
+    "description": "Cross-Fire's Dual Revolvers become Dual Shotguns; Windfall increases pellet count."
   },
   "ilikethoseodds": {
     "name": "I Like Those Odds",
@@ -3057,7 +3057,7 @@
     "name": "House Edge",
     "vaultHunter": "C4sh",
     "tree": "Luck of the Draw",
-    "description": "entering Windfall only consumes half of C4SH’s Fortune stacks."
+    "description": "entering Windfall only consumes half of C4SH's Fortune stacks."
   },
   "c4shgame": {
     "name": "C4SH Game",
@@ -3237,7 +3237,7 @@
     "name": "Pale Rider",
     "vaultHunter": "C4sh",
     "tree": "Chaos Walking",
-    "description": "C4SH’s Action Skills deal bonus Kinetic Damage."
+    "description": "C4SH's Action Skills deal bonus Kinetic Damage."
   },
   "nothingbeatslead": {
     "name": "Nothing Beats Lead",
@@ -3273,7 +3273,7 @@
     "name": "Bleed the Bad",
     "vaultHunter": "C4sh",
     "tree": "Chaos Walking",
-    "description": "Activating Cross-Fire’s Burst Fire gives a chance to enter Windfall; failed Windfall attempts reset duration and make it drain faster."
+    "description": "Activating Cross-Fire's Burst Fire gives a chance to enter Windfall; failed Windfall attempts reset duration and make it drain faster."
   },
   "devilstines": {
     "name": "Devil's Tines",
@@ -4187,7 +4187,7 @@
     "name": "Peer Review",
     "vaultHunter": "Harlowe",
     "tree": "Seize the Day",
-    "description": "Whenever an enemy enters Stasis, spawn a homing Rejuvenating Projectile that targets Harlowe or her Allies once the enemy is Slammed, killed, or Stasis ends.Â The Rejuvenating Projectile grants decreased Action Skill Duration Rate and increased Action Skill Cooldown Rate for a Duration. If the target is in Fight for Your Life, they immediately gain Second Wind as if they killed an enemy."
+    "description": "Whenever an enemy enters Stasis, spawn a homing Rejuvenating Projectile that targets Harlowe or her Allies once the enemy is Slammed, killed, or Stasis ends. The Rejuvenating Projectile grants decreased Action Skill Duration Rate and increased Action Skill Cooldown Rate for a Duration. If the target is in Fight for Your Life, they immediately gain Second Wind as if they killed an enemy."
   },
   "Periodic Table Flip": {
     "name": "Periodic Table Flip",
@@ -5975,7 +5975,7 @@
     "name": "Mighty Nine",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "If C4SH would enter FFYL with an active Bone Totem, he instead gets a free Second Wind, a free Cleromancy charge, and destroys a Bone Totem. Tough Totem: Roll 9's to spawn a totem that adds bonus Incendiary Melee Damage and restores other totems’ duration on kill."
+    "description": "If C4SH would enter FFYL with an active Bone Totem, he instead gets a free Second Wind, a free Cleromancy charge, and destroys a Bone Totem. Tough Totem: Roll 9's to spawn a totem that adds bonus Incendiary Melee Damage and restores other totems' duration on kill."
   },
   "Eights Of Hel": {
     "name": "Eights Of Hel",
@@ -5987,7 +5987,7 @@
     "name": "Dirty Dozen",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "C4SH’s minimum Fortune Stack Count is based on active Totems. Chaos Totem: Roll 12's to spawn a totem that draws and throws cards from his deck."
+    "description": "C4SH's minimum Fortune Stack Count is based on active Totems. Chaos Totem: Roll 12's to spawn a totem that draws and throws cards from his deck."
   },
   "Easy Sixes": {
     "name": "Easy Sixes",
@@ -6383,7 +6383,7 @@
     "name": "House Edge",
     "vaultHunter": "C4sh",
     "tree": "Luck of the Draw",
-    "description": "entering Windfall only consumes half of C4SH’s Fortune stacks."
+    "description": "entering Windfall only consumes half of C4SH's Fortune stacks."
   },
   "C4SH Game": {
     "name": "C4SH Game",
@@ -6563,7 +6563,7 @@
     "name": "Pale Rider",
     "vaultHunter": "C4sh",
     "tree": "Chaos Walking",
-    "description": "C4SH’s Action Skills deal bonus Kinetic Damage."
+    "description": "C4SH's Action Skills deal bonus Kinetic Damage."
   },
   "Nothing Beats Lead": {
     "name": "Nothing Beats Lead",
@@ -6623,13 +6623,13 @@
     "name": "Three's Company",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "C4SH gains increased Windfall Duration for every Totem. Arcane Totem: Roll 3's to create a totem that boosts nearby allies’ Action Skill Damage and instantly grants a Cleromancy charge."
+    "description": "C4SH gains increased Windfall Duration for every Totem. Arcane Totem: Roll 3's to create a totem that boosts nearby allies' Action Skill Damage and instantly grants a Cleromancy charge."
   },
   "Commotion's Eleven": {
     "name": "Commotion's Eleven",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "Totems deal bonus damage of C4SH’s gun’s current element. Effigy Totem: Roll 11's to spawn a totem that fires Eldritch Bullets and fires extra waves when status effects are applied."
+    "description": "Totems deal bonus damage of C4SH's gun's current element. Effigy Totem: Roll 11's to spawn a totem that fires Eldritch Bullets and fires extra waves when status effects are applied."
   },
   "Eights of Hel": {
     "name": "Eights of Hel",
@@ -6665,7 +6665,7 @@
     "name": "Sawed-Off",
     "vaultHunter": "C4sh",
     "tree": "Roll the Bones",
-    "description": "Cross-Fire’s Dual Revolvers become Dual Shotguns; Windfall increases pellet count."
+    "description": "Cross-Fire's Dual Revolvers become Dual Shotguns; Windfall increases pellet count."
   },
   "Hard-Boiled": {
     "name": "Hard-Boiled",
@@ -6719,7 +6719,7 @@
     "name": "Bleed the Bad",
     "vaultHunter": "C4sh",
     "tree": "Chaos Walking",
-    "description": "Activating Cross-Fire’s Burst Fire gives a chance to enter Windfall; failed Windfall attempts reset duration and make it drain faster."
+    "description": "Activating Cross-Fire's Burst Fire gives a chance to enter Windfall; failed Windfall attempts reset duration and make it drain faster."
   },
   "name": {
     "name": "name",

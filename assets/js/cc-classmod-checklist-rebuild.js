@@ -490,6 +490,21 @@
     cmListPageState[id] = Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
   }
 
+  function ensureSkillQtySelectIdName(scopeEl) {
+    var root = scopeEl || document;
+    if (!root || !root.querySelectorAll) return;
+    var nodes = root.querySelectorAll('select.cm-skill-qty-select');
+    for (var i = 0; i < nodes.length; i++) {
+      var sel = nodes[i];
+      var tok = String(sel.getAttribute('data-cm-skill-qty') || '').toLowerCase();
+      var slug = tok.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      var fallback = 'cm-skill-qty-auto-' + i;
+      var id = sel.id || ('cm-skill-qty-' + (slug || fallback));
+      sel.id = id;
+      if (!sel.name) sel.name = id;
+    }
+  }
+
   function renderChecklist(listEl, items) {
     if (!listEl) return;
     var listId = String(listEl.id || '');
@@ -578,6 +593,10 @@
         var qtySel = document.createElement('select');
         qtySel.className = 'editor-select cm-skill-qty-select';
         qtySel.setAttribute('data-cm-skill-qty', it.code);
+        var qtySlug = String(it.code || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        var qtyId = 'cm-skill-qty-' + (qtySlug || ('row-' + (start + i)));
+        qtySel.id = qtyId;
+        qtySel.name = qtyId;
         qtySel.setAttribute('data-native-select', 'yes');
         qtySel.setAttribute('aria-label', (it.name || 'Skill') + ' amount');
         qtySel.style.cssText = 'min-width:62px;';
@@ -600,6 +619,7 @@
       frag.appendChild(row);
     }
     listEl.appendChild(frag);
+    ensureSkillQtySelectIdName(listEl);
 
     if (totalPages > 1) {
       var nav = document.createElement('div');
