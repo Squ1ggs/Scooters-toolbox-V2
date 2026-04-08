@@ -40,7 +40,7 @@ jobs:
         env:
           GHPAGES_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
           STX_SHARED_API_BASE: https://save-editor.be/Scooters_TBX
-        run: node scripts/patch-index-for-github-pages.mjs _site/index.html
+        run: node scripts/patch-index-for-github-pages.mjs _site
 
       - uses: actions/upload-pages-artifact@v3
         with:
