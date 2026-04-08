@@ -32,6 +32,16 @@
     }
   }
 
+  /** Project Pages live under *.github.io; same-origin counter_v2.php does not exist — only absolute metas work. */
+  function isGitHubPagesHost() {
+    try {
+      var h = String(location.hostname || '').toLowerCase();
+      return h === 'github.io' || h.slice(-10) === '.github.io';
+    } catch (_) {
+      return false;
+    }
+  }
+
   function candidateUrls(filename) {
     var out = [];
     var seen = Object.create(null);
@@ -50,6 +60,16 @@
     /* Prefer meta / STX_COUNTER_URL (Netlify functions) first — legacy counter.php probes can return 200 with
        stale JSON and block the real endpoint (fetchJsonFirst stops on first success). */
     if (isHttp) {
+      if (isGitHubPagesHost()) {
+        /* Absolute API URLs from patch-index-for-github-pages must run before resolving counter_v2.php
+           against the Pages origin (404). */
+        if (cfg && /^https?:\/\//i.test(cfg)) add(cfg);
+        if (php) {
+          try { add(new URL(php, location.href).href); } catch (_) { add(php); }
+        }
+        if (cfg && !/^https?:\/\//i.test(cfg)) add(cfg);
+        return out;
+      }
       if (preferCfg && cfg) add(cfg);
       if (php) {
         try { add(new URL(php, location.href).href); } catch (_) { add(php); }

@@ -22,7 +22,12 @@
     try {
       var h = String(location.hostname || '').toLowerCase();
       if (h === 'scooters-toolbox.netlify.app') return true;
-      /* Shared-host and mirror domains: disable remote analytics POST to avoid 403/404 spam. */
+      /* GitHub Pages mirror: allow POST when meta points at a real HTTPS API (patch sets save-editor track.php). */
+      if (h === 'github.io' || h.slice(-10) === '.github.io') {
+        var ep = configuredEndpoint();
+        if (ep && /^https:\/\//i.test(ep)) return true;
+      }
+      /* Other shared-host / mirrors: disable remote analytics POST to avoid 403/404 spam. */
       return false;
     } catch (_) {
       return false;

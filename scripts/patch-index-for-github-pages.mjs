@@ -21,19 +21,28 @@ const shared = (process.env.STX_SHARED_API_BASE || 'https://save-editor.be/Scoot
 
 let html = fs.readFileSync(file, 'utf8');
 
-function rep(attr, name, value) {
-  const re = new RegExp(`<meta content="[^"]*" name="${name}"\\/>`, 'g');
-  const n = (html.match(re) || []).length;
-  if (n !== 1) {
-    console.warn(`patch: expected 1 meta name="${name}", found ${n}`);
-  }
-  html = html.replace(re, `<meta content="${value}" name="${name}"/>`);
+function escapeRe(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-rep('content', 'stx-analytics-endpoint', `${shared}/track.php`);
-rep('content', 'stx-counter-url', `${shared}/counter_v2.php`);
-rep('content', 'stx-items-bump-url', `${shared}/items-bump.php`);
-rep('content', 'stx-php-counter-url', `${shared}/counter_v2.php`);
+function rep(name, value) {
+  const esc = escapeRe(name);
+  const replacement = `<meta content="${value}" name="${name}"/>`;
+  const p1 = new RegExp(`<meta content="[^"]*" name="${esc}"\\s*/>`, 'g');
+  const p2 = new RegExp(`<meta name="${esc}" content="[^"]*"\\s*/>`, 'g');
+  const before = html;
+  html = html.replace(p1, replacement);
+  if (html !== before) return;
+  html = html.replace(p2, replacement);
+  if (html === before) {
+    console.warn(`patch: no meta name="${name}" matched (content-first or name-first)`);
+  }
+}
+
+rep('stx-analytics-endpoint', `${shared}/track.php`);
+rep('stx-counter-url', `${shared}/counter_v2.php`);
+rep('stx-items-bump-url', `${shared}/items-bump.php`);
+rep('stx-php-counter-url', `${shared}/counter_v2.php`);
 
 html = html.replace(
   /<link href="https:\/\/scooters-toolbox\.netlify\.app\/" rel="canonical"\/>/,
