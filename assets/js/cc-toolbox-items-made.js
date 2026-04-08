@@ -52,7 +52,14 @@
     if (!urls.length) return;
     var k = itemsBumpKey();
     var cfg = configuredItemsBumpUrl();
-    var isNetlifyFn = cfg.indexOf('netlify.app') !== -1;
+    var isNetlifyFn = false;
+    try {
+      var iu = new URL(cfg, typeof location !== 'undefined' ? location.href : 'https://local.invalid/');
+      var ih = String(iu.hostname || '').toLowerCase();
+      isNetlifyFn = ih === 'netlify.app' || ih.slice(-12) === '.netlify.app';
+    } catch (_) {
+      isNetlifyFn = false;
+    }
     var headers;
     var body;
     if (isNetlifyFn) {

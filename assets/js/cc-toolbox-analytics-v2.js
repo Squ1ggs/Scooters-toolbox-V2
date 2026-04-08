@@ -127,7 +127,14 @@
 
     /* Netlify functions expect JSON + X-STX-Track-Key; their CORS allows it. Shared PHP behind nginx: form body (no preflight). */
     var ep0 = urls[0] || '';
-    var isNetlifyFn = ep0.indexOf('netlify.app') !== -1;
+    var isNetlifyFn = false;
+    try {
+      var tu = new URL(ep0, typeof location !== 'undefined' ? location.href : 'https://local.invalid/');
+      var th = String(tu.hostname || '').toLowerCase();
+      isNetlifyFn = th === 'netlify.app' || th.slice(-12) === '.netlify.app';
+    } catch (_) {
+      isNetlifyFn = false;
+    }
 
     var chain;
     if (isNetlifyFn) {
