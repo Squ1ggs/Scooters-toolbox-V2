@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   var STORAGE_KEY = 'stx_toolbox_items_made_v1';
   var BADGE_KEY = 'stx_items_made_show_badge';
   var COOLDOWN_MS = 480;
@@ -28,10 +28,7 @@
     var cfg = configuredItemsBumpUrl();
     /* Prefer configured Netlify endpoint first; a same-origin legacy items-bump.php can return 200
        and prevent fallback, which keeps world counter lower than real usage. */
-    if (cfg) {
-      add(cfg);
-      return out;
-    }
+    if (cfg) add(cfg);
     if (isHttp) {
       try { add(new URL('items-bump.php', location.href).href); } catch (_) {}
       try { add(new URL('../items-bump.php', location.href).href); } catch (_) {}
@@ -115,8 +112,10 @@
     var b = byId('outCode');
     var s = (a && a.value && String(a.value).trim()) || (b && b.value && String(b.value).trim()) || '';
     if (s.length < 12) return false;
-    if (s === '—' || /^[—\-–]+$/.test(s)) return false;
+    if (s === 'â€”' || s === '—' || /^[—\-–]+$/.test(s)) return false;
     if (s.indexOf('@U') === 0) return true;
+    if (s.indexOf('||') >= 0 && s.indexOf('{') >= 0) return true;
+    if (/\{\d+:\d+\}/.test(s)) return true;
     var compact = s.replace(/\s/g, '');
     if (compact.length >= 18 && /^[A-Za-z0-9+/=@]+$/.test(compact)) return true;
     return false;
@@ -228,9 +227,9 @@
       '<div class="stx-im-row"><span>Guided builder</span><strong id="stx-im-guided">0</strong></div>' +
       '<div class="stx-im-row"><span>Legit Builder</span><strong id="stx-im-legit">0</strong></div>' +
       '<hr id="stx-im-server-hr" style="display:none;border:none;border-top:1px solid rgba(0,243,255,0.15);margin:12px 0;"/>' +
-      '<div class="stx-im-row" id="stx-im-server-row" style="display:none;"><span>Your visits (server)</span><strong id="stx-im-server-visits">—</strong></div>' +
+      '<div class="stx-im-row" id="stx-im-server-row" style="display:none;"><span>Your visits (server)</span><strong id="stx-im-server-visits">â€”</strong></div>' +
       '<p class="stx-im-hint">Stored only in this browser. Count goes up when a serial is present and you switch item type, manufacturer, rarity, weapon type (or guided equivalents), or after a full Legit build when you change item type or hit Reset.</p>' +
-      '<p class="stx-im-hint" id="stx-im-server-hint" style="display:none;margin-top:8px;">Server analytics: see repo <code>api/SETUP.md</code>. Dashboard: <code>stats.php?key=…</code>. Meta: <code>stx-analytics-endpoint</code> or <code>STX_ANALYTICS_ENDPOINT</code>.</p>' +
+      '<p class="stx-im-hint" id="stx-im-server-hint" style="display:none;margin-top:8px;">Server analytics: see repo <code>api/SETUP.md</code>. Dashboard: <code>stats.php?key=â€¦</code>. Meta: <code>stx-analytics-endpoint</code> or <code>STX_ANALYTICS_ENDPOINT</code>.</p>' +
       '<div class="stx-im-actions">' +
       '<label class="stx-im-cb"><input type="checkbox" id="stx-im-cb-badge"/> Corner badge</label>' +
       '<button type="button" id="stx-im-btn-reset">Reset counts</button>' +
@@ -319,7 +318,7 @@
       on = localStorage.getItem(BADGE_KEY) === '1';
     } catch (_) {}
     var d = load();
-    badgeEl.textContent = '· ' + d.total + ' crafted ·';
+    badgeEl.textContent = 'Â· ' + d.total + ' crafted Â·';
     badgeEl.classList.toggle('stx-im-badge-on', on && d.total > 0);
   }
 
@@ -421,3 +420,4 @@
     togglePanel: togglePanel
   };
 })();
+
