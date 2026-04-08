@@ -44,19 +44,22 @@ rep('stx-counter-url', `${shared}/counter_v2.php`);
 rep('stx-items-bump-url', `${shared}/items-bump.php`);
 rep('stx-php-counter-url', `${shared}/counter_v2.php`);
 
+const siteNoSlash = site.replace(/\/$/, '');
+const canonicalLink = `<link href="${site}" rel="canonical"/>`;
+html = html.replace(/<link\s+href="[^"]*"\s+rel="canonical"\s*\/>/i, canonicalLink);
+html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*"\s*\/>/i, canonicalLink);
+
 html = html.replace(
-  /<link href="https:\/\/scooters-toolbox\.netlify\.app\/" rel="canonical"\/>/,
-  `<link href="${site}" rel="canonical"/>`
+  /<meta\s+content="[^"]*"\s+property="og:url"\s*\/>/i,
+  `<meta content="${site}" property="og:url"/>`
 );
 html = html.replace(
-  /<meta content="https:\/\/scooters-toolbox\.netlify\.app\/" property="og:url"\/>/,
+  /<meta\s+property="og:url"\s+content="[^"]*"\s*\/>/i,
   `<meta content="${site}" property="og:url"/>`
 );
 
-html = html.replace(
-  /"url":"https:\/\/scooters-toolbox\.netlify\.app\/"/g,
-  `"url":"${site.replace(/\/$/, '')}/"`
-);
+/* Single WebApplication url in JSON-LD — rewrite any previous host (Netlify, bad custom domain, etc.). */
+html = html.replace(/"url":"https?:\/\/[^"]*"/, `"url":"${siteNoSlash}/"`);
 
 fs.writeFileSync(file, html, 'utf8');
 console.log('Patched', path.resolve(file));
