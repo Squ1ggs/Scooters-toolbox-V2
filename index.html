@@ -14,7 +14,7 @@
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
 <title>Scooter's Toolbox — BL4 save editor, YAML &amp; item serial tools</title>
-<meta content="Free browser BL4 tools: .sav ↔ YAML save editing, item serial decode/build, bulk checks, guided builder. No install — runs locally in your browser." name="description"/>
+<meta content="Free browser BL4 tools: .sav ? YAML save editing, item serial decode/build, bulk checks, guided builder. No install — runs locally in your browser." name="description"/>
 <meta content="index,follow" name="robots"/>
 <meta content="Scooter's Toolbox" name="application-name"/>
 <meta content="#060a12" name="theme-color"/>
@@ -27,7 +27,7 @@
 <meta content="en_US" property="og:locale"/>
 <meta content="summary" name="twitter:card"/>
 <meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" name="twitter:title"/>
-<meta content="Browser BL4 save editor: .sav ↔ YAML, item serial tools, bulk decode, guided builder." name="twitter:description"/>
+<meta content="Browser BL4 save editor: .sav ? YAML, item serial tools, bulk decode, guided builder." name="twitter:description"/>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","url":"https://scooters-toolbox.netlify.app/","applicationCategory":"GameApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based BL4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools."}
 </script>
@@ -444,6 +444,7 @@
     
     html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn),
+    html.fullAnimButtons a.btn[href="./assets/parts-stats-catalog.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn),
     html.fullAnimButtons a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn) {
@@ -453,6 +454,7 @@
     }
     html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn):hover,
     html.fullAnimButtons a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn):hover,
+    html.fullAnimButtons a.btn[href="./assets/parts-stats-catalog.html"]:not(.egg-off-btn):hover,
     html.fullAnimButtons a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn):hover,
     html.fullAnimButtons a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn):hover,
     html.fullAnimButtons a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn):hover {
@@ -902,6 +904,7 @@
     }
     a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
     a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn),
+    a.btn[href="./assets/parts-stats-catalog.html"]:not(.egg-off-btn),
     a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn),
     a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn),
     a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn) {
@@ -911,6 +914,7 @@
     }
     a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn):hover,
     a.btn[href="./assets/bulk-serial-validator.html"]:not(.egg-off-btn):hover,
+    a.btn[href="./assets/parts-stats-catalog.html"]:not(.egg-off-btn):hover,
     a.btn[href="./legacy/prefix-lookup.html"]:not(.egg-off-btn):hover,
     a.btn[href="./legacy/legit-builder.html"]:not(.egg-off-btn):hover,
     a.btn[href="./assets/stx-save-yaml-full.html"]:not(.egg-off-btn):hover {
@@ -2609,7 +2613,7 @@
 <a class="btn btn--brand" href="https://docs.google.com/spreadsheets/d/11TmXyGmIVoDFn4IFNJN1s2HuijSnn_nPZqN3LkDd5TA/edit?gid=1385091622#gid=1385091622" rel="noopener noreferrer" target="_blank" title="Deserialization Spreadsheet">Deserialization Spreadsheet</a>
 <p class="credits-discord">We also have a Discord server for Scooters Toolbox - choose <b>Scooters Garage (community)</b> to hang out, or <b>Scooters Garage (issues/ideas)</b> to report bugs and share ideas.</p>
 <div class="credits-discord-btns">
-<a class="btn btn--brand" href="https://Discord.gg/scootersgarage" rel="noopener noreferrer" target="_blank" title="Scooters Garage (community)">🎮 Scooters Garage (community)</a>
+<a class="btn btn--brand" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Scooters Garage (community)">🎮 Scooters Garage (community)</a>
 <a class="btn btn--brand" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Scooters Garage (issues/ideas)</a>
 </div>
 </div>
@@ -2619,6 +2623,7 @@
 <button aria-controls="stxDockDetails" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button">Simple Builder</button>
 <a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/.">Bulk decoder</a>
 <a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints">Bulk serial validator</a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
 <a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
 <a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
 <a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
@@ -2903,7 +2908,7 @@
 <select class="editor-select" id="enhRaritySel" name="enhRaritySel" style="min-width:180px;"></select>
 </div>
 <div>
-<button class="btn btn-Firmware" id="enhDice" title="New random seed" type="button">⚀</button>
+<button class="btn btn-Firmware" id="enhDice" title="New random seed" type="button">?</button>
 </div>
 </div>
 </details>
@@ -3081,14 +3086,18 @@
 <p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Hard-to-drop community Godroll serials. Search by name, manufacturer/type, rarity, or ID and add directly to editor/YAML.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
 <div style="min-width:200px;">
-<label for="godrollCategorySelect" style="color:#ffb84d;font-size:0.85em;display:block;margin-bottom:4px;">Category</label>
+<label for="godrollCategorySelect" style="color:#ffb84d;font-size:0.85em;display:block;margin-bottom:4px;">Category <span aria-label="Category details" id="godrollCategoryTip" style="display:none;margin-left:6px;cursor:help;opacity:0.9;">?</span></label>
 <select class="editor-select" id="godrollCategorySelect" name="godrollCategorySelect" style="width:100%;padding:8px 10px;background:#1a2332;border:2px solid rgba(255,190,60,0.45);border-radius:8px;color:#ffe8ba;font-size:0.9em;">
 <option value="">All categories</option>
 <option value="community">Community godrolls (bundled)</option>
-<option title="KeepinitGrimeey worked hard to collect these God-roll items since the game released, some he used to gain top places in speedruns, and he was kind enough to share them all with everyone! Thanks, Grimeey!" value="keepinitgrimeeys">KeepinitGrimeeys God-rolls</option>
+<option title="KeepinitGrimeey worked hard to collect these God-roll items since the game released, some he used to gain top places in speedruns, and he was kind enough to share them all with everyone! Thanks, Grimeey!" value="keepinitgrimeeys">KeepinitGrimeey's God-rolls</option>
 </select>
 </div>
 <input id="godrollSearchInput" name="godrollSearchInput" placeholder="Search Godrolls by name, maker, rarity, or ID..." style="flex:1;min-width:220px;padding:10px 12px;background:#1a2332;border:2px solid rgba(255,190,60,0.5);border-radius:8px;color:#ffe8ba;font-size:0.95em;" type="text"/>
+<label for="godrollShowFullStatsToggle" style="display:inline-flex;align-items:center;gap:6px;color:#ffd898;font-size:0.84em;padding:8px 10px;background:rgba(255,190,60,0.08);border:1px solid rgba(255,190,60,0.3);border-radius:8px;">
+<input id="godrollShowFullStatsToggle" name="godrollShowFullStatsToggle" type="checkbox"/>
+<span>Show full stats in results</span>
+</label>
 <button class="btn btn--brand" id="godrollAddToEditorBtn" type="button">Add to Editor</button>
 <button class="btn btn--brand" disabled="" id="godrollAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">💾 Add to YAML</button>
 <button class="btn btn--brand" disabled="" id="godrollAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
@@ -3107,6 +3116,7 @@
 <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
 <a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/.">Bulk decoder</a>
 <a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints">Bulk serial validator</a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
 <a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
 <a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
 <a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
@@ -3223,7 +3233,7 @@
             Added parts (after <code>||</code>)
             <span class="ipi-badge" id="ipiCount" style="font-size:0.85em;padding:2px 8px;border-radius:999px;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.88);background:rgba(255,255,255,0.06);">0 added</span>
 </h4>
-<p class="ipi-note" style="font-size:0.88em;color:rgba(255,255,255,0.75);margin:0 0 12px 0;line-height:1.45;">Lists tokens in the current item serial (same source as <strong>Guided</strong> output when a Guided item type is selected, otherwise <strong>Generated code</strong>). Use <strong>−</strong> / <strong>+</strong> to remove or duplicate a part token.</p>
+<p class="ipi-note" style="font-size:0.88em;color:rgba(255,255,255,0.75);margin:0 0 12px 0;line-height:1.45;">Lists tokens in the current item serial (same source as <strong>Guided</strong> output when a Guided item type is selected, otherwise <strong>Generated code</strong>). Use <strong>-</strong> / <strong>+</strong> to remove or duplicate a part token.</p>
 <div style="margin-bottom:12px;padding:10px;border-radius:8px;border:1px solid rgba(0,243,255,0.22);background:rgba(0,243,255,0.06);">
 <label for="ipiQuickPaste" style="display:block;font-size:0.85em;color:rgba(0,243,255,0.95);margin-bottom:6px;">Paste code (Base85 or deserialized)</label>
 <textarea class="editor-output-code" id="ipiQuickPaste" name="ipiQuickPaste" placeholder="Paste serial here, then choose where to apply…" rows="2" style="width:100%;margin-bottom:8px;"></textarea>
@@ -3243,7 +3253,7 @@
 <th style="text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);">Family</th>
 <th style="width:9%;text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);">Num ID</th>
 <th style="width:7%;text-align:center;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);">Qty</th>
-<th style="width:14%;text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);">Δ</th>
+<th style="width:14%;text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);">?</th>
 <th style="width:22%;text-align:left;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.90);white-space:pre-line;">Stats</th>
 </tr>
 </thead>
@@ -3266,7 +3276,7 @@
 <button aria-label="Close Save and YAML panel" id="rp-saveyaml-drawer-close" type="button">Close</button>
 </div>
 <div id="rp-saveyaml-drawer-body">
-<p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">💾</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
+<p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">⚠️</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
 <details id="saveYamlDetails" open="" style="margin-top:10px;">
 <summary style="color:#00f3ff;font-weight:700;">Save and YAML section</summary>
 <div style="margin-top:10px;">
@@ -3282,6 +3292,7 @@
 <a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
 <a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use this slide-out for quick YAML work, or open the full page for more room — same tools.">Save/Yaml</a>
 <a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
 <a class="btn" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
 </div>
 </div>
@@ -3289,7 +3300,7 @@
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
 <input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
-<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC → 17-digit SteamID64; Epic PC → Epic account id. If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
+<p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC ? 17-digit SteamID64; Epic PC ? Epic account id. If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
 <strong style="color: #70e5ff; display: block; margin-bottom: 12px; font-size: 1.1em;">Save File Operations:</strong>
@@ -3467,7 +3478,7 @@
 </div>
 <div>
 <label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ico_reward_exp.png" width="22"/>Experience Points:</label>
-<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
+<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ˜ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>

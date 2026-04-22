@@ -221,7 +221,7 @@
     unlockAllSpecialization: 'Specialization XP and tokens updated.',
     maxCurrency: 'Cash and eridium maxed.',
     maxAmmo: 'Ammo pools maxed.',
-    unlockMaxEverything: 'KeepinItGrimeey full unlock applied (bundled preset data; regenerate preset_data.js after game updates for new missions/collectibles).',
+    unlockMaxEverything: 'Full character unlock applied (bundled preset data; regenerate preset_data.js after game updates for new missions/collectibles).',
     completeAllCollectibles: 'Collectibles merged from preset data.',
     completeAllChallenges: 'Challenge stats updated.',
     completeAllAchievements: 'Achievement counters updated.',

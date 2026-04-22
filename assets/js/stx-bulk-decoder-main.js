@@ -16,6 +16,7 @@ const kResolved = document.getElementById('kResolved');
 const kUnresolved = document.getElementById('kUnresolved');
 const openEditorBtn = document.getElementById('openEditorBtn');
 const sendFirstBtn = document.getElementById('sendFirstBtn');
+const includeFullStatsOutput = document.getElementById('includeFullStatsOutput');
 const EDITOR_HANDOFF_KEY = 'STX_DECODER_TO_EDITOR_V1';
 const EDITOR_PAGE = '../index.html';
 let lastResults = [];
@@ -314,6 +315,79 @@ function enrichResultForUi(result) {
   result.__resolvedUi = resolved;
   return resolved;
 }
+function statsPartKeyForRow(p) {
+  const alpha = String((p && p.alpha_code) || '').trim().replace(/^"(.*)"$/, '$1').replace(/\\"/g, '"');
+  if (alpha) return alpha.toLowerCase();
+  const key = String((p && p.key) || '').trim();
+  if (/^\d+:\d+$/.test(key)) return key;
+  return '';
+}
+function buildFullItemStats(result) {
+  const byPart = window.PARTS_STATS_DATA && window.PARTS_STATS_DATA.by_part_code;
+  if (!byPart || !result || !Array.isArray(result.resolvedParts)) return null;
+  const rows = [];
+  const srcParts = new Set();
+  const fieldMap = new Map();
+  for (const p of result.resolvedParts) {
+    const partKey = statsPartKeyForRow(p);
+    if (!partKey) continue;
+    const statRows = byPart[partKey];
+    if (!Array.isArray(statRows) || !statRows.length) continue;
+    srcParts.add(partKey);
+    for (const s of statRows) {
+      const rec = {
+        part_code: partKey,
+        stat_field: String(s && s.stat_field || ''),
+        stat_value: (s && s.stat_value != null) ? s.stat_value : null,
+        bucket: String(s && s.bucket || ''),
+        combine: String(s && s.combine || ''),
+        invert: !!(s && s.invert)
+      };
+      rows.push(rec);
+      const fk = rec.stat_field || '(unknown)';
+      if (!fieldMap.has(fk)) fieldMap.set(fk, { stat_field: fk, rows: 0, source_parts: new Set(), buckets: new Set(), combine_modes: new Set() });
+      const agg = fieldMap.get(fk);
+      agg.rows += 1;
+      agg.source_parts.add(partKey);
+      if (rec.bucket) agg.buckets.add(rec.bucket);
+      if (rec.combine) agg.combine_modes.add(rec.combine);
+    }
+  }
+  if (!rows.length) return null;
+  const byField = Array.from(fieldMap.values()).sort((a, b) => b.rows - a.rows || a.stat_field.localeCompare(b.stat_field)).map(v => ({
+    stat_field: v.stat_field,
+    rows: v.rows,
+    source_parts: Array.from(v.source_parts),
+    buckets: Array.from(v.buckets),
+    combine_modes: Array.from(v.combine_modes)
+  }));
+  return {
+    source_parts: Array.from(srcParts).sort(),
+    row_count: rows.length,
+    by_field: byField,
+    rows
+  };
+}
+function applyFullStatsOutput(results) {
+  const enabled = !!(includeFullStatsOutput && includeFullStatsOutput.checked);
+  for (const result of (results || [])) {
+    if (!result || !result.success) {
+      delete result.full_item_stats;
+      delete result.full_item_stats_summary;
+      continue;
+    }
+    if (!enabled) {
+      delete result.full_item_stats;
+      delete result.full_item_stats_summary;
+      continue;
+    }
+    const fullStats = buildFullItemStats(result);
+    result.full_item_stats = fullStats;
+    result.full_item_stats_summary = fullStats
+      ? (String(fullStats.row_count) + ' rows / ' + String(fullStats.source_parts.length) + ' parts')
+      : 'no mapped rows';
+  }
+}
 window.__stxEnrichDecodeResult = function (result) {
   if (!result || !result.success) return result;
   enrichResultForUi(result);
@@ -324,6 +398,7 @@ function buildResultRowHtml(result, idx) {
   const partsHtml = resolved.parts.length ? '<div class="details">' + resolved.parts.map(renderPartCard).join('') + '</div>' : '<span class="small">No parts found.</span>';
   const dropSource = (typeof window.CC_ITEMPOOL_DROP_CHECK !== 'undefined' && window.CC_ITEMPOOL_DROP_CHECK.getDropSource)
     ? window.CC_ITEMPOOL_DROP_CHECK.getDropSource(result, resolved.parts) : '—';
+  const statsSummary = (result && result.full_item_stats_summary) ? (' • Full stats: ' + result.full_item_stats_summary) : '';
   return '<tr>' +
     '<td><strong>' + escapeHtml(itemTitle(result)) + '</strong><div class="chips">' +
     (result.success ? '<span class="chip good">decoded</span>' : '<span class="chip bad">failed</span>') +
@@ -332,7 +407,7 @@ function buildResultRowHtml(result, idx) {
     '<td><code>' + escapeHtml(result.input) + '</code></td>' +
     '<td>' + (result.success ? '<code>' + escapeHtml(result.deserialized || '') + '</code>' : '<span class="bad">' + escapeHtml(result.error || 'decode failed') + '</span>') + '</td>' +
     '<td>' + partsHtml + '</td>' +
-    '<td><div class="small">' + escapeHtml(noteSummary(result, resolved)) + '</div></td>' +
+    '<td><div class="small">' + escapeHtml(noteSummary(result, resolved) + statsSummary) + '</div></td>' +
     '<td><div class="small">' + escapeHtml(dropSource) + '</div></td>' +
     '<td>' + (result.success ? '<button class="secondary send-editor-btn" type="button" data-result-index="' + String(idx) + '">Send to editor</button>' : '<span class="small">—</span>') + '</td>' +
     '</tr>';
@@ -389,6 +464,7 @@ function render(results) {
     return;
   }
   for (const result of results) enrichResultForUi(result);
+  applyFullStatsOutput(results);
   applyKpisFromResults(results);
   renderResultsBody();
 }
@@ -678,6 +754,16 @@ if (sendFirstBtn) {
     const first = lastResults.find(r => r && r.success && r.deserialized);
     if (!first) { status('Decode at least one serial first.', 'warn'); return; }
     openEditorWithPayload(first, true);
+  });
+}
+if (includeFullStatsOutput) {
+  includeFullStatsOutput.addEventListener('change', () => {
+    if (!lastResults.length) return;
+    applyFullStatsOutput(lastResults);
+    renderResultsBody();
+    status(includeFullStatsOutput.checked
+      ? 'Full item stats will be included in exported JSON.'
+      : 'Full item stats removed from export output.');
   });
 }
 

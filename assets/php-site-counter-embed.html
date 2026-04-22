@@ -1,0 +1,82 @@
+<style>
+.stx-php-site-stats-hidden { display: none !important; }
+#stxPhpCounterPanelEmbed {
+  position: fixed;
+  top: 72px;
+  right: 12px;
+  z-index: 99999;
+}
+#stxPhpCounterPanelEmbed .stx-php-counter-inner {
+  min-width: 220px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 243, 255, 0.35);
+  background: linear-gradient(145deg, rgba(5, 12, 24, 0.96) 0%, rgba(10, 8, 22, 0.94) 100%);
+  color: #e9feff;
+  font: 14px/1.45 system-ui, sans-serif;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(0, 243, 255, 0.12);
+}
+</style>
+<div class="stx-php-site-stats-hidden" id="stxPhpCounterPanelEmbed" role="region" aria-label="Site visit counts" aria-hidden="true">
+<div class="stx-php-counter-inner">
+<div>Total visits: <span id="total"></span></div>
+<div>Unique visitors: <span id="unique"></span></div>
+<div>Items crafted: <span id="items_made"></span></div>
+</div>
+</div>
+<script>
+(function () {
+  var panel = document.getElementById('stxPhpCounterPanelEmbed');
+  var urls = ['counter_v2.php', 'counter.php'];
+  var triggers = document.querySelectorAll('[data-stx-php-counter-brand]');
+  var fetched = false;
+  function fetchFirst(i) {
+    if (i >= urls.length) return Promise.reject(new Error('no_endpoint'));
+    return fetch(urls[i], { method: 'GET', cache: 'no-store', credentials: 'same-origin' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('http');
+        return r.json();
+      })
+      .catch(function () { return fetchFirst(i + 1); });
+  }
+  function loadPhp() {
+    if (fetched) return;
+    fetched = true;
+    fetchFirst(0)
+      .then(function (data) {
+        var t = document.getElementById('total');
+        var u = document.getElementById('unique');
+        var im = document.getElementById('items_made');
+        if (t) t.textContent = data && data.total != null ? data.total : '—';
+        if (u) u.textContent = data && data.unique != null ? data.unique : '—';
+        if (im) im.textContent = data && data.items_made != null ? data.items_made : '—';
+      })
+      .catch(function () {
+        var t = document.getElementById('total');
+        var u = document.getElementById('unique');
+        var im = document.getElementById('items_made');
+        if (t) t.textContent = '—';
+        if (u) u.textContent = '—';
+        if (im) im.textContent = '—';
+      });
+  }
+  function onBrandClick(e) {
+    if (!e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!panel) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var opening = panel.classList.contains('stx-php-site-stats-hidden');
+    if (opening) {
+      panel.classList.remove('stx-php-site-stats-hidden');
+      panel.setAttribute('aria-hidden', 'false');
+      loadPhp();
+    } else {
+      panel.classList.add('stx-php-site-stats-hidden');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  }
+  for (var i = 0; i < triggers.length; i++) {
+    triggers[i].addEventListener('click', onBrandClick);
+  }
+})();
+</script>

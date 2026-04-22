@@ -22,6 +22,7 @@
   var godrollData = null;
   var lastGodrollSelected = null;
   var godrollLoadPromise = null;
+  var godrollStatsCache = {};
   var prefixRenderLimit = 80;
   var godrollRenderLimit = 80;
 
@@ -238,8 +239,141 @@
       godrollCategory: godrollCategory || entry.godrollCategory || 'imported',
       prefixHint: prefixHint,
       deserialized: deser,
-      rpParts: rpNorm.slice()
+      rpParts: rpNorm.slice(),
+      rpRaw: Array.isArray(entry.rp || entry.resolvedParts) ? (entry.rp || entry.resolvedParts) : []
     };
+  }
+
+  function godrollShouldShowFullStats() {
+    var cb = byId('godrollShowFullStatsToggle');
+    return !!(cb && cb.checked);
+  }
+
+  function godrollStatsPartKeyForRow(p) {
+    if (!p || typeof p !== 'object') return '';
+    var alpha = String(p.alpha_code || '').trim().replace(/^"(.*)"$/, '$1').replace(/\\"/g, '"');
+    if (alpha) return alpha.toLowerCase();
+    var key = String(p.key || '').trim();
+    if (/^\d+:\d+$/.test(key)) return key;
+    return '';
+  }
+
+  function getFamilyIdForGodroll(item) {
+    if (item && Number.isFinite(item.familyId)) return item.familyId;
+    if (window.parseSerialMeta && item && item.serial) {
+      try {
+        var m = window.parseSerialMeta(item.serial);
+        if (m && Number.isFinite(Number(m.familyId))) return Number(m.familyId);
+      } catch (_e) {}
+    }
+    return null;
+  }
+
+  function godrollKeysFromDeserialized(item) {
+    var deser = String(godrollDeserializedForDisplay(item) || '').trim();
+    if (!deser) return [];
+    var fam = getFamilyIdForGodroll(item);
+    var out = [];
+    var re = /\{([^}]+)\}/g;
+    var m;
+    while ((m = re.exec(deser))) {
+      var tok = String(m[1] || '').trim();
+      if (!tok) continue;
+      var pair = tok.match(/^(\d+)\s*:\s*(\d+)$/);
+      if (pair) {
+        out.push(pair[1] + ':' + pair[2]);
+        continue;
+      }
+      var single = tok.match(/^(\d+)$/);
+      if (single && fam != null) {
+        out.push(String(fam) + ':' + single[1]);
+      }
+    }
+    var seen = {};
+    return out.filter(function (k) {
+      if (!k || seen[k]) return false;
+      seen[k] = true;
+      return true;
+    });
+  }
+
+  function buildGodrollFullStatsData(item) {
+    var byPart = window.PARTS_STATS_DATA && window.PARTS_STATS_DATA.by_part_code;
+    if (!byPart) return null;
+    var keys = [];
+    var i;
+    var raw = Array.isArray(item && item.rpRaw) ? item.rpRaw : [];
+    for (i = 0; i < raw.length; i++) {
+      var k = godrollStatsPartKeyForRow(raw[i]);
+      if (k) keys.push(k);
+    }
+    if (!keys.length) keys = godrollKeysFromDeserialized(item);
+    if (!keys.length) return null;
+    var unique = {};
+    keys = keys.filter(function (k2) { if (!k2 || unique[k2]) return false; unique[k2] = 1; return true; });
+
+    var rows = [];
+    var sourceParts = [];
+    var fieldCounts = {};
+    for (i = 0; i < keys.length; i++) {
+      var partKey = keys[i];
+      var statRows = byPart[partKey];
+      if (!Array.isArray(statRows) || !statRows.length) continue;
+      sourceParts.push(partKey);
+      for (var j = 0; j < statRows.length; j++) {
+        var s = statRows[j] || {};
+        var field = String(s.stat_field || '');
+        rows.push({
+          part_code: partKey,
+          stat_field: field,
+          stat_value: s.stat_value,
+          bucket: String(s.bucket || '')
+        });
+        if (field) fieldCounts[field] = (fieldCounts[field] || 0) + 1;
+      }
+    }
+    if (!rows.length) return null;
+    var topFields = Object.keys(fieldCounts)
+      .sort(function (a, b) { return (fieldCounts[b] - fieldCounts[a]) || a.localeCompare(b); })
+      .slice(0, 6)
+      .map(function (f) { return f + ' ×' + fieldCounts[f]; });
+    return {
+      source_parts: sourceParts,
+      row_count: rows.length,
+      top_fields: topFields,
+      rows: rows
+    };
+  }
+
+  function buildGodrollStatsBlockHtml(item) {
+    if (!item || !item.serial) return '';
+    var cacheKey = String(item.serial);
+    var data = godrollStatsCache[cacheKey];
+    if (data === undefined) {
+      data = buildGodrollFullStatsData(item);
+      godrollStatsCache[cacheKey] = data || null;
+    }
+    if (!data) {
+      return '<div class="cc-godroll-stats" style="margin-top:6px;padding:6px;border:1px dashed rgba(255,190,80,0.3);border-radius:6px;font-size:0.72em;color:rgba(255,220,170,0.85);">Full stats: no mapped rows</div>';
+    }
+    var top = data.top_fields && data.top_fields.length ? data.top_fields.join(' · ') : '—';
+    var lines = data.rows.slice(0, 24).map(function (r) {
+      var sv = (r.stat_value === null || r.stat_value === undefined) ? '' : String(r.stat_value);
+      var b = r.bucket ? (' [' + r.bucket + ']') : '';
+      return r.part_code + ' → ' + r.stat_field + ': ' + sv + b;
+    });
+    var more = data.rows.length > 24 ? ('\n… +' + (data.rows.length - 24) + ' more rows') : '';
+    return ''
+      + '<details class="cc-godroll-stats" style="margin-top:6px;border:1px solid rgba(255,190,80,0.34);border-radius:6px;background:rgba(0,0,0,0.2);">'
+      + '<summary style="cursor:pointer;padding:6px 8px;font-size:0.75em;color:rgba(255,236,190,0.95);font-weight:700;">'
+      + 'Full stats: ' + escapeHtml(String(data.row_count)) + ' rows / ' + escapeHtml(String(data.source_parts.length)) + ' parts'
+      + '</summary>'
+      + '<div style="padding:6px 8px 8px;">'
+      + '<div style="font-size:0.7em;color:rgba(255,220,180,0.9);margin-bottom:4px;"><strong>Top fields:</strong> ' + escapeHtml(top) + '</div>'
+      + '<pre style="margin:0;max-height:10em;overflow:auto;white-space:pre-wrap;word-break:break-word;font-size:0.68em;line-height:1.35;color:rgba(220,240,255,0.86);background:rgba(0,0,0,0.25);padding:6px;border-radius:4px;border:1px solid rgba(255,180,80,0.2);">'
+      + escapeHtml(lines.join('\n') + more)
+      + '</pre>'
+      + '</div></details>';
   }
 
   function godrollDeserializedForDisplay(item) {
@@ -477,6 +611,7 @@
         + bundledLine
         + (badge ? '<div style="font-size:0.76em;color:rgba(255,220,170,0.82);margin-top:2px;">' + escapeHtml(badge) + '</div>' : '')
         + buildGodrollDetailBlockHtml(item)
+        + (godrollShouldShowFullStats() ? buildGodrollStatsBlockHtml(item) : '')
         + '</div>'
         + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to editor">Editor</button>'
         + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to character backpack">YAML</button>'
@@ -569,6 +704,20 @@
   function getGodrollCategoryFilter() {
     var sel = byId('godrollCategorySelect');
     return sel ? String(sel.value || '').trim() : '';
+  }
+
+  function syncGodrollCategoryHoverTip() {
+    var sel = byId('godrollCategorySelect');
+    if (!sel) return;
+    var idx = typeof sel.selectedIndex === 'number' ? sel.selectedIndex : -1;
+    var opt = (idx >= 0 && sel.options && sel.options[idx]) ? sel.options[idx] : null;
+    var tip = opt ? String(opt.getAttribute('title') || '').trim() : '';
+    sel.title = tip;
+    var helper = byId('godrollCategoryTip');
+    if (helper) {
+      helper.title = tip;
+      helper.style.display = tip ? 'inline-flex' : 'none';
+    }
   }
 
   function getGodrollCategoryPool() {
@@ -705,9 +854,14 @@
     if (godrollSearchInput) {
       godrollSearchInput.addEventListener('input', doGodrollSearch);
     }
+    var showStatsToggle = byId('godrollShowFullStatsToggle');
+    if (showStatsToggle) {
+      showStatsToggle.addEventListener('change', doGodrollSearch);
+    }
     var godrollCatSel = byId('godrollCategorySelect');
     if (godrollCatSel) {
       godrollCatSel.addEventListener('change', doGodrollSearch);
+      godrollCatSel.addEventListener('change', syncGodrollCategoryHoverTip);
     }
     if (godrollAddEditorBtn) {
       godrollAddEditorBtn.addEventListener('click', function () {
@@ -777,6 +931,7 @@
         console.error('Godroll UI update failed', e);
         if (st) st.textContent = 'Godroll list loaded but UI error — check console.';
       }
+      syncGodrollCategoryHoverTip();
     });
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   }

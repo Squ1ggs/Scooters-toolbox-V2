@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Legit Builder: decode @U serial via STX bridge (iframe or inline WASM, enrichResolved) + map resolvedParts to manifest + computeLegitValidationState (data checks).
  * Depends: LegitBuilderApi (legacy/legit-builder.html), decodeSerialsViaBridge (cc-stx-decoder-bridge.js), computeSimpleBuilderItemSlug (cc-item-slug.js).
  */
@@ -7,7 +7,7 @@
 
   function escapeHtmlLegit(s) {
     return String(s == null ? '' : s)
-      .replace(/&/g, '&')
+      .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
@@ -179,7 +179,7 @@
       return options[0];
     }
     /* Never default stat slots to options[0]: that maps the wrong manifest row, so Legit uses the first
-       option's name before invDumpKey and bogus "OK" passes while save-editor shows allowlist/prereq fail. */
+       option’s name before invDumpKey and bogus “OK” passes while save-editor shows allowlist/prereq fail. */
     if (
       (slotKey === 'stat_group1' || slotKey === 'stat_group2' || slotKey === 'stat_group3') &&
       options.length === 1 &&
@@ -273,7 +273,7 @@
   /**
    * Bulk mapped: guns allow at most one manifest option per slot — bucket by slot only. Class mods
    * (etc.) legitimately have several manifest options under one slot key (partition by option).
-   * The save editor does not treat "two resolved rows for one CM option" as a hard fail: decode can
+   * The save editor does not treat “two resolved rows for one CM option” as a hard fail: decode can
    * repeat a row or vary alpha vs name while still one pick — so **weapons only** apply a strict
    * same-option identity check; CM skips it (v20 falsely failed ~1k+ banks on stat_group1).
    */
@@ -458,7 +458,7 @@
     while (dense.length && ncs.length && ncs[0] === 'rarity' && dense[0] !== 'rarity') {
       ncs.shift();
     }
-    /* Serial omits empty accessory slots; NCS lists every slot. Require decode order ⊆ NCS order (subsequence). */
+    /* Serial omits empty accessory slots; NCS lists every slot. Require decode order âŠ† NCS order (subsequence). */
     var mismatches = [];
     var ni = 0;
     for (var dj = 0; dj < dense.length; dj++) {

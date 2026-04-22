@@ -5,14 +5,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
-<!-- Netlify: URLs + keys â€” same as index.html. Empty URLs for local file://. -->
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
-<title>Simple Builder â€” Scooter's Toolbox</title>
+<title>Simple Builder — Scooter's Toolbox</title>
 <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
 <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -245,21 +244,21 @@
 </div>
 <div class="stx-topbar-actions">
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
-<summary class="stx-embed-back" title="Site visits &amp; craft tallies">ðŸ“Š Stats</summary>
+<summary class="stx-embed-back" title="Site visits &amp; craft tallies">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
 <h4>Site (server)</h4>
-<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">â€”</span></div>
-<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">â€”</span></div>
-<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">â€”</span></div>
+<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
 <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
 <hr class="stx-counter-hr"/>
 <h4>Your browser</h4>
 <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
-<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 Â· Guided 0 Â· Legit 0</p>
+<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
 </div>
 </details>
 <a class="stx-embed-back" href="./stx-save-yaml-full.html">Save / YAML</a>
-<a class="stx-embed-back" href="../index.html">â† Main toolbox</a>
+<a class="stx-embed-back" href="../index.html">← Main toolbox</a>
 </div>
 </header>
 <script>
@@ -380,7 +379,7 @@
 <section class="card">
 <div class="hd">
 <div class="k">Builder</div>
-<div class="pill"><span>Detected</span> <b id="detectedCat">â€”</b></div>
+<div class="pill"><span>Detected</span> <b id="detectedCat">—</b></div>
 </div>
 <div class="bd">
 <div class="muted" id="builderEmpty">Pick a Rarity ID Part to open the builder.</div>
@@ -401,13 +400,13 @@
 <section class="card">
 <div class="hd">
 <div class="k">Build stats (core snapshot)</div>
-<div class="pill">PARTS_STATS_DATA Â· weapon init Â· parsed text</div>
+<div class="pill">PARTS_STATS_DATA · weapon init · parsed text</div>
 </div>
 <details class="rebuild-details cc-build-stats-panel" id="rebuildBuildStatsSection" open="">
 <summary>Build stats (core snapshot)</summary>
 <div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
-<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate â€” coarse buckets, not in-game DPS. Uses output and slot selections. Full lines and per-bucket breakdown below.</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Uses output and slot selections. Full lines and per-bucket breakdown below.</div>
 <div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
 <div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
 <div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
@@ -428,9 +427,9 @@
 <script src="js/cc-item-slug.js"></script>
 <script src="js/cc-build-stats-rebuild.js"></script>
 <script src="js/rebuild-presets-random.js"></script>
-<script src="js/cc-toolbox-analytics-v2.js?v=6"></script>
-<script src="js/cc-toolbox-items-made.js?v=6"></script>
-<script src="js/cc-toolbox-public-counter.js?v=6"></script>
+<script src="js/cc-toolbox-analytics-v2.js?v=7"></script>
+<script src="js/cc-toolbox-items-made.js?v=7"></script>
+<script src="js/cc-toolbox-public-counter.js?v=7"></script>
 <script src="js/stx-simple-builder-core.js"></script>
 </body>
 </html>

@@ -5,14 +5,13 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="dark" name="color-scheme">
-<!-- Netlify: URLs + keys â€” same as site root index.html (env STX_*). Empty URLs for local file://. -->
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
 <meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
-<title>Legit Builder (data checks) â€” Scooter's Toolbox</title>
+<title>Legit Builder (data checks) — Scooter's Toolbox</title>
 <link href="../assets/favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="../assets/favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
 <link href="../assets/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -739,48 +738,48 @@
 <div class="legit-header-main">
 <div class="legit-brand-line">Scooter's Toolbox</div>
 <h1>Legit Builder</h1>
-<div class="subtitle">This tool does <strong>not</strong> mirror every rule the game uses internallyâ€”only the live game is truly authoritative. What we <strong>do</strong> is compare your item to <strong>bundled reference data</strong> shipped with this site: loot-pool manifests, catalog slots, inventory composition tags, loot timing and minimum-level hints, weapon part-weight tables, and â€œwhere this kind of item might come fromâ€ source hints. <strong>OK (data)</strong> means those checks passed and we found a matching source <em>hint</em>; we still <strong>do not</strong> guarantee that this exact serial can spawn in-game.</div>
+<div class="subtitle">This tool does <strong>not</strong> mirror every rule the game uses internally—only the live game is truly authoritative. What we <strong>do</strong> is compare your item to <strong>bundled reference data</strong> shipped with this site: loot-pool manifests, catalog slots, inventory composition tags, loot timing and minimum-level hints, weapon part-weight tables, and “where this kind of item might come from” source hints. <strong>OK (data)</strong> means those checks passed and we found a matching source <em>hint</em>; we still <strong>do not</strong> guarantee that this exact serial can spawn in-game.</div>
 <div class="legit-legend">
 <span class="leg-ok">In pool</span> = listed in manifest drop-pool data (<code>in_pool</code>)
-      <span class="legit-legend-sep">Â·</span>
-<span class="leg-warn">Off-pool</span> = not on manifest loot-pool export (<code>in_pool</code>); quests/vendors/rewards still possible â€” see validation FYI + Sources
-      <span class="legit-legend-sep">Â·</span>
-<span style="color:#7dd3fc;">Inv tags</span> = composition basetags + per-slot tag chain from exported inv data; failures show as <code>Inv tags: â€¦</code> in validation
-      <span class="legit-legend-sep">Â·</span>
+      <span class="legit-legend-sep">·</span>
+<span class="leg-warn">Off-pool</span> = not on manifest loot-pool export (<code>in_pool</code>); quests/vendors/rewards still possible — see validation FYI + Sources
+      <span class="legit-legend-sep">·</span>
+<span style="color:#7dd3fc;">Inv tags</span> = composition basetags + per-slot tag chain from exported inv data; failures show as <code>Inv tags: …</code> in validation
+      <span class="legit-legend-sep">·</span>
 <span style="color:#b388ff;">NCS</span> = raw catalog slot (no pool filter)
-      <span class="legit-legend-sep">Â·</span>
-<span class="leg-err">Fail (data)</span> = breaks a rule in the validation panel (not â€œillegal in-gameâ€)
+      <span class="legit-legend-sep">·</span>
+<span class="leg-err">Fail (data)</span> = breaks a rule in the validation panel (not “illegal in-game”)
     </div>
 </div>
-<a class="legit-back" href="../index.html">â† Main toolbox</a>
+<a class="legit-back" href="../index.html">← Main toolbox</a>
 <a class="legit-back" href="../assets/stx-save-yaml-full.html">Save / YAML</a>
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
-<summary class="legit-back" title="Site visits &amp; your local craft tally">ðŸ“Š Stats</summary>
+<summary class="legit-back" title="Site visits &amp; your local craft tally">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
 <h4>Site (server)</h4>
-<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">â€”</span></div>
-<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">â€”</span></div>
-<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">â€”</span></div>
+<div class="stx-counter-row"><span>Page views</span><span class="stx-counter-val" id="stx-counter-server-total">—</span></div>
+<div class="stx-counter-row"><span>Unique visitors</span><span class="stx-counter-val" id="stx-counter-server-unique">—</span></div>
+<div class="stx-counter-row"><span>Items crafted (world)</span><span class="stx-counter-val" id="stx-counter-server-items">—</span></div>
 <p class="stx-counter-note" id="stx-counter-server-hint" style="display:none;">Stats unavailable.</p>
 <hr class="stx-counter-hr"/>
 <h4>Your browser</h4>
 <div class="stx-counter-row"><span>Items crafted (local)</span><span class="stx-counter-val" id="stx-counter-local-total">0</span></div>
-<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 Â· Guided 0 Â· Legit 0</p>
+<p class="stx-counter-note" id="stx-counter-local-breakdown">Simple 0 · Guided 0 · Legit 0</p>
 </div>
 </details>
 <details class="support-menu instructions-menu" id="stxInstructionsMenuLegit">
-<summary class="legit-back" title="Open Scooter's Toolbox instructions">ðŸ“„ Instructions</summary>
+<summary class="legit-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
 <button class="legit-back active" id="stxInstructionsExpandedBtnLegit" style="padding:6px 10px;" type="button">Expanded</button>
 <button class="legit-back" id="stxInstructionsSimpleBtnLegit" style="padding:6px 10px;" type="button">Simple</button>
 </div>
-<pre class="instructions-menu__text" id="stxInstructionsTextLegit">Loading instructionsâ€¦</pre>
+<pre class="instructions-menu__text" id="stxInstructionsTextLegit">Loading instructions…</pre>
 <iframe class="instructions-menu__embed" id="stxInstructionsFrameLegit" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
 </div>
 </details>
 <details class="support-menu">
-<summary class="legit-back" title="Support the project - I wouldnâ€™t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">ðŸ«¶ Support / Donate</summary>
+<summary class="legit-back" title="Support the project - I wouldn’t be here without you. Every bit of support helps me keep creating, and I appreciate it more than words can say!">🫶 Support / Donate</summary>
 <div aria-label="Support links" class="support-menu__panel" role="menu">
 <a class="support-menu__link" href="https://ko-fi.com/rdpsqu1ggs" rel="noopener noreferrer" role="menuitem" target="_blank">Ko-fi</a>
 <a class="support-menu__link" href="https://buymeacoffee.com/scooterstoolbox" rel="noopener noreferrer" role="menuitem" target="_blank">Buy Me a Coffee</a>
@@ -892,7 +891,7 @@
 <summary>Build stats (core snapshot)</summary>
 <div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
-<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate â€” coarse buckets, not in-game DPS. Uses PARTS_STATS_DATA, weapon init tables when a slug appears in output, or parsed text. Full lines and per-bucket breakdown below.</div>
+<div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Uses PARTS_STATS_DATA, weapon init tables when a slug appears in output, or parsed text. Full lines and per-bucket breakdown below.</div>
 <div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
 <div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
 <div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
@@ -920,14 +919,14 @@
 </div>
 <div class="item-level-row">
 <label for="item-level">Item level (for code &amp; LootSchedule checks)</label>
-<input id="item-level" max="60" min="1" name="item-level" title="Must be â‰¥ MinGameStage gates from LootSchedule when strict mode is on" type="number" value="60"/>
+<input id="item-level" max="60" min="1" name="item-level" title="Must be ≥ MinGameStage gates from LootSchedule when strict mode is on" type="number" value="60"/>
 </div>
 <div class="stats-ref" id="stats-ref"></div>
 </div>
 <div class="legit-panel">
 <div class="legit-panel-title">Decode @U serial &amp; check data</div>
-<p style="font-size:0.75rem;color:rgba(233,254,255,0.55);margin:0 0 8px;line-height:1.45;">Paste an <code>@U</code> serial. The STX decoder (same as BL4 Bulk Deserializer) resolves <code>resolvedParts</code>, maps names to manifest slots (best-effort), then runs the <strong>same</strong> data checks as manual selection â€” including <strong>inv composition tags</strong> when <code>inv_comp_tag_data.js</code> is loaded. Empty or partial mapping still runs checks on whatever matched.</p>
-<textarea id="legit-decode-input" name="legit-decode-input" placeholder="@Uâ€¦" rows="3" style="width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:0.78rem;padding:8px;border-radius:6px;border:1px solid rgba(0,200,255,0.25);background:rgba(0,0,0,0.35);color:#e9feff;"></textarea>
+<p style="font-size:0.75rem;color:rgba(233,254,255,0.55);margin:0 0 8px;line-height:1.45;">Paste an <code>@U</code> serial. The STX decoder (same as BL4 Bulk Deserializer) resolves <code>resolvedParts</code>, maps names to manifest slots (best-effort), then runs the <strong>same</strong> data checks as manual selection — including <strong>inv composition tags</strong> when <code>inv_comp_tag_data.js</code> is loaded. Empty or partial mapping still runs checks on whatever matched.</p>
+<textarea id="legit-decode-input" name="legit-decode-input" placeholder="@U…" rows="3" style="width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:0.78rem;padding:8px;border-radius:6px;border:1px solid rgba(0,200,255,0.25);background:rgba(0,0,0,0.35);color:#e9feff;"></textarea>
 <div style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
 <button class="btn-legit" id="legit-decode-btn" type="button">Decode &amp; check</button>
 <span id="legit-decode-status" style="font-size:0.72rem;color:rgba(233,254,255,0.5);"></span>
@@ -939,7 +938,7 @@
 <p style="font-size:0.72rem;color:rgba(233,254,255,0.5);margin:0 0 8px;line-height:1.45;">Uses manifest / NCS / schedules / weights / stats <em>and</em> inv tag composition rules; panel lines starting with <code>Inv tags:</code> come from the tag graph.</p>
 <div class="validation-bar v-idle" id="validation">Select parts to validate.</div>
 <span class="inv-tag-hint" id="inv-tag-rules-hint" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Inv NCS tag rules active</span>
-<label class="strict-toggle"><input checked="" id="strict-mode" name="strict-mode" type="checkbox"/> Strict mode (0% weight or level &lt; LootSchedule MinGameStage â†’ Fail (data))</label>
+<label class="strict-toggle"><input checked="" id="strict-mode" name="strict-mode" type="checkbox"/> Strict mode (0% weight or level &lt; LootSchedule MinGameStage → Fail (data))</label>
 </div>
 <div class="legit-panel">
 <div class="legit-panel-title">Item info &amp; part checklist</div>
@@ -952,9 +951,9 @@
 <div class="legit-panel data-lineage-panel">
 <div class="legit-panel-title">Data Sources</div>
 <div class="data-lineage-text">
-          bl4_manifest Â· NCS (itempool, gbx_ue_data_table, GbxActorPart) Â· PARTS_STATS_DATA (<code>parts_stats_data.js</code>) Â· WEAPON_STATS_DATA Â· LootSchedule &amp; weapon_part_weight_table Â· inv tag rules (<code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>)
+          bl4_manifest · NCS (itempool, gbx_ue_data_table, GbxActorPart) · PARTS_STATS_DATA (<code>parts_stats_data.js</code>) · WEAPON_STATS_DATA · LootSchedule &amp; weapon_part_weight_table · inv tag rules (<code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>)
           <span class="lineage-note">LootSchedule / weapon_part_weight_table come from extracts; mapping a chosen part to a schedule row still uses heuristics we maintain.</span>
-<span class="lineage-note">Status labels (OK / Fail / Uncertain) describe agreement with <strong>our</strong> tables and rules, not a private â€œlegitâ€ verdict from the game. Stats by idRaw / Stats known come only from PARTS_STATS_DATA here. For full part lookup (same STX idRaw layer), use <a href="../index.html#ccAdvancedPartsSearch">Advanced Part Search</a> in the main toolbox. For many serials at once (same checks + export alignment flags), use <a href="../assets/bulk-serial-validator.html">Bulk serial validator</a>.</span>
+<span class="lineage-note">Status labels (OK / Fail / Uncertain) describe agreement with <strong>our</strong> tables and rules, not a private “legit” verdict from the game. Stats by idRaw / Stats known come only from PARTS_STATS_DATA here. For full part lookup (same STX idRaw layer), use <a href="../index.html#ccAdvancedPartsSearch">Advanced Part Search</a> in the main toolbox. For many serials at once (same checks + export alignment flags), use <a href="../assets/bulk-serial-validator.html">Bulk serial validator</a>.</span>
 <span class="lineage-note">Slot names are checked against NCS (with manifest aliases: mag/magazine, shield/hyperion_secondary_acc, multi/tediore_acc). Element overlap across slots is a <strong>consistency heuristic we chose</strong> (same element token in two slots); the engine may differ. Rainbow / multi-element single parts are skipped for overlap checks.</span>
 </div>
 <div class="drop-sources-box" id="drop-sources"></div>
@@ -982,9 +981,9 @@
 <script src="../assets/data/inv_part_layout_rules.js"></script>
 <script src="../assets/js/legit-builder-core.js"></script>
 <script src="../assets/js/legit-builder-ui.js"></script>
-<script src="../assets/js/cc-toolbox-analytics-v2.js?v=6"></script>
-<script src="../assets/js/cc-toolbox-items-made.js?v=6"></script>
-<script src="../assets/js/cc-toolbox-public-counter.js?v=6"></script>
+<script src="../assets/js/cc-toolbox-analytics-v2.js?v=7"></script>
+<script src="../assets/js/cc-toolbox-items-made.js?v=7"></script>
+<script src="../assets/js/cc-toolbox-public-counter.js?v=7"></script>
 <script>window.STX_DECODER_IFRAME_URL = 'bl4-bulk-decoder.html';</script>
 <script src="../assets/js/cc-stx-decoder-bridge.js"></script>
 <script src="../assets/js/legit-decode-validate.js"></script>
