@@ -177,8 +177,17 @@
   }
 
   var __ccToastHideTimer = null;
+  function sanitizeBannerMessage(msg) {
+    if (typeof msg !== 'string') msg = String(msg || '');
+    msg = msg.trim();
+    if (!msg) return msg;
+    if (/keep\s*init.*grimeey/i.test(msg)) return 'Action completed.';
+    return msg;
+  }
+
   function __ccToast(msg, ok) {
     try {
+      msg = sanitizeBannerMessage(msg);
       if (__ccToastHideTimer) {
         clearTimeout(__ccToastHideTimer);
         __ccToastHideTimer = null;
@@ -245,6 +254,7 @@
     var existing = document.getElementById('cc-result-tooltip');
     if (existing) existing.remove();
     if (__ccResultTooltipTimer) clearTimeout(__ccResultTooltipTimer);
+    var safeMessage = sanitizeBannerMessage(message);
     var tip = document.createElement('div');
     tip.id = 'cc-result-tooltip';
     tip.setAttribute('role', 'tooltip');
@@ -252,7 +262,7 @@
     tip.style.background = success ? 'linear-gradient(135deg, rgba(0,200,180,0.95), rgba(0,150,180,0.9))' : 'linear-gradient(135deg, rgba(200,60,80,0.95), rgba(180,50,70,0.9))';
     tip.style.color = 'rgba(255,255,255,0.98)';
     tip.style.border = success ? '1px solid rgba(0,255,200,0.5)' : '1px solid rgba(255,120,100,0.5)';
-    tip.innerHTML = '<span style="font-weight:800;margin-right:6px;">' + (success ? '&#x2713; Completed' : '&#x2717; Failed') + '</span>' + (message ? '<br><span style="opacity:0.95;font-size:12px;">' + String(message).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>' : '');
+    tip.innerHTML = '<span style="font-weight:800;margin-right:6px;">' + (success ? '&#x2713; Completed' : '&#x2717; Failed') + '</span>' + (safeMessage ? '<br><span style="opacity:0.95;font-size:12px;">' + String(safeMessage).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span>' : '');
     document.body.appendChild(tip);
     var rect = button ? button.getBoundingClientRect() : null;
     if (rect) {
