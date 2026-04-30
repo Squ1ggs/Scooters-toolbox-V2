@@ -2759,7 +2759,6 @@
 <button class="btn" id="guidedConvertToDeserialized" type="button">Convert to Deserialized</button>
 </div>
 </div>
-
 <div class="panel" id="rebuildGuidedBuilderSection" style="margin-top:16px;">
 <div class="panel__title">Main Guided Builder</div>
 <div class="info-box" style="margin-bottom:12px;">
@@ -3738,23 +3737,42 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           var ok = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(asU) : asU;
           return Promise.resolve(ok || '');
         }
+        function localSer(input) {
+          if (typeof window.serializeToBase85 !== 'function') return '';
+          try { return String(window.serializeToBase85(input, undefined, true) || '').trim(); } catch (_) { return ''; }
+        }
+        var normCode = code;
         if (typeof window.__stxNormalizeDeserializedInput === 'function') {
           try {
             var norm0 = window.__stxNormalizeDeserializedInput(code);
-            if (norm0) code = norm0;
+            if (norm0) normCode = String(norm0).trim();
           } catch (_) {}
         }
-        function localSer() {
-          if (typeof window.serializeToBase85 !== 'function') return '';
-          try { return String(window.serializeToBase85(code, undefined, true) || '').trim(); } catch (_) { return ''; }
+        function localBest() {
+          return localSer(code) || (normCode && normCode !== code ? localSer(normCode) : '');
         }
         if (typeof window.ccSerializeDeserializedRemote !== 'function') {
-          return Promise.resolve(localSer());
+          return Promise.resolve(localBest());
         }
         return window.ccSerializeDeserializedRemote(code).then(function (remote) {
           var s = String(remote || '').trim();
-          return s || localSer();
-        }).catch(function () { return localSer(); });
+          if (s) return s;
+          if (normCode && normCode !== code) {
+            return window.ccSerializeDeserializedRemote(normCode).then(function (remoteNorm) {
+              var sn = String(remoteNorm || '').trim();
+              return sn || localBest();
+            }).catch(function () { return localBest(); });
+          }
+          return localBest();
+        }).catch(function () {
+          if (normCode && normCode !== code && typeof window.ccSerializeDeserializedRemote === 'function') {
+            return window.ccSerializeDeserializedRemote(normCode).then(function (remoteNorm) {
+              var sn = String(remoteNorm || '').trim();
+              return sn || localBest();
+            }).catch(function () { return localBest(); });
+          }
+          return localBest();
+        });
       }
 
       function finalizeB85ForYamlInject(b85) {
@@ -4056,8 +4074,12 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var outCode = byId('outCode');
         
         function getPrimaryOutputEl() {
-          var deser = byId('guidedOutputDeserialized');
-          return deser || outCode;
+          var guidedDeser = byId('guidedOutputDeserialized');
+          var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
+          if (last === 'guided' && guidedDeser) return guidedDeser;
+          // Keep floating panel scoped away from Simple Builder's dedicated output box.
+          if (guidedDeser) return guidedDeser;
+          return null;
         }
         var guidedSerialEl = byId('guidedOutputSerial');
         var guidedDeserEl = byId('guidedOutputDeserialized');
@@ -4241,6 +4263,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           } catch (e) { alert('Convert to Deserialized failed: ' + (e && e.message)); }
         });
       }
+
 
       function clearRebuildOnLoad() {
         var byId = function(id){ return document.getElementById(id); };

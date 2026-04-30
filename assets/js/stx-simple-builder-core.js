@@ -233,7 +233,7 @@
 
   const SIMPLE_SCHEMA_BY_CATEGORY = {
     Shield: [
-      {key:'mainBody', label:'Main Part', partType:'Body'},
+      {key:'body', label:'Body', partType:'Body'},
       {key:'bodyLegendary', label:'Body - Legendary Perk', partType:'', multi:true},
       {key:'resistance', label:'Resistance', partType:''},
       {key:'primary246', label:'Primary Perks 246', partType:'Perk'},
@@ -309,8 +309,10 @@
    */
   window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM = {
     iigenburst: true,
+    eagenburst: true,
     eigenburst: true,
     handcannon: true,
+    handconnon: true,
     vestigialconflux: true,
     conflux: true,
     soulsurvivor: true,
@@ -2787,7 +2789,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     const isShieldType1ElementSlot = (category === 'Shield' && schemaItem && schemaItem.customType === 'type1Element');
     const isClassModElementSlot = (category === 'Class Mod' && schemaItem && schemaItem.customType === 'classModElement');
     const isShieldBodyLegendarySlot = (category === 'Shield' && schemaItem && schemaItem.key === 'bodyLegendary');
-    const isShieldMainBodySlot = (category === 'Shield' && schemaItem && schemaItem.key === 'mainBody');
+    const isShieldMainBodySlot = (category === 'Shield' && schemaItem && (schemaItem.key === 'mainBody' || schemaItem.key === 'body'));
     if (isShieldType1ElementSlot){
       rawOpts = ELEMENTS
         .filter(e => e && e.code)
@@ -2955,7 +2957,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const manL = String(state.manufacturer || '').trim().toLowerCase();
       const useAllMfr = isAllPartsEnabled();
       const slotKey = String(schemaItem && schemaItem.key || '');
-      const ignoreMfrForBodyLegendary = (slotKey === 'bodyLegendary' || slotKey === 'mainBody');
+      const ignoreMfrForBodyLegendary = (slotKey === 'bodyLegendary' || slotKey === 'mainBody' || slotKey === 'body');
 
       rawOpts = rawOpts.filter((p)=>{
         const pm = String((p && p.manufacturer) || '').trim().toLowerCase();
@@ -2970,7 +2972,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         const isPerk = (pt === 'perk');
         const isFirmware = (pt === 'firmware');
 
-        if (slotKey === 'mainBody'){
+        if (slotKey === 'mainBody' || slotKey === 'body'){
           if (pf === 246 || pf === 237 || pf === 248) return false;
           if (isRarityPart || isPerk || isFirmware) return false;
           if (Number.isFinite(selectedFam) && pf !== selectedFam) return false;
@@ -5111,11 +5113,11 @@ function resetAll(){
           }
 
           if (Number.isFinite(mainFam) && Number.isFinite(pf) && pf === mainFam){
-            if (!state.slots.mainBody) return slotByKey.get('mainBody') || null;
+            if (!state.slots.body && !state.slots.mainBody) return slotByKey.get('body') || slotByKey.get('mainBody') || null;
             return slotByKey.get('bodyLegendary') || null;
           }
           if (Number.isFinite(pf) && pf !== 237 && pf !== 246 && pf !== 248){
-            if (!state.slots.mainBody) return slotByKey.get('mainBody') || null;
+            if (!state.slots.body && !state.slots.mainBody) return slotByKey.get('body') || slotByKey.get('mainBody') || null;
             return slotByKey.get('bodyLegendary') || null;
           }
           return null;

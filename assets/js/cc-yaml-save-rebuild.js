@@ -1014,27 +1014,39 @@
     function packDeserializedToB85(deserIn) {
       var deser = String(deserIn || '').trim();
       if (!deser) return '';
+      var normDeser = deser;
       if (typeof window.__stxNormalizeDeserializedInput === 'function') {
         try {
           var normD = window.__stxNormalizeDeserializedInput(deser);
-          if (normD) deser = normD;
+          if (normD) normDeser = String(normD).trim();
         } catch (_) {}
       }
-      if (typeof window.__stxNicnlPackDeserialized === 'function') {
-        try {
-          var pk = window.__stxNicnlPackDeserialized(deser);
-          pk = (pk && String(pk).trim()) || '';
-          pk = normalizeAtU(pk);
-          if (validStoredB85(pk)) return pk;
-        } catch (_) {}
+      function tryPackOne(input) {
+        var d = String(input || '').trim();
+        if (!d) return '';
+        if (typeof window.__stxNicnlPackDeserialized === 'function') {
+          try {
+            var pk = window.__stxNicnlPackDeserialized(d);
+            pk = (pk && String(pk).trim()) || '';
+            pk = normalizeAtU(pk);
+            if (validStoredB85(pk)) return pk;
+          } catch (_) {}
+        }
+        if (typeof window.serializeToBase85 === 'function') {
+          try {
+            var b = window.serializeToBase85(d, undefined, true);
+            b = (b && String(b).trim()) || '';
+            b = normalizeAtU(b);
+            if (validStoredB85(b)) return b;
+          } catch (_) {}
+        }
+        return '';
       }
-      if (typeof window.serializeToBase85 === 'function') {
-        try {
-          var b = window.serializeToBase85(deser, undefined, true);
-          b = (b && String(b).trim()) || '';
-          b = normalizeAtU(b);
-          if (validStoredB85(b)) return b;
-        } catch (_) {}
+      var packed = tryPackOne(deser);
+      if (packed) return packed;
+      if (normDeser && normDeser !== deser) {
+        packed = tryPackOne(normDeser);
+        if (packed) return packed;
       }
       return '';
     }

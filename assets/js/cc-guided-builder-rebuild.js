@@ -1756,14 +1756,8 @@
   }
 
   function getGuidedOutputEl() {
-    if (typeof window.getCodeAppendOutputEl === 'function') {
-      try {
-        var ap = window.getCodeAppendOutputEl();
-        if (ap) return ap;
-      } catch (_) {}
-    }
     var el = byId('guidedOutputDeserialized');
-    return el || byId('outCode');
+    return el || null;
   }
 
   function getBaseFamilyFromPrefix(prefixStr) {
@@ -1828,7 +1822,8 @@
     }
     tokens.push(token.indexOf('{') === 0 ? token : (token.indexOf('"') >= 0 ? token : '"' + token + '"'));
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
+    if (newTail && !/\|\s*$/.test(newTail)) newTail = newTail + '|';
+    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + (newTail ? ' ' + newTail : '') : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
     out.value = newSerial;
     try {
       window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
@@ -1891,7 +1886,8 @@
       tokens.push(tok);
     }
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + newTail : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
+    if (newTail && !/\|\s*$/.test(newTail)) newTail = newTail + '|';
+    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + (newTail ? ' ' + newTail : '') : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
     out.value = newSerial;
     try {
       window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
@@ -2774,7 +2770,7 @@
         return;
       }
       var guidedItem = byId('ccGuidedItemType');
-      var out = byId('guidedOutputDeserialized') || byId('outCode');
+      var out = byId('guidedOutputDeserialized');
       var existingCode = (out && out.value || '').trim();
       var familyId = parsePrefixFromCode(existingCode);
       var appendOnly = false;
@@ -2885,7 +2881,7 @@
     var i = 0;
     function step() {
       if (i >= count) return;
-      var out = byId('guidedOutputDeserialized') || byId('outCode');
+      var out = byId('guidedOutputDeserialized');
       if (out) out.value = '';
       randomFullBuild();
       i++;

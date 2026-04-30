@@ -78,6 +78,15 @@
     atlasinfiniumm: 'atlasinfinium',
     daeddyo: 'daedyo'
   };
+  var CM_PERK_ICON_KEY_ALIASES = {
+    // Rafa first-tree edge cases / naming drift.
+    alcentro: 'alcentro',
+    alcentrorafa: 'alcentro',
+    abajorafa: 'abajo',
+    arribarafa: 'arriba',
+    batterysubscriptionservicerafa: 'batterysubscriptionservice',
+    firstimpressionrafa: 'firstimpression'
+  };
 
   function normalizePerkNameForMeta(name) {
     if (typeof window.__normalizePerkName === 'function') {
@@ -121,6 +130,7 @@
   function resolvePerkThumbKey(it) {
     if (!it) return '';
     var meta = getClassmodPerkMetaForItem(it);
+    var thumbMap = window.__PERK_THUMB_URL_BY_KEY || {};
     var tryNames = [];
     if (meta && meta.name) tryNames.push(String(meta.name).trim());
     if (it.name) tryNames.push(String(it.name).trim());
@@ -133,7 +143,20 @@
     if (it.part) tryNames.push(String(it.part.name || it.part.legendaryName || '').trim());
     for (var j = 0; j < tryNames.length; j++) {
       var k = normalizePerkNameForMeta(tryNames[j]);
+      if (k && thumbMap[k]) return k;
+      if (k && meta && meta.vaultHunter) {
+        var vh = String(meta.vaultHunter || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+        var vk = k + vh;
+        if (thumbMap[vk]) return vk;
+      }
       if (k) return k;
+    }
+    if (meta && meta.name) {
+      var base = String(meta.name).replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+      var kb = normalizePerkNameForMeta(base);
+      if (kb && thumbMap[kb]) return kb;
+      var vh2 = String(meta.vaultHunter || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (kb && vh2 && thumbMap[kb + vh2]) return kb + vh2;
     }
     return '';
   }
@@ -144,10 +167,78 @@
     var isFw = src.indexOf('firmware') !== -1;
     var fwStem = isFw ? (CM_FIRMWARE_ICON_STEM_ALIASES[key] || key) : key;
     var map = window.__PERK_THUMB_URL_BY_KEY || {};
-    var remote = map[fwStem] || map[key];
-    if (remote) return [remote];
-    /* Local PNG packs (optional). Off by default so file:// / missing bundles do not spam 404s. */
-    if (!window.__CM_USE_LOCAL_PERK_THUMBS) return [];
+    var out = [];
+    var meta = getClassmodPerkMetaForItem(it);
+    var displayName = String((meta && meta.name) || (it && it.name) || '').trim();
+    var vh = String((meta && meta.vaultHunter) || '').trim().toLowerCase();
+    function toFileUrl(absPath) {
+      var p = String(absPath || '').trim();
+      if (!p) return '';
+      // Windows absolute path -> file URL
+      if (/^[a-z]:[\\/]/i.test(p)) {
+        return 'file:///' + p.replace(/\\/g, '/').split('/').map(function (seg, idx) {
+          return idx === 0 ? seg : encodeURIComponent(seg);
+        }).join('/');
+      }
+      return '';
+    }
+    function pushLocalPath(absPath) {
+      var u = toFileUrl(absPath);
+      if (u) out.push(u);
+    }
+    var perkNameStem = normalizePerkNameForMeta(displayName || key);
+    var perkNameBase = String(perkNameStem || '').replace(/(rafa|c4sh|robodealer)$/i, '');
+    var keyCandidates = [];
+    function addKeyCandidate(v) {
+      var s = normalizePerkNameForMeta(v);
+      if (!s) return;
+      if (CM_PERK_ICON_KEY_ALIASES[s]) s = CM_PERK_ICON_KEY_ALIASES[s];
+      if (keyCandidates.indexOf(s) === -1) keyCandidates.push(s);
+    }
+    addKeyCandidate(key);
+    addKeyCandidate(fwStem);
+    addKeyCandidate(displayName);
+    addKeyCandidate(String(displayName || '').replace(/\s*\([^)]*\)\s*/g, ' '));
+    addKeyCandidate(perkNameStem);
+    addKeyCandidate(perkNameBase);
+    addKeyCandidate(it && it.name);
+    if (meta && meta.name) addKeyCandidate(meta.name);
+    if (Array.isArray(it && it._cmGroupParts)) {
+      for (var kci = 0; kci < it._cmGroupParts.length; kci++) {
+        var gpk = it._cmGroupParts[kci];
+        addKeyCandidate(gpk && (gpk.name || gpk.legendaryName));
+      }
+    }
+    if (meta && meta.vaultHunter) {
+      var vhn = String(meta.vaultHunter || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (vhn) {
+        var baseKeys = keyCandidates.slice();
+        for (var bi = 0; bi < baseKeys.length; bi++) {
+          addKeyCandidate(baseKeys[bi] + vhn);
+        }
+      }
+    }
+    function pushWorkspaceUrls(stem) {
+      var s = normalizePerkNameForMeta(stem);
+      if (!s) return;
+      out.push(new URL('assets/img/classmod-perks/' + encodeURIComponent(s) + '.png', window.location.href).href);
+      out.push(new URL('assets/img/classmod-passive/' + encodeURIComponent(s) + '.png', window.location.href).href);
+      out.push(new URL('assets/img/classmod-firmware/' + encodeURIComponent(s) + '.png', window.location.href).href);
+      if (map[s]) out.push(map[s]);
+    }
+    for (var ci = 0; ci < keyCandidates.length; ci++) pushWorkspaceUrls(keyCandidates[ci]);
+    var perkNameUnderscore = String(displayName || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    // User local icon packs fallback (kept after remote map and optional in-repo packs).
+    pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + displayName + '.png');
+    pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + perkNameUnderscore.replace(/_/g, ' ') + '.png');
+    if (vh === 'rafa') {
+      pushLocalPath('C:\\Users\\picto\\Pictures\\bl4-icons-sorted\\ico_ui_art_passives\\Exo_Soldier\\ico_passive_exo_' + (perkNameUnderscore || perkNameStem) + '.png');
+    }
+    if (vh === 'c4sh' || vh === 'robodealer') {
+      pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + (displayName || key) + '.png');
+    }
+    /* Extra local PNG packs (legacy toggle). */
+    if (!window.__CM_USE_LOCAL_PERK_THUMBS) return out;
     var rels;
     if (isFw) {
       rels = [
@@ -161,7 +252,6 @@
         'assets/img/classmod-firmware/' + encodeURIComponent(key) + '.png'
       ];
     }
-    var out = [];
     for (var u = 0; u < rels.length; u++) {
       try {
         out.push(new URL(rels[u], window.location.href).href);
@@ -184,6 +274,17 @@
     img.addEventListener('error', function tryNext() {
       idx++;
       if (idx >= urls.length) {
+        // Do not leave a blank cell: keep a vault-hunter fallback icon.
+        var meta = getClassmodPerkMetaForItem(it) || {};
+        var vh = String(meta.vaultHunter || '').trim().toLowerCase();
+        if (vh === 'rafa') {
+          img.src = './assets/img/vault-hunters/player_class_exo_soldier.png';
+          return;
+        }
+        if (vh === 'c4sh' || vh === 'robodealer') {
+          img.src = './assets/img/vault-hunters/player_robodealer.png';
+          return;
+        }
         img.remove();
         return;
       }

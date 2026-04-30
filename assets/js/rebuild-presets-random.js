@@ -646,7 +646,7 @@
         if (!br || !br.entries || !br.entries.length) {
           fullPanel.innerHTML = "<p class=\"cc-full-stats-empty\">" + esc(br && br.message ? br.message : "\u2014") + "</p>";
         } else {
-          var chunks = ["<div class=\"cc-full-stats-heading\">Full stat lines (per resolved part)</div>"];
+          var chunks = ["<details class=\"cc-full-stats-details\"><summary class=\"cc-full-stats-heading\">Full stat lines (per resolved part)</summary><div class=\"cc-full-stats-details-body\">"];
           for (var fi = 0; fi < br.entries.length; fi++) {
             var en = br.entries[fi];
             chunks.push("<div class=\"cc-full-stats-part\"><div class=\"cc-full-stats-part-title\">" + esc(en.name) + "</div>");
@@ -661,6 +661,7 @@
             }
             chunks.push("</div>");
           }
+          chunks.push("</div></details>");
           fullPanel.innerHTML = chunks.join("");
         }
       } catch (e) {
