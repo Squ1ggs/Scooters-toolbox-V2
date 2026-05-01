@@ -618,13 +618,26 @@
       var part = col.deduped[i];
       var name = partDisplayName(part);
       var pack = computeFullStatLinesForPart(part, slug);
-      var lines = sortFullStatLinesByImpact(pack.lines, pack.source, pack.excelRows);
+      var lines = sortFullStatLinesByImpact(pack.lines, pack.source, pack.excelRows) || [];
+      lines = lines.filter(function (ln) { return ln != null && String(ln).trim() !== ''; }).map(function (ln) { return String(ln); });
+      if (!lines.length) {
+        var raw = '';
+        try { raw = String(displayStatsFor(part) || '').trim(); } catch (_) {}
+        if (raw) lines = [raw];
+        else {
+          var tok = '';
+          try { tok = String((part && (part.idRaw || part.idraw || part.code || part.spawnCode)) || '').trim(); } catch (_) {}
+          lines = [tok ? ('No parsed stat lines (' + tok + ')') : 'No parsed stat lines'];
+        }
+      }
       entries.push({ name: name, source: pack.source, lines: lines });
     }
     if (slug) {
       var mfr = lookupMfrStats(slug);
       if (mfr && Object.keys(mfr).length) {
-        var mlines = wstatsObjectToLines(mfr);
+        var mlines = wstatsObjectToLines(mfr) || [];
+        mlines = mlines.filter(function (ln) { return ln != null && String(ln).trim() !== ''; }).map(function (ln) { return String(ln); });
+        if (!mlines.length) mlines = ['No parsed manufacturer stat lines'];
         mlines = sortFullStatLinesByImpact(mlines, 'WEAPON_STATS_DATA (manufacturer init)', null);
         entries.unshift({
           name: 'Manufacturer (' + (getMfrFromSlug(slug) || slug) + ')',

@@ -13,6 +13,48 @@
     try { sel.__customSelectSync(); } catch (_) {}
   }
 
+  function ensureStaticGuidedIcons() {
+    function setIcon(selectId, value, url) {
+      var sel = byId(selectId);
+      if (!sel || !sel.options) return;
+      for (var i = 0; i < sel.options.length; i++) {
+        var o = sel.options[i];
+        if (!o) continue;
+        if (String(o.value || '').trim() !== String(value || '').trim()) continue;
+        if (url) o.setAttribute('data-cc-icon', String(url));
+      }
+      syncGuidedCustomSelectIfWrapped(sel);
+    }
+    var base = './assets/img/guided-dropdowns/';
+    setIcon('ccGuidedItemType', 'Weapon', base + 'legendary-augments/ico_legendary_aug_gun_assault.png');
+    setIcon('ccGuidedItemType', 'Shield', base + 'legendary-augments/ico_legendary_aug_shield.png');
+    setIcon('ccGuidedItemType', 'Repkit', base + 'legendary-augments/ico_legendary_aug_repkit.png');
+    setIcon('ccGuidedItemType', 'Grenade', base + 'legendary-augments/ico_legendary_aug_grenade.png');
+    setIcon('ccGuidedItemType', 'Enhancement', base + 'legendary-augments/ico_legendary_aug_classmod.png');
+    setIcon('ccGuidedItemType', 'Class Mod', base + 'legendary-augments/ico_legendary_aug_classmod.png');
+    setIcon('ccGuidedItemType', 'Heavy Weapon', base + 'legendary-augments/ico_legendary_aug_heavy.png');
+    setIcon('ccGuidedWeaponType', 'Assault Rifle', base + 'weapon-type/ico_ui_art_assault_small.png');
+    setIcon('ccGuidedWeaponType', 'Pistol', base + 'weapon-type/ico_ui_art_pistol_small.png');
+    setIcon('ccGuidedWeaponType', 'Shotgun', base + 'weapon-type/ico_ui_art_shotgun_small.png');
+    setIcon('ccGuidedWeaponType', 'SMG', base + 'weapon-type/ico_ui_art_smg_small.png');
+    setIcon('ccGuidedWeaponType', 'Sniper Rifle', base + 'weapon-type/ico_ui_art_sniper_small.png');
+    setIcon('ccGuidedWeaponType', 'Heavy Weapon', base + 'weapon-type/ico_ui_art_heavy_small.png');
+    try {
+      var btns = document.querySelectorAll('#classmodQuickChecklistButtons .stx-vh-btn[data-cm-class]');
+      for (var bi = 0; bi < btns.length; bi++) {
+        var b = btns[bi];
+        var c = String(b.getAttribute('data-cm-class') || '').trim().toLowerCase();
+        var img = b.querySelector('img.stx-vh-btn__icon');
+        if (!img) continue;
+        if (c === 'vex') img.src = './assets/img/vault-hunters/player_class_dark_siren.png';
+        else if (c === 'amon') img.src = './assets/img/vault-hunters/player_class_paladin.png';
+        else if (c === 'rafa') img.src = './assets/img/vault-hunters/player_class_exo_soldier.png';
+        else if (c === 'harlowe') img.src = './assets/img/vault-hunters/player_class_gravitar.png';
+        else if (c === 'c4sh') img.src = './assets/img/vault-hunters/player_robodealer.png';
+      }
+    } catch (_) {}
+  }
+
   function isGuidedClassModItemType(val) {
     return /class\s*mod|classmod/i.test(String(val || '').trim());
   }
@@ -25,12 +67,13 @@
     { key: 'bodyEle', label: 'Body Element', partType: 'Body', selectId: 'ccWeaponBodyEleSelect', btnId: 'ccAddWeaponBodyEle' },
     { key: 'barrel', label: 'Barrel', partType: 'Barrel', selectId: 'ccBarrelSelect', btnId: 'ccAddBarrel' },
     { key: 'barrelAcc', label: 'Barrel Accessory', partType: 'Barrel Accessory', selectId: 'ccBarrelAccSelect', btnId: 'ccAddBarrelAcc' },
-    { key: 'hyperionSecondaryAcc', label: 'Hyperion Shield', partType: 'Manufacturer Part', selectId: 'ccWeaponHypShieldSelect', btnId: 'ccAddWeaponHypShield' },
+    { key: 'hyperionSecondaryAcc', label: 'Hyperion Amp Shield', partType: 'Manufacturer Part', selectId: 'ccWeaponHypShieldSelect', btnId: 'ccAddWeaponHypShield' },
     { key: 'mag', label: 'Magazine', partType: 'Magazine', selectId: 'ccMagazineSelect', btnId: 'ccAddMagazine' },
     { key: 'magazineAcc', label: 'Magazine Accessory', partType: 'Magazine', selectId: 'ccWeaponMagAccSelect', btnId: 'ccAddWeaponMagAcc' },
     { key: 'magazineTedThrown', label: 'Tediore Thrown Mag', partType: 'Magazine', selectId: 'ccWeaponMagTedSelect', btnId: 'ccAddWeaponMagTed' },
     { key: 'scope', label: 'Scope', partType: 'Scope', selectId: 'ccScopeSelect', btnId: 'ccAddScope' },
     { key: 'scopeAcc', label: 'Scope Accessory', partType: 'Scope Accessory', selectId: 'ccScopeAccSelect', btnId: 'ccAddScopeAcc' },
+    { key: 'scopeAcc2', label: 'Scope Accessory 2', partType: 'Scope Accessory', selectId: 'ccScopeAcc2Select', btnId: 'ccAddScopeAcc2' },
     { key: 'grip', label: 'Grip', partType: 'Grip', selectId: 'ccGripSelect', btnId: 'ccAddGrip' },
     { key: 'underbarrel', label: 'Underbarrel', partType: 'Underbarrel', selectId: 'ccUnderbarrelSelect', btnId: 'ccAddUnderbarrel' },
     { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip', selectId: 'ccForegripSelect', btnId: 'ccAddForegrip' },
@@ -1753,6 +1796,7 @@
       if (stxMan && fromStx) stxMan.value = preserveMan;
     }
     syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
+    ensureStaticGuidedIcons();
   }
 
   function getGuidedOutputEl() {
@@ -1779,7 +1823,7 @@
       }
     }
     if (baseFamily == null || !window.normalizeIdTokensForBaseFamily) return tokens.join(' ');
-    var norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily, { compactSameFamily: false });
+    var norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily);
     return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
   }
   function isRarityToken(tok) {
@@ -1961,7 +2005,12 @@
         return baseAcc;
       }
       if (slot.key === 'bodyEle') return filtered.filter(function (p) { return c(p).indexOf('part_body_ele') !== -1; });
-      if (slot.key === 'hyperionSecondaryAcc') return filtered.filter(function (p) { return c(p).indexOf('part_shield') !== -1; });
+      if (slot.key === 'hyperionSecondaryAcc') return filtered.filter(function (p) {
+        var x = c(p);
+        var n = String((p && (p.name || p.legendaryName)) || '').toLowerCase();
+        var pt = String((p && p.partType) || '').toLowerCase();
+        return x.indexOf('part_shield') !== -1 || x.indexOf('amp') !== -1 || n.indexOf('amp') !== -1 || pt.indexOf('shield') !== -1;
+      });
       if (slot.key === 'secondaryAmmo') return filtered.filter(function (p) { return c(p).indexOf('part_secondary_ammo') !== -1; });
       if (slot.key === 'licensed') return filtered.filter(function (p) { return c(p).indexOf('barrel_licensed') !== -1; });
       /* Main magazine: exclude Tediore thrown + parts that belong in Magazine Accessory (avoids duplicates with those rows). */
@@ -2420,6 +2469,7 @@
     if (window.ensurePartPools) window.ensurePartPools();
     loadGuidedManufacturers();
     if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
+    ensureStaticGuidedIcons();
     syncGuidedVisibility();
     setTimeout(function () { refreshToolsStandaloneElementDropdowns(); }, 0);
     setTimeout(function () {
@@ -2427,6 +2477,7 @@
       if (it) {
         loadGuidedManufacturers();
         if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
+        ensureStaticGuidedIcons();
         syncGuidedVisibility();
       }
       if (typeof window.refreshPartSections === 'function') window.refreshPartSections();

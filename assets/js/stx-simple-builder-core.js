@@ -144,7 +144,9 @@
     {key:'barrelAcc', label:'Barrel Accessory', partType:'Barrel Accessory'},
     {key:'mag', label:'Magazine', partType:'Magazine'},
     {key:'scope', label:'Scope', partType:'Scope'},
-    {key:'scopeAcc', label:'Scope Accessory', partType:'Scope Accessory'},
+    {key:'scopeAcc', label:'Scope Accessory', partType:'Scope Accessory', ncsSlot:'scope_acc'},
+    {key:'scopeAcc2', label:'Scope Accessory 2', partType:'Scope Accessory', ncsSlot:'scope_acc'},
+    {key:'hyperionSecondaryAcc', label:'Hyperion Amp Shield', partType:'Manufacturer Part', ncsSlot:'hyperion_secondary_acc'},
     {key:'grip', label:'Grip', partType:'Grip'},
     {key:'foregrip', label:'Foregrip', partType:'Foregrip'},
     {key:'underbarrel', label:'Underbarrel', partType:'Underbarrel'},
@@ -4024,7 +4026,7 @@ function randSeed(){
     const s = unquoteWrappedValue(value);
     if (!s) return '';
     const id = extractSkinNumericId(s, !!allowBareNumeric, !!allowGenericNumericBrace);
-    if (Number.isFinite(id)) return `|"c",${id}|`;
+    if (Number.isFinite(id)) return `{27:${id}}`;
     return s;
   }
 
@@ -4715,8 +4717,12 @@ function computeFullDeserializedCode(){
     return '';
   }
   const orderedHasRarity = !!(rarityItemIdStr && orderedParts.some(t => tokenIdOnlyForRarity(t) === rarityItemIdStr));
-  const rarityTok = String(skinRarityToken || '').trim()
+  const rarityTokRaw = String(skinRarityToken || '').trim()
     || (Number.isFinite(rarityItemId) ? `{${rarityItemId}}` : '');
+  const rarityTokNorm = rarityTokRaw ? normalizeIdTokensForBaseFamily([rarityTokRaw], baseFamilyId) : [];
+  const rarityTok = Array.isArray(rarityTokNorm) && rarityTokNorm.length
+    ? String(rarityTokNorm[0] || '').trim()
+    : rarityTokRaw;
   const __rarityTokN = String(rarityTok || '').replace(/\s+/g,'').trim();
   const isSameAsSelectedRarityToken = (tok)=>{
     if (!__rarityTokN) return false;
@@ -4844,8 +4850,11 @@ function computeFullDeserializedCode(){
     const listTokens = normalizeIdTokensForBaseFamily(listTokensRaw, listFamily);
     $('outList').value = listTokens.join(', ');
     const code = computeFullDeserializedCode();
-    // Simple Builder owns #outCode. Guided/global panels are managed by guided-builder scripts.
     if ($('outCode')) $('outCode').value = code;
+    try{
+      const b85 = (code && typeof window.serializeToBase85 === 'function') ? String(window.serializeToBase85(code, undefined, true) || '').trim() : '';
+      if ($('outCodeB85')) $('outCodeB85').value = b85 || '';
+    }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
     try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
     $('outJson').value = JSON.stringify(json, null, 2);
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}

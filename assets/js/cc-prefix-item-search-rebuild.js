@@ -794,6 +794,8 @@
     var godrollAddEditorBtn = byId('godrollAddToEditorBtn');
     var godrollAddYamlBtn = byId('godrollAddToYamlBtn');
     var godrollAddBankBtn = byId('godrollAddToBankBtn');
+    var copyBtn = byId('prefixItemCopyBtn');
+    var godrollCopyBtn = byId('godrollCopyBtn');
 
     if (searchInput) {
       searchInput.addEventListener('input', doSearch);
@@ -850,6 +852,20 @@
         }
       });
     }
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        if (!lastSelected) {
+          var q = getSearchText();
+          var filtered = serialsData ? serialsData.filter(function (item) { return matches(item, q); }) : [];
+          if (filtered.length === 1) lastSelected = filtered[0];
+        }
+        if (lastSelected && lastSelected.serial) {
+          try { navigator.clipboard.writeText(String(lastSelected.serial).trim()); } catch (_) {}
+        } else {
+          alert('Search and click a result first, or narrow to one match.');
+        }
+      });
+    }
 
     if (godrollSearchInput) {
       godrollSearchInput.addEventListener('input', doGodrollSearch);
@@ -872,6 +888,20 @@
         }
         if (lastGodrollSelected && window.importSerialToEditor) window.importSerialToEditor(lastGodrollSelected.serial);
         else alert('Search and click a Godroll result first, or narrow to one match.');
+      });
+    }
+    if (godrollCopyBtn) {
+      godrollCopyBtn.addEventListener('click', function () {
+        if (!lastGodrollSelected) {
+          var q = getGodrollSearchText();
+          var filtered = getGodrollCategoryPool().filter(function (item) { return matchesGodroll(item, q); });
+          if (filtered.length === 1) lastGodrollSelected = filtered[0];
+        }
+        if (lastGodrollSelected && lastGodrollSelected.serial) {
+          try { navigator.clipboard.writeText(String(lastGodrollSelected.serial).trim()); } catch (_) {}
+        } else {
+          alert('Search and click a Godroll result first, or narrow to one match.');
+        }
       });
     }
     if (godrollAddYamlBtn) {

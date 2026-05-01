@@ -79,7 +79,6 @@
     daeddyo: 'daedyo'
   };
   var CM_PERK_ICON_KEY_ALIASES = {
-    // Rafa first-tree edge cases / naming drift.
     alcentro: 'alcentro',
     alcentrorafa: 'alcentro',
     abajorafa: 'abajo',
@@ -228,7 +227,6 @@
     }
     for (var ci = 0; ci < keyCandidates.length; ci++) pushWorkspaceUrls(keyCandidates[ci]);
     var perkNameUnderscore = String(displayName || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
-    // User local icon packs fallback (kept after remote map and optional in-repo packs).
     pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + displayName + '.png');
     pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + perkNameUnderscore.replace(/_/g, ' ') + '.png');
     if (vh === 'rafa') {

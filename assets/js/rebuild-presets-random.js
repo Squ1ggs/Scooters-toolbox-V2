@@ -72,7 +72,8 @@
     }
     for (var i = 0; i < n; i++) tokens.push(code);
     if (typeof window.normalizeIdTokensForBaseFamily === "function" && baseFamilyId != null) {
-      tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId, { compactSameFamily: false });
+      // Use compactSameFamily: true (default) so same-family parts use {id} and others use {fam:id}
+      tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId);
     } else {
       for (var j = 0; j < tokens.length; j++) {
         tokens[j] = normalizeIdTokenForBaseFamily(tokens[j], baseFamilyId);
@@ -639,6 +640,90 @@
       var titleRow = esc(it.label);
       return "<div class=\"cc-core-card\" style=\"border-color:" + p.border + ";background:linear-gradient(180deg," + p.bgTop + " 0%," + p.bgBottom + " 100%);\"><div class=\"cc-core-card-title\" style=\"color:" + p.title + "\">" + titleRow + "</div><div class=\"cc-core-card-scale-label\">Scale</div><div class=\"cc-core-card-scale\" style=\"color:" + (delta >= 0 ? p.pos : p.neg) + "\" title=\"Combined scale vs 1.000 baseline\">" + scaleNum + "</div><div class=\"cc-core-card-pct\">" + pctText + "</div><div class=\"cc-core-card-meta\" style=\"color:" + p.meta + "\">" + esc(meta) + "</div></div>";
     }).join("");
+    var finalPanel = byId("buildStatsFinalEstimates");
+    if (finalPanel) {
+      try {
+        var byLabel = {};
+        for (var ci0 = 0; ci0 < core.items.length; ci0++) {
+          var c0 = core.items[ci0];
+          if (!c0 || !c0.label) continue;
+          byLabel[String(c0.label).toLowerCase()] = c0;
+        }
+        function getMult(label, fallback) {
+          var it = byLabel[String(label || '').toLowerCase()];
+          if (!it) return Number(fallback || 1);
+          var v = Number(it.mult);
+          return Number.isFinite(v) ? v : Number(fallback || 1);
+        }
+        function getHits(label) {
+          var it = byLabel[String(label || '').toLowerCase()];
+          if (!it) return 0;
+          var v = Number(it.hits || 0);
+          return Number.isFinite(v) ? v : 0;
+        }
+        function formatStatValue(base, mult, decimals, suffix) {
+          var b = Number(base);
+          var m = Number(mult);
+          if (!Number.isFinite(b) || !Number.isFinite(m)) return '—';
+          var val = b * m;
+          return val.toFixed(Math.max(0, Number(decimals || 0))) + (suffix || '');
+        }
+        // Try to get actual base damage from weapon stats data
+        var baseDamage = 100;
+        try {
+          if (typeof window.inferSlugHint === 'function' && typeof window.getWstatsGlobal === 'function') {
+            var slug = window.inferSlugHint();
+            var WSTATS = window.getWstatsGlobal && window.getWstatsGlobal();
+            if (slug && WSTATS && WSTATS.Weapon_Init && WSTATS.Weapon_Init.rows && WSTATS.Weapon_Init.rows[slug]) {
+              var wrow = WSTATS.Weapon_Init.rows[slug];
+              if (wrow && typeof wrow.damage_base !== 'undefined') {
+                baseDamage = Number(wrow.damage_base) || baseDamage;
+              }
+            }
+          }
+        } catch (e) {}
+        var damageMult = getMult('Damage', 1);
+        var critMult = getMult('Critical Damage', 1);
+        var elementalMult = getMult('Elemental', 1);
+        var accuracyMult = getMult('Accuracy', 1);
+        var adsMult = getMult('ADS / Handling', 1);
+        var fireRateMult = getMult('Fire Rate', 1);
+        var reloadSpeedMult = getMult('Reload Speed', 1);
+        var ammoMult = getMult('Ammo / Mag', 1);
+        var projMult = getMult('Projectiles', 1);
+        var rows = [
+          { name: 'Damage', value: formatStatValue(baseDamage, damageMult, 0, ''), note: 'Est. numeric (base from stats)' },
+          { name: 'Critical Damage', value: formatStatValue(100, critMult, 1, '%'), note: 'Est. crit bonus scale' },
+          { name: 'Elemental', value: formatStatValue(100, elementalMult, 1, '%'), note: 'Est. elemental effectiveness' },
+          { name: 'Accuracy', value: formatStatValue(100, accuracyMult, 1, '%'), note: 'Est. aim precision scale' },
+          { name: 'ADS', value: formatStatValue(100, adsMult, 1, '%'), note: 'Est. ADS responsiveness' },
+          { name: 'Handling', value: formatStatValue(100, adsMult, 1, '%'), note: 'Mapped from ADS/handling bucket' },
+          { name: 'Fire Rate', value: formatStatValue(10, fireRateMult, 2, ' /s'), note: 'Est. rounds per second' },
+          { name: 'Reload Speed', value: formatStatValue(100, reloadSpeedMult, 1, '%'), note: 'Higher is faster reload' },
+          { name: 'Ammo / Mag', value: formatStatValue(30, ammoMult, 1, ''), note: 'Est. mag size (base 30)' },
+          { name: 'Projectiles', value: formatStatValue(1, projMult, 2, ''), note: 'Est. projectiles per shot' }
+        ];
+        var anyHits = 0;
+        for (var rh = 0; rh < rows.length; rh++) {
+          var lname = rows[rh].name.toLowerCase();
+          if (lname === 'handling') lname = 'ads / handling';
+          anyHits += getHits(lname);
+        }
+        var bits = [];
+        bits.push("<div class=\"cc-final-estimates-title\">Estimated Final Stats</div>");
+        bits.push("<div class=\"cc-final-estimates-grid\">");
+        for (var rix = 0; rix < rows.length; rix++) {
+          var rr = rows[rix];
+          bits.push("<div class=\"cc-final-est-row\"><div class=\"cc-final-est-name\">" + esc(rr.name) + "</div><div class=\"cc-final-est-value\">" + esc(rr.value) + "</div><div class=\"cc-final-est-note\">" + esc(rr.note) + "</div></div>");
+        }
+        bits.push("</div>");
+        bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:8px;\">These are model estimates from your selected parts. They are useful for comparing builds and may differ from exact in-game card values.</div>");
+        if (!anyHits) bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:6px;\">No stat lines detected yet. Add/import parts to populate these estimates.</div>");
+        finalPanel.innerHTML = bits.join("");
+      } catch (e0) {
+        finalPanel.innerHTML = "<div class=\"cc-final-estimates-title\">Estimated Final Stats</div><p class=\"cc-full-stats-empty\">" + esc(String(e0 && e0.message)) + "</p>";
+      }
+    }
     var fullPanel = byId("buildStatsFullStats");
     if (fullPanel) {
       try {
@@ -650,12 +735,15 @@
           for (var fi = 0; fi < br.entries.length; fi++) {
             var en = br.entries[fi];
             chunks.push("<div class=\"cc-full-stats-part\"><div class=\"cc-full-stats-part-title\">" + esc(en.name) + "</div>");
-            if (!en.lines || !en.lines.length) {
+            var safeLines = (en && en.lines && en.lines.length) ? en.lines.filter(function (ln) {
+              return ln != null && String(ln).trim() !== '';
+            }).map(function (ln) { return String(ln); }) : [];
+            if (!safeLines.length) {
               chunks.push("<p class=\"cc-full-stats-empty cc-full-stats-none\">No stat lines for this part.</p>");
             } else {
               chunks.push("<ul class=\"cc-full-stats-lines\">");
-              for (var li = 0; li < en.lines.length; li++) {
-                chunks.push("<li>" + esc(en.lines[li]) + "</li>");
+              for (var li = 0; li < safeLines.length; li++) {
+                chunks.push("<li>" + esc(safeLines[li]) + "</li>");
               }
               chunks.push("</ul>");
             }
