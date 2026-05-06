@@ -14,8 +14,13 @@
     reload: [{ key: 24, value: '44' }, { key: 9, value: '61' }],
     firerate: [{ key: 14, value: '1' }, { key: 27, value: '15' }],
     ammo: [{ key: 18, value: '14' }, { key: 27, value: '75' }],
-    splash: [{ key: 6, value: '33' }, { key: 9, value: '89' }, { key: 24, value: '18' }],
-    crit: [{ key: 3, value: '6' }, { key: 24, value: '33' }]
+    splash: [{ key: 6, value: '33' }, { key: 9, value: '89' }, { key: 24, value: '18' }, { key: 243, value: '32' }, { key: 243, value: '33' }, { key: 243, value: '34' }, { key: 243, value: '35' }, { key: 243, value: '36' }],
+    crit: [{ key: 3, value: '6' }, { key: 24, value: '33' }, { key: 243, value: '37' }, { key: 243, value: '38' }, { key: 243, value: '39' }, { key: 243, value: '40' }, { key: 243, value: '41' }],
+    splat: [{ key: 243, value: '32' }, { key: 243, value: '33' }, { key: 243, value: '34' }, { key: 243, value: '35' }, { key: 243, value: '36' }],
+    nova: [{ key: 243, value: '37' }, { key: 243, value: '38' }, { key: 243, value: '39' }, { key: 243, value: '40' }, { key: 243, value: '41' }],
+    immunity: [{ key: 243, value: '27' }, { key: 243, value: '28' }, { key: 243, value: '29' }, { key: 243, value: '31' }, { key: 243, value: '42' }, { key: 243, value: '43' }, { key: 243, value: '44' }, { key: 243, value: '46' }],
+    resistance: [{ key: 243, value: '22' }, { key: 243, value: '23' }, { key: 243, value: '24' }, { key: 243, value: '26' }, { key: 243, value: '47' }, { key: 243, value: '49' }, { key: 243, value: '50' }, { key: 243, value: '51' }],
+    elemental: [{ key: 243, value: '98' }, { key: 243, value: '99' }, { key: 243, value: '100' }, { key: 243, value: '101' }, { key: 243, value: '102' }]
   };
 
   function getPartTokenForPopulate(p) {
@@ -173,6 +178,14 @@
           }
         }
         appendGroup(camoSel, 'Camo codes (|"c",id|)', camoGroup);
+        if (window.CAMO_TOKENS && window.CAMO_TOKENS.length) {
+          var namedCamos = [];
+          for (var ni = 0; ni < window.CAMO_TOKENS.length; ni++) {
+            var nc = window.CAMO_TOKENS[ni];
+            namedCamos.push({ value: nc.code, label: nc.name + ' (' + nc.code + ')' });
+          }
+          appendGroup(camoSel, 'Legendary Camos', namedCamos);
+        }
         attachSelectFullTitle(camoSel);
       } catch (_) {}
     }
@@ -247,7 +260,22 @@
           o.value = tok;
           o.textContent = label;
           if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
+          if (!o.title) o.title = 'Other stats: dataset stats unavailable for this part.';
           partSel.appendChild(o);
+        }
+      }
+      if (partSel.options.length <= 1) {
+        for (var pi = 0; pi < pool.length; pi++) {
+          var pe = pool[pi];
+          var pk = pe.key != null ? pe.key : pe.k;
+          var pv = pe.value != null ? pe.value : pe.v;
+          if (pk == null || pv == null) continue;
+          var rawTok = '{' + String(pk) + ':' + String(pv) + '}';
+          var fallback = document.createElement('option');
+          fallback.value = rawTok;
+          fallback.textContent = rawTok + ' - Preset token';
+          fallback.title = 'Dataset name unavailable; this preset token will still be added.';
+          partSel.appendChild(fallback);
         }
       }
     } catch (_) {}
@@ -255,8 +283,8 @@
 
   function populatePresetCategories(catSel) {
     if (!catSel) return;
-    var cats = ['Damage', 'Accuracy', 'Reload Speed', 'Fire Rate', 'Ammo', 'Splash Damage', 'Crit Damage'];
-    var keys = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit'];
+    var cats = ['Damage', 'Accuracy', 'Reload Speed', 'Fire Rate', 'Ammo', 'Splash Damage', 'Crit Damage', 'Splat', 'Nova', 'Immunity', 'Resistance', 'Elemental'];
+    var keys = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit', 'splat', 'nova', 'immunity', 'resistance', 'elemental'];
     catSel.innerHTML = '<option value="">-- Select Preset Category --</option>';
     for (var i = 0; i < cats.length; i++) {
       var o = document.createElement('option');

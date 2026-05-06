@@ -76,7 +76,8 @@
   var CM_FIRMWARE_ICON_STEM_ALIASES = {
     atlasinfinum: 'atlasinfinium',
     atlasinfiniumm: 'atlasinfinium',
-    daeddyo: 'daedyo'
+    daeddyo: 'daedyo',
+    getthrowin: 'getthrowd'
   };
   var CM_PERK_ICON_KEY_ALIASES = {
     alcentro: 'alcentro',
@@ -84,7 +85,9 @@
     abajorafa: 'abajo',
     arribarafa: 'arriba',
     batterysubscriptionservicerafa: 'batterysubscriptionservice',
-    firstimpressionrafa: 'firstimpression'
+    firstimpressionrafa: 'firstimpression',
+    propreitaryincendiary: 'proprietaryincendiary',
+    thethrill: 'thethrillamon'
   };
 
   function normalizePerkNameForMeta(name) {
@@ -164,29 +167,13 @@
     if (!key) return [];
     var src = String(it._cmSource || '').toLowerCase();
     var isFw = src.indexOf('firmware') !== -1;
-    var fwStem = isFw ? (CM_FIRMWARE_ICON_STEM_ALIASES[key] || key) : key;
+    var isPassive = src.indexOf('passive') !== -1;
+    
     var map = window.__PERK_THUMB_URL_BY_KEY || {};
     var out = [];
     var meta = getClassmodPerkMetaForItem(it);
     var displayName = String((meta && meta.name) || (it && it.name) || '').trim();
-    var vh = String((meta && meta.vaultHunter) || '').trim().toLowerCase();
-    function toFileUrl(absPath) {
-      var p = String(absPath || '').trim();
-      if (!p) return '';
-      // Windows absolute path -> file URL
-      if (/^[a-z]:[\\/]/i.test(p)) {
-        return 'file:///' + p.replace(/\\/g, '/').split('/').map(function (seg, idx) {
-          return idx === 0 ? seg : encodeURIComponent(seg);
-        }).join('/');
-      }
-      return '';
-    }
-    function pushLocalPath(absPath) {
-      var u = toFileUrl(absPath);
-      if (u) out.push(u);
-    }
-    var perkNameStem = normalizePerkNameForMeta(displayName || key);
-    var perkNameBase = String(perkNameStem || '').replace(/(rafa|c4sh|robodealer)$/i, '');
+
     var keyCandidates = [];
     function addKeyCandidate(v) {
       var s = normalizePerkNameForMeta(v);
@@ -194,67 +181,48 @@
       if (CM_PERK_ICON_KEY_ALIASES[s]) s = CM_PERK_ICON_KEY_ALIASES[s];
       if (keyCandidates.indexOf(s) === -1) keyCandidates.push(s);
     }
+    
     addKeyCandidate(key);
-    addKeyCandidate(fwStem);
     addKeyCandidate(displayName);
-    addKeyCandidate(String(displayName || '').replace(/\s*\([^)]*\)\s*/g, ' '));
-    addKeyCandidate(perkNameStem);
-    addKeyCandidate(perkNameBase);
-    addKeyCandidate(it && it.name);
+    if (it && it.name) addKeyCandidate(it.name);
     if (meta && meta.name) addKeyCandidate(meta.name);
+    if (it && it.part) addKeyCandidate(it.part.name || it.part.legendaryName);
+    
     if (Array.isArray(it && it._cmGroupParts)) {
       for (var kci = 0; kci < it._cmGroupParts.length; kci++) {
         var gpk = it._cmGroupParts[kci];
-        addKeyCandidate(gpk && (gpk.name || gpk.legendaryName));
+        if (gpk) addKeyCandidate(gpk.name || gpk.legendaryName);
       }
     }
-    if (meta && meta.vaultHunter) {
-      var vhn = String(meta.vaultHunter || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
-      if (vhn) {
-        var baseKeys = keyCandidates.slice();
-        for (var bi = 0; bi < baseKeys.length; bi++) {
-          addKeyCandidate(baseKeys[bi] + vhn);
-        }
-      }
-    }
-    function pushWorkspaceUrls(stem) {
+
+    function pushSpeculativeUrls(stem) {
       var s = normalizePerkNameForMeta(stem);
       if (!s) return;
-      out.push(new URL('assets/img/classmod-perks/' + encodeURIComponent(s) + '.png', window.location.href).href);
-      out.push(new URL('assets/img/classmod-passive/' + encodeURIComponent(s) + '.png', window.location.href).href);
-      out.push(new URL('assets/img/classmod-firmware/' + encodeURIComponent(s) + '.png', window.location.href).href);
+
+      // Avoid speculative path for generic stats
+      var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance|brokenblue|brokengreen|brokenred|brokenwhite/.test(s);
+      if (isGeneric) {
+        if (map[s]) out.push(map[s]);
+        return;
+      }
+
+      if (isFw) {
+        var fw = CM_FIRMWARE_ICON_STEM_ALIASES[s] || s;
+        out.push('./assets/img/classmod-firmware/' + fw + '.png');
+      } else if (isPassive) {
+        out.push('./assets/img/classmod-passive/' + s + '.png');
+        out.push('./assets/img/classmod-perks/' + s + '.png');
+      } else {
+        out.push('./assets/img/classmod-perks/' + s + '.png');
+        out.push('./assets/img/classmod-passive/' + s + '.png');
+        out.push('./assets/img/classmod-firmware/' + s + '.png');
+      }
+
       if (map[s]) out.push(map[s]);
     }
-    for (var ci = 0; ci < keyCandidates.length; ci++) pushWorkspaceUrls(keyCandidates[ci]);
-    var perkNameUnderscore = String(displayName || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
-    pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + displayName + '.png');
-    pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + perkNameUnderscore.replace(/_/g, ' ') + '.png');
-    if (vh === 'rafa') {
-      pushLocalPath('C:\\Users\\picto\\Pictures\\bl4-icons-sorted\\ico_ui_art_passives\\Exo_Soldier\\ico_passive_exo_' + (perkNameUnderscore || perkNameStem) + '.png');
-    }
-    if (vh === 'c4sh' || vh === 'robodealer') {
-      pushLocalPath('C:\\Users\\picto\\Pictures\\bl4 class perks\\c4sh robodealer\\' + (displayName || key) + '.png');
-    }
-    /* Extra local PNG packs (legacy toggle). */
-    if (!window.__CM_USE_LOCAL_PERK_THUMBS) return out;
-    var rels;
-    if (isFw) {
-      rels = [
-        'assets/img/classmod-firmware/' + encodeURIComponent(fwStem) + '.png',
-        'assets/img/classmod-perks/' + encodeURIComponent(fwStem) + '.png'
-      ];
-    } else {
-      rels = [
-        'assets/img/classmod-passive/' + encodeURIComponent(key) + '.png',
-        'assets/img/classmod-perks/' + encodeURIComponent(key) + '.png',
-        'assets/img/classmod-firmware/' + encodeURIComponent(key) + '.png'
-      ];
-    }
-    for (var u = 0; u < rels.length; u++) {
-      try {
-        out.push(new URL(rels[u], window.location.href).href);
-      } catch (_) {}
-    }
+
+    for (var ci = 0; ci < keyCandidates.length; ci++) pushSpeculativeUrls(keyCandidates[ci]);
+
     return out;
   }
 

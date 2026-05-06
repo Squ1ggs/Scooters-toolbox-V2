@@ -73,7 +73,6 @@
     { key: 'magazineTedThrown', label: 'Tediore Thrown Mag', partType: 'Magazine', selectId: 'ccWeaponMagTedSelect', btnId: 'ccAddWeaponMagTed' },
     { key: 'scope', label: 'Scope', partType: 'Scope', selectId: 'ccScopeSelect', btnId: 'ccAddScope' },
     { key: 'scopeAcc', label: 'Scope Accessory', partType: 'Scope Accessory', selectId: 'ccScopeAccSelect', btnId: 'ccAddScopeAcc' },
-    { key: 'scopeAcc2', label: 'Scope Accessory 2', partType: 'Scope Accessory', selectId: 'ccScopeAcc2Select', btnId: 'ccAddScopeAcc2' },
     { key: 'grip', label: 'Grip', partType: 'Grip', selectId: 'ccGripSelect', btnId: 'ccAddGrip' },
     { key: 'underbarrel', label: 'Underbarrel', partType: 'Underbarrel', selectId: 'ccUnderbarrelSelect', btnId: 'ccAddUnderbarrel' },
     { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip', selectId: 'ccForegripSelect', btnId: 'ccAddForegrip' },
@@ -888,6 +887,25 @@
     return compactGuidedPartLabel(p);
   }
 
+  function preservedSelectLabelForToken(sel, token) {
+    var t = String(token || '').trim();
+    if (!t) return '[Selected]';
+    try {
+      var wantKey = normTailTokenKey(t);
+      var all = getAllParts();
+      for (var i = 0; i < all.length; i++) {
+        var p = all[i];
+        if (!p) continue;
+        var pt = String(getPartToken(p) || '').trim();
+        if (!pt) continue;
+        if (pt === t || normTailTokenKey(pt) === wantKey) {
+          return '[Selected] ' + guidedOptionLabelForSelect(sel, p);
+        }
+      }
+    } catch (_) {}
+    return '[Selected] ' + t;
+  }
+
   function guidedOptionTitleForSelect(sel, p) {
     var base = '';
     try {
@@ -1311,12 +1329,29 @@
 
   function fillSelect(sel, parts, maxItems, emptyHint) {
     if (!sel) return;
+    var prevValue = String((sel.value != null ? sel.value : '') || '').trim();
+    var preferredValue = String((sel.__ccPreferredToken != null ? sel.__ccPreferredToken : prevValue) || '').trim();
+    
+    // Check if parts list has actually changed to avoid redundant DOM work
+    var partsHash = (parts && parts.length) ? (parts.length + ':' + (parts[0] ? (parts[0].code || parts[0].name) : '')) : '0';
+    if (sel.__lastPartsHash === partsHash && !sel.dataset.forceRebuild) {
+        // Still need to ensure value is synced if preferredValue changed externally
+        if (preferredValue && sel.value !== preferredValue) {
+           sel.value = preferredValue;
+           syncGuidedCustomSelectIfWrapped(sel);
+        }
+        return;
+    }
+    sel.__lastPartsHash = partsHash;
+
     sel.innerHTML = '';
     sel.appendChild(new Option('-- None / N/A --', ''));
     var listForPreview = [];
     var seenTok = {};
     var plen = (parts && parts.length) ? parts.length : 0;
     var limit = Math.min(plen, maxItems || 300);
+    
+    var fragment = document.createDocumentFragment();
     for (var i = 0; i < limit; i++) {
       var p = parts[i];
       var tok = getPartToken(p);
@@ -1329,12 +1364,30 @@
       if (tit) opt.title = tit;
       applyGuidedPartOptionIcon(sel, opt, p);
       applyGuidedBarrelOptionDataAttrs(sel, opt, p);
-      sel.appendChild(opt);
+      fragment.appendChild(opt);
     }
+    sel.appendChild(fragment);
+    
     if (!listForPreview.length && emptyHint) {
       var hi = new Option(emptyHint, '');
       hi.disabled = true;
       sel.appendChild(hi);
+    }
+    if (preferredValue) {
+      var foundPref = false;
+      for (var pi = 0; pi < sel.options.length; pi++) {
+        if (String(sel.options[pi].value || '').trim() === preferredValue) {
+          sel.value = preferredValue;
+          foundPref = true;
+          break;
+        }
+      }
+      if (!foundPref) {
+        var keepOpt = new Option(preservedSelectLabelForToken(sel, preferredValue), preferredValue);
+        keepOpt.setAttribute('data-guided-preserved', '1');
+        sel.appendChild(keepOpt);
+        sel.value = preferredValue;
+      }
     }
     sel.__ccGuidedPartsList = listForPreview;
     maybeDecoratedGuidedSelectPlaceholder(sel);
@@ -1440,8 +1493,30 @@
     }
   }
 
+  function fillElementPresetFallbackSelect(sel, placeholder) {
+    if (!sel) return;
+    sel.innerHTML = '';
+    var ph = new Option(placeholder || '-- Element --', '');
+    applyDataCcIconIfAny(ph, CC_ELEMENT_PLACEHOLDER_ICON_FILE);
+    sel.appendChild(ph);
+    for (var j = 0; j < ELEMENTS.length; j++) {
+      var ej = ELEMENTS[j];
+      if (!ej || !ej.code) continue;
+      var o = new Option(guidedPresetElementOptionLabel(ej), ej.code);
+      o.title = 'Output token: ' + ej.code;
+      if (ej.iconFile) applyDataCcIconIfAny(o, ej.iconFile);
+      sel.appendChild(o);
+    }
+    sel.__ccGuidedPartsList = null;
+    bindGuidedSelectPreviewIfNeeded(sel);
+    updateGuidedSelectPreview(sel);
+    syncGuidedCustomSelectIfWrapped(sel);
+  }
+
   function fillSelectWithLegendaryGroups(sel, parts) {
     if (!sel) return;
+    var prevValue = String((sel.value != null ? sel.value : '') || '').trim();
+    var preferredValue = String((sel.__ccPreferredToken != null ? sel.__ccPreferredToken : prevValue) || '').trim();
     var heavy = [];
     var weapon = [];
     for (var i = 0; i < parts.length; i++) {
@@ -1481,6 +1556,22 @@
       g2.label = 'Weapon Legendary Perks';
       for (var w = 0; w < Math.min(weapon.length, 1200); w++) addPartToGroup(g2, weapon[w]);
       sel.appendChild(g2);
+    }
+    if (preferredValue) {
+      var foundLegendaryPref = false;
+      for (var li = 0; li < sel.options.length; li++) {
+        if (String(sel.options[li].value || '').trim() === preferredValue) {
+          sel.value = preferredValue;
+          foundLegendaryPref = true;
+          break;
+        }
+      }
+      if (!foundLegendaryPref) {
+        var keepLegendaryOpt = new Option(preservedSelectLabelForToken(sel, preferredValue), preferredValue);
+        keepLegendaryOpt.setAttribute('data-guided-preserved', '1');
+        sel.appendChild(keepLegendaryOpt);
+        sel.value = preferredValue;
+      }
     }
     sel.__ccGuidedPartsList = listed;
     maybeDecoratedGuidedSelectPlaceholder(sel);
@@ -1640,6 +1731,7 @@
     wtypes = wtypes.filter(function (w) { return w !== 'Sniper'; });
     wtypes = wtypes.filter(function (w) { return String(w).trim().toLowerCase() !== 'weapon'; });
     wtypes.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); });
+    var preserveWt = (wtSel.value || '').trim();
     wtSel.innerHTML = '<option value="">Select weapon type...</option>';
     for (var j = 0; j < wtypes.length; j++) {
       if (!wtypes[j]) continue;
@@ -1648,8 +1740,10 @@
       if (wIcon) applyDataCcIconFullUrl(wOpt, wIcon);
       wtSel.appendChild(wOpt);
     }
-    var cur = (wtSel.value || '').trim();
-    if (cur && wtypes.indexOf(cur) >= 0) { wtSel.value = cur; } else if (wtypes.length) { wtSel.value = wtypes[0]; }
+    var cur = preserveWt;
+    if (cur && wtypes.indexOf(cur) >= 0) wtSel.value = cur;
+    else if (window.state && window.state.weaponType && wtypes.indexOf(String(window.state.weaponType)) >= 0) wtSel.value = String(window.state.weaponType);
+    else if (wtypes.length) wtSel.value = wtypes[0];
     syncGuidedCustomSelectIfWrapped(wtSel);
   }
 
@@ -1670,6 +1764,12 @@
     var fromStx = !!(stxItem && stxItem.value) && (!itemSel || !itemSel.value || itemSel.value === stxItem.value);
     var placeholder = (itemType === 'Class Mod') ? 'Select character...' : 'Select manufacturer...';
     var preserveMan = (manSel.value || '').trim();
+    if (!preserveMan) {
+      try {
+        var st = window.state || window.__STX_SIMPLE_STATE;
+        preserveMan = String((st && st.manufacturer) || manSel.__ccPreferredManufacturer || '').trim();
+      } catch (_) {}
+    }
     manSel.innerHTML = '<option value="">' + placeholder + '</option>';
     manSel.disabled = false;
     if (stxMan && fromStx) stxMan.innerHTML = '<option value="">' + placeholder + '</option>';
@@ -1694,6 +1794,11 @@
         }
         if (Object.keys(seen).length > 0) {
           if (preserveMan && Array.prototype.some.call(manSel.options, function (o) { return (o.value || '').trim() === preserveMan; })) {
+            manSel.value = preserveMan;
+            if (stxMan && fromStx) stxMan.value = preserveMan;
+          } else if (preserveMan) {
+            var pLab0 = (itemType === 'Class Mod') ? getClassModDisplayName(preserveMan) : preserveMan;
+            appendGuidedManufacturerOption(manSel, stxMan, fromStx, pLab0, preserveMan, itemType);
             manSel.value = preserveMan;
             if (stxMan && fromStx) stxMan.value = preserveMan;
           }
@@ -1727,6 +1832,11 @@
             }
           }
           if (preserveMan && Array.prototype.some.call(manSel.options, function(o){ return (o.value||'').trim() === preserveMan; })) {
+            manSel.value = preserveMan;
+            if (stxMan && fromStx) stxMan.value = preserveMan;
+          } else if (preserveMan) {
+            var pLab1 = (itemType === 'Class Mod') ? getClassModDisplayName(preserveMan) : preserveMan;
+            appendGuidedManufacturerOption(manSel, stxMan, fromStx, pLab1, preserveMan, itemType);
             manSel.value = preserveMan;
             if (stxMan && fromStx) stxMan.value = preserveMan;
           }
@@ -1794,6 +1904,11 @@
     if (preserveMan && Array.prototype.some.call(manSel.options, function(o){ return (o.value||'').trim() === preserveMan; })) {
       manSel.value = preserveMan;
       if (stxMan && fromStx) stxMan.value = preserveMan;
+    } else if (preserveMan) {
+      var pLab2 = (itemType === 'Class Mod') ? getClassModDisplayName(preserveMan) : preserveMan;
+      appendGuidedManufacturerOption(manSel, stxMan, fromStx, pLab2, preserveMan, itemType);
+      manSel.value = preserveMan;
+      if (stxMan && fromStx) stxMan.value = preserveMan;
     }
     syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
     ensureStaticGuidedIcons();
@@ -1804,6 +1919,105 @@
     return el || null;
   }
 
+  function parseGuidedHeaderNumber(v, fallback) {
+    var n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function guidedRowLooksPearl(row) {
+    var item = Number(row && (row.itemId != null ? row.itemId : row.id));
+    var code = String((row && (row.itemTypeString || row.code)) || '').toLowerCase();
+    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
+    return code.indexOf('pearl_') !== -1 || /(?:^|[._])comp_06_pearlescent/.test(code);
+  }
+
+  function computeGuidedPrefixFallback() {
+    var st = getGuidedState();
+    var itemType = String((st && st.itemType) || '').trim();
+    if (!itemType) return '';
+
+    var levelEl = byId('ccGuidedLevel');
+    var level = parseGuidedHeaderNumber(levelEl && levelEl.value, 60);
+    if (!Number.isFinite(level) || level <= 0) level = 60;
+
+    var buybackEl = byId('ccGuidedBuybackFlag');
+    var buyback = !!(buybackEl && buybackEl.checked);
+
+    var familyId = 1;
+    var itemId = 0;
+    var rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
+    if (rows.length) {
+      var man = getEffectiveManufacturerForFilter();
+      var manL = String(man || '').trim().toLowerCase();
+      var cat = (itemType === 'Heavy') ? 'Weapon' : itemType;
+      var wt = String((st && st.weaponType) || '').trim();
+      if (cat === 'Weapon') {
+        if (itemType === 'Heavy' || itemType === 'Heavy Weapon') wt = 'Heavy Weapon';
+        else if (!wt) wt = 'Assault Rifle';
+      } else {
+        wt = '';
+      }
+      var wantType = cat === 'Weapon' ? wt : cat;
+
+      var matchesType = function (rt) {
+        var v = String(rt || '').trim();
+        if (!v || !wantType) return false;
+        if (wantType === 'Heavy Weapon') return v === 'Heavy Weapon' || v === 'Heavy' || v === 'HeavyWeapon';
+        return v === wantType;
+      };
+
+      var pool = rows.filter(function (r) {
+        if (cat === 'Weapon' && guidedRowLooksPearl(r)) return true;
+        if (!matchesType(r && r.itemType)) return false;
+        if (!manL) return true;
+        return String((r && r.manufacturer) || '').trim().toLowerCase() === manL;
+      });
+      if (!pool.length) {
+        pool = rows.filter(function (r) { return matchesType(r && r.itemType); });
+      }
+
+      var pick = null;
+      for (var i = 0; i < pool.length; i++) {
+        if (!String((pool[i] && pool[i].legendaryName) || '').trim()) {
+          pick = pool[i];
+          break;
+        }
+      }
+      if (!pick && pool.length) pick = pool[0];
+
+      if (pick) {
+        familyId = parseGuidedHeaderNumber(pick.familyId, 1);
+        itemId = parseGuidedHeaderNumber(pick.itemId, 0);
+      }
+    }
+
+    var seed = 0;
+    if (typeof window.getSeed === 'function') {
+      try {
+        seed = Number(window.getSeed({ familyId: familyId, itemId: itemId })) || 0;
+      } catch (_) {
+        seed = 0;
+      }
+    } else {
+      seed = Math.floor(Math.random() * 9999) + 1;
+    }
+
+    var header = familyId + ', 0, 1, ' + level + '|';
+    if (buyback) header += ' 9, 1|';
+    header += ' 2, ' + seed + '||';
+    return header;
+  }
+
+  function computeGuidedPrefixSafe() {
+    if (typeof window.computeGuidedPrefix === 'function') {
+      try {
+        var p = String(window.computeGuidedPrefix() || '').trim();
+        if (p) return p;
+      } catch (_) {}
+    }
+    return computeGuidedPrefixFallback();
+  }
+
   function getBaseFamilyFromPrefix(prefixStr) {
     var m = (prefixStr || '').match(/^\s*(\d+)/);
     return m ? parseInt(m[1], 10) : null;
@@ -1811,6 +2025,65 @@
   function getFamilyFromToken(tok) {
     var m = (tok || '').match(/^\{\s*(\d+)\s*:\s*\d+\s*\}$/);
     return m ? parseInt(m[1], 10) : null;
+  }
+  function parseGuidedIdToken(tok) {
+    var s = String(tok || '').trim();
+    if (!s) return null;
+    var m = s.match(/^\{\s*(\d+)\s*\}$/);
+    if (m) return { kind: 'id', id: Number(m[1]) };
+    m = s.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (m) return { kind: 'family', family: Number(m[1]), ids: [Number(m[2])] };
+    m = s.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+    if (m) {
+      var ids = String(m[2] || '').match(/\d+/g);
+      var list = (ids || []).map(function (n) { return Number(n); }).filter(function (n) { return Number.isFinite(n); });
+      if (!list.length) return null;
+      return { kind: 'family', family: Number(m[1]), ids: list, rawIds: m[2] };
+    }
+    return null;
+  }
+  function normalizeGuidedIdTokensLocal(tokens, baseFamily) {
+    var src = Array.isArray(tokens) ? tokens : [];
+    var bf = Number(baseFamily);
+    var hasBase = Number.isFinite(bf);
+    var out = [];
+    for (var i = 0; i < src.length; i++) {
+      var tok = src[i];
+      var parsed = parseGuidedIdToken(tok);
+      if (!parsed) {
+        out.push(tok);
+        continue;
+      }
+      if (parsed.kind === 'id') {
+        out.push('{' + String(parsed.id) + '}');
+        continue;
+      }
+      var fam = Number(parsed.family);
+      var ids = Array.isArray(parsed.ids) ? parsed.ids : [];
+      if (!Number.isFinite(fam) || !ids.length) {
+        out.push(tok);
+        continue;
+      }
+      
+      // Expansion for bracketed IDs
+      if (parsed.rawIds) {
+        for (var j = 0; j < ids.length; j++) {
+          var id = Number(ids[j]);
+          if (!Number.isFinite(id)) continue;
+          if (hasBase && fam === bf) out.push('{' + String(id) + '}');
+          else out.push('{' + String(fam) + ':' + String(id) + '}');
+        }
+        continue;
+      }
+      // Regular family:id tokens must also be preserved.
+      for (var k = 0; k < ids.length; k++) {
+        var idSingle = Number(ids[k]);
+        if (!Number.isFinite(idSingle)) continue;
+        if (hasBase && fam === bf) out.push('{' + String(idSingle) + '}');
+        else out.push('{' + String(fam) + ':' + String(idSingle) + '}');
+      }
+    }
+    return out;
   }
   function normalizeGuidedTail(prefixStr, tokens) {
     if (!tokens || !tokens.length) return '';
@@ -1822,8 +2095,12 @@
         if (baseFamily != null) break;
       }
     }
-    if (baseFamily == null || !window.normalizeIdTokensForBaseFamily) return tokens.join(' ');
-    var norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily);
+    if (baseFamily == null) return tokens.join(' ');
+    var norm = null;
+    if (window.normalizeIdTokensForBaseFamily) {
+      try { norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily); } catch (_) { norm = null; }
+    }
+    if (!Array.isArray(norm)) norm = normalizeGuidedIdTokensLocal(tokens, baseFamily);
     return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
   }
   function isRarityToken(tok) {
@@ -1840,40 +2117,88 @@
     return !!m;
   }
 
+  /** Helper to unlock output generation after an import, allowing subsequent interactive edits. */
+  function clearGuidedImportLock() {
+    try {
+      window.__LOCK_IMPORTED_OUTPUT = false;
+      window.__LAST_IMPORTED_DESERIALIZED = null;
+      var gDes = byId('guidedOutputDeserialized');
+      var gSer = byId('guidedOutputSerial');
+      if (gDes) gDes.__ccImportedValue = null;
+      if (gSer) gSer.__ccImportedValue = null;
+    } catch (_) {}
+  }
+  window.clearGuidedImportLock = clearGuidedImportLock;
+
   function appendToOutCode(token, forceTarget, replaceRarity) {
     var out = forceTarget || getGuidedOutputEl();
     if (!out) return;
+    // Once user explicitly adds/removes parts, stop pinning outputs to the imported snapshot.
+    clearGuidedImportLock();
     var serial = (out.value || '').trim();
     var dbl = serial.indexOf('||');
     var prefixStr = dbl >= 0 ? serial.slice(0, dbl).trim() : '';
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
     // When guided output is empty (no prefix), ensure we have a prefix before appending
     var guidedItem = byId('ccGuidedItemType');
-    var isGuided = guidedItem && (guidedItem.value || '').trim();
-    if (isGuided && !prefixStr && typeof window.computeGuidedPrefix === 'function') {
-      prefixStr = window.computeGuidedPrefix();
+    var isGuided = (guidedItem && (guidedItem.value || '').trim());
+    if (isGuided && !prefixStr) {
+      prefixStr = computeGuidedPrefixSafe();
       if (prefixStr) {
-        serial = prefixStr + '|| ';
+        prefixStr = prefixStr.trim();
+        serial = (prefixStr.indexOf('||') >= 0) ? (prefixStr + ' ' + tail) : (prefixStr + ' || ' + tail);
         dbl = serial.indexOf('||');
       }
     }
-    var tokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\S+/g) || []).filter(function (t) {
+    // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
+    var tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
       var s = String(t || '').trim();
       return s && s !== '|' && s !== '||';
     });
     if (replaceRarity) {
       tokens = tokens.filter(function (t) { return !isRarityToken(t); });
     }
-    tokens.push(token.indexOf('{') === 0 ? token : (token.indexOf('"') >= 0 ? token : '"' + token + '"'));
+    
+    var skinTokens = [];
+    var camoTokens = [];
+    var otherTokens = [];
+    for (var i = 0; i < tokens.length; i++) {
+        var t = tokens[i];
+        if (String(t).indexOf('|') >= 0 && String(t).indexOf('c') >= 0) {
+            // camo like |"c",123|
+            camoTokens.push(t);
+        } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(t)) {
+            skinTokens.push(t);
+        } else {
+            otherTokens.push(t);
+        }
+    }
+
+    var newToken = token.indexOf('{') === 0 ? token : (token.indexOf('"') >= 0 ? token : '"' + token + '"');
+    
+    // Categorize the new token
+    if (String(newToken).indexOf('|') >= 0 && String(newToken).indexOf('c') >= 0) {
+        camoTokens.push(newToken);
+    } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(newToken)) {
+        skinTokens.push(newToken);
+    } else {
+        otherTokens.push(newToken);
+    }
+
+    // Order: Skins (Rarity) first, then other parts, then Camos at the absolute end.
+    tokens = skinTokens.concat(otherTokens).concat(camoTokens);
+
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    if (newTail && !/\|\s*$/.test(newTail)) newTail = newTail + '|';
-    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + (newTail ? ' ' + newTail : '') : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
+    // Ensure we don't have double pipes and that the tail ends correctly
+    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + ' |';
+    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
     out.value = newSerial;
     try {
-      window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
+      window.__CC_LAST_CODE_TARGET = 'guided';
     } catch (_) {}
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
   }
 
   /** Match tail tokens for grouping / remove-one (family:id vs quoted code). */
@@ -1893,6 +2218,7 @@
   function mutateSerialTailDelta(canonicalToken, delta) {
     var out = getGuidedOutputEl();
     if (!out || canonicalToken == null || canonicalToken === '') return false;
+    clearGuidedImportLock();
     var d = Number(delta);
     if (!Number.isFinite(d) || d === 0) return false;
     var serial = (out.value || '').trim();
@@ -1900,16 +2226,17 @@
     var prefixStr = dbl >= 0 ? serial.slice(0, dbl).trim() : '';
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
     var guidedItem = byId('ccGuidedItemType');
-    var isGuided = guidedItem && (guidedItem.value || '').trim();
-    if (isGuided && !prefixStr && typeof window.computeGuidedPrefix === 'function') {
-      prefixStr = window.computeGuidedPrefix();
+    var isGuided = (guidedItem && (guidedItem.value || '').trim());
+    if (isGuided && !prefixStr) {
+      prefixStr = computeGuidedPrefixSafe();
       if (prefixStr) {
-        serial = prefixStr + '|| ';
+        prefixStr = prefixStr.trim();
+        serial = (prefixStr.indexOf('||') >= 0) ? (prefixStr + ' ' + tail) : (prefixStr + ' || ' + tail);
         dbl = serial.indexOf('||');
-        tail = '';
       }
     }
-    var tokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\|\s*["']?c["']?\s*,\s*\d+\s*\||\S+/g) || []).filter(function (t) {
+    // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
+    var tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
       var s = String(t || '').trim();
       return s && s !== '|' && s !== '||';
     });
@@ -1930,11 +2257,11 @@
       tokens.push(tok);
     }
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    if (newTail && !/\|\s*$/.test(newTail)) newTail = newTail + '|';
-    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2) + (newTail ? ' ' + newTail : '') : (serial ? serial + ' || ' + newTail : '|| ' + newTail);
+    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + ' |';
+    var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
     out.value = newSerial;
     try {
-      window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided';
+      window.__CC_LAST_CODE_TARGET = 'guided';
     } catch (_) {}
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
@@ -1945,6 +2272,219 @@
 
   window.__ccGetGuidedOutputEl = getGuidedOutputEl;
   window.__ccMutateSerialTailDelta = mutateSerialTailDelta;
+
+  function setGuidedSelectByToken(selectId, token) {
+    var sel = byId(selectId);
+    if (!sel || !token) return;
+    var want = String(token).trim();
+    sel.__ccPreferredToken = want;
+    var wantKey = normTailTokenKey(want);
+    
+    // Also consider the "short" key if it's a {fam:id} token matching the current base family
+    var baseFamilyId = null;
+    try {
+      var st = window.state || window.__STX_SIMPLE_STATE;
+      if (st && Number.isFinite(st.familyId)) {
+        baseFamilyId = Number(st.familyId);
+      } else if (st && st.slots && st.slots.rarity) {
+        baseFamilyId = Number(st.slots.rarity.family ?? st.slots.rarity.familyId);
+      }
+      if (!Number.isFinite(baseFamilyId) && st && st.mainPart) {
+        baseFamilyId = Number(st.mainPart.family ?? st.mainPart.familyId);
+      }
+    } catch(_) {}
+    
+    var shortWantKey = null;
+    if (wantKey.indexOf('q:') === 0 && Number.isFinite(baseFamilyId)) {
+      var parts = wantKey.split(':'); // ['q', 'fam', 'id']
+      if (Number(parts[1]) === baseFamilyId) {
+        shortWantKey = 's:' + parts[2];
+      }
+    } else if (wantKey.indexOf('s:') === 0 && Number.isFinite(baseFamilyId)) {
+      // If we have a singular token {59} and know the family is 25, then qualified is {25:59}
+      var parts = wantKey.split(':'); // ['s', 'id']
+      shortWantKey = 'q:' + baseFamilyId + ':' + parts[1];
+    }
+
+    var found = false;
+    for (var i = 0; i < sel.options.length; i++) {
+      var ov = String(sel.options[i].value || '').trim();
+      if (!ov) continue;
+      var ovKey = normTailTokenKey(ov);
+      if (ov === want || ovKey === wantKey || (shortWantKey && ovKey === shortWantKey)) {
+        sel.value = ov;
+        found = true;
+        break;
+      }
+    }
+    if (!found && want) {
+      var keep = new Option(preservedSelectLabelForToken(sel, want), want);
+      keep.setAttribute('data-guided-preserved', '1');
+      sel.appendChild(keep);
+      sel.value = want;
+      found = true;
+    }
+    if (found) {
+      syncGuidedCustomSelectIfWrapped(sel);
+      try { updateGuidedSelectPreview(sel); } catch (_) {}
+    }
+  }
+
+  function hydrateGuidedSlotsFromSimpleState() {
+    window.__ccIsHydrating = true;
+    try {
+      var st = window.state || window.__STX_SIMPLE_STATE;
+      if (!st || typeof st !== 'object') {
+        window.__ccIsHydrating = false;
+        return false;
+      }
+      var gi = byId('ccGuidedItemType');
+      var gm = byId('ccGuidedManufacturer');
+      var gw = byId('ccGuidedWeaponType');
+      var gl = byId('ccGuidedLevel');
+
+      // Hydrate Top selectors
+      if (gi && st.itemType) { 
+        var wantIt = String(st.itemType);
+        // Map to Guided values
+        if (wantIt === 'Weapon' || (typeof STX_RARITY_WEAPON_ITEM_TYPES !== 'undefined' && STX_RARITY_WEAPON_ITEM_TYPES.has(wantIt))) wantIt = 'Weapon';
+        if (wantIt === 'Heavy' || wantIt === 'Heavy Weapon') wantIt = 'Heavy Weapon';
+
+        if (gi.value !== wantIt) {
+          gi.value = wantIt; 
+          syncGuidedCustomSelectIfWrapped(gi); 
+          if (typeof syncGuidedVisibility === 'function') syncGuidedVisibility();
+        }
+      }
+      
+      // Load manufacturers for this item type
+      if (typeof loadGuidedManufacturers === 'function') loadGuidedManufacturers();
+      
+      if (gm && st.manufacturer) { 
+        var wantMan = String(st.manufacturer);
+        gm.__ccPreferredManufacturer = wantMan;
+        // If the manufacturer isn't in the list yet, we might need to force it or re-load
+        if (gm.value !== wantMan) {
+          gm.value = wantMan;
+          // If setting value failed (not in list), try to add it temporarily or wait
+          if (gm.value !== wantMan && wantMan) {
+             var opt = new Option(wantMan, wantMan);
+             gm.appendChild(opt);
+             gm.value = wantMan;
+          }
+          syncGuidedCustomSelectIfWrapped(gm); 
+        }
+      }
+
+      // Load weapon types for this manufacturer/item type
+      if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
+      
+      if (gw && st.weaponType) { 
+        var wantWt = String(st.weaponType);
+        if (gw.value !== wantWt) {
+          gw.value = wantWt;
+          if (gw.value !== wantWt && wantWt) {
+             var opt = new Option(wantWt, wantWt);
+             gw.appendChild(opt);
+             gw.value = wantWt;
+          }
+          syncGuidedCustomSelectIfWrapped(gw); 
+        }
+      }
+      if (gl && st.level) {
+        if (gl.value !== String(st.level)) {
+          gl.value = String(st.level);
+        }
+      }
+
+      // Sync state and visibility
+      if (typeof window.syncGuidedToSimple === 'function') window.syncGuidedToSimple();
+      if (typeof syncGuidedVisibility === 'function') syncGuidedVisibility();
+      if (typeof refreshWeaponDropdowns === 'function') refreshWeaponDropdowns();
+      if (typeof refreshGearDropdowns === 'function') {
+        var it = String(st.itemType || '');
+        if (it && it !== 'Weapon') refreshGearDropdowns(it);
+      }
+    } catch (e) {
+       console.error('Hydration failed (top level):', e);
+    }
+
+    try {
+      var st = window.state || window.__STX_SIMPLE_STATE;
+      var cat = String(st.itemType || '').trim();
+      var slots = null;
+      if (cat === 'Weapon') slots = WEAPON_SLOTS;
+      else if (cat === 'Heavy Weapon' && GEAR_SLOTS_BY_CATEGORY) slots = GEAR_SLOTS_BY_CATEGORY['Heavy Weapon'];
+      else if (GEAR_SLOTS_BY_CATEGORY && GEAR_SLOTS_BY_CATEGORY[cat]) slots = GEAR_SLOTS_BY_CATEGORY[cat];
+      
+      if (!slots || !slots.length) return true;
+
+      for (var i = 0; i < slots.length; i++) {
+        var slot = slots[i];
+        if (!slot || !slot.selectId) continue;
+        var picked = null;
+        
+        if (slot.key === 'rarity') {
+          var rp = st.slots && st.slots.rarity;
+          if (!rp && st.mainPart && String(st.mainPart.partType || '').toLowerCase() === 'rarity') rp = st.mainPart;
+          var part = rp;
+          if (part && typeof window.tokenForPart === 'function') {
+            try { picked = window.tokenForPart(part); } catch (_) { picked = null; }
+          }
+          if (!picked && part) {
+            var rraw = String((part.idRaw || part.idraw || '')).trim();
+            if (/^\d+\s*:\s*\d+$/.test(rraw)) picked = '{' + rraw.replace(/\s+/g, '') + '}';
+          }
+          if (!picked && part) picked = String((part.code || part.spawnCode || '')).trim();
+          if (picked) setGuidedSelectByToken(slot.selectId, picked);
+          continue;
+        }
+
+        if (slot.key === 'element') {
+          var ecode = '';
+          if (st.primaryElement && Array.isArray(ELEMENTS)) {
+            for (var ei = 0; ei < ELEMENTS.length; ei++) {
+              if (ELEMENTS[ei] && ELEMENTS[ei].key === st.primaryElement) {
+                ecode = String(ELEMENTS[ei].code || '').trim();
+                break;
+              }
+            }
+          }
+          picked = ecode;
+        } else {
+          var slotVal = st.slots && st.slots[slot.key];
+          // Fallback for Simple Builder's "augment" array -> Guided Builder's "aug1", "aug2", "aug3"
+          if (!slotVal && slot.key && slot.key.indexOf('aug') === 0 && st.slots && Array.isArray(st.slots.augment)) {
+            var augIdx = parseInt(slot.key.replace('aug', ''), 10) - 1;
+            if (augIdx >= 0 && augIdx < st.slots.augment.length) {
+              slotVal = st.slots.augment[augIdx];
+            }
+          }
+          // Handle both single objects and arrays (some importers use arrays for slots)
+          var part = Array.isArray(slotVal) ? slotVal[0] : slotVal;
+          if (!part) continue;
+
+          if (typeof window.tokenForPart === 'function') {
+            try { picked = window.tokenForPart(part); } catch (_) { picked = null; }
+          }
+          if (!picked) {
+            var raw = String((part.idRaw || part.idraw || '')).trim();
+            if (/^\d+\s*:\s*\d+$/.test(raw)) picked = '{' + raw.replace(/\s+/g, '') + '}';
+          }
+          if (!picked) picked = String((part.code || part.spawnCode || '')).trim();
+        }
+        if (picked) setGuidedSelectByToken(slot.selectId, picked);
+      }
+      
+      try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    } finally {
+      window.__ccIsHydrating = false;
+    }
+  }
+  window.__ccHydrateGuidedSlotsFromSimpleState = hydrateGuidedSlotsFromSimpleState;
 
   function addGunPart(selectId, replaceRarity) {
     var sel = byId(selectId);
@@ -2069,17 +2609,20 @@
         continue;
       }
       var filtered;
+      var slotMan = man || '';
+      // Legendary perk pools are shared and should not be restricted by manufacturer toggle/filter.
+      if (slot.partType === 'Legendary Perks') slotMan = '';
       if (useSimpleFilter) {
         filtered = window.filterPartsForGuided({
           category: 'Weapon',
-          manufacturer: man || '',
+          manufacturer: slotMan,
           weaponType: (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || ''),
           partType: slot.partType
         });
         filtered = filterGuidedWeaponSlotParts(slot, filtered);
       } else {
         var all = getAllParts();
-        filtered = filterByPartType(all, slot.partType, cat, man, wt);
+        filtered = filterByPartType(all, slot.partType, cat, slotMan, wt);
         filtered = filterGuidedWeaponSlotParts(slot, filtered);
       }
       if (slot.partType === 'Rarity' && filtered && filtered.length) {
@@ -2095,7 +2638,11 @@
       var emptyHintWeapon = '';
       if (slot.key === 'bodyEle') emptyHintWeapon = GUIDED_HINT_EMPTY_BODY_ELEMENT;
       else if (slot.key === 'secondaryEle') emptyHintWeapon = GUIDED_HINT_EMPTY_MALIWAN_SWITCH;
-      fillSelect(sel, filtered, maxItems, emptyHintWeapon);
+      if (slot.key === 'secondaryEle' && (!filtered || !filtered.length)) {
+        fillElementPresetFallbackSelect(sel, '-- Secondary element --');
+      } else {
+        fillSelect(sel, filtered, maxItems, emptyHintWeapon);
+      }
       var fc = (filtered && filtered.length) ? filtered.length : 0;
       applyGuidedBodySlotRowVisibility(sel, 'Weapon', slot.key, fc);
     }
@@ -2190,7 +2737,8 @@
       var sel = byId(slot.selectId);
       if (!sel) continue;
       var slotMan = man || '';
-      if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks') slotMan = '';
+      // Legendary perk pools are shared; never restrict these by manufacturer filter/toggle.
+      if (slot.partType === 'Legendary Perks') slotMan = '';
       var filtered;
       if (useSimpleFilter) {
         filtered = window.filterPartsForGuided({
@@ -2208,7 +2756,9 @@
       }
       var maxItems = (slot.partType === 'Rarity') ? 600 : 1200;
       var emptyHintGear = (slot.key === 'elementSwitch') ? GUIDED_HINT_EMPTY_MALIWAN_SWITCH : '';
-      if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks' && filtered && filtered.length) {
+      if ((slot.key === 'elementSwitch' || slot.partType === 'Element' || slot.partType === 'TypeID1Element') && (!filtered || !filtered.length)) {
+        fillElementPresetFallbackSelect(sel, slot.key === 'elementSwitch' ? '-- Secondary element --' : '-- Element --');
+      } else if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks' && filtered && filtered.length) {
         fillSelectWithLegendaryGroups(sel, filtered);
       } else {
         fillSelect(sel, filtered, maxItems, emptyHintGear);
@@ -2258,6 +2808,9 @@
     var manSel = byId('ccGuidedManufacturer');
 
     var isWeapon = /weapon/i.test(itemType) && !/heavy/i.test(itemType);
+    if (!isWeapon && (itemType === 'Sniper Rifle' || itemType === 'SMG' || itemType === 'Pistol' || itemType === 'Shotgun' || itemType === 'Assault Rifle')) {
+       isWeapon = true;
+    }
     var isHeavy = /heavy/i.test(itemType);
     var isGear = !isWeapon && (isHeavy || itemType);
     if (gunWrap) gunWrap.style.display = isWeapon ? '' : 'none';
@@ -2355,15 +2908,29 @@
           if (lv > 100) lv = 100;
           st.level = lv;
         }
+        if (st.itemType || st.manufacturer) {
+          st.__seedEnabled = true;
+          if (window.state) window.state.__seedEnabled = true;
+        }
       }
       var giVal = getSelectValue(gi);
       var gmVal = getSelectValue(gm);
       var gwVal = getSelectValue(gw);
       var isGuidedClassMod = isGuidedClassModItemType(giVal);
-      if (gi && si && giVal !== (si.value || '')) { si.value = giVal; si.dispatchEvent(new Event('change', { bubbles: true })); }
+      var suppressSimpleDispatch = !!(window.__ccIsHydrating || window.__CC_IMPORT_IN_PROGRESS);
+      if (gi && si && giVal !== (si.value || '')) {
+        si.value = giVal;
+        if (!suppressSimpleDispatch) si.dispatchEvent(new Event('change', { bubbles: true }));
+      }
       // Class Mod guided uses its own manufacturer control (#ccGuidedManufacturer); do not overwrite Simple Builder's #stx_manufacturer.
-      if (!isGuidedClassMod && gm && sm && gmVal !== (sm.value || '')) { sm.value = gmVal; sm.dispatchEvent(new Event('change', { bubbles: true })); }
-      if (gw && wt && gwVal !== (wt.value || '')) { wt.value = gwVal; wt.dispatchEvent(new Event('change', { bubbles: true })); }
+      if (!isGuidedClassMod && gm && sm && gmVal !== (sm.value || '')) {
+        sm.value = gmVal;
+        if (!suppressSimpleDispatch) sm.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      if (gw && wt && gwVal !== (wt.value || '')) {
+        wt.value = gwVal;
+        if (!suppressSimpleDispatch) wt.dispatchEvent(new Event('change', { bubbles: true }));
+      }
       if (gl) {
         var lv = Number(gl.value || 50);
         if (!Number.isFinite(lv) || lv < 1) lv = 50;
@@ -2376,43 +2943,134 @@
     function refreshGuidedOutput() {
       var deserEl = byId('guidedOutputDeserialized');
       if (!deserEl) return;
+      
+      // If we are currently hydrating, don't clear or update yet to avoid wiping imported values
+      if (window.__ccIsHydrating) return;
+      
+      var existing = (deserEl.value || '').trim();
+      // Safety: If current value is exactly the protected imported value, don't clear it or mangle it.
+      if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue) {
+         if (existing.indexOf('||') >= 0) {
+            // Check if serial output is also populated, if not, update it once
+            var serialEl = byId('guidedOutputSerial');
+            if (serialEl && !serialEl.value && typeof window.serializeToBase85 === 'function') {
+               try {
+                  var b85 = window.serializeToBase85(existing, undefined, true);
+                  if (b85) serialEl.value = String(b85).trim();
+               } catch(_) {}
+            }
+            return;
+         }
+      }
+
       var prefix = (typeof window.computeGuidedPrefix === 'function') ? window.computeGuidedPrefix() : '';
       if (!prefix) {
-        deserEl.value = '';
-        var serialEl = byId('guidedOutputSerial');
-        if (serialEl) serialEl.value = '';
-        try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        // Only clear if nothing is there. If we have a tail but no prefix (rare but possible),
+        // we might want to keep it. But standard behavior is clear if no item selected.
+        if (!existing) {
+           var serialEl = byId('guidedOutputSerial');
+           if (serialEl) serialEl.value = '';
+           try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        }
         return;
       }
-      var existing = (deserEl.value || '').trim();
       var dbl = existing.indexOf('||');
+      
+      // If we don't have a parts tail yet, just set the prefix and return.
       if (dbl < 0) {
-        if (existing) {
-          try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
-          return;
+        if (existing && existing.indexOf('{') >= 0) {
+           deserEl.value = (prefix.indexOf('||') >= 0 ? prefix.trim() : prefix.trim() + ' ||') + ' ' + existing;
+        } else if (existing && existing.indexOf('|') >= 0 && existing.length > 20) {
+           // Keep existing if it looks like a full code (e.g. from an import)
+           if (deserEl.__ccImportedValue === existing) {
+              // It's the imported value, don't clear it.
+              return;
+           }
+        } else {
+           deserEl.value = (prefix.indexOf('||') >= 0) ? prefix.trim() : (prefix.trim() + ' ||');
         }
-        deserEl.value = prefix;
+        if (deserEl.value && !/\|\s*$/.test(deserEl.value.trim())) deserEl.value = deserEl.value.trim() + ' |';
         try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
         return;
       }
       var tail = existing.slice(dbl + 2).trim();
       while (tail.charAt(0) === '|') tail = tail.replace(/^\|+\s*/, '').trim();
       if (tail) {
-        var tokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\S+/g) || []);
-        tail = normalizeGuidedTail(prefix, tokens);
+        // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
+        var tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function(t) {
+            var s = String(t || '').trim();
+            return s && s !== '|' && s !== '||';
+        });
+        
+        var normalized = normalizeGuidedTail(prefix, tokens);
+        tail = normalized;
       }
-      deserEl.value = tail ? prefix + ' ' + tail : prefix;
+      
+      // Final assembly
+      var finalOut = tail ? (prefix.indexOf('||') >= 0 ? prefix.trim() + ' ' + tail : prefix.trim() + ' || ' + tail) : (prefix.indexOf('||') >= 0 ? prefix.trim() : prefix.trim() + ' ||');
+      if (finalOut && !/\|\s*$/.test(finalOut.trim())) finalOut = finalOut.trim() + ' |';
+      
+    // If the final assembly would result in data loss compared to an imported value, abort
+    if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue && existing.length > finalOut.length && existing.indexOf('||') >= 0) {
+      // Allow shortening if it's due to expansion/normalization of bracketed tokens
+      if (existing.indexOf(':[' ) === -1 && existing.length - finalOut.length > 5) {
+        // Just ensure the serial El is also synced if needed
+        var serialEl2 = byId('guidedOutputSerial');
+        if (serialEl2 && !serialEl2.value && typeof window.serializeToBase85 === 'function') {
+           try {
+              var b85_2 = window.serializeToBase85(existing, undefined, true);
+              if (b85_2) serialEl2.value = String(b85_2).trim();
+           } catch(_) {}
+        }
+        return;
+      }
+    }
+
+    if (deserEl.value !== finalOut) {
+      // Data loss prevention: If finalOut is significantly shorter than the current value, 
+      // and we have an imported value, stick with the imported value.
+      if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue && existing.length > finalOut.length + 10) {
+          // Stay with existing
+      } else {
+          deserEl.value = finalOut;
+      }
+    }
       try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
     }
     window.refreshGuidedOutput = refreshGuidedOutput;
     function clearCodeSectionsForNewItem() {
       var out = byId('guidedOutputDeserialized');
+      var outSerial = byId('guidedOutputSerial');
+      
+      // If we have an imported value, don't clear it
+      if (out && out.__ccImportedValue && out.value === out.__ccImportedValue) {
+         return;
+      }
+      
       if (out) out.value = '';
-      out = byId('guidedOutputSerial');
-      if (out) out.value = '';
+      if (outSerial) outSerial.value = '';
+      
+      // Ensure state is ready for prefix computation
+      if (typeof syncGuidedToSimple === 'function') syncGuidedToSimple();
+
+      if (typeof window.computeGuidedPrefix === 'function' && typeof window.getGuidedContext === 'function') {
+        var ctx = window.getGuidedContext();
+        if (ctx && ctx.itemType) {
+          var prefix = window.computeGuidedPrefix();
+          if (prefix) {
+            var deser = byId('guidedOutputDeserialized');
+            if (deser) {
+              deser.value = (prefix.indexOf('||') >= 0) ? prefix.trim() : (prefix.trim() + ' ||');
+            }
+          }
+        }
+      }
       try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
     }
     function onItemTypeChange() {
+      clearGuidedImportLock();
+      if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
       loadGuidedManufacturers();
       if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
@@ -2421,6 +3079,8 @@
       scheduleGuidedPreviewRefreshIfFullStats();
     }
     function onManufacturerOrWeaponChange() {
+      clearGuidedImportLock();
+      if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
       if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
       syncGuidedVisibility();
@@ -2428,6 +3088,8 @@
       scheduleGuidedPreviewRefreshIfFullStats();
     }
     function onWeaponTypeChange() {
+      clearGuidedImportLock();
+      if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
       syncGuidedVisibility();
       clearCodeSectionsForNewItem();
@@ -2450,10 +3112,12 @@
     var guidedLevel = byId('ccGuidedLevel');
     if (guidedLevel) {
       guidedLevel.addEventListener('change', function () {
+        clearGuidedImportLock();
         syncGuidedToSimple();
         try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
       });
       guidedLevel.addEventListener('input', function () {
+        clearGuidedImportLock();
         syncGuidedToSimple();
         try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
       });
@@ -2461,6 +3125,7 @@
     var guidedBuyback = byId('ccGuidedBuybackFlag');
     if (guidedBuyback) {
       guidedBuyback.addEventListener('change', function () {
+        clearGuidedImportLock();
         try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
       });
@@ -2685,6 +3350,18 @@
           partSel.appendChild(opt);
         }
       }
+      if (partSel.options.length <= 1) {
+        for (var pi = 0; pi < pool.length; pi++) {
+          var raw = pool[pi];
+          var rk = raw.key != null ? raw.key : raw.k;
+          var rv = raw.value != null ? raw.value : raw.v;
+          if (rk == null || rv == null) continue;
+          var tokFallback = '{' + String(rk) + ':' + String(rv) + '}';
+          var optFallback = new Option(tokFallback + ' - Preset token', tokFallback);
+          optFallback.title = 'Dataset name unavailable; this preset token will still be added.';
+          partSel.appendChild(optFallback);
+        }
+      }
     } catch (_) {}
   }
 
@@ -2815,6 +3492,7 @@
   }
   function randomFullBuild() {
     try {
+      window.__CC_LAST_CODE_TARGET = 'guided';
       var rarities = window.STX_RARITIES;
       if (!Array.isArray(rarities) || !rarities.length) {
         alert('STX_RARITIES not loaded.');
@@ -2944,4 +3622,11 @@
   window.randomFullBuild = randomFullBuild;
   window.randomFullBuildBatch = randomFullBuildBatch;
   window.refreshAllGuidedSlotPreviews = refreshAllGuidedSlotPreviews;
+  window.syncGuidedVisibility = syncGuidedVisibility;
+  if (typeof refreshGuidedOutput === 'function') {
+    window.refreshGuidedOutput = refreshGuidedOutput;
+    window.__ccRefreshGuidedOutput = refreshGuidedOutput;
+  }
+  window.__ccHydrateGuidedSlotsFromSimpleState = hydrateGuidedSlotsFromSimpleState;
+  window.__ccSyncGuidedVisibility = syncGuidedVisibility;
 })();

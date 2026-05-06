@@ -19,6 +19,9 @@
       var u = d.indexOf('@U') === 0 ? d : ('@U' + d.replace(/^@U/i, ''));
       if (u.length >= 10 && u.indexOf(',') < 0 && u.indexOf('||') < 0) return Promise.resolve(u);
     }
+    if (window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteSerialization) {
+      return Promise.resolve('');
+    }
     return fetch(SERIALIZE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -17,7 +17,7 @@
 
   /** Text fields scanned for part refs + slug hints (standalone builders + main toolbox). */
   var BUILD_STATS_TEXT_SOURCE_IDS = [
-    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'deserialized-code-output',
+    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'outCodeB85', 'deserialized-code-output',
     'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml',
     'output-code-live', 'output-code-yaml', 'output-code', 'importBox', 'code-output',
     'yamlInput', 'bv-input', 'yamlAddSerialsInput', 'serialLibraryPasteArea'
@@ -53,6 +53,33 @@
 
   function stripQuotes(s) { return q(s).replace(/^"+|"+$/g, ''); }
 
+  var _partLookupMap = null;
+  function getPartLookupMap() {
+    if (_partLookupMap) return _partLookupMap;
+    var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+    if (!all.length) return null;
+    var map = new Map();
+    var norm = function (x) { return String(x || '').replace(/^"+|"+$/g, '').trim(); };
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      var idRaw = norm(p.idRaw || p.idraw || '');
+      if (idRaw) { if (!map.has(idRaw)) map.set(idRaw, p); }
+      if (p.family != null && p.id != null) {
+        var famId = String(p.family) + ':' + String(p.id);
+        if (!map.has(famId)) map.set(famId, p);
+      }
+      var c = norm(p.code);
+      if (c) { if (!map.has(c)) map.set(c, p); }
+      if (p.id != null && /^\d+$/.test(String(p.id))) {
+        var sid = String(p.id);
+        if (!map.has(sid)) map.set(sid, p);
+      }
+    }
+    _partLookupMap = map;
+    return map;
+  }
+
   function resolvePart(ref) {
     if (!ref) return null;
     var code = typeof ref === 'string' ? stripQuotes(ref) : (ref.idRaw || ref.code || ref.spawnCode || '');
@@ -63,9 +90,15 @@
         if (p) return p;
       }
     } catch (_) {}
-    var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+    
     var norm = function (x) { return String(x || '').replace(/^"+|"+$/g, '').trim(); };
     var t = norm(code);
+    
+    var map = getPartLookupMap();
+    if (map && map.has(t)) return map.get(t);
+
+    // Fallback if map not ready or missed something
+    var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
     for (var i = 0; i < all.length; i++) {
       var p = all[i];
       if (!p) continue;

@@ -9,6 +9,10 @@
   /** One local/server bump per "build" until topology changes; avoids counting every part add. */
   var craftSessionCounted = false;
 
+  function isDesktopNoTelemetry() {
+    return !!(window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteTelemetry);
+  }
+
   function configuredItemsBumpUrl() {
     if (typeof window.STX_ITEMS_BUMP_URL === 'string' && window.STX_ITEMS_BUMP_URL.trim()) {
       return window.STX_ITEMS_BUMP_URL.trim();
@@ -19,6 +23,7 @@
 
   function itemsBumpUrls() {
     var out = [];
+    if (isDesktopNoTelemetry()) return out;
     var seen = Object.create(null);
     function add(u) {
       if (!u) return;
@@ -30,7 +35,14 @@
     var cfg = configuredItemsBumpUrl();
     /* Prefer configured Netlify endpoint first; a same-origin legacy items-bump.php can return 200
        and prevent fallback, which keeps world counter lower than real usage. */
-    if (cfg) add(cfg);
+    if (cfg) {
+      // Avoid remote Netlify fetch on file:/// which results in CORS errors/noise
+      var isLocalFile = typeof location !== 'undefined' && location.protocol === 'file:';
+      var isRemoteCfg = /https?:\/\//i.test(cfg);
+      if (!isLocalFile || !isRemoteCfg) {
+        add(cfg);
+      }
+    }
     if (isHttp) {
       try { add(new URL('items-bump.php', location.href).href); } catch (_) {}
       try { add(new URL('../items-bump.php', location.href).href); } catch (_) {}
@@ -458,4 +470,3 @@
     togglePanel: togglePanel
   };
 })();
-

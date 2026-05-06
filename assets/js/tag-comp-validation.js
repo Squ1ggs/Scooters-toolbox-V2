@@ -109,9 +109,16 @@
     });
     var poolHasUnique = tagPool.has('unique');
     var partHasUnique = addTags.has('unique');
-    if (!options.skipRarityPoolMatch && poolRarities.length > 0 && !poolHasUnique && !partHasUnique && partRarities.length > 0) {
-      var match = partRarities.some(function (pr) { return poolRarities.indexOf(pr) >= 0; });
-      if (!match) reasons.push('rarity tags do not match pool');
+    if (!options.skipRarityPoolMatch && poolRarities.length > 0 && partRarities.length > 0) {
+      if (!partHasUnique) {
+        var match = partRarities.some(function (pr) {
+          if (poolRarities.indexOf(pr) >= 0) return true;
+          if (pr === 'epic' && (poolRarities.indexOf('legendary') >= 0 || poolRarities.indexOf('pearlescent') >= 0)) return true;
+          if (pr === 'legendary' && poolRarities.indexOf('pearlescent') >= 0) return true;
+          return false;
+        });
+        if (!match) reasons.push('rarity tags do not match pool');
+      }
     }
 
     return { ok: reasons.length === 0, reasons: reasons };

@@ -181,15 +181,6 @@
       };
       if (ns === 'pearl_elem' || ns === 'pearl_stat') row.customType = 'weaponPearl';
       rows.push(row);
-      if (ns === 'scope_acc' && !seenKey.scopeAcc2) {
-        seenKey.scopeAcc2 = true;
-        rows.push({
-          key: 'scopeAcc2',
-          label: 'Scope Accessory 2',
-          partType: partType,
-          ncsSlot: ns
-        });
-      }
     }
     if (!hasNcs.firmware) {
       rows.push({ key: 'firmware', label: labels.firmware || 'Firmware', partType: 'Firmware', ncsSlot: '' });

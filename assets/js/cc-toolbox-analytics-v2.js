@@ -1,6 +1,10 @@
 (function () {
   var META = 'stx-analytics-endpoint';
 
+  function isDesktopNoTelemetry() {
+    return !!(window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteTelemetry);
+  }
+
   function configuredEndpoint() {
     if (typeof window.STX_ANALYTICS_ENDPOINT === 'string' && window.STX_ANALYTICS_ENDPOINT.trim()) {
       return window.STX_ANALYTICS_ENDPOINT.trim();
@@ -11,6 +15,7 @@
 
   /** file://, iframe sandbox, etc. — remote Netlify has no CORS for Origin "null"; skip to avoid console noise. */
   function allowRemoteAnalyticsEndpoints() {
+    if (isDesktopNoTelemetry()) return false;
     if (typeof location === 'undefined') return false;
     if (!/^https?:$/i.test(location.protocol || '')) return false;
     try {

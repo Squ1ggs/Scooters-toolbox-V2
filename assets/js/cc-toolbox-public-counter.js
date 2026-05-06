@@ -2,6 +2,10 @@
   var META = 'stx-counter-url';
   var KEY_META = 'stx-counter-key';
 
+  function isDesktopNoTelemetry() {
+    return !!(window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteTelemetry);
+  }
+
   function counterPublicKey() {
     if (typeof window.STX_COUNTER_PUBLIC_KEY === 'string' && window.STX_COUNTER_PUBLIC_KEY) {
       return String(window.STX_COUNTER_PUBLIC_KEY).trim();
@@ -44,6 +48,7 @@
 
   function candidateUrls(filename) {
     var out = [];
+    if (isDesktopNoTelemetry()) return out;
     var seen = Object.create(null);
     function add(u) {
       if (!u) return;

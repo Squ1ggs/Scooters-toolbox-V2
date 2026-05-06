@@ -491,8 +491,10 @@
     if (pasteDetails && !pasteDetails.open) pasteDetails.open = true;
     try {
       if (typeof window.importTokens === 'function') window.importTokens();
-      if (typeof window.refreshOutputs === 'function') window.refreshOutputs();
-      if (typeof window.refreshBuilder === 'function') window.refreshBuilder();
+      else {
+        if (typeof window.refreshOutputs === 'function') window.refreshOutputs();
+        if (typeof window.refreshBuilder === 'function') window.refreshBuilder();
+      }
     } catch (_) {}
   }
   window.importSerialToEditor = importSerialToEditor;

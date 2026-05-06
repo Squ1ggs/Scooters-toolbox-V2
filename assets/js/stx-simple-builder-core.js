@@ -32,6 +32,8 @@
     extras: []
   };
 
+  const byId = (id) => document.getElementById(id);
+
   try{
     // Keep STX/simple state isolated; do not clobber an existing main-page `window.state`.
     window.__STX_SIMPLE_STATE = state;
@@ -145,7 +147,6 @@
     {key:'mag', label:'Magazine', partType:'Magazine'},
     {key:'scope', label:'Scope', partType:'Scope'},
     {key:'scopeAcc', label:'Scope Accessory', partType:'Scope Accessory', ncsSlot:'scope_acc'},
-    {key:'scopeAcc2', label:'Scope Accessory 2', partType:'Scope Accessory', ncsSlot:'scope_acc'},
     {key:'hyperionSecondaryAcc', label:'Hyperion Amp Shield', partType:'Manufacturer Part', ncsSlot:'hyperion_secondary_acc'},
     {key:'grip', label:'Grip', partType:'Grip'},
     {key:'foregrip', label:'Foregrip', partType:'Foregrip'},
@@ -373,7 +374,12 @@
     var fam2 = p.family != null ? String(p.family) : (p.familyId != null ? String(p.familyId) : '');
     var id2 = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
     if (/^\d+$/.test(fam2) && /^\d+$/.test(id2)) return `{${fam2}:${id2}}`;
-    if (/^\d+$/.test(id2) && !String(fam2).trim()) return `{${id2}}`;
+    if (/^\d+$/.test(id2)) {
+      if (!String(fam2).trim()) return `{${id2}}`;
+      // If family is non-numeric but id is numeric, we might still want to return just {id}
+      // if it's considered a "top-level" part without a defined family.
+      return `{${id2}}`;
+    }
     return '';
   }
 
@@ -386,14 +392,28 @@
   /** Default numeric `{fam:id}`; unchecked (spawn mode) uses spawn strings. Mutual fallback when one form is missing. */
   function tokenForPart(p){
     if (!p) return '';
+    // IMPORTANT: Check for __importedToken FIRST.
+    // If it's explicitly set to an empty string, it means this part should be skipped
+    // (e.g., it was part of a bracketed group where another part took the bracket token).
+    if (p.__importedToken != null) return String(p.__importedToken);
+
+    // Use current builder mode (Numeric or Spawn)
+    // If the part was NOT imported (manually added), we strictly follow idMode.
+    let result = '';
     if (state.idMode){
       const n = numericTokenFromPart(p);
-      if (n) return n;
-      return spawnTokenFromPart(p);
+      // Strictly return numeric if it exists.
+      if (n) result = String(n);
+      // ONLY fallback to spawn if numeric is absolutely missing.
+      else result = String(spawnTokenFromPart(p));
+    } else {
+      const s = spawnTokenFromPart(p);
+      // Strictly return spawn if it exists.
+      if (s) result = String(s);
+      // ONLY fallback to numeric if spawn is absolutely missing.
+      else result = String(numericTokenFromPart(p));
     }
-    const s = spawnTokenFromPart(p);
-    if (s) return s;
-    return numericTokenFromPart(p);
+    return (result === '[object Object]') ? '' : result;
   }
 
   function parseIdToken(tok){
@@ -412,11 +432,13 @@
 
     m = s.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
     if (m){
-      const ids = String(m[2] || '')
-        .match(/\d+/g);
+      const idsStr = String(m[2] || '');
+      // Match all numbers separated by spaces or commas
+      const ids = idsStr.match(/\d+/g);
       const list = (ids || []).map(n => Number(n)).filter(n => Number.isFinite(n));
       if (!list.length) return null;
-      return { kind:'family', family: Number(m[1]), ids: list };
+      // Also return the raw bracketed string to allow preserving it
+      return { kind:'family', family: Number(m[1]), ids: list, rawIds: m[2] };
     }
 
     return null;
@@ -429,15 +451,56 @@
     const hasBase = Number.isFinite(bf);
     const compactSame = !(opts && opts.compactSameFamily === false);
 
+    for (const tok of src) {
+        const parsed = parseIdToken(tok);
+        if (parsed && parsed.kind === 'family' && parsed.rawIds) {
+            // Check if it's foreign or if we are forced to keep bracketed form
+            // The user wants NO shortening, and specifically mentioned {7:[4 4 4 4 64]} should show.
+            out.push(tok);
+            continue;
+        }
+        
+        // Use existing expansion logic for others
+        if (!parsed) {
+            out.push(tok);
+            continue;
+        }
+        
+        if (parsed.kind === 'id') {
+            if (compactSame && hasBase) out.push(`{${parsed.id}}`);
+            else if (hasBase) out.push(`{${bf}:${parsed.id}}`);
+            else out.push(`{${parsed.id}}`);
+            continue;
+        }
+
+        const fam = Number(parsed.family);
+        const ids = Array.isArray(parsed.ids) ? parsed.ids : [];
+        if (hasBase && fam === bf && compactSame) {
+            for (const id of ids) out.push(`{${id}}`);
+        } else {
+            for (const id of ids) out.push(`{${fam}:${id}}`);
+        }
+    }
+    return out;
+  }
+
+  // OLD VERSION kept for reference or removed if certain
+  /*
+  function normalizeIdTokensForBaseFamily_OLD(tokens, baseFamily, opts){
+    const src = Array.isArray(tokens) ? tokens : [];
+    const out = [];
+    const bf = Number(baseFamily);
+    const hasBase = Number.isFinite(bf);
+    const compactSame = !(opts && opts.compactSameFamily === false);
+
     let pendingFamily = null;
     let pendingIds = [];
 
     const flushPending = () => {
       if (!Number.isFinite(pendingFamily) || !pendingIds.length) return;
-      if (pendingIds.length === 1){
-        out.push(`{${pendingFamily}:${pendingIds[0]}}`);
-      } else {
-        out.push(`{${pendingFamily}:[${pendingIds.join(' ')}]}`);
+      for (const pid of pendingIds){
+        if (hasBase && pendingFamily === bf && compactSame) out.push(`{${pid}}`);
+        else out.push(`{${pendingFamily}:${pid}}`);
       }
       pendingFamily = null;
       pendingIds = [];
@@ -471,6 +534,13 @@
         continue;
       }
 
+      // If it has rawIds (bracketed), and it's a foreign family, we can preserve the bracketed form if it's already one
+      if (parsed.rawIds && fam !== bf) {
+          flushPending();
+          out.push(tok);
+          continue;
+      }
+
       if (hasBase && fam === bf){
         flushPending();
         if (compactSame){
@@ -490,10 +560,10 @@
         pendingIds = ids.slice();
       }
     }
-
     flushPending();
     return out;
   }
+  */
 
   function displayForPart(p){
     if (!p) return '-';
@@ -1241,47 +1311,72 @@ function getAllParts(){
     }
   }
 
-  /** Main barrel + body slots (not barrel accessory): pearl / legendary aug / weapon-type chip. */
-  function isStxBodyBarrelPearlLegendIconSlot(schemaItem, category){
-    if (!schemaItem) return false;
-    const k = schemaItem.key;
+  function stxResolvePartIconUrl(p, schemaItem, category){
+    if (!p) return null;
     const cat = String(category || '').trim();
-    if (k === 'barrel') return cat === 'Weapon' || cat === 'Gadget';
-    if (k === 'body' || k === 'bodyAcc') return cat === 'Weapon' || cat === 'Gadget' || cat === 'Shield';
-    return false;
-  }
-
-  function stxApplySlotPartOptionDecoration(opt, p, schemaItem, category){
-    if (!opt || !p || !schemaItem) return;
-    if (!isStxBodyBarrelPearlLegendIconSlot(schemaItem, category)) return;
-    opt.removeAttribute('data-cc-icon');
-    opt.removeAttribute('data-cc-icon-filter');
-    const its = String(p.itemTypeString || '').toLowerCase();
+    const its = String(p.itemTypeString || p.itemType || '').toLowerCase();
     const code = String(p.code || '').toLowerCase();
     const nm = String((p.legendaryName || p.name || '')).toLowerCase();
+    const pt = String(p.partType || '').toLowerCase();
     const blob = its + ' ' + code + ' ' + nm;
 
+    // 1. Pearl
     if (stxPartMatchesPearlRarityIdAllowlist(p)){
       const elFn = stxGuessPearlElementIconFilename(p);
-      if (elFn){
-        opt.setAttribute('data-cc-icon', STX_CC_ELEMENT_ICON_BASE + elFn);
-        return;
-      }
+      if (elFn) return STX_CC_ELEMENT_ICON_BASE + elFn;
       const pearlUrl = stxPearlAugFullUrlFromPart(p);
-      if (pearlUrl){
-        opt.setAttribute('data-cc-icon', pearlUrl);
-        return;
-      }
-      opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
-      return;
+      if (pearlUrl) return pearlUrl;
+      return STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png';
     }
 
-    // Legendary body/barrel rows: `legendary_augments` art.
-    const looksLegendary =
-      stxPartLooksLegendaryBarrel(p) ||
-      /comp_05_legendary/.test(blob) ||
-      nm.indexOf('legendary') !== -1;
+    const s = String(p.name || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '').trim();
+    if (!s) return null;
 
+    // 2. Firmware
+    if (pt.indexOf('firmware') !== -1 || code.indexOf('firmware') !== -1){
+      let fw = s;
+      if (fw === 'atlasinfinum' || fw === 'atlasinfiniumm') fw = 'atlasinfinium';
+      if (fw === 'daeddyo') fw = 'daedyo';
+      if (fw === 'getthrowin') fw = 'getthrowd';
+      return './assets/img/classmod-firmware/' + fw + '.png';
+    }
+
+    // 3. Perk (Legendary Perk, Universal, Stat Modifier)
+    if (pt.indexOf('perk') !== -1 || pt.indexOf('modifier') !== -1 || its.indexOf('perk') !== -1){
+      const thumbMap = window.__PERK_THUMB_URL_BY_KEY || {};
+      if (thumbMap[s]) return thumbMap[s];
+      
+      // Known skill icon stem aliases
+      let pk = s;
+      if (pk === 'alcentrorafa') pk = 'alcentro';
+      if (pk === 'abajorafa') pk = 'abajo';
+      if (pk === 'arribarafa') pk = 'arriba';
+      if (pk === 'propreitaryincendiary') pk = 'proprietaryincendiary';
+      if (pk === 'thethrill') pk = 'thethrillamon';
+
+      // Avoid speculative path for generic stats
+      const isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance|brokenblue|brokengreen|brokenred|brokenwhite/.test(pk);
+      if (isGeneric) return null;
+
+      // Try stem search
+      if (pk.length > 3) {
+        return './assets/img/classmod-perks/' + pk + '.png';
+      }
+    }
+
+    // 4. Class Mod Body / Character Body
+    if (cat === 'Class Mod' || cat === 'Character' || its.indexOf('classmod') !== -1 || its.indexOf('character') !== -1){
+      const mfr = String(p.manufacturer || '').toLowerCase();
+      // Character portraits
+      if (mfr === 'siren') return './assets/img/vault-hunters/player_class_dark_siren.png';
+      if (mfr === 'paladin') return './assets/img/vault-hunters/player_class_paladin.png';
+      if (mfr === 'exo soldier' || mfr === 'exosoldier') return './assets/img/vault-hunters/player_class_exo_soldier.png';
+      if (mfr === 'gravitar') return './assets/img/vault-hunters/player_class_gravitar.png';
+      if (mfr === 'robodealer' || mfr === 'c4sh') return './assets/img/vault-hunters/player_robodealer.png';
+    }
+
+    // 5. Legendary Augments
+    const looksLegendary = stxPartLooksLegendaryBarrel(p) || /comp_05_legendary/.test(blob) || nm.indexOf('legendary') !== -1;
     if (looksLegendary){
       const catPart = String(p.category || '').trim().toLowerCase();
       const legFn = stxLegendaryAugFilenameFromCategoryWeapon(
@@ -1290,46 +1385,48 @@ function getAllParts(){
         stxNormalizedWeaponTypeKeyFromPart(p),
         p
       );
-      if (legFn){
-        opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
-        return;
-      }
-      const ctx = stxCompIconContext();
-      const legFn2 = stxLegendaryAugFilenameFromCategoryWeapon(
-        stxResolveGearCategoryForCompIcons(ctx),
-        ctx.weaponType || 'Assault Rifle',
-        ''
-      );
-      if (legFn2) opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn2);
-      return;
+      if (legFn) return STX_CC_LEGENDARY_AUG_BASE + legFn;
     }
 
-    // Default: weapon-type chip (no rarity tint).
-    const k2 = stxNormalizedWeaponTypeKeyFromPart(p);
-    if (k2){
-      const fn2 = STX_WEAPON_TYPE_ICON_FILES[k2];
-      if (fn2) opt.setAttribute('data-cc-icon', STX_CC_WEAPON_TYPE_DIR + fn2);
+    // 6. Default: Weapon/Gadget chip
+    const kw = stxNormalizedWeaponTypeKeyFromPart(p);
+    if (kw){
+      const fn = STX_WEAPON_TYPE_ICON_FILES[kw];
+      if (fn) return STX_CC_WEAPON_TYPE_DIR + fn;
+    }
+
+    return null;
+  }
+
+  function stxApplySlotPartOptionDecoration(opt, p, schemaItem, category){
+    if (!opt || !p || !schemaItem) return;
+    opt.removeAttribute('data-cc-icon');
+    opt.removeAttribute('data-cc-icon-filter');
+    
+    const iconUrl = stxResolvePartIconUrl(p, schemaItem, category);
+    if (iconUrl){
+      opt.setAttribute('data-cc-icon', iconUrl);
     }
   }
 
   function getRarityRowsForCurrentContext(){
-    const table = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
+    const table = (typeof STX_RARITIES !== 'undefined' && Array.isArray(STX_RARITIES)) ? STX_RARITIES : (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : []);
     const guided = getGuidedContext();
-    const useGuided = guided && guided.itemType;
-    const man = useGuided ? guided.manufacturer : (($('manufacturer') && $('manufacturer').value) || state.manufacturer || '');
-    if (!useGuided) state.manufacturer = man;
+    const useGuided = !!(guided && guided.itemType);
+    const man = useGuided ? guided.manufacturer : (($('manufacturer') && $('manufacturer').value) || (state && state.manufacturer) || '');
+    if (!useGuided && state) state.manufacturer = man;
     const allMansEl = useGuided ? document.getElementById('ccGuidedAllManufacturers') : null;
-    const useAllMfr = useGuided ? !!(allMansEl && allMansEl.checked) : isAllPartsEnabled();
-    const catUi = useGuided ? guided.itemType : (state.itemType || '');
+    const useAllMfr = useGuided ? !!(allMansEl && allMansEl.checked) : (typeof isAllPartsEnabled === 'function' ? isAllPartsEnabled() : false);
+    const catUi = useGuided ? guided.itemType : ((state && state.itemType) || '');
     const cat   = (catUi === 'Heavy') ? 'Weapon' : catUi;
 
     const wtypeRaw = useGuided
       ? ((cat === 'Weapon' && catUi === 'Heavy') ? 'Heavy Weapon' : (guided.weaponType || (cat === 'Weapon' ? 'Assault Rifle' : '')))
       : ((cat === 'Weapon' && catUi === 'Heavy') ? 'Heavy Weapon' :
-      ((cat === 'Weapon' && $('weaponType')) ? ($('weaponType').value || state.weaponType || '') : (state.weaponType || '')));
+      ((cat === 'Weapon' && $('weaponType')) ? ($('weaponType').value || (state && state.weaponType) || '') : ((state && state.weaponType) || '')));
 
     const wtypeNorm = (String(wtypeRaw) === 'Heavy') ? 'Heavy Weapon' : String(wtypeRaw || '');
-    if (cat === 'Weapon' && !useGuided) state.weaponType = wtypeNorm;
+    if (cat === 'Weapon' && !useGuided && state) state.weaponType = wtypeNorm;
 
     const itemType = (cat === 'Weapon') ? wtypeNorm : cat;
     let wantType = String(itemType || '').trim();
@@ -1360,9 +1457,14 @@ function getAllParts(){
       return String(r && r.manufacturer || '').trim().toLowerCase() === manL;
     });
 
-    // Non-weapon gear fallback when manufacturer-specific rows are missing.
-    if (!rows.length && !useAllMfr && cat !== 'Weapon'){
+    // Fallback when manufacturer-specific rows are missing.
+    if (!rows.length){
       rows = table.filter(r => itemTypeMatches(r && r.itemType));
+    }
+    
+    // Absolute fallback: if still empty, find anything that matches category or name
+    if (!rows.length && cat) {
+       rows = table.filter(r => String(r && r.itemType || '').includes(cat));
     }
 
     // Older rarity tables may not include pearlescent rows yet.
@@ -1388,20 +1490,51 @@ function getAllParts(){
   }
 
   function computeGuidedPrefix(){
+    if (window.state) window.state.__seedEnabled = true;
     const guided = getGuidedContext();
     if (!guided || !guided.itemType) return '';
+
+    // If we have an existing serial with a valid numeric prefix, try to preserve its familyId.
+    // This prevents resets to 21 or 1 when UI dropdowns aren't perfectly matched yet.
+    let preservedFamilyId = null;
+    try {
+      const deserEl = document.getElementById('guidedOutputDeserialized');
+      const cur = String((deserEl && deserEl.value) || '').trim();
+      if (cur) {
+        const dbl = cur.indexOf('||');
+        const prefixStr = dbl >= 0 ? cur.slice(0, dbl).trim() : cur.trim();
+        const m = prefixStr.match(/^\s*(\d+)\s*[,\|]/) || prefixStr.match(/^\s*(\d+)/);
+        if (m) preservedFamilyId = Number(m[1]);
+      }
+    } catch (_) {}
+
     const rows = getRarityRowsForCurrentContext();
     const pick = rows.find(r => !String(r && r.legendaryName || '').trim()) || rows[0] || null;
-    if (!pick || !Number.isFinite(Number(pick.familyId))) return '';
+    
     const level = Number(guided.level) || 60;
     const buybackEl = document.getElementById('ccGuidedBuybackFlag');
     const buyback = !!(buybackEl && buybackEl.checked);
-    let header = `${pick.familyId}, 0, 1, ${level}|`;
+    
+    // Prioritize preserved familyId if it belongs to the current manufacturer/type context.
+    // (We check if it exists in 'rows' to be safe, but allow it if rows are somehow broken).
+    let familyId = (pick && Number.isFinite(Number(pick.familyId))) ? Number(pick.familyId) : 1;
+    if (preservedFamilyId != null) {
+       // If the preserved ID matches ANY row in the current context, definitely use it.
+       if (rows.some(r => Number(r.familyId || r.family) === preservedFamilyId)) {
+          familyId = preservedFamilyId;
+       } else if (!rows.length || (pick && familyId === 1 && preservedFamilyId !== 1)) {
+          // If rows is empty or we fell back to 1, trust the preserved ID more.
+          familyId = preservedFamilyId;
+       }
+    }
+
+    const itemId = (pick && Number.isFinite(Number(pick.itemId))) ? Number(pick.itemId) : 0;
+    
+    let header = `${familyId}, 0, 1, ${level}|`;
     if (buyback) header += ' 9, 1|';
-    const seedBase = { familyId: Number(pick.familyId), itemId: Number(pick.itemId) };
+    const seedBase = { familyId: familyId, itemId: itemId };
     const seed = getSeed(seedBase);
-    if (Number(seed) !== 0) header += ` 2, ${seed}||`;
-    else header += '|';
+    header += ` 2, ${seed}||`;
     return header;
   }
 
@@ -1950,7 +2083,7 @@ const all = getAllParts();
 
   /** Rarity-sheet row `itemType` values that are weapon families (not shields, class mods, etc.). */
   const STX_RARITY_WEAPON_ITEM_TYPES = new Set([
-    'Assault Rifle', 'Pistol', 'Shotgun', 'SMG', 'Sniper Rifle', 'Sniper', 'Heavy Weapon', 'Submachine Gun'
+    'Assault Rifle','Pistol','Shotgun','SMG','Sniper','Heavy','Submachine Gun','Sniper Rifle','Heavy Weapon'
   ]);
 
   /**
@@ -2060,7 +2193,8 @@ const all = getAllParts();
       mans = unique(mansFromParts.concat(mansFromRarity))
         .filter(m => {
           const ml = String(m || '').trim().toLowerCase();
-          return ml && ml !== 'gadgets' && ml !== 'generic' && ml !== 'all' && ml !== 'universal' && ml !== 'firmware' && ml !== 'weapon' && ml !== 'heavy weapon';
+          const bad = new Set(['gadgets', 'generic', 'all', 'universal', 'firmware', 'weapon', 'heavy weapon', 'splat', 'nova', 'immunity', 'elemental', 'ground splat', 'splat pack', 'resist', 'resistance', 'elemental resist', 'capacity', 'duration', 'cooldown', 'stats', 'augment', 'perk', 'payload', 'size', 'part', 'main body', 'status', 'secondary rarity', 'class mod', 'grenade', 'repkit', 'shield']);
+          return ml && !bad.has(ml);
         })
         .sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
 
@@ -2070,7 +2204,8 @@ const all = getAllParts();
           .filter(Boolean)
           .filter(m => {
             const ml = String(m || '').trim().toLowerCase();
-            return ml && ml !== 'gadgets' && ml !== 'generic' && ml !== 'all' && ml !== 'universal' && ml !== 'firmware' && ml !== 'characters' && ml !== 'weapon' && ml !== 'heavy weapon';
+            const badFallback = new Set(['gadgets', 'generic', 'all', 'universal', 'firmware', 'characters', 'weapon', 'heavy weapon', 'splat', 'nova', 'immunity', 'elemental', 'ground splat', 'splat pack', 'resist', 'resistance', 'elemental resist', 'capacity', 'duration', 'cooldown', 'stats', 'augment', 'perk', 'payload', 'size', 'part', 'main body', 'status', 'secondary rarity', 'class mod', 'grenade', 'repkit', 'shield']);
+            return ml && !badFallback.has(ml);
           })
           .sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
       }
@@ -2124,6 +2259,11 @@ const all = getAllParts();
     state.itemType = catUi;
     const cat = (catUi === 'Heavy' || catUi === 'Heavy Weapon') ? 'Weapon' : catUi;
     const { mans, isClassMod } = computeManufacturersForCategory(catUi);
+    const importingManufacturer = window.__CC_IMPORT_IN_PROGRESS ? String(state.manufacturer || '').trim() : '';
+    if (importingManufacturer && !mans.some(m => String(m || '').trim().toLowerCase() === importingManufacturer.toLowerCase())) {
+      const badImportMfr = new Set(['firmware','gadgets','generic','all','universal','characters','weapon','heavy weapon','splat','nova','immunity','elemental','ground splat','splat pack','resist','resistance','elemental resist','capacity','duration','cooldown','stats','augment','perk','payload','size','part','main body','status','secondary rarity','class mod','grenade','repkit','shield']);
+      if (!badImportMfr.has(importingManufacturer.toLowerCase())) mans.push(importingManufacturer);
+    }
 
     if ($('manufacturerLabel')){
       if (isClassMod) $('manufacturerLabel').textContent = 'Character';
@@ -2157,7 +2297,7 @@ const all = getAllParts();
     }
     // Safety: remove any disallowed pseudo-manufacturers that may slip in (e.g. Firmware)
     try{
-      const bad = new Set(['firmware','gadgets','generic','all','universal','characters','weapon','heavy weapon']);
+      const bad = new Set(['firmware','gadgets','generic','all','universal','characters','weapon','heavy weapon','splat','nova','immunity','elemental','ground splat','splat pack','resist','resistance','elemental resist','capacity','duration','cooldown','stats','augment','perk','payload','size','part','main body','status','secondary rarity','class mod','grenade','repkit','shield']);
       const sel = $('manufacturer');
       if (sel && sel.options){
         Array.from(sel.options).forEach(opt=>{
@@ -2176,7 +2316,7 @@ const all = getAllParts();
     }catch(_e){}
 
     // attempt to keep previous (only fix when invalid, not when empty)
-    if (state.manufacturer && !mans.includes(state.manufacturer)) state.manufacturer = mans[0] || '';
+    if (state.manufacturer && !mans.includes(state.manufacturer) && !window.__CC_IMPORT_IN_PROGRESS) state.manufacturer = mans[0] || '';
     $('manufacturer').value = state.manufacturer || '';
     stxSyncCustomSelectIfWrapped($('manufacturer'));
 
@@ -2776,7 +2916,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     btnClear.className = 'danger';
     btnClear.style.padding = '7px 10px';
     btnClear.addEventListener('click', ()=>{
+      clearImportedOutputLock();
       delete state.slots[schemaItem.key];
+      if (state.__simpleSlotDropdownSelections) delete state.__simpleSlotDropdownSelections[schemaItem.key];
       refreshBuilder();
     });
 
@@ -2838,16 +2980,26 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         return /part_pearl/i.test(normCode(p.code));
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else {
-      const manufacturerForSlot = (isShieldBodyLegendarySlot || isShieldMainBodySlot) ? '' : state.manufacturer;
-      const partTypeForSlot = (category === 'Shield' && (isShieldBodyLegendarySlot || isShieldMainBodySlot))
+      const isLooseFilter = (schemaItem.key === 'legendary' || schemaItem.key === 'statMod' || schemaItem.key === 'legendary2');
+      const manufacturerForSlot = (isShieldBodyLegendarySlot || isShieldMainBodySlot || isLooseFilter) ? '' : state.manufacturer;
+      const partTypeForSlot = ((category === 'Shield' && (isShieldBodyLegendarySlot || isShieldMainBodySlot)) || isLooseFilter)
         ? undefined
         : schemaItem.partType;
-      rawOpts = filterParts({
+      
+      const filterParams = {
         category,
         manufacturer: manufacturerForSlot,
-        weaponType: (category==='Weapon' ? state.weaponType : ''),
+        weaponType: (category==='Weapon' && !isLooseFilter ? state.weaponType : ''),
         partType: partTypeForSlot
-      }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+      };
+
+      rawOpts = filterParts(filterParams).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+      
+      if (isLooseFilter && schemaItem.partType) {
+        const targetPt = String(schemaItem.partType).trim().toLowerCase();
+        rawOpts = rawOpts.filter(p => String(p.partType || '').trim().toLowerCase() === targetPt);
+      }
+
       if (category === 'Weapon' && schemaItem && schemaItem.ncsSlot){
         rawOpts = applyWeaponNcsSlotOptionFilter(schemaItem.ncsSlot, rawOpts);
       }
@@ -3298,6 +3450,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           text.appendChild(line2);
 
           input.addEventListener('change', ()=>{
+            clearImportedOutputLock();
             if (!schemaItem.multi){
               // Clear previous selection
               setSelected(part, true);
@@ -3357,6 +3510,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       getTitle: barrelSlot ? barrelFamilyOptionTitle : null,
       decorateOption: (opt, p)=>{ stxApplySlotPartOptionDecoration(opt, p, schemaItem, category); }
     });
+    state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
+    const lastDropdownKey = state.__simpleSlotDropdownSelections[schemaItem.key];
+    if (lastDropdownKey && partByOptionKey.has(lastDropdownKey)) sel.value = lastDropdownKey;
     slot.appendChild(sel);
 
     const partPreview = document.createElement('div');
@@ -3415,6 +3571,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       swapPerkInput.style.width = '16px';
       swapPerkInput.style.height = '16px';
       swapPerkInput.addEventListener('change', ()=>{
+        clearImportedOutputLock();
         state.swapBodyLegendary = !!swapPerkInput.checked;
         if (state.swapBodyLegendary){
           const cur = state.slots.bodyLegendary;
@@ -3429,6 +3586,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     }
 
     addBtn.addEventListener('click', ()=>{
+      clearImportedOutputLock();
       const key = sel.value;
       if (!key) return;
       const part = partByOptionKey.get(key);
@@ -3450,7 +3608,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } else {
         state.slots[schemaItem.key] = part;
       }
-      sel.value = '';
+      state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
+      state.__simpleSlotDropdownSelections[schemaItem.key] = key;
       refreshBuilder();
     });
 
@@ -3512,6 +3671,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     clearBtn.addEventListener('click', ()=>{
       state.primaryElement = 'None';
       state.elementStack = [];
+      if (state.__simpleSlotDropdownSelections) delete state.__simpleSlotDropdownSelections.__elementStack;
       refreshBuilder();
     });
 
@@ -3557,10 +3717,15 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     addBtn.addEventListener('click', ()=>{
       const v = addSel.value;
       if (!v) return;
+      state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
+      state.__simpleSlotDropdownSelections.__elementStack = v;
       state.elementStack.push(v);
-      addSel.value='';
       refreshBuilder();
     });
+    if (state.__simpleSlotDropdownSelections && state.__simpleSlotDropdownSelections.__elementStack) {
+      const lastElementAdd = state.__simpleSlotDropdownSelections.__elementStack;
+      if (Array.from(addSel.options).some(o => o.value === lastElementAdd)) addSel.value = lastElementAdd;
+    }
 
     row.appendChild(addSel);
     row.appendChild(addBtn);
@@ -3595,121 +3760,128 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     return wrap;
   }
 
+  let __refreshBuilderPending = false;
   function refreshBuilder(){
-    const builder = $('builder');
-    builder.innerHTML = '';
+    if (__refreshBuilderPending) return;
+    __refreshBuilderPending = true;
 
-    const mainKey = String($('mainPart').value || '').trim();
-    if (!mainKey){
-      const directMain = state.mainPart || null;
-      const directType = String((directMain && directMain.partType) || '').trim().toLowerCase();
-      const directCat = String(state.itemType || state.detectedCategory || '').trim();
-      if (directMain && directType === 'rarity' && /class\s*mod|classmod/i.test(directCat)) {
-        state.detectedCategory = 'Class Mod';
-        $('detectedCat').textContent = state.detectedCategory;
+    requestAnimationFrame(function() {
+      __refreshBuilderPending = false;
+      const builder = $('builder');
+      builder.innerHTML = '';
+
+      const mainKey = String($('mainPart').value || '').trim();
+      if (!mainKey){
+        const directMain = state.mainPart || null;
+        const directType = String((directMain && directMain.partType) || '').trim().toLowerCase();
+        const directCat = String(state.itemType || state.detectedCategory || '').trim();
+        if (directMain && directType === 'rarity' && /class\s*mod|classmod/i.test(directCat)) {
+          state.detectedCategory = 'Class Mod';
+          $('detectedCat').textContent = state.detectedCategory;
+          $('builderEmpty').style.display = '';
+          refreshOutputs();
+          return;
+        }
+        state.mainPart = null;
+        state.detectedCategory = null;
+        $('detectedCat').textContent = '-';
         $('builderEmpty').style.display = '';
         refreshOutputs();
         return;
       }
-      state.mainPart = null;
-      state.detectedCategory = null;
-      $('detectedCat').textContent = '-';
-      $('builderEmpty').style.display = '';
-      refreshOutputs();
-      return;
-    }
 
-    let main = null;
-    try{
-      const map = state && state.__mainPartByOptionKey;
-      if (map && typeof map.get === 'function') main = map.get(mainKey) || null;
-    }catch(_e){}
-    if (!main && /^idx:\s*-?\d+$/i.test(mainKey)){
-      const idx = Number(mainKey.replace(/^idx:\s*/i, ''));
-      if (Number.isFinite(idx)) main = getAllParts()[idx] || null;
-    }
-    // Backward compatibility for old numeric-only values.
-    if (!main && /^-?\d+$/.test(mainKey)){
-      const idx = Number(mainKey);
-      if (Number.isFinite(idx)) main = getAllParts()[idx] || null;
-    }
-    if (!main){
-      state.mainPart = null;
-      state.detectedCategory = null;
-      $('detectedCat').textContent = '-';
-      $('builderEmpty').style.display = '';
-      refreshOutputs();
-      return;
-    }
-    let guidedClassModActive = false;
-    try {
-      const gi = document.getElementById('ccGuidedItemType');
-      guidedClassModActive = !!(gi && /class\s*mod|classmod/i.test(String(gi.value || '').trim()) && String(state.itemType || '').trim() === 'Class Mod');
-    } catch (_) {}
-    const checklistCompRarity = guidedClassModActive && state.mainPart && String(state.mainPart.partType || '').trim().toLowerCase() === 'rarity';
-    if (checklistCompRarity) {
-      main = state.mainPart;
-    } else {
-      state.mainPart = main;
-    }
-    state.detectedCategory = detectCategoryFromMainPart(main) || state.itemType;
-    $('detectedCat').textContent = state.detectedCategory || '-';
-    $('builderEmpty').style.display = 'none';
-
-    const cat = state.detectedCategory;
-
-    // Main part card
-    const mainSlot = document.createElement('div');
-    mainSlot.className = 'slot';
-    const top = document.createElement('div');
-    top.className='top';
-    const name = document.createElement('div');
-    name.className='name';
-    var mainLabel = 'Rarity ID Part';
-    if (String(cat || '').trim() === 'Class Mod') mainLabel = 'Body - Classmod Name';
-    name.textContent = main.__isAicarFullItem ? 'Full item' : mainLabel;
-    const change = document.createElement('div');
-    change.className='muted small';
-    change.textContent = main.__isAicarFullItem ? 'Complete deserialized serial (AI / car / guns).' : 'Selected in the left panel.';
-    top.appendChild(name);
-    top.appendChild(change);
-
-    const picked = document.createElement('div');
-    picked.className='picked';
-    if (main.__isAicarFullItem && main.__fullDeserialized){
-      picked.innerHTML = `<div>${escapeHtml(displayForPart(main))}<br><code>${escapeHtml(String(main.__fullDeserialized))}</code></div>`;
-    } else {
-      picked.innerHTML = `<div>${escapeHtml(displayForPart(main))}<br><code>${escapeHtml(tokenForPart(main))}</code></div>`;
-    }
-    mainSlot.appendChild(top);
-    mainSlot.appendChild(picked);
-
-    builder.appendChild(mainSlot);
-
-    if (cat === 'Weapon'){
-      const grid = document.createElement('div');
-      grid.className = 'grid';
-
-      // Weapon slots
-      for (const s of getActiveWeaponSlotSchema()){
-        grid.appendChild(buildSlotControl(s, 'Weapon'));
+      let main = null;
+      try{
+        const map = state && state.__mainPartByOptionKey;
+        if (map && typeof map.get === 'function') main = map.get(mainKey) || null;
+      }catch(_e){}
+      if (!main && /^idx:\s*-?\d+$/i.test(mainKey)){
+        const idx = Number(mainKey.replace(/^idx:\s*/i, ''));
+        if (Number.isFinite(idx)) main = getAllParts()[idx] || null;
       }
-
-      // Elements control
-      grid.appendChild(buildElementsControl());
-
-      builder.appendChild(grid);
-    } else {
-      const schema = SIMPLE_SCHEMA_BY_CATEGORY[cat] || [];
-      const grid = document.createElement('div');
-      grid.className='grid';
-      for (const s of schema){
-        grid.appendChild(buildSlotControl(s, cat));
+      // Backward compatibility for old numeric-only values.
+      if (!main && /^-?\d+$/.test(mainKey)){
+        const idx = Number(mainKey);
+        if (Number.isFinite(idx)) main = getAllParts()[idx] || null;
       }
-      builder.appendChild(grid);
-    }
+      if (!main){
+        state.mainPart = null;
+        state.detectedCategory = null;
+        $('detectedCat').textContent = '-';
+        $('builderEmpty').style.display = '';
+        refreshOutputs();
+        return;
+      }
+      let guidedClassModActive = false;
+      try {
+        const gi = document.getElementById('ccGuidedItemType');
+        guidedClassModActive = !!(gi && /class\s*mod|classmod/i.test(String(gi.value || '').trim()) && String(state.itemType || '').trim() === 'Class Mod');
+      } catch (_) {}
+      const checklistCompRarity = guidedClassModActive && state.mainPart && String(state.mainPart.partType || '').trim().toLowerCase() === 'rarity';
+      if (checklistCompRarity) {
+        main = state.mainPart;
+      } else {
+        state.mainPart = main;
+      }
+      state.detectedCategory = detectCategoryFromMainPart(main) || state.itemType;
+      $('detectedCat').textContent = state.detectedCategory || '-';
+      $('builderEmpty').style.display = 'none';
 
-    refreshOutputs();
+      const cat = state.detectedCategory;
+
+      // Main part card
+      const mainSlot = document.createElement('div');
+      mainSlot.className = 'slot';
+      const top = document.createElement('div');
+      top.className='top';
+      const name = document.createElement('div');
+      name.className='name';
+      var mainLabel = 'Rarity ID Part';
+      if (String(cat || '').trim() === 'Class Mod') mainLabel = 'Body - Classmod Name';
+      name.textContent = main.__isAicarFullItem ? 'Full item' : mainLabel;
+      const change = document.createElement('div');
+      change.className='muted small';
+      change.textContent = main.__isAicarFullItem ? 'Complete deserialized serial (AI / car / guns).' : 'Selected in the left panel.';
+      top.appendChild(name);
+      top.appendChild(change);
+      top.style.willChange = 'transform';
+
+      const picked = document.createElement('div');
+      picked.className='picked';
+      if (main.__isAicarFullItem && main.__fullDeserialized){
+        picked.innerHTML = `<div>${escapeHtml(displayForPart(main))}<br><code>${escapeHtml(String(main.__fullDeserialized))}</code></div>`;
+      } else {
+        picked.innerHTML = `<div>${escapeHtml(displayForPart(main))}<br><code>${escapeHtml(tokenForPart(main))}</code></div>`;
+      }
+      mainSlot.appendChild(top);
+      mainSlot.appendChild(picked);
+
+      builder.appendChild(mainSlot);
+
+      if (cat === 'Weapon'){
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        // Weapon slots
+        for (const s of getActiveWeaponSlotSchema()){
+          grid.appendChild(buildSlotControl(s, 'Weapon'));
+        }
+
+        // Elements control
+        grid.appendChild(buildElementsControl());
+
+        builder.appendChild(grid);
+      } else {
+        const schema = SIMPLE_SCHEMA_BY_CATEGORY[cat] || [];
+        const grid = document.createElement('div');
+        grid.className='grid';
+        for (const s of schema){
+          grid.appendChild(buildSlotControl(s, cat));
+        }
+        builder.appendChild(grid);
+      }
+      refreshOutputs();
+    });
   }
 
   function computeOrderedParts(){
@@ -3717,55 +3889,39 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     if (!cat || !state.mainPart) return [];
     if (state.mainPart.__fullDeserialized) return [];
 
-    const out = [];
-    // include main part first (prefix)
-    out.push(state.mainPart);
-
-    if (cat === 'Weapon'){
-      const ordered = [];
-      const pushIf = (p)=>{ if (p) ordered.push(p); };
-      pushIf(state.mainPart);
-      const schema = getActiveWeaponSlotSchema();
-      for (const s of schema){
-        if (s.multi && s.key === 'legendary'){
-          if (Array.isArray(state.slots.legendary)){
-            for (const p of state.slots.legendary) pushIf(p);
-          }
-          continue;
-        }
-        if (s.multi) continue;
-        pushIf(state.slots[s.key]);
+    const allPartsInSlots = [];
+    if (state.mainPart) allPartsInSlots.push(state.mainPart);
+    for (const k of Object.keys(state.slots)){
+      const val = state.slots[k];
+      if (!val) continue;
+      if (Array.isArray(val)){
+        for (const p of val) if (p) allPartsInSlots.push(p);
+      } else {
+        allPartsInSlots.push(val);
       }
-      return ordered.filter(Boolean);
-    } else {
-      const schema = SIMPLE_SCHEMA_BY_CATEGORY[cat] || [];
-      const ordered = [state.mainPart];
-      // Guided class mod checklist: base comp rarity (main) + optional name + legendary/name rarity id — match cc-classmod-checklist-rebuild.js order.
-      if (cat === 'Class Mod' && state.slots) {
-        if (state.slots.namePart) ordered.push(state.slots.namePart);
-        if (state.slots.rarityNamePart) ordered.push(state.slots.rarityNamePart);
-      }
-      for (const s of schema){
-        const cur = state.slots[s.key];
-        if (!cur) continue;
-        if (s.multi){
-          for (const p of (Array.isArray(cur)?cur:[])) ordered.push(p);
-        } else {
-          ordered.push(cur);
-        }
-      }
-      return ordered;
     }
+
+    // Sort parts primarily by __importOrder if they have it
+    // Parts without __importOrder (manually added) should come AFTER imported parts
+    const ordered = allPartsInSlots.sort((a, b) => {
+      const ao = a.__importOrder ?? Infinity;
+      const bo = b.__importOrder ?? Infinity;
+      if (ao !== bo) return ao - bo;
+      // If neither has import order, or they are the same (shouldn't happen), fallback to schema order if possible
+      return 0;
+    });
+
+    return ordered;
   }
 
-  function computeOutputTokens(){
-    if (typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return { tokens: [], json: {} };
+  function computeOutputTokens(force){
+    if (!force && typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return { tokens: [], json: {} };
     const cat = state.detectedCategory;
     if (!cat || !state.mainPart) return {tokens:[], json:{}};
     if (state.mainPart.__fullDeserialized){
       const fs = String(state.mainPart.__fullDeserialized).trim();
       return {
-        tokens: fs ? [fs] : [],
+        tokens: fs ? [String(fs)] : [],
         json: {
           category: 'Other',
           manufacturer: state.manufacturer || 'AI Car Guns',
@@ -3776,33 +3932,85 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     }
 
     const orderedParts = computeOrderedParts();
-    const tokens = orderedParts.map(tokenForPart).filter(Boolean);
+    
+    // Create an array of token objects with order for sorting
+    let finalItems = [];
+    const seenTokens = new Set();
 
-    // Append element tokens as plain strings (they are not dataset IDs/codes)
+    // Add parts from orderedParts
+    for (const p of orderedParts) {
+      const t = tokenForPart(p);
+      if (t !== '' && t != null) {
+        let sTok = String(t).trim();
+        if (sTok === '[object Object]') continue;
+        // Avoid adding the same exact token multiple times if it's already in the list
+        // and doesn't have a distinct import order (manual duplicates are rare but handled by schema)
+        finalItems.push({
+          tok: sTok,
+          order: p.__importOrder ?? Infinity
+        });
+      }
+    }
+
+    // Add elements and extras from state.extras (new structure)
+    if (Array.isArray(state.extras)) {
+      for (const ex of state.extras) {
+        if (ex && typeof ex === 'object' && ex.tok) {
+          let sTok = String(ex.tok).trim();
+          if (sTok === '[object Object]') continue;
+          finalItems.push({
+            tok: sTok,
+            order: Number.isFinite(ex.order) ? ex.order : Infinity
+          });
+        } else if (ex) {
+          // Handle legacy string extras just in case
+          let sTok = String(ex).trim();
+          if (sTok === '[object Object]') continue;
+          finalItems.push({
+            tok: sTok,
+            order: Infinity
+          });
+        }
+      }
+    }
+
+    // Weapons have special logic for current elements/camos if they are not already in state.extras
     if (cat === 'Weapon'){
-      const elems = [];
+      // We need to check if primary element or skin/camo tokens were already handled as imported tokens.
+      // If not, they are "manual" additions and go to the end.
+      
+      const sc = getSelectedWeaponSkinAndCamo();
+      if (sc && sc.camoToken) {
+        const sCamo = String(sc.camoToken);
+        // If not already in finalItems (by token comparison), add at end
+        if (!finalItems.some(fi => String(fi.tok) === sCamo)) {
+          finalItems.push({ tok: sCamo, order: Infinity });
+        }
+      }
+
+      // Add manual elements only if they are not already represented in finalItems
+      const manualElems = [];
       const prim = state.primaryElement || 'None';
       const primObj = ELEMENTS.find(x=>x.key===prim);
-      if (primObj && primObj.code) elems.push(primObj.code);
+      if (primObj && primObj.code) manualElems.push(String(primObj.code));
       if (Array.isArray(state.elementStack) && state.elementStack.length){
         for (const e of state.elementStack){
           const eo = ELEMENTS.find(x=>x.key===e);
-          if (eo && eo.code) elems.push(eo.code);
+          if (eo && eo.code) manualElems.push(String(eo.code));
         }
       }
-      tokens.push(...elems);
+
+      for (const me of manualElems) {
+        if (!finalItems.some(fi => String(fi.tok) === me)) {
+          finalItems.push({ tok: me, order: Infinity });
+        }
+      }
     }
 
-    // Optional skin/camo selections from dropdowns
-    if (cat === 'Weapon'){
-      const sc = getSelectedWeaponSkinAndCamo();
-      if (sc && sc.camoToken) tokens.push(sc.camoToken);
-    }
+    // Sort EVERYTHING by order
+    finalItems.sort((a, b) => a.order - b.order);
 
-    // extras (imported unknown tokens)
-    if (Array.isArray(state.extras) && state.extras.length){
-      tokens.push(...state.extras.map(String));
-    }
+    const tokens = finalItems.map(x => String(x.tok));
 
     const jsonObj = {
       category: cat,
@@ -3818,7 +4026,10 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } : null,
       slots: {},
       elements: (cat==='Weapon') ? { primary: state.primaryElement || 'None', stack: state.elementStack.slice() } : undefined,
-      extras: state.extras.slice(),
+      extras: state.extras.map(ex => {
+        if (ex && typeof ex === 'object' && ex.tok) return String(ex.tok);
+        return String(ex || '');
+      }),
       mode: state.idMode ? 'idRaw' : 'code'
     };
 
@@ -4034,8 +4245,7 @@ function randSeed(){
     const s = unquoteWrappedValue(value);
     if (!s) return '';
     const m = s.match(/^\|\s*["']?c["']?\s*,\s*(\d+)\s*\|$/i)
-      || s.match(/^["']?c["']?\s*,\s*(\d+)$/i)
-      || s.match(/^\{\s*\d+\s*:\s*(\d+)\s*\}$/);
+      || s.match(/^["']?c["']?\s*,\s*(\d+)$/i);
     if (!m) return '';
     return `|"c",${Number(m[1])}|`;
   }
@@ -4654,6 +4864,14 @@ function computeFullDeserializedCode(){
   const level = useGuided ? (Number(guided.level) || 60) : Number(state.level || 60);
 
   const orderedParts = computeOrderedParts().map(p => tokenForPart(p) || normCode(p.code)).filter(Boolean);
+  const importedExtras = Array.isArray(state.extras)
+    ? state.extras.map(x => {
+        if (x && typeof x === 'object' && x.tok) return String(x.tok).trim();
+        return String(x || '').trim();
+      }).filter(Boolean)
+    : [];
+  // Preserve unresolved imported tokens (e.g. {7:[4 4 4 4 64]}) in final code output.
+  const outputTokens = orderedParts.concat(importedExtras);
 
   // Rarity helpers (tier for filtering; emits rarity token after ||)
   const selectedTier = getSelectedRarityTier();
@@ -4680,18 +4898,18 @@ function computeFullDeserializedCode(){
   let rarityItemId = rarityRow && Number.isFinite(Number(rarityRow.itemId))
     ? Number(rarityRow.itemId)
     : (base && Number.isFinite(Number(base.itemId)) ? Number(base.itemId) : null);
-  const mainPartIsRarity = String((state.mainPart && state.mainPart.partType) || '').trim().toLowerCase() === 'rarity';
-  const mainPartRarityItemId = mainPartIsRarity ? partItemIdOf(state.mainPart || null) : null;
-  if (Number.isFinite(mainPartRarityItemId)){
-    rarityItemId = Number(mainPartRarityItemId);
-  }
-  const raritySlotPartRaw = state && state.slots ? state.slots.rarity : null;
-  const raritySlotPart = Array.isArray(raritySlotPartRaw) ? (raritySlotPartRaw[0] || null) : raritySlotPartRaw;
-  const raritySlotIsRarity = String((raritySlotPart && raritySlotPart.partType) || '').trim().toLowerCase() === 'rarity';
-  const raritySlotItemId = raritySlotIsRarity ? partItemIdOf(raritySlotPart || null) : null;
-  if (Number.isFinite(raritySlotItemId)){
-    rarityItemId = Number(raritySlotItemId);
-  }
+    const mainPartIsRarity = String((state.mainPart && state.mainPart.partType) || '').trim().toLowerCase() === 'rarity';
+    const mainPartRarityItemId = mainPartIsRarity ? partItemIdOf(state.mainPart || null) : null;
+    if (Number.isFinite(mainPartRarityItemId)){
+      rarityItemId = Number(mainPartRarityItemId);
+    }
+    const raritySlotPartRaw = state && state.slots ? state.slots.rarity : null;
+    const raritySlotPart = Array.isArray(raritySlotPartRaw) ? (raritySlotPartRaw[0] || null) : raritySlotPartRaw;
+    const raritySlotIsRarity = String((raritySlotPart && raritySlotPart.partType) || '').trim().toLowerCase() === 'rarity';
+    const raritySlotItemId = raritySlotIsRarity ? partItemIdOf(raritySlotPart || null) : null;
+    if (Number.isFinite(raritySlotItemId)){
+      rarityItemId = Number(raritySlotItemId);
+    }
   const isWeapon = (state.itemType === 'Weapon') || (state.detectedCategory === 'Weapon');
   const weaponSkinSelection = isWeapon ? getSelectedWeaponSkinAndCamo() : null;
   let skinRarityToken = (weaponSkinSelection && weaponSkinSelection.rarityToken)
@@ -4716,7 +4934,7 @@ function computeFullDeserializedCode(){
     if (m && m[1]) return String(m[1]);
     return '';
   }
-  const orderedHasRarity = !!(rarityItemIdStr && orderedParts.some(t => tokenIdOnlyForRarity(t) === rarityItemIdStr));
+  const orderedHasRarity = !!(rarityItemIdStr && outputTokens.some(t => tokenIdOnlyForRarity(t) === rarityItemIdStr));
   const rarityTokRaw = String(skinRarityToken || '').trim()
     || (Number.isFinite(rarityItemId) ? `{${rarityItemId}}` : '');
   const rarityTokNorm = rarityTokRaw ? normalizeIdTokensForBaseFamily([rarityTokRaw], baseFamilyId) : [];
@@ -4741,17 +4959,23 @@ function computeFullDeserializedCode(){
     const camoTokens = [];
     const elements = [];
 
-    for (const t of orderedParts){
+    for (const t of outputTokens){
       if (!t) continue;
       if (isSameAsSelectedRarityToken(t)) continue;
-      if (isSkin(t)) {
-        const ct = canonicalCamoToken(t);
-        if (ct) camoTokens.push(ct);
-        continue;
+      
+      const sT = String(t).trim();
+      if (isSkin(sT)) {
+        const ct = canonicalCamoToken(sT);
+        if (ct) {
+          camoTokens.push(ct);
+          continue;
+        }
       }
-      if (isElement(t)) { elements.push(t); continue; }
-      if (t.startsWith('{')) bracketTokens.push(t);
-      else gunTokens.push(t);
+      if (isElement(sT)) { elements.push(sT); continue; }
+      
+      // If it's a bracketed group or a numeric token, it goes to partsSection
+      if (sT.startsWith('{')) bracketTokens.push(sT);
+      else gunTokens.push(sT);
     }
 
     // Optional camo token from dedicated camo dropdown (or token-form skin selection).
@@ -4775,14 +4999,28 @@ function computeFullDeserializedCode(){
       : bracketTokens;
     const __bracket = normalizeIdTokensForBaseFamily(__bracketRaw, baseFamilyId);
 
-    const partsSection = [...__bracket, ...gunTokens.map(quoteIfGunPart), ...elements]
+    const seed = getSeed(base);
+    // Order of components after ||: Rarity (Skin), then Parts, then Elements, then Camos.
+    const partsSection = [...__bracket, ...gunTokens.map(quoteIfGunPart)]
       .filter(Boolean)
       .join(' ')
       .trim();
-
-    const seed = getSeed(base);
-    let tail = [rarityTok, partsSection].filter(Boolean).join(' ').trim();
-    if (skinTok) tail = [tail, skinTok].filter(Boolean).join(' ').trim();
+    
+    const elementsStr = elements.filter(Boolean).join(' ').trim();
+    
+    // Construct the tail parts in specific order
+    let tailParts = [rarityTok, partsSection, elementsStr, skinTok].filter(Boolean);
+    // Dedup rarity if already in partsSection (bracketed or gunTokens)
+    if (rarityTok) {
+       const cleanRarityTok = rarityTok.trim();
+       if (partsSection.includes(cleanRarityTok)) {
+          tailParts = [partsSection, elementsStr, skinTok].filter(Boolean);
+       }
+    }
+    let tail = tailParts.join(' ').trim();
+    
+    // Ensure final tail ends with a single pipe
+    if (tail && !tail.endsWith('|')) tail = tail + ' |';
 
     // Optional firmware lock / buyback flag segment (emitted only when checked).
   const lockFirmware = !!(
@@ -4797,18 +5035,14 @@ function computeFullDeserializedCode(){
 
   let out = `${base.familyId}, 0, 1, ${level}|`;
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
-    if (Number(seed) !== 0) out += ` 2, ${seed}||`;
-    else out += '|';
+    out += ` 2, ${seed}||`;
     if (tail){
-      out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
-    } else {
-      out += `|`;
+      out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail} |`;
     }
-
     return out;
   }
 
-  const __partsArrRaw = orderedParts
+  const __partsArrRaw = outputTokens
     .filter(t => !isSameAsSelectedRarityToken(t))
     .map(quoteIfGunPart)
     .filter(Boolean);
@@ -4834,32 +5068,56 @@ function computeFullDeserializedCode(){
 
   let out = `${base.familyId}, 0, 1, ${level}|`;
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
-  if (Number(seed) !== 0) out += ` 2, ${seed}||`;
-  else out += '|';
-  out += (tail ? ` ${tail}|` : `|`);
+  out += ` 2, ${seed}||`;
+  if (tail){
+    out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail} |`;
+  }
   return out;
 }
-  function refreshOutputs(){
-    if (typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return;
-    const {tokens, json} = computeOutputTokens();
-    const listBase = getSelectedBaseItem();
-    const listFamily = Number(listBase && listBase.familyId);
-    const listTokensRaw = (state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true)
-      ? compressFamilyRefsAll(tokens)
-      : tokens;
-    const listTokens = normalizeIdTokensForBaseFamily(listTokensRaw, listFamily);
-    $('outList').value = listTokens.join(', ');
-    const code = computeFullDeserializedCode();
-    if ($('outCode')) $('outCode').value = code;
-    try{
-      const b85 = (code && typeof window.serializeToBase85 === 'function') ? String(window.serializeToBase85(code, undefined, true) || '').trim() : '';
-      if ($('outCodeB85')) $('outCodeB85').value = b85 || '';
-    }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
-    try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
-    $('outJson').value = JSON.stringify(json, null, 2);
-    try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
-    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
+  let __refreshOutputsPending = false;
+  function refreshOutputs(force){
+    if (!force && typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return;
+    
+    if (__refreshOutputsPending) return;
+    __refreshOutputsPending = true;
+
+    requestAnimationFrame(function() {
+      __refreshOutputsPending = false;
+      const {tokens, json} = computeOutputTokens(force);
+      const listBase = getSelectedBaseItem();
+      const listFamily = Number(listBase && listBase.familyId);
+      const listTokensRaw = (state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true)
+        ? compressFamilyRefsAll(tokens)
+        : tokens;
+      
+      const listTokens = normalizeIdTokensForBaseFamily(listTokensRaw, listFamily, { compactSameFamily: state.idMode === true });
+      
+      const lockedImportedCode = (window.__LOCK_IMPORTED_OUTPUT && window.__LAST_IMPORTED_DESERIALIZED)
+        ? String(window.__LAST_IMPORTED_DESERIALIZED || '').trim()
+        : '';
+      const code = lockedImportedCode || computeFullDeserializedCode();
+      let partsListValue = listTokens.map(t => String(t || '')).join(', ');
+      
+      if (code.includes('||')) {
+        const partsPart = code.split('||')[1].trim();
+        if (partsPart) {
+          const actualParts = partsPart.split(/[|\s]+/).filter(Boolean).map(t => String(t || ''));
+          partsListValue = actualParts.join(', ');
+        }
+      }
+      
+      $('outList').value = partsListValue;
+      if ($('outCode') && (force || window.__CC_LAST_CODE_TARGET === 'simple')) $('outCode').value = code;
+      try{
+        const b85 = (code && typeof window.serializeToBase85 === 'function') ? String(window.serializeToBase85(code, undefined, true) || '').trim() : '';
+        if ($('outCodeB85') && (force || window.__CC_LAST_CODE_TARGET === 'simple')) $('outCodeB85').value = b85 || '';
+      }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
+      if (!force) window.__CC_LAST_CODE_TARGET = 'simple';
+      $('outJson').value = JSON.stringify(json, null, 2);
+      try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
+      try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
+    });
   }
 
   function updateModeLabel(){
@@ -4869,11 +5127,10 @@ function computeFullDeserializedCode(){
 
 
   function clearImportedOutputLock(){
+    if (window.__CC_IMPORT_IN_PROGRESS) return;
     try{
       window.__LOCK_IMPORTED_OUTPUT = false;
-      window.__IMPORTED_TAIL_TOKENS = [];
-      window.__IMPORTED_PARTS_ORDER_RAW = [];
-      window.originalPartsOrder = [];
+      window.__ccImportedValue = null;
       window.__LAST_IMPORTED_DESERIALIZED = null;
       window.__IMPORTED_HEADER_FULL = null;
       window.__IMPORTED_BASE_ITEM = null;
@@ -4918,35 +5175,267 @@ function resetAll(){
     refreshBuilder();
   }
 
-  function tryResolveToken(tok){
-    const t = String(tok).trim();
-    if (!t) return null;
-
+  let __STX_PART_RESOLVER_CACHE = null;
+  function __getStxPartResolverCache() {
+    if (__STX_PART_RESOLVER_CACHE) return __STX_PART_RESOLVER_CACHE;
     const all = getAllParts();
-    // Try idRaw match
-    const byIdRaw = all.find(p => String(p.idRaw ?? '').trim() === t);
+    if (!all.length) return null;
+    const cache = {
+      famId: new Map(),
+      idRaw: new Map(),
+      singleId: new Map(),
+      code: new Map()
+    };
+    const stripQ = (s)=> String(s ?? '').trim().replace(/^"+|"+$/g, '').trim();
+    for (let i = 0; i < all.length; i++) {
+      const p = all[i];
+      if (!p) continue;
+      const fam = Number(p.family != null ? p.family : p.familyId);
+      const idn = Number(p.id != null ? p.id : p.itemId);
+      if (Number.isFinite(fam) && Number.isFinite(idn)) {
+        const key = fam + ':' + idn;
+        if (!cache.famId.has(key)) cache.famId.set(key, p);
+      }
+      const ir = stripQ(p.idRaw ?? p.idraw ?? '');
+      if (ir) {
+        if (!cache.idRaw.has(ir)) cache.idRaw.set(ir, p);
+        if (/^\d+\s*:\s*\d+$/.test(ir)) {
+          const ps = ir.split(':');
+          const key = Number(ps[0].trim()) + ':' + Number(ps[1].trim());
+          if (!cache.famId.has(key)) cache.famId.set(key, p);
+        }
+      }
+      if (p.id != null && /^\d+$/.test(String(p.id))) {
+        const sid = String(Number(p.id));
+        if (!cache.singleId.has(sid)) cache.singleId.set(sid, p);
+      }
+      const c = normCode(p.code);
+      if (c && !cache.code.has(c)) cache.code.set(c, p);
+      const sc = normCode(p.spawnCode || '');
+      if (sc && !cache.code.has(sc)) cache.code.set(sc, p);
+      const ic = normCode(p.importCode || '');
+      if (ic && !cache.code.has(ic)) cache.code.set(ic, p);
+    }
+    __STX_PART_RESOLVER_CACHE = cache;
+    return cache;
+  }
+
+  function tryResolveToken(tok){
+    const t0 = String(tok).trim();
+    if (!t0) return null;
+
+    const cache = __getStxPartResolverCache();
+    const stripQ = (s)=> String(s ?? '').trim().replace(/^"+|"+$/g, '').trim();
+    const tBare = stripQ(t0);
+
+    if (cache) {
+      // {fam:id} or {fam : id}
+      var mBrace = tBare.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+      if (mBrace) {
+        const key = Number(mBrace[1]) + ':' + Number(mBrace[2]);
+        if (cache.famId.has(key)) return cache.famId.get(key);
+      }
+      // Bare fam:id
+      var mBare = tBare.match(/^(\d+)\s*:\s*(\d+)$/);
+      if (mBare) {
+        const key = Number(mBare[1]) + ':' + Number(mBare[2]);
+        if (cache.famId.has(key)) return cache.famId.get(key);
+      }
+      // Verbatim idRaw
+      if (cache.idRaw.has(tBare)) return cache.idRaw.get(tBare);
+      // Single id
+      if (/^\d+$/.test(tBare)) {
+        const sid = String(Number(tBare));
+        if (cache.singleId.has(sid)) return cache.singleId.get(sid);
+      }
+      // Code match
+      const tNorm = normCode(tBare);
+      if (cache.code.has(tNorm)) return cache.code.get(tNorm);
+    }
+
+    // Fallback if cache not ready or missed something
+    const all = getAllParts();
+    const normIdRawPair = (p)=>{
+      var r = stripQ(p.idRaw ?? p.idraw ?? '');
+      if (/^\d+\s*:\s*\d+$/.test(r)){
+        var ps = r.split(':');
+        return String(Number(ps[0].trim())) + ':' + String(Number(ps[1].trim()));
+      }
+      if (p && p.family != null && (p.id != null || p.itemId != null)){
+        var fid = Number(p.family != null ? p.family : p.familyId);
+        var iid = Number(p.id != null ? p.id : p.itemId);
+        if (Number.isFinite(fid) && Number.isFinite(iid)) return fid + ':' + iid;
+      }
+      return '';
+    };
+
+    var mBraceF = tBare.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (mBraceF){
+      const fam = Number(mBraceF[1]);
+      const idn = Number(mBraceF[2]);
+      const needle = `${fam}:${idn}`;
+      var hit = all.find(p => normIdRawPair(p) === needle);
+      if (hit) return hit;
+      hit = all.find(p => Number(p.family ?? p.familyId) === fam && Number(p.id ?? p.itemId) === idn);
+      if (hit) return hit;
+    }
+
+    var bareF = tBare.match(/^(\d+)\s*:\s*(\d+)$/);
+    if (bareF){
+      const fam2 = Number(bareF[1]);
+      const idn2 = Number(bareF[2]);
+      const needle2 = `${fam2}:${idn2}`;
+      let hit2 = all.find(p => normIdRawPair(p) === needle2);
+      if (hit2) return hit2;
+      hit2 = all.find(p => Number(p.family ?? p.familyId) === fam2 && Number(p.id ?? p.itemId) === idn2);
+      if (hit2) return hit2;
+    }
+
+    const byIdRaw = all.find(p => stripQ(p.idRaw ?? p.idraw ?? '') === tBare);
     if (byIdRaw) return byIdRaw;
 
-    // Try numeric id match
-    if (/^\d+$/.test(t)){
-      const n = Number(t);
+    if (/^\d+$/.test(tBare)){
+      const n = Number(tBare);
       const byId = all.find(p => Number(p.id ?? -1) === n);
       if (byId) return byId;
     }
 
-    // Try code match (normalized)
-    const tNorm = t.replace(/^"+|"+$/g,'');
-    const byCode = all.find(p => normCode(p.code) === tNorm);
+    const tNormF = normCode(tBare);
+    const byCode = all.find(p => normCode(p.code) === tNormF || normCode(p.spawnCode || '') === tNormF || normCode(p.importCode || '') === tNormF);
     if (byCode) return byCode;
 
     return null;
   }
 
+  /** After importTokens: mirror output into Guided, hydrate slot dropdowns, scroll to Guided. */
+  function finalizeCcImportToBuilders(targetBuilder){
+    try{
+      var outEl = $('outCode');
+      var outB85El = $('outCodeB85');
+      var guidedDeserEl = document.getElementById('guidedOutputDeserialized');
+      var guidedSerialEl = document.getElementById('guidedOutputSerial');
+      
+      var deser = '';
+      try{ deser = String((outEl && outEl.value) || '').trim(); }catch(__){ deser = ''; }
+      if (!deser){
+        try{ deser = String(($('importBox') && $('importBox').value) || '').trim(); }catch(__2){ deser = ''; }
+      }
+      
+  if ((targetBuilder === 'guided' || targetBuilder === 'both') && guidedDeserEl && deser && deser.indexOf('||') >= 0) {
+    guidedDeserEl.value = deser;
+    guidedDeserEl.__ccImportedValue = deser;
+    if (guidedSerialEl && typeof window.serializeToBase85 === 'function') {
+      try {
+        var b85 = window.serializeToBase85(deser, undefined, true);
+        if (b85) {
+          guidedSerialEl.value = String(b85).trim();
+          guidedSerialEl.__ccImportedValue = String(b85).trim();
+        }
+      } catch(_) {}
+    }
+  }
+  
+  // If only targeting guided, ensure simple output doesn't look like it was also updated
+  if (targetBuilder === 'guided') {
+    if (outEl) outEl.value = '';
+    if (outB85El) outB85El.value = '';
+  }
+
+      var runHydrate = function(){
+        try{
+          if (typeof window.__ccHydrateGuidedSlotsFromSimpleState === 'function'){
+            window.__ccHydrateGuidedSlotsFromSimpleState();
+          }
+        }catch(_e2){}
+      };
+      
+      if (targetBuilder === 'guided' || targetBuilder === 'both') {
+        runHydrate();
+        setTimeout(function(){
+          runHydrate();
+          try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+          try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+          try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+        }, 150);
+      }
+
+      if (targetBuilder === 'guided') {
+        window.__CC_LAST_CODE_TARGET = 'guided';
+        var anchor = document.getElementById('rebuildGuidedBuilderSection');
+        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        try{
+          var gi = document.getElementById('ccGuidedItemType');
+          if (gi) {
+            gi.focus();
+            if (state.itemType && gi.value !== state.itemType) {
+              gi.value = state.itemType;
+              if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(gi);
+            }
+          }
+        }catch(_e3){}
+      } else if (targetBuilder === 'simple') {
+        window.__CC_LAST_CODE_TARGET = 'simple';
+        refreshOutputs(true);
+      } else if (targetBuilder === 'both') {
+        window.__CC_LAST_CODE_TARGET = 'guided';
+        refreshOutputs(true);
+      }
+      
+      try{
+        if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
+      }catch(_e4){}
+    }catch(_){}
+  }
+
+  window.finalizeCcImportToBuilders = finalizeCcImportToBuilders;
+  function applyImportedSerialHeaderToUi(full, importTarget){
+    try{
+      const s = String(full || '').trim();
+      const dbl = s.indexOf('||');
+      if (dbl < 0) return;
+      const head = s.slice(0, dbl);
+      const segments = head.split('|').map(x => String(x || '').trim()).filter(Boolean);
+      const primary = segments[0] || '';
+      const lm = primary.match(/^(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (lm){
+      const lvl = Number(lm[4]);
+      if (Number.isFinite(lvl)){
+        const clamped = Math.min(100, Math.max(1, lvl));
+        state.level = clamped;
+        if (!importTarget || importTarget === 'simple' || importTarget === 'both') {
+          const le = $('level') || $('level2');
+          if (le) le.value = String(clamped);
+        }
+        if (importTarget === 'guided' || importTarget === 'both') {
+          const gl = document.getElementById('ccGuidedLevel');
+          if (gl) {
+             gl.value = String(clamped);
+             gl.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      }
+    }
+      for (let si = 1; si < segments.length; si++){
+        const sm = segments[si].match(/^2\s*,\s*(\d+)\s*$/);
+        if (sm){
+          const sd = Number(sm[1]);
+          if (Number.isFinite(sd)){
+            state.__seedEnabled = true;
+            state.seedAuto = null;
+            const se = $('seedInput');
+            if (se) se.value = String(sd);
+          }
+          break;
+        }
+      }
+    }catch(_){}
+  }
+
   function parseImportTokenList(raw){
     const s = String(raw || '');
     const out = [];
-    // Keep camo tokens like |"c",110| intact while still splitting normal CSV/space token lists.
-    const rx = /\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]+\}|"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,\s]+/g;
+    // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
+    const rx = /\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,\s]+/g;
     let m;
     while ((m = rx.exec(s))){
       const tok = String(m[0] || '').trim();
@@ -4955,43 +5444,350 @@ function resetAll(){
     return out;
   }
 
-  function importTokens(){
+  function tokenIsElement(tok) {
+    return /^\{\s*1\s*:\s*\d+\s*\}$/.test(String(tok).trim());
+  }
+
+  function importTokens(rawInput, targetBuilder){
+    const modeArg = String(rawInput || '').trim().toLowerCase();
+    if (!targetBuilder && (modeArg === 'guided' || modeArg === 'simple' || modeArg === 'both')){
+      targetBuilder = modeArg;
+      rawInput = '';
+    }
+    const importTarget = (targetBuilder === 'guided' || targetBuilder === 'simple' || targetBuilder === 'both')
+      ? targetBuilder
+      : 'both';
     const ib = $('importBox');
     if (!ib) return;
-    const raw = ib.value || '';
-    const tokens = parseImportTokenList(raw);
-    if (!tokens.length) return;
+    let raw = String(rawInput || ib.value || '').trim();
+    if (!raw) return;
+    let importedFullOriginal = '';
+    let baseFamilyFromHeader = null;
+    window.__CC_IMPORT_IN_PROGRESS = true;
 
+    // Accept Base85 paste directly, then operate on deserialized text.
+    if ((raw.indexOf('@u') === 0 || raw.indexOf('@U') === 0 || (raw.indexOf('||') < 0 && raw.indexOf('{') < 0 && raw.length > 20)) && typeof window.deserializeBase85 === 'function'){
+      try{
+        const deser = window.deserializeBase85(raw);
+        if (deser && typeof deser === 'string' && deser.trim().length){
+          raw = deser.trim();
+          ib.value = raw;
+        }
+      }catch(_){}
+    }
+    importedFullOriginal = String(raw || '').trim();
+
+    applyImportedSerialHeaderToUi(raw, importTarget);
+
+    // If no part tokens are found, try to detect item type/manufacturer from the header base family ID
+    if (raw.indexOf('||') >= 0){
+      const dbl = raw.indexOf('||');
+      const head = raw.slice(0, dbl).trim();
+      const hm = head.match(/^\s*(\d+)/);
+      if (hm && Number.isFinite(Number(hm[1]))){
+        baseFamilyFromHeader = Number(hm[1]);
+        state.familyId = baseFamilyFromHeader;
+        // Fallback: If no parts resolve, use header to set category
+        const rarities = window.STX_RARITIES || [];
+        const rRow = rarities.find(r => Number(r.familyId || r.family) === baseFamilyFromHeader);
+        if (rRow) {
+           let rawIt = rRow.itemType || rRow.category || '';
+           if (STX_RARITY_WEAPON_ITEM_TYPES.has(rawIt)) {
+             state.itemType = 'Weapon';
+             if (rawIt === 'Sniper' || rawIt === 'Sniper Rifle') state.weaponType = 'Sniper Rifle';
+             else if (rawIt === 'Submachine Gun') state.weaponType = 'SMG';
+             else if (rawIt === 'Heavy' || rawIt === 'Heavy Weapon') state.weaponType = 'Heavy Weapon';
+             else state.weaponType = rawIt;
+           } else {
+             state.itemType = rawIt;
+           }
+           state.manufacturer = rRow.manufacturer || state.manufacturer;
+
+         if ((importTarget === 'simple' || importTarget === 'both') && $('itemType')) {
+           $('itemType').value = state.itemType;
+           stxSyncCustomSelectIfWrapped($('itemType'));
+           // Trigger change to ensure simple builder logic (like refreshing manufacturers) fires
+           $('itemType').dispatchEvent(new Event('change', { bubbles: true }));
+         }
+        
+         const cgi = document.getElementById('ccGuidedItemType');
+         if ((importTarget === 'guided' || importTarget === 'both') && cgi) {
+            let wantCgi = state.itemType;
+            // Map canonical names to Guided dropdown values if they differ
+            if (wantCgi === 'Weapon' || STX_RARITY_WEAPON_ITEM_TYPES.has(wantCgi)) wantCgi = 'Weapon';
+            if (wantCgi === 'Heavy' || wantCgi === 'Heavy Weapon') wantCgi = 'Heavy Weapon';
+            if (wantCgi === 'Sniper' || wantCgi === 'Sniper Rifle') wantCgi = 'Weapon';
+          
+            cgi.value = wantCgi;
+            if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgi);
+           
+            // Check if it actually stuck
+            if (cgi.value !== wantCgi && wantCgi) {
+               var opt3 = new Option(wantCgi, wantCgi);
+               cgi.appendChild(opt3);
+               cgi.value = wantCgi;
+               if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgi);
+            }
+
+            // Force visibility sync and change event
+            cgi.dispatchEvent(new Event('change', { bubbles: true }));
+            if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility();
+         }
+
+         if (importTarget === 'simple' || importTarget === 'both') {
+           refreshTopSelectors();
+           if ($('manufacturer')) {
+             $('manufacturer').value = state.manufacturer;
+             stxSyncCustomSelectIfWrapped($('manufacturer'));
+           }
+         }
+        
+         if (importTarget === 'guided' || importTarget === 'both') {
+           // Ensure Guided manufacturers are loaded for the selected item type
+           if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();
+
+           const cgm = document.getElementById('ccGuidedManufacturer');
+           if (cgm) {
+             cgm.value = state.manufacturer;
+             // If not in list, add it
+             if (cgm.value !== state.manufacturer && state.manufacturer) {
+                var opt = new Option(state.manufacturer, state.manufacturer);
+                cgm.appendChild(opt);
+                cgm.value = state.manufacturer;
+             }
+             if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm);
+             cgm.dispatchEvent(new Event('change', { bubbles: true }));
+            
+             // SECOND PASS RE-CHECK: Sometimes events clear it
+             setTimeout(function() {
+                if (cgm.value !== state.manufacturer && state.manufacturer) {
+                   cgm.value = state.manufacturer;
+                   if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm);
+                   cgm.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+             }, 100);
+           }
+         }
+
+         if ((importTarget === 'simple' || importTarget === 'both') && state.itemType === 'Weapon' && $('weaponType')) {
+           $('weaponType').value = state.weaponType;
+           stxSyncCustomSelectIfWrapped($('weaponType'));
+         }
+        
+         // Ensure Guided weapon types are loaded
+         if ((importTarget === 'guided' || importTarget === 'both')) {
+           if (typeof window.loadGuidedWeaponTypes === 'function') window.loadGuidedWeaponTypes();
+
+           const cgw = document.getElementById('ccGuidedWeaponType');
+           if (cgw && state.itemType === 'Weapon') {
+             cgw.value = state.weaponType;
+             if (cgw.value !== state.weaponType && state.weaponType) {
+                var opt2 = new Option(state.weaponType, state.weaponType);
+                cgw.appendChild(opt2);
+                cgw.value = state.weaponType;
+             }
+             if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgw);
+             cgw.dispatchEvent(new Event('change', { bubbles: true }));
+           }
+         }
+         // Final pass to ensure all dependent pools are correctly filtered
+         if (importTarget === 'simple' || importTarget === 'both') {
+            refreshMainPart();
+         }
+        }
+      }
+      raw = raw.slice(dbl + 2).trim();
+    }
+    const tokensRaw = parseImportTokenList(raw);
+    const tokens = [];
+    const bracketedMap = new Map(); // Map original bracketed string to its expanded individual tokens
+    const tokenToBracket = new Map(); // Map expanded individual token to its original bracketed string
+
+    for (const t0 of tokensRaw){
+      const t = String(t0 || '').trim();
+      if (!t) continue;
+      
+      let m = t.match(/^\{\s*(\d+)\s*\}$/);
+      if (m && Number.isFinite(baseFamilyFromHeader)){
+        const exp = `{${baseFamilyFromHeader}:${Number(m[1])}}`;
+        tokens.push(exp);
+        continue;
+      }
+      m = t.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+      if (m){
+        const fam = m[1];
+        const ids = String(m[2] || '').match(/\d+/g);
+        if (ids && ids.length) {
+          const expandedForThisBracket = [];
+          for (const id of ids) {
+            const exp = `{${fam}:${id}}`;
+            expandedForThisBracket.push(exp);
+            tokens.push(exp);
+            tokenToBracket.set(exp, t);
+          }
+          bracketedMap.set(t, expandedForThisBracket);
+          continue;
+        }
+      }
+      tokens.push(t);
+    }
+    
     // reset selections but keep top dropdowns
     state.slots = {};
     state.elementStack = [];
     state.extras = [];
     state.primaryElement = 'None';
+    
+    if (!tokens.length) {
+      refreshOutputs(true);
+      window.__CC_IMPORT_IN_PROGRESS = false;
+      return;
+    }
 
-    // Resolve parts and pick the first matching as main part (if not already set)
-    const resolved = tokens.map(t => ({t, p: tryResolveToken(t)}));
+    // Resolve parts
+    const bracketUsed = new Set();
+    let globalImportCounter = 0;
+    const resolved = tokens.map(t => {
+       const rawPart = tryResolveToken(t);
+       let p = null;
+       const originalIdx = globalImportCounter++;
 
-    // TypeID 1 tokens (used by weapon elements and optional shield element row)
-    const elementTokens = resolved.filter(x => !x.p && /^\{\s*1\s*:\s*\d+\s*\}$/.test(x.t));
-    const partTokens = resolved.filter(x => x.p);
+       if (rawPart) {
+         // Clone the part object to avoid polluting the shared dataset with __importedToken
+         p = {...rawPart};
+         p.__importOrder = originalIdx;
+         
+         const originalBracket = tokenToBracket.get(t);
+         if (originalBracket) {
+           if (!bracketUsed.has(originalBracket)) {
+             // First part resolved from this bracket gets the bracketed token
+             p.__importedToken = String(originalBracket);
+             bracketUsed.add(originalBracket);
+           } else {
+             // Subsequent parts from the same bracket get NO token to avoid duplication
+             p.__importedToken = '';
+           }
+         } else {
+           p.__importedToken = String(t); 
+         }
+       }
+       return {t, p, originalIdx};
+    });
+
+    state.extras = [];
+    const actualPartTokens = [];
+    const resolvedTokensSet = new Set();
+    const partCounts = new Map();
+
+      for (const res of resolved) {
+        if (res.p) {
+          const pt = tokenForPart(res.p);
+          if (pt) {
+            actualPartTokens.push(res);
+            resolvedTokensSet.add(res.t);
+            const pKey = res.p.__idx != null ? `idx:${res.p.__idx}` : (pt || normCode(res.p.code));
+            partCounts.set(pKey, (partCounts.get(pKey) || 0) + 1);
+          }
+        } else {
+          if (tokenIsElement(res.t)) {
+            // Store elements as objects with order
+            state.extras.push({ tok: String(res.t), order: res.originalIdx, type: 'element' });
+          } else {
+            if (!tokenToBracket.has(res.t)) {
+              state.extras.push({ tok: String(res.t), order: res.originalIdx, type: 'extra' });
+            }
+          }
+        }
+      }
+
+    // Handle bracketed groups: if NONE of the parts in a bracket resolved, add original bracket to extras
+    for (const [bracket, expandedList] of bracketedMap.entries()) {
+      const anyResolved = expandedList.some(et => resolvedTokensSet.has(et));
+      if (!anyResolved) {
+        // Find the index of the first token in the expanded list to approximate the bracket's position
+        const firstTok = expandedList[0];
+        const resObj = resolved.find(r => r.t === firstTok);
+        state.extras.push({ tok: String(bracket), order: resObj ? resObj.order : (resObj ? resObj.originalIdx : 0), type: 'extra' });
+      }
+    }
+
+    const partTokens = actualPartTokens;
 
     // Set main part: prefer the category's core part type (e.g. Barrel for weapons)
     if (partTokens.length){
       const detectedCat0 = partTokens[0].p.category || state.itemType;
       const corePt0 = CORE_PARTTYPE_BY_CATEGORY[detectedCat0] || 'Base';
       const main = partTokens.map(x=>x.p).find(p => (p.partType||'') === corePt0) || partTokens[0].p;
+      
+      // Update counts because main is handled separately
+      const mKey = main.__idx != null ? `idx:${main.__idx}` : (tokenForPart(main) || normCode(main.code));
+      if (partCounts.get(mKey) > 0) partCounts.set(mKey, partCounts.get(mKey) - 1);
       // set top dropdowns to match detected
-      state.itemType = main.category || state.itemType;
-      $('itemType').value = state.itemType;
-      refreshManufacturer();
-      state.manufacturer = main.manufacturer || '';
-      $('manufacturer').value = state.manufacturer;
-      if (state.itemType === 'Weapon'){
-        state.weaponType = main.weaponType || main.itemType || '';
-        refreshWeaponType();
-        $('weaponType').value = state.weaponType;
+      let rawDetectedCat = main.category || state.itemType;
+      if (STX_RARITY_WEAPON_ITEM_TYPES.has(rawDetectedCat)) {
+        state.itemType = 'Weapon';
+        if (rawDetectedCat === 'Sniper' || rawDetectedCat === 'Sniper Rifle') state.weaponType = 'Sniper Rifle';
+        else if (rawDetectedCat === 'Submachine Gun') state.weaponType = 'SMG';
+        else if (rawDetectedCat === 'Heavy' || rawDetectedCat === 'Heavy Weapon') state.weaponType = 'Heavy Weapon';
+        else state.weaponType = rawDetectedCat;
+      } else {
+        state.itemType = rawDetectedCat;
       }
-      refreshMainPart();
+
+      // Ensure dropdowns are populated for the new category
+      const doSimpleUI = (importTarget === 'simple' || importTarget === 'both');
+      if (doSimpleUI && $('itemType')) {
+        $('itemType').value = state.itemType;
+        stxSyncCustomSelectIfWrapped($('itemType'));
+      }
+      const cgi_main = document.getElementById('ccGuidedItemType');
+      if ((importTarget === 'guided' || importTarget === 'both') && cgi_main) {
+        cgi_main.value = state.itemType;
+        if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgi_main);
+        if (typeof syncGuidedVisibility === 'function') syncGuidedVisibility();
+      }
+
+      if (doSimpleUI) refreshTopSelectors();
+      
+      state.manufacturer = main.manufacturer || '';
+      if (doSimpleUI && $('manufacturer')) {
+        $('manufacturer').value = state.manufacturer;
+        stxSyncCustomSelectIfWrapped($('manufacturer'));
+      }
+      const cgm_main = document.getElementById('ccGuidedManufacturer');
+      if ((importTarget === 'guided' || importTarget === 'both') && cgm_main) {
+        cgm_main.value = state.manufacturer;
+        if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm_main);
+      }
+
+      if (state.itemType === 'Weapon'){
+        state.weaponType = main.weaponType || main.itemType || state.weaponType;
+        if (doSimpleUI && $('weaponType')) {
+          $('weaponType').value = state.weaponType;
+          stxSyncCustomSelectIfWrapped($('weaponType'));
+        }
+        const cgw_main = document.getElementById('ccGuidedWeaponType');
+        if ((importTarget === 'guided' || importTarget === 'both') && cgw_main) {
+           cgw_main.value = state.weaponType;
+           if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgw_main);
+        }
+      }
+      if (doSimpleUI) refreshMainPart();
+
+      // If category uses rarity filter, we MUST set the rarity tier dropdown first
+      // so refreshMainPart can find the part in the resulting pool.
+      if (categoryUsesRarityTierFilter(state.itemType)){
+        const detectedTier = rarityTierFromItemTypeString(main.itemTypeString || main.code || main.itemType || '', main);
+        if (Number.isFinite(detectedTier)){
+          state.rarity = String(detectedTier);
+          if (doSimpleUI && $('rarity')) {
+            $('rarity').value = state.rarity;
+            stxSyncCustomSelectIfWrapped($('rarity'));
+          }
+          // Re-refresh main part pool with the new tier
+          if (doSimpleUI) refreshMainPart();
+        }
+      }
 
       let mainOptKey = '';
       try{
@@ -5005,15 +5801,31 @@ function resetAll(){
           }
         }
       }catch(_e){}
-      if (mainOptKey) $('mainPart').value = String(mainOptKey);
-      else if (main && main.__idx != null && Number.isFinite(Number(main.__idx))) $('mainPart').value = `idx:${Number(main.__idx)}`;
+      if (doSimpleUI) {
+        if (mainOptKey) $('mainPart').value = String(mainOptKey);
+        else if (main && main.__idx != null && Number.isFinite(Number(main.__idx))) $('mainPart').value = `idx:${Number(main.__idx)}`;
+      }
       state.mainPart = main;
       state.detectedCategory = main.category || state.itemType;
+    
+      // Explicitly set the rarity slot if we detected it
+      const ptL = String(main.partType || '').toLowerCase();
+      if (ptL === 'rarity') {
+        state.slots.rarity = main;
+        // Also update counts
+        const rKey = main.__idx != null ? `idx:${main.__idx}` : (tokenForPart(main) || normCode(main.code));
+        if (partCounts.get(rKey) > 0) partCounts.set(rKey, partCounts.get(rKey) - 1);
+      }
     }
 
     // Fill slots best-effort by matching partType to first empty slot schema
     const cat = state.detectedCategory;
-    const partsLeft = partTokens.slice(1).map(x=>x.p);
+    const partsLeft = partTokens.slice().map(x=>x.p);
+    // Remove mainPart from pool once (it was already accounted for in partCounts)
+    if (state.mainPart) {
+      const mainIdx = partsLeft.findIndex(p => p === state.mainPart);
+      if (mainIdx >= 0) partsLeft.splice(mainIdx, 1);
+    }
 
     if (cat === 'Weapon'){
       const schema = getActiveWeaponSlotSchema();
@@ -5032,7 +5844,11 @@ function resetAll(){
             if (String(p.partType||'').trim() !== 'Legendary Perks') continue;
             const arr = state.slots.legendary || [];
             const tok = tokenForPart(p);
-            if (!arr.some(x => tokenForPart(x) === tok)) arr.push(p);
+            if (!arr.some(x => tokenForPart(x) === tok)) {
+               arr.push(p);
+               const pt = tokenForPart(p);
+               if (partCounts.get(pt) > 0) partCounts.set(pt, partCounts.get(pt) - 1);
+            }
             state.slots.legendary = arr;
             pool.splice(i, 1);
           }
@@ -5054,27 +5870,21 @@ function resetAll(){
           if (s.ncsSlot && !weaponPartMatchesNcsSlot(part, s.ncsSlot)) return false;
           return true;
         });
-        if (p) state.slots[s.key] = p;
-      }
-      for (const p of pool){
-        state.extras.push(tokenForPart(p) || normCode(p.code));
-      }
-
-      // parse elements ({1:10}-{1:14})
-      if (elementTokens.length){
-        const ids = elementTokens
-          .map(x => parseInt(String(x.t).replace(/\D/g,''),10))
-          .filter(n => !isNaN(n));
-        const idToKey = new Map(ELEMENTS.filter(e=>e.code).map(e=>[
-          parseInt(String(e.code).replace(/\D/g,''),10),
-          e.key
-        ]));
-        const keys = ids.map(id=>idToKey.get(id)).filter(Boolean);
-        if (keys.length){
-          state.primaryElement = keys[0];
-          state.elementStack = keys.slice(1);
+        if (p) {
+          state.slots[s.key] = p;
+          const pKey = p.__idx != null ? `idx:${p.__idx}` : (tokenForPart(p) || normCode(p.code));
+          if (partCounts.get(pKey) > 0) partCounts.set(pKey, partCounts.get(pKey) - 1);
         }
       }
+      // Surplus parts go to extras to ensure they are NOT REMOVED
+      for (const p of pool){
+        const pKey = p.__idx != null ? `idx:${p.__idx}` : (tokenForPart(p) || normCode(p.code));
+        if (partCounts.get(pKey) > 0) {
+          state.extras.push({ tok: tokenForPart(p) || normCode(p.code), order: p.__importOrder ?? 0, type: 'extra' });
+          partCounts.set(pKey, (partCounts.get(pKey) || 0) - 1);
+        }
+      }
+      // parse elements ({1:10}-{1:14})
     } else {
       const schema = SIMPLE_SCHEMA_BY_CATEGORY[cat] || [];
       const slotByKey = new Map(schema.map(s => [s.key, s]));
@@ -5135,11 +5945,11 @@ function resetAll(){
         for (const p of partsLeft){
           const s = pickShieldSlot(p);
           if (!assignSlot(s, p)){
-            state.extras.push(tokenForPart(p) || normCode(p.code));
+            state.extras.push({ tok: tokenForPart(p) || normCode(p.code), order: p.__importOrder ?? 0, type: 'extra' });
           }
         }
-
-        if (elementTokens.length && slotByKey.has('elementType1')){
+      
+      if (elementTokens.length && slotByKey.has('elementType1')){
           const tok = String(elementTokens[0].t || '').trim();
           const m = tok.match(/^\{\s*1\s*:\s*(\d+)\s*\}$/);
           if (m){
@@ -5170,13 +5980,33 @@ function resetAll(){
             s = matches.find(x => x.multi) || matches.find(x => !state.slots[x.key]) || matches[0];
           }
           if (!assignSlot(s, p)){
-            state.extras.push(tokenForPart(p) || normCode(p.code));
+            state.extras.push({ tok: tokenForPart(p) || normCode(p.code), order: p.__importOrder ?? Infinity, type: 'extra' });
           }
+        }
+        if (typeof bracketedExtras !== 'undefined' && bracketedExtras && bracketedExtras.length) {
+          state.extras.push(...bracketedExtras);
         }
       }
     }
-
+    
     refreshBuilder();
+    try{
+      if (importedFullOriginal && importedFullOriginal.indexOf('||') >= 0 && (importTarget === 'simple' || importTarget === 'both')){
+        window.__LOCK_IMPORTED_OUTPUT = true;
+        window.__LAST_IMPORTED_DESERIALIZED = importedFullOriginal;
+        const outEl = $('outCode');
+        if (outEl) outEl.value = importedFullOriginal;
+        const outB85El = $('outCodeB85');
+        if (outB85El && typeof window.serializeToBase85 === 'function'){
+          try{
+            const b85 = window.serializeToBase85(importedFullOriginal, undefined, true);
+            outB85El.value = b85 ? String(b85).trim() : '';
+          }catch(_){}
+        }
+      }
+    }catch(_){}
+    try{ finalizeCcImportToBuilders(importTarget); }catch(_){}
+    window.__CC_IMPORT_IN_PROGRESS = false;
   }
 
   async function copyToClipboard(text){
@@ -5253,10 +6083,12 @@ function resetAll(){
     });
 
     $('level').addEventListener('change', ()=>{
+      clearImportedOutputLock();
       state.level = Number($('level').value||1);
       refreshOutputs();
     });
     $('level2').addEventListener('change', ()=>{
+      clearImportedOutputLock();
       state.level = Number($('level2').value||1);
       refreshOutputs();
     });
@@ -5361,6 +6193,7 @@ function resetAll(){
     }
 
     $('mainPart').addEventListener('change', ()=>{
+      clearImportedOutputLock();
       // selecting main part resets builder state (slots etc.)
       state.slots = {};
       state.primaryElement = 'None';
@@ -5373,6 +6206,7 @@ function resetAll(){
     const idModeEl = $('idMode');
     if (idModeEl){
       idModeEl.addEventListener('change', ()=>{
+        clearImportedOutputLock();
         state.idMode = !!idModeEl.checked;
         var ccPart = document.getElementById('ccPartEntryMode');
         if (ccPart) ccPart.checked = state.idMode;
@@ -5387,6 +6221,7 @@ function resetAll(){
     var ccPartMode = document.getElementById('ccPartEntryMode');
     if (ccPartMode){
       ccPartMode.addEventListener('change', ()=>{
+        clearImportedOutputLock();
         state.idMode = !!ccPartMode.checked;
         if ($('idMode')) $('idMode').checked = state.idMode;
         updateModeLabel();
@@ -5422,7 +6257,128 @@ function resetAll(){
       await copyToClipboard($('outJson').value||'');
     });
 
-    if ($('btnImport')) $('btnImport').addEventListener('click', ()=>importTokens());
+    if ($('btnImport')) $('btnImport').addEventListener('click', ()=>importTokens('', 'both'));
+
+    // Simple Builder Quick Presets
+    const simplePresetSel = $('simpleBuilderPresetSelect');
+    const simplePresetAddBtn = $('simpleBuilderPresetAddBtn');
+    if (simplePresetSel && simplePresetAddBtn) {
+      simplePresetAddBtn.addEventListener('click', () => {
+        const code = (simplePresetSel.value || '').trim();
+        if (!code) return;
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        if (typeof window.appendToOutCode === 'function') {
+          window.appendToOutCode(code);
+          return;
+        }
+        const out = $('outCode');
+        if (!out) return;
+        const serial = String(out.value || '').trim();
+        const dbl = serial.indexOf('||');
+        const tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
+        const nextTail = (tail ? tail + ' ' : '') + code;
+        out.value = dbl >= 0 ? serial.slice(0, dbl + 2) + nextTail : (serial ? serial + ' || ' + nextTail : '|| ' + nextTail);
+        try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+      });
+    }
+  }
+
+  function loadSimplePresets() {
+    const sel = $('simpleBuilderPresetSelect');
+    if (!sel) return;
+
+    const cats = [
+      ['damage', 'Damage'],
+      ['accuracy', 'Accuracy'],
+      ['reload', 'Reload Speed'],
+      ['firerate', 'Fire Rate'],
+      ['ammo', 'Ammo'],
+      ['splash', 'Splash Damage'],
+      ['crit', 'Crit Damage'],
+      ['splat', 'Splat'],
+      ['nova', 'Nova'],
+      ['immunity', 'Immunity'],
+      ['resistance', 'Resistance'],
+      ['elemental', 'Elemental']
+    ];
+    const pools = window.PRESET_BOOST_POOLS || {};
+    function tokenForPresetEntry(entry) {
+      if (!entry) return '';
+      const k = entry.key != null ? entry.key : entry.k;
+      const v = entry.value != null ? entry.value : entry.v;
+      if (k == null || v == null) return '';
+      return `{${String(k)}:${String(v)}}`;
+    }
+    function partNameForToken(tok) {
+      const m = String(tok || '').match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+      if (!m) return '';
+      const idRaw = `${Number(m[1])}:${Number(m[2])}`;
+      const parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (!p) continue;
+        if (String(p.idRaw || p.idraw || '').trim() !== idRaw) continue;
+        return String(p.name || p.legendaryName || p.displayName || '').trim();
+      }
+      return '';
+    }
+    function partForToken(tok) {
+      const m = String(tok || '').match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+      if (!m) return null;
+      const idRaw = `${Number(m[1])}:${Number(m[2])}`;
+      const parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (p && String(p.idRaw || p.idraw || '').trim() === idRaw) return p;
+      }
+      return null;
+    }
+    function quickPresetTitle(tok, catLabel, name) {
+      const p = partForToken(tok);
+      let tip = '';
+      if (p && typeof window.partTooltipText === 'function') {
+        try { tip = String(window.partTooltipText(p) || '').trim(); } catch (_) { tip = ''; }
+      }
+      if (tip) return tip;
+      return name
+        ? `${catLabel}: ${name}\nOther stats: hover data unavailable for this part.`
+        : `${catLabel}: ${tok}\nOther stats: dataset name/stats unavailable, token still adds correctly.`;
+    }
+    const updateSimplePresets = () => {
+      const currentVal = sel.value;
+      sel.innerHTML = '<option value="">-- Select Preset --</option>';
+      for (const [catKey, catLabel] of cats) {
+        const pool = pools[catKey] || [];
+        if (!Array.isArray(pool) || !pool.length) continue;
+        const group = document.createElement('optgroup');
+        group.label = catLabel;
+        for (const entry of pool) {
+          const tok = tokenForPresetEntry(entry);
+          if (!tok) continue;
+          const name = partNameForToken(tok);
+          const opt = new Option(name ? `${tok} - ${name}` : `${tok} - Preset token`, tok);
+          opt.title = quickPresetTitle(tok, catLabel, name);
+          group.appendChild(opt);
+        }
+        if (group.children.length) sel.appendChild(group);
+      }
+      if (currentVal) sel.value = currentVal;
+      try { stxSyncCustomSelectIfWrapped(sel); } catch (_) {}
+    };
+
+    updateSimplePresets();
+    if (!sel.__simplePresetReloadTimer) {
+      var tries = 0;
+      sel.__simplePresetReloadTimer = setInterval(() => {
+        tries++;
+        updateSimplePresets();
+        const parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+        if ((parts.length && tries >= 2) || tries > 40) {
+          clearInterval(sel.__simplePresetReloadTimer);
+          sel.__simplePresetReloadTimer = null;
+        }
+      }, 250);
+    }
   }
 
   function init(){
@@ -5460,6 +6416,7 @@ function resetAll(){
 
     refreshTopSelectors();
     wireEvents();
+    loadSimplePresets();
     refreshOutputs();
 
     // Expose for Guided Builder and other consumers
@@ -5475,6 +6432,7 @@ function resetAll(){
       window.classModFamilyIdForCharacter = classModFamilyIdForCharacter;
       window.getLegacyClassModNameParts = getLegacyClassModNameParts;
       window.importTokens = importTokens;
+      window.__ccFinalizeImportToBuilders = finalizeCcImportToBuilders;
       if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();
       if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns();
     } catch (_e) {}

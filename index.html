@@ -509,18 +509,37 @@
       display: inline-flex; align-items: center;
       padding: 6px 12px; border-radius: 999px;
       border: 2px solid rgba(0, 243, 255, 0.5);
-      background: rgba(0, 243, 255, 0.08);
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(0, 140, 255, 0.12));
       color: #eafcff;
       font-size: 12px; font-weight: 600;
       cursor: default;
-      transition: transform var(--transition-fast), filter var(--transition-fast), border-color var(--transition-fast);
+      transition: transform var(--transition-fast), filter var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .contributor-name:nth-child(even) { 
+      color: #00f3ff; 
+      background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(0, 140, 255, 0.15));
+      border-color: rgba(0, 243, 255, 0.4);
+    }
+    .contributor-name:nth-child(odd) { 
+      color: #ff9ee6; 
+      background: linear-gradient(135deg, rgba(255, 0, 200, 0.18), rgba(0, 140, 255, 0.12));
+      border-color: rgba(255, 0, 200, 0.35);
     }
     .contributor-name[data-egg="1"] { cursor: pointer; }
     .contributor-name[data-egg="1"]:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.1);
-      border-color: rgba(255, 0, 200, 0.6);
+      transform: translateY(-2px);
+      filter: brightness(1.2);
+      border-color: #ff00c8;
+      box-shadow: 0 4px 12px rgba(255, 0, 200, 0.3);
     }
+    
+    body.mattmab-reskin .contributor-name { border-color: rgba(255,215,0,0.5); background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(70,140,255,0.15)); color: #fff; }
+    body.mac10-reskin .contributor-name { border-color: rgba(255,80,80,0.5); background: linear-gradient(135deg, rgba(255,80,80,0.2), rgba(20,10,10,0.6)); color: #fff; }
+    body.badley-reskin .contributor-name { border-color: rgba(155,110,255,0.5); background: linear-gradient(135deg, rgba(155,110,255,0.2), rgba(255,185,230,0.15)); color: #fff; }
+    body.scooter-reskin .contributor-name { border-color: rgba(0,255,120,0.5); background: linear-gradient(135deg, rgba(0,255,120,0.2), rgba(255,40,40,0.15)); color: #fff; }
+    body.ynot-reskin .contributor-name { border-color: rgba(0,212,232,0.5); background: linear-gradient(135deg, rgba(0,212,232,0.2), rgba(10,10,14,0.6)); color: #fff; }
+    body.grimeey-reskin .contributor-name { border-color: rgba(255,140,0,0.5); background: linear-gradient(135deg, rgba(255,140,0,0.2), rgba(40,20,0,0.6)); color: #fff; }
     .credits-msg, .credits-check, .credits-discord {
       margin: 0; font-size: 12px; color: var(--text-secondary);
     }
@@ -547,7 +566,28 @@
     html:not(.fullAnimButtons) body.ynot-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,212,232,0.42), rgba(10,10,14,0.92)) !important; }
 
     
-    .egg-off-btn { display: none !important; }
+    .egg-off-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: var(--radius-btn);
+      border: 1px solid #ff00c8;
+      background: rgba(255, 0, 200, 0.15);
+      color: #fff;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-top: 10px;
+    }
+    .egg-off-btn:hover {
+      background: rgba(255, 0, 200, 0.25);
+      box-shadow: 0 0 15px rgba(255, 0, 200, 0.4);
+      transform: scale(1.02);
+    }
+    body.mattmab-reskin .egg-off-btn { border-color: #ffd700; background: rgba(255,215,0,0.2); }
+    body.mac10-reskin .egg-off-btn { border-color: #ff5050; background: rgba(255,80,80,0.2); }
+    body.badley-reskin .egg-off-btn { border-color: #9b6eff; background: rgba(155,110,255,0.2); }
+    body.scooter-reskin .egg-off-btn { border-color: #00ff78; background: rgba(0,255,120,0.2); }
+    body.ynot-reskin .egg-off-btn { border-color: #00d4e8; background: rgba(0,212,232,0.2); }
+    body.grimeey-reskin .egg-off-btn { border-color: #ff8c00; background: rgba(255,140,0,0.2); }
 
     
     body.mattmab-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(255,215,0,.95), rgba(70,120,255,.95)); border-color: rgba(255,215,0,.65); box-shadow: 0 0 22px rgba(255,215,0,.35); }
@@ -613,7 +653,7 @@
       color: #e8e0c8 !important;
     }
     body.mattmab-reskin .editor-select option, body.mattmab-reskin select option {
-      background: linear-gradient(135deg, rgba(50,40,20,0.98) 0%, rgba(35,28,15,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(50,40,20,1) 0%, rgba(35,28,15,1) 100%) !important;
       color: #f0e8d0 !important;
     }
     body.mac10-reskin .editor-select, body.mac10-reskin .editor-input,
@@ -625,7 +665,7 @@
       color: #f0d8d8 !important;
     }
     body.mac10-reskin .editor-select option, body.mac10-reskin select option {
-      background: linear-gradient(135deg, rgba(45,18,18,0.98) 0%, rgba(28,10,10,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(45,18,18,1) 0%, rgba(28,10,10,1) 100%) !important;
       color: #f5e0e0 !important;
     }
     body.badley-reskin .editor-select, body.badley-reskin .editor-input,
@@ -637,7 +677,7 @@
       color: #f0e8f5 !important;
     }
     body.badley-reskin .editor-select option, body.badley-reskin select option {
-      background: linear-gradient(135deg, rgba(45,25,55,0.98) 0%, rgba(35,20,45,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(45,25,55,1) 0%, rgba(35,20,45,1) 100%) !important;
       color: #f5ecfa !important;
     }
     body.scooter-reskin .editor-select, body.scooter-reskin .editor-input,
@@ -649,7 +689,7 @@
       color: #d8f5e8 !important;
     }
     body.scooter-reskin .editor-select option, body.scooter-reskin select option {
-      background: linear-gradient(135deg, rgba(18,42,30,0.98) 0%, rgba(12,30,22,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(18,42,30,1) 0%, rgba(12,30,22,1) 100%) !important;
       color: #e0f8ec !important;
     }
     body.ynot-reskin .editor-select, body.ynot-reskin .editor-input,
@@ -661,7 +701,7 @@
       color: #d8f4f8 !important;
     }
     body.ynot-reskin .editor-select option, body.ynot-reskin select option {
-      background: linear-gradient(135deg, rgba(12,24,34,0.98) 0%, rgba(6,12,18,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(12,24,34,1) 0%, rgba(6,12,18,1) 100%) !important;
       color: #e4f8fc !important;
     }
     body.mattmab-reskin .expander-bar { background: linear-gradient(90deg, rgba(255,215,0,0.15) 0%, rgba(70,120,255,0.14) 100%) !important; border-color: rgba(255,215,0,0.4) !important; color: #ffd700 !important; }
@@ -702,25 +742,25 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    body.mattmab-reskin .custom-select-display, body.mattmab-reskin .custom-select-list { background: linear-gradient(135deg, rgba(50,40,20,0.98) 0%, rgba(35,28,15,0.98) 100%) !important; border-color: rgba(255,215,0,0.45) !important; color: #f0e8d0 !important; }
+    body.mattmab-reskin .custom-select-display, body.mattmab-reskin .custom-select-list { background: linear-gradient(135deg, rgba(50,40,20,1) 0%, rgba(35,28,15,1) 100%) !important; border-color: rgba(255,215,0,0.45) !important; color: #f0e8d0 !important; }
     body.mattmab-reskin .custom-select-option { color: #f0e8d0 !important; }
-    body.mattmab-reskin .custom-select-option:hover { background: rgba(255,215,0,0.25) !important; }
+    body.mattmab-reskin .custom-select-option:hover { background: rgba(255, 215, 0, 0.45) !important; }
     body.mattmab-reskin .custom-select-group-header { color: #ffd700 !important; border-bottom-color: rgba(255,215,0,0.4) !important; }
-    body.mac10-reskin .custom-select-display, body.mac10-reskin .custom-select-list { background: linear-gradient(135deg, rgba(45,18,18,0.98) 0%, rgba(28,10,10,0.98) 100%) !important; border-color: rgba(255,80,80,0.45) !important; color: #f5e0e0 !important; }
+    body.mac10-reskin .custom-select-display, body.mac10-reskin .custom-select-list { background: linear-gradient(135deg, rgba(45,18,18,1) 0%, rgba(28,10,10,1) 100%) !important; border-color: rgba(255,80,80,0.45) !important; color: #f5e0e0 !important; }
     body.mac10-reskin .custom-select-option { color: #f5e0e0 !important; }
-    body.mac10-reskin .custom-select-option:hover { background: rgba(255,80,80,0.25) !important; }
+    body.mac10-reskin .custom-select-option:hover { background: rgba(255, 80, 80, 0.45) !important; }
     body.mac10-reskin .custom-select-group-header { color: #ff6060 !important; border-bottom-color: rgba(255,80,80,0.4) !important; }
-    body.badley-reskin .custom-select-display, body.badley-reskin .custom-select-list { background: linear-gradient(135deg, rgba(45,25,55,0.98) 0%, rgba(35,20,45,0.98) 100%) !important; border-color: rgba(155,110,255,0.45) !important; color: #f5ecfa !important; }
+    body.badley-reskin .custom-select-display, body.badley-reskin .custom-select-list { background: linear-gradient(135deg, rgba(45,25,55,1) 0%, rgba(35,20,45,1) 100%) !important; border-color: rgba(155,110,255,0.45) !important; color: #f5ecfa !important; }
     body.badley-reskin .custom-select-option { color: #f5ecfa !important; }
-    body.badley-reskin .custom-select-option:hover { background: rgba(155,110,255,0.25) !important; }
+    body.badley-reskin .custom-select-option:hover { background: rgba(155, 110, 255, 0.45) !important; }
     body.badley-reskin .custom-select-group-header { color: #9b6eff !important; border-bottom-color: rgba(155,110,255,0.4) !important; }
-    body.scooter-reskin .custom-select-display, body.scooter-reskin .custom-select-list { background: linear-gradient(135deg, rgba(18,42,30,0.98) 0%, rgba(12,30,22,0.98) 100%) !important; border-color: rgba(0,255,120,0.45) !important; color: #e0f8ec !important; }
+    body.scooter-reskin .custom-select-display, body.scooter-reskin .custom-select-list { background: linear-gradient(135deg, rgba(18,42,30,1) 0%, rgba(12,30,22,1) 100%) !important; border-color: rgba(0,255,120,0.45) !important; color: #e0f8ec !important; }
     body.scooter-reskin .custom-select-option { color: #e0f8ec !important; }
-    body.scooter-reskin .custom-select-option:hover { background: rgba(0,255,120,0.25) !important; }
+    body.scooter-reskin .custom-select-option:hover { background: rgba(0, 255, 120, 0.45) !important; }
     body.scooter-reskin .custom-select-group-header { color: #00ff78 !important; border-bottom-color: rgba(0,255,120,0.4) !important; }
-    body.ynot-reskin .custom-select-display, body.ynot-reskin .custom-select-list { background: linear-gradient(135deg, rgba(12,24,34,0.98) 0%, rgba(6,12,18,0.98) 100%) !important; border-color: rgba(0,212,232,0.45) !important; color: #e4f8fc !important; }
+    body.ynot-reskin .custom-select-display, body.ynot-reskin .custom-select-list { background: linear-gradient(135deg, rgba(12,24,34,1) 0%, rgba(6,12,18,1) 100%) !important; border-color: rgba(0,212,232,0.45) !important; color: #e4f8fc !important; }
     body.ynot-reskin .custom-select-option { color: #e4f8fc !important; }
-    body.ynot-reskin .custom-select-option:hover { background: rgba(0,212,232,0.22) !important; }
+    body.ynot-reskin .custom-select-option:hover { background: rgba(0, 212, 232, 0.7) !important; }
     body.ynot-reskin .custom-select-group-header { color: #00d4e8 !important; border-bottom-color: rgba(0,212,232,0.4) !important; }
 
     
@@ -747,7 +787,7 @@
       color: #ecfdf5 !important;
     }
     body.grimeey-reskin .editor-select option, body.grimeey-reskin select option {
-      background: linear-gradient(135deg, rgba(12,32,22,0.98) 0%, rgba(8,22,14,0.98) 100%) !important;
+      background: linear-gradient(135deg, rgba(12,32,22,1) 0%, rgba(8,22,14,1) 100%) !important;
       color: #f0fdf4 !important;
     }
     body.mattmab-reskin .rebuild-details summary, body.mac10-reskin .rebuild-details summary,
@@ -755,9 +795,9 @@
       color: inherit;
     }
     body.grimeey-reskin .expander-bar { background: linear-gradient(90deg, rgba(68,143,54,0.22) 0%, rgba(8,14,10,0.92) 100%) !important; border-color: rgba(68,143,54,0.42) !important; color: #92c978 !important; }
-    body.grimeey-reskin .custom-select-display, body.grimeey-reskin .custom-select-list { background: linear-gradient(135deg, rgba(12,32,22,0.98) 0%, rgba(8,20,14,0.98) 100%) !important; border-color: rgba(68,143,54,0.45) !important; color: #ecfdf5 !important; }
+    body.grimeey-reskin .custom-select-display, body.grimeey-reskin .custom-select-list { background: linear-gradient(135deg, rgba(12,32,22,1) 0%, rgba(8,20,14,1) 100%) !important; border-color: rgba(68,143,54,0.45) !important; color: #ecfdf5 !important; }
     body.grimeey-reskin .custom-select-option { color: #ecfdf5 !important; }
-    body.grimeey-reskin .custom-select-option:hover { background: rgba(68,143,54,0.22) !important; }
+    body.grimeey-reskin .custom-select-option:hover { background: rgba(68, 143, 54, 0.45) !important; }
     body.grimeey-reskin .custom-select-group-header { color: #92c978 !important; border-bottom-color: rgba(248,250,252,0.35) !important; }
 
     
@@ -813,7 +853,7 @@
     #ccHeavyLegendarySelect {
       border-color: rgba(255, 205, 80, 0.78) !important;
       box-shadow: 0 0 0 1px rgba(255, 205, 80, 0.16), inset 0 0 0 1px rgba(255, 205, 80, 0.08);
-      background: linear-gradient(135deg, rgba(42, 30, 10, 0.72), rgba(26, 20, 8, 0.82)) !important;
+      background: linear-gradient(135deg, rgba(42, 30, 10, 1), rgba(26, 20, 8, 1)) !important;
       color: #ffe9a8 !important;
     }
     
@@ -961,7 +1001,7 @@
       padding: 6px 10px;
       border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.35) 0%, rgba(80, 0, 120, 0.35) 100%);
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%);
       color: var(--text-primary);
       font-size: 12px;
       min-width: 140px;
@@ -970,12 +1010,12 @@
     .editor-select option,
     select.editor-select option,
     select option {
-      background: linear-gradient(135deg, rgba(0, 60, 120, 0.98) 0%, rgba(60, 0, 100, 0.98) 100%);
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%);
       color: #fff;
     }
     .editor-page select,
     .app-shell select {
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.35) 0%, rgba(80, 0, 120, 0.35) 100%) !important;
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%) !important;
       color-scheme: dark;
     }
     .editor-select:hover,
@@ -1402,7 +1442,7 @@
       padding: 8px 10px;
       border-radius: 6px;
       border: 1px solid rgba(255,255,255,0.12);
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.35) 0%, rgba(80, 0, 120, 0.35) 100%);
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%);
       color: var(--text-primary);
       font-size: 12px;
     }
@@ -1445,7 +1485,7 @@
     #stxSimpleBuilderPanel select.editor-select,
     #stxSimpleBuilderPanel input.editor-input {
       border-color: rgba(255, 255, 255, 0.15);
-      background: linear-gradient(135deg, rgba(0, 100, 180, 0.4) 0%, rgba(80, 0, 120, 0.4) 100%);
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%);
     }
     #stxSimpleBuilderPanel select.editor-select:focus,
     #stxSimpleBuilderPanel input.editor-input:focus {
@@ -1456,13 +1496,13 @@
       padding: 14px;
       border-radius: 8px;
       border: 1px solid rgba(255, 0, 200, 0.25);
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 1);
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     #stxSimpleBuilderPanel #builderEmpty {
       padding: 12px;
       border-radius: 6px;
-      background: linear-gradient(135deg, rgba(0, 243, 255, 0.06) 0%, rgba(255, 0, 200, 0.06) 100%);
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%);
       border: 1px dashed rgba(255, 0, 200, 0.35);
     }
     #stxSimpleBuilderPanel #detectedCat {
@@ -1633,7 +1673,7 @@
       padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid rgba(0, 243, 255, 0.22);
-      background: rgba(6, 16, 28, 0.55);
+      background: rgba(6, 16, 28, 1);
       font-size: 11px;
       line-height: 1.45;
       color: rgba(240, 250, 255, 0.92);
@@ -1788,10 +1828,97 @@
       margin-top: 10px;
       border: 1px solid rgba(255, 0, 200, 0.25);
       border-radius: var(--radius-panel);
-      background: rgba(0, 0, 0, 0.25);
-      overflow: hidden;
+      background: rgba(0, 0, 10, 1);
+      overflow: visible !important;
+      content-visibility: visible !important;
+      contain: none !important;
+      will-change: transform;
+      position: relative;
+      z-index: 1;
     }
-    .rebuild-details[open] { overflow: visible; }
+    .rebuild-details[open] { 
+      overflow: visible !important; 
+      content-visibility: visible !important;
+      contain: none !important;
+      z-index: 100;
+    }
+    .panel,
+    #stxSimpleBuilderPanel,
+    #stxSimpleBuilderPanel .stx-builder-grid,
+    #rebuildToolsPanel,
+    #ccGearGuidedHub,
+    #ccGunBuilder {
+      overflow: visible;
+    }
+    .custom-select-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+    .custom-select-wrapper.is-open {
+      z-index: 2147483000;
+    }
+    .custom-select-list {
+      z-index: 2147483001 !important;
+      background: #050a14 !important;
+    }
+    .custom-select-display,
+    .custom-select-list {
+      opacity: 1 !important;
+      background: linear-gradient(135deg, rgba(8, 24, 38, 1) 0%, rgba(20, 12, 34, 1) 100%) !important;
+      color: var(--text-primary) !important;
+    }
+    .custom-select-display {
+      border-color: rgba(0, 243, 255, 0.34) !important;
+    }
+    .custom-select-option {
+      background: #050a14 !important;
+    }
+    .quick-part-button-groups {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+    }
+    .quick-part-button-group {
+      padding: 10px;
+      border: 1px solid rgba(0, 243, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+    .quick-part-button-group__title {
+      margin-bottom: 8px;
+      color: var(--accent-cyan);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .quick-part-button-group__buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    #rebuildBuildStatsSection[open] {
+      min-height: 280px;
+      contain-intrinsic-size: auto 280px;
+      will-change: min-height;
+    }
+    #ccGuidedSkinCamoDetails[open] {
+      min-height: 140px;
+      contain-intrinsic-size: auto 140px;
+    }
+    #ccGuidedLegendaryDetails[open] {
+      min-height: 110px;
+      contain-intrinsic-size: auto 110px;
+    }
+    #ccGuidedQuickAddDetails[open] {
+      min-height: 110px;
+      contain-intrinsic-size: auto 110px;
+    }
+    .cm-checklist { 
+      min-height: 40px; 
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
     .rebuild-details summary {
       padding: 10px 14px;
       color: var(--accent-cyan);
@@ -1809,7 +1936,7 @@
       padding: 12px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 1);
     }
     .rebuild-part-card__title { color: var(--accent-cyan); font-weight: 700; font-size: 12px; display: block; margin-bottom: 4px; }
     .rebuild-part-card__hint { color: var(--text-muted); font-size: 11px; margin: 0; }
@@ -1996,7 +2123,7 @@
       flex-direction: column;
       border-radius: 16px;
       border: 2px solid rgba(255, 0, 200, 0.45);
-      background: rgba(0, 10, 22, 0.72);
+      background: rgba(0, 10, 22, 1);
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 243, 255, 0.25), 0 0 20px rgba(255, 0, 200, 0.2);
       backdrop-filter: blur(12px);
       overflow: hidden;
@@ -2427,6 +2554,114 @@
       animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: transform;
     }
+    .stx-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(2, 8, 14, 0.78);
+      backdrop-filter: blur(6px);
+    }
+    .stx-modal.is-open { display: flex; }
+    .stx-modal__content {
+      width: min(1040px, 100%);
+      max-height: min(760px, 92vh);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(0, 243, 255, 0.36);
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(10, 18, 28, 0.98), rgba(14, 22, 34, 0.98));
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.72), 0 0 34px rgba(0, 243, 255, 0.18);
+      overflow: hidden;
+    }
+    .stx-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+      background: rgba(0, 243, 255, 0.08);
+    }
+    .stx-modal__title {
+      margin: 0;
+      color: #9ff8ff;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+    .stx-modal__body {
+      padding: 14px 16px 16px;
+      overflow: auto;
+    }
+    .stx-history-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: rgba(245, 252, 255, 0.92);
+      font-size: 13px;
+    }
+    .stx-history-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 9px 8px;
+      color: #00f3ff;
+      background: #111a26;
+      border-bottom: 1px solid rgba(0, 243, 255, 0.24);
+      text-align: left;
+    }
+    .stx-history-table td {
+      vertical-align: top;
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .stx-history-item-name {
+      margin-bottom: 6px;
+      color: #fff;
+      font-weight: 800;
+    }
+    .stx-history-item-code {
+      display: block;
+      max-width: 680px;
+      padding: 8px;
+      border: 1px solid rgba(0, 243, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.24);
+      color: #b8f4ff;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .stx-history-meta {
+      margin-top: 4px;
+      color: rgba(190, 220, 235, 0.68);
+      font-size: 11px;
+    }
+    .btn.btn-sm {
+      padding: 5px 8px;
+      min-height: 28px;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      .stx-modal { padding: 10px; align-items: stretch; }
+      .stx-modal__content { max-height: 96vh; }
+      .stx-history-table, .stx-history-table thead, .stx-history-table tbody, .stx-history-table tr, .stx-history-table th, .stx-history-table td {
+        display: block;
+      }
+      .stx-history-table thead { display: none; }
+      .stx-history-table tr {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .stx-history-table td {
+        border-bottom: 0;
+        padding: 4px 0;
+      }
+      .stx-history-item-code { max-width: 100%; }
+    }
   </style>
 </head>
 <body class="editor-page">
@@ -2434,7 +2669,7 @@
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
 <h1 class="splash__title" id="stxToolboxSplashTitle">Scooter's Toolbox</h1>
-<p class="splash__sub">Cyber workshop · V2 - 2.5.1</p>
+<p class="splash__sub">Cyber workshop · V2 - 2.5.2</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
 <div class="app-shell">
@@ -2447,7 +2682,6 @@
 <input class="anim-toggle__input" id="fullAnimToggle" name="fullAnimToggle" type="checkbox"/>
 <span class="anim-toggle__slider"></span>
 </label>
-<button class="btn egg-off-btn" id="eggOffBtn" title="Turn off easter egg theme" type="button">Reset theme</button>
 <button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button">Have a code to import/edit? Click here</button>
 <button class="btn btn--brand" id="scrollToSavBtn" type="button">💾 Using a .Sav/.yaml? Click here</button>
 
@@ -2623,6 +2857,7 @@
 <a class="btn btn--brand" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Scooters Garage (community)">🎮 Scooters Garage (community)</a>
 <a class="btn btn--brand" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Scooters Garage (issues/ideas)</a>
 </div>
+<button class="egg-off-btn" id="eggOffBtn" style="display:none;" type="button">Disable Easter Eggs & Reset Theme</button>
 </div>
 
 <div id="stxDockBlock">
@@ -2710,6 +2945,15 @@
 <button class="btn" id="btnCopyList" type="button">Copy Parts List</button>
 <button class="btn" id="btnCopyJson" type="button">Copy JSON</button>
 <button class="btn btn-clear" id="btnClear" type="button">Clear Parts</button>
+</div>
+<div id="simpleBuilderPresetRow" style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(0,243,255,0.15);">
+<label for="simpleBuilderPresetSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Quick presets (optional)</label>
+<div style="display:flex; gap:8px;">
+<select class="editor-select" id="simpleBuilderPresetSelect" style="flex:1;">
+<option value="">-- Select Preset --</option>
+</select>
+<button class="btn" id="simpleBuilderPresetAddBtn" type="button">Add</button>
+</div>
 </div>
 </div>
 <div>
@@ -2850,7 +3094,7 @@
 <div><label for="ccWeaponMagTedSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Tediore Thrown Mag</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccWeaponMagTedSelect" name="ccWeaponMagTedSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponMagTed" type="button">Add</button></div></div>
 <div><label for="ccScopeSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Scope</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccScopeSelect" name="ccScopeSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddScope" type="button">Add</button></div></div>
 <div><label for="ccScopeAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Scope Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccScopeAccSelect" name="ccScopeAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddScopeAcc" type="button">Add</button></div></div>
-<div><label for="ccScopeAcc2Select" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Scope Accessory 2</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccScopeAcc2Select" name="ccScopeAcc2Select" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddScopeAcc2" type="button">Add</button></div></div>
+<!-- removed scope acc 2 -->
 <div><label for="ccGripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Grip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGripSelect" name="ccGripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddGrip" type="button">Add</button></div></div>
 <div><label for="ccUnderbarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Underbarrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccUnderbarrelSelect" name="ccUnderbarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddUnderbarrel" type="button">Add</button></div></div>
 <div><label for="ccForegripSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Foregrip</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccForegripSelect" name="ccForegripSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddForegrip" type="button">Add</button></div></div>
@@ -2935,7 +3179,7 @@
 <div style="margin-top:8px;">
 <input id="enhStackFilter" name="enhStackFilter" placeholder="Filter stacked perks..." style="width:100%;max-width:320px;margin-bottom:8px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,243,255,0.3);color:#fff;" type="text">
 <div class="enh-tickbox-list" id="enhStackBox" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(0,243,255,0.2);"></div>
-</input></div>
+</div>
 </details>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Build {247:[...]} secondary stats (duplicates allowed)</summary>
@@ -3053,7 +3297,7 @@
 
 <details class="rebuild-details" id="rebuildBuildStatsSection" open="" style="margin-top:16px;overflow:visible;">
 <summary>Build stats (core snapshot)</summary>
-<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(255,255,255,0.04);overflow:visible;">
+<div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(0, 0, 10, 1);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
 <div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.</div>
 <div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
@@ -3068,11 +3312,12 @@
 </details>
 
 <div class="panel" id="rebuildPasteCodeSection" style="margin-top:16px;">
-<div class="panel__title">Paste code to edit</div>
+<div class="panel__title">Paste code to edit (import)</div>
 <div id="rebuildPasteCodeDetails" style="margin-top:10px;">
 <textarea class="editor-output-code" id="importBox" name="importBox" placeholder="Paste BL-base85 or deserialized code here (Ctrl+Enter to import)" rows="3"></textarea>
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
-<button class="btn btn--brand" id="btnImport" type="button">Import to Builder</button>
+<button class="btn btn--brand" id="btnImport" type="button">Import to Guided</button>
+<button class="btn btn--brand" id="btnImportSimple" type="button">Import to Simple</button>
 <button class="btn" id="btnClearImport" title="Clear paste area" type="button">Clear</button>
 <span id="importFeedback" style="color:var(--accent-cyan);font-size:0.9em;opacity:0;"></span>
 </div>
@@ -3086,12 +3331,12 @@
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
 <input id="prefixItemSearchInput" name="prefixItemSearchInput" placeholder="Search by name, prefix, or ID…" style="flex:1;min-width:200px;padding:10px 12px;background:#1a2332;border:2px solid rgba(0,243,255,0.4);border-radius:8px;color:#b8e6f0;font-size:0.95em;" type="text"/>
 <button class="btn btn--brand" id="prefixItemAddToEditorBtn" type="button">Add to Editor</button>
+<button class="btn" id="prefixItemCopyBtn" type="button">Copy selected</button>
 <button class="btn btn--brand" disabled="" id="prefixItemAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">💾 Add to YAML</button>
 <button class="btn btn--brand" disabled="" id="prefixItemAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
-<button class="btn" id="prefixItemCopyBtn" type="button">Copy</button>
 </div>
 <div id="prefixItemSearchStatus" style="color:rgba(0,200,255,0.9);font-size:0.85em;margin-bottom:6px;"></div>
-<div id="prefixItemSearchResults" style="max-height:220px;overflow-y:auto;padding:8px;background:rgba(0,0,0,0.25);border-radius:8px;border:1px solid rgba(0,200,255,0.2);">
+<div id="prefixItemSearchResults" style="max-height:220px;overflow-y:auto;padding:8px;background:rgba(0, 0, 10, 1);border-radius:8px;border:1px solid rgba(0,200,255,0.2);">
 <div style="color:rgba(255,255,255,0.6);font-size:0.9em;">Type to search. Results appear below.</div>
 </div>
 </div>
@@ -3118,11 +3363,10 @@
 <button class="btn btn--brand" disabled="" id="godrollAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">💾 Add to YAML</button>
 <button class="btn btn--brand" disabled="" id="godrollAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 <button class="btn" id="godrollCopyBtn" type="button">Copy</button>
-<button class="btn" id="godrollLoadFileBtn" type="button">Load JSON File</button>
 <input accept=".json" id="godrollFileInput" name="godrollFileInput" style="display:none;" type="file"/>
 </div>
 <div id="godrollSearchStatus" style="color:rgba(255,220,150,0.95);font-size:0.85em;margin-bottom:6px;"></div>
-<div id="godrollSearchResults" style="max-height:240px;overflow-y:auto;padding:8px;background:rgba(0,0,0,0.28);border-radius:8px;border:1px solid rgba(255,170,70,0.35);">
+<div id="godrollSearchResults" style="max-height:240px;overflow-y:auto;padding:8px;background:rgba(0, 0, 10, 1);border-radius:8px;border:1px solid rgba(255,170,70,0.35);">
 <div style="color:rgba(255,255,255,0.68);font-size:0.9em;">Loading Godroll list…</div>
 </div>
 </div>
@@ -3137,6 +3381,7 @@
 <a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
 <a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
 <a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
+<button class="btn btn--brand" id="btnShowHistory" title="View a history of items you have crafted in this browser" type="button">📄 Items Made</button>
 </div>
 <details class="rebuild-details" id="ccAdvancedPartsSearch" open="">
 <summary>Advanced part search</summary>
@@ -3160,6 +3405,35 @@
 <input class="editor-input" id="presetQuantity" min="1" name="presetQuantity" style="width:80px;" type="number" value="1"/>
 </div>
 <button class="btn btn--brand" id="rebuildPresetAddBtn" type="button">Add preset</button>
+</div>
+<div class="quick-part-button-groups" aria-label="Quick part buttons by item type">
+<div class="quick-part-button-group">
+<div class="quick-part-button-group__title">Grenade</div>
+<div class="quick-part-button-group__buttons">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:10}')" title="Grenade quick part token {23:10}" type="button">Damage</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:11}')" title="Grenade quick part token {23:11}" type="button">Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:12}')" title="Grenade quick part token {23:12}" type="button">Charges</button>
+</div>
+</div>
+<div class="quick-part-button-group">
+<div class="quick-part-button-group__title">Shield</div>
+<div class="quick-part-button-group__buttons">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:15}')" title="Shield quick part token {22:15}" type="button">Element Resist</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:74}')" title="Shield quick part token {22:74}" type="button">Recharge Rate (30%)</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:75}')" title="Shield quick part token {22:75}" type="button">Recharge Delay (-20%)</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:1}')" title="Shield quick part token {22:1}" type="button">Capacity</button>
+</div>
+</div>
+<div class="quick-part-button-group">
+<div class="quick-part-button-group__title">Repkit</div>
+<div class="quick-part-button-group__buttons">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:31}')" title="Repkit quick part token {247:31}" type="button">Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:48}')" title="Repkit quick part token {247:48}" type="button">Healing/Long Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:28}')" title="Repkit quick part token {247:28}" type="button">Capacity/Duration</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:35}')" title="Repkit quick part token {247:35}" type="button">Splat/Nova</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:37}')" title="Repkit quick part token {247:37}" type="button">Resist/Immunity</button>
+</div>
+</div>
 </div>
 </div>
 </details>
@@ -3225,9 +3499,54 @@
 <summary>Additional part sections</summary>
 <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">Manual part addition by category. Use the Guided Builder above for slot-by-slot selection.</p>
 <div id="rebuildPartSectionsWrap" style="margin-top:14px;">
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsGrenade"><summary>Grenade</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectGrenade" name="partSelectGrenade" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddGrenade" type="button">Add</button></div><div class="rebuild-part-list" id="partListGrenade"></div></details>
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsShield"><summary>Shield</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectShield" name="partSelectShield" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddShield" type="button">Add</button></div><div class="rebuild-part-list" id="partListShield"></div></details>
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsRepkit"><summary>Repkit</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectRepkit" name="partSelectRepkit" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddRepkit" type="button">Add</button></div><div class="rebuild-part-list" id="partListRepkit"></div></details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsGrenade">
+<summary>Grenade</summary>
+<div style="margin-top:10px;">
+<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:10}')" type="button">Damage</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:11}')" type="button">Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{23:12}')" type="button">Charges</button>
+</div>
+<select class="editor-select" id="partSelectGrenade" name="partSelectGrenade" style="width:100%;margin-bottom:6px;">
+<option value="">-- Select part --</option>
+</select>
+<button class="btn" id="partAddGrenade" type="button">Add</button>
+</div>
+<div class="rebuild-part-list" id="partListGrenade"></div>
+</details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsShield">
+<summary>Shield</summary>
+<div style="margin-top:10px;">
+<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:15}')" type="button">Element Resist</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:74}')" type="button">Recharge Rate (30%)</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:75}')" type="button">Recharge Delay (-20%)</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{22:1}')" type="button">CAPACITY</button>
+</div>
+<select class="editor-select" id="partSelectShield" name="partSelectShield" style="width:100%;margin-bottom:6px;">
+<option value="">-- Select part --</option>
+</select>
+<button class="btn" id="partAddShield" type="button">Add</button>
+</div>
+<div class="rebuild-part-list" id="partListShield"></div>
+</details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsRepkit">
+<summary>Repkit</summary>
+<div style="margin-top:10px;">
+<div style="margin-bottom:10px;display:flex;gap:6px;flex-wrap:wrap;">
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:31}')" type="button">Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:48}')" type="button">Healing/Long Cooldown</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:28}')" type="button">Capacity/Duration</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:35}')" type="button">Splat/Nova</button>
+<button class="btn btn-sm btn--brand" onclick="appendToOutCode('{247:37}')" type="button">Resist/Immunity</button>
+</div>
+<select class="editor-select" id="partSelectRepkit" name="partSelectRepkit" style="width:100%;margin-bottom:6px;">
+<option value="">-- Select part --</option>
+</select>
+<button class="btn" id="partAddRepkit" type="button">Add</button>
+</div>
+<div class="rebuild-part-list" id="partListRepkit"></div>
+</details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsEnhancement"><summary>Enhancement</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectEnhancement" name="partSelectEnhancement" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddEnhancement" type="button">Add</button></div><div class="rebuild-part-list" id="partListEnhancement"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Vex" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Vex</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Amon" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Amon</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Rafa" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Rafa</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Harlowe" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Harlowe</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="C4sh" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickPrimaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickSecondaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickUniversalList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist" id="cmQuickFirmwareList"></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsHeavy"><summary>Heavy</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectHeavy" name="partSelectHeavy" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddHeavy" type="button">Add</button></div><div class="rebuild-part-list" id="partListHeavy"></div></details>
@@ -3255,7 +3574,7 @@
 <label for="ipiQuickPaste" style="display:block;font-size:0.85em;color:rgba(0,243,255,0.95);margin-bottom:6px;">Paste code (Base85 or deserialized)</label>
 <textarea class="editor-output-code" id="ipiQuickPaste" name="ipiQuickPaste" placeholder="Paste serial here, then choose where to apply…" rows="2" style="width:100%;margin-bottom:8px;"></textarea>
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-<button class="btn btn--brand" id="ipiBtnApplyGuided" type="button">Apply to Guided output</button>
+<button class="btn btn--brand" id="ipiBtnApplyGuided" type="button">Import to Guided</button>
 <button class="btn" id="ipiBtnApplySimple" type="button">Import to Simple Builder</button>
 <span style="font-size:0.8em;color:rgba(255,255,255,0.55);">Guided = main textarea below Guided Builder. Simple = slot importer (same as "Paste code to edit").</span>
 </div>
@@ -3729,6 +4048,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           alert('Could not produce a BL-base85 serial. Use Convert to BL-base85, paste an @U serial, or fix the deserialized code.');
           return;
         }
+        if (window.stxLogHistory) window.stxLogHistory(b85);
         var drawer = byId('rp-saveyaml-drawer');
         if (drawer) {
           drawer.classList.add('rp-open');
@@ -3934,31 +4254,35 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
       function initImportToBuilder() {
         var importBox = byId('importBox');
         var btnImport = byId('btnImport');
+        var btnImportSimple = byId('btnImportSimple');
         var btnClearImport = byId('btnClearImport');
         var importFeedback = byId('importFeedback');
         var pasteDetails = byId('rebuildPasteCodeDetails');
         var pasteSection = byId('rebuildPasteCodeSection');
-        if (!btnImport || !importBox) return;
-        function doImport() {
+        if (!importBox) return;
+
+        function doImport(target) {
           var code = (importBox.value || '').trim();
           if (!code) return false;
           if (pasteDetails && !pasteDetails.open) pasteDetails.open = true;
-          var looksLikeBase85 = code.indexOf('||') < 0 && code.indexOf('{') < 0 && code.length > 20;
-          if (looksLikeBase85 && typeof window.deserializeBase85 === 'function') {
+          if ((code.indexOf('@u') === 0 || code.indexOf('@U') === 0 || (code.indexOf('||') < 0 && code.indexOf('{') < 0 && code.length > 20)) && typeof window.deserializeBase85 === 'function') {
             try {
               var deser = window.deserializeBase85(code);
               if (deser && typeof deser === 'string' && deser.trim().length) importBox.value = deser.trim();
             } catch (_) {}
           }
           try {
-            if (typeof window.importTokens === 'function') window.importTokens();
+            if (typeof window.importTokens === 'function') {
+              window.importTokens();
+              // 'target' will sync the requested builder
+              if (typeof window.finalizeCcImportToBuilders === 'function') window.finalizeCcImportToBuilders(target || 'guided');
+            }
             else if (typeof window.refreshOutputs === 'function') window.refreshOutputs();
           } catch (_) {}
           setTimeout(function () {
-            try { if (window.refreshOutputs) window.refreshOutputs(); } catch (_) {}
+            // try { if (window.refreshOutputs) window.refreshOutputs(); } catch (_) {}
             try { if (window.refreshBuilder) window.refreshBuilder(); } catch (_) {}
             try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-            if (pasteSection) pasteSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             if (importFeedback) {
               var count = 0;
               try {
@@ -3975,9 +4299,13 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           }, 50);
           return true;
         }
-        btnImport.addEventListener('click', function (e) {
+        if (btnImport) btnImport.addEventListener('click', function (e) {
           e.stopImmediatePropagation();
-          doImport();
+          doImport('guided');
+        });
+        if (btnImportSimple) btnImportSimple.addEventListener('click', function (e) {
+          e.stopImmediatePropagation();
+          doImport('simple');
         });
         if (btnClearImport) btnClearImport.addEventListener('click', function () {
           importBox.value = '';
@@ -3988,7 +4316,8 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         importBox.addEventListener('keydown', function (e) {
           if (e.ctrlKey && e.key === 'Enter') {
             e.preventDefault();
-            if (doImport()) e.stopPropagation();
+            // Default to 'both' for Ctrl+Enter import
+            if (doImport('both')) e.stopPropagation();
           }
         });
       }
@@ -4075,10 +4404,17 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var copySerialBtn = byId('btnCopyGuidedSerial');
         var copyDeserBtn = byId('btnCopyGuidedDeser');
         function copyAndFeedback(btn, txt) {
-          if (txt) try { navigator.clipboard.writeText(txt.trim()); btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1200); } catch (_) {}
+          if (txt) {
+            try { navigator.clipboard.writeText(txt.trim()); btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1200); } catch (_) {}
+            if (window.stxLogHistory) window.stxLogHistory(txt.trim());
+          }
         }
-        if (copySerialBtn && serialEl) copySerialBtn.addEventListener('click', function () { copyAndFeedback(copySerialBtn, serialEl.value); });
-        if (copyDeserBtn && deserEl) copyDeserBtn.addEventListener('click', function () { copyAndFeedback(copyDeserBtn, deserEl.value); });
+        if (copySerialBtn && serialEl) copySerialBtn.addEventListener('click', function () { 
+          copyAndFeedback(copySerialBtn, serialEl.value); 
+        });
+        if (copyDeserBtn && deserEl) copyDeserBtn.addEventListener('click', function () { 
+          copyAndFeedback(copyDeserBtn, deserEl.value); 
+        });
         setInterval(update, 500);
         setTimeout(update, 100);
       }
@@ -4092,12 +4428,15 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var outCode = byId('outCode');
         
         function getPrimaryOutputEl() {
-          var guidedDeser = byId('guidedOutputDeserialized');
           var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
+          if (last === 'simple') return byId('outCode');
+          
+          var guidedDeser = byId('guidedOutputDeserialized');
           if (last === 'guided' && guidedDeser) return guidedDeser;
-          // Keep floating panel scoped away from Simple Builder's dedicated output box.
-          if (guidedDeser) return guidedDeser;
-          return null;
+          
+          // Fallback
+          if (guidedDeser && (guidedDeser.value || '').indexOf('||') >= 0) return guidedDeser;
+          return byId('outCode');
         }
         var guidedSerialEl = byId('guidedOutputSerial');
         var guidedDeserEl = byId('guidedOutputDeserialized');
@@ -4227,6 +4566,7 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var copyBtn = byId('floatingCopyBtn');
         if (copyBtn) copyBtn.addEventListener('click', function () {
           var txt = getEffectiveCodeForYamlOrCopy();
+          if (window.stxLogHistory && txt) window.stxLogHistory(txt);
           try { navigator.clipboard.writeText(txt); } catch (_) {}
         });
         function pushSerialToPrimary(val) {
@@ -4322,16 +4662,255 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
           var outCode = byId('outCode');
           var guidedSerial = byId('guidedOutputSerial');
           var txt = (outCode && outCode.value) || (guidedSerial && guidedSerial.value) || '';
-          if (txt) try { navigator.clipboard.writeText(txt.trim()); btnCopyCode.textContent = 'Copied!'; setTimeout(function(){ btnCopyCode.textContent = 'Copy'; }, 1200); } catch (_) {}
+          if (txt) {
+            try { navigator.clipboard.writeText(txt.trim()); btnCopyCode.textContent = 'Copied!'; setTimeout(function(){ btnCopyCode.textContent = 'Copy'; }, 1200); } catch (_) {}
+            if (window.stxLogHistory) window.stxLogHistory(txt.trim());
+          }
         });
         var btnCopyCodeB85 = byId('btnCopyCodeB85');
         if (btnCopyCodeB85) btnCopyCodeB85.addEventListener('click', function () {
           var b = byId('outCodeB85');
           var t = (b && b.value) ? String(b.value).trim() : '';
-          if (t) try { navigator.clipboard.writeText(t); btnCopyCodeB85.textContent = 'Copied!'; setTimeout(function(){ btnCopyCodeB85.textContent = 'Copy Base85'; }, 1200); } catch (_) {}
+          if (t) {
+            try { navigator.clipboard.writeText(t); btnCopyCodeB85.textContent = 'Copied!'; setTimeout(function(){ btnCopyCodeB85.textContent = 'Copy Base85'; }, 1200); } catch (_) {}
+            if (window.stxLogHistory) window.stxLogHistory(t);
+          }
         });
+
         setTimeout(clearRebuildOnLoad, 400);
       }
+
+      // --- Items Made history (local browser storage; prefers deserialized codes) ---
+      function stxHistoryLoad() {
+        try {
+          var parsed = JSON.parse(localStorage.getItem('stx_items_history') || '[]');
+          return Array.isArray(parsed) ? parsed : [];
+        } catch(e) {
+          return [];
+        }
+      }
+
+      function stxHistorySave(history) {
+        try { localStorage.setItem('stx_items_history', JSON.stringify(history)); } catch(e) {}
+      }
+
+      function stxHistoryLooksDeserialized(code) {
+        code = String(code || '').trim();
+        return code.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(code);
+      }
+
+      function stxHistoryNormalizeDeserialized(code) {
+        code = String(code || '').trim();
+        if (!code) return '';
+        if (typeof window.__stxNormalizeDeserializedInput === 'function') {
+          try {
+            var norm = window.__stxNormalizeDeserializedInput(code);
+            if (norm) return String(norm).trim();
+          } catch(e) {}
+        }
+        return code;
+      }
+
+      function stxHistoryDecodeBase85Local(code) {
+        code = String(code || '').trim();
+        if (!code || stxHistoryLooksDeserialized(code) || typeof window.deserializeBase85 !== 'function') return '';
+        try {
+          var decoded = window.deserializeBase85(code);
+          if (decoded && typeof decoded.then !== 'function') return stxHistoryNormalizeDeserialized(decoded);
+        } catch(e) {}
+        return '';
+      }
+
+      function stxHistoryPartNameFromDataset(fam, id) {
+        var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+        var fallback = '';
+        for (var i = 0; i < all.length; i++) {
+          var p = all[i];
+          if (!p) continue;
+          var pr = String(p.idRaw || p.idraw || '').trim();
+          var match = (Number.isFinite(fam) && Number.isFinite(id) && pr === (fam + ':' + id)) ||
+            (Number.isFinite(fam) && Number.isFinite(id) && p.family != null && p.id != null && Number(p.family) === fam && Number(p.id) === id);
+          if (!match) continue;
+          var name = String(p.name || p.legendaryName || p.displayName || '').trim();
+          if (!name) continue;
+          if (!/^(comp[_\-.]|part[_\-.]|common|uncommon|rare|epic|legendary|pearl)/i.test(name)) return name;
+          fallback = fallback || name;
+        }
+        return fallback;
+      }
+
+      function stxHistoryInferMeta(code, base85) {
+        var src = String(code || base85 || '').trim();
+        var meta = {};
+        if (window.parseSerialMeta) {
+          try { meta = window.parseSerialMeta(src) || {}; } catch(e) { meta = {}; }
+        }
+        var name = String(meta.name || '').trim();
+        var level = meta.level != null ? Number(meta.level) : null;
+        var deser = String(code || meta.deserialized || '').trim();
+        var head = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|\s*(\d+)\s*,\s*(\d+)\s*(?:\||\s)/) ||
+          deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|/);
+        if (head) {
+          var fam = Number(head[1]);
+          if (level == null || !Number.isFinite(level)) level = Number(head[2]);
+          var id = head[4] != null ? Number(head[4]) : NaN;
+          if ((!name || /^Item\s+\d+:\d+$/i.test(name)) && Number.isFinite(fam) && Number.isFinite(id)) {
+            name = stxHistoryPartNameFromDataset(fam, id) || name;
+          }
+        }
+        if (!name) name = 'Crafted Item';
+        return {
+          name: name + (Number.isFinite(level) ? ' (Lv' + level + ')' : ''),
+          level: Number.isFinite(level) ? level : null
+        };
+      }
+
+      function stxHistoryUpsert(entry) {
+        if (!entry || !entry.c) return;
+        var cleanCode = String(entry.c || '').trim();
+        var cleanB85 = String(entry.b || '').trim();
+        if (cleanCode.length < 10 && cleanB85.length < 10) return;
+        var history = stxHistoryLoad();
+        var duplicateAt = -1;
+        for (var i = 0; i < history.length; i++) {
+          var h = history[i] || {};
+          if ((cleanCode && h.c === cleanCode) || (cleanB85 && h.b === cleanB85)) {
+            duplicateAt = i;
+            break;
+          }
+        }
+        var merged = {
+          t: entry.t || Date.now(),
+          c: cleanCode,
+          b: cleanB85,
+          n: entry.n || 'Crafted Item',
+          lvl: entry.lvl != null ? entry.lvl : null
+        };
+        if (duplicateAt >= 0) history.splice(duplicateAt, 1);
+        history.unshift(merged);
+        if (history.length > 150) history.splice(150);
+        stxHistorySave(history);
+        if (document.getElementById('stxHistoryModal') && document.getElementById('stxHistoryModal').classList.contains('is-open')) {
+          window.refreshHistoryUI();
+        }
+      }
+
+      window.stxLogHistory = function(code) {
+        if (!code || typeof code !== 'string') return;
+        var raw = code.trim();
+        if (raw.length < 10) return;
+        var base85 = stxHistoryLooksDeserialized(raw) ? '' : raw;
+        var deser = stxHistoryLooksDeserialized(raw) ? stxHistoryNormalizeDeserialized(raw) : stxHistoryDecodeBase85Local(raw);
+        var displayCode = deser || raw;
+        var meta = stxHistoryInferMeta(displayCode, base85);
+        stxHistoryUpsert({ t: Date.now(), c: displayCode, b: base85, n: meta.name, lvl: meta.level });
+
+        if (!deser && base85 && typeof window.ccDecodeSerialToDesktop === 'function') {
+          window.ccDecodeSerialToDesktop(base85).then(function(decoded) {
+            var remoteDeser = '';
+            if (typeof decoded === 'string') remoteDeser = decoded;
+            else if (decoded && decoded.deserialized) remoteDeser = decoded.deserialized;
+            remoteDeser = stxHistoryNormalizeDeserialized(remoteDeser);
+            if (!remoteDeser || !stxHistoryLooksDeserialized(remoteDeser)) return;
+            var remoteMeta = stxHistoryInferMeta(remoteDeser, base85);
+            stxHistoryUpsert({ t: Date.now(), c: remoteDeser, b: base85, n: remoteMeta.name, lvl: remoteMeta.level });
+          }).catch(function(){});
+        }
+      };
+
+      window.refreshHistoryUI = function() {
+        var list = document.getElementById('stxHistoryList');
+        if (!list) return;
+        var history = stxHistoryLoad();
+        if (history.length === 0) {
+          list.innerHTML = '<tr><td colspan="3" style="text-align:center; opacity:0.6; padding: 40px;">No items in history. Items are added here when you copy a code or add it to YAML.</td></tr>';
+          return;
+        }
+        var html = '';
+        function esc(s) { return String(s||'').replace(/[&<>"']/g, function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+        history.forEach(function(item, idx) {
+          var date = new Date(item.t).toLocaleString();
+          var code = String(item.c || item.code || '').trim();
+          var base85 = String(item.b || item.base85 || '').trim();
+          var format = stxHistoryLooksDeserialized(code) ? 'Deserialized' : (base85 || /^@U/i.test(code) ? 'BL-base85' : 'Code');
+          html += '<tr>' +
+            '<td style="white-space:nowrap; font-size:0.75rem; opacity:0.6;">' + date + '</td>' +
+            '<td><div class="stx-history-item-name">' + esc(item.n || 'Crafted Item') + '</div>' +
+            '<code class="stx-history-item-code">' + esc(code || base85) + '</code>' +
+            '<div class="stx-history-meta">' + esc(format + (base85 && format !== 'BL-base85' ? ' | Base85 saved too' : '')) + '</div></td>' +
+            '<td style="text-align:right;"><div style="display:flex; gap:6px; justify-content:flex-end;">' +
+            '<button class="btn btn-sm" onclick="stxHistoryAction(\'copy\','+idx+')">Copy</button>' +
+            (base85 ? '<button class="btn btn-sm" onclick="stxHistoryAction(\'copyBase85\','+idx+')">Copy Base85</button>' : '') +
+            '<button class="btn btn-sm btn-Firmware" onclick="stxHistoryAction(\'import\','+idx+')">Import</button>' +
+            '<button class="btn btn-sm" style="border-color:rgba(255,80,80,0.4);" onclick="stxHistoryAction(\'delete\','+idx+')">×</button>' +
+            '</div></td></tr>';
+        });
+        list.innerHTML = html;
+      };
+
+      window.stxHistoryAction = function(action, idx) {
+        var history = stxHistoryLoad();
+        var item = history[idx];
+        if (!item) return;
+        if (action === 'copy' || action === 'copyBase85') {
+          try { 
+            var ta = document.createElement('textarea');
+            ta.value = action === 'copyBase85' ? (item.b || item.c) : (item.c || item.b);
+            document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+          } catch(_) {}
+        } else if (action === 'import') {
+          var ib = document.getElementById('importBox');
+          if (ib) {
+            ib.value = item.c || item.b || '';
+            var btn = document.getElementById('btnImport');
+            if (btn) btn.click();
+            var btnSimp = document.getElementById('btnImportSimple');
+            if (btnSimp) btnSimp.click();
+          }
+          var modal = document.getElementById('stxHistoryModal');
+          if (modal) modal.classList.remove('is-open');
+        } else if (action === 'delete') {
+          history.splice(idx, 1);
+          stxHistorySave(history);
+          window.refreshHistoryUI();
+        }
+      };
+
+      function stxLogCurrentBuiltItem() {
+        var ids = ['guidedOutputDeserialized', 'outCode', 'guidedOutputSerial', 'outCodeB85', 'floating-output-code'];
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          var val = el && el.value ? String(el.value).trim() : '';
+          if (!val || val === '—' || /^[—\-–]+$/.test(val)) continue;
+          if (stxHistoryLooksDeserialized(val) || /^@U/i.test(val) || val.length > 20) {
+            window.stxLogHistory(val);
+            return;
+          }
+        }
+      }
+
+      // Direct Event Binding
+      document.addEventListener('DOMContentLoaded', function() {
+        var btn = document.getElementById('btnShowHistory');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            var modal = document.getElementById('stxHistoryModal');
+            if (modal) {
+              modal.classList.add('is-open');
+              window.refreshHistoryUI();
+            }
+          });
+        }
+        document.addEventListener('click', function(e) {
+          if (e.target && (e.target.id === 'stxHistoryClose' || e.target.id === 'stxHistoryModal')) {
+            var modal = document.getElementById('stxHistoryModal');
+            if (modal) modal.classList.remove('is-open');
+          }
+        });
+        document.addEventListener('stx-items-made-bump', function() {
+          setTimeout(stxLogCurrentBuiltItem, 80);
+        });
+      });
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
@@ -4341,6 +4920,20 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
     })();
   </script>
 <script src="./assets/js/cc-yaml-drawer-wiring-rebuild.js"></script>
+
+<div id="stxHistoryModal" class="stx-modal">
+  <div class="stx-modal__content">
+    <div class="stx-modal__header">
+      <h3 class="stx-modal__title">📄 Items Made (History)</h3>
+      <button id="stxHistoryClose" class="btn" type="button">Close</button>
+    </div>
+    <div class="stx-modal__body">
+      <table class="stx-history-table">
+        <thead><tr><th>Date</th><th>Item Details</th><th style="text-align:right;">Actions</th></tr></thead>
+        <tbody id="stxHistoryList"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </body>
 </html>
-

@@ -8,7 +8,12 @@
   var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin' };
 
   function byId(id){ return document.getElementById(id); }
-  function setEggsEnabled(on){ try { localStorage.setItem(EGGS_KEY, on ? '1' : '0'); } catch(_){} }
+  function setEggsEnabled(on){
+    try {
+      localStorage.setItem(EGGS_KEY, on ? '1' : '0');
+      if (!on) setTheme('default');
+    } catch(_){}
+  }
   function eggsEnabled(){ try { return localStorage.getItem(EGGS_KEY) !== '0'; } catch(_){ return true; } }
   function currentTheme(){ try { return localStorage.getItem(THEME_KEY) || 'default'; } catch(_){ return 'default'; } }
   function fullAnimEnabled(){
@@ -34,6 +39,13 @@
     if(cls) body.classList.add(cls);
     try { localStorage.setItem(THEME_KEY, theme); } catch(_){}
     syncFullAnim();
+    updateEggOffBtnVisibility();
+  }
+
+  function updateEggOffBtnVisibility(){
+    var btn = byId('eggOffBtn');
+    if(!btn) return;
+    btn.style.display = isEggThemeActive() ? 'inline-flex' : 'none';
   }
 
   function toggleWithThanks(){
@@ -102,11 +114,16 @@
       setTheme('grimeey');
     });
 
+    var eggOffBtn = byId('eggOffBtn');
+    if(eggOffBtn){
+      eggOffBtn.addEventListener('click', function(){
+        setEggsEnabled(false);
+        setTheme('default');
+      });
+    }
+
     if(eggsEnabled()) setTheme(currentTheme());
     else setTheme('default');
-
-    var eggOffBtn = byId('eggOffBtn');
-    if(eggOffBtn) eggOffBtn.addEventListener('click', function(){ setTheme('default'); });
 
     var fullAnimToggle = byId('fullAnimToggle');
     if(fullAnimToggle) {

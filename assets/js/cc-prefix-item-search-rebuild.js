@@ -84,22 +84,38 @@
     }
     items.slice(0, prefixRenderLimit).forEach(function (item, idx) {
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;margin-bottom:6px;border:1px solid rgba(0,200,255,0.15);cursor:pointer;';
+      row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;margin-bottom:6px;border:1px solid rgba(0,200,255,0.15);cursor:pointer;';
       row.setAttribute('data-serial', item.serial || '');
       var name = item.name || 'Unknown';
       var meta = window.parseSerialMeta ? window.parseSerialMeta(item.serial) : {};
       var level = Number.isFinite(meta.level) ? ' Lv' + meta.level : '';
       var idStr = (meta.familyId != null && meta.itemId != null) ? ' (' + meta.familyId + ':' + meta.itemId + ')' : '';
-      row.innerHTML = '<div style="flex:1;color:rgba(255,255,255,0.95);font-size:0.9em;">' + escapeHtml(name + level + idStr) + '</div>' +
+      
+      var deser = getCachedDeserialized(item);
+      var deserHtml = '';
+      if (deser) {
+        deserHtml = '<div style="font-size:0.7em;color:rgba(200,230,255,0.8);margin-top:3px;word-break:break-all;font-family:Consolas,monospace;background:rgba(0,0,0,0.15);padding:2px 4px;border-radius:3px;">' + escapeHtml(deser) + '</div>';
+      }
+
+      row.innerHTML = '<div style="flex:1;min-width:0;color:rgba(255,255,255,0.95);font-size:0.9em;">' + escapeHtml(name + level + idStr) + 
+        deserHtml + 
+        '</div>' +
+        '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Copy serial to clipboard">Copy</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to editor">Editor</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to character backpack">YAML</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to profile bank">Bank</button>';
       var btns = row.querySelectorAll('button');
       btns[0].addEventListener('click', function (e) {
         e.stopPropagation();
-        if (window.importSerialToEditor) window.importSerialToEditor(item.serial);
+        var ser = String(item.serial || '').trim();
+        if (!ser) return;
+        try { navigator.clipboard.writeText(ser); } catch (_) {}
       });
       btns[1].addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (window.importSerialToEditor) window.importSerialToEditor(item.serial);
+      });
+      btns[2].addEventListener('click', function (e) {
         e.stopPropagation();
         lastSelected = item;
         if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial)) {
@@ -108,7 +124,7 @@
           alert('Load a character save YAML (root state:) with a backpack section first.');
         }
       });
-      btns[2].addEventListener('click', function (e) {
+      btns[3].addEventListener('click', function (e) {
         e.stopPropagation();
         lastSelected = item;
         if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial)) {
@@ -418,7 +434,7 @@
 
   function buildGodrollDetailBlockHtml(item) {
     var partsLine = formatGodrollPartsLine(item && item.rpParts);
-    var deser = godrollDeserializedForDisplay(item);
+    var deser = getCachedDeserialized(item);
     var out = '';
     if (partsLine) {
       out += '<div class="cc-godroll-parts" style="font-size:0.72em;line-height:1.35;color:rgba(255,235,200,0.88);margin-top:4px;word-break:break-word;">'
@@ -435,6 +451,16 @@
         + '</pre></div>';
     }
     return out;
+  }
+
+  var deserCache = new Map();
+  function getCachedDeserialized(item) {
+    var s = String(item && item.serial || '').trim();
+    if (!s) return '';
+    if (deserCache.has(s)) return deserCache.get(s);
+    var d = godrollDeserializedForDisplay(item);
+    deserCache.set(s, d);
+    return d;
   }
 
   function looksGenericItemName(name) {
@@ -568,7 +594,7 @@
     }
     var partsHay = formatGodrollPartsLine(item.rpParts || [], { max: 200 }).toLowerCase();
     if (partsHay && partsHay.indexOf(q) >= 0) return true;
-    var desHay = String(item.deserialized || godrollDeserializedForDisplay(item) || '').toLowerCase();
+    var desHay = String(item.deserialized || getCachedDeserialized(item) || '').toLowerCase();
     if (desHay && desHay.indexOf(q) >= 0) return true;
     return false;
   }
@@ -613,15 +639,22 @@
         + buildGodrollDetailBlockHtml(item)
         + (godrollShouldShowFullStats() ? buildGodrollStatsBlockHtml(item) : '')
         + '</div>'
+        + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Copy serial to clipboard">Copy</button>'
         + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to editor">Editor</button>'
         + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to character backpack">YAML</button>'
         + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to profile bank">Bank</button>';
       var btns = row.querySelectorAll('button');
       btns[0].addEventListener('click', function (e) {
         e.stopPropagation();
-        if (window.importSerialToEditor) window.importSerialToEditor(item.serial);
+        var ser = String(item.serial || '').trim();
+        if (!ser) return;
+        try { navigator.clipboard.writeText(ser); } catch (_) {}
       });
       btns[1].addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (window.importSerialToEditor) window.importSerialToEditor(item.serial);
+      });
+      btns[2].addEventListener('click', function (e) {
         e.stopPropagation();
         lastGodrollSelected = item;
         if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial)) {
@@ -630,7 +663,7 @@
           alert('Load a character save YAML (root state:) with a backpack section first.');
         }
       });
-      btns[2].addEventListener('click', function (e) {
+      btns[3].addEventListener('click', function (e) {
         e.stopPropagation();
         lastGodrollSelected = item;
         if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial)) {
@@ -954,7 +987,7 @@
       var st = byId('godrollSearchStatus');
       if (st) st.textContent = godrollData && godrollData.length
         ? (godrollData.length + ' Godroll serials loaded. Type to search.')
-        : 'Godroll list not bundled. Click "Load JSON File" to import your list.';
+        : 'Godroll list not bundled.';
       try {
         doGodrollSearch();
       } catch (e) {

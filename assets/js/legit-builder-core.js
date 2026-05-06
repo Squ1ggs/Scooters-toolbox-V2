@@ -888,6 +888,7 @@
         var compNameSel = effectiveRarityCompKey(rpSel);
         var compKeyNormSel = compNameSel ? compNameSel.replace(/^base_comp_/i, 'comp_') : null;
         var skipUniqueExclPreview = !!(compKeyNormSel && /^comp_0[1-6]_/i.test(compKeyNormSel));
+        var skipRarityPoolMatchPreview = false;
         var compSlotRules = inv.compSlotRules || {};
         var previewCompRules = null;
         if (compNameSel && selectedItem && !slugSkipsInvCompSlotRules(selectedItem.slug, selectedItem)) {
@@ -914,6 +915,24 @@
               if (compNameSel && inv.compBasetags && inv.compBasetags[compNameSel]) {
                 TC.formatTags(inv.compBasetags[compNameSel]).forEach(function (t) { pool.add(t); });
               }
+              var cnOrangeP = compKeyNormSel || compNameSel;
+              if (cnOrangeP && (/^comp_05_legendary/i.test(cnOrangeP) || /^comp_06_|pearlescent|_pearlescent/i.test(compNameSel) || /^comp_0[1-4]_(?:common|uncommon|rare|epic)_[a-z0-9_]+$/i.test(cnOrangeP))) {
+                pool.add('unique');
+                if (!pool.has('legendary') && (/legendary|pearlescent|comp_06|_pearlescent/i.test(compNameSel))) pool.add('legendary');
+              }
+              (function seedRarityFromCompKeyUi(cn, p) {
+                if (!cn) return;
+                var c = String(cn).trim().toLowerCase();
+                var tier = c.match(/^comp_0([1-4])_(common|uncommon|rare|epic)(?:$|_)/i);
+                if (tier) p.add(tier[2].toLowerCase());
+                else if (/^comp_05_legendary/i.test(c) || /^comp_06_/i.test(c) || /pearlescent/i.test(c)) {
+                  p.add('unique'); p.add('legendary');
+                } else if (/^comp_0[1-4]_(common|uncommon|rare|epic)_/i.test(c)) {
+                  p.add('unique');
+                  var nt = c.match(/^comp_0[1-4]_(common|uncommon|rare|epic)_/i);
+                  if (nt) p.add(nt[1].toLowerCase());
+                }
+              })(compKeyNormSel || compNameSel, pool);
               var mLegR = String(compNameSel || '').match(/^(?:base_)?comp_05_legendary_([a-z0-9_]+)$/i);
               if (mLegR && mLegR[1]) addNamedLegendaryFamilyTagsToPool(mLegR[1], pool);
             } catch (_) {}
@@ -950,6 +969,9 @@
               }
             }
             var metaO = resolveInvPartMeta(partsByName, cand);
+            if (!metaO && slotBaseUi === 'rarity' && (cand.invDumpKey || cand.name)) {
+              metaO = { addtags: [], dependencytags: [], exclusiontags: [] };
+            }
             if (!metaO) {
               o.textContent = o.dataset.baseText;
               o.disabled = false;
@@ -966,7 +988,7 @@
               if (exf.indexOf('barrel_01') >= 0 && slotBaseUi === 'underbarrel') skipExTags.push('barrel_01');
             }
             var v = TC.partValidForPool(metaO, pool, {
-              skipRarityPoolMatch: true,
+              skipRarityPoolMatch: skipRarityPoolMatchPreview,
               skipUniqueExclusion: skipUniqueExclPreview,
               skipExclusionTags: skipExTags.length ? skipExTags : undefined
             });
@@ -1008,6 +1030,16 @@
               o.textContent = '✗ ' + o.dataset.baseText;
               o.disabled = pearlMismatch ? true : !!strictMode;
               o.title = 'Will fail now: ' + formatPreviewReasonsForTooltip(v.reasons || []);
+              if (strictMode && sel.value === String(o.value)) {
+                sel.value = '';
+                delete selectedParts[slotNameUi];
+                updateOutput();
+                updateValidation();
+                updateItemStats();
+                updateStatEffects();
+                updateDropSources();
+                updateProofEvidence();
+              }
             }
           }
         }
@@ -2376,11 +2408,13 @@
           if (exf.indexOf('barrel_01') >= 0 && skBase === 'underbarrel') skipExTags.push('barrel_01');
         }
         /* Match __stxRefreshLegitSlotOptionValidity / save-editor style: named comps often carry rarity addtags
-           that do not intersect the linear pool’s tier set — do not false-fail; real cheats still miss deps or hit exclusions. */
+           that do not intersect the linear pool’s tier set — do not false-fail; real cheats still miss deps or hit exclusions.
+           Note: tag-comp-validation.js now handles Legendary->Epic matching strictly; no automatic skip here. */
+        var skipRarityPoolMatchActual = false;
         var pvOpts = {
           skipUniqueExclusion: skipUniqueExcl,
           skipExclusionTags: skipExTags.length ? skipExTags : undefined,
-          skipRarityPoolMatch: true
+          skipRarityPoolMatch: skipRarityPoolMatchActual
         };
         if (progOpts.relaxUniLegDeps) pvOpts.skipAllDependencyChecks = true;
         if (skBase === 'barrel' && p && p.name) {
@@ -2746,6 +2780,8 @@
     function invReasonIsSaveEditorBulkHardFail(line) {
       var s = String(line || '');
       if (/^Comp allowlist:/i.test(s)) return true;
+      if (/rarity tags do not match pool/i.test(s)) return true;
+      if (/pearl-only slot requires pearlescent/i.test(s)) return true;
       if (/missing dependency tag/i.test(s)) {
         var rxd = /missing dependency tag "([^"]+)"/gi;
         var md;

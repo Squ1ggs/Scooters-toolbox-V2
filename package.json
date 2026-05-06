@@ -1,13 +1,14 @@
 {
   "name": "scooters-toolbox-v2",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Scooters Toolbox desktop app and Netlify site",
   "main": "desktop/main.cjs",
   "author": "RDPSqu1ggs",
+  "companyName": "RDPSqu1ggs",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win portable",
+    "dist": "electron-builder --win",
     "smoke:inv": "node scripts/smoke-raw-inv-check.cjs",
     "export-game-icons": "node scripts/export-game-icons-from-folder.mjs",
     "scan:bl4": "node tools/scan-bl4-content-hints.mjs --with-preset --out references/bl4_content_scan_latest.json",
@@ -15,15 +16,17 @@
     "profile:check-unlockables": "node scripts/profile-vs-bundle-unlockables.mjs"
   },
   "dependencies": {
-    "@netlify/blobs": "^10.7.4"
+    "@netlify/blobs": "^8.2.0"
   },
   "devDependencies": {
-    "electron": "^37.2.6",
+    "electron": "^41.4.0",
     "electron-builder": "^26.0.12"
   },
   "build": {
     "appId": "com.scooterstoolbox.v2",
     "productName": "Scooters Toolbox",
+    "copyright": "Copyright © 2026 RDPSqu1ggs",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "files": [
       "index.html",
       "assets/**/*",
@@ -34,9 +37,12 @@
     ],
     "win": {
       "target": [
-        "portable"
+        "portable",
+        "zip"
       ],
-      "icon": "assets/favicon.ico"
+      "icon": "assets/favicon.ico",
+      "legalTrademarks": "RDPSqu1ggs",
+      "verifyUpdateCodeSignature": true
     }
   }
 }

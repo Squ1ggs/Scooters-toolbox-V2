@@ -22,7 +22,12 @@
 
   function getBaseFamilyIdFromSerial(serial) {
     try {
-      var s = String(serial || "");
+      var s = String(serial || "").trim();
+      // Handle Base85
+      if (s.indexOf('||') < 0 && s.indexOf('{') < 0 && s.length > 20 && typeof window.deserializeBase85 === 'function') {
+        var deser = window.deserializeBase85(s);
+        if (deser && typeof deser === 'string') s = deser.trim();
+      }
       var dbl = s.indexOf("||");
       var prefix = dbl >= 0 ? s.slice(0, dbl).trim() : s.trim();
       var m = prefix.match(/^\s*(\d+)\s*[,\|]/);
@@ -176,7 +181,7 @@
   function extractInspectorTokens(src) {
     var work = String(src || "").trim();
     if (!work) return [];
-    if (work.indexOf("||") < 0 && work.indexOf("{") < 0 && work.length > 20 && typeof window.deserializeBase85 === "function") {
+    if (work && (work.indexOf('@u') === 0 || work.indexOf('@U') === 0 || (work.indexOf("||") < 0 && work.indexOf("{") < 0 && work.length > 20)) && typeof window.deserializeBase85 === "function") {
       try {
         var deser = window.deserializeBase85(work);
         if (deser && typeof deser === "string" && deser.indexOf("||") >= 0) work = deser.trim();
@@ -289,24 +294,28 @@
   }
   function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-  /** Prefer Guided deserialized when Guided item type is set; else Generated code; else paste box. */
+  /** Prefer explicit pasted inspector input; else active builder outputs. */
   function getInspectorSerialSource() {
+    var qp = byId("ipiQuickPaste");
     var gi = byId("ccGuidedItemType");
     var guidedOn = gi && String(gi.value || "").trim();
     var g = byId("guidedOutputDeserialized");
     var o = byId("outCode");
     var imp = byId("importBox");
+    var qv = qp && String(qp.value || "").trim();
     var gv = g && String(g.value || "").trim();
     var ov = o && String(o.value || "").trim();
     var iv = imp && String(imp.value || "").trim();
+    if (qv) return qv;
+    if (iv) return iv;
     if (guidedOn) {
       if (gv) return gv;
       if (ov) return ov;
-      return iv || "";
+      return "";
     }
     if (ov) return ov;
     if (gv) return gv;
-    return iv || "";
+    return "";
   }
 
   function normTailTokenKeyIpi(t) {
@@ -323,11 +332,55 @@
     var badge = byId("ipiCount");
     var src = getInspectorSerialSource();
     if (!tbody || !badge) return;
+
+    // Support Base85 deserialization in inspector
+    if (src && (src.indexOf('@u') === 0 || src.indexOf('@U') === 0 || (src.indexOf('||') < 0 && src.indexOf('{') < 0 && src.length > 20)) && typeof window.deserializeBase85 === 'function') {
+      try {
+        var deser = window.deserializeBase85(src);
+        if (deser && typeof deser === 'string') src = deser.trim();
+      } catch (_) {}
+    }
+
     var baseFamilyId = getBaseFamilyIdFromSerial(src);
     var tokens = extractInspectorTokens(src);
+    
+    var rows = [];
+
+    // Resolve item header details (Type, Manufacturer, Rarity name)
+    if (baseFamilyId != null) {
+      var rarityRow = null;
+      var rarities = window.STX_RARITIES || [];
+      for (var ri = 0; ri < rarities.length; ri++) {
+        if (Number(rarities[ri].familyId || rarities[ri].family) === baseFamilyId) {
+          rarityRow = rarities[ri];
+          break;
+        }
+      }
+      if (rarityRow) {
+        var rCat = String(rarityRow.itemType || rarityRow.category || "—").trim();
+        var rMan = String(rarityRow.manufacturer || "—").trim();
+        var rName = String(rarityRow.name || rarityRow.legendaryName || "Item Header").trim();
+        rows.push(
+          "<tr style=\"background:rgba(0,243,255,0.08);border-bottom:2px solid rgba(0,243,255,0.2);\">" +
+          "<td style=\"color:rgba(0,243,255,1);font-weight:700;\">" + esc(rCat) + "</td>" +
+          "<td style=\"color:rgba(255,255,255,0.95);\">" + esc(rName) + "</td>" +
+          "<td style=\"color:rgba(0,243,255,0.95);\">" + esc(rMan) + "</td>" +
+          "<td>" + baseFamilyId + "</td>" +
+          "<td style=\"text-align:center;\">—</td>" +
+          "<td>—</td>" +
+          "<td class=\"ipi-dim\" style=\"color:rgba(0,243,255,0.7);font-size:0.85em;\">Item Type &amp; Base Family</td></tr>"
+        );
+      }
+    }
+
     if (!tokens.length) {
       badge.textContent = "0 added";
-      tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);">No part tokens after <code>||</code>. Paste or import a serial above, or build in Guided / Simple Builder.</td></tr>';
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);">No part tokens after <code>||</code>. Paste or import a serial above, or build in Guided / Simple Builder.</td></tr>';
+      } else {
+        rows.push('<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.4);padding:10px;text-align:center;">No parts found after <code>||</code></td></tr>');
+        tbody.innerHTML = rows.join("");
+      }
       return;
     }
     var order = [];
@@ -397,9 +450,9 @@
   }
 
   function applyInspectorPasteToGuided() {
-    var g = byId("guidedOutputDeserialized");
-    if (!g) {
-      alert("Guided output field not found.");
+    var importBox = byId("importBox");
+    if (!importBox) {
+      alert("Import box not found.");
       return;
     }
     var code = getCombinedPasteForInspector();
@@ -407,19 +460,26 @@
       alert("Paste a serial in the inspector box or in “Paste code to edit” first.");
       return;
     }
-    if (code.indexOf("||") < 0 && code.indexOf("{") < 0 && code.length > 20) {
+    if ((code.indexOf('@u') === 0 || code.indexOf('@U') === 0 || (code.indexOf("||") < 0 && code.indexOf("{") < 0 && code.length > 20)) && typeof window.deserializeBase85 === "function") {
       try {
-        if (typeof window.deserializeBase85 === "function") {
-          var deser = window.deserializeBase85(code);
-          if (deser && typeof deser === "string" && deser.trim().length) code = deser.trim();
-        }
+        var deser = window.deserializeBase85(code);
+        if (deser && typeof deser === "string" && deser.trim().length) code = deser.trim();
       } catch (_) {}
     }
-    g.value = code;
-    try { if (typeof window.refreshGuidedOutputPreview === "function") window.refreshGuidedOutputPreview(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === "function") window.syncFloatingOutput(true); } catch (_) {}
-    refreshImportedInspector();
-    try { if (typeof window.refreshBuildStatsCore === "function") window.refreshBuildStatsCore(); } catch (_) {}
+    importBox.value = code;
+    try {
+      if (typeof window.importTokens === "function") {
+        window.importTokens(code, 'guided');
+      } else if (typeof window.refreshOutputs === "function") {
+        window.refreshOutputs();
+      }
+    } catch (_) {}
+    setTimeout(function () {
+      try { if (typeof window.refreshGuidedOutputPreview === "function") window.refreshGuidedOutputPreview(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === "function") window.syncFloatingOutput(true); } catch (_) {}
+      refreshImportedInspector();
+      try { if (typeof window.refreshBuildStatsCore === "function") window.refreshBuildStatsCore(); } catch (_) {}
+    }, 80);
   }
 
   function applyInspectorPasteToSimpleBuilder() {
@@ -434,24 +494,24 @@
       return;
     }
     importBox.value = code;
-    if (code.indexOf("||") < 0 && code.indexOf("{") < 0 && code.length > 20) {
+    if ((code.indexOf('@u') === 0 || code.indexOf('@U') === 0 || (code.indexOf("||") < 0 && code.indexOf("{") < 0 && code.length > 20)) && typeof window.deserializeBase85 === "function") {
       try {
-        if (typeof window.deserializeBase85 === "function") {
-          var deser = window.deserializeBase85(code);
-          if (deser && typeof deser === "string" && deser.trim().length) importBox.value = deser.trim();
-        }
+        var deser = window.deserializeBase85(code);
+        if (deser && typeof deser === "string" && deser.trim().length) importBox.value = deser.trim();
       } catch (_) {}
     }
     try {
-      if (typeof window.importTokens === "function") window.importTokens();
-      else if (typeof window.refreshOutputs === "function") window.refreshOutputs();
+      if (typeof window.importTokens === "function") {
+        window.importTokens(code, 'simple');
+      } else if (typeof window.refreshOutputs === "function") {
+        window.refreshOutputs();
+      }
     } catch (_) {}
     setTimeout(function () {
-      try { if (window.refreshOutputs) window.refreshOutputs(); } catch (_) {}
-      try { if (window.refreshBuilder) window.refreshBuilder(); } catch (_) {}
+      try { if (typeof window.refreshGuidedOutputPreview === "function") window.refreshGuidedOutputPreview(); } catch (_) {}
       refreshImportedInspector();
       try { if (typeof window.refreshBuildStatsCore === "function") window.refreshBuildStatsCore(); } catch (_) {}
-    }, 50);
+    }, 80);
   }
   function init(){
     loadPresetCategories();
@@ -540,6 +600,7 @@
     refreshBuildStatsCore();
     window.refreshImportedInspector = refreshImportedInspector;
     window.refreshBuildStatsCore = refreshBuildStatsCore;
+    window.appendToOutCode = appendToOutCode;
   }
   function refreshBuildStatsCore() {
     var grid = byId("buildStatsCoreGrid");
