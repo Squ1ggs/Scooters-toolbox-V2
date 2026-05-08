@@ -1,0 +1,2304 @@
+{
+  "_meta": {
+    "builtAt": "2026-05-07T20:35:48.465Z",
+    "inputDir": "c:\\Users\\picto\\Downloads\\Borderlands-4.NcsParser-220-1-0-0-1768940952\\Borderlands-4.NcsParser\\output\\json",
+    "invFiles": [
+      "Nexus-Data-inv0.json",
+      "Nexus-Data-inv4.json",
+      "Nexus-Data-inv6.json"
+    ],
+    "totalRootsScanned": 133,
+    "totalRootsKept": 133,
+    "note": "Gear-only compact rootKey→parttypes bundle extracted from NcsParser Nexus JSON output."
+  },
+  "roots": [
+    {
+      "rootKey": "armor_shield",
+      "inv": "Armor_Shield",
+      "baseType": "inv'Shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "atl_enhancement",
+      "inv": "ATL_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_enhancement",
+      "inv": "BOR_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_hw",
+      "inv": "BOR_HW",
+      "baseType": "inv'heavy_weapon_gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_repair_kit",
+      "inv": "BOR_REPAIR_KIT",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_augmenter"
+        ],
+        "secondary_augment": [
+          "part_aug_D_Elemental_Resist_sec",
+          "part_aug_d_Lifesteal_sec",
+          "part_aug_D_Dmg_Reduction_On_Use_sec",
+          "part_aug_u_move_speed_on_use_sec",
+          "part_aug_u_askill_cooldown_on_use_sec",
+          "part_aug_u_gadget_cooldown_on_use_sec",
+          "part_aug_u_AllDmg_on_use_sec",
+          "part_aug_o_melee_boost_on_use_sec",
+          "part_aug_o_fire_rate_on_use_sec",
+          "part_aug_o_reload_speed_on_use_sec",
+          "part_aug_o_elemental_dmg_on_use_sec",
+          "part_aug_o_SplashDmg_on_use_sec"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_sg",
+      "inv": "BOR_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_borg",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_shield",
+      "inv": "bor_shield",
+      "baseType": "inv'energy_shield'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "element",
+        "primary_augment",
+        "secondary_augment",
+        "body_acc",
+        "firmware",
+        "endgame",
+        "unique"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_sm",
+      "inv": "BOR_SM",
+      "baseType": "inv'Weapon_SM'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_borg",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_sr",
+      "inv": "bor_sr",
+      "baseType": "inv'Weapon_SR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_borg",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "primary_ele",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_terminal_barrier",
+      "inv": "BOR_TERMINAL_BARRIER",
+      "baseType": "inv'terminal_gadget_barrier'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "bor_turret_gadget",
+      "inv": "bor_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "borg_grenade_gadget",
+      "inv": "borg_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "payload": [
+          "part_payload_unique_buoy"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "classmod",
+      "inv": "ClassMod",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [
+        "class_mod_body",
+        "action_skill_mod",
+        "passive_points",
+        "special_passive",
+        "stat_group1",
+        "stat_group2",
+        "stat_group3",
+        "firmware"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "classmod_dark_siren",
+      "inv": "classmod_dark_siren",
+      "baseType": "inv'ClassMod'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "class_mod_body": [
+          "leg_body_01",
+          "leg_body_02",
+          "leg_body_03",
+          "leg_body_04",
+          "leg_body_05",
+          "leg_body_06"
+        ],
+        "stat_group1": [
+          "stat_ordnance_damage",
+          "statspecial_attunement_duration",
+          "stat_sniper_damage",
+          "statspecial_commandskill_cooldown",
+          "statspecial_phaseclone_healthloss",
+          "statspecial_lifesteal"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "classmod_exo_soldier",
+      "inv": "classmod_exo_soldier",
+      "baseType": "inv'ClassMod'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "class_mod_body": [
+          "leg_body_01",
+          "leg_body_02",
+          "leg_body_03",
+          "leg_body_04",
+          "leg_body_05",
+          "leg_body_06"
+        ],
+        "stat_group1": [
+          "stat_skill_cooldown_rate",
+          "stat_ordnance_damage",
+          "stat_skill_duration",
+          "stat_skill_damage",
+          "stat_melee_damage",
+          "Stat_Weapon_Damage"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "classmod_gravitar",
+      "inv": "classmod_gravitar",
+      "baseType": "inv'ClassMod'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "class_mod_body": [
+          "leg_body_01",
+          "leg_body_02",
+          "leg_body_03",
+          "leg_body_04",
+          "leg_body_05",
+          "leg_body_06"
+        ],
+        "stat_group1": [
+          "statspecial_puddle_damage",
+          "stat_statuseffect_chance",
+          "stat_skill_duration",
+          "statspecial_lifesteal",
+          "statspecial_stasis_damage",
+          "stat_splash_damage"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "classmod_paladin",
+      "inv": "classmod_paladin",
+      "baseType": "inv'ClassMod'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "class_mod_body": [
+          "leg_body_01",
+          "leg_body_02",
+          "leg_body_03",
+          "leg_body_04",
+          "leg_body_05",
+          "leg_body_06"
+        ],
+        "stat_group1": [
+          "statspecial_incendiary_damage",
+          "stat_skill_damage",
+          "statspecial_forgedrone_duration",
+          "statspecial_cryo_damage",
+          "statspecial_detonation_damage",
+          "statspecial_forgeskill_damage"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "cov_enhancement",
+      "inv": "COV_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_ar",
+      "inv": "DAD_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_enhancement",
+      "inv": "DAD_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_grenade_gadget",
+      "inv": "dad_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_ps",
+      "inv": "DAD_PS",
+      "baseType": "inv'Weapon_PS'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_repair_kit",
+      "inv": "dad_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_pacemaker"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_sg",
+      "inv": "DAD_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_shield",
+      "inv": "dad_shield",
+      "baseType": "inv'energy_shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_sm",
+      "inv": "DAD_SM",
+      "baseType": "inv'Weapon_SM'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_terminal_combat",
+      "inv": "DAD_TERMINAL_COMBAT",
+      "baseType": "inv'terminal_gadget_combat'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_hot_off_the_press"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "dad_turret_gadget",
+      "inv": "dad_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "default_repair_kit",
+      "inv": "default_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "default_repkit_body"
+        ],
+        "payload": [
+          "part_payload_small"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "energy_shield",
+      "inv": "energy_shield",
+      "baseType": "inv'Shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "enhancement",
+      "inv": "Enhancement",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "core_augment",
+        "stat_group1",
+        "stat_group2",
+        "stat_group3",
+        "firmware"
+      ],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "gadget",
+      "inv": "Gadget",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "grenade_gadget",
+      "inv": "grenade_gadget",
+      "baseType": "inv'Gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "element",
+        "payload",
+        "payload_augment",
+        "stat_augment",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "heavy_weapon_gadget",
+      "inv": "heavy_weapon_gadget",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "hyp_enhancement",
+      "inv": "HYP_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "invdef_pickup_firstrepkit_intro",
+      "inv": "InvDef_Pickup_FirstRepkit_Intro",
+      "baseType": "inv'mission_pickup'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_ar",
+      "inv": "JAK_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_enhancement",
+      "inv": "JAK_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_grenade_gadget",
+      "inv": "jak_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "payload": [
+          "part_spinning_blade"
+        ],
+        "payload_augment": [
+          "part_07_damage_amp_02_suppressor"
+        ],
+        "stat_augment": [
+          "part_stat_05_jak_oversized"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_ps",
+      "inv": "JAK_PS",
+      "baseType": "inv'Weapon_PS'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_repair_kit",
+      "inv": "jak_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_sg",
+      "inv": "JAK_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_shield",
+      "inv": "jak_shield",
+      "baseType": "inv'Armor_Shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_sr",
+      "inv": "JAK_SR",
+      "baseType": "inv'Weapon_SR'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_acc",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_terminal_combat",
+      "inv": "JAK_TERMINAL_COMBAT",
+      "baseType": "inv'terminal_gadget_combat'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_me_layhem"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "jak_turret_gadget",
+      "inv": "jak_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_enhancement",
+      "inv": "MAL_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_grenade_gadget",
+      "inv": "mal_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_hw",
+      "inv": "MAL_HW",
+      "baseType": "inv'heavy_weapon_gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "secondary_ele",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_repair_kit",
+      "inv": "mal_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_BloodAnalyzer"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_sg",
+      "inv": "MAL_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_shield",
+      "inv": "mal_shield",
+      "baseType": "inv'energy_shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "unique": [
+          "part_unique_supernova"
+        ],
+        "primary_augment": [
+          "part_eng_vagabond_primary",
+          "part_eng_berserker_primary",
+          "part_eng_siphon_primary",
+          "part_eng_fleeting_primary",
+          "part_eng_brimming_primary",
+          "part_eng_amp_primary",
+          "part_eng_recharge_rate_primary",
+          "part_eng_recharge_delay_primary",
+          "part_eng_trigger_happy_primary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_sm",
+      "inv": "MAL_SM",
+      "baseType": "inv'Weapon_SM'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_sr",
+      "inv": "MAL_SR",
+      "baseType": "inv'Weapon_SR'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_terminal_healing",
+      "inv": "MAL_TERMINAL_HEALING",
+      "baseType": "inv'terminal_gadget_healing'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_active_shield_stabilizer"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "mal_turret_gadget",
+      "inv": "mal_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_ar",
+      "inv": "ORD_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_enhancement",
+      "inv": "ORD_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_grenade_gadget",
+      "inv": "ord_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_ps",
+      "inv": "ORD_PS",
+      "baseType": "inv'Weapon_PS'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_repair_kit",
+      "inv": "ord_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_shield",
+      "inv": "ord_shield",
+      "baseType": "inv'energy_shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "unique": [
+          "part_unique_cindershelly"
+        ],
+        "primary_augment": [
+          "part_eng_vagabond_primary",
+          "part_eng_berserker_primary",
+          "part_eng_trigger_happy_primary",
+          "part_eng_fleeting_primary",
+          "part_eng_brimming_primary",
+          "part_eng_amp_primary",
+          "part_unv_utility_primary",
+          "part_unv_pinpoint_primary",
+          "part_unv_spike_primary",
+          "part_unv_resistant_primary",
+          "part_unv_absorb_primary",
+          "part_unv_adaptive_primary",
+          "part_unv_capacity_primary",
+          "part_unv_reflect_primary"
+        ],
+        "secondary_augment": [
+          "part_eng_vagabond_secondary",
+          "part_eng_berserker_secondary",
+          "part_eng_trigger_happy_secondary",
+          "part_eng_fleeting_secondary",
+          "part_eng_brimming_secondary",
+          "part_eng_amp_secondary",
+          "part_unv_utility_secondary",
+          "part_unv_pinpoint_secondary",
+          "part_unv_spike_secondary",
+          "part_unv_resistant_secondary",
+          "part_unv_absorb_secondary",
+          "part_unv_adaptive_secondary",
+          "part_unv_capacity_secondary",
+          "part_unv_reflect_secondary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_sr",
+      "inv": "ORD_SR",
+      "baseType": "inv'Weapon_SR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_terminal_healing",
+      "inv": "ORD_TERMINAL_HEALING",
+      "baseType": "inv'terminal_gadget_healing'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_active_bogo",
+          "part_active_healer_on_the_go"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ord_turret_gadget",
+      "inv": "ord_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "turret_weapon": [
+          "part_unique_beam_anchor"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "overshield_booster_pickup",
+      "inv": "overshield_booster_pickup",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "repair_kit",
+      "inv": "repair_kit",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "payload",
+        "element",
+        "primary_augment",
+        "secondary_augment",
+        "augment_element_resist",
+        "augment_element_immunity",
+        "augment_element_nova",
+        "augment_element_splat",
+        "firmware",
+        "endgame"
+      ],
+      "slotAllowlist": {
+        "vile": [
+          "part_vile"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "shield",
+      "inv": "Shield",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "element",
+        "primary_augment",
+        "secondary_augment",
+        "firmware",
+        "endgame",
+        "unique",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "shield_armor_pickup",
+      "inv": "shield_armor_pickup",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "shield_booster_pickup",
+      "inv": "shield_booster_pickup",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "ted_ar",
+      "inv": "TED_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "tediore_acc",
+        "tediore_secondary_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_enhancement",
+      "inv": "TED_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_grenade_gadget",
+      "inv": "ted_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_ps",
+      "inv": "TED_PS",
+      "baseType": "inv'Weapon_PS'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "tediore_acc",
+        "tediore_secondary_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_repair_kit",
+      "inv": "ted_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_KillSpring"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_sg",
+      "inv": "TED_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "tediore_acc",
+        "tediore_secondary_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "secondary_ele",
+        "secondary_ammo",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_shield",
+      "inv": "ted_shield",
+      "baseType": "inv'Armor_Shield'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "element",
+        "primary_augment",
+        "secondary_augment",
+        "body_acc",
+        "firmware",
+        "endgame",
+        "unique"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_terminal_barrier",
+      "inv": "TED_TERMINAL_BARRIER",
+      "baseType": "inv'terminal_gadget_barrier'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_active_sit_rep"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "ted_turret_gadget",
+      "inv": "ted_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "terminal_gadget",
+      "inv": "Terminal_Gadget",
+      "baseType": "inv'Gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "primary_augment",
+        "secondary_augment",
+        "enemy_augment",
+        "active_augment",
+        "firmware",
+        "endgame"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "terminal_gadget_barrier",
+      "inv": "terminal_gadget_barrier",
+      "baseType": "inv'Terminal_Gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "terminal_gadget_combat",
+      "inv": "terminal_gadget_combat",
+      "baseType": "inv'Terminal_Gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "terminal_gadget_healing",
+      "inv": "terminal_gadget_healing",
+      "baseType": "inv'Terminal_Gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_ar",
+      "inv": "TOR_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_enhancement",
+      "inv": "TOR_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_03_Rare",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_grenade_gadget",
+      "inv": "tor_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_hw",
+      "inv": "TOR_HW",
+      "baseType": "inv'heavy_weapon_gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {
+        "barrel": [
+          "part_unique_barrel_02_ravenfire",
+          "part_unique_barrel_01_sidewinder"
+        ],
+        "barrel_acc": [
+          "part_barrel_02_b",
+          "part_barrel_02_c"
+        ],
+        "body_acc": [
+          "part_body_a",
+          "part_body_b",
+          "part_body_c"
+        ],
+        "firmware": [
+          "part_firmware_god_killer"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_ps",
+      "inv": "TOR_PS",
+      "baseType": "inv'Weapon_PS'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_repair_kit",
+      "inv": "tor_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_ShinyWarPaint"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_sg",
+      "inv": "TOR_SG",
+      "baseType": "inv'Weapon_SG'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "scope",
+        "scope_acc",
+        "grip",
+        "foregrip",
+        "body_mag",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_shield",
+      "inv": "tor_shield",
+      "baseType": "inv'Armor_Shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_terminal_combat",
+      "inv": "TOR_TERMINAL_COMBAT",
+      "baseType": "inv'terminal_gadget_combat'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "active_augment": [
+          "part_nova_bomb_active"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "tor_turret_gadget",
+      "inv": "tor_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_gadget",
+      "inv": "turret_gadget",
+      "baseType": "inv'Gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "element",
+        "turret_weapon",
+        "primary_augment",
+        "secondary_augment",
+        "firmware",
+        "endgame"
+      ],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_basic",
+      "inv": "turret_weapon_basic",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "turret_weapon_augment_basic_pierce"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_beam",
+      "inv": "turret_weapon_beam",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "Part_TurretWeapon_Beam_Pierce"
+        ],
+        "underbarrel": [
+          "Part_TurretWeapon_Beam_Underbarrel"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_chaingun",
+      "inv": "turret_weapon_chaingun",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "Part_TurretWeapon_Chaingun_Pierce"
+        ],
+        "underbarrel": [
+          "Part_TurretWeapon_Chaingun_Underbarrel"
+        ],
+        "body": [
+          "part_body"
+        ],
+        "body_ele": [
+          "part_normal"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_longrifle",
+      "inv": "turret_weapon_longrifle",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "Part_TurretWeapon_LongRifle_Pierce"
+        ],
+        "underbarrel": [
+          "Part_TurretWeapon_Longrifle_Underbarrel"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_rocketlauncher",
+      "inv": "turret_weapon_rocketlauncher",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "Part_TurretWeapon_RL_Pierce"
+        ],
+        "underbarrel": [
+          "Part_TurretWeapon_RL_Underbarrel"
+        ],
+        "body": [
+          "part_body"
+        ],
+        "body_ele": [
+          "part_normal"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "turret_weapon_shotgun",
+      "inv": "turret_weapon_shotgun",
+      "baseType": "inv'weapon_gadget_turret'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "secondary_augment",
+        "body_ele",
+        "underbarrel"
+      ],
+      "slotAllowlist": {
+        "secondary_augment": [
+          "Part_TurretWeapon_Shotgun_Pierce"
+        ],
+        "underbarrel": [
+          "Part_TurretWeapon_SG_Underbarrel"
+        ],
+        "body": [
+          "part_body"
+        ],
+        "body_ele": [
+          "part_normal"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_ar",
+      "inv": "VLA_AR",
+      "baseType": "inv'Weapon_AR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "underbarrel",
+        "underbarrel_acc",
+        "underbarrel_acc_vis",
+        "foregrip",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_enhancement",
+      "inv": "VLA_Enhancement",
+      "baseType": "inv'Enhancement'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "body": [
+          "Part_Body_01_Common",
+          "Part_Body_02_Uncommon",
+          "Part_Body_04_Epic",
+          "Part_Body_05_Legendary"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_grenade_gadget",
+      "inv": "vla_grenade_gadget",
+      "baseType": "inv'grenade_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_hw",
+      "inv": "VLA_HW",
+      "baseType": "inv'heavy_weapon_gadget'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "barrel_licensed",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {
+        "barrel": [
+          "part_unique_barrel_01_atlinggun"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_repair_kit",
+      "inv": "vla_repair_kit",
+      "baseType": "inv'repair_kit'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "primary_augment": [
+          "part_augment_unique_AdrenalinePump"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_shield",
+      "inv": "vla_shield",
+      "baseType": "inv'Armor_Shield'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_sm",
+      "inv": "VLA_SM",
+      "baseType": "inv'Weapon_SM'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "underbarrel",
+        "underbarrel_acc",
+        "foregrip",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_sr",
+      "inv": "VLA_SR",
+      "baseType": "inv'Weapon_SR'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_acc",
+        "body_ele",
+        "barrel",
+        "barrel_acc",
+        "hyperion_secondary_acc",
+        "magazine",
+        "magazine_acc",
+        "magazine_ted_thrown",
+        "body_bolt",
+        "scope",
+        "scope_acc",
+        "grip",
+        "underbarrel",
+        "underbarrel_acc",
+        "foregrip",
+        "secondary_ammo",
+        "secondary_ele",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_terminal_barrier",
+      "inv": "VLA_TERMINAL_BARRIER",
+      "baseType": "inv'terminal_gadget_barrier'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "vla_turret_gadget",
+      "inv": "vla_turret_gadget",
+      "baseType": "inv'turret_gadget'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "weapon",
+      "inv": "Weapon",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_ai_custombase",
+      "inv": "Weapon_AI_CustomBase",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "weapon_ar",
+      "inv": "Weapon_AR",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_brute_facelaser",
+      "inv": "Weapon_Brute_FaceLaser",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_gadget_turret",
+      "inv": "weapon_gadget_turret",
+      "baseType": "inv'weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {},
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "weapon_gunship_maingun",
+      "inv": "Weapon_GunShip_MainGun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv4.json"
+    },
+    {
+      "rootKey": "weapon_meathead_chaingun",
+      "inv": "Weapon_Meathead_Chaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_meathead_flamethrower",
+      "inv": "Weapon_Meathead_Flamethrower",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_meathead_rocket",
+      "inv": "Weapon_Meathead_Rocket",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_missionturret_chaingun",
+      "inv": "Weapon_MissionTurret_Chaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_orderdrone",
+      "inv": "Weapon_OrderDrone",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_ps",
+      "inv": "Weapon_PS",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_ripperturret_flamethrower",
+      "inv": "Weapon_RipperTurret_Flamethrower",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_ripperturret_rocket",
+      "inv": "Weapon_Ripperturret_Rocket",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_sg",
+      "inv": "Weapon_SG",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_sm",
+      "inv": "Weapon_SM",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_soldier_sprayer",
+      "inv": "Weapon_Soldier_Sprayer",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_splicearm_launcher",
+      "inv": "Weapon_SpliceArm_Launcher",
+      "baseType": "inv'heavy_weapon_gadget'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_ele"
+      ],
+      "slotAllowlist": {
+        "body": [
+          "part_body"
+        ],
+        "body_ele": [
+          "part_corrosive",
+          "part_cryo",
+          "part_fire",
+          "part_radiation",
+          "part_shock"
+        ]
+      },
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_splicespiderjumbo_rocketgun",
+      "inv": "Weapon_SpliceSpiderJumbo_RocketGun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_sr",
+      "inv": "Weapon_SR",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_turret_chaingun",
+      "inv": "Weapon_Turret_Chaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv6.json"
+    },
+    {
+      "rootKey": "weapon_vehicle_mg",
+      "inv": "Weapon_Vehicle_MG",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    },
+    {
+      "rootKey": "weapon_vehicle_rl",
+      "inv": "Weapon_Vehicle_RL",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null,
+      "sourceFile": "Nexus-Data-inv0.json"
+    }
+  ]
+}

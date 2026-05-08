@@ -597,13 +597,16 @@
     if (info) {
       info.style.display = 'block';
       var hint = /profile/i.test(file.name) ? ' (profile) ' : ' ';
-      info.textContent = file.name + ' (' + Math.max(1, Math.round(file.size / 1024)) + ' KB)' + hint + '— click Convert .sav to YAML';
+      info.textContent = file.name + ' (' + Math.max(1, Math.round(file.size / 1024)) + ' KB)' + hint + '— decrypting to YAML…';
     }
     var btn = document.getElementById('convertSAVToYAMLBtn');
     if (btn) {
       btn.disabled = false;
       btn.classList.add('glow-ready');
     }
+    setTimeout(function () {
+      if (typeof window.convertSAVToYAML === 'function') window.convertSAVToYAML();
+    }, 0);
   };
 
   window.convertSAVToYAML = async function () {
@@ -664,6 +667,11 @@
       if (statusDiv) {
         statusDiv.textContent = 'Save file converted to YAML! YAML loaded and downloaded.';
         statusDiv.style.color = '#4caf50';
+      }
+      var infoSav = document.getElementById('sav-file-info');
+      if (infoSav) {
+        infoSav.style.display = 'block';
+        infoSav.textContent = (saveFile && saveFile.name ? saveFile.name : 'Save') + ' — YAML loaded in editor below.';
       }
       var btnSav = document.getElementById('convertSAVToYAMLBtn');
       if (btnSav) btnSav.classList.remove('glow-ready');

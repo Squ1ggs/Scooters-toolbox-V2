@@ -37,6 +37,21 @@
   --transition-fast: 120ms ease;
   --line-soft: rgba(0, 243, 255, 0.12);
 }
+textarea.stx-yaml-drop-target.stx-yaml-drop-hover {
+  outline: 2px dashed rgba(0, 243, 255, 0.55);
+  outline-offset: 2px;
+  background: rgba(0, 40, 70, 0.35);
+}
+.stx-sav-load-btn-with-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.stx-sav-load-btn-with-icon img {
+  flex-shrink: 0;
+  opacity: 0.92;
+}
 .stx-vh-btn {
   display: inline-flex;
   align-items: center;
@@ -506,9 +521,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <input accept=".sav" aria-label="Upload profile save file" id="profileSavFileInput" name="profileSavFileInput" style="display: none;" type="file"/>
 <input accept=".yaml,.yml" aria-label="Upload YAML file" id="yamlFileInput" name="yamlFileInput" style="display: none;" type="file"/>
 <div style="display:flex; gap:10px; width:100%; margin-top:10px; flex-wrap: wrap;">
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load YAML File</button>
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load .sav File</button>
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load profile.sav</button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" title="Open a .yaml / .yml file into the editor" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./favicon.svg" width="20"/><span>Load YAML file</span></button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick a character .sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./favicon.svg" width="20" style="filter:hue-rotate(-38deg) saturate(1.2);"/><span>Load .sav file</span></button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick profile.sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./favicon.svg" width="20" style="filter:hue-rotate(115deg) saturate(1.15);"/><span>Load profile.sav</span></button>
 <button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button">Convert .sav to YAML</button>
 </div>
 <div id="sav-file-info" style="margin-top: 0; padding: 12px; width: 100%; background: linear-gradient(90deg, rgba(255, 0, 150, 0.25), rgba(0, 255, 200, 0.35), rgba(0, 150, 255, 0.25)), rgba(0, 0, 0, 0.35); border-radius: 0 0 8px 8px; color: #fff; font-size: 1.05em; font-weight: 700; display: none; text-align: center;">Loaded - now click convert to YAML</div>
@@ -518,7 +533,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 </div>
 </div>
-<textarea aria-label="YAML editor" id="yamlInput" name="yamlInput" placeholder="load or Paste your YAML file content here to extract item serials from the backpack section of the yaml" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
+<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML here, use Load YAML / .sav above, or drag-drop a .yaml / .yml / .sav file (decrypts .sav into this editor)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
 <div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
 <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
@@ -673,7 +688,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" name="yaml-char-level" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
-<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./img/ico_reward_exp.png" width="22"/>Experience Points:</label>
+<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./img/reward-icons/ico_reward_exp.png" width="22"/>Experience Points:</label>
 <input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
 </div>
 <div>
@@ -832,7 +847,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <button class="btn btn-Firmware" id="serialSearchSelectAllBtn" type="button">Select All</button>
 <button class="btn btn-Firmware" id="serialSearchClearBtn" type="button">Clear</button>
 </div>
-<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center;">
+<label for="serialSearchInjectCopies" style="color: rgba(0,200,255,0.9); font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">Copies each
+<input id="serialSearchInjectCopies" max="999" min="1" name="serialSearchInjectCopies" style="width: 52px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,243,255,0.4); background: #1a2332; color: #b8e6f0;" type="number" value="1"/></label>
 <button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">Add Selected to YAML</button>
 <button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add Selected to bank</button>
 <button class="btn btn-primary primary-save-gradient" id="serialSearchAddToEditorBtn" title="Import selected serials into the paste/import editor" type="button">Add Selected to Editor</button>
@@ -849,6 +866,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
 Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
+<label for="yamlAddSerialsCount" style="color: rgba(0,200,255,0.9); font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">Copies / line
+<input id="yamlAddSerialsCount" max="999" min="1" name="yamlAddSerialsCount" style="width: 52px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0;" type="number" value="1"/></label>
 <button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBtn" title="Load a character save YAML (root state:) first." type="button">Add to backpack</button>
 <button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 <button class="btn" id="yamlAddSerialsClearBtn" type="button">Clear box</button>

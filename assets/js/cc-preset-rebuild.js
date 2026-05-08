@@ -1020,6 +1020,8 @@
     help.textContent = 'Paste one serial per line. Flags/state_flags are optional (blank = auto from first slot).';
     help.style.cssText = 'opacity:0.85;font-size:13px;margin-bottom:10px;';
     var textarea = document.createElement('textarea');
+    textarea.id = 'ccManualAddSerialsText';
+    textarea.name = textarea.id;
     textarea.placeholder = 'Example:\n@UgbV...\n@UgwS...';
     textarea.style.cssText = 'width:100%;min-height:180px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgb(18,18,18);color:rgb(220,220,220);font-family:monospace;margin-bottom:10px;';
     var row = document.createElement('div');
@@ -1034,6 +1036,7 @@
       inp.type = 'number';
       inp.placeholder = 'auto';
       inp.id = id;
+      inp.name = id;
       inp.style.cssText = 'padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgb(18,18,18);color:rgb(220,220,220);';
       wrap.appendChild(lab);
       wrap.appendChild(inp);
@@ -1041,8 +1044,14 @@
     }
     var flagsInput = makeNum('flags', 'ccManualFlags');
     var stateFlagsInput = makeNum('state_flags', 'ccManualStateFlags');
+    var copiesInput = makeNum('Copies per serial', 'ccManualAddCopies');
+    copiesInput.input.min = '1';
+    copiesInput.input.max = '999';
+    copiesInput.input.value = '1';
+    copiesInput.input.placeholder = '1';
     row.appendChild(flagsInput.wrap);
     row.appendChild(stateFlagsInput.wrap);
+    row.appendChild(copiesInput.wrap);
     var btnRow = document.createElement('div');
     btnRow.style.cssText = 'display:flex;justify-content:flex-end;gap:10px;';
     var cancelBtn = document.createElement('button');
@@ -1055,9 +1064,16 @@
     addBtn.addEventListener('click', function () {
       var lines = textarea.value.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
       if (!lines.length) { alert('Paste at least one serial.'); return; }
+      var copies = parseInt(String(copiesInput.input.value || '1'), 10);
+      if (!Number.isFinite(copies) || copies < 1) copies = 1;
+      if (copies > 999) copies = 999;
+      var expanded = [];
+      for (var li = 0; li < lines.length; li++) {
+        for (var ci = 0; ci < copies; ci++) expanded.push(lines[li]);
+      }
       addBtn.disabled = true;
       try {
-        window.insertSerials(lines, { flags: flagsInput.input.value, state_flags: stateFlagsInput.input.value });
+        window.insertSerials(expanded, { flags: flagsInput.input.value, state_flags: stateFlagsInput.input.value });
       } finally {
         if (overlay.parentNode) document.body.removeChild(overlay);
       }

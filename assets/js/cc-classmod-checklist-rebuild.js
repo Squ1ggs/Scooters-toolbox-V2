@@ -11,8 +11,55 @@
   var cmListPageState = { cmPrimaryList: 0, cmSecondaryList: 0, cmUniversalList: 0, cmFirmwareList: 0 };
   var cmSkillQtyState = {};
   var FAMILY_BY_KEY = { vex: 254, amon: 255, rafa: 256, harlowe: 259, c4sh: 404, robodealer: 404, universal: 234, firmware: 234 };
+  /** Must match #classmodChecklistSection / #classmodQuickChecklistSection `.cm-checklist--resize-master` CSS. */
+  var CM_CHECKLIST_PAIR_MIN_PX = 240;
+  var CM_CHECKLIST_PAIR_MAX_PX = 800;
+  var CM_CHECKLIST_HEIGHT_PAIRS = [
+    ['cmPrimaryList', 'cmSecondaryList'],
+    ['cmUniversalList', 'cmFirmwareList'],
+    ['cmQuickPrimaryList', 'cmQuickSecondaryList'],
+    ['cmQuickUniversalList', 'cmQuickFirmwareList']
+  ];
+  var cmChecklistHeightSyncReady = false;
 
   function byId(id) { return document.getElementById(id); }
+
+  function clampCmChecklistPairHeight(px) {
+    var n = Math.round(Number(px) || 0);
+    if (n < CM_CHECKLIST_PAIR_MIN_PX) return CM_CHECKLIST_PAIR_MIN_PX;
+    if (n > CM_CHECKLIST_PAIR_MAX_PX) return CM_CHECKLIST_PAIR_MAX_PX;
+    return n;
+  }
+
+  function syncCmChecklistRowHeights() {
+    for (var i = 0; i < CM_CHECKLIST_HEIGHT_PAIRS.length; i++) {
+      var master = byId(CM_CHECKLIST_HEIGHT_PAIRS[i][0]);
+      var slave = byId(CM_CHECKLIST_HEIGHT_PAIRS[i][1]);
+      if (!master || !slave) continue;
+      var h = clampCmChecklistPairHeight(master.getBoundingClientRect().height);
+      slave.style.height = h + 'px';
+      slave.style.minHeight = CM_CHECKLIST_PAIR_MIN_PX + 'px';
+      slave.style.maxHeight = CM_CHECKLIST_PAIR_MAX_PX + 'px';
+    }
+  }
+
+  function initCmChecklistHeightSync() {
+    if (cmChecklistHeightSyncReady) return;
+    cmChecklistHeightSyncReady = true;
+    window.__ccSyncCmChecklistRowHeights = syncCmChecklistRowHeights;
+    document.addEventListener('mouseup', syncCmChecklistRowHeights, true);
+    document.addEventListener('touchend', syncCmChecklistRowHeights, true);
+    for (var j = 0; j < CM_CHECKLIST_HEIGHT_PAIRS.length; j++) {
+      var el = byId(CM_CHECKLIST_HEIGHT_PAIRS[j][0]);
+      if (!el || el.__cmChecklistPairRO) continue;
+      el.__cmChecklistPairRO = true;
+      try {
+        var ro = new ResizeObserver(syncCmChecklistRowHeights);
+        ro.observe(el);
+      } catch (_) {}
+    }
+    syncCmChecklistRowHeights();
+  }
 
   function getState() {
     return window.__STX_SIMPLE_STATE || window.state || {};
@@ -199,7 +246,10 @@
       var s = normalizePerkNameForMeta(stem);
       if (!s) return;
 
-      // Avoid speculative path for generic stats
+      var uni = typeof window.stxResolveUniversalClassmodPerkIconUrl === 'function' ? window.stxResolveUniversalClassmodPerkIconUrl(s) : null;
+      if (uni) out.push(uni);
+
+      // Avoid pointless disk/CDN lookups for plain stat rows once universal art is wired.
       var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance|brokenblue|brokengreen|brokenred|brokenwhite/.test(s);
       if (isGeneric) {
         if (map[s]) out.push(map[s]);
@@ -1372,6 +1422,7 @@
     try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
     try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
     syncChecklistClassModOutputs();
+    try { syncCmChecklistRowHeights(); } catch (_) {}
   }
 
   function installHandlers() {
@@ -1558,6 +1609,7 @@
 
   function boot() {
     installHandlers();
+    initCmChecklistHeightSync();
     renderUI();
   }
 

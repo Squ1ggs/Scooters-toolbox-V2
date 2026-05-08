@@ -52,6 +52,7 @@
         var cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.id = 'enhPerk_' + code;
+        cb.name = cb.id;
         cb.dataset.code = code;
         cb.addEventListener('change', rebuildEnhOutput);
         var span = document.createElement('span');

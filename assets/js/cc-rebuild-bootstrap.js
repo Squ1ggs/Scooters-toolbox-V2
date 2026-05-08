@@ -14,6 +14,53 @@
 
   function byId(id) { return document.getElementById(id); }
 
+  /** Collapse duplicate dataset rows that share the same TypeID:ItemID (e.g. main + supplement). Prefer non-supplement rows and full spawn paths. */
+  function normalizeIdRawKey(p) {
+    if (!p) return '';
+    var ir = String(p.idRaw != null ? p.idRaw : (p.idraw != null ? p.idraw : '')).trim();
+    var m = ir.match(/^(\d+)\s*:\s*(\d+)\s*$/);
+    if (m) return Number(m[1]) + ':' + Number(m[2]);
+    var fam = p.family != null ? Number(p.family) : (p.familyId != null ? Number(p.familyId) : NaN);
+    var idn = p.id != null ? Number(p.id) : (p.itemId != null ? Number(p.itemId) : NaN);
+    if (Number.isFinite(fam) && Number.isFinite(idn)) return fam + ':' + idn;
+    return '';
+  }
+
+  function dedupePartsByNumericIdentity(parts) {
+    if (!Array.isArray(parts) || !parts.length) return parts;
+    function normCodeKey(p) {
+      var c = String(p.code != null ? p.code : '').trim();
+      if (c.charAt(0) === '"' && c.charAt(c.length - 1) === '"') c = c.slice(1, -1);
+      return c.toLowerCase();
+    }
+    function scorePart(p) {
+      var s = 0;
+      if (normalizeIdRawKey(p)) s += 20;
+      if (p.idRaw || p.idraw) s += 4;
+      var src = String(p.source || '').toLowerCase();
+      if (src !== 'supplement') s += 5;
+      var c = normCodeKey(p);
+      if (c && c.indexOf('.') !== -1 && !/^\{\s*\d+\s*:\s*\d+\s*\}$/.test(c)) s += 3;
+      return s;
+    }
+    var map = Object.create(null);
+    var order = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      var idK = normalizeIdRawKey(p);
+      var k = idK ? ('id:' + idK) : ('code:' + normCodeKey(p));
+      if (!map[k]) {
+        map[k] = p;
+        order.push(k);
+      } else if (scorePart(p) > scorePart(map[k])) {
+        map[k] = p;
+      }
+    }
+    return order.map(function (kk) { return map[kk]; });
+  }
+  try { window.__ccDedupePartsByNumericId = dedupePartsByNumericIdentity; } catch (_) {}
+
   function byCategory(cat) {
     var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS))
       ? window.STX_DATASET.ALL_PARTS
@@ -39,20 +86,20 @@
 
   function ensurePools() {
     if (!window.STX_DATASET && !window.ALL_PARTS) return;
-    window.GUN_PARTS = window.GUN_PARTS || byCategoryOrWeapon('Weapon');
-    window.GRENADE_PARTS = window.GRENADE_PARTS || byCategory('Grenade');
-    window.SHIELD_PARTS = window.SHIELD_PARTS || byCategory('Shield');
-    window.REPKIT_PARTS = window.REPKIT_PARTS || byCategory('Repkit');
-    window.ENHANCEMENT_PARTS = window.ENHANCEMENT_PARTS || byCategory('Enhancement');
+    window.GUN_PARTS = dedupePartsByNumericIdentity(window.GUN_PARTS || byCategoryOrWeapon('Weapon'));
+    window.GRENADE_PARTS = dedupePartsByNumericIdentity(window.GRENADE_PARTS || byCategory('Grenade'));
+    window.SHIELD_PARTS = dedupePartsByNumericIdentity(window.SHIELD_PARTS || byCategory('Shield'));
+    window.REPKIT_PARTS = dedupePartsByNumericIdentity(window.REPKIT_PARTS || byCategory('Repkit'));
+    window.ENHANCEMENT_PARTS = dedupePartsByNumericIdentity(window.ENHANCEMENT_PARTS || byCategory('Enhancement'));
     var hw = byCategory('Heavy Weapon');
     if (!hw || hw.length === 0) {
       var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) ? window.STX_DATASET.ALL_PARTS : [];
       hw = all.filter(function (p) { return p && String(p.itemType || '').trim() === 'Heavy Weapon'; });
     }
-    window.HEAVY_PARTS = window.HEAVY_PARTS || hw;
-    window.CLASSMOD_PARTS = window.CLASSMOD_PARTS || byCategory('Classmod');
+    window.HEAVY_PARTS = dedupePartsByNumericIdentity(window.HEAVY_PARTS || hw);
+    window.CLASSMOD_PARTS = dedupePartsByNumericIdentity(window.CLASSMOD_PARTS || byCategory('Classmod'));
     if (!window.CLASSMOD_PARTS || window.CLASSMOD_PARTS.length === 0) {
-      window.CLASSMOD_PARTS = byCategory('Character');
+      window.CLASSMOD_PARTS = dedupePartsByNumericIdentity(byCategory('Character'));
     }
   }
 

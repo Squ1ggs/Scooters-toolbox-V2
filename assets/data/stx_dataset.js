@@ -37926,11 +37926,12 @@
     "weaponType": "Shotgun",
     "partType": "Rarity",
     "code": "\"JAK_SG.part_rarity\"",
-    "name": "Hellwalker Skin",
+    "name": "Doeshot Skin",
     "idRaw": "9:100",
     "family": 9,
     "id": 100,
-    "stats": "Can be used for skin"
+    "stats": "Cosmetic / skin row (generic part_rarity code). Same rarity id as Doeshot (9:100 per STX_RARITIES); not Hellwalker (9:83).",
+    "effects": "Doeshot"
   },
   {
     "category": "Weapon",

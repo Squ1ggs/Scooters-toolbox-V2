@@ -290,7 +290,56 @@ window.INVENTORY_ITEM_CATALOG = {
   ],
   "grenades": [],
   "enhancements": [],
-  "repkits": [],
+  "repkits": [
+    {
+      "id": "bor_repair_kit",
+      "name": "Ripper Repair Kit",
+      "manufacturer": "BOR",
+      "type": "repkit"
+    },
+    {
+      "id": "dad_repair_kit",
+      "name": "Daedalus Repair Kit",
+      "manufacturer": "DAD",
+      "type": "repkit"
+    },
+    {
+      "id": "jak_repair_kit",
+      "name": "Jakobs Repair Kit",
+      "manufacturer": "JAK",
+      "type": "repkit"
+    },
+    {
+      "id": "mal_repair_kit",
+      "name": "Maliwan Repair Kit",
+      "manufacturer": "MAL",
+      "type": "repkit"
+    },
+    {
+      "id": "ord_repair_kit",
+      "name": "Order Repair Kit",
+      "manufacturer": "ORD",
+      "type": "repkit"
+    },
+    {
+      "id": "ted_repair_kit",
+      "name": "Tediore Repair Kit",
+      "manufacturer": "TED",
+      "type": "repkit"
+    },
+    {
+      "id": "tor_repair_kit",
+      "name": "Torgue Repair Kit",
+      "manufacturer": "TOR",
+      "type": "repkit"
+    },
+    {
+      "id": "vla_repair_kit",
+      "name": "Vladof Repair Kit",
+      "manufacturer": "VLA",
+      "type": "repkit"
+    }
+  ],
   "manufacturers": [
     "BOR",
     "DAD",

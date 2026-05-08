@@ -37,6 +37,7 @@
         itemStatsEl.innerHTML = '<div class="stats-empty">Select an item type to see info.</div>';
         statEffectsEl.innerHTML = '<div class="stats-empty">Select parts to see their stat effects.</div>';
         proofEvidenceEl.innerHTML = '<div class="stats-empty">Select parts to view proof details.</div>';
+        try { window.__legitSerialSeed = null; window.__legitBuildSeedForSlug = null; } catch (_) {}
         return;
       }
       selectedItem = getAllItems().find(function(i) { return i.slug === slug; });

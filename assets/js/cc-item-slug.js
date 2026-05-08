@@ -136,7 +136,7 @@
   /** STX `partType` filter string (or '' for pearl rows — filtered in Simple Builder). */
   function ncsNameToPartType(ns) {
     var m = {
-      body: 'Body', body_acc: 'Body Accessory', body_ele: 'Element', body_bolt: 'Body Accessory', body_mag: 'Manufacturer Part',
+      body: 'Body', body_acc: 'Body Accessory', body_ele: 'Body Element', body_bolt: 'Body Accessory', body_mag: 'Manufacturer Part',
       barrel: 'Barrel', barrel_acc: 'Barrel Accessory', barrel_licensed: 'Manufacturer Part',
       hyperion_secondary_acc: 'Manufacturer Part',
       magazine: 'Magazine', magazine_acc: 'Magazine', magazine_ted_thrown: 'Magazine', magazine_borg: 'Magazine',
@@ -151,7 +151,7 @@
 
   /**
    * Ordered weapon slot schema for a Legit-style slug, matching `NCS_SLOT_MAP.items[slug].ncs_slots`
-   * plus trailing rarity override / stat / legendary rows. Requires `legacy/ncs_slot_map.js` on the page.
+   * plus trailing stat / legendary / additional / firmware rows. Requires `legacy/ncs_slot_map.js` on the page.
    * @param {string} slug
    * @returns {Array<{key:string,label:string,partType:string,ncsSlot?:string,multi?:boolean,customType?:string}>|null}
    */
@@ -169,6 +169,11 @@
       var ns = slots[i];
       /* Fold NCS `body_bolt` into Body Accessory UI (same parts; dataset lists bolt under Body). */
       if (ns === 'body_bolt') continue;
+      /* Firmware always renders as the final weapon slot (after legendary + additional parts). */
+      if (ns === 'firmware') {
+        hasNcs.firmware = true;
+        continue;
+      }
       var key = ncsNameToStateKey(ns);
       if (!key || seenKey[key]) continue;
       seenKey[key] = true;
@@ -182,15 +187,13 @@
       if (ns === 'pearl_elem' || ns === 'pearl_stat') row.customType = 'weaponPearl';
       rows.push(row);
     }
-    if (!hasNcs.firmware) {
-      rows.push({ key: 'firmware', label: labels.firmware || 'Firmware', partType: 'Firmware', ncsSlot: '' });
-    }
     if (!hasNcs.barrel_licensed) {
       rows.push({ key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part', ncsSlot: '' });
     }
-    rows.push({ key: 'rarity', label: 'Rarity ID Override (optional)', partType: 'Rarity', ncsSlot: '' });
     rows.push({ key: 'statMod', label: 'Stat Modifier', partType: 'Stat Modifier', ncsSlot: '' });
     rows.push({ key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', multi: true, ncsSlot: '' });
+    rows.push({ key: 'firmware', label: (labels && labels.firmware) ? labels.firmware : 'Firmware', partType: 'Firmware', ncsSlot: hasNcs.firmware ? 'firmware' : '' });
+    rows.push({ key: 'additionalParts', label: 'Additional (other parts)', partType: '', multi: true, customType: 'weaponAdditionalParts', ncsSlot: '' });
     return rows;
   }
 

@@ -141,6 +141,30 @@
       return '';
     }
 
+    /** Optgroup label for manifest / STX rarity dropdown rows (standalone Legit Builder UI). */
+    function legitRarityOptgroupLabelFromManifestOption(o) {
+      if (!o) return 'Unknown';
+      var raw = String((o.invDumpKey || o.inv_key || o.name || '') || '').toLowerCase();
+      var cm = raw.match(/comp_(0[1-6])_/);
+      if (cm) {
+        var t = cm[1];
+        if (t === '01') return 'Common';
+        if (t === '02') return 'Uncommon';
+        if (t === '03') return 'Rare';
+        if (t === '04') return 'Epic';
+        if (t === '06') return 'Pearlescent';
+        if (t === '05') return 'Legendary';
+      }
+      if (/pearlescent|part_pearl|pearl_/.test(raw)) return 'Pearlescent';
+      var sn = String(o.name || '').trim();
+      var m2 = sn.match(/^(Common|Uncommon|Rare|Epic|Legendary|Pearlescent)\b/i);
+      if (m2 && m2[1]) {
+        var w = m2[1].toLowerCase();
+        return w.charAt(0).toUpperCase() + w.slice(1);
+      }
+      return 'Unknown';
+    }
+
     function getExtraRarityOptions(item, existingOptions) {
       if (!item || !Array.isArray(STX_RAR) || !STX_RAR.length) return [];
       var fam = Number(item.category_id);
@@ -540,6 +564,46 @@
     function getNcsInfo(slug) {
       if (!NMAP || !NMAP.items) return null;
       return NMAP.items[slug] || null;
+    }
+
+    /**
+     * Repair-kit manifest rows often stuff manufacturer bases + unique augments into `unknown`.
+     * Pull them into the NCS lanes save-editor.be exposes (body / primary_augment).
+     */
+    function mergeManifestUnknownRepkitOptions(slotName, item, ncsOpts) {
+      var slug = item && item.slug;
+      if (!slug || !/repair_kit$/.test(String(slug)) || !item.slots || !item.slots.unknown || !item.slots.unknown.options) return ncsOpts || [];
+      var raw = item.slots.unknown.options;
+      var base = Array.isArray(ncsOpts) ? ncsOpts.slice() : [];
+      if (slotName === 'body') {
+        var bodyRe = /^part_(jak|mal|tor|ted|vla|dad|ord|bor)$/;
+        var b = [];
+        for (var i = 0; i < raw.length; i++) {
+          var o = raw[i];
+          if (o && bodyRe.test(String(o.name || '').toLowerCase())) b.push(o);
+        }
+        return b.length ? b : base;
+      }
+      if (slotName === 'primary_augment') {
+        var seen = {};
+        for (var j = 0; j < base.length; j++) {
+          var bj = base[j];
+          if (bj && Number.isFinite(Number(bj.index))) seen[Number(bj.index)] = true;
+        }
+        var out = base.slice();
+        for (var k = 0; k < raw.length; k++) {
+          var rk = raw[k];
+          if (!rk) continue;
+          var n = String(rk.name || '').toLowerCase();
+          if (n.indexOf('part_augment') === -1 && n.indexOf('part_aug') !== 0) continue;
+          var idx = Number(rk.index);
+          if (Number.isFinite(idx) && seen[idx]) continue;
+          if (Number.isFinite(idx)) seen[idx] = true;
+          out.push(rk);
+        }
+        return out;
+      }
+      return base;
     }
 
     function getManifestNameAllowlistForSlot(item, slotName) {
@@ -1022,6 +1086,15 @@
                 }
               }
             }
+            if (v.ok && slotBaseUi === 'barrel') {
+              var invBarPrev = String(optInvKey || '').trim().toLowerCase();
+              if (!namedLegendaryBarrelMatchesWeaponComp(invBarPrev, nm, compNameSel)) {
+                v = {
+                  ok: false,
+                  reasons: ['Barrel does not match this weapon\'s named legendary family (not a natural roll for this item).']
+                };
+              }
+            }
             if (v.ok) {
               o.textContent = '✓ ' + o.dataset.baseText;
               o.disabled = false;
@@ -1074,6 +1147,8 @@
       ];
       function pushUniqueSlot(arr, slotName, hasManifest) {
         if (!slotName || seen[slotName]) return;
+        /* Full NCS lanes + manifest splits below replace the catch-all `unknown` row for repair kits. */
+        if (/repair_kit$/.test(String(item.slug || '')) && slotName === 'unknown') return;
         arr.push({ name: slotName, hasManifest: !!hasManifest });
         seen[slotName] = true;
       }
@@ -1209,10 +1284,13 @@
             var isRarity = (slotName === 'rarity' || manifestKey === 'rarity');
             var slugLc = String((item && item.slug) || '').toLowerCase();
             var isWeaponSlug = /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slugLc);
-            /* For non-weapon gear, manifest in_pool flags are often incomplete; keep full options visible. */
-            /* For weapons, still keep strict pool filtering except known noisy rows (rarity/barrels). */
-            var skipInPoolFilter = !isWeaponSlug || isRarity || slotName === 'barrel' || slotName === 'barrel_acc' || manifestKey === 'barrel' || manifestKey === 'barrel_acc';
-            if (!skipInPoolFilter) options = options.filter(function(o) { return o.in_pool === true; });
+            /* Non-weapon gear: manifest in_pool is often incomplete — show full lists. Weapons: filter to manifest
+               loot-pool export so barrel/body/mag rows match natural drops for that item (barrels were exempt and allowed wrong-leg barrels). */
+            var skipInPoolFilter = !isWeaponSlug || isRarity;
+            if (!skipInPoolFilter) {
+              var poolOnly = options.filter(function(o) { return o.in_pool === true; });
+              if (poolOnly.length) options = poolOnly;
+            }
             /* NCS alignment: exclude accessory parts from main slot dropdowns (body_acc from body, barrel_acc from barrel). */
             if (isWeaponSlug && NPARTS && (slotName === 'body' || manifestKey === 'body')) {
               var bodyAccNames = (NPARTS.body_acc || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
@@ -1257,17 +1335,45 @@
             }
             if (options.length === 0) continue;
             if (isRarity) options.forEach(function(o) { o.in_pool = true; });
-            options.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
             rendered++;
             var labelText = getSlotDisplayLabel(slotName);
-            div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span style="opacity:0.45;font-weight:400;">(' + options.length + ')</span></label>'
+            var selectOpen = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span style="opacity:0.45;font-weight:400;">(' + options.length + ')</span></label>'
               + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="' + (manifestKey || slotName) + '">'
+              /* none option appended below */
+              ;
+            function optLineHtml(o) {
+              var poolMark = o.in_pool === true ? 'In pool — ' : 'Off-pool — ';
+              var invDumpKey = String(o.invDumpKey || o.inv_dump_key || o.inv_key || '').trim();
+              return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + (o.in_pool === true) + '">[' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
+            }
+            var optBody = '';
+            if (isRarity) {
+              var byG = {};
+              for (var oiG = 0; oiG < options.length; oiG++) {
+                var oG = options[oiG];
+                var gLbl = legitRarityOptgroupLabelFromManifestOption(oG);
+                if (!byG[gLbl]) byG[gLbl] = [];
+                byG[gLbl].push(oG);
+              }
+              var orderG = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Pearlescent', 'Unknown'];
+              for (var gi = 0; gi < orderG.length; gi++) {
+                var gnm = orderG[gi];
+                var arrG = byG[gnm];
+                if (!arrG || !arrG.length) continue;
+                arrG.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
+                optBody += '<optgroup label="' + escapeHtml(gnm) + '">';
+                for (var ai = 0; ai < arrG.length; ai++) {
+                  optBody += optLineHtml(arrG[ai]);
+                }
+                optBody += '</optgroup>';
+              }
+            } else {
+              options.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
+              optBody = options.map(optLineHtml).join('');
+            }
+            div.innerHTML = selectOpen
               + '<option value="">\u2014 None \u2014</option>'
-              + options.map(function(o) {
-                  var poolMark = o.in_pool === true ? 'In pool — ' : 'Off-pool — ';
-                  var invDumpKey = String(o.invDumpKey || o.inv_dump_key || o.inv_key || '').trim();
-                  return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + (o.in_pool === true) + '">[' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
-                }).join('')
+              + optBody
               + '</select>';
             div.querySelector('select').addEventListener('change', function(e) {
               var sel = e.target;
@@ -1318,24 +1424,28 @@
             });
           } else {
             var ncsParts = NPARTS ? NPARTS[slotName] : null;
+            var ncsOpts = [];
             if (ncsParts && ncsParts.length > 0) {
+              ncsOpts = ncsParts.slice().filter(function (o) { return !isEleControlPlaceholderPartName(o && o.name); });
+            }
+            ncsOpts = mergeManifestUnknownRepkitOptions(slotName, item, ncsOpts);
+            if (slotName === 'body_acc') {
+              var hasElementSlotNcs = !!(
+                item && item.slots && (item.slots.body_ele || item.slots.element || item.slots.primary_ele || item.slots.secondary_ele || item.slots.pearl_elem) ||
+                (ncsInfo && Array.isArray(ncsInfo.ncs_slots) && ncsInfo.ncs_slots.some(function (s) { return /(^|_)(ele|element)$/.test(String(s || '').toLowerCase()) || /^(body_ele|primary_ele|secondary_ele|pearl_elem)$/.test(String(s || '').toLowerCase()); }))
+              );
+              if (hasElementSlotNcs) ncsOpts = ncsOpts.filter(function (o) { return !isElementLikePartName(o && o.name); });
+            }
+            var allowNames = getManifestNameAllowlistForSlot(item, slotName);
+            if (allowNames) {
+              ncsOpts = ncsOpts.filter(function (o) {
+                var on = String((o && o.name) || '').trim().toLowerCase();
+                return !!allowNames[on];
+              });
+            }
+            if (ncsOpts.length > 0) {
               rendered++;
               var labelText = getSlotDisplayLabel(slotName);
-              var ncsOpts = ncsParts.slice().filter(function (o) { return !isEleControlPlaceholderPartName(o && o.name); });
-              if (slotName === 'body_acc') {
-                var hasElementSlotNcs = !!(
-                  item && item.slots && (item.slots.body_ele || item.slots.element || item.slots.primary_ele || item.slots.secondary_ele || item.slots.pearl_elem) ||
-                  (ncsInfo && Array.isArray(ncsInfo.ncs_slots) && ncsInfo.ncs_slots.some(function (s) { return /(^|_)(ele|element)$/.test(String(s || '').toLowerCase()) || /^(body_ele|primary_ele|secondary_ele|pearl_elem)$/.test(String(s || '').toLowerCase()); }))
-                );
-                if (hasElementSlotNcs) ncsOpts = ncsOpts.filter(function (o) { return !isElementLikePartName(o && o.name); });
-              }
-              var allowNames = getManifestNameAllowlistForSlot(item, slotName);
-              if (allowNames) {
-                ncsOpts = ncsOpts.filter(function (o) {
-                  var on = String((o && o.name) || '').trim().toLowerCase();
-                  return !!allowNames[on];
-                });
-              }
               ncsOpts.sort(function(a, b) {
                 return (a.index - b.index) || String(a.name || '').localeCompare(String(b.name || ''));
               });
@@ -1343,13 +1453,28 @@
                 + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="">'
                 + '<option value="">\u2014 None \u2014</option>'
                 + ncsOpts.map(function(o) {
-                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="" data-in-pool="false">NCS — [' + o.index + '] ' + formatPartName(o.name) + '</option>';
+                    /* NPARTS rows omit in_pool — treat as strict-allowed (same as pre-merge NCS). */
+                    var ip = (o.in_pool === true) ? 'true' : ((o.in_pool === false) ? 'false' : 'true');
+                    var poolMark = (o.in_pool === true) ? 'In pool \u2014 ' : ((o.in_pool === false) ? 'Off-pool \u2014 ' : '');
+                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="" data-in-pool="' + ip + '">NCS \u2014 [' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
                   }).join('')
                 + '</select>';
               div.querySelector('select').addEventListener('change', function(e) {
                 var sel = e.target;
                 var opt = sel.options[sel.selectedIndex];
                 var sn = sel.dataset.slot;
+                if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
+                  sel.value = '';
+                  delete selectedParts[sn];
+                  updateOutput();
+                  updateValidation();
+                  updateItemStats();
+                  updateStatEffects();
+                  updateDropSources();
+                  updateProofEvidence();
+                  scheduleLegitSlotOptionValidityRefresh();
+                  return;
+                }
                 if (strictMode && opt && opt.disabled && opt.value) {
                   sel.value = '';
                   delete selectedParts[sn];
@@ -1363,7 +1488,7 @@
                   return;
                 }
                 if (opt.value) {
-                  selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, invDumpKey: null, in_pool: false, slot: sn, ncs: true };
+                  selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, invDumpKey: null, in_pool: opt.dataset.inPool === 'true', slot: sn, ncs: true };
                 } else {
                   delete selectedParts[sn];
                 }
@@ -1377,8 +1502,8 @@
               });
             } else {
               rendered++;
-              var labelText = getSlotDisplayLabel(slotName);
-              div.innerHTML = '<label>' + escapeHtml(labelText) + ' <span class="ncs-badge">NCS</span></label>'
+              var labelTextNcs = getSlotDisplayLabel(slotName);
+              div.innerHTML = '<label>' + escapeHtml(labelTextNcs) + ' <span class="ncs-badge">NCS</span></label>'
                 + '<div style="padding:6px 10px;font-size:0.78rem;color:rgba(179,136,255,0.6);font-style:italic;">No part data available yet</div>';
             }
           }
@@ -1388,6 +1513,26 @@
 
       if (!rendered) {
         slotsContainer.innerHTML = '<div class="slot-empty-msg">No configurable slots for this item.</div>';
+      }
+    }
+
+    /**
+     * Roll / persist seed per item slug so the header stays stable while editing parts.
+     * Matches Simple/Guided: `fam, 0, 1, lvl| 2, seed|| {tail}|` (not `|||`).
+     */
+    function getLegitBuilderSerialSeed() {
+      var slug = selectedItem && selectedItem.slug ? String(selectedItem.slug) : '';
+      try {
+        if (!slug) return Math.floor(1000 + Math.random() * 9000);
+        var prevSlug = String(window.__legitBuildSeedForSlug || '');
+        var n = Number(window.__legitSerialSeed);
+        if (prevSlug !== slug || !Number.isFinite(n) || n <= 0) {
+          window.__legitSerialSeed = Math.floor(1000 + Math.random() * 9000);
+          window.__legitBuildSeedForSlug = slug;
+        }
+        return Number(window.__legitSerialSeed);
+      } catch (_) {
+        return Math.floor(1000 + Math.random() * 9000);
       }
     }
 
@@ -1437,7 +1582,8 @@
           partTokens.push('{' + familyId + ':' + p.index + '}');
         }
       }
-      var code = familyId + ', 0, 1, ' + level + '||| ' + partTokens.join(' ') + '|';
+      var seed = getLegitBuilderSerialSeed();
+      var code = familyId + ', 0, 1, ' + level + '| 2, ' + seed + '|| ' + partTokens.join(' ') + '|';
       codeOutput.textContent = code;
       codeOutput.className = 'code-box';
       try {
@@ -2236,6 +2382,34 @@
       return true;
     }
 
+    /** @returns {string[]} cumulative segments e.g. phantom_flame → phantom, phantom_flame */
+    function cumulativeUnderscorePrefixes(famSuffix) {
+      var parts = String(famSuffix || '').toLowerCase().split('_').filter(Boolean);
+      var out = [];
+      var i;
+      for (i = 1; i <= parts.length; i++) out.push(parts.slice(0, i).join('_'));
+      return out;
+    }
+
+    /**
+     * Named-orange weapon comps use comp_05_legendary_<fam>; barrel rows part_barrel_*_<tail> must belong to that
+     * weapon family. Inv dependencytags alone were too loose (shared leg_* prefixes across legendaries).
+     */
+    function namedLegendaryBarrelMatchesWeaponComp(invKeyLower, partNameLower, compEffectiveKey) {
+      var compNorm = normalizeCompKeyForNamedLegFam(compEffectiveKey || '');
+      var mc = compNorm.match(/^comp_05_legendary_([a-z0-9_]+)$/i);
+      if (!mc || !mc[1]) return true;
+      var fam = mc[1].toLowerCase();
+      var inv = String(invKeyLower || '').trim().toLowerCase();
+      if (!inv && partNameLower) inv = normalizeInvLookupKey(partNameLower);
+      if (!invKeyLooksNamedLegendaryBarrel(inv)) return true;
+      var mb = /^part_barrel_\d{2}_([a-z0-9_]+)$/i.exec(inv);
+      var tail = mb ? String(mb[1]).toLowerCase() : '';
+      if (!tail) return true;
+      var allowed = cumulativeUnderscorePrefixes(fam);
+      return allowed.indexOf(tail) >= 0;
+    }
+
     function isPearlRarityCompName(compName) {
       var c = String(compName || '').trim().toLowerCase();
       if (!c) return false;
@@ -2429,6 +2603,15 @@
         if (v.ok && (skBase === 'pearl_elem' || skBase === 'pearl_stat')) {
           if (!isPearlRarityCompName(compName)) {
             v = { ok: false, reasons: ['pearl-only slot requires pearlescent rarity comp'] };
+          }
+        }
+        if (v.ok && skBase === 'barrel') {
+          var ikBar = String((p.invDumpKey || p.name || '')).trim().toLowerCase();
+          if (!namedLegendaryBarrelMatchesWeaponComp(ikBar, pnl, compName)) {
+            v = {
+              ok: false,
+              reasons: ['Barrel does not match this weapon\'s named legendary family (not a natural roll for this item).']
+            };
           }
         }
         if (!v.ok) {

@@ -235,14 +235,19 @@ const NCS_SLOT_MAP = {
     ripper_enhancement: { ncs_id: 'BOR_Enhancement', type: 'Enhancement', manufacturer: 'Borg', ncs_slots: ['body','core_augment','firmware','stat_group1'], ncs_slot_count: 4 },
     vladof_enhancement: { ncs_id: 'VLA_Enhancement', type: 'Enhancement', manufacturer: 'Vladof', ncs_slots: ['body','core_augment','firmware','stat_group1'], ncs_slot_count: 4 },
 
-    torgue_repair_kit: { ncs_id: 'TOR_RepairKit', type: 'RepairKit', manufacturer: 'Torgue', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
-    jakobs_repair_kit: { ncs_id: 'JAK_RepairKit', type: 'RepairKit', manufacturer: 'Jakobs', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
-    maliwan_repair_kit: { ncs_id: 'MAL_RepairKit', type: 'RepairKit', manufacturer: 'Maliwan', ncs_slots: ['curative','primary_augment'], ncs_slot_count: 2 },
-    vladof_repair_kit: { ncs_id: 'VLA_RepairKit', type: 'RepairKit', manufacturer: 'Vladof', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
-    daedalus_repair_kit: { ncs_id: 'DAD_RepairKit', type: 'RepairKit', manufacturer: 'Daedalus', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
-    ripper_repair_kit: { ncs_id: 'BOR_RepairKit', type: 'RepairKit', manufacturer: 'Borg', ncs_slots: ['primary_augment','secondary_augment'], ncs_slot_count: 2 },
-    order_repair_kit: { ncs_id: 'ORD_RepairKit', type: 'RepairKit', manufacturer: 'Order', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
-    tediore_repair_kit: { ncs_id: 'TED_RepairKit', type: 'RepairKit', manufacturer: 'Tediore', ncs_slots: ['primary_augment'], ncs_slot_count: 1 },
+    /**
+     * Repair kits: manifest export only lists rarity + a catch-all `unknown`; the in-game / save-editor.be
+     * builder exposes the same NCS gear lanes as grenades (body, payload, element, augments, firmware, …).
+     * Order matches `SIMPLE_SCHEMA_BY_CATEGORY.Repkit` / guided repkit grid (rarity still comes from manifest).
+     */
+    torgue_repair_kit: { ncs_id: 'TOR_RepairKit', type: 'RepairKit', manufacturer: 'Torgue', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    jakobs_repair_kit: { ncs_id: 'JAK_RepairKit', type: 'RepairKit', manufacturer: 'Jakobs', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    maliwan_repair_kit: { ncs_id: 'MAL_RepairKit', type: 'RepairKit', manufacturer: 'Maliwan', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    vladof_repair_kit: { ncs_id: 'VLA_RepairKit', type: 'RepairKit', manufacturer: 'Vladof', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    daedalus_repair_kit: { ncs_id: 'DAD_RepairKit', type: 'RepairKit', manufacturer: 'Daedalus', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    ripper_repair_kit: { ncs_id: 'BOR_RepairKit', type: 'RepairKit', manufacturer: 'Borg', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    order_repair_kit: { ncs_id: 'ORD_RepairKit', type: 'RepairKit', manufacturer: 'Order', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
+    tediore_repair_kit: { ncs_id: 'TED_RepairKit', type: 'RepairKit', manufacturer: 'Tediore', ncs_slots: ['body','payload','element','payload_augment','primary_augment','secondary_augment','curative','stat_augment','firmware','endgame','pearl_elem','pearl_stat','unique'], ncs_slot_count: 13 },
 
     maliwan_grenade_gadget: { ncs_id: 'MAL_GrenadeGadget', type: 'Gadget', manufacturer: 'Maliwan', ncs_slots: ['element','payload','payload_augment','stat_augment'], ncs_slot_count: 4 },
     jakobs_grenade_gadget: { ncs_id: 'JAK_GrenadeGadget', type: 'Gadget', manufacturer: 'Jakobs', ncs_slots: ['payload','payload_augment','stat_augment'], ncs_slot_count: 3 },

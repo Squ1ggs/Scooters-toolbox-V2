@@ -7,6 +7,24 @@
 
   function byId(id) { return document.getElementById(id); }
 
+  function getGlobalYamlInjectCopies() {
+    var el = byId('stxYamlInjectCopiesGlobal');
+    if (el && typeof window.stxNormalizeYamlInjectCopies === 'function') {
+      return window.stxNormalizeYamlInjectCopies(el.value);
+    }
+    return 1;
+  }
+
+  function alertYamlInjectNeedSave(kind) {
+    if (typeof window.stxAlertNeedSaveForYamlInject === 'function') {
+      window.stxAlertNeedSaveForYamlInject(kind);
+    } else {
+      alert(kind === 'bank'
+        ? 'Could not add to profile bank. Load a profile YAML (shared inventory) first.'
+        : 'Could not add to backpack. Load a character save YAML (root state:) first.');
+    }
+  }
+
   function escapeHtml(s) {
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -118,19 +136,21 @@
       btns[2].addEventListener('click', function (e) {
         e.stopPropagation();
         lastSelected = item;
-        if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial)) {
+        var n = getGlobalYamlInjectCopies();
+        if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial, n)) {
           openSaveYamlDrawer();
         } else {
-          alert('Load a character save YAML (root state:) with a backpack section first.');
+          alertYamlInjectNeedSave('backpack');
         }
       });
       btns[3].addEventListener('click', function (e) {
         e.stopPropagation();
         lastSelected = item;
-        if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial)) {
+        var nb = getGlobalYamlInjectCopies();
+        if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial, nb)) {
           openSaveYamlDrawer();
         } else {
-          alert('Load profile .sav or YAML first.');
+          alertYamlInjectNeedSave('bank');
         }
       });
       row.addEventListener('click', function () { lastSelected = item; });
@@ -657,19 +677,21 @@
       btns[2].addEventListener('click', function (e) {
         e.stopPropagation();
         lastGodrollSelected = item;
-        if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial)) {
+        var n = getGlobalYamlInjectCopies();
+        if (window.appendSerialToYAML && window.appendSerialToYAML(item.serial, n)) {
           openSaveYamlDrawer();
         } else {
-          alert('Load a character save YAML (root state:) with a backpack section first.');
+          alertYamlInjectNeedSave('backpack');
         }
       });
       btns[3].addEventListener('click', function (e) {
         e.stopPropagation();
         lastGodrollSelected = item;
-        if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial)) {
+        var nb = getGlobalYamlInjectCopies();
+        if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(item.serial, nb)) {
           openSaveYamlDrawer();
         } else {
-          alert('Load profile .sav or YAML first.');
+          alertYamlInjectNeedSave('bank');
         }
       });
       row.addEventListener('click', function () { lastGodrollSelected = item; });
@@ -857,11 +879,11 @@
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && window.appendSerialToYAML) {
-          var ok = window.appendSerialToYAML(lastSelected.serial);
+          var ok = window.appendSerialToYAML(lastSelected.serial, getGlobalYamlInjectCopies());
           if (ok) {
             openSaveYamlDrawer();
           } else {
-            alert('Load a character save YAML (root state:) with a backpack section first.');
+            alertYamlInjectNeedSave('backpack');
           }
         } else {
           alert('Search and click a result first, or narrow to one match.');
@@ -877,9 +899,9 @@
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && window.appendSerialToProfileBank) {
-          var okb = window.appendSerialToProfileBank(lastSelected.serial);
+          var okb = window.appendSerialToProfileBank(lastSelected.serial, getGlobalYamlInjectCopies());
           if (okb) openSaveYamlDrawer();
-          else alert('Load profile .sav or YAML first.');
+          else alertYamlInjectNeedSave('bank');
         } else {
           alert('Search and click a result first, or narrow to one match.');
         }
@@ -945,11 +967,11 @@
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && window.appendSerialToYAML) {
-          var ok = window.appendSerialToYAML(lastGodrollSelected.serial);
+          var ok = window.appendSerialToYAML(lastGodrollSelected.serial, getGlobalYamlInjectCopies());
           if (ok) {
             openSaveYamlDrawer();
           } else {
-            alert('Load a character save YAML (root state:) with a backpack section first.');
+            alertYamlInjectNeedSave('backpack');
           }
         } else {
           alert('Search and click a Godroll result first, or narrow to one match.');
@@ -964,9 +986,9 @@
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && window.appendSerialToProfileBank) {
-          var okg = window.appendSerialToProfileBank(lastGodrollSelected.serial);
+          var okg = window.appendSerialToProfileBank(lastGodrollSelected.serial, getGlobalYamlInjectCopies());
           if (okg) openSaveYamlDrawer();
-          else alert('Load profile .sav or YAML first.');
+          else alertYamlInjectNeedSave('bank');
         } else {
           alert('Search and click a Godroll result first, or narrow to one match.');
         }

@@ -303,6 +303,8 @@
 
   window.SPAWN_SKINS = SPAWN_SKINS;
   window.CAMO_TOKENS = CAMO_TOKENS;
+  /** Shared pattern: mixable weapon skin rarity braces `{fam:id}` / `{fam:[a b]}`. Exposed for skin mixer + populate logic. */
+  try { window.__CC_NUMERIC_SKIN_BRACE_RE = NUMERIC_BRACE_RE; } catch (_e) {}
   window.SKINS = {
     "Legendary Skins": EXTRA_SKINS.slice(),
     "Legendary Camos": CAMO_TOKENS.slice()

@@ -95,27 +95,36 @@
           if (/Shiny/i.test(v)) phosGroup.push(item);
           else spawnGroup.push(item);
         }
+        var braceRe = window.__CC_NUMERIC_SKIN_BRACE_RE;
+        if (!(braceRe instanceof RegExp)) {
+          braceRe = /^\{\s*\d+\s*:\s*(?:\[\s*\d+(?:\s+\d+)*\s*\]|\d+)\s*\}$/;
+        }
         var extras = window.__CC_EXTRA_NUMERIC_SKINS || [];
         for (var j = 0; j < extras.length; j++) {
           var ex = extras[j];
           var code = Array.isArray(ex) ? ex[0] : (ex && ex.code);
           var name = Array.isArray(ex) ? ex[1] : (ex && (ex.name || ex.label));
           if (!code) continue;
-          var k = String(code).toLowerCase();
+          var codeTrim = String(code).trim().replace(/\s+/g, ' ');
+          if (!braceRe.test(codeTrim) || /^\{\s*1\s*:/.test(codeTrim)) continue;
+          var k = codeTrim.toLowerCase();
           if (numericSeen[k]) continue;
           numericSeen[k] = true;
-          numericGroup.push({ value: code, label: name ? (code + ' - ' + name) : code });
+          numericGroup.push({ value: codeTrim, label: name ? (codeTrim + ' - ' + name) : codeTrim });
         }
         var SKINS = window.SKINS || {};
         for (var cat in SKINS) {
+          if (/camo|token/i.test(String(cat))) continue;
           var arr = SKINS[cat] || [];
           for (var idx = 0; idx < arr.length; idx++) {
             var sk = arr[idx];
             if (!sk || !sk.code) continue;
-            var ck = String(sk.code).toLowerCase();
+            var skCode = String(sk.code).trim().replace(/\s+/g, ' ');
+            if (!braceRe.test(skCode) || /^\{\s*1\s*:/.test(skCode)) continue;
+            var ck = skCode.toLowerCase();
             if (numericSeen[ck]) continue;
             numericSeen[ck] = true;
-            numericGroup.push({ value: sk.code, label: (sk.name || sk.label) ? (sk.code + ' - ' + (sk.name || sk.label)) : sk.code });
+            numericGroup.push({ value: skCode, label: (sk.name || sk.label) ? (skCode + ' - ' + (sk.name || sk.label)) : skCode });
           }
         }
         appendGroup(skinSel, 'Spawn-ID Skins', spawnGroup);
@@ -315,6 +324,15 @@
       var LEG_BASE = './assets/img/guided-dropdowns/legendary-augments/';
       var PEARL_BASE = './assets/img/guided-dropdowns/pearl-item-types/';
 
+      function perkTokenForOption(p){
+        var t = tokFn(p);
+        if (t) return String(t).replace(/^["']|["']$/g, '').trim();
+        var raw = String(p.idRaw || p.idraw || '').trim().replace(/\s+/g, '');
+        if (raw && /^\d+:\d+$/.test(raw)) return '{' + raw + '}';
+        var c = String(p.code || '').replace(/^["']|["']$/g, '').trim();
+        return c || '';
+      }
+
       function legendaryIconUrlForPart(p){
         if (!p) return '';
 
@@ -363,34 +381,34 @@
         return LEG_BASE + (map[wt] || map['assault rifle']);
       }
 
-      for (var i = 0; i < Math.min(leg.length, 150); i++) {
+      var seenTok = {};
+      for (var i = 0; i < leg.length; i++) {
         var p = leg[i];
-        var tok = tokFn(p);
-        if (tok) {
-          var human = (p.name || p.legendaryName || '').substring(0, 40);
-          var ef = String(p.effects || p.effect || '').trim();
-          var efSuffix = '';
-          if (ef) {
-            // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"
-            // If the human name already contains the effects string, don't append it again.
-            var humanCompact = String(human || '').toLowerCase().replace(/\s+/g, '');
-            var efCompact = String(ef || '').toLowerCase().replace(/\s+/g, '');
-            var efAlreadyInName = efCompact && humanCompact.indexOf(efCompact) !== -1;
-            if (!efAlreadyInName) {
-              efSuffix = ' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef);
-            }
+        var tok = perkTokenForOption(p);
+        if (!tok || seenTok[tok]) continue;
+        seenTok[tok] = true;
+        var human = (p.name || p.legendaryName || '').substring(0, 40);
+        var ef = String(p.effects || p.effect || '').trim();
+        var efSuffix = '';
+        if (ef) {
+          // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"
+          var humanCompact = String(human || '').toLowerCase().replace(/\s+/g, '');
+          var efCompact = String(ef || '').toLowerCase().replace(/\s+/g, '');
+          var efAlreadyInName = efCompact && humanCompact.indexOf(efCompact) !== -1;
+          if (!efAlreadyInName) {
+            efSuffix = ' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef);
           }
-          var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
-          var o = document.createElement('option');
-          o.value = tok;
-          o.textContent = label;
-          try {
-            var iconUrl = legendaryIconUrlForPart(p);
-            if (iconUrl) o.setAttribute('data-cc-icon', iconUrl);
-          } catch (_) {}
-          if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
-          sel.appendChild(o);
         }
+        var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
+        var o = document.createElement('option');
+        o.value = tok;
+        o.textContent = label;
+        try {
+          var iconUrl = legendaryIconUrlForPart(p);
+          if (iconUrl) o.setAttribute('data-cc-icon', iconUrl);
+        } catch (_) {}
+        if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
+        sel.appendChild(o);
       }
     } catch (_) {}
   }

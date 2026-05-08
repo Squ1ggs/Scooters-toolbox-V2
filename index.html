@@ -38,6 +38,7 @@
 <link href="./assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 
 <script defer="" src="./assets/data/stx_dataset.js"></script>
+<script defer="" src="./assets/data/stx_dataset_supplement.js"></script>
 <script defer="" src="./assets/data/part_ref_meta.js"></script>
 <script defer="" src="./assets/data/stx_rarities.js"></script>
 <script defer="" src="./assets/data/source_paths_data.js"></script>
@@ -52,8 +53,8 @@
 <script defer="" src="./assets/js/cc-rebuild-bootstrap.js"></script>
 <script defer="" src="./legacy/ncs_slot_map.js"></script>
 <script defer="" src="./assets/js/cc-item-slug.js"></script>
-<script defer="" src="./assets/js/stx-simple-builder-core.js"></script>
-<script defer="" src="./assets/js/cc-guided-builder-rebuild.js"></script>
+<script defer="" src="./assets/js/stx-simple-builder-core.js?v=20260509b"></script>
+<script defer="" src="./assets/js/cc-guided-builder-rebuild.js?v=20260509b"></script>
 <script defer="" src="./assets/js/cc-classmod-checklist-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-enhancement-checklist-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-adv-search-stable.js"></script>
@@ -80,12 +81,12 @@
 <script defer="" src="./assets/js/cc-preset-data-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-preset-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-part-tooltip-rebuild.js"></script>
-<script defer="" src="./assets/js/cc-custom-select-rebuild.js"></script>
+<script defer="" src="./assets/js/cc-custom-select-rebuild.js?v=20260508t"></script>
 <script defer="" src="./assets/js/cc-skin-mixer-rebuild.js"></script>
 <script defer="" src="./assets/js/rebuild-presets-random.js"></script>
 <script defer="" src="./assets/js/rebuild-credits-eggs.js"></script>
 <script defer="" src="./assets/js/cc-toolbox-analytics-v2.js?v=7"></script>
-<script defer="" src="./assets/js/cc-toolbox-items-made.js?v=7"></script>
+<script defer="" src="./assets/js/cc-toolbox-items-made.js?v=10"></script>
 <script defer="" src="./assets/js/cc-toolbox-public-counter.js?v=7"></script>
 <style id="editor-rebuild-spec">
     
@@ -118,6 +119,22 @@
 
     @media (prefers-reduced-motion: reduce) {
       :root { --transition-fast: 0ms; --transition-mid: 0ms; }
+    }
+
+    textarea.stx-yaml-drop-target.stx-yaml-drop-hover {
+      outline: 2px dashed rgba(0, 243, 255, 0.55);
+      outline-offset: 2px;
+      background: rgba(0, 40, 70, 0.35);
+    }
+    .stx-sav-load-btn-with-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .stx-sav-load-btn-with-icon img {
+      flex-shrink: 0;
+      opacity: 0.92;
     }
 
     * { box-sizing: border-box; }
@@ -728,13 +745,47 @@
       background: rgba(0, 0, 0, 0.35);
       pointer-events: none;
     }
-    .custom-select-display-icon,
-    .custom-select-option-icon {
+    .custom-select-icon-chip {
       width: 22px;
       height: 22px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid rgba(0, 243, 255, 0.22);
+      background: rgba(4, 12, 22, 0.96);
+      overflow: hidden;
+      pointer-events: none;
+      forced-colors-adjust: none;
+    }
+    .custom-select-icon-filter-wrap {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+      isolation: isolate;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    .custom-select-display-icon,
+    .custom-select-option-icon {
+      width: 100%;
+      height: 100%;
+      max-width: 22px;
+      max-height: 22px;
       object-fit: contain;
       flex-shrink: 0;
       pointer-events: none;
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      vertical-align: middle;
+      forced-colors-adjust: none;
     }
     .custom-select-display .custom-select-display-text {
       flex: 1;
@@ -1261,7 +1312,27 @@
 
     
     #classmodChecklistSection.cm-disabled { opacity: 0.85; filter: grayscale(0.15); }
-    #classmodChecklistSection .cm-checklist { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
+    /* Class mod checklists: master column has resize handle; paired column height syncs in JS */
+    #classmodChecklistSection .cm-checklist,
+    #classmodQuickChecklistSection .cm-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+    #classmodChecklistSection .cm-checklist.cm-checklist--resize-master,
+    #classmodQuickChecklistSection .cm-checklist.cm-checklist--resize-master {
+      min-height: 240px;
+      max-height: 800px;
+      height: 400px;
+      resize: vertical;
+      overflow-y: auto;
+    }
+    #classmodChecklistSection .cm-checklist.cm-checklist--resize-slave,
+    #classmodQuickChecklistSection .cm-checklist.cm-checklist--resize-slave {
+      overflow-y: auto;
+    }
     #classmodChecklistSection .cm-page-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.25); background: rgba(0,0,0,0.22); }
     #classmodChecklistSection .cm-page-meta { font-size: 12px; color: rgba(190,245,255,0.9); text-align: center; flex: 1; }
     #classmodChecklistSection .cm-page-btn { width: auto !important; padding: 6px 10px !important; font-size: 0.85em !important; }
@@ -1652,19 +1723,14 @@
     }
     #stxSimpleBuilderPanel #builder .grid {
       display: grid;
-      
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
-      gap: 14px 16px;
-    }
-    @media (min-width: 1200px) {
-      #stxSimpleBuilderPanel #builder .grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
     #stxSimpleBuilderPanel #builder .slot > select.editor-select,
     #stxSimpleBuilderPanel #builder .slot > select {
       width: 100%;
       max-width: 100%;
+      min-height: 40px;
       box-sizing: border-box;
     }
     :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .stx-part-preview {
@@ -1744,13 +1810,8 @@
     
     :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .cc-guided-slots-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 400px), 1fr));
-      gap: 14px 16px;
-    }
-    @media (min-width: 1200px) {
-      :is(#stxSimpleBuilderPanel, #rebuildGuidedBuilderSection) .cc-guided-slots-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
     #stxSimpleBuilderPanel #builder .muted,
     #stxSimpleBuilderPanel #builder .small.muted {
@@ -1767,6 +1828,19 @@
       color: var(--text-secondary);
     }
     #stxSimpleBuilderPanel #builder .stx-tick-row:hover { color: var(--text-primary); }
+    #stxSimpleBuilderPanel #builder .stx-tick-row-part-icon {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 243, 255, 0.28);
+      background: rgba(4, 12, 22, 0.96);
+      box-sizing: border-box;
+      forced-colors-adjust: none;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
     @media (max-width: 980px) { :root { --stx-embed-h: min(87vh, 1140px); } }
     #stxSimpleBuilderPanel .panel__title { margin-bottom: 8px; }
     @media (max-width: 700px) {
@@ -2881,11 +2955,9 @@
 <select class="editor-select" id="stx_itemType" name="stx_itemType" style="width:100%;margin-bottom:10px;">
 <option value="">Select item type...</option>
 <option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
-<option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Heavy Weapon</option>
 <option value="Shield" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_shield.png">Shield</option>
 <option value="Repkit" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_repkit.png">Repkit</option>
 <option value="Grenade" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_grenade.png">Grenade</option>
-<option value="Gadget" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Gadget</option>
 <option value="Enhancement" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Enhancement</option>
 <option value="Class Mod" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Class Mod</option>
 </select>
@@ -2914,7 +2986,7 @@
 <input class="editor-input" id="level2" max="60" min="1" name="level2" style="width:100%;" type="number" value="60"/>
 </div>
 <label for="mainPart" id="mainPartLabel">Main / Prefix Part</label>
-<select class="editor-select" id="mainPart" name="mainPart" style="width:100%;margin-bottom:0;"><option value="">Select Body...</option></select>
+<select class="editor-select" id="mainPart" name="mainPart" style="width:100%;margin-bottom:0;"><option value="">Select main / prefix part...</option></select>
 <div id="stxMainPartPreview" class="stx-part-preview small" role="status" aria-live="polite"></div>
 <div id="optionalExtrasRow" style="margin-bottom:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
 <div>
@@ -2937,6 +3009,16 @@
 <label style="min-width:auto;"><input id="buybackFlag" name="buybackFlag" type="checkbox"/> Buyback flag</label>
 </div>
 <div class="form-row" style="margin:10px 0;">
+<label style="min-width:auto;display:inline-flex;align-items:flex-start;gap:8px;cursor:pointer;max-width:100%;">
+<input id="stxPearlOverride" name="stxPearlOverride" type="checkbox"/>
+<img alt="" src="./assets/img/dlc_rarity_pips/ico_misc_pearl.png" width="20" height="20" style="flex-shrink:0;margin-top:1px;" loading="lazy"/>
+<span style="display:flex;flex-direction:column;gap:2px;line-height:1.25;">
+<span>Pearl override</span>
+<span style="font-size:0.72em;color:var(--text-muted);font-weight:400;">Will make the item you are making pearlescent (adds a pearl rarity token first after&nbsp;||).</span>
+</span>
+</label>
+</div>
+<div class="form-row" style="margin:10px 0;">
 <label style="min-width:auto;"><input id="allPartsToggle" name="allPartsToggle" type="checkbox"/> All manufacturers</label>
 </div>
 <div id="dsStatus" style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">—</div>
@@ -2949,7 +3031,7 @@
 <div id="simpleBuilderPresetRow" style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(0,243,255,0.15);">
 <label for="simpleBuilderPresetSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Quick presets (optional)</label>
 <div style="display:flex; gap:8px;">
-<select class="editor-select" id="simpleBuilderPresetSelect" style="flex:1;">
+<select class="editor-select" id="simpleBuilderPresetSelect" name="simpleBuilderPresetSelect" style="flex:1;">
 <option value="">-- Select Preset --</option>
 </select>
 <button class="btn" id="simpleBuilderPresetAddBtn" type="button">Add</button>
@@ -3056,15 +3138,24 @@
 <label for="ccGuidedLevel" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Item level</label>
 <input class="editor-input" id="ccGuidedLevel" max="60" min="1" name="ccGuidedLevel" style="width:100%;" type="number" value="60"/>
 </div>
-<div style="display:flex;align-items:flex-end;">
+<div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:14px;">
 <label for="ccGuidedBuybackFlag" style="min-width:auto;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
 <input id="ccGuidedBuybackFlag" name="ccGuidedBuybackFlag" type="checkbox"/>
 <span style="color:#00c8ff;font-size:0.9em;">Buyback flag</span>
+</label>
+<label for="ccGuidedPearlOverride" style="min-width:auto;margin:0;display:flex;align-items:flex-start;gap:6px;cursor:pointer;max-width:280px;">
+<input id="ccGuidedPearlOverride" name="ccGuidedPearlOverride" type="checkbox"/>
+<img alt="" src="./assets/img/dlc_rarity_pips/ico_misc_pearl.png" width="18" height="18" style="flex-shrink:0;margin-top:2px;" loading="lazy"/>
+<span style="display:flex;flex-direction:column;gap:2px;line-height:1.25;">
+<span style="color:#00c8ff;font-size:0.9em;">Pearl override</span>
+<span style="color:var(--text-muted);font-size:0.72em;font-weight:400;">Will make the item you are making pearlescent (adds a pearl rarity token first after&nbsp;||).</span>
+</span>
 </label>
 </div>
 </div>
 <div id="ccPartEntryModeWrap" style="margin-bottom:10px;">
 <label style="min-width:auto;"><input checked="" id="ccPartEntryMode" name="ccPartEntryMode" type="checkbox"/> Numeric IDs in output (off = spawn codes)</label>
+<label style="min-width:auto; margin-left:16px;" title="When enabled, tokens won’t be shortened to {id}; they’ll stay in {TypeID:ID} form where possible."><input id="ccForceTypeIdTokens" name="ccForceTypeIdTokens" type="checkbox"/> Always include TypeID in tokens</label>
 <label style="min-width:auto; margin-left:16px;"><input id="ccGuidedAllManufacturers" name="ccGuidedAllManufacturers" type="checkbox"/> All manufacturers' parts in dropdowns</label>
 <label style="min-width:auto; margin-left:16px;" title="Shows PARTS_STATS_DATA / weapon init lines under each slot preview, sorted by strongest numeric impact"><input id="ccGuidedFullStatsPreview" name="ccGuidedFullStatsPreview" type="checkbox"/> Full stats in guided previews</label>
 </div>
@@ -3113,13 +3204,13 @@
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Shield slots</summary>
 <div class="cc-guided-slots-grid" style="margin-top:10px;">
 <div><label for="ccShieldMainPartSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Main Part</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldMainPartSelect" name="ccShieldMainPartSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldMainPartAdd" type="button">Add</button></div></div>
+<div><label for="ccShieldElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element (TypeID 1)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccShieldElementSelect" name="ccShieldElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldElementAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldResistanceSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Resistance</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldResistanceSelect" name="ccShieldResistanceSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldResistanceAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldPrimaryPerksSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Primary Perks 246</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldPrimaryPerksSelect" name="ccShieldPrimaryPerksSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldPrimaryPerksAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldSecondaryPerksSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Secondary Perks 246</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldSecondaryPerksSelect" name="ccShieldSecondaryPerksSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldSecondaryPerksAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldArmorSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Armor 237</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldArmorSelect" name="ccShieldArmorSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldArmorAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldEnergySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Energy 248</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldEnergySelect" name="ccShieldEnergySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldEnergyAdd" type="button">Add</button></div></div>
 <div><label for="ccShieldFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware 246</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccShieldFirmwareSelect" name="ccShieldFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldFirmwareAdd" type="button">Add</button></div></div>
-<div><label for="ccShieldElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element (TypeID 1)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccShieldElementSelect" name="ccShieldElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccShieldElementAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -3128,11 +3219,14 @@
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Grenade slots</summary>
 <div class="cc-guided-slots-grid" style="margin-top:10px;">
-<div><label for="ccGrenadeFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeFirmwareSelect" name="ccGrenadeFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeFirmwareAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeRaritySelect" name="ccGrenadeRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeRarityAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeBodySelect" name="ccGrenadeBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeBodyAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccGrenadeElementSelect" name="ccGrenadeElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeElementAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadePayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadePayloadSelect" name="ccGrenadePayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadePayloadAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadeAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeAugmentSelect" name="ccGrenadeAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeAugmentAdd" type="button">Add</button></div></div>
-<div><label for="ccGrenadeElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccGrenadeElementSelect" name="ccGrenadeElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeElementAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeKitStatsSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Grenade stat parts</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeKitStatsSelect" name="ccGrenadeKitStatsSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeKitStatsAdd" type="button">Add</button></div></div>
 <div><label for="ccGrenadeSpecialSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Special / Unique</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeSpecialSelect" name="ccGrenadeSpecialSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeSpecialAdd" type="button">Add</button></div></div>
+<div><label for="ccGrenadeFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGrenadeFirmwareSelect" name="ccGrenadeFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGrenadeFirmwareAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -3141,13 +3235,23 @@
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Repkit slots</summary>
 <div class="cc-guided-slots-grid" style="margin-top:10px;">
-<div><label for="ccRepkitRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitRaritySelect" name="ccRepkitRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitRarityAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitRaritySelect" name="ccRepkitRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitRarityAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitBodySelect" name="ccRepkitBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitBodyAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitPayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload (Size)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPayloadSelect" name="ccRepkitPayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPayloadAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccRepkitElementSelect" name="ccRepkitElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitElementAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitAugmentSelect" name="ccRepkitAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitAugmentAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitPerkSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Perk</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkSelect" name="ccRepkitPerkSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitSpecialPlaceholderSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Placeholders (no perk)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitSpecialPlaceholderSelect" name="ccRepkitSpecialPlaceholderSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitSpecialPlaceholderAdd" type="button">Add</button></div></div>
+<div style="grid-column:1 / -1; margin: 6px 0 0; padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(0,243,255,0.18); background: rgba(0,0,0,0.18);">
+  <div style="font-weight:700;color:#00f3ff; font-size: 0.95em; margin-bottom: 4px;">Element add-ons</div>
+  <div class="muted small">Optional effects that modify how the perk behaves.</div>
+</div>
+<div><label for="ccRepkitPerkResistSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element resist add-ons</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkResistSelect" name="ccRepkitPerkResistSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkResistAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitPerkImmunitySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element immunity add-ons</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkImmunitySelect" name="ccRepkitPerkImmunitySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkImmunityAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitPerkNovaSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Nova add-ons</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkNovaSelect" name="ccRepkitPerkNovaSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkNovaAdd" type="button">Add</button></div></div>
+<div><label for="ccRepkitPerkSplatSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Splat add-ons</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitPerkSplatSelect" name="ccRepkitPerkSplatSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitPerkSplatAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitFirmwareSelect" name="ccRepkitFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitFirmwareAdd" type="button">Add</button></div></div>
-<div><label for="ccRepkitElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccRepkitElementSelect" name="ccRepkitElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitElementAdd" type="button">Add</button></div></div>
 <div><label for="ccRepkitLegendarySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary Perks</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitLegendarySelect" name="ccRepkitLegendarySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitLegendaryAdd" type="button">Add</button></div></div>
-<div><label for="ccRepkitSpecialSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Special / Unique</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccRepkitSpecialSelect" name="ccRepkitSpecialSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccRepkitSpecialAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -3207,8 +3311,8 @@
 <div class="cc-heavy-slot-empty" data-slot="augment"><label for="ccHeavyAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyAugmentSelect" name="ccHeavyAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyAugmentAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccHeavyElementSelect" name="ccHeavyElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyElementSwitchSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Maliwan Switch (2nd element)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccHeavyElementSwitchSelect" name="ccHeavyElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyElementSwitchAdd" type="button">Add</button></div></div>
-<div><label for="ccHeavyFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyFirmwareSelect" name="ccHeavyFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyFirmwareAdd" type="button">Add</button></div></div>
 <div><label for="ccHeavyLegendarySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary Perks</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyLegendarySelect" name="ccHeavyLegendarySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyLegendaryAdd" type="button">Add</button></div></div>
+<div><label for="ccHeavyFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccHeavyFirmwareSelect" name="ccHeavyFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccHeavyFirmwareAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -3248,21 +3352,21 @@
 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:12px;">
 <div style="border:1px solid rgba(0,243,255,0.22); border-radius:12px; padding:10px; background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Primary (skills)</div><button class="btn btn-Firmware" id="cmToggleAllPrimaryBtn" style="padding:6px 10px; font-size:0.9em; width:auto;" title="Toggle all Primary (skills)" type="button">Toggle all</button></div>
-<div class="cm-checklist" id="cmPrimaryList"></div>
+<div class="cm-checklist cm-checklist--resize-master" id="cmPrimaryList" title="Drag the bottom edge to resize; Secondary column matches height"></div>
 </div>
 <div style="border:1px solid rgba(0,243,255,0.22); border-radius:12px; padding:10px; background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Secondary (class perks)</div><button class="btn btn-Firmware" id="cmToggleAllSecondaryBtn" style="padding:6px 10px; font-size:0.9em; width:auto;" title="Toggle all class perks" type="button">Toggle all</button></div>
-<div class="cm-checklist" id="cmSecondaryList"></div>
+<div class="cm-checklist cm-checklist--resize-slave" id="cmSecondaryList"></div>
 </div>
 </div>
 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:12px; margin-top:12px;">
 <div style="border:1px solid rgba(0,243,255,0.22); border-radius:12px; padding:10px; background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmToggleAllUniversalBtn" style="padding:6px 10px; font-size:0.9em; width:auto;" title="Toggle all universal perks" type="button">Toggle all</button></div>
-<div class="cm-checklist" id="cmUniversalList"></div>
+<div class="cm-checklist cm-checklist--resize-master" id="cmUniversalList" title="Drag the bottom edge to resize; Firmware column matches height"></div>
 </div>
 <div style="border:1px solid rgba(0,243,255,0.22); border-radius:12px; padding:10px; background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;"><div style="font-weight:700; color:#00f3ff;">Firmware</div></div>
-<div class="cm-checklist" id="cmFirmwareList"></div>
+<div class="cm-checklist cm-checklist--resize-slave" id="cmFirmwareList"></div>
 </div>
 </div>
 </div>
@@ -3328,6 +3432,10 @@
 <summary>Prefix / Item Search and Add</summary>
 <div>
 <p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Search bundled serials by item name, prefix, or ID (e.g. 254:10). Add to editor or YAML.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+<label for="stxYamlInjectCopiesGlobal" style="color:var(--text-muted);font-size:0.82em;display:inline-flex;align-items:center;gap:6px;">Copies (YAML/Bank)
+<input id="stxYamlInjectCopiesGlobal" max="999" min="1" name="stxYamlInjectCopiesGlobal" style="width:50px;padding:6px 8px;border-radius:8px;border:1px solid rgba(0,243,255,0.35);background:#1a2332;color:#b8e6f0;" title="How many duplicate items to add for Prefix and Godroll YAML/bank actions" type="number" value="1"/></label>
+</div>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px;">
 <input id="prefixItemSearchInput" name="prefixItemSearchInput" placeholder="Search by name, prefix, or ID…" style="flex:1;min-width:200px;padding:10px 12px;background:#1a2332;border:2px solid rgba(0,243,255,0.4);border-radius:8px;color:#b8e6f0;font-size:0.95em;" type="text"/>
 <button class="btn btn--brand" id="prefixItemAddToEditorBtn" type="button">Add to Editor</button>
@@ -3548,7 +3656,7 @@
 <div class="rebuild-part-list" id="partListRepkit"></div>
 </details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsEnhancement"><summary>Enhancement</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectEnhancement" name="partSelectEnhancement" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddEnhancement" type="button">Add</button></div><div class="rebuild-part-list" id="partListEnhancement"></div></details>
-<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Vex" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Vex</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Amon" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Amon</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Rafa" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Rafa</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Harlowe" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Harlowe</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="C4sh" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:10px;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickPrimaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickSecondaryList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist" id="cmQuickUniversalList"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist" id="cmQuickFirmwareList"></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
+<details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsClassMod"><summary>Class Mod</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectClassMod" name="partSelectClassMod" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddClassMod" type="button">Add</button><div aria-live="polite" class="cm-part-perk-preview" id="partSelectClassModPreview"><div class="cm-perk-preview-name" id="partSelectClassModPreviewName"></div><div class="cm-perk-preview-desc" id="partSelectClassModPreviewDesc"></div></div></div><div id="classmodQuickChecklistSection" style="margin-top:10px;border:1px solid rgba(0,243,255,0.22);border-radius:10px;padding:10px;background:rgba(0,0,0,0.16);"><div style="font-weight:700;color:#00f3ff;margin-bottom:8px;">Class Mod quick perks checklist</div><div id="classmodQuickChecklistButtons" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Vex" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_dark_siren.png"/><span>Vex</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Amon" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_paladin.png"/><span>Amon</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Rafa" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_exo_soldier.png"/><span>Rafa</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="Harlowe" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_class_gravitar.png"/><span>Harlowe</span></button><button class="btn btn-Firmware classmod-class-btn stx-vh-btn" data-cm-class="C4sh" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./assets/img/vault-hunters/player_robodealer.png"/><span>C4sh</span></button><button class="btn btn-Firmware classmod-class-btn" data-cm-class="Universal" type="button">Universal</button></div><div class="cm-quick-checklist-rows" style="display:flex;flex-direction:column;gap:10px;"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Primary</div><button class="btn btn-Firmware" id="cmQuickToggleAllPrimaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist cm-checklist--resize-master" id="cmQuickPrimaryList" title="Drag bottom edge to resize; Secondary matches height"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Secondary</div><button class="btn btn-Firmware" id="cmQuickToggleAllSecondaryBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist cm-checklist--resize-slave" id="cmQuickSecondaryList"></div></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch;"><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Universal</div><button class="btn btn-Firmware" id="cmQuickToggleAllUniversalBtn" style="padding:6px 10px;font-size:0.85em;width:auto;" type="button">Toggle all</button></div><div class="cm-checklist cm-checklist--resize-master" id="cmQuickUniversalList" title="Drag bottom edge to resize; Firmware matches height"></div></div><div style="border:1px solid rgba(0,243,255,0.22); border-radius:10px; padding:8px; background: rgba(0,0,0,0.16);"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;"><div style="font-weight:700;color:#00f3ff;">Firmware</div></div><div class="cm-checklist cm-checklist--resize-slave" id="cmQuickFirmwareList"></div></div></div></div></div><div class="rebuild-part-list" id="partListClassMod"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsHeavy"><summary>Heavy</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectHeavy" name="partSelectHeavy" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddHeavy" type="button">Add</button></div><div class="rebuild-part-list" id="partListHeavy"></div></details>
 <details class="rebuild-details rebuild-part-expandable" id="partSectionDetailsGun"><summary>Gun</summary><div style="margin-top:10px;"><select class="editor-select" id="partSelectGun" name="partSelectGun" style="width:100%;margin-bottom:6px;"><option value="">-- Select part --</option></select><button class="btn" id="partAddGun" type="button">Add</button></div><div class="rebuild-part-list" id="partListGun"></div></details>
 </div>
@@ -3646,9 +3754,9 @@
 <input accept=".sav" aria-label="Upload profile save file" id="profileSavFileInput" name="profileSavFileInput" style="display: none;" type="file"/>
 <input accept=".yaml,.yml" aria-label="Upload YAML file" id="yamlFileInput" name="yamlFileInput" style="display: none;" type="file"/>
 <div style="display:flex; gap:10px; width:100%; margin-top:10px; flex-wrap: wrap;">
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load YAML File</button>
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load .sav File</button>
-<button class="btn btn-Firmware sav-load-btn" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" type="button">Load profile.sav</button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" title="Open a .yaml / .yml file into the editor" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/favicon.svg" width="20"/><span>Load YAML file</span></button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick a character .sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/icon.ico" width="20"/><span>Load .sav file</span></button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick profile.sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/icon.ico" width="20"/><span>Load profile.sav</span></button>
 <button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button">Convert .sav to YAML</button>
 </div>
 <div id="sav-file-info" style="margin-top: 0; padding: 12px; width: 100%; background: linear-gradient(90deg, rgba(255, 0, 150, 0.25), rgba(0, 255, 200, 0.35), rgba(0, 150, 255, 0.25)), rgba(0, 0, 0, 0.35); border-radius: 0 0 8px 8px; color: #fff; font-size: 1.05em; font-weight: 700; display: none; text-align: center;">Loaded - now click convert to YAML</div>
@@ -3658,7 +3766,7 @@
 </div>
 </div>
 </div>
-<textarea aria-label="YAML editor" id="yamlInput" name="yamlInput" placeholder="load or Paste your YAML file content here to extract item serials from the backpack section of the yaml" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
+<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML, load a file with the buttons above, or drag &amp; drop a .yaml / .yml / .sav here (character or profile)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
 <div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
 <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
@@ -3813,7 +3921,7 @@
 <input aria-label="YAML character level" id="yaml-char-level" max="60" min="1" name="yaml-char-level" placeholder="60" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
-<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ico_reward_exp.png" width="22"/>Experience Points:</label>
+<label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/reward-icons/ico_reward_exp.png" width="22"/>Experience Points:</label>
 <input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ˜ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
 </div>
 <div>
@@ -3961,7 +4069,9 @@
 <button class="btn btn-Firmware" id="serialSearchSelectAllBtn" type="button">Select All</button>
 <button class="btn btn-Firmware" id="serialSearchClearBtn" type="button">Clear</button>
 </div>
-<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; align-items: center;">
+<label for="serialSearchInjectCopies" style="color: rgba(0,200,255,0.9); font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">Copies each
+<input id="serialSearchInjectCopies" max="999" min="1" name="serialSearchInjectCopies" style="width: 52px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,243,255,0.4); background: #1a2332; color: #b8e6f0;" type="number" value="1"/></label>
 <button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToYamlBtn" title="Load a character save YAML (root state:) first." type="button">Add Selected to YAML</button>
 <button class="btn btn-primary primary-save-gradient" disabled="" id="serialSearchAddToBankBtn" title="Load profile .sav or YAML first." type="button">Add Selected to bank</button>
 <button class="btn btn-primary primary-save-gradient" id="serialSearchAddToEditorBtn" title="Import selected serials into the paste/import editor" type="button">Add Selected to Editor</button>
@@ -3978,6 +4088,8 @@
 <textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
 Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
+<label for="yamlAddSerialsCount" style="color: rgba(0,200,255,0.9); font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">Copies / line
+<input id="yamlAddSerialsCount" max="999" min="1" name="yamlAddSerialsCount" style="width: 52px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0;" type="number" value="1"/></label>
 <button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBtn" title="Load a character save YAML (root state:) first." type="button">Add to backpack</button>
 <button class="btn btn-Firmware" disabled="" id="yamlAddSerialsBankBtn" title="Load profile .sav or YAML first." type="button">Add to bank</button>
 <button class="btn" id="yamlAddSerialsClearBtn" type="button">Clear box</button>
@@ -4009,7 +4121,9 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <button class="btn rebuild-floating-panel-close" id="floating-output-close" title="Minimize to logo" type="button">Close</button>
 </div>
 <div class="rebuild-floating-panel-body">
-<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+<label for="floatingYamlInjectCopies" style="font-size:0.82em;opacity:0.9;display:inline-flex;align-items:center;gap:6px;">×
+<input id="floatingYamlInjectCopies" max="999" min="1" style="width:48px;padding:4px 8px;border-radius:8px;border:1px solid rgba(0,243,255,0.35);background:rgba(0,20,40,0.6);color:#e9feff;" type="number" value="1"/></label>
 <button class="btn btn--brand" id="floatingAddItemToYaml" type="button">💾 Add Item to YAML</button>
 <button class="btn btn--brand" disabled="" id="floatingAddItemToBank" title="Load profile .sav or YAML first." type="button">🏦 Add Item to Bank</button>
 </div>
@@ -4043,24 +4157,61 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         return '';
       }
 
-      function injectResolvedSerialIntoYamlEditor(b85, useBank) {
+      function injectResolvedSerialIntoYamlEditor(b85, useBank, copiesOverride, injectOpts) {
+        injectOpts = injectOpts || {};
         if (!b85) {
           alert('Could not produce a BL-base85 serial. Use Convert to BL-base85, paste an @U serial, or fix the deserialized code.');
           return;
         }
-        if (window.stxLogHistory) window.stxLogHistory(b85);
+        if (!injectOpts.skipHistoryLog && window.stxLogHistory) window.stxLogHistory(b85);
+        var copies = 1;
+        try {
+          if (copiesOverride != null && typeof window.stxNormalizeYamlInjectCopies === 'function') {
+            copies = window.stxNormalizeYamlInjectCopies(copiesOverride);
+          } else {
+            var cq = byId('floatingYamlInjectCopies');
+            if (cq && typeof window.stxNormalizeYamlInjectCopies === 'function') {
+              copies = window.stxNormalizeYamlInjectCopies(cq.value);
+            }
+          }
+        } catch (_) {}
         var drawer = byId('rp-saveyaml-drawer');
         if (drawer) {
           drawer.classList.add('rp-open');
           document.body.classList.add('rp-saveyaml-drawer-open');
         }
+        var yaml = typeof window.getYamlText === 'function' ? window.getYamlText() : { text: (byId('yamlInput') && byId('yamlInput').value) || '' };
+        var yt = yaml && yaml.text ? String(yaml.text).trim() : '';
+        if (!yt) {
+          if (typeof window.stxAlertNeedSaveForYamlInject === 'function') {
+            window.stxAlertNeedSaveForYamlInject(useBank ? 'bank' : 'backpack');
+          } else {
+            alert(useBank ? 'Could not add to profile bank. Load a profile YAML first.' : 'Could not add to backpack. Load a character save YAML first.');
+          }
+          return;
+        }
+        var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yt) : 'unknown';
+        if (useBank && kind !== 'profile') {
+          if (typeof window.stxAlertNeedSaveForYamlInject === 'function') window.stxAlertNeedSaveForYamlInject('bank');
+          else alert('Could not add to profile bank. Load a profile YAML (shared inventory) first.');
+          return;
+        }
+        if (!useBank && kind !== 'character') {
+          if (typeof window.stxAlertNeedSaveForYamlInject === 'function') window.stxAlertNeedSaveForYamlInject('backpack');
+          else alert('Could not add to backpack. Load a character save YAML (root state:) first.');
+          return;
+        }
         var ok = useBank
-          ? (window.appendSerialToProfileBank && window.appendSerialToProfileBank(b85))
-          : (window.appendSerialToYAML && window.appendSerialToYAML(b85));
+          ? (window.appendSerialToProfileBank && window.appendSerialToProfileBank(b85, copies))
+          : (window.appendSerialToYAML && window.appendSerialToYAML(b85, copies));
         if (!ok) {
-          alert(useBank
-            ? 'Could not add to profile bank. Load a profile YAML (shared inventory) first.'
-            : 'Could not add to backpack. Load a character save YAML (root state:) first.');
+          if (typeof window.stxAlertNeedSaveForYamlInject === 'function') {
+            window.stxAlertNeedSaveForYamlInject(useBank ? 'bank' : 'backpack');
+          } else {
+            alert(useBank
+              ? 'Could not add to profile bank. Load a profile YAML (shared inventory) first.'
+              : 'Could not add to backpack. Load a character save YAML (root state:) first.');
+          }
           return;
         }
         if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
@@ -4146,7 +4297,13 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var splash = byId('splash');
         var btn = byId('splashDismiss');
         if (btn && splash) {
-          btn.addEventListener('click', function () { splash.classList.add('dismissed'); });
+          btn.addEventListener('click', function () {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                splash.classList.add('dismissed');
+              });
+            });
+          });
         }
       }
 
@@ -4818,12 +4975,47 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         }
       };
 
+      window.stxHistoryInjectToYaml = function(idx, useBank) {
+        var history = stxHistoryLoad();
+        var item = history[idx];
+        if (!item) return;
+        var qtyEl = document.getElementById('stxHistoryQty_' + idx);
+        var copies = 1;
+        try {
+          if (qtyEl && typeof window.stxNormalizeYamlInjectCopies === 'function') {
+            copies = window.stxNormalizeYamlInjectCopies(qtyEl.value);
+          }
+        } catch (_) {}
+        var code = String(item.c || item.code || '').trim();
+        var b85 = String(item.b || item.base85 || '').trim();
+        function go(sn) {
+          sn = finalizeB85ForYamlInject(String(sn || '').trim());
+          if (!sn) {
+            alert('Could not produce a BL-base85 serial for this row. Use Import and convert, or ensure deserialized code is valid.');
+            return;
+          }
+          injectResolvedSerialIntoYamlEditor(sn, !!useBank, copies, { skipHistoryLog: true });
+        }
+        if (b85) {
+          go(b85);
+          return;
+        }
+        var sync = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(code) : '';
+        if (sync) {
+          go(sync);
+          return;
+        }
+        serializeDeserializedToBase85BestEffort(code).then(function (packed) {
+          go(packed);
+        });
+      };
+
       window.refreshHistoryUI = function() {
         var list = document.getElementById('stxHistoryList');
         if (!list) return;
         var history = stxHistoryLoad();
         if (history.length === 0) {
-          list.innerHTML = '<tr><td colspan="3" style="text-align:center; opacity:0.6; padding: 40px;">No items in history. Items are added here when you copy a code or add it to YAML.</td></tr>';
+          list.innerHTML = '<tr><td colspan="4" style="text-align:center; opacity:0.6; padding: 40px;">No items in history. Items are added here when you copy a code or add it to YAML.</td></tr>';
           return;
         }
         var html = '';
@@ -4838,11 +5030,15 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
             '<td><div class="stx-history-item-name">' + esc(item.n || 'Crafted Item') + '</div>' +
             '<code class="stx-history-item-code">' + esc(code || base85) + '</code>' +
             '<div class="stx-history-meta">' + esc(format + (base85 && format !== 'BL-base85' ? ' | Base85 saved too' : '')) + '</div></td>' +
-            '<td style="text-align:right;"><div style="display:flex; gap:6px; justify-content:flex-end;">' +
-            '<button class="btn btn-sm" onclick="stxHistoryAction(\'copy\','+idx+')">Copy</button>' +
-            (base85 ? '<button class="btn btn-sm" onclick="stxHistoryAction(\'copyBase85\','+idx+')">Copy Base85</button>' : '') +
-            '<button class="btn btn-sm btn-Firmware" onclick="stxHistoryAction(\'import\','+idx+')">Import</button>' +
-            '<button class="btn btn-sm" style="border-color:rgba(255,80,80,0.4);" onclick="stxHistoryAction(\'delete\','+idx+')">×</button>' +
+            '<td style="vertical-align:middle;"><label style="font-size:0.72rem;opacity:0.85;display:flex;flex-direction:column;gap:4px;align-items:flex-start;">Qty' +
+            '<input type="number" id="stxHistoryQty_' + idx + '" min="1" max="999" value="1" style="width:52px;padding:4px 6px;border-radius:6px;border:1px solid rgba(0,243,255,0.35);background:#1a2332;color:#b8e6f0;"/></label></td>' +
+            '<td style="text-align:right;"><div style="display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap;">' +
+            '<button type="button" class="btn btn-sm" onclick="stxHistoryAction(\'copy\','+idx+')">Copy</button>' +
+            (base85 ? '<button type="button" class="btn btn-sm" onclick="stxHistoryAction(\'copyBase85\','+idx+')">Copy Base85</button>' : '') +
+            '<button type="button" class="btn btn-sm btn-Firmware" onclick="stxHistoryAction(\'import\','+idx+')">Import</button>' +
+            '<button type="button" class="btn btn-sm" title="Add copies to character backpack YAML" onclick="stxHistoryInjectToYaml('+idx+', false)">Backpack</button>' +
+            '<button type="button" class="btn btn-sm" title="Add copies to profile bank YAML" onclick="stxHistoryInjectToYaml('+idx+', true)">Bank</button>' +
+            '<button type="button" class="btn btn-sm" style="border-color:rgba(255,80,80,0.4);" onclick="stxHistoryAction(\'delete\','+idx+')">×</button>' +
             '</div></td></tr>';
         });
         list.innerHTML = html;
@@ -4876,6 +5072,81 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         }
       };
 
+      function stxHistoryElementLabelFromCode(code) {
+        var c = String(code || '');
+        var m = c.match(/\{\s*1\s*:\s*(10|11|12|13|14)\s*\}/);
+        if (m) {
+          var id = Number(m[1]);
+          if (id === 10) return 'Corrosive';
+          if (id === 11) return 'Cryo';
+          if (id === 12) return 'Fire';
+          if (id === 13) return 'Radiation';
+          if (id === 14) return 'Shock';
+        }
+        m = c.match(/\{\s*243\s*:\s*(98|99|100|101|102)\s*\}/);
+        if (m) {
+          var rid = Number(m[1]);
+          if (rid === 100) return 'Corrosive';
+          if (rid === 102) return 'Cryo';
+          if (rid === 98) return 'Fire';
+          if (rid === 99) return 'Radiation';
+          if (rid === 101) return 'Shock';
+        }
+        return '';
+      }
+
+      function stxHistoryDownloadTxt() {
+        var history = stxHistoryLoad();
+        if (!history || !history.length) {
+          alert('No items in history yet.');
+          return;
+        }
+        var out = [];
+        out.push('Scooter\'s Toolbox — Items Made (History)');
+        out.push('Count: ' + String(history.length));
+        out.push('Generated: ' + new Date().toISOString());
+        out.push('');
+        function safe(s, n) {
+          var t = String(s || '').replace(/\r\n/g, '\n').trim();
+          if (!n || t.length <= n) return t;
+          return t.slice(0, Math.max(0, n - 1)) + '…';
+        }
+        history.forEach(function (item) {
+          item = item || {};
+          var when = '';
+          try { when = item.t ? new Date(Number(item.t)).toISOString() : ''; } catch (_) { when = ''; }
+          var code = String(item.c || item.code || '').trim();
+          var base85 = String(item.b || item.base85 || '').trim();
+          var elem = stxHistoryElementLabelFromCode(code || base85);
+          var header = [
+            when ? ('[' + when + ']') : '[unknown time]',
+            safe(item.n || 'Crafted Item', 160),
+            (item.lvl != null ? ('— Lv' + item.lvl) : ''),
+            (elem ? ('— ' + elem) : '')
+          ].join(' ').replace(/\s+/g, ' ').trim();
+          out.push(header);
+          if (code) out.push('Deserialized: ' + safe(code, 4000));
+          if (base85) out.push('Base85: ' + safe(base85, 4000));
+          if (!code && !base85) out.push('(No code saved for this row)');
+          out.push('');
+        });
+        var txt = out.join('\n');
+        try {
+          var blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'stx-items-made-history-' + new Date().toISOString().slice(0, 10) + '.txt';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            try { URL.revokeObjectURL(url); } catch (_) {}
+            try { document.body.removeChild(a); } catch (_) {}
+          }, 0);
+        } catch (_) {}
+      }
+
       function stxLogCurrentBuiltItem() {
         var ids = ['guidedOutputDeserialized', 'outCode', 'guidedOutputSerial', 'outCodeB85', 'floating-output-code'];
         for (var i = 0; i < ids.length; i++) {
@@ -4901,6 +5172,8 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
             }
           });
         }
+        var dl = document.getElementById('stxHistoryDownloadTxt');
+        if (dl) dl.addEventListener('click', stxHistoryDownloadTxt);
         document.addEventListener('click', function(e) {
           if (e.target && (e.target.id === 'stxHistoryClose' || e.target.id === 'stxHistoryModal')) {
             var modal = document.getElementById('stxHistoryModal');
@@ -4920,16 +5193,61 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
     })();
   </script>
 <script src="./assets/js/cc-yaml-drawer-wiring-rebuild.js"></script>
+<script>
+  (function () {
+    'use strict';
+    var PLACEHOLDER_SRC = './assets/img/icon-missing.svg';
+    function wireImg(img) {
+      if (!img || img.__ccMissingWired) return;
+      img.__ccMissingWired = true;
+      img.addEventListener('error', function () {
+        try {
+          if (img.dataset && img.dataset.ccMissingApplied === '1') return;
+          if (img.dataset) img.dataset.ccMissingApplied = '1';
+          img.src = PLACEHOLDER_SRC;
+          img.style.opacity = '0.7';
+        } catch (_) {}
+      });
+    }
+    function scan(root) {
+      try {
+        var imgs = (root && root.querySelectorAll) ? root.querySelectorAll('img') : [];
+        for (var i = 0; i < imgs.length; i++) wireImg(imgs[i]);
+      } catch (_) {}
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { scan(document); });
+    } else {
+      scan(document);
+    }
+    try {
+      var mo = new MutationObserver(function (muts) {
+        for (var mi = 0; mi < muts.length; mi++) {
+          var mut = muts[mi];
+          var nodes = mut && mut.addedNodes ? mut.addedNodes : [];
+          for (var ni = 0; ni < nodes.length; ni++) {
+            var n = nodes[ni];
+            if (!n) continue;
+            if (n.tagName === 'IMG') wireImg(n);
+            else scan(n);
+          }
+        }
+      });
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+    } catch (_) {}
+  })();
+</script>
 
 <div id="stxHistoryModal" class="stx-modal">
   <div class="stx-modal__content">
     <div class="stx-modal__header">
       <h3 class="stx-modal__title">📄 Items Made (History)</h3>
+      <button id="stxHistoryDownloadTxt" class="btn btn--brand" type="button">Download .txt</button>
       <button id="stxHistoryClose" class="btn" type="button">Close</button>
     </div>
     <div class="stx-modal__body">
       <table class="stx-history-table">
-        <thead><tr><th>Date</th><th>Item Details</th><th style="text-align:right;">Actions</th></tr></thead>
+        <thead><tr><th>Date</th><th>Item Details</th><th>Qty</th><th style="text-align:right;">Actions</th></tr></thead>
         <tbody id="stxHistoryList"></tbody>
       </table>
     </div>

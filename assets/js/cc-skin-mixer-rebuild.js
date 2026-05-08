@@ -9,9 +9,18 @@
   function byId(id) { return document.getElementById(id); }
   function norm(v) { return String(v == null ? '' : v).trim(); }
 
-  function isNumericBrace(code) {
-    var s = norm(code);
-    return /^\{\s*\d+\s*:\s*(?:\[\s*\d+(?:\s+\d+)*\s*\]|\d+)\s*\}$/.test(s);
+  function numericSkinBraceRe() {
+    var r = window.__CC_NUMERIC_SKIN_BRACE_RE;
+    return (r instanceof RegExp) ? r : /^\{\s*\d+\s*:\s*(?:\[\s*\d+(?:\s+\d+)*\s*\]|\d+)\s*\}$/;
+  }
+
+  /** True for `{fam:id}` / `{fam:[..]}` style skins that the mixer can combine (not camo tokens, not `{1:..}` element IDs). */
+  function isMixableNumericSkinBrace(code) {
+    var s = norm(code).replace(/\s+/g, ' ');
+    if (!numericSkinBraceRe().test(s)) return false;
+    // Family 1 is used for element stack tokens — not weapon skin rarity mixes.
+    if (/^\{\s*1\s*:/.test(s)) return false;
+    return true;
   }
 
   function extractFV(code) {
@@ -52,7 +61,7 @@
     var seen = new Set();
     function add(codeRaw, labelRaw) {
       var code = norm(codeRaw).replace(/\s+/g, ' ');
-      if (!isNumericBrace(code)) return;
+      if (!isMixableNumericSkinBrace(code)) return;
       if (familyFilter != null) {
         var fv = extractFV(code);
         if (!fv || fv.fam !== familyFilter) return;
@@ -66,6 +75,7 @@
     try {
       var SKINS = window.SKINS || {};
       for (var cat in SKINS) {
+        if (/camo|token/i.test(String(cat))) continue;
         var arr = SKINS[cat] || [];
         for (var i = 0; i < arr.length; i++) {
           var sk = arr[i] || {};

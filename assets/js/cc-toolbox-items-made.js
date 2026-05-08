@@ -1,5 +1,6 @@
 ﻿(function () {
   var STORAGE_KEY = 'stx_toolbox_items_made_v1';
+  var LOG_KEY = 'stx_toolbox_items_made_log_v1';
   var BADGE_KEY = 'stx_items_made_show_badge';
   var COOLDOWN_MS = 480;
   var BUMP_URL_META = 'stx-items-bump-url';
@@ -88,21 +89,45 @@
 
     (function postNext(i) {
       if (i >= urls.length) return;
-      fetch(urls[i], {
+      var u = urls[i];
+      /* When embedded on a foreign origin (e.g. save-editor.be) a remote Netlify bump triggers
+         a CORS preflight due to the custom auth header. Keep the global counter unified by
+         switching to a no-cors, query-key request (best-effort; response is opaque). */
+      var useNoCors = false;
+      if (isNetlifyFn && k) {
+        try {
+          var hereHost = String(location && location.hostname || '').toLowerCase();
+          var bumpHost = '';
+          try { bumpHost = String(new URL(u, location.href).hostname || '').toLowerCase(); } catch (_) { bumpHost = ''; }
+          useNoCors = !!(hereHost && bumpHost && hereHost !== bumpHost);
+        } catch (_) {
+          useNoCors = false;
+        }
+      }
+      if (useNoCors) {
+        try {
+          var nu = new URL(u, location.href);
+          nu.searchParams.set('key', k);
+          u = nu.href;
+        } catch (_) {}
+      }
+      fetch(u, {
         method: 'POST',
-        headers: headers,
+        headers: useNoCors ? { 'Content-Type': 'application/json' } : headers,
         body: body,
-        mode: 'cors',
+        mode: useNoCors ? 'no-cors' : 'cors',
         credentials: 'omit',
         cache: 'no-store'
       })
         .then(function (r) {
+          if (useNoCors) return null;
           if (!r.ok) throw new Error('http_' + r.status);
           return r.json().catch(function () {
             return null;
           });
         })
         .then(function (j) {
+          if (useNoCors) return;
           if (j && j.ok && typeof j.items_made === 'number') {
             try {
               document.dispatchEvent(new CustomEvent('stx-server-items-made', { detail: j.items_made }));
@@ -138,6 +163,168 @@
   function save(d) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+    } catch (_) {}
+  }
+
+  function loadLog() {
+    try {
+      var raw = localStorage.getItem(LOG_KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveLog(arr) {
+    try {
+      localStorage.setItem(LOG_KEY, JSON.stringify(arr || []));
+    } catch (_) {}
+  }
+
+  function safeTrim(s, n) {
+    var t = String(s || '').replace(/\r\n/g, '\n').trim();
+    if (!n || t.length <= n) return t;
+    return t.slice(0, Math.max(0, n - 1)) + '…';
+  }
+
+  function elementLabelFromDeserialized(code) {
+    var c = String(code || '');
+    // Weapon element tokens: {1:10..14}
+    var m = c.match(/\{\s*1\s*:\s*(10|11|12|13|14)\s*\}/);
+    if (m) {
+      var id = Number(m[1]);
+      if (id === 10) return 'Corrosive';
+      if (id === 11) return 'Cryo';
+      if (id === 12) return 'Fire';
+      if (id === 13) return 'Radiation';
+      if (id === 14) return 'Shock';
+    }
+    // Repkit element pool: {243:98..102}
+    m = c.match(/\{\s*243\s*:\s*(98|99|100|101|102)\s*\}/);
+    if (m) {
+      var rid = Number(m[1]);
+      if (rid === 100) return 'Corrosive';
+      if (rid === 102) return 'Cryo';
+      if (rid === 98) return 'Fire';
+      if (rid === 99) return 'Radiation';
+      if (rid === 101) return 'Shock';
+    }
+    return '';
+  }
+
+  function snapshotMadeItem(source) {
+    var guided = isGuidedContext();
+    var itemType = '';
+    var manufacturer = '';
+    var weaponType = '';
+    var level = '';
+    try {
+      var it = guided ? byId('ccGuidedItemType') : byId('stx_itemType');
+      if (it && it.value) itemType = String(it.value || '').trim();
+    } catch (_) {}
+    try {
+      var mf = guided ? byId('ccGuidedManufacturer') : byId('stx_manufacturer');
+      if (mf && mf.value) manufacturer = String(mf.value || '').trim();
+    } catch (_) {}
+    try {
+      var wt = guided ? byId('ccGuidedWeaponType') : byId('weaponType');
+      if (wt && wt.value) weaponType = String(wt.value || '').trim();
+    } catch (_) {}
+    try {
+      var lv = byId('level2') || byId('level');
+      if (lv && lv.value != null) level = String(lv.value || '').trim();
+    } catch (_) {}
+
+    var des = '';
+    try {
+      if (guided) {
+        var gd = byId('guidedOutputDeserialized');
+        if (gd && gd.value) des = String(gd.value || '').trim();
+      } else {
+        var oc = byId('outCode');
+        if (oc && oc.value) des = String(oc.value || '').trim();
+      }
+    } catch (_) {}
+    var name = '';
+    try {
+      if (!guided) {
+        var mp = byId('mainPart');
+        if (mp && mp.selectedOptions && mp.selectedOptions[0]) {
+          name = String(mp.selectedOptions[0].textContent || '').trim();
+        }
+      }
+    } catch (_) {}
+
+    var elem = elementLabelFromDeserialized(des);
+    return {
+      ts: Date.now(),
+      source: String(source || ''),
+      itemType: itemType,
+      manufacturer: manufacturer,
+      weaponType: weaponType,
+      level: level,
+      element: elem,
+      name: name,
+      deserialized: des
+    };
+  }
+
+  function appendToLogSafe(entry) {
+    if (!entry) return;
+    var des = String(entry.deserialized || '').trim();
+    if (!des) return;
+    var log = loadLog();
+    // Dedupe consecutive duplicates by deserialized text.
+    var last = log.length ? log[log.length - 1] : null;
+    if (last && String(last.deserialized || '').trim() === des) return;
+    log.push(entry);
+    // Keep storage bounded.
+    if (log.length > 200) log = log.slice(log.length - 200);
+    saveLog(log);
+  }
+
+  function formatLogTxt(entries) {
+    var out = [];
+    out.push('Scooter\'s Toolbox — made items export');
+    out.push('Count: ' + String(entries.length));
+    out.push('Generated: ' + new Date().toISOString());
+    out.push('');
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i] || {};
+      var when = '';
+      try { when = e.ts ? new Date(Number(e.ts)).toISOString() : ''; } catch (_) { when = ''; }
+      var header = [
+        when ? ('[' + when + ']') : '[unknown time]',
+        (e.itemType ? String(e.itemType) : 'Item'),
+        (e.manufacturer ? ('— ' + String(e.manufacturer)) : ''),
+        (e.weaponType ? ('— ' + String(e.weaponType)) : ''),
+        (e.level ? ('— L' + String(e.level)) : ''),
+        (e.element ? ('— ' + String(e.element)) : ''),
+        (e.name ? ('— ' + safeTrim(e.name, 120)) : '')
+      ].join(' ').replace(/\s+/g, ' ').trim();
+      out.push(header);
+      out.push(safeTrim(e.deserialized, 4000));
+      out.push('');
+    }
+    return out.join('\n');
+  }
+
+  function downloadTxt(filename, text) {
+    try {
+      var blob = new Blob([String(text || '')], { type: 'text/plain;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        try { URL.revokeObjectURL(url); } catch (_) {}
+        try { document.body.removeChild(a); } catch (_) {}
+      }, 0);
     } catch (_) {}
   }
 
@@ -178,6 +365,9 @@
     else return;
     d.total += 1;
     save(d);
+    try {
+      appendToLogSafe(snapshotMadeItem(source));
+    } catch (_) {}
     updateBadge();
     refreshPanelIfOpen();
     try {
@@ -230,7 +420,52 @@
   var panelEl = null;
   var badgeEl = null;
 
+  function ensureDownloadButtonBound() {
+    var panel = byId('stx-items-made-panel');
+    if (!panel) return;
+    var actions = panel.querySelector ? panel.querySelector('.stx-im-actions') : null;
+    if (!actions) {
+      // Backward compat: older panel markup might not have `.stx-im-actions`.
+      var resetBtn = byId('stx-im-btn-reset');
+      var closeBtn = byId('stx-im-btn-close');
+      actions = (resetBtn && resetBtn.parentElement) ? resetBtn.parentElement : ((closeBtn && closeBtn.parentElement) ? closeBtn.parentElement : null);
+    }
+    if (!actions) return;
+    var btn = byId('stx-im-btn-download');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.id = 'stx-im-btn-download';
+      btn.textContent = 'Download list (.txt)';
+      actions.insertBefore(btn, byId('stx-im-btn-reset') || byId('stx-im-btn-close') || null);
+    }
+    if (btn.__stxBoundDownload) return;
+    btn.__stxBoundDownload = true;
+    btn.addEventListener('click', function () {
+      var log = loadLog();
+      if (!log || !log.length) {
+        alert('No made items saved yet for this browser.');
+        return;
+      }
+      var txt = formatLogTxt(log);
+      var fn = 'stx-made-items-' + new Date().toISOString().slice(0, 10) + '.txt';
+      downloadTxt(fn, txt);
+    });
+  }
+
   function ensurePanel() {
+    // If an older script instance already injected the panel, re-use it and patch missing controls.
+    if (!panelEl) {
+      try {
+        var existing = byId('stx-items-made-panel');
+        if (existing) {
+          panelEl = existing;
+          badgeEl = byId('stx-items-made-badge');
+          ensureDownloadButtonBound();
+          return panelEl;
+        }
+      } catch (_) {}
+    }
     if (panelEl) return panelEl;
     var style = document.createElement('style');
     style.textContent =
@@ -274,6 +509,7 @@
       '<p class="stx-im-hint" id="stx-im-server-hint" style="display:none;margin-top:8px;">Server analytics: see repo <code>api/SETUP.md</code>. Dashboard: <code>stats.php?key=…</code>. Meta: <code>stx-analytics-endpoint</code> or <code>STX_ANALYTICS_ENDPOINT</code>.</p>' +
       '<div class="stx-im-actions">' +
       '<label class="stx-im-cb"><input type="checkbox" id="stx-im-cb-badge"/> Corner badge</label>' +
+      '<button type="button" id="stx-im-btn-download">Download list (.txt)</button>' +
       '<button type="button" id="stx-im-btn-reset">Reset counts</button>' +
       '<button type="button" id="stx-im-btn-close">Close</button></div>';
     document.body.appendChild(panelEl);
@@ -291,6 +527,7 @@
       refreshPanelIfOpen();
       updateBadge();
     });
+    ensureDownloadButtonBound();
     var cb = byId('stx-im-cb-badge');
     try {
       cb.checked = localStorage.getItem(BADGE_KEY) === '1';

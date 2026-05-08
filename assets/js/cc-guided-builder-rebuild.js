@@ -26,13 +26,13 @@
       syncGuidedCustomSelectIfWrapped(sel);
     }
     var base = './assets/img/guided-dropdowns/';
-    setIcon('ccGuidedItemType', 'Weapon', base + 'legendary-augments/ico_legendary_aug_gun_assault.png');
-    setIcon('ccGuidedItemType', 'Shield', base + 'legendary-augments/ico_legendary_aug_shield.png');
-    setIcon('ccGuidedItemType', 'Repkit', base + 'legendary-augments/ico_legendary_aug_repkit.png');
-    setIcon('ccGuidedItemType', 'Grenade', base + 'legendary-augments/ico_legendary_aug_grenade.png');
-    setIcon('ccGuidedItemType', 'Enhancement', base + 'legendary-augments/ico_legendary_aug_classmod.png');
-    setIcon('ccGuidedItemType', 'Class Mod', base + 'legendary-augments/ico_legendary_aug_classmod.png');
-    setIcon('ccGuidedItemType', 'Heavy Weapon', base + 'legendary-augments/ico_legendary_aug_heavy.png');
+    setIcon('ccGuidedItemType', 'Weapon', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_gun_assault.png'));
+    setIcon('ccGuidedItemType', 'Shield', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_shield.png'));
+    setIcon('ccGuidedItemType', 'Repkit', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_repkit.png'));
+    setIcon('ccGuidedItemType', 'Grenade', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_grenade.png'));
+    setIcon('ccGuidedItemType', 'Enhancement', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_classmod.png'));
+    setIcon('ccGuidedItemType', 'Class Mod', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_classmod.png'));
+    setIcon('ccGuidedItemType', 'Heavy Weapon', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_heavy.png'));
     setIcon('ccGuidedWeaponType', 'Assault Rifle', base + 'weapon-type/ico_ui_art_assault_small.png');
     setIcon('ccGuidedWeaponType', 'Pistol', base + 'weapon-type/ico_ui_art_pistol_small.png');
     setIcon('ccGuidedWeaponType', 'Shotgun', base + 'weapon-type/ico_ui_art_shotgun_small.png');
@@ -64,7 +64,7 @@
     { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccRaritySelect', btnId: 'ccAddRarity' },
     { key: 'body', label: 'Body', partType: 'Body', selectId: 'ccBodySelect', btnId: 'ccAddBody' },
     { key: 'bodyAcc', label: 'Body Accessory', partType: 'Body Accessory', selectId: 'ccBodyAccSelect', btnId: 'ccAddBodyAcc' },
-    { key: 'bodyEle', label: 'Body Element', partType: 'Body', selectId: 'ccWeaponBodyEleSelect', btnId: 'ccAddWeaponBodyEle' },
+    { key: 'bodyEle', label: 'Body Element', partType: 'Body Element', selectId: 'ccWeaponBodyEleSelect', btnId: 'ccAddWeaponBodyEle' },
     { key: 'barrel', label: 'Barrel', partType: 'Barrel', selectId: 'ccBarrelSelect', btnId: 'ccAddBarrel' },
     { key: 'barrelAcc', label: 'Barrel Accessory', partType: 'Barrel Accessory', selectId: 'ccBarrelAccSelect', btnId: 'ccAddBarrelAcc' },
     { key: 'hyperionSecondaryAcc', label: 'Hyperion Amp Shield', partType: 'Manufacturer Part', selectId: 'ccWeaponHypShieldSelect', btnId: 'ccAddWeaponHypShield' },
@@ -84,16 +84,16 @@
   ];
 
   /** Shown as a disabled option when a pool is empty so users know to widen filters. */
-  var GUIDED_HINT_EMPTY_BODY_ELEMENT = '(Empty) Turn on "All manufacturers\' parts in dropdowns" above, then open this list again — body element parts are shared across manufacturers.';
+  var GUIDED_HINT_EMPTY_BODY_ELEMENT = '(Empty) No body element parts match the current filters — try "All manufacturers\' parts" if the dataset is still wide.';
   var GUIDED_HINT_EMPTY_MALIWAN_SWITCH = '(Empty) Maliwan guns only. If nothing appears, turn on "All manufacturers\' parts in dropdowns" above so Maliwan switch parts can load.';
 
   var ELEMENTS = [
     { key: 'None', code: '' },
-    { key: 'Corrosive', code: '{1:10}', iconFile: 'pearl_elemental_corrosive.png' },
-    { key: 'Cryo', code: '{1:11}', iconFile: 'pearl_elemental_cryo.png' },
-    { key: 'Fire', code: '{1:12}', iconFile: 'pearl_elemental_fire.png' },
-    { key: 'Radiation', code: '{1:13}', iconFile: 'pearl_elemental_radiation.png' },
-    { key: 'Shock', code: '{1:14}', iconFile: 'pearl_elemental_shock.png' }
+    { key: 'Corrosive', code: '{1:10}', iconFile: 'ico_elemental_corrosive.png' },
+    { key: 'Cryo', code: '{1:11}', iconFile: 'ico_elemental_cryo.png' },
+    { key: 'Fire', code: '{1:12}', iconFile: 'ico_elemental_fire.png' },
+    { key: 'Radiation', code: '{1:13}', iconFile: 'ico_elemental_radiation.png' },
+    { key: 'Shock', code: '{1:14}', iconFile: 'ico_elemental_shock.png' }
   ];
 
   /** In-repo textures only (see assets/img/elements/). */
@@ -104,10 +104,30 @@
   var CC_GUIDED_DROPDOWN_BASE = './assets/img/guided-dropdowns/';
   /** BL UI: ico_ui_art_item_augments / legendary_augments — for legendary barrel rows. */
   var CC_GUIDED_LEGENDARY_AUG_BASE = CC_GUIDED_DROPDOWN_BASE + 'legendary-augments/';
-  /** DLC pearl slot icons (dlc_rarity_pips) — weapon/gear class for pearlescent rows. */
-  var CC_GUIDED_PEARL_ITEMTYPE_BASE = CC_GUIDED_DROPDOWN_BASE + 'pearl-item-types/';
+  /** DLC pearl slot icons from game `dlc_rarity_pips` (in-repo under assets/img/dlc_rarity_pips/). */
+  var CC_GUIDED_PEARL_ITEMTYPE_BASE = './assets/img/dlc_rarity_pips/';
 
-  var CC_GUIDED_RARITY_SELECT_IDS = { ccRaritySelect: 1, ccHeavyRaritySelect: 1, ccRepkitRaritySelect: 1 };
+  /** When Simple/Guided pearl override is on, swap gold legendary-augment URLs for matching pearl pip art. */
+  function ccPearlPipUrlInsteadOfLegendaryAug(u) {
+    if (typeof window.stxPearlPipUrlInsteadOfLegendaryAug === 'function') {
+      return window.stxPearlPipUrlInsteadOfLegendaryAug(u);
+    }
+    var s = String(u || '').trim();
+    if (!s) return s;
+    try {
+      var a = document.getElementById('stxPearlOverride');
+      var b = document.getElementById('ccGuidedPearlOverride');
+      if (!((a && a.checked) || (b && b.checked))) return s;
+    } catch (_e) { return s; }
+    return s.replace(/\/legendary-augments\/ico_legendary_/gi, '/dlc_rarity_pips/ico_pearl_');
+  }
+
+  var CC_GUIDED_RARITY_SELECT_IDS = {
+    ccRaritySelect: 1,
+    ccHeavyRaritySelect: 1,
+    ccRepkitRaritySelect: 1,
+    ccGrenadeRaritySelect: 1
+  };
   var CC_GUIDED_ELEMENTISH_SELECT_IDS = {
     ccWeaponBodyEleSelect: 1,
     ccElementSwitchSelect: 1,
@@ -177,15 +197,31 @@
     }
   }
 
-  function guessElementIconFromBlob(blob) {
+  function guessPearlElementIconFromBlob(blob) {
     var s = String(blob || '').toLowerCase();
     if (!s) return '';
     if (s.indexOf('corrosive') !== -1) return 'pearl_elemental_corrosive.png';
     if (s.indexOf('cryo') !== -1) return 'pearl_elemental_cryo.png';
     if (s.indexOf('radiation') !== -1 || s.indexOf('_rad_') !== -1 || /\brad_shock\b/.test(s) || /\brad_cryo\b/.test(s)) return 'pearl_elemental_radiation.png';
+    if (s.indexOf('sonic') !== -1 || s.indexOf('barrier_elemental_field_sonic') !== -1) return 'pearl_elemental_sonic.png';
     if (s.indexOf('shock') !== -1) return 'pearl_elemental_shock.png';
+    if ((/\bring\b/.test(s) && (s.indexOf('element') !== -1 || s.indexOf('ele_') !== -1)) || s.indexOf('element_ring') !== -1) return 'pearl_elemental_ring.png';
     if (s.indexOf('kinetic') !== -1) return 'pearl_elemental_kinetic.png';
     if (s.indexOf('incendiary') !== -1 || s.indexOf('ele_fire') !== -1 || /\b_fire\b/.test(s) || /\bfire_rad\b/.test(s) || /\bfire_shock\b/.test(s)) return 'pearl_elemental_fire.png';
+    return '';
+  }
+
+  function guessStandardElementIconFromBlob(blob) {
+    var s = String(blob || '').toLowerCase();
+    if (!s) return '';
+    if (s.indexOf('corrosive') !== -1) return 'ico_elemental_corrosive.png';
+    if (s.indexOf('cryo') !== -1) return 'ico_elemental_cryo.png';
+    if (s.indexOf('radiation') !== -1 || s.indexOf('_rad_') !== -1 || /\brad_shock\b/.test(s) || /\brad_cryo\b/.test(s)) return 'ico_elemental_radiation.png';
+    if (s.indexOf('sonic') !== -1 || s.indexOf('barrier_elemental_field_sonic') !== -1) return 'ico_elemental_all.png';
+    if (s.indexOf('shock') !== -1) return 'ico_elemental_shock.png';
+    if ((/\bring\b/.test(s) && (s.indexOf('element') !== -1 || s.indexOf('ele_') !== -1)) || s.indexOf('element_ring') !== -1) return 'ico_elemental_all.png';
+    if (s.indexOf('kinetic') !== -1) return 'ico_elemental_kinetic.png';
+    if (s.indexOf('incendiary') !== -1 || s.indexOf('ele_fire') !== -1 || /\b_fire\b/.test(s) || /\bfire_rad\b/.test(s) || /\bfire_shock\b/.test(s)) return 'ico_elemental_fire.png';
     return '';
   }
 
@@ -198,19 +234,34 @@
 
     if (/\bpearl_(damage|reload|firerate|handling)\b/.test(blob)) return 'ico_misc_pearl.png';
 
-    var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire)\b/);
+    var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire|sonic)\b/);
     if (pe) {
       if (pe[1] === 'normal') return 'pearl_elemental_kinetic.png';
       return 'pearl_elemental_' + pe[1] + '.png';
     }
 
     if (/part_pearl/i.test(code)) {
-      var g = guessElementIconFromBlob(blob);
+      var g = guessPearlElementIconFromBlob(blob);
       return g || 'ico_misc_pearl.png';
     }
 
-    return guessElementIconFromBlob(blob);
+    return guessStandardElementIconFromBlob(blob);
   }
+
+  /** Recolor white weapon silhouettes for rarity tiers 0–3; keep in sync with `stx-simple-builder-core.js`. */
+  var CC_COMP_TIER_WEAPON_ICON_FILTERS = [
+    'brightness(0) saturate(100%) invert(68%) sepia(9%) saturate(214%) hue-rotate(126deg) brightness(94%) contrast(88%)',
+    'brightness(0) saturate(100%) invert(56%) sepia(58%) saturate(488%) hue-rotate(90deg) brightness(96%) contrast(91%)',
+    'brightness(0) saturate(100%) invert(55%) sepia(72%) saturate(1466%) hue-rotate(176deg) brightness(96%) contrast(92%)',
+    'brightness(0) saturate(100%) invert(51%) sepia(71%) saturate(2347%) hue-rotate(238deg) brightness(95%) contrast(92%)'
+  ];
+  /** Soft rarity tint on full-color legendary aug art (common→epic); match `STX_COMP_TIER_GEAR_LEGENDARY_AUG_FILTERS`. */
+  var CC_COMP_TIER_GEAR_LEGENDARY_AUG_FILTERS = [
+    'saturate(0.48) brightness(0.84) contrast(1.09)',
+    'hue-rotate(78deg) saturate(0.82) brightness(0.86) contrast(1.06)',
+    'hue-rotate(168deg) saturate(0.88) brightness(0.87) contrast(1.07)',
+    'hue-rotate(228deg) saturate(0.9) brightness(0.86) contrast(1.08)'
+  ];
 
   /** Legendary augment PNG (`legendary_augments/`) by gear category + weapon class. */
   function ccLegendaryAugIconUrlForPartGear(p) {
@@ -226,6 +277,7 @@
       repkit: 'ico_legendary_aug_repkit.png',
       grenade: 'ico_legendary_aug_grenade.png',
       'class mod': 'ico_legendary_aug_classmod.png',
+      enhancement: 'ico_legendary_aug_classmod.png',
       'heavy weapon': 'ico_legendary_aug_heavy.png',
       gadget: 'ico_legendary_aug_heavy.png'
     };
@@ -240,6 +292,7 @@
   function applyGuidedRarityPartOptionIcon(opt, p) {
     if (!opt || !p) return;
     opt.removeAttribute('data-cc-icon-filter');
+    opt.removeAttribute('data-cc-icon-tint');
 
     var its = String(p.itemTypeString || '').toLowerCase();
     var code = String(p.code || '').toLowerCase();
@@ -265,7 +318,7 @@
         applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
         return;
       }
-      var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire)\b/);
+      var pe = its.match(/\bpearl_(normal|shock|radiation|corrosive|cryo|fire|sonic)\b/);
       if (pe) {
         applyDataCcIconIfAny(
           opt,
@@ -278,7 +331,7 @@
         applyDataCcIconFullUrl(opt, slotUrl);
         return;
       }
-      var g = guessElementIconFromBlob(blob);
+      var g = guessPearlElementIconFromBlob(blob);
       if (g) applyDataCcIconIfAny(opt, g);
       else applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
       return;
@@ -288,27 +341,31 @@
     if (tier === 4) {
       var legAug = ccLegendaryAugIconUrlForPartGear(p);
       if (legAug) {
-        applyDataCcIconFullUrl(opt, legAug);
+        applyDataCcIconFullUrl(opt, ccPearlPipUrlInsteadOfLegendaryAug(legAug));
         return;
       }
     }
 
-    // Non-pearl comp tiers (common..epic): weapon-type icon with tint.
-    var tierFilters = [
-      'grayscale(0.5) brightness(0.85)',                                // common
-      'sepia(0.45) saturate(1.7) hue-rotate(48deg) brightness(0.9)',    // uncommon
-      'sepia(0.32) saturate(2.1) hue-rotate(195deg) brightness(0.94)',  // rare
-      'sepia(0.38) saturate(2.6) hue-rotate(268deg) brightness(1.0)'    // epic
-    ];
-    var filter = tierFilters[tier] || '';
-
+    // Non-pearl comp tiers (common..epic): weapon silhouettes vs soft-tinted gear aug art (see legGear branch).
     var k = ccNormalizedWeaponTypeKey(p);
-    if (!k) return;
-    var png = ccGuidedWeaponTypePngUrlFromKey(k);
-    var iconUrl = png || ccGuidedWeaponTypeIconDataUrl(p);
-    if (!iconUrl) return;
-    applyDataCcIconFullUrl(opt, iconUrl);
-    if (filter) opt.setAttribute('data-cc-icon-filter', filter);
+    if (k) {
+      var png = ccGuidedWeaponTypePngUrlFromKey(k);
+      var iconUrl = png || ccGuidedWeaponTypeIconDataUrl(p);
+      if (iconUrl) {
+        applyDataCcIconFullUrl(opt, iconUrl);
+        if (png && tier >= 0 && tier <= 3) {
+          var ft = CC_COMP_TIER_WEAPON_ICON_FILTERS[tier];
+          if (ft) opt.setAttribute('data-cc-icon-filter', ft);
+        }
+        return;
+      }
+    }
+    var legGear = ccLegendaryAugIconUrlForPartGear(p);
+    if (legGear && tier >= 0 && tier <= 3) {
+      applyDataCcIconFullUrl(opt, ccPearlPipUrlInsteadOfLegendaryAug(legGear));
+      var fG = CC_COMP_TIER_GEAR_LEGENDARY_AUG_FILTERS[tier];
+      if (fG) opt.setAttribute('data-cc-icon-filter', fG);
+    }
   }
 
   function applyDataCcIconIfAny(opt, filename) {
@@ -490,7 +547,7 @@
     var shortNumericTok = /^[0-9]+$/.test(token) && token.length <= 2;
     if (token && !shortNumericTok && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token]) {
       var uTok = CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token];
-      if (!isW || !/ico_legendary_aug_classmod/i.test(uTok)) return uTok;
+      if (!isW || !/ico_legendary_aug_classmod/i.test(uTok)) return ccPearlPipUrlInsteadOfLegendaryAug(uTok);
     }
 
     // Fallback: match by rarity-id effects naming.
@@ -499,7 +556,7 @@
     var kNorm = k.replace(/[^a-z0-9]/g, '');
     var uEff = CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL[kNorm] || '';
     if (uEff && isW && /ico_legendary_aug_classmod/i.test(uEff)) return '';
-    return uEff;
+    return ccPearlPipUrlInsteadOfLegendaryAug(uEff);
   }
 
   function ccIsPearlByRarityIdEffectName(p) {
@@ -580,7 +637,7 @@
   function ccGuidedWeaponTypeIconForPart(p) {
     if (ccPartLooksLegendaryBarrel(p)) {
       var leg = ccGuidedLegendaryAugIconUrlForPart(p);
-      if (leg) return leg;
+      if (leg) return ccPearlPipUrlInsteadOfLegendaryAug(leg);
     }
     var k = ccNormalizedWeaponTypeKey(p);
     if (k) {
@@ -593,6 +650,27 @@
   function applyGuidedPartOptionIcon(sel, opt, p) {
     if (!sel || !opt || !p) return;
     var sid = String(sel.id || '');
+    if (sid === 'ccRepkitBodySelect') {
+      // Repkit "Body" entries are stored as partType "Base" with `*_repair_kit.part_*` codes,
+      // and the dataset manufacturer is often "gadgets". Use the code prefix to pick the right icon.
+      try {
+        var c0 = String(p.code || p.spawnCode || '').toLowerCase().replace(/^["']|["']$/g, '').trim();
+        var m = '';
+        if (c0.indexOf('ted_repair_kit.') === 0) m = 'tediore';
+        else if (c0.indexOf('tor_repair_kit.') === 0) m = 'torgue';
+        else if (c0.indexOf('jak_repair_kit.') === 0) m = 'jakobs';
+        else if (c0.indexOf('mal_repair_kit.') === 0) m = 'maliwan';
+        else if (c0.indexOf('vla_repair_kit.') === 0) m = 'vladof';
+        else if (c0.indexOf('dad_repair_kit.') === 0) m = 'daedalus';
+        else if (c0.indexOf('ord_repair_kit.') === 0) m = 'order';
+        else if (c0.indexOf('bor_repair_kit.') === 0) m = 'ripper';
+        if (m) {
+          var u = manufacturerLogomarkUrl(m);
+          if (u) applyDataCcIconFullUrl(opt, u);
+        }
+      } catch (_) {}
+      return;
+    }
     if (CC_GUIDED_RARITY_SELECT_IDS[sid]) {
       applyGuidedRarityPartOptionIcon(opt, p);
       return;
@@ -617,7 +695,7 @@
       // the row lacks explicit `comp_05_legendary` text tokens.
       var leg = ccLegendaryAugIconUrlForPartGear(p);
       if (leg) {
-        applyDataCcIconFullUrl(opt, leg);
+        applyDataCcIconFullUrl(opt, ccPearlPipUrlInsteadOfLegendaryAug(leg));
         return;
       }
 
@@ -641,12 +719,13 @@
       return;
     }
     if (CC_GUIDED_ELEMENTISH_SELECT_IDS[sid]) {
-      var f2 = guessElementIconFromBlob(String((p.itemTypeString || '') + ' ' + (p.code || '') + ' ' + (p.name || p.legendaryName || '')).toLowerCase());
+      var f2 = ccResolveElementIconFilename(p);
       if (f2) applyDataCcIconIfAny(opt, f2);
     }
     if (GUIDED_BARREL_ACCESSORY_SELECT_IDS[sid]) {
       opt.removeAttribute('data-cc-icon');
       opt.removeAttribute('data-cc-icon-filter');
+      opt.removeAttribute('data-cc-icon-tint');
       return;
     }
     if (GUIDED_BARREL_FAMILY_SELECT_IDS[sid] || GUIDED_BODY_SLOT_IDS[sid]) {
@@ -658,7 +737,7 @@
       }
       var tiedLegendUrl = ccLegendaryAugIconUrlForPartIfTiedByName(p);
       if (tiedLegendUrl) {
-        applyDataCcIconFullUrl(opt, tiedLegendUrl);
+        applyDataCcIconFullUrl(opt, ccPearlPipUrlInsteadOfLegendaryAug(tiedLegendUrl));
         return;
       }
 
@@ -680,7 +759,7 @@
       if (looksLegendary2) {
         var leg2 = ccLegendaryAugIconUrlForPartGear(p);
         if (leg2) {
-          applyDataCcIconFullUrl(opt, leg2);
+          applyDataCcIconFullUrl(opt, ccPearlPipUrlInsteadOfLegendaryAug(leg2));
           return;
         }
       }
@@ -779,7 +858,11 @@
         if (pwt && wwt && !sniperMatch && pwt !== wwt && pwt !== 'weapon') return false;
       }
       if (want === 'element') {
-        return pt === 'element' || pt === 'status' || /^\{1:(10|11|12|13|14)\}$/.test(getPartToken(p));
+        var codeN = String(normCodeForRepkitGuidedSlot(p && p.code) || '').toLowerCase();
+        var grenadeElem = /(?:^|[._])grenade_gadget\.part_(corrosive|cryo|fire|radiation|shock)\b/.test(codeN)
+          || /[a-z0-9]+_grenade_gadget\.part_(corrosive|cryo|fire|radiation|shock)\b/.test(codeN);
+        var repkitElem = /^part_element_/.test(codeN) || /\.part_element_/.test(codeN);
+        return pt === 'element' || pt === 'status' || grenadeElem || repkitElem || /^\{1:(10|11|12|13|14)\}$/.test(getPartToken(p));
       }
       if (want === 'element switch') {
         var code = String(p.code || '').toLowerCase();
@@ -863,11 +946,8 @@
       if (lineSoFar.indexOf('(Pearl)') === -1) bits.push('(Pearl)');
     }
     if (id) {
-      var ptypeLo = String(p.partType || '').trim().toLowerCase().replace(/\s+/g, '');
       var idNorm = String(id).replace(/\s+/g, ' ').trim();
-      var useBracedId = (ptypeLo === 'element' || ptypeLo === 'status' || ptypeLo === 'typeid1element' || ptypeLo === 'elementswitch')
-        && /^\d+\s*:\s*\d+$/.test(idNorm);
-      if (useBracedId) {
+      if (/^\d+\s*:\s*\d+$/.test(idNorm)) {
         var idParts = idNorm.split(':');
         bits.push('{' + String(idParts[0]).trim() + ':' + String(idParts[1]).trim() + '}');
       } else {
@@ -1139,8 +1219,10 @@
   }
 
   function applyGuidedBarrelOptionDataAttrs(sel, opt, p) {
-    if (!opt || !isGuidedBarrelFamilySelect(sel)) return;
-    opt.textContent = guidedBarrelOptionPrimaryText(p);
+    if (!opt || !p) return;
+    if (isGuidedBarrelFamilySelect(sel)) {
+      opt.textContent = guidedBarrelOptionPrimaryText(p);
+    }
     var sub = guidedBarrelOptionSubText(p);
     if (sub) opt.setAttribute('data-cc-barrel-sub', sub);
     else opt.removeAttribute('data-cc-barrel-sub');
@@ -1327,13 +1409,23 @@
     descEl.textContent = d || 'No description available yet.';
   }
 
-  function fillSelect(sel, parts, maxItems, emptyHint) {
+  function guidedRarityGroupRank(label) {
+    var m = { Common: 0, Uncommon: 1, Rare: 2, Epic: 3, Legendary: 4, Pearlescent: 5, Unknown: 6 };
+    var L = String(label || '');
+    return Object.prototype.hasOwnProperty.call(m, L) ? m[L] : 50;
+  }
+
+  function fillSelect(sel, parts, maxItems, emptyHint, fillOpts) {
     if (!sel) return;
+    fillOpts = fillOpts || {};
+    var groupByRarity = !!(fillOpts.groupByRarity && typeof window.stxRarityOptgroupLabelFromPart === 'function');
+    var manHint = String(fillOpts.manufacturer || '').trim();
     var prevValue = String((sel.value != null ? sel.value : '') || '').trim();
     var preferredValue = String((sel.__ccPreferredToken != null ? sel.__ccPreferredToken : prevValue) || '').trim();
     
     // Check if parts list has actually changed to avoid redundant DOM work
     var partsHash = (parts && parts.length) ? (parts.length + ':' + (parts[0] ? (parts[0].code || parts[0].name) : '')) : '0';
+    if (groupByRarity) partsHash = 'rfl:' + manHint + ':' + partsHash;
     if (sel.__lastPartsHash === partsHash && !sel.dataset.forceRebuild) {
         // Still need to ensure value is synced if preferredValue changed externally
         if (preferredValue && sel.value !== preferredValue) {
@@ -1351,6 +1443,53 @@
     var plen = (parts && parts.length) ? parts.length : 0;
     var limit = Math.min(plen, maxItems || 300);
     
+    if (groupByRarity) {
+      var dedupedRg = [];
+      var seenRg = {};
+      for (var di = 0; di < plen; di++) {
+        var pRg = parts[di];
+        var tRg = getPartToken(pRg);
+        if (!tRg || seenRg[tRg]) continue;
+        seenRg[tRg] = true;
+        dedupedRg.push(pRg);
+      }
+      var groupsRg = {};
+      for (var gi = 0; gi < dedupedRg.length; gi++) {
+        var pGlx = dedupedRg[gi];
+        var gLbl = window.stxRarityOptgroupLabelFromPart(pGlx, manHint) || 'Unknown';
+        if (!groupsRg[gLbl]) groupsRg[gLbl] = [];
+        groupsRg[gLbl].push(pGlx);
+      }
+      var gKeysRg = Object.keys(groupsRg).sort(function (a, b) {
+        return guidedRarityGroupRank(a) - guidedRarityGroupRank(b) ||
+          String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+      });
+      for (var gs = 0; gs < gKeysRg.length; gs++) {
+        groupsRg[gKeysRg[gs]].sort(function (a, b) {
+          return normPartCodeForSort(a).localeCompare(normPartCodeForSort(b), undefined, { numeric: true });
+        });
+      }
+      /* Same tier order as grouped UI, but one flat list (no optgroup section headers in the custom dropdown). */
+      var fragmentRg = document.createDocumentFragment();
+      var remainingRg = limit;
+      for (var ogI = 0; ogI < gKeysRg.length && remainingRg > 0; ogI++) {
+        var ogParts = groupsRg[gKeysRg[ogI]];
+        for (var oj = 0; oj < ogParts.length && remainingRg > 0; oj++) {
+          var pr = ogParts[oj];
+          var t2 = getPartToken(pr);
+          if (!t2) continue;
+          listForPreview.push(pr);
+          var opt2 = new Option(guidedOptionLabelForSelect(sel, pr), t2);
+          var tit2 = guidedOptionTitleForSelect(sel, pr);
+          if (tit2) opt2.title = tit2;
+          applyGuidedPartOptionIcon(sel, opt2, pr);
+          applyGuidedBarrelOptionDataAttrs(sel, opt2, pr);
+          fragmentRg.appendChild(opt2);
+          remainingRg--;
+        }
+      }
+      sel.appendChild(fragmentRg);
+    } else {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < limit; i++) {
       var p = parts[i];
@@ -1367,6 +1506,7 @@
       fragment.appendChild(opt);
     }
     sel.appendChild(fragment);
+    }
     
     if (!listForPreview.length && emptyHint) {
       var hi = new Option(emptyHint, '');
@@ -1597,6 +1737,14 @@
     }
     var weaponType = (guidedWt && guidedWt.value) || (byId('weaponType') && byId('weaponType').value) || '';
     return { itemType: itemType, manufacturer: manufacturer, weaponType: weaponType };
+  }
+
+  /** Map Simple Builder `Heavy` onto Guided gear key `Heavy Weapon` for slot tables + visibility. */
+  function normalizeGuidedItemTypeForGear(category) {
+    var c = String(category || '').trim();
+    if (!c) return c;
+    if (c.toLowerCase() === 'heavy') return 'Heavy Weapon';
+    return c;
   }
 
   function getEffectiveManufacturerForFilter() {
@@ -2403,7 +2551,7 @@
       if (typeof refreshWeaponDropdowns === 'function') refreshWeaponDropdowns();
       if (typeof refreshGearDropdowns === 'function') {
         var it = String(st.itemType || '');
-        if (it && it !== 'Weapon') refreshGearDropdowns(it);
+        if (it && it !== 'Weapon') refreshGearDropdowns(normalizeGuidedItemTypeForGear(it));
       }
     } catch (e) {
        console.error('Hydration failed (top level):', e);
@@ -2505,6 +2653,7 @@
   function refreshWeaponDropdowns() {
     var st = getGuidedState();
     var it = String(st.itemType).toLowerCase();
+    if (it === 'heavy') it = 'heavy weapon';
     if (it !== 'weapon' && it !== 'heavy weapon') return;
     var man = getEffectiveManufacturerForFilter();
     var wt = st.weaponType;
@@ -2518,7 +2667,7 @@
       if (slot.key === 'body') {
         return filtered.filter(function (p) {
           var x = c(p);
-          return x.indexOf('part_body_bolt') === -1 && x.indexOf('part_body_flap') === -1;
+          return x.indexOf('part_body_bolt') === -1 && x.indexOf('part_body_flap') === -1 && x.indexOf('part_body_ele') === -1;
         });
       }
       if (slot.key === 'bodyAcc' && !useSimpleFilter) {
@@ -2612,11 +2761,15 @@
       var slotMan = man || '';
       // Legendary perk pools are shared and should not be restricted by manufacturer toggle/filter.
       if (slot.partType === 'Legendary Perks') slotMan = '';
+      // Element pools are shared and should not be restricted by manufacturer toggle/filter.
+      if (slot.key === 'bodyEle' || slot.key === 'secondaryEle') slotMan = '';
       if (useSimpleFilter) {
+        var wtForFilter = (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || '');
+        if (slot.key === 'bodyEle') wtForFilter = '';
         filtered = window.filterPartsForGuided({
           category: 'Weapon',
           manufacturer: slotMan,
-          weaponType: (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || ''),
+          weaponType: wtForFilter,
           partType: slot.partType
         });
         filtered = filterGuidedWeaponSlotParts(slot, filtered);
@@ -2625,13 +2778,7 @@
         filtered = filterByPartType(all, slot.partType, cat, slotMan, wt);
         filtered = filterGuidedWeaponSlotParts(slot, filtered);
       }
-      if (slot.partType === 'Rarity' && filtered && filtered.length) {
-        filtered = filtered.slice().sort(function (a, b) {
-          var na = (a.name || a.legendaryName || '').toLowerCase();
-          var nb = (b.name || b.legendaryName || '').toLowerCase();
-          return na.localeCompare(nb, undefined, { numeric: true });
-        });
-      } else if (filtered && filtered.length) {
+      if (filtered && filtered.length) {
         filtered = sortGuidedPartsByCode(filtered);
       }
       var maxItems = (slot.partType === 'Rarity') ? 600 : 1200;
@@ -2641,7 +2788,10 @@
       if (slot.key === 'secondaryEle' && (!filtered || !filtered.length)) {
         fillElementPresetFallbackSelect(sel, '-- Secondary element --');
       } else {
-        fillSelect(sel, filtered, maxItems, emptyHintWeapon);
+        var rarityFillOptsW = (slot.partType === 'Rarity')
+          ? { groupByRarity: true, manufacturer: getEffectiveManufacturerForFilter() }
+          : null;
+        fillSelect(sel, filtered, maxItems, emptyHintWeapon, rarityFillOptsW);
       }
       var fc = (filtered && filtered.length) ? filtered.length : 0;
       applyGuidedBodySlotRowVisibility(sel, 'Weapon', slot.key, fc);
@@ -2668,35 +2818,45 @@
     'Repkit': 'ccRepkitBuilderDetails',
     'Enhancement': 'ccEnhancementBuilderDetails',
     'Class Mod': 'ccClassModBuilderDetails',
-    'Heavy Weapon': 'ccHeavyBuilderDetails'
+    'Heavy Weapon': 'ccHeavyBuilderDetails',
+    'Heavy': 'ccHeavyBuilderDetails'
   };
 
   var GEAR_SLOTS_BY_CATEGORY = {
     Shield: [
       { key: 'mainBody', label: 'Main Part', partType: 'Body', selectId: 'ccShieldMainPartSelect', btnId: 'ccShieldMainPartAdd' },
+      { key: 'elementType1', label: 'Element / resist (Shield 246)', partType: 'TypeID1Element', selectId: 'ccShieldElementSelect', btnId: 'ccShieldElementAdd' },
       { key: 'resistance', label: 'Resistance', partType: '', selectId: 'ccShieldResistanceSelect', btnId: 'ccShieldResistanceAdd' },
       { key: 'primary246', label: 'Primary Perks 246', partType: 'Perk', selectId: 'ccShieldPrimaryPerksSelect', btnId: 'ccShieldPrimaryPerksAdd' },
       { key: 'secondary246', label: 'Secondary Perks 246', partType: 'Perk', selectId: 'ccShieldSecondaryPerksSelect', btnId: 'ccShieldSecondaryPerksAdd' },
       { key: 'armor237', label: 'Armor 237', partType: '', selectId: 'ccShieldArmorSelect', btnId: 'ccShieldArmorAdd' },
       { key: 'energy248', label: 'Energy 248', partType: '', selectId: 'ccShieldEnergySelect', btnId: 'ccShieldEnergyAdd' },
       { key: 'firmware246', label: 'Firmware 246', partType: 'Firmware', selectId: 'ccShieldFirmwareSelect', btnId: 'ccShieldFirmwareAdd' },
-      { key: 'elementType1', label: 'Element (TypeID 1)', partType: 'TypeID1Element', selectId: 'ccShieldElementSelect', btnId: 'ccShieldElementAdd' }
     ],
     Grenade: [
-      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccGrenadeFirmwareSelect', btnId: 'ccGrenadeFirmwareAdd' },
+      { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccGrenadeRaritySelect', btnId: 'ccGrenadeRarityAdd' },
+      { key: 'body', label: 'Body', partType: 'Base', selectId: 'ccGrenadeBodySelect', btnId: 'ccGrenadeBodyAdd' },
+      { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccGrenadeElementSelect', btnId: 'ccGrenadeElementAdd' },
       { key: 'payload', label: 'Payload', partType: 'Payload', selectId: 'ccGrenadePayloadSelect', btnId: 'ccGrenadePayloadAdd' },
       { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccGrenadeAugmentSelect', btnId: 'ccGrenadeAugmentAdd' },
-      { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccGrenadeElementSelect', btnId: 'ccGrenadeElementAdd' },
-      { key: 'special', label: 'Special / Unique', partType: '', selectId: 'ccGrenadeSpecialSelect', btnId: 'ccGrenadeSpecialAdd' }
+      { key: 'grenadeKitStats', label: 'Grenade stat parts', partType: '__grenadeKitStats', selectId: 'ccGrenadeKitStatsSelect', btnId: 'ccGrenadeKitStatsAdd' },
+      { key: 'special', label: 'Special / Unique', partType: '', selectId: 'ccGrenadeSpecialSelect', btnId: 'ccGrenadeSpecialAdd' },
+      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccGrenadeFirmwareSelect', btnId: 'ccGrenadeFirmwareAdd' }
     ],
     Repkit: [
-      { key: 'rarity', label: 'Legendary ID', partType: 'Rarity', selectId: 'ccRepkitRaritySelect', btnId: 'ccRepkitRarityAdd' },
+      { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccRepkitRaritySelect', btnId: 'ccRepkitRarityAdd' },
+      { key: 'body', label: 'Body', partType: 'Base', selectId: 'ccRepkitBodySelect', btnId: 'ccRepkitBodyAdd' },
+      { key: 'payload', label: 'Payload (Size)', partType: 'Payload', selectId: 'ccRepkitPayloadSelect', btnId: 'ccRepkitPayloadAdd' },
+      { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccRepkitElementSelect', btnId: 'ccRepkitElementAdd' },
       { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccRepkitAugmentSelect', btnId: 'ccRepkitAugmentAdd' },
       { key: 'perk', label: 'Perk', partType: 'Perk', selectId: 'ccRepkitPerkSelect', btnId: 'ccRepkitPerkAdd' },
+      { key: 'specialPlaceholder', label: 'Placeholders (no perk)', partType: '', selectId: 'ccRepkitSpecialPlaceholderSelect', btnId: 'ccRepkitSpecialPlaceholderAdd' },
+      { key: 'perkResist', label: 'Element resist add-ons', partType: '', selectId: 'ccRepkitPerkResistSelect', btnId: 'ccRepkitPerkResistAdd' },
+      { key: 'perkImmunity', label: 'Element immunity add-ons', partType: '', selectId: 'ccRepkitPerkImmunitySelect', btnId: 'ccRepkitPerkImmunityAdd' },
+      { key: 'perkNova', label: 'Nova add-ons', partType: '', selectId: 'ccRepkitPerkNovaSelect', btnId: 'ccRepkitPerkNovaAdd' },
+      { key: 'perkSplat', label: 'Splat add-ons', partType: '', selectId: 'ccRepkitPerkSplatSelect', btnId: 'ccRepkitPerkSplatAdd' },
       { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccRepkitFirmwareSelect', btnId: 'ccRepkitFirmwareAdd' },
-      { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccRepkitElementSelect', btnId: 'ccRepkitElementAdd' },
-      { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccRepkitLegendarySelect', btnId: 'ccRepkitLegendaryAdd' },
-      { key: 'special', label: 'Special / Unique', partType: '', selectId: 'ccRepkitSpecialSelect', btnId: 'ccRepkitSpecialAdd' }
+      { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccRepkitLegendarySelect', btnId: 'ccRepkitLegendaryAdd' }
     ],
     Enhancement: [],
     'Class Mod': [
@@ -2717,12 +2877,45 @@
       { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccHeavyAugmentSelect', btnId: 'ccHeavyAugmentAdd' },
       { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccHeavyElementSelect', btnId: 'ccHeavyElementAdd' },
       { key: 'elementSwitch', label: 'Maliwan Switch (2nd element)', partType: 'Element Switch', selectId: 'ccHeavyElementSwitchSelect', btnId: 'ccHeavyElementSwitchAdd', maliwanOnly: true },
-      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccHeavyFirmwareSelect', btnId: 'ccHeavyFirmwareAdd' },
-      { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccHeavyLegendarySelect', btnId: 'ccHeavyLegendaryAdd' }
+      { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccHeavyLegendarySelect', btnId: 'ccHeavyLegendaryAdd' },
+      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccHeavyFirmwareSelect', btnId: 'ccHeavyFirmwareAdd' }
     ]
   };
 
+  function normCodeForRepkitGuidedSlot(code) {
+    if (code == null) return '';
+    var s = String(code).trim();
+    if (s.length >= 2 && s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') return s.slice(1, -1);
+    return s;
+  }
+
+  /** Same bucketing as Simple builder: empty `partType` Repkit rows split by spawn-code shape. */
+  function filterRepkitGuidedSpecialParts(parts, slotKey) {
+    if (!parts || !parts.length) return parts || [];
+    var sk = String(slotKey || '');
+    if (sk !== 'specialPlaceholder' && sk !== 'perkResist' && sk !== 'perkImmunity' && sk !== 'perkNova' && sk !== 'perkSplat') return parts;
+    var out = [];
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      var c = normCodeForRepkitGuidedSlot(p && p.code).toLowerCase();
+      var n = String((p && p.name) || '').trim().toUpperCase();
+      var isPh = !c || n === 'PLACEHOLDER';
+      var isPayload = /repair_kit\.part_payload_/.test(c);
+      var isElem = /^part_element_/.test(c) || /\.part_element_/.test(c);
+      var isAug = /repair_kit\.part_aug_/.test(c);
+      var ok = false;
+      if (sk === 'specialPlaceholder') ok = isPh;
+      else if (sk === 'perkResist') ok = isAug && /resist/.test(c);
+      else if (sk === 'perkImmunity') ok = isAug && /immunity/.test(c);
+      else if (sk === 'perkNova') ok = isAug && /nova/.test(c);
+      else if (sk === 'perkSplat') ok = isAug && /splat/.test(c);
+      if (ok) out.push(p);
+    }
+    return out;
+  }
+
   function refreshGearDropdowns(category) {
+    category = normalizeGuidedItemTypeForGear(category);
     var st = getGuidedState();
     var man = getEffectiveManufacturerForFilter();
     var slots = GEAR_SLOTS_BY_CATEGORY[category];
@@ -2739,17 +2932,46 @@
       var slotMan = man || '';
       // Legendary perk pools are shared; never restrict these by manufacturer filter/toggle.
       if (slot.partType === 'Legendary Perks') slotMan = '';
+      // Element pools are shared; never restrict these by manufacturer filter/toggle.
+      if (slot.partType === 'Element' || slot.partType === 'TypeID1Element' || slot.partType === 'Element Switch') slotMan = '';
+      // Grenade bodies: show full cross-manufacturer `*_grenade_gadget` pool (modded-builder style).
+      if (category === 'Grenade' && slot.key === 'body') slotMan = '';
       var filtered;
-      if (useSimpleFilter) {
+      if (category === 'Grenade' && slot.key === 'grenadeKitStats') {
+        var manGk = String(slotMan || '').trim().toLowerCase();
+        filtered = [];
+        var allGk = getAllParts();
+        for (var gki = 0; gki < allGk.length; gki++) {
+          var pgk = allGk[gki];
+          if (!pgk) continue;
+          var cgk = String((pgk.code || pgk.spawnCode || pgk.importCode || '')).toLowerCase().replace(/^["']|["']$/g, '');
+          if (!/grenade_gadget\.part_stat_/.test(cgk)) continue;
+          if (typeof isAllPartsEnabled === 'function' && isAllPartsEnabled()) {
+            filtered.push(pgk);
+            continue;
+          }
+          if (typeof window.stxGrenadeGadgetRowMatchesSelectedManufacturer === 'function' &&
+            !window.stxGrenadeGadgetRowMatchesSelectedManufacturer(cgk, manGk)) continue;
+          filtered.push(pgk);
+        }
+        filtered = sortGuidedPartsByCode(filtered);
+      } else if (useSimpleFilter) {
+        var ptSlot = String(slot.partType || '');
+        if (ptSlot === '__grenadeVariant' || ptSlot === '__grenadeKitStats') ptSlot = '';
         filtered = window.filterPartsForGuided({
           category: filterCat,
           manufacturer: slotMan,
           weaponType: filterWt,
-          partType: slot.partType || ''
+          partType: ptSlot
         });
       } else {
         var all = getAllParts();
-        filtered = filterByPartType(all, slot.partType, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, category === 'Heavy Weapon' ? 'Heavy Weapon' : null);
+        var ptFb = String(slot.partType || '');
+        if (ptFb === '__grenadeVariant' || ptFb === '__grenadeKitStats') ptFb = '';
+        filtered = filterByPartType(all, ptFb, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, category === 'Heavy Weapon' ? 'Heavy Weapon' : null);
+      }
+      if (category === 'Repkit') {
+        filtered = filterRepkitGuidedSpecialParts(filtered, slot.key);
       }
       if (slot.partType !== 'Rarity' && filtered && filtered.length && !(category === 'Heavy Weapon' && slot.partType === 'Legendary Perks')) {
         filtered = sortGuidedPartsByCode(filtered);
@@ -2761,7 +2983,10 @@
       } else if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks' && filtered && filtered.length) {
         fillSelectWithLegendaryGroups(sel, filtered);
       } else {
-        fillSelect(sel, filtered, maxItems, emptyHintGear);
+        var rarityGearOpts = (slot.partType === 'Rarity')
+          ? { groupByRarity: true, manufacturer: getEffectiveManufacturerForFilter() }
+          : null;
+        fillSelect(sel, filtered, maxItems, emptyHintGear, rarityGearOpts);
       }
       if (category === 'Heavy Weapon' && (slot.partType === 'Payload' || slot.partType === 'Augment')) {
         var wrap = sel && sel.parentElement && sel.parentElement.parentElement ? sel.parentElement.parentElement : null;
@@ -2799,7 +3024,7 @@
 
   function syncGuidedVisibility() {
     var st = getGuidedState();
-    var itemType = st.itemType;
+    var itemType = normalizeGuidedItemTypeForGear(st.itemType);
     var gunWrap = byId('ccGunBuilder');
     var gearHub = byId('ccGearGuidedHub');
     var hint = byId('ccGunBuilderHint');
@@ -2995,16 +3220,46 @@
       }
       var tail = existing.slice(dbl + 2).trim();
       while (tail.charAt(0) === '|') tail = tail.replace(/^\|+\s*/, '').trim();
+      var tokens = [];
       if (tail) {
-        // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
-        var tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function(t) {
+        tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function(t) {
             var s = String(t || '').trim();
             return s && s !== '|' && s !== '||';
         });
-        
-        var normalized = normalizeGuidedTail(prefix, tokens);
-        tail = normalized;
       }
+      var pearlChk = byId('ccGuidedPearlOverride');
+      if (pearlChk && pearlChk.checked && typeof window.stxPickPearlOverrideBraceToken === 'function') {
+        var baseFamGuid = null;
+        try {
+          var mpf = prefix.match(/^\s*(\d+)\s*[,\|]/);
+          if (mpf) baseFamGuid = Number(mpf[1]);
+        } catch (_pf) {}
+        var giPo = byId('ccGuidedItemType');
+        var givPo = giPo ? String(giPo.value || '').trim() : '';
+        var isWeaponPo = givPo === 'Weapon' || givPo === 'Heavy';
+        if (Number.isFinite(baseFamGuid)) {
+          var ptOk = window.stxPickPearlOverrideBraceToken(baseFamGuid, isWeaponPo);
+          if (ptOk) {
+            var dupPo = false;
+            if (tokens.length) {
+              if (window.normalizeIdTokensForBaseFamily) {
+                try {
+                  var a0 = window.normalizeIdTokensForBaseFamily([tokens[0]], baseFamGuid);
+                  var b0 = window.normalizeIdTokensForBaseFamily([ptOk], baseFamGuid);
+                  if (a0 && a0.length && b0 && b0.length &&
+                      String(a0[0]).replace(/\s+/g,'') === String(b0[0]).replace(/\s+/g,'')) dupPo = true;
+                } catch (_e0) {}
+              }
+              if (!dupPo) {
+                dupPo = String(tokens[0] || '').replace(/\s+/g,'') === String(ptOk).replace(/\s+/g,'');
+              }
+            }
+            if (!dupPo) tokens.unshift(ptOk);
+          }
+        }
+      }
+      var normalized = tokens.length ? normalizeGuidedTail(prefix, tokens) : '';
+      tail = normalized;
       
       // Final assembly
       var finalOut = tail ? (prefix.indexOf('||') >= 0 ? prefix.trim() + ' ' + tail : prefix.trim() + ' || ' + tail) : (prefix.indexOf('||') >= 0 ? prefix.trim() : prefix.trim() + ' ||');
@@ -3130,6 +3385,19 @@
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
       });
     }
+    var guidedPearlOv = byId('ccGuidedPearlOverride');
+    if (guidedPearlOv) {
+      guidedPearlOv.addEventListener('change', function () {
+        clearGuidedImportLock();
+        try { ensureStaticGuidedIcons(); } catch (_e) {}
+        try { refreshWeaponDropdowns(); } catch (_e2) {}
+        try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_e3) {}
+        try { if (typeof window.refreshTopSelectors === 'function') window.refreshTopSelectors(); } catch (_e4) {}
+        try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_e5) {}
+        try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+        try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+      });
+    }
 
     if (window.ensurePartPools) window.ensurePartPools();
     loadGuidedManufacturers();
@@ -3172,10 +3440,13 @@
     var pool = parts || [];
     var limit = Math.min(pool.length, maxItems || 1200);
     var listForPreview = [];
+    var seenTok = Object.create(null);
     for (var i = 0; i < limit; i++) {
       var p = pool[i];
       var tok = getPartToken(p);
       if (!tok) continue;
+      if (seenTok[tok]) continue;
+      seenTok[tok] = true;
       listForPreview.push(p);
       var human = (p.name || p.legendaryName || '').trim();
       var label = compactGuidedPartLabel(p);
@@ -3189,6 +3460,7 @@
         opt.setAttribute('data-perk-name', String(perkMeta.name || human || ''));
         opt.setAttribute('data-perk-desc', String(perkMeta.description || ''));
       }
+      applyGuidedBarrelOptionDataAttrs(sel, opt, p);
       sel.appendChild(opt);
     }
     sel.__ccGuidedPartsList = listForPreview;
@@ -3347,6 +3619,7 @@
         if (tok) {
           var opt = new Option(name, tok);
           if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(px); if (t) opt.title = t; }
+          applyGuidedBarrelOptionDataAttrs(partSel, opt, px);
           partSel.appendChild(opt);
         }
       }
@@ -3446,6 +3719,7 @@
   window.refreshToolsStandaloneElementDropdowns = refreshToolsStandaloneElementDropdowns;
   window.syncGuidedVisibility = syncGuidedVisibility;
   window.refreshPartSections = refreshPartSections;
+  window.ensureStaticGuidedIcons = ensureStaticGuidedIcons;
   window.loadGuidedManufacturers = loadGuidedManufacturers;
   window.loadGuidedSkinCamo = loadGuidedSkinCamo;
   window.initGuidedExtraSections = initGuidedExtraSections;
