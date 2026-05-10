@@ -77,8 +77,9 @@
   /** Swap gold legendary augment icons for matching `dlc_rarity_pips` pearl pips when override is active. */
   function stxPearlPipUrlInsteadOfLegendaryAug(u){
     const s = String(u || '').trim();
-    if (!s || !stxIsPearlOverrideUiActive()) return s;
-    return s.replace(/\/legendary-augments\/ico_legendary_/gi, '/dlc_rarity_pips/ico_pearl_');
+    // Safety: do not rewrite icon URLs to DLC pearl pips unless your build actually ships those assets.
+    // Pearl override still affects *code output* elsewhere; this is icon-only.
+    return s;
   }
 
   try{
@@ -465,8 +466,8 @@
     /* Enhancement: NCS `body → core_augment → firmware → stat_group1` — firmware slot last among fixed rows (before “other”). */
     Enhancement: [
       {key:'body', label:'Body', partType:'Body'},
-      {key:'legendary', label:'Legendary Perks', partType:'Legendary Perks', multi:true},
-      {key:'legendary2', label:'Legendary Perk 2', partType:'Legendary Perks'},
+      {key:'legendary', label:'Legendary perks', partType:'Legendary Perks', multi:true},
+      {key:'legendary2', label:'Core / augment', partType:'Core'},
       {key:'stats', label:'Stats', partType:'Stats', multi:true},
       {key:'special', label:'Special / Unique', partType:'', multi:true},
       {key:'element', label:'Elements', partType:'Status', multi:true},
@@ -482,8 +483,8 @@
 ,
 'Class Mod': [
   {key:'perk', label:'Perks', partType:'Skill', multi:true},
-  {key:'secondary', label:'Secondary Parts', partType:'Secondary', multi:true},
   {key:'universal', label:'Universal Parts', partType:'Universal', multi:true},
+  {key:'secondary', label:'Secondary Parts', partType:'Secondary', multi:true},
   {key:'element', label:'Element Override', partType:'Element', customType:'classModElement'},
   {key:'firmware', label:'Firmware', partType:'Firmware'},
   {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
@@ -813,6 +814,10 @@
         // Repkits frequently source most tail parts from the shared `repair_kit.*` pool (family 243).
         if (!Number.isFinite(partFam)) {
           const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+          const cmVFam = stxClassModSpawnCodeVaultFamilyId(c);
+          if (Number.isFinite(cmVFam)) {
+            return `{${cmVFam}:${raw}}`;
+          }
           // Shared numeric pools (dataset rows often omit `family` — qualify by spawn-code prefix).
           // Keep `repair_kit.` at string index 0 only: manufacturer kits use `jak_repair_kit.` etc.
           if (c.indexOf('repair_kit.') === 0) {
@@ -919,6 +924,8 @@
       const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
       if (c.indexOf('repair_kit.') === 0) return 243;
       if (c.indexOf('heavy_weapon_gadget.') === 0) return 244;
+      const cmInf = stxClassModSpawnCodeVaultFamilyId(c);
+      if (Number.isFinite(cmInf)) return cmInf;
       if (c.startsWith('classmod.')) return 234;
       if (c.startsWith('enhancement.')) return 247;
       if (c.startsWith('armor_shield.')) return 237;
@@ -959,6 +966,40 @@
       }
     }catch(_e){}
     return NaN;
+  }
+
+  /**
+   * Vault-hunter TypeID from class-mod spawn code. `classmod_paladin.*` must not match the blanket `classmod.` → 234
+   * shared-pool rule (that was emitting cross-VH rows as `{234:n}` then bare `{n}`).
+   */
+  function stxClassModSpawnCodeVaultFamilyId(code){
+    try{
+      const c = String(normCode(code || '') || '').toLowerCase();
+      if (!c) return NaN;
+      const m1 = c.match(/^([a-z0-9]+)_classmod\./i);
+      if (m1 && m1[1]){
+        const k = String(m1[1] || '').replace(/[\s-]+/g, '').toLowerCase();
+        const byPrefix = {
+          vex:254, siren:254,
+          amon:255, paladin:255,
+          rafa:256, exosoldier:256, exo:256,
+          harlowe:259, gravitar:259,
+          c4sh:404, robodealer:404
+        };
+        const fam1 = Number(byPrefix[k]);
+        if (Number.isFinite(fam1)) return fam1;
+      }
+      const m2 = c.match(/^classmod_([a-z0-9]+)\./i);
+      if (m2 && m2[1]){
+        const low = String(m2[1] || '').toLowerCase();
+        if (low === 'universal' || low === 'firmware') return 234;
+        const fam2 = classModFamilyIdForCharacter(String(m2[1]).replace(/_/g, ' '));
+        if (Number.isFinite(fam2)) return fam2;
+      }
+      return NaN;
+    }catch(_e){
+      return NaN;
+    }
   }
 
   /**
@@ -1014,6 +1055,19 @@
       return rawTok;
     }
 
+    /* Class Mod: rarity + name/leg-effect rows must always serialize as `{TypeID:itemId}` so tails normalize to
+     * truncated bare `{id}` after the header family; spawn-mode spawn strings here omit the name in output. */
+    try {
+      const itUi = String(state && state.itemType || '').trim();
+      if (itUi === 'Class Mod' && p) {
+        const ptLo = String(p.partType || '').trim().toLowerCase();
+        if (ptLo === 'name+skin' || ptLo === 'rarity') {
+          const numTok = numericTokenFromPart(p);
+          if (numTok) return numTok;
+        }
+      }
+    } catch (_eCmTok) {}
+
     // Use current builder mode (Numeric or Spawn)
     // If the part was NOT imported (manually added), we strictly follow idMode.
     let result = '';
@@ -1057,7 +1111,7 @@
     // Critical safety: never emit bare "{id}" for parts that are NOT from the base family.
     // Also: Firmware should always be emitted as "{TypeID:ID}" when possible.
     try {
-      if (state.idMode && /^\{\s*\d+\s*\}$/.test(String(result || ''))) {
+      if (/^\{\s*\d+\s*\}$/.test(String(result || ''))) {
         const ptLo = String(p.partType || '').trim().toLowerCase();
         const isFirmware = ptLo === 'firmware' || /part_firmware/i.test(String(p.code || p.spawnCode || ''));
 
@@ -1145,8 +1199,10 @@
   }
 
   function normalizeIdTokensForBaseFamilyWithPrefs(tokens, baseFamily){
+    /* Same TypeID as the item → bare `{id}` after `||`; different TypeID → `{fam:id}`. Applies to all categories (not gated on idMode). */
+    const compactSame = !isForceTypeIdTokensEnabled();
     return normalizeIdTokensForBaseFamily(tokens, baseFamily, {
-      compactSameFamily: state.idMode === true && !isForceTypeIdTokensEnabled()
+      compactSameFamily: compactSame
     });
   }
 
@@ -1475,6 +1531,13 @@ function getAllParts(){
   }
 
   function isAllPartsEnabled(){
+    try {
+      const guided = typeof getGuidedContext === 'function' ? getGuidedContext() : null;
+      if (guided && guided.itemType){
+        const el = typeof document !== 'undefined' ? document.getElementById('ccGuidedAllManufacturers') : null;
+        if (el && typeof el.checked === 'boolean') return !!el.checked;
+      }
+    } catch (_e) {}
     return !!(state && state.allParts);
   }
 
@@ -1672,7 +1735,6 @@ function getAllParts(){
 
   /** Guided-dropdown art (same paths as cc-guided-builder-rebuild.js). */
   const STX_CC_WEAPON_TYPE_DIR = './assets/img/guided-dropdowns/weapon-type/';
-  const STX_ICON_MISSING_SRC = './assets/img/icon-missing.svg';
   const STX_CC_LEGENDARY_AUG_BASE = './assets/img/guided-dropdowns/legendary-augments/';
   const STX_CC_PEARL_ITEMTYPE_BASE = './assets/img/dlc_rarity_pips/';
   const STX_CC_ELEMENT_ICON_BASE = './assets/img/elements/';
@@ -1831,7 +1893,63 @@ function getAllParts(){
     return null;
   }
 
-  try { window.stxResolveUniversalClassmodPerkIconUrl = stxResolveUniversalClassmodPerkIconUrl; } catch (_e) {}
+  /** Strip combining marks so "Corazón" → "Corazon" before the ASCII-only slug step. */
+  function stxFoldDiacriticsForPerkIconKey(raw){
+    try{
+      return String(raw || '').normalize('NFD').replace(/\p{M}+/gu, '');
+    }catch(_e){
+      return String(raw || '');
+    }
+  }
+
+  /**
+   * Perk art files omit the "Vex - " / "Harlowe - " prefix; `vexchanneling` → `channeling`.
+   * Longest prefixes first so `c4sh` wins over substring collisions.
+   */
+  function stxStripVaultHunterPrefixFromClassmodPerkStem(pk){
+    const x = String(pk || '').toLowerCase().trim();
+    if (!x) return x;
+    const prefs = ['robodealer', 'exosoldier', 'harlowe', 'gravitar', 'c4sh', 'paladin', 'siren', 'amon', 'rafa', 'vex'];
+    for (let pi = 0; pi < prefs.length; pi++){
+      const pref = prefs[pi];
+      if (x.startsWith(pref) && x.length > pref.length) return x.slice(pref.length);
+    }
+    return x;
+  }
+
+  /**
+   * Map normalized perk-name keys to existing `assets/img/classmod-perks/*.png` stems
+   * (typos, UK spellings, and long autogenerated stat keys with no dedicated art).
+   */
+  function stxRemapClassmodPerkArtStem(raw){
+    const x = String(raw || '').toLowerCase().trim();
+    if (!x) return x;
+    const map = {
+      harbringer: 'harbinger',
+      judgement: 'judgment',
+      thebestdefence: 'thebestdefense',
+      statuseffectapplicationchance: 'practicalapplications',
+      devilstinered: 'devilstinesred',
+      devilstineblue: 'devilstinesblue',
+      devilstinegreen: 'devilstinesgreen',
+      fromgloamtoglow: 'fromgloamtillglow',
+      luckbearobot: 'luckless',
+      precisionengineering: 'mechanicalbrilliance',
+      lifesteal: 'essenceleech',
+      phaseclonehealthlossovertime: 'phasepocket',
+      redtreestrikemedownbroken: 'strikemedown',
+    };
+    if (map[x]) return map[x];
+    if (/defence$/i.test(x)) return x.replace(/defence$/i, 'defense');
+    return x;
+  }
+
+  try {
+    window.stxResolveUniversalClassmodPerkIconUrl = stxResolveUniversalClassmodPerkIconUrl;
+    window.stxFoldDiacriticsForPerkIconKey = stxFoldDiacriticsForPerkIconKey;
+    window.stxStripVaultHunterPrefixFromClassmodPerkStem = stxStripVaultHunterPrefixFromClassmodPerkStem;
+    window.stxRemapClassmodPerkArtStem = stxRemapClassmodPerkArtStem;
+  } catch (_e) {}
 
   /** Match cc-guided-builder `ccNormalizedWeaponTypeKey` so barrel icons align with Guided. */
   function stxNormalizedWeaponTypeKeyFromPart(p){
@@ -2103,6 +2221,13 @@ function getAllParts(){
 
   function stxInferCompTier(p){
     if (!p) return null;
+    const codeEarly = String(normCode(p.code || '') || '').toLowerCase();
+    const itsEarly = String(p.itemTypeString || '').toLowerCase();
+    const ptEarly = String(p.partType || '').trim().toLowerCase();
+    if (/comp_05_legendary/.test(codeEarly) || /comp_05_legendary/.test(itsEarly)) return 4;
+    if (/comp_06_pearlescent|comp_06_pearl/.test(codeEarly) || /pearlescent/.test(itsEarly)) return 5;
+    if (ptEarly === 'legendary perks' || ptEarly === 'legendary perk') return 4;
+
     let t = rarityTierFromItemTypeString(p.itemTypeString, p);
     if (Number.isFinite(t)) return t;
     const blob = stxCodeBlobForCompTier(p);
@@ -2344,8 +2469,27 @@ function getAllParts(){
       if (u0) return u0;
     }
 
-    const s = String(p.name || p.legendaryName || p.effects || p.effect || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '').trim();
+    const s = stxFoldDiacriticsForPerkIconKey(String(p.name || p.legendaryName || p.effects || p.effect || ''))
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/[^a-z0-9]+/g, '')
+      .trim();
     if (!s){
+      if (String(cat || catRaw || '').trim() === 'Enhancement' && schemaKeyLo){
+        const augChip = ()=> stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png');
+        if (schemaKeyLo === 'legendary2') return augChip();
+        if (schemaKeyLo === 'legendary'){
+          const ptL = String(pt||'').trim().toLowerCase();
+          if (ptL === 'core' || codeNormLo.includes('part_core_')) return augChip();
+          const u = stxItemTypeIconUrl('Enhancement');
+          if (u) return u;
+          return augChip();
+        }
+        if (schemaKeyLo === 'stats' || schemaKeyLo === 'special' || schemaKeyLo === 'element'){
+          const u = stxItemTypeIconUrl('Enhancement');
+          if (u) return u;
+        }
+      }
       if (perkishSchema || perkishDataset){
         if (cat === 'Class Mod') return STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png';
       }
@@ -2389,6 +2533,9 @@ function getAllParts(){
       if (pk === 'maximumhealthcapacity') pk = 'vitalorgans';
       if (pk === 'maximumshieldcapacity') pk = 'shieldbarriest';
       if (pk === 'movementspeed') pk = 'fasthands';
+
+      pk = stxStripVaultHunterPrefixFromClassmodPerkStem(pk);
+      pk = stxRemapClassmodPerkArtStem(pk);
 
       const universalUrl = stxResolveUniversalClassmodPerkIconUrl(pk);
       if (universalUrl) return universalUrl;
@@ -2473,10 +2620,12 @@ function getAllParts(){
       }
       if (!im.__stxTickTriedMiss){
         im.__stxTickTriedMiss = true;
-        if (STX_ICON_MISSING_SRC && String(im.src || '').indexOf(STX_ICON_MISSING_SRC) === -1){
-          im.src = STX_ICON_MISSING_SRC;
-          return;
-        }
+        try {
+          im.style.visibility = 'hidden';
+          im.style.opacity = '0';
+          im.removeAttribute('src');
+        } catch (_) {}
+        return;
       }
       im.removeEventListener('error', onImgErr);
     });
@@ -2656,22 +2805,90 @@ function getAllParts(){
     return s;
   }
 
+  function stxPearlRaritiesTable(){
+    return (typeof STX_RARITIES !== 'undefined' && Array.isArray(STX_RARITIES))
+      ? STX_RARITIES
+      : (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : []);
+  }
+
   /**
-   * Pearl rarity token to prepend after `||` when "Pearl override" is on.
-   * Weapons: best-matching pearlescent STX_RARITIES row for the header family, else `{family:51}`.
+   * Same itemId as the pearl row we want, but a family different from the header — avoids `{9:51}` compacting to `{51}`
+   * and colliding with the rarity slot when the item family is also 9.
    */
-  function stxPickPearlOverrideBraceToken(baseFamilyId, isWeapon){
-    if (!isWeapon) return STX_PEARL_OVERRIDE_FIXED_NON_WEAPON;
-    const fam = Number(baseFamilyId);
-    const table = (typeof STX_RARITIES !== 'undefined' && Array.isArray(STX_RARITIES)) ? STX_RARITIES : (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : []);
-    const cands = table.filter(r => Number.isFinite(fam) && Number(r && r.familyId) === fam && stxIsPearlTierStxRarityRow(r));
-    if (!cands.length && Number.isFinite(fam)) return `{${fam}:51}`;
+  function stxPearlForeignFamilyForPearlItemId(pearlItemId, baseFamilyId){
+    const pid = Number(pearlItemId);
+    const bf = Number(baseFamilyId);
+    if (!Number.isFinite(pid) || pid < 51 || pid > 60) return null;
+    if (!Number.isFinite(bf)) return null;
+    const table = stxPearlRaritiesTable();
+    const cands = table.filter(r =>
+      Number(r && r.familyId) !== bf &&
+      stxIsPearlTierStxRarityRow(r) &&
+      Number((r.itemId != null) ? r.itemId : r.id) === pid
+    );
+    if (!cands.length) return null;
+    cands.sort((a, b) => Number(a.familyId) - Number(b.familyId));
+    return Number(cands[0].familyId);
+  }
+
+  /** Any pearlescent brace token from a non-header family (fallback when no cross-family row shares the same itemId). */
+  function stxPearlForeignBraceTokenFromTable(baseFamilyId){
+    const bf = Number(baseFamilyId);
+    if (!Number.isFinite(bf)) return '{1:51}';
+    const table = stxPearlRaritiesTable();
+    const cands = table.filter(r => Number(r && r.familyId) !== bf && stxIsPearlTierStxRarityRow(r));
+    if (!cands.length){
+      const fallbackFam = bf === 1 ? 7 : 1;
+      return `{${fallbackFam}:51}`;
+    }
     cands.sort((a, b) => stxPearlOverrideRowScore(b) - stxPearlOverrideRowScore(a));
     const pick = cands[0];
     const itemId = Number(pick && ((pick.itemId != null) ? pick.itemId : pick.id));
     const rfam = Number(pick && pick.familyId);
     if (Number.isFinite(rfam) && Number.isFinite(itemId)) return `{${rfam}:${itemId}}`;
-    return Number.isFinite(fam) ? `{${fam}:51}` : '';
+    const fallbackFam = bf === 1 ? 7 : 1;
+    return `{${fallbackFam}:51}`;
+  }
+
+  /**
+   * If `{fam:itemId}` uses the same family as the serialized header, rewrite to a foreign-family pearl token
+   * (keep itemId when another family has that pearlescent row; otherwise pick another foreign pearl row).
+   */
+  function stxRewritePearlOverrideIfSameFamilyAsHeader(dualBraceTok, baseFamilyId){
+    const m = String(dualBraceTok || '').trim().match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (!m) return dualBraceTok;
+    const fam = Number(m[1]);
+    const id = Number(m[2]);
+    const bf = Number(baseFamilyId);
+    if (!Number.isFinite(fam) || !Number.isFinite(id) || !Number.isFinite(bf)) return dualBraceTok;
+    if (fam !== bf) return dualBraceTok;
+    if (id < 51 || id > 60) return dualBraceTok;
+    const altF = stxPearlForeignFamilyForPearlItemId(id, bf);
+    if (altF != null && Number.isFinite(altF) && altF !== fam) return `{${altF}:${id}}`;
+    return stxPearlForeignBraceTokenFromTable(bf);
+  }
+
+  /**
+   * Pearl rarity token to prepend after `||` when "Pearl override" is on.
+   * Weapons: best-matching pearlescent STX_RARITIES row for the header family, else `{family:51}`.
+   * Row family always matches the header in-table; output is rewritten to a foreign family when needed so the slot stays unambiguous.
+   */
+  function stxPickPearlOverrideBraceToken(baseFamilyId, isWeapon){
+    if (!isWeapon) return stxRewritePearlOverrideIfSameFamilyAsHeader(STX_PEARL_OVERRIDE_FIXED_NON_WEAPON, baseFamilyId);
+    const fam = Number(baseFamilyId);
+    const table = stxPearlRaritiesTable();
+    const cands = table.filter(r => Number.isFinite(fam) && Number(r && r.familyId) === fam && stxIsPearlTierStxRarityRow(r));
+    if (!cands.length && Number.isFinite(fam)){
+      return stxRewritePearlOverrideIfSameFamilyAsHeader(`{${fam}:51}`, baseFamilyId);
+    }
+    cands.sort((a, b) => stxPearlOverrideRowScore(b) - stxPearlOverrideRowScore(a));
+    const pick = cands[0];
+    const itemId = Number(pick && ((pick.itemId != null) ? pick.itemId : pick.id));
+    const rfam = Number(pick && pick.familyId);
+    if (Number.isFinite(rfam) && Number.isFinite(itemId)){
+      return stxRewritePearlOverrideIfSameFamilyAsHeader(`{${rfam}:${itemId}}`, baseFamilyId);
+    }
+    return Number.isFinite(fam) ? stxRewritePearlOverrideIfSameFamilyAsHeader(`{${fam}:51}`, baseFamilyId) : '';
   }
 
   function isStxSimplePearlOverrideChecked(){
@@ -2679,12 +2896,29 @@ function getAllParts(){
     return !!(el && el.checked);
   }
 
+  /**
+   * Pearl override tokens must stay explicitly `{family:itemId}` in output — never bare `{id}` from same-family compaction.
+   * When the pearl family equals the header family (e.g. `{9:51}` → `{51}`), rewrite to a foreign-family pearl token.
+   */
   function stxPearlOverrideNormalized(tok, baseFamilyId){
     const t = String(tok || '').trim();
     if (!t) return '';
+    const dualIn = t.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (dualIn){
+      const fam = Number(dualIn[1]);
+      const id = Number(dualIn[2]);
+      if (Number.isFinite(fam) && Number.isFinite(id)){
+        return stxRewritePearlOverrideIfSameFamilyAsHeader(`{${fam}:${id}}`, baseFamilyId);
+      }
+    }
     const bf = Number(baseFamilyId);
     const norm = normalizeIdTokensForBaseFamilyWithPrefs([t], bf);
-    return (norm && norm.length) ? String(norm[0]).trim() : t;
+    let out = (norm && norm.length) ? String(norm[0]).trim() : t;
+    const bareOut = out.match(/^\{\s*(\d+)\s*\}$/);
+    if (bareOut && Number.isFinite(bf)){
+      return stxRewritePearlOverrideIfSameFamilyAsHeader(`{${bf}:${Number(bareOut[1])}}`, baseFamilyId);
+    }
+    return out;
   }
 
   function stxPearlTokensDuplicateForOverride(a, b, baseFamilyId){
@@ -3033,6 +3267,39 @@ function getAllParts(){
     }catch(_e){ return null; }
   }
 
+  /**
+   * Vault-hunter TypeID from class-mod spawn code when `family` is missing on the part row.
+   * `classmod_paladin.*` must NOT hit the generic `classmod.*` → 234 pool rule (that caused `{234:n}` → bare `{n}` on wrong-family mods).
+   */
+  function stxClassModSpawnCodeVaultFamilyId(code){
+    try{
+      const c = String(normCode(code || '') || '').toLowerCase();
+      if (!c) return NaN;
+      const m1 = c.match(/^([a-z0-9_]+)_classmod\./);
+      if (m1 && m1[1]){
+        const k = String(m1[1]).replace(/[\s-]+/g, '');
+        const byPrefix = {
+          vex: 254, siren: 254,
+          amon: 255, paladin: 255,
+          rafa: 256, exosoldier: 256, exo: 256,
+          harlowe: 259, gravitar: 259,
+          c4sh: 404, robodealer: 404
+        };
+        const fam = Number(byPrefix[k]);
+        if (Number.isFinite(fam)) return fam;
+      }
+      const m2 = c.match(/^classmod_([a-z0-9_]+)\./i);
+      if (m2 && m2[1]){
+        const slug = String(m2[1]).replace(/_/g, ' ').trim();
+        const low = slug.toLowerCase();
+        if (low === 'universal' || low === 'firmware') return 234;
+        const fam = classModFamilyIdForCharacter(slug);
+        if (Number.isFinite(fam)) return fam;
+      }
+      return NaN;
+    }catch(_e){ return NaN; }
+  }
+
   function classModKeyForCharacter(charName){
     const raw = String(charName || '').trim().toLowerCase();
     if (!raw) return null;
@@ -3044,6 +3311,24 @@ function getAllParts(){
       c4sh: 'c4sh', robodealer: 'c4sh'
     };
     return byLower[raw] || null;
+  }
+
+  /**
+   * Dataset / legacy placeholder class-mod rows (Broken Red/Green/Blue/White, Broken??, etc.).
+   * Excluded from dropdowns, checklists, and search — not valid selectable perks/skills.
+   */
+  function stxIsBrokenClassmodDatasetPlaceholderPart(p){
+    if (!p) return false;
+    const nm = String((p.name || p.legendaryName || p.displayName) || '').trim();
+    const code = String(normCode(p.code || '') || '').toLowerCase();
+    const ef = String((p.effects || p.effect || p.effects_text || '') || '');
+    const blob = (nm + ' ' + code + ' ' + ef).toLowerCase();
+    if (/\bbroken\s*[-_]?\s*(red|green|blue|white)\b/i.test(blob)) return true;
+    if (/\bbroken[\s_]*\?{2,}/i.test(blob) || /\bbroken\?{2,}/i.test(blob.replace(/\s+/g, ''))) return true;
+    const nn = nm.toLowerCase().replace(/\s+/g, '');
+    if (/broken(red|green|blue|white)/.test(nn)) return true;
+    if (/^broken\?+$/.test(nn) || /^broken\?{3,}$/i.test(nn.replace(/\s+/g, ''))) return true;
+    return false;
   }
 
   function getLegacyClassModPartsByKind(charName, kindMatcher){
@@ -3072,7 +3357,7 @@ function getAllParts(){
         else if (k === 'perk') normalizedPartType = 'Perk';
         else if (k === 'firmware') normalizedPartType = 'Firmware';
         else if (k === 'item card') normalizedPartType = 'Rarity';
-        out.push({
+        const synth = {
           category: 'Character',
           manufacturer: 'characters',
           itemType: '',
@@ -3083,7 +3368,9 @@ function getAllParts(){
           idRaw: `${Number(fam)}:${id}`,
           family: Number(fam),
           id
-        });
+        };
+        if (stxIsBrokenClassmodDatasetPlaceholderPart(synth)) continue;
+        out.push(synth);
       }
       return out;
     }catch(_e){ return []; }
@@ -3140,6 +3427,8 @@ function getAllParts(){
     const filtered = all.filter(p => {
       const code = String((p && p.code) ? p.code : '').trim();
       const pt   = String((p && p.partType) ? p.partType : '').trim();
+
+      if (isClassMod && stxIsBrokenClassmodDatasetPlaceholderPart(p)) return false;
 
       // Exclude skins/cosmetics from the parts universe (skins are handled via the dedicated Skin dropdown)
       if (/^\{\s*27\s*:\s*\d+\s*\}$/.test(code)) return false; // weapon skin token
@@ -3363,6 +3652,7 @@ function getAllParts(){
           const pwtN = String(pwt).trim().toLowerCase();
           const wtN = String(weaponType).trim().toLowerCase();
           if ((pwtN === 'sniper' && wtN === 'sniper rifle') || (pwtN === 'sniper rifle' && wtN === 'sniper')) { /* match */ }
+          else if ((pwtN === 'smg' && wtN === 'submachine gun') || (pwtN === 'submachine gun' && wtN === 'smg')) { /* match */ }
           else if (__isHeavyWeapon){
             // Heavy Weapon parts often live under Gadget/Prefix/Rarity pools; don't drop them due to a mismatched itemType.
             // Element Switch (Maliwan) and Legendary Perks use shared pools with different weaponType - allow them.
@@ -3950,6 +4240,19 @@ function getAllParts(){
     const parts = filterParts({category:'Weapon', manufacturer: mansel});
     let wtypes = unique(parts.map(p=>p.weaponType || p.itemType).filter(Boolean));
     wtypes = wtypes.filter(w => String(w).trim().toLowerCase() !== 'weapon');
+    /* Dataset mixes "Sniper" vs "Sniper Rifle" (same gameplay row); one menu entry avoids duplicate picks. */
+    const seenWt = new Set();
+    wtypes = wtypes.map(w=>{
+      const s = String(w || '').trim();
+      const l = s.toLowerCase();
+      if (l === 'sniper' || l === 'sniper rifle') return 'Sniper Rifle';
+      if (l === 'submachine gun') return 'SMG';
+      return s;
+    }).filter(w=>{
+      if (!w || seenWt.has(w)) return false;
+      seenWt.add(w);
+      return true;
+    });
     // Ensure Heavy Weapon appears if the rarity sheet exposes it for this manufacturer.
     try{
       const rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
@@ -3968,6 +4271,10 @@ function getAllParts(){
       }
     });
     if (state.weaponType === 'Heavy') state.weaponType = 'Heavy Weapon';
+    const wtNormSel = String(state.weaponType || '').trim();
+    const wtLow = wtNormSel.toLowerCase();
+    if ((wtLow === 'sniper' || wtLow === 'sniper rifle') && wtypes.includes('Sniper Rifle')) state.weaponType = 'Sniper Rifle';
+    if ((wtLow === 'submachine gun') && wtypes.includes('SMG')) state.weaponType = 'SMG';
     if (state.weaponType && !wtypes.includes(state.weaponType)) state.weaponType = wtypes[0] || '';
     $('weaponType').value = state.weaponType || '';
     stxSyncCustomSelectIfWrapped($('weaponType'));
@@ -4939,6 +5246,49 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           partType:'Stat Modifier'
         }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
       }
+      /* Stat / Endgame: match Legendary Perks visibility — dataset splits unique barrels vs perk rows; users expect both. */
+      if (category === 'Weapon' && schemaItem && (schemaItem.key === 'statMod' || schemaItem.key === 'endgame')){
+        const barrelLegendarySM = filterParts({
+          category:'Weapon',
+          manufacturer: state.manufacturer,
+          weaponType: state.weaponType,
+          partType:'Barrel'
+        }).filter(p => stxPartCarriesLegendaryEffectWeaponFamilyBarrel(p));
+        let mergedSM = rawOpts.concat(barrelLegendarySM);
+        mergedSM = mergedSM.concat(filterParts({
+          category:'Weapon',
+          manufacturer:'',
+          weaponType:'',
+          partType:'Legendary Perks'
+        }));
+        const heavyWtSM = String(state.weaponType || '').trim().toLowerCase();
+        const isHeavyWeaponCtxSM = heavyWtSM === 'heavy weapon' || heavyWtSM === 'heavy' || stxSimpleBuilderItemTypeIsHeavyUi(state.itemType);
+        if (isHeavyWeaponCtxSM){
+          const legGadgetSM = filterParts({
+            category:'Gadget',
+            manufacturer:'',
+            weaponType:'',
+            partType: undefined
+          }).filter(p => String(p.partType || '').trim().toLowerCase() === 'legendary perks'
+            && !stxIsDatasetGrenadeGadgetSpawnCode(String(normCode(p.code || '') || '').toLowerCase()));
+          mergedSM = mergedSM.concat(legGadgetSM);
+        }
+        const seenSM = new Set();
+        mergedSM = mergedSM.filter(p=>{
+          const k = stxStableDropdownDedupeKey(p);
+          if (!k || seenSM.has(k)) return false;
+          seenSM.add(k);
+          return true;
+        });
+        mergedSM = mergedSM.filter((p)=>{
+          const pt = String(p.partType || '').trim().toLowerCase();
+          if (pt === 'rarity') return false;
+          const c = String(normCode(p.code || '') || '').toLowerCase();
+          if (/(?:^|[._])comp_0[1-6]_/.test(c) || /pearl_/.test(c) || /\.comp_/.test(c)) return false;
+          return true;
+        });
+        rawOpts = mergedSM.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+      }
       if (isShieldMainBodySlot && !rawOpts.length){
         rawOpts = filterParts({
           category,
@@ -4967,6 +5317,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       if (category === 'Class Mod' && schemaItem && schemaItem.partType === 'Skill'){
         // Match main classmod builder: class-specific skill pool from the selected character.
         const legacySkillOpts = getLegacyClassModSkillParts(state.manufacturer)
+          .filter((p)=>!stxIsBrokenClassmodDatasetPlaceholderPart(p))
           .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
         if (legacySkillOpts.length) rawOpts = legacySkillOpts;
       }
@@ -5258,13 +5609,31 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           /(?:^|[._])(element|ele)(?:[._]|$)/.test(code)
         );
       };
-      const isLegendaryLike = (p)=>{
-        const pt = String((p && p.partType) || '').trim().toLowerCase();
-        const code = String((p && p.code) || '').trim().toLowerCase();
+      /** Manufacturer core row (`part_core_*`, partType Core / augment) — NCS “core_augment” lane. */
+      const isEnhancementCoreAugmentPool = (p)=>{
         if (isRarityish(p)) return false;
-        if (pt === 'legendary perks' || pt === 'legendary perk' || pt === 'legendary') return true;
-        if (code.includes('legendary') || code.includes('unique_core')) return true;
-        return isCoreLike(p);
+        if (isFirmwareLike(p) || isStatsLike(p) || isElementLike(p)) return false;
+        const pt = String((p && p.partType) || '').trim().toLowerCase();
+        const code = String(normCode(p && p.code || '') || '').toLowerCase();
+        if (pt === 'core') return true;
+        if (code.includes('part_core_') || code.includes('.part_core_')) return true;
+        if (code.includes('core_augment')) return true;
+        if (pt === 'augment' && (code.includes('part_core') || code.includes('core_augment'))) return true;
+        return false;
+      };
+      /** Legendary / supplemental perk rows — exclude cores so this list does not duplicate Core / augment. */
+      const isEnhancementLegendaryPerkPool = (p)=>{
+        if (isRarityish(p)) return false;
+        if (isEnhancementCoreAugmentPool(p)) return false;
+        if (isFirmwareLike(p) || isStatsLike(p) || isElementLike(p)) return false;
+        const pt = String((p && p.partType) || '').trim().toLowerCase();
+        const code = String(normCode(p && p.code || '') || '').toLowerCase();
+        const nm = String((p && (p.name || p.legendaryName)) || '').toLowerCase();
+        if (pt === 'legendary perks' || pt === 'legendary perk') return true;
+        if (pt === 'legendary') return true;
+        if (code.includes('unique_core')) return true;
+        if ((code.includes('legendary') || nm.includes('legendary')) && !code.includes('part_core_')) return true;
+        return false;
       };
       const isBodyLike = (p)=>{
         const pt = String((p && p.partType) || '').trim().toLowerCase();
@@ -5275,7 +5644,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const isSpecialLike = (p)=>{
         const pt = String((p && p.partType) || '').trim().toLowerCase();
         const code = String((p && p.code) || '').trim().toLowerCase();
-        if (isRarityish(p) || isCoreLike(p) || isStatsLike(p) || isFirmwareLike(p) || isLegendaryLike(p) || isElementLike(p) || isBodyLike(p)) return false;
+        if (isRarityish(p) || isCoreLike(p) || isStatsLike(p) || isFirmwareLike(p) || isEnhancementLegendaryPerkPool(p) || isEnhancementCoreAugmentPool(p) || isElementLike(p) || isBodyLike(p)) return false;
         if (pt === 'special' || pt === 'unique' || pt === '') return true;
         if (code.includes('part_unique') || code.includes('.part_unique_') || code.includes('unique_')) return true;
         return false;
@@ -5292,8 +5661,17 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         rawOpts = sortParts(allEnhancement().filter((p)=>isRarityish(p)));
       } else if (slotKey === 'stats'){
         rawOpts = sortParts(allEnhancement().filter((p)=>isStatsLike(p) && !isRarityish(p)));
-      } else if (slotKey === 'legendary' || slotKey === 'legendary2'){
-        rawOpts = sortParts(allEnhancement().filter((p)=>isLegendaryLike(p)));
+      } else if (slotKey === 'legendary'){
+        rawOpts = sortParts(allEnhancement().filter((p)=>isEnhancementLegendaryPerkPool(p)));
+        rawOpts = rawOpts.filter((p)=>{
+          const pt = String((p && p.partType) || '').trim().toLowerCase();
+          if (pt === 'rarity') return false;
+          const c = String(normCode(p && p.code || '') || '').toLowerCase();
+          if (/(?:^|[._])comp_0[1-6]_/.test(c) || /pearl_/.test(c) || /\.comp_/.test(c)) return false;
+          return true;
+        });
+      } else if (slotKey === 'legendary2'){
+        rawOpts = sortParts(allEnhancement().filter((p)=>isEnhancementCoreAugmentPool(p)));
         rawOpts = rawOpts.filter((p)=>{
           const pt = String((p && p.partType) || '').trim().toLowerCase();
           if (pt === 'rarity') return false;
@@ -6889,7 +7267,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       };
       out.push(state.mainPart);
       seen.add(state.mainPart);
-      const cmEmitOrder = ['perk', 'secondary', 'universal', 'element', 'firmware', 'otherParts'];
+      /* After rarity/name: Element → Universal → Secondary → Perks (skills) → Firmware.
+         Keeping element before the 234-family perks lets firmware stay last but still pack with the other 234 tokens. */
+      const cmEmitOrder = ['namePart', 'element', 'universal', 'secondary', 'perk', 'firmware', 'otherParts'];
       const cmEmitted = new Set();
       for (const k of cmEmitOrder){
         cmEmitted.add(k);
@@ -6899,7 +7279,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         if (cmEmitted.has(k)) continue;
         pushVal(state.slots[k]);
       }
-      const restKeys = Object.keys(state.slots).filter(k => !schemaKeys.includes(k));
+      const restKeys = Object.keys(state.slots).filter(k => !schemaKeys.includes(k) && !cmEmitted.has(k));
       for (const k of restKeys) pushVal(state.slots[k]);
       return out.filter(Boolean);
     }
@@ -6961,6 +7341,25 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     for (const k of restKeys) pushVal(state.slots[k]);
 
     return out.filter(Boolean);
+  }
+
+  /** Harlowe + legendary: append `{27}` immediately after the name / leg-effect token (game format). */
+  function stxClassModTokensWithHarlowe27(tokens, state, cat){
+    const out = Array.isArray(tokens) ? tokens.slice() : [];
+    if (String(cat) !== 'Class Mod' || !state || !out.length) return out;
+    const manLo = String((state.classmodClass || state.manufacturer || '')).trim().toLowerCase();
+    if (manLo !== 'harlowe' && manLo !== 'gravitar') return out;
+    if (out.some(t => String(t || '').trim() === '{27}')) return out;
+    const mainT = stxRarityTierFromPartForGrouping(state.mainPart, state.manufacturer);
+    if (mainT !== 4) return out;
+    const np = state.slots && state.slots.namePart;
+    if (!np) return out;
+    const nameTok = String(tokenForPart(np) || '').trim();
+    if (!nameTok || nameTok === '[object Object]') return out;
+    const ix = out.indexOf(nameTok);
+    if (ix === -1) return out;
+    out.splice(ix + 1, 0, '{27}');
+    return out;
   }
 
   function computeOutputTokens(force){
@@ -7071,7 +7470,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     // Sort EVERYTHING by order
     finalItems.sort((a, b) => a.order - b.order);
 
-    const tokens = finalItems.map(x => String(x.tok));
+    let tokens = finalItems.map(x => String(x.tok));
     if (isStxSimplePearlOverrideChecked() && !(state.mainPart && state.mainPart.__fullDeserialized)){
       const b0 = getSelectedBaseItem();
       const bf = Number(b0 && b0.familyId);
@@ -7085,6 +7484,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         }
       }
     }
+    if (cat === 'Class Mod') tokens = stxClassModTokensWithHarlowe27(tokens, state, cat);
 
     const jsonObj = {
       category: cat,
@@ -7992,7 +8392,9 @@ function computeFullDeserializedCode(){
   if (!base) return '';
   const level = useGuided ? (Number(guided.level) || 60) : Number(state.level || 60);
 
-  const outputCategory = String(state.detectedCategory || state.itemType || '').trim();
+  /* Prefer explicit Item Type for tail packing: imports can mis-set detectedCategory to Repkit when `repair_kit.*`
+     perk rows appear on Enhancement builds — those still need `{243:[…]}` consecutive packing. */
+  const outputCategory = String(state.itemType || state.detectedCategory || '').trim();
   const orderedPartObjects = computeOrderedParts();
   const orderedParts = orderedPartObjects.map(p => tokenForPart(p) || normCode(p.code)).filter(Boolean);
   const importedExtras = Array.isArray(state.extras)
@@ -8166,8 +8568,11 @@ function computeFullDeserializedCode(){
     }
     let tail = tailParts.join(' ').trim();
     
-    // Ensure final tail ends with a single pipe
-    if (tail && !tail.endsWith('|')) tail = tail + ' |';
+    // Ensure final tail ends with a single pipe (no space before it)
+    if (tail) {
+      tail = tail.trim();
+      if (!/\|\s*$/.test(tail)) tail = tail + '|';
+    }
 
     // Optional buyback flag segment (emitted only when checked).
   const lockFirmware = !!(
@@ -8184,9 +8589,9 @@ function computeFullDeserializedCode(){
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
     out += ` 2, ${seed}||`;
     if (tail){
-      out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail} |`;
+      out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
     }
-    return out;
+    return String(out || '').replace(/\s+\|$/, '|');
   }
 
   const __partsArrRaw = outputTokens
@@ -8201,11 +8606,20 @@ function computeFullDeserializedCode(){
   // Repkits likewise use packed `{243:…}` pools; bracket compression after `||` often fails in-game (spawn rejects).
   const shieldSkipCompress = (catTail === 'Shield');
   const repkitSkipCompress = (catTail === 'Repkit');
-  const partsSection = (shieldSkipCompress || repkitSkipCompress)
-    ? __partsArr.join(' ').trim()
-    : (((state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true) ? compressFamilyRefsAll(__partsArr) : compressConsecutiveFamilyRefs(__partsArr))
+  /* Class Mod: same-base tokens are already bare `{id}` after normalize; consecutive foreign `{fam:a} {fam:b}` pack for any fam. */
+  const classModPackForeignRuns = (catTail === 'Class Mod');
+  let partsSection;
+  if (shieldSkipCompress || repkitSkipCompress) {
+    partsSection = __partsArr.join(' ').trim();
+  } else if (classModPackForeignRuns) {
+    partsSection = compressConsecutiveFamilyRefs(__partsArr)
+      .join(' ')
+      .trim();
+  } else {
+    partsSection = (((state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true) ? compressFamilyRefsAll(__partsArr) : compressConsecutiveFamilyRefs(__partsArr))
       .join(' ')
       .trim());
+  }
   const seed = getSeed(base);
   let tailPartsNw = [rarityTok, partsSection].filter(Boolean);
   if (isStxSimplePearlOverrideChecked()){
@@ -8229,10 +8643,87 @@ function computeFullDeserializedCode(){
   if (lockFirmware || buybackFlag) out += ` 9, 1|`;
   out += ` 2, ${seed}||`;
   if (tail){
-    out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail} |`;
+    out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
   }
-  return out;
+  return String(out || '').replace(/\s+\|$/, '|');
 }
+
+  /**
+   * Quick-add `{family:itemId}` tokens must merge into `state.extras` — otherwise `refreshOutputs()`
+   * regenerates `outCode` from slots alone and wipes textarea-only appends (floating panel goes stale too).
+   */
+  function stxAppendTailTokenViaExtras(rawTok){
+    let t = String(rawTok || '').trim().replace(/^"+|"+$/g, '');
+    if (/^\d+:\d+$/.test(t)) t = `{${t}}`;
+    else if (/^\d+$/.test(t)) t = `{${t}}`;
+    const isDual = /^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t);
+    const isBareId = /^\{\s*\d+\s*\}$/.test(t);
+    if (!isDual && !isBareId) return false;
+
+    clearImportedOutputLock();
+    try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+
+    state.extras = Array.isArray(state.extras) ? state.extras : [];
+    let maxOrd = 0;
+    for (const ex of state.extras){
+      const o = ex && typeof ex.order === 'number' ? ex.order : 0;
+      if (o > maxOrd) maxOrd = o;
+    }
+    state.extras.push({ tok: t, order: maxOrd + 1, type: 'quickPreset' });
+
+    refreshOutputs(true);
+    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    return true;
+  }
+  try { window.stxAppendTailTokenViaExtras = stxAppendTailTokenViaExtras; } catch (_) {}
+
+  /**
+   * Tools / preset UI: append one or more normalized `{fam:id}` or `{id}` tokens into Simple Builder `state.extras`.
+   * Plain `#outCode` edits are overwritten by `refreshOutputs()` — presets must use this path (or `stxAppendTailTokenViaExtras`).
+   */
+  function stxAppendQuickPresetNumericTokens(normalizedTokArr, opts){
+    const arr = Array.isArray(normalizedTokArr) ? normalizedTokArr : [];
+    const o = opts || {};
+    const replaceBareQuickPresets = !!o.replaceBareQuickPresets;
+    const filtered = arr.map(x => String(x || '').trim()).filter(Boolean);
+    if (!filtered.length) return false;
+    for (const t of filtered){
+      const isDual = /^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t);
+      const isBare = /^\{\s*\d+\s*\}$/.test(t);
+      if (!isDual && !isBare) return false;
+    }
+
+    clearImportedOutputLock();
+    try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+
+    state.extras = Array.isArray(state.extras) ? state.extras : [];
+    if (replaceBareQuickPresets){
+      state.extras = state.extras.filter(ex => {
+        if (!ex || typeof ex !== 'object') return true;
+        if (String(ex.type || '') !== 'quickPreset') return true;
+        const tk = String(ex.tok || '').trim();
+        return !/^\{\s*\d+\s*\}$/.test(tk);
+      });
+    }
+    let maxOrd = 0;
+    for (const ex of state.extras){
+      const ord = ex && typeof ex.order === 'number' ? ex.order : 0;
+      if (ord > maxOrd) maxOrd = ord;
+    }
+    let ord = maxOrd;
+    for (const t of filtered){
+      ord += 1;
+      state.extras.push({ tok: t, order: ord, type: 'quickPreset' });
+    }
+
+    refreshOutputs(true);
+    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    return true;
+  }
+  try { window.stxAppendQuickPresetNumericTokens = stxAppendQuickPresetNumericTokens; } catch (_) {}
+
   let __refreshOutputsPending = false;
   function refreshOutputs(force){
     if (!force && typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return;
@@ -8245,14 +8736,21 @@ function computeFullDeserializedCode(){
       const {tokens, json} = computeOutputTokens(force);
       const listBase = getSelectedBaseItem();
       const listFamily = Number(listBase && listBase.familyId);
-      const listTokensRaw = (state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true)
-        ? compressFamilyRefsAll(tokens)
-        : tokens;
+      const listIsClassMod = String(state.itemType || '').trim() === 'Class Mod';
+      let listTokensRaw;
+      if (listIsClassMod) {
+        listTokensRaw = compressConsecutiveFamilyRefs(tokens);
+      } else if (state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true) {
+        listTokensRaw = compressFamilyRefsAll(tokens);
+      } else {
+        listTokensRaw = tokens;
+      }
       
+      const listCompactSame = !isForceTypeIdTokensEnabled();
       const listTokens = normalizeIdTokensForBaseFamily(
         listTokensRaw,
         listFamily,
-        { compactSameFamily: state.idMode === true && !isForceTypeIdTokensEnabled() }
+        { compactSameFamily: listCompactSame }
       );
       
       const lockedImportedCode = (window.__LOCK_IMPORTED_OUTPUT && window.__LAST_IMPORTED_DESERIALIZED)
@@ -8282,6 +8780,16 @@ function computeFullDeserializedCode(){
       try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
       try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
       try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
+      try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+      try {
+        if (typeof window.__ccForceCustomSelectSync === 'function') {
+          ['stx_itemType', 'weaponType', 'stx_manufacturer', 'mainPart', 'rarity', 'skinSelect', 'camoSelect',
+            'ccGuidedItemType', 'ccGuidedWeaponType', 'ccGuidedManufacturer', 'ccGuidedLevel'].forEach(function (sid) {
+            var node = document.getElementById(sid);
+            if (node) window.__ccForceCustomSelectSync(node);
+          });
+        }
+      } catch (_ccFs) {}
     });
   }
 
@@ -8597,8 +9105,29 @@ function resetAll(){
     }catch(_){}
   }
 
+  /** Repair pasted tails where `{fam:[…]}` lost the opening `{` (e.g. `234:[28 27 … ]}`). Used by import + inspector. */
+  function stxNormalizeTruncatedPackedBracketTail(tail){
+    let s = String(tail || '');
+    s = s.replace(/(^|[\s|])(\d+)\s*:\s*\[\s*([^\]]*?)\s*\]\s*\}/g, (_m, sep, fam, ids) => {
+      const compact = String(ids || '').trim().replace(/\s+/g, ' ');
+      return String(sep || '') + '{' + fam + ':[' + compact + ']}';
+    });
+    s = s.replace(/(^|[\s|])(\d+)\s*:\s*\[\s*([^\]]*?)\s*\](?!\s*\})/g, (_m, sep, fam, ids) => {
+      const compact = String(ids || '').trim().replace(/\s+/g, ' ');
+      return String(sep || '') + '{' + fam + ':[' + compact + ']}';
+    });
+    return s;
+  }
+  try { window.__ccNormalizeTruncatedTailBracketTokens = stxNormalizeTruncatedPackedBracketTail; } catch (_) {}
+
   function parseImportTokenList(raw){
-    const s = String(raw || '');
+    let s = String(raw || '').trim();
+    const di = s.indexOf('||');
+    if (di >= 0){
+      s = s.slice(0, di + 2) + stxNormalizeTruncatedPackedBracketTail(s.slice(di + 2));
+    } else {
+      s = stxNormalizeTruncatedPackedBracketTail(s);
+    }
     const out = [];
     // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
     const rx = /\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^,\s]+/g;
@@ -8907,13 +9436,25 @@ function resetAll(){
         return cat === 'repkit' || c.includes('repair_kit.part_');
       });
 
+      let enhancementFromHeaderFamily = false;
+      try {
+        const fid = Number(baseFamilyFromHeader);
+        if (Number.isFinite(fid)){
+          const rr = (window.STX_RARITIES || []).find(r => Number(r.familyId || r.family) === fid);
+          enhancementFromHeaderFamily = String(rr && rr.itemType || '').trim() === 'Enhancement';
+        }
+      } catch (_){ enhancementFromHeaderFamily = false; }
+
       // Use existing `state.itemType` (from header / prior dropdown) as the primary signal.
       // Dataset internal categories for weapons can be `Prefix`/`Rarity`/`Gadget`, which
       // would break CORE_PARTTYPE_BY_CATEGORY if we blindly used `partTokens[0].p.category`.
       const itemTypeRaw = state.itemType || (partTokens[0] && partTokens[0].p && partTokens[0].p.category) || '';
       const itemTypeKey = STX_RARITY_WEAPON_ITEM_TYPES.has(itemTypeRaw) ? 'Weapon' : itemTypeRaw;
 
-      const detectedCat0 = hasRepkit ? 'Repkit' : (itemTypeKey || state.itemType || partTokens[0].p.category);
+      const itemTypeGuess = String(state.itemType || '').trim();
+      const detectedCat0 = (hasRepkit && itemTypeGuess !== 'Enhancement' && !enhancementFromHeaderFamily)
+        ? 'Repkit'
+        : (itemTypeKey || state.itemType || partTokens[0].p.category);
       const corePt0 = CORE_PARTTYPE_BY_CATEGORY[detectedCat0] || 'Base';
       const main = partTokens.map(x=>x.p).find(p => (p.partType||'') === corePt0) || partTokens[0].p;
       
@@ -9617,7 +10158,7 @@ function resetAll(){
 
     if ($('btnImport')) $('btnImport').addEventListener('click', ()=>importTokens('', 'both'));
 
-    // Simple Builder Quick Presets
+    // Simple Builder Quick Presets (`{fam:id}` rows → state.extras so serialized code + floating panel stay in sync)
     const simplePresetSel = $('simpleBuilderPresetSelect');
     const simplePresetAddBtn = $('simpleBuilderPresetAddBtn');
     if (simplePresetSel && simplePresetAddBtn) {
@@ -9625,6 +10166,7 @@ function resetAll(){
         const code = (simplePresetSel.value || '').trim();
         if (!code) return;
         try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        if (stxAppendTailTokenViaExtras(code)) return;
         if (typeof window.appendToOutCode === 'function') {
           window.appendToOutCode(code);
           return;
@@ -9636,6 +10178,7 @@ function resetAll(){
         const tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
         const nextTail = (tail ? tail + ' ' : '') + code;
         out.value = dbl >= 0 ? serial.slice(0, dbl + 2) + nextTail : (serial ? serial + ' || ' + nextTail : '|| ' + nextTail);
+        try { refreshOutputs(true); } catch (_) {}
         try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
       });
     }
@@ -9653,11 +10196,11 @@ function resetAll(){
       ['ammo', 'Ammo'],
       ['splash', 'Splash Damage'],
       ['crit', 'Crit Damage'],
-      ['splat', 'Splat'],
-      ['nova', 'Nova'],
-      ['immunity', 'Immunity'],
-      ['resistance', 'Resistance'],
-      ['elemental', 'Elemental']
+      ['splat', 'Repkit — Splat'],
+      ['nova', 'Repkit — Nova'],
+      ['immunity', 'Repkit — Immunity'],
+      ['resistance', 'Repkit — Resistance'],
+      ['elemental', 'Repkit — Elemental']
     ];
     const pools = window.PRESET_BOOST_POOLS || {};
     function tokenForPresetEntry(entry) {
@@ -9790,19 +10333,28 @@ function resetAll(){
       };
       window.computeGuidedPrefix = computeGuidedPrefix;
       window.normalizeIdTokensForBaseFamily = normalizeIdTokensForBaseFamily;
+      window.compressConsecutiveFamilyRefs = compressConsecutiveFamilyRefs;
       window.tokenForPart = tokenForPart;
       window.stxPickPearlOverrideBraceToken = stxPickPearlOverrideBraceToken;
+      window.stxPrependPearlOverrideToTailSeq = stxPrependPearlOverrideToTailSeq;
+      window.stxPearlTokensDuplicateForOverride = stxPearlTokensDuplicateForOverride;
+      window.stxPearlOverrideNormalized = stxPearlOverrideNormalized;
       window.stxIsPearlOverrideUiActive = stxIsPearlOverrideUiActive;
       window.stxPearlPipUrlInsteadOfLegendaryAug = stxPearlPipUrlInsteadOfLegendaryAug;
       window.refreshTopSelectors = refreshTopSelectors;
       window.refreshBuilder = refreshBuilder;
       window.filterPartsForGuided = filterParts;
+      window.stxSelectLogicalDedupeKey = stxSelectLogicalDedupeKey;
+      window.stxStableDropdownDedupeKey = stxStableDropdownDedupeKey;
+      window.stxPartDropdownRichnessScore = stxPartDropdownRichnessScore;
       window.stxRarityOptgroupLabelFromPart = stxRarityOptgroupLabelFromPart;
       window.stxGrenadeSpawnPrefixForUiManufacturer = stxGrenadeSpawnPrefixForUiManufacturer;
       window.stxGrenadeGadgetRowMatchesSelectedManufacturer = stxGrenadeGadgetRowMatchesSelectedManufacturer;
       window.classModFamilyIdForCharacter = classModFamilyIdForCharacter;
+      window.stxIsBrokenClassmodDatasetPlaceholderPart = stxIsBrokenClassmodDatasetPlaceholderPart;
       window.getLegacyClassModNameParts = getLegacyClassModNameParts;
       window.importTokens = importTokens;
+      window.refreshOutputs = refreshOutputs;
       window.stxPartRedTextSubForDropdown = stxPartRedTextSubForDropdown;
       window.__ccFinalizeImportToBuilders = finalizeCcImportToBuilders;
       if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();

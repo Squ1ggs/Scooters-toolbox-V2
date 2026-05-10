@@ -252,7 +252,12 @@
         var idRaw = String(p.idRaw || p.idraw || '').trim();
         if (!idRaw || !idRawSet[idRaw]) continue;
         var tok = tokFn(p);
-        if (tok) {
+        var tokStr = String(tok || '').trim();
+        if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
+          tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
+          tokStr = String(tok || '').trim();
+        }
+        if (tokStr && /^\{/.test(tokStr)) {
           var human = (p.name || p.legendaryName || '').substring(0, 40);
           var ef = String(p.effects || p.effect || '').trim();
           // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"

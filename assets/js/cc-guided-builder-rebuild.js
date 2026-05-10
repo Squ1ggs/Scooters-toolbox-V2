@@ -114,12 +114,9 @@
     }
     var s = String(u || '').trim();
     if (!s) return s;
-    try {
-      var a = document.getElementById('stxPearlOverride');
-      var b = document.getElementById('ccGuidedPearlOverride');
-      if (!((a && a.checked) || (b && b.checked))) return s;
-    } catch (_e) { return s; }
-    return s.replace(/\/legendary-augments\/ico_legendary_/gi, '/dlc_rarity_pips/ico_pearl_');
+    // Safety: do not rewrite icon URLs to DLC pearl pips unless your build ships those assets.
+    // Pearl override still affects *code output* elsewhere; this is icon-only.
+    return s;
   }
 
   var CC_GUIDED_RARITY_SELECT_IDS = {
@@ -450,6 +447,7 @@
     if (cat === 'character') cat = 'class mod';
     var fn = '';
     if (cat === 'class mod') fn = 'ico_pearl_aug_gun_classmod.png';
+    else if (cat === 'enhancement') fn = 'ico_pearl_aug_gun_classmod.png';
     else if (cat === 'grenade') fn = 'ico_pearl_aug_gun_grenade.png';
     else if (cat === 'repkit') fn = 'ico_pearl_aug_gun_repkit.png';
     else if (cat === 'shield') fn = 'ico_pearl_aug_gun_shield.png';
@@ -460,6 +458,37 @@
     }
     if (!fn) return '';
     return CC_GUIDED_PEARL_ITEMTYPE_BASE + fn;
+  }
+
+  /** When pearl override is on: explicit pearl pip art for legendaries that lack a clean spawn→icon chain (supplement rows, etc.). Keys = normalized display name (letters+digits only, lower). Values = weapon class key or `classmod`. */
+  var CC_PEARL_ICON_OVERRIDE_WEAPON_KEY_BY_NAME_NORM = {
+    conflux: 'sniper rifle',
+    eigenburst: 'shotgun',
+    handcannon: 'pistol',
+    crowdsourced: 'sniper rifle',
+    soulsurvivor: 'assault rifle',
+    crazedearl: 'smg',
+    chainreaction: 'classmod'
+  };
+
+  function ccPearlIconUrlForLegendaryNameOverride(p) {
+    if (!p) return '';
+    var candidates = [p.name, p.legendaryName, p.effects, p.effect];
+    for (var ci = 0; ci < candidates.length; ci++) {
+      var raw = String(candidates[ci] || '').trim();
+      if (!raw) continue;
+      var head = raw.split(/\s*[\-|–—]\s*/)[0].trim();
+      var tryKeys = [raw, head];
+      for (var ti = 0; ti < tryKeys.length; ti++) {
+        var k = tryKeys[ti].replace(/[^a-z0-9]/gi, '').toLowerCase();
+        if (!k || !Object.prototype.hasOwnProperty.call(CC_PEARL_ICON_OVERRIDE_WEAPON_KEY_BY_NAME_NORM, k)) continue;
+        var w = CC_PEARL_ICON_OVERRIDE_WEAPON_KEY_BY_NAME_NORM[k];
+        if (w === 'classmod') return CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_pearl_aug_gun_classmod.png';
+        var fake = { weaponType: w, category: 'Weapon', code: p.code, spawnCode: p.spawnCode };
+        return CC_GUIDED_PEARL_ITEMTYPE_BASE + ccWeaponFamilyPearlAugFilename(fake);
+      }
+    }
+    return '';
   }
 
   // Legend/pearlescent icons can be tied to base parts by name.
@@ -650,6 +679,26 @@
   function applyGuidedPartOptionIcon(sel, opt, p) {
     if (!sel || !opt || !p) return;
     var sid = String(sel.id || '');
+    try {
+      var pearlOn =
+        (typeof window.stxIsPearlOverrideUiActive === 'function' && window.stxIsPearlOverrideUiActive()) ||
+        (function () {
+          try {
+            var a = document.getElementById('stxPearlOverride');
+            var b = document.getElementById('ccGuidedPearlOverride');
+            return !!((a && a.checked) || (b && b.checked));
+          } catch (_e) {
+            return false;
+          }
+        })();
+      if (pearlOn) {
+        var namedPearl = ccPearlIconUrlForLegendaryNameOverride(p);
+        if (namedPearl) {
+          applyDataCcIconFullUrl(opt, namedPearl);
+          return;
+        }
+      }
+    } catch (_po) {}
     if (sid === 'ccRepkitBodySelect') {
       // Repkit "Body" entries are stored as partType "Base" with `*_repair_kit.part_*` codes,
       // and the dataset manufacturer is often "gadgets". Use the code prefix to pick the right icon.
@@ -941,10 +990,17 @@
       }
     }
 
-    if (/pearl/i.test(String(p.stats || ''))) {
+    // Only mark (Pearl) when the row is truly pearl/pearlescent — avoid false positives from stats text.
+    (function () {
+      var codeL = String(unquoted || '').toLowerCase();
+      var isPearl =
+        (/part_pearl/i.test(codeL)) ||
+        (/(?:^|[._])comp_06_pearlescent/.test(codeL)) ||
+        (typeof ccPartMatchesPearlRarityAllowlist === 'function' && ccPartMatchesPearlRarityAllowlist(p));
+      if (!isPearl) return;
       var lineSoFar = bits.join(' · ');
       if (lineSoFar.indexOf('(Pearl)') === -1) bits.push('(Pearl)');
-    }
+    })();
     if (id) {
       var idNorm = String(id).replace(/\s+/g, ' ').trim();
       if (/^\d+\s*:\s*\d+$/.test(idNorm)) {
@@ -1415,6 +1471,55 @@
     return Object.prototype.hasOwnProperty.call(m, L) ? m[L] : 50;
   }
 
+  /** Collapse duplicate dataset rows ({9} vs {267:9}); prefer richer rows for icons / labels (matches Simple Builder). */
+  function dedupePartsForGuidedSelect(parts) {
+    if (!parts || !parts.length) return parts || [];
+    var normC = function (p) {
+      return String((p && p.code) ? p.code : '').toLowerCase().replace(/^["']|["']$/g, '');
+    };
+    var richness = function (p) {
+      if (typeof window.stxPartDropdownRichnessScore === 'function') {
+        return window.stxPartDropdownRichnessScore(p);
+      }
+      var s = 0;
+      var ir = String((p && (p.idRaw != null ? p.idRaw : p.idraw)) || '').trim();
+      if (/^\d+\s*:\s*\d+$/.test(ir)) s += 8;
+      else if (ir) s += 2;
+      if (String(p && p.name || '').trim()) s += 1;
+      if (String((p && p.code) || '').trim()) s += 1;
+      return s;
+    };
+    var sorted = parts.slice().sort(function (a, b) {
+      var rd = richness(b) - richness(a);
+      if (rd) return rd;
+      return normC(a).localeCompare(normC(b), undefined, { numeric: true });
+    });
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < sorted.length; i++) {
+      var p = sorted[i];
+      var key = '';
+      if (typeof window.stxSelectLogicalDedupeKey === 'function') {
+        key = window.stxSelectLogicalDedupeKey(p) || '';
+      }
+      if (!key && typeof window.stxStableDropdownDedupeKey === 'function') {
+        key = window.stxStableDropdownDedupeKey(p) || '';
+      }
+      if (key) {
+        if (seen[key]) continue;
+        seen[key] = true;
+        out.push(p);
+        continue;
+      }
+      var tok = getPartToken(p);
+      if (!tok) continue;
+      if (seen[tok]) continue;
+      seen[tok] = true;
+      out.push(p);
+    }
+    return out;
+  }
+
   function fillSelect(sel, parts, maxItems, emptyHint, fillOpts) {
     if (!sel) return;
     fillOpts = fillOpts || {};
@@ -1422,9 +1527,12 @@
     var manHint = String(fillOpts.manufacturer || '').trim();
     var prevValue = String((sel.value != null ? sel.value : '') || '').trim();
     var preferredValue = String((sel.__ccPreferredToken != null ? sel.__ccPreferredToken : prevValue) || '').trim();
+    /* Logical dedupe ({9} vs {267:9}) is opt-in: global dedupe can drop icon-rich rows and hurt dropdown art. */
+    var dedupeLogical = !!(fillOpts && fillOpts.logicalDedupe);
+    var partsList = dedupeLogical ? dedupePartsForGuidedSelect(parts || []) : (parts || []);
     
     // Check if parts list has actually changed to avoid redundant DOM work
-    var partsHash = (parts && parts.length) ? (parts.length + ':' + (parts[0] ? (parts[0].code || parts[0].name) : '')) : '0';
+    var partsHash = (partsList && partsList.length) ? (partsList.length + ':' + (partsList[0] ? (partsList[0].code || partsList[0].name) : '')) : '0';
     if (groupByRarity) partsHash = 'rfl:' + manHint + ':' + partsHash;
     if (sel.__lastPartsHash === partsHash && !sel.dataset.forceRebuild) {
         // Still need to ensure value is synced if preferredValue changed externally
@@ -1440,22 +1548,13 @@
     sel.appendChild(new Option('-- None / N/A --', ''));
     var listForPreview = [];
     var seenTok = {};
-    var plen = (parts && parts.length) ? parts.length : 0;
+    var plen = (partsList && partsList.length) ? partsList.length : 0;
     var limit = Math.min(plen, maxItems || 300);
     
     if (groupByRarity) {
-      var dedupedRg = [];
-      var seenRg = {};
-      for (var di = 0; di < plen; di++) {
-        var pRg = parts[di];
-        var tRg = getPartToken(pRg);
-        if (!tRg || seenRg[tRg]) continue;
-        seenRg[tRg] = true;
-        dedupedRg.push(pRg);
-      }
       var groupsRg = {};
-      for (var gi = 0; gi < dedupedRg.length; gi++) {
-        var pGlx = dedupedRg[gi];
+      for (var gi = 0; gi < plen; gi++) {
+        var pGlx = partsList[gi];
         var gLbl = window.stxRarityOptgroupLabelFromPart(pGlx, manHint) || 'Unknown';
         if (!groupsRg[gLbl]) groupsRg[gLbl] = [];
         groupsRg[gLbl].push(pGlx);
@@ -1492,7 +1591,7 @@
     } else {
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < limit; i++) {
-      var p = parts[i];
+      var p = partsList[i];
       var tok = getPartToken(p);
       if (!tok) continue;
       if (seenTok[tok]) continue;
@@ -2233,6 +2332,177 @@
     }
     return out;
   }
+
+  /** Lowercase spawn code for tail-token lookup (matches `normCode` strip-quotes behavior). */
+  function guidedTailNormSpawnKey(raw) {
+    var s = String(raw || '').trim();
+    if (s.length >= 2 && s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') s = s.slice(1, -1);
+    return s.trim().toLowerCase();
+  }
+
+  function guidedTailNumericItemIdFromPart(p) {
+    if (!p) return NaN;
+    if (Number.isFinite(Number(p.id))) return Number(p.id);
+    var ir = String((p.idRaw || p.idraw || '') || '').trim();
+    var m = ir.match(/:\s*(\d+)\s*$/);
+    if (m) return Number(m[1]);
+    var m2 = ir.match(/^(\d+)\s*:\s*(\d+)$/);
+    return m2 ? Number(m2[2]) : NaN;
+  }
+
+  function guidedTailFamilyFromPart(p) {
+    if (!p) return NaN;
+    if (Number.isFinite(Number(p.familyId))) return Number(p.familyId);
+    if (Number.isFinite(Number(p.family))) return Number(p.family);
+    var ir = String((p.idRaw || p.idraw || '') || '').trim();
+    var m = ir.match(/^(\d+)\s*:/);
+    return m ? Number(m[1]) : NaN;
+  }
+
+  /**
+   * Index ALL_PARTS so guided tail tokens resolve to dataset rows (Class Mod bucket classification).
+   */
+  function buildGuidedClassModTailPartLookup() {
+    var byLower = Object.create(null);
+    var getAll = typeof window.getAllParts === 'function' ? window.getAllParts : null;
+    var all = getAll ? getAll() : [];
+    if (!Array.isArray(all)) return byLower;
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      var raw = String((p.code || p.spawnCode || p.importCode || '') || '').trim();
+      if (!raw) continue;
+      var k = guidedTailNormSpawnKey(raw);
+      if (k) byLower[k] = p;
+      var ir = String((p.idRaw || p.idraw || '') || '').trim().replace(/\s+/g, '');
+      if (/^\d+:\d+$/.test(ir)) {
+        var ps = ir.split(':');
+        var fk = Number(ps[0]);
+        var ik = Number(ps[1]);
+        if (Number.isFinite(fk) && Number.isFinite(ik)) {
+          byLower[('{' + fk + ':' + ik + '}').toLowerCase()] = p;
+        }
+      }
+    }
+    return byLower;
+  }
+
+  function findGuidedClassModPartForTailToken(tok, baseFam, byLower, allParts) {
+    var s = String(tok || '').trim();
+    var sLow = s.toLowerCase();
+    if (byLower[sLow]) return byLower[sLow];
+    if (s.length >= 2 && s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') {
+      var inner = guidedTailNormSpawnKey(s);
+      if (inner && byLower[inner]) return byLower[inner];
+    }
+    var mq = s.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (mq) {
+      var key = ('{' + Number(mq[1]) + ':' + Number(mq[2]) + '}').toLowerCase();
+      if (byLower[key]) return byLower[key];
+    }
+    var mb = s.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+    if (mb) {
+      var nums = String(mb[2] || '').match(/\d+/g);
+      if (nums && nums.length) {
+        var fk = Number(mb[1]);
+        var fid = Number(nums[0]);
+        var kb = ('{' + fk + ':' + fid + '}').toLowerCase();
+        if (byLower[kb]) return byLower[kb];
+      }
+    }
+    var mbare = s.match(/^\{\s*(\d+)\s*\}$/);
+    if (mbare && Number.isFinite(baseFam)) {
+      var bid = Number(mbare[1]);
+      if (!Array.isArray(allParts)) return null;
+      for (var j = 0; j < allParts.length; j++) {
+        var q = allParts[j];
+        if (!q) continue;
+        var pf = guidedTailFamilyFromPart(q);
+        var qi = guidedTailNumericItemIdFromPart(q);
+        if (pf === baseFam && qi === bid) return q;
+      }
+      var kb2 = ('{' + baseFam + ':' + bid + '}').toLowerCase();
+      if (byLower[kb2]) return byLower[kb2];
+    }
+    return null;
+  }
+
+  /** Dataset-derived bucket rank; lower runs earlier in tail (aligned with Simple `cmEmitOrder`). */
+  function rankFromClassModPartOrUnknown(p) {
+    if (!p) return null;
+    var pt = String((p.partType || p.kind || '') || '').trim().toLowerCase();
+    var raw = String((p.code || p.spawnCode || '') || '').trim();
+    var codeL = guidedTailNormSpawnKey(raw);
+    if (pt === 'firmware' && codeL.indexOf('part_firmware') !== -1) return 580;
+    // Keep element before 234-family perk runs so firmware can pack with them at the end.
+    if (pt === 'element') return 250;
+    if (pt === 'skill') return 500;
+    if (pt === 'perk') {
+      if (codeL.indexOf('statspecial') !== -1) return 200;
+      if (/(^|[._])stat2([._]|$)/.test(codeL)) return 400;
+      return 300;
+    }
+    if (pt === 'rarity' || pt === 'item card') return 200;
+    if (pt.indexOf('name+skin') === 0) return 200;
+    if (pt === 'body') return 200;
+    return null;
+  }
+
+  /**
+   * Canonical Class Mod tail — Universal → Secondary → Perks (skills) → Element → Firmware — regardless of Add click order.
+   * Runs before `compressConsecutiveFamilyRefs` so same-family runs pack correctly within each bucket.
+   */
+  function reorderClassModGuidedTail(tokens, baseFam) {
+    var src = Array.isArray(tokens) ? tokens : [];
+    if (!src.length) return src;
+    var bf = Number(baseFam);
+    var getAll = typeof window.getAllParts === 'function' ? window.getAllParts : null;
+    var allParts = getAll ? getAll() : [];
+    var byLower = buildGuidedClassModTailPartLookup();
+    var decorated = [];
+    for (var i = 0; i < src.length; i++) {
+      var tok = src[i];
+      var s = String(tok || '').trim();
+      var rank = 200;
+      if (!s) continue;
+
+      if (typeof window.isSkinTokenCandidate === 'function') {
+        try {
+          if (window.isSkinTokenCandidate(tok)) rank = 100;
+        } catch (_) {}
+      }
+      if (rank === 200 && s.indexOf('|') !== -1 && /["']?\s*c\s*["']?\s*,\s*\d+/i.test(s)) {
+        rank = 900;
+      }
+
+      if (rank === 200 && ELEMENTS && ELEMENTS.length) {
+        var sl = s.toLowerCase();
+        for (var ei = 0; ei < ELEMENTS.length; ei++) {
+          var ec = String(ELEMENTS[ei] && ELEMENTS[ei].code || '').trim().toLowerCase();
+          if (ec && sl === ec) {
+            rank = 250;
+            break;
+          }
+        }
+      }
+
+      if (rank === 200) {
+        var pr = findGuidedClassModPartForTailToken(tok, bf, byLower, allParts);
+        var rr = rankFromClassModPartOrUnknown(pr);
+        if (rr != null) rank = rr;
+      }
+
+      decorated.push({ tok: tok, rank: rank, idx: i });
+    }
+    decorated.sort(function (a, b) {
+      if (a.rank !== b.rank) return a.rank - b.rank;
+      return a.idx - b.idx;
+    });
+    var out = [];
+    for (var k = 0; k < decorated.length; k++) out.push(decorated[k].tok);
+    return out;
+  }
+
   function normalizeGuidedTail(prefixStr, tokens) {
     if (!tokens || !tokens.length) return '';
     // Item family always comes from the header (e.g. "13, 0, 1, 60| … ||"), not from the first {fam:id} in the tail.
@@ -2249,6 +2519,22 @@
       try { norm = window.normalizeIdTokensForBaseFamily(tokens, baseFamily); } catch (_) { norm = null; }
     }
     if (!Array.isArray(norm)) norm = normalizeGuidedIdTokensLocal(tokens, baseFamily);
+
+    var guidedCm = false;
+    try {
+      var elItCm = document.getElementById('ccGuidedItemType');
+      guidedCm = !!(elItCm && /^class\s*mod$/i.test(String(elItCm.value || '').trim()));
+    } catch (_) {}
+
+    if (Array.isArray(norm) && guidedCm) {
+      try { norm = reorderClassModGuidedTail(norm, baseFamily); } catch (_) {}
+    }
+
+    if (Array.isArray(norm) && typeof window.compressConsecutiveFamilyRefs === 'function') {
+      if (guidedCm) {
+        try { norm = window.compressConsecutiveFamilyRefs(norm); } catch (_) {}
+      }
+    }
     return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
   }
   function isRarityToken(tok) {
@@ -2338,7 +2624,7 @@
 
     var newTail = normalizeGuidedTail(prefixStr, tokens);
     // Ensure we don't have double pipes and that the tail ends correctly
-    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + ' |';
+    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + '|';
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
     out.value = newSerial;
     try {
@@ -2348,10 +2634,14 @@
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
   }
+  /** Tools / rebuild quick-add paths call `window.appendToOutCode`; delegate here when target is Guided output. */
+  try { window.appendToOutCodeGuided = appendToOutCode; } catch (_) {}
 
   /** Match tail tokens for grouping / remove-one (family:id vs quoted code). */
   function normTailTokenKey(t) {
     var u = String(t || '').trim().replace(/^"+|"+$/g, '');
+    var bk = u.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+    if (bk) return bk[1] + ':[' + bk[2].trim().replace(/\s+/g, ' ') + ']';
     var m = u.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
     if (m) return m[1] + ':' + m[2];
     m = u.match(/^\{\s*(\d+)\s*\}$/);
@@ -2373,6 +2663,11 @@
     var dbl = serial.indexOf('||');
     var prefixStr = dbl >= 0 ? serial.slice(0, dbl).trim() : '';
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
+    try {
+      if (typeof window.__ccNormalizeTruncatedTailBracketTokens === 'function') {
+        tail = window.__ccNormalizeTruncatedTailBracketTokens(tail);
+      }
+    } catch (_) {}
     var guidedItem = byId('ccGuidedItemType');
     var isGuided = (guidedItem && (guidedItem.value || '').trim());
     if (isGuided && !prefixStr) {
@@ -2405,7 +2700,7 @@
       tokens.push(tok);
     }
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + ' |';
+    if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + '|';
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
     out.value = newSerial;
     try {
@@ -2790,7 +3085,7 @@
       } else {
         var rarityFillOptsW = (slot.partType === 'Rarity')
           ? { groupByRarity: true, manufacturer: getEffectiveManufacturerForFilter() }
-          : null;
+          : (slot.key === 'body' ? { logicalDedupe: true } : null);
         fillSelect(sel, filtered, maxItems, emptyHintWeapon, rarityFillOptsW);
       }
       var fc = (filtered && filtered.length) ? filtered.length : 0;
@@ -2860,11 +3155,10 @@
     ],
     Enhancement: [],
     'Class Mod': [
-      { key: 'namePart', label: 'Prefix Part', partType: 'Name+Skin', selectId: 'ccClassModPrefixSelect', btnId: 'ccClassModPrefixAdd' },
-      { key: 'universal', label: 'Universal Parts', partType: 'Universal', selectId: 'ccClassModUniversalSelect', btnId: 'ccClassModUniversalAdd' },
       { key: 'perk', label: 'Perks', partType: 'Skill', selectId: 'ccClassModPerkSelect', btnId: 'ccClassModPerkAdd' },
-      { key: 'element', label: 'Element Override', partType: 'Element', selectId: 'ccClassModElementSelect', btnId: 'ccClassModElementAdd' },
+      { key: 'universal', label: 'Universal Parts', partType: 'Universal', selectId: 'ccClassModUniversalSelect', btnId: 'ccClassModUniversalAdd' },
       { key: 'secondary', label: 'Secondary Parts', partType: 'Secondary', selectId: 'ccClassModSecondarySelect', btnId: 'ccClassModSecondaryAdd' },
+      { key: 'element', label: 'Element Override', partType: 'Element', selectId: 'ccClassModElementSelect', btnId: 'ccClassModElementAdd' },
       { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccClassModFirmwareSelect', btnId: 'ccClassModFirmwareAdd' }
     ],
     'Heavy Weapon': [
@@ -3163,6 +3457,13 @@
         var levEl = byId('level') || byId('level2');
         if (levEl && Number(levEl.value || 0) !== lv) levEl.value = String(lv);
       }
+      try {
+        if (typeof window.__ccForceCustomSelectSync === 'function') {
+          [gi, gm, gw, si, sm, wt].forEach(function (node) {
+            if (node) window.__ccForceCustomSelectSync(node);
+          });
+        }
+      } catch (_) {}
     }
     window.syncGuidedToSimple = syncGuidedToSimple;
     function refreshGuidedOutput() {
@@ -3171,6 +3472,15 @@
       
       // If we are currently hydrating, don't clear or update yet to avoid wiping imported values
       if (window.__ccIsHydrating) return;
+
+      /* Enhancement checklist owns #guidedOutputDeserialized (manufacturer-specific header). Do not replace it with computeGuidedPrefix() weapon-style headers or pearl normalization. */
+      var guidedItEnh = byId('ccGuidedItemType');
+      if (guidedItEnh && String(guidedItEnh.value || '').trim() === 'Enhancement') {
+        try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        return;
+      }
       
       var existing = (deserEl.value || '').trim();
       // Safety: If current value is exactly the protected imported value, don't clear it or mangle it.
@@ -3184,6 +3494,7 @@
                   if (b85) serialEl.value = String(b85).trim();
                } catch(_) {}
             }
+            try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
             return;
          }
       }
@@ -3197,6 +3508,7 @@
            if (serialEl) serialEl.value = '';
            try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
         }
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
         return;
       }
       var dbl = existing.indexOf('||');
@@ -3214,8 +3526,9 @@
         } else {
            deserEl.value = (prefix.indexOf('||') >= 0) ? prefix.trim() : (prefix.trim() + ' ||');
         }
-        if (deserEl.value && !/\|\s*$/.test(deserEl.value.trim())) deserEl.value = deserEl.value.trim() + ' |';
+        if (deserEl.value && !/\|\s*$/.test(deserEl.value.trim())) deserEl.value = deserEl.value.trim() + '|';
         try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
         return;
       }
       var tail = existing.slice(dbl + 2).trim();
@@ -3228,42 +3541,50 @@
         });
       }
       var pearlChk = byId('ccGuidedPearlOverride');
-      if (pearlChk && pearlChk.checked && typeof window.stxPickPearlOverrideBraceToken === 'function') {
-        var baseFamGuid = null;
-        try {
-          var mpf = prefix.match(/^\s*(\d+)\s*[,\|]/);
-          if (mpf) baseFamGuid = Number(mpf[1]);
-        } catch (_pf) {}
-        var giPo = byId('ccGuidedItemType');
-        var givPo = giPo ? String(giPo.value || '').trim() : '';
-        var isWeaponPo = givPo === 'Weapon' || givPo === 'Heavy';
-        if (Number.isFinite(baseFamGuid)) {
-          var ptOk = window.stxPickPearlOverrideBraceToken(baseFamGuid, isWeaponPo);
-          if (ptOk) {
-            var dupPo = false;
-            if (tokens.length) {
-              if (window.normalizeIdTokensForBaseFamily) {
-                try {
-                  var a0 = window.normalizeIdTokensForBaseFamily([tokens[0]], baseFamGuid);
-                  var b0 = window.normalizeIdTokensForBaseFamily([ptOk], baseFamGuid);
-                  if (a0 && a0.length && b0 && b0.length &&
-                      String(a0[0]).replace(/\s+/g,'') === String(b0[0]).replace(/\s+/g,'')) dupPo = true;
-                } catch (_e0) {}
-              }
-              if (!dupPo) {
-                dupPo = String(tokens[0] || '').replace(/\s+/g,'') === String(ptOk).replace(/\s+/g,'');
-              }
-            }
-            if (!dupPo) tokens.unshift(ptOk);
-          }
-        }
+      var baseFamGuid = null;
+      try {
+        var mpf = prefix.match(/^\s*(\d+)\s*[,\|]/);
+        if (mpf) baseFamGuid = Number(mpf[1]);
+      } catch (_pf) {}
+      var giPo = byId('ccGuidedItemType');
+      var gwtPo = byId('ccGuidedWeaponType');
+      var givPo = giPo ? String(giPo.value || '').trim() : '';
+      var gwvPo = gwtPo ? String(gwtPo.value || '').trim() : '';
+      var isWeaponPo = givPo === 'Weapon' || givPo === 'Heavy Weapon' || givPo === 'Gadget' || givPo === 'Heavy' ||
+        (givPo === 'Weapon' && /^heavy(?:\s*weapon)?$/i.test(gwvPo));
+
+      function parseGuidedTailTokenStrings(tailStr) {
+        if (!tailStr) return [];
+        return (String(tailStr).match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
+          var s = String(t || '').trim();
+          return s && s !== '|' && s !== '||';
+        });
       }
+
+      var ptOk = '';
+      if (pearlChk && pearlChk.checked && typeof window.stxPickPearlOverrideBraceToken === 'function' && Number.isFinite(baseFamGuid)) {
+        ptOk = String(window.stxPickPearlOverrideBraceToken(baseFamGuid, !!isWeaponPo) || '').trim();
+      }
+      if (ptOk && typeof window.stxPearlTokensDuplicateForOverride === 'function') {
+        var filteredTok = [];
+        for (var _ti = 0; _ti < tokens.length; _ti++) {
+          if (!window.stxPearlTokensDuplicateForOverride(tokens[_ti], ptOk, baseFamGuid)) filteredTok.push(tokens[_ti]);
+        }
+        tokens = filteredTok;
+      }
+
       var normalized = tokens.length ? normalizeGuidedTail(prefix, tokens) : '';
       tail = normalized;
+
+      if (ptOk && typeof window.stxPrependPearlOverrideToTailSeq === 'function') {
+        var tailTok = parseGuidedTailTokenStrings(tail);
+        tailTok = window.stxPrependPearlOverrideToTailSeq(tailTok, ptOk, baseFamGuid);
+        tail = tailTok.length ? tailTok.join(' ') : '';
+      }
       
       // Final assembly
       var finalOut = tail ? (prefix.indexOf('||') >= 0 ? prefix.trim() + ' ' + tail : prefix.trim() + ' || ' + tail) : (prefix.indexOf('||') >= 0 ? prefix.trim() : prefix.trim() + ' ||');
-      if (finalOut && !/\|\s*$/.test(finalOut.trim())) finalOut = finalOut.trim() + ' |';
+      if (finalOut && !/\|\s*$/.test(finalOut.trim())) finalOut = finalOut.trim() + '|';
       
     // If the final assembly would result in data loss compared to an imported value, abort
     if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue && existing.length > finalOut.length && existing.indexOf('||') >= 0) {
@@ -3292,6 +3613,7 @@
     }
       try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
       try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
     }
     window.refreshGuidedOutput = refreshGuidedOutput;
     function clearCodeSectionsForNewItem() {
@@ -3360,6 +3682,7 @@
     if (allMansToggle) {
       allMansToggle.addEventListener('change', function () {
         syncGuidedVisibility();
+        try { if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns(); } catch (_) {}
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
       });
     }
@@ -3479,6 +3802,11 @@
       var s = PART_SECTIONS[i];
       var sel = byId(s.selectId);
       var pool = window[s.poolKey];
+      if (s.poolKey === 'CLASSMOD_PARTS' && typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === 'function') {
+        pool = (pool || []).filter(function (p) {
+          try { return !window.stxIsBrokenClassmodDatasetPlaceholderPart(p); } catch (_e) { return true; }
+        });
+      }
       fillPartSectionSelect(sel, pool || [], 1200);
     }
     refreshToolsStandaloneElementDropdowns();
@@ -3559,17 +3887,8 @@
     }
   }
 
-  /* Preset categories and parts from reference ScootersToolbox.html (BOOST_POOLS) */
-  var PRESET_CATEGORIES = [
-    { key: 'damage', label: 'Damage' },
-    { key: 'accuracy', label: 'Accuracy' },
-    { key: 'reload', label: 'Reload Speed' },
-    { key: 'firerate', label: 'Fire Rate' },
-    { key: 'ammo', label: 'Ammo' },
-    { key: 'splash', label: 'Splash Damage' },
-    { key: 'crit', label: 'Crit Damage' }
-  ];
-  var PRESET_BOOST_POOLS = {
+  /* Preset categories — pools come from `window.PRESET_BOOST_POOLS` (cc-rebuild-populate.js), incl. Repkit 243:* rows. */
+  var PRESET_BOOST_POOLS_FALLBACK = {
     damage: [{ key: 22, value: '72' }, { key: 9, value: '28' }, { key: 9, value: '32' }, { key: 9, value: '40' }, { key: 9, value: '55' }, { key: 9, value: '59' }, { key: 9, value: '62' }, { key: 9, value: '68' }],
     accuracy: [{ key: 13, value: '12' }, { key: 9, value: '48' }],
     reload: [{ key: 24, value: '44' }, { key: 9, value: '61' }],
@@ -3578,13 +3897,35 @@
     splash: [{ key: 6, value: '33' }, { key: 9, value: '89' }, { key: 24, value: '18' }],
     crit: [{ key: 3, value: '6' }, { key: 24, value: '33' }]
   };
+  function getGuidedPresetBoostPools() {
+    var w = window.PRESET_BOOST_POOLS;
+    if (w && typeof w === 'object') return w;
+    return PRESET_BOOST_POOLS_FALLBACK;
+  }
+  var PRESET_CATEGORIES = [
+    { key: 'damage', label: 'Damage' },
+    { key: 'accuracy', label: 'Accuracy' },
+    { key: 'reload', label: 'Reload Speed' },
+    { key: 'firerate', label: 'Fire Rate' },
+    { key: 'ammo', label: 'Ammo' },
+    { key: 'splash', label: 'Splash Damage' },
+    { key: 'crit', label: 'Crit Damage' },
+    { key: 'splat', label: 'Repkit — Splat' },
+    { key: 'nova', label: 'Repkit — Nova' },
+    { key: 'immunity', label: 'Repkit — Immunity' },
+    { key: 'resistance', label: 'Repkit — Resistance' },
+    { key: 'elemental', label: 'Repkit — Elemental' }
+  ];
 
   function loadGuidedPresetCategories() {
     var sel = byId('ccGuidedPresetCategorySelect');
     if (!sel) return;
+    var pools = getGuidedPresetBoostPools();
     sel.innerHTML = '<option value="">-- Select category --</option>';
     for (var i = 0; i < PRESET_CATEGORIES.length; i++) {
       var c = PRESET_CATEGORIES[i];
+      var pool = pools[c.key];
+      if (!Array.isArray(pool) || !pool.length) continue;
       sel.appendChild(new Option(c.label, c.key));
     }
   }
@@ -3596,7 +3937,8 @@
     var catKey = (catSel.value || '').trim();
     partSel.innerHTML = '<option value="">-- Select preset --</option>';
     if (!catKey) return;
-    var pool = PRESET_BOOST_POOLS[catKey];
+    var pools = getGuidedPresetBoostPools();
+    var pool = pools[catKey];
     if (!Array.isArray(pool) || pool.length === 0) return;
     try {
       var parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];

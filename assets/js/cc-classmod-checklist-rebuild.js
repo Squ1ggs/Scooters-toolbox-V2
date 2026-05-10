@@ -10,6 +10,8 @@
   var CM_ROWS_PER_PAGE = 10;
   var cmListPageState = { cmPrimaryList: 0, cmSecondaryList: 0, cmUniversalList: 0, cmFirmwareList: 0 };
   var cmSkillQtyState = {};
+  /** >0 while mutating many checklist rows — skips per-row refreshOutputs for responsiveness */
+  var cmBulkSuppressDepth = 0;
   var FAMILY_BY_KEY = { vex: 254, amon: 255, rafa: 256, harlowe: 259, c4sh: 404, robodealer: 404, universal: 234, firmware: 234 };
   /** Must match #classmodChecklistSection / #classmodQuickChecklistSection `.cm-checklist--resize-master` CSS. */
   var CM_CHECKLIST_PAIR_MIN_PX = 240;
@@ -138,10 +140,14 @@
   };
 
   function normalizePerkNameForMeta(name) {
+    var raw = String(name || '');
+    try {
+      if (typeof raw.normalize === 'function') raw = raw.normalize('NFD').replace(/\p{M}+/gu, '');
+    } catch (_) {}
     if (typeof window.__normalizePerkName === 'function') {
-      try { return String(window.__normalizePerkName(name) || ''); } catch (_) {}
+      try { return String(window.__normalizePerkName(raw) || ''); } catch (_) {}
     }
-    return String(name || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '').trim();
+    return String(raw || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '').trim();
   }
 
   function getClassmodPerkMetaByName(name) {
@@ -245,12 +251,18 @@
     function pushSpeculativeUrls(stem) {
       var s = normalizePerkNameForMeta(stem);
       if (!s) return;
+      if (typeof window.stxStripVaultHunterPrefixFromClassmodPerkStem === 'function') {
+        try { s = window.stxStripVaultHunterPrefixFromClassmodPerkStem(s) || s; } catch (_) {}
+      }
+      if (typeof window.stxRemapClassmodPerkArtStem === 'function') {
+        try { s = window.stxRemapClassmodPerkArtStem(s) || s; } catch (_) {}
+      }
 
       var uni = typeof window.stxResolveUniversalClassmodPerkIconUrl === 'function' ? window.stxResolveUniversalClassmodPerkIconUrl(s) : null;
       if (uni) out.push(uni);
 
       // Avoid pointless disk/CDN lookups for plain stat rows once universal art is wired.
-      var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance|brokenblue|brokengreen|brokenred|brokenwhite/.test(s);
+      var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance/.test(s);
       if (isGeneric) {
         if (map[s]) out.push(map[s]);
         return;
@@ -284,7 +296,6 @@
     var img = document.createElement('img');
     img.className = 'cm-perk-thumb';
     img.alt = '';
-    img.loading = 'lazy';
     img.decoding = 'async';
     var idx = 0;
     img.addEventListener('error', function tryNext() {
@@ -306,8 +317,31 @@
       }
       img.src = urls[idx];
     });
-    img.src = urls[0];
+    function beginThumbLoad() {
+      if (img.__cmThumbLoadBegun) return;
+      img.__cmThumbLoadBegun = true;
+      img.loading = 'lazy';
+      img.src = urls[0];
+    }
     labelWrap.appendChild(img);
+    if (typeof IntersectionObserver === 'function') {
+      var io = new IntersectionObserver(function (ents) {
+        for (var ei = 0; ei < ents.length; ei++) {
+          if (ents[ei] && ents[ei].isIntersecting) {
+            try { io.disconnect(); } catch (_) {}
+            beginThumbLoad();
+            return;
+          }
+        }
+      }, { root: null, rootMargin: '100px 0px 100px 0px', threshold: 0.01 });
+      try {
+        io.observe(img);
+      } catch (_) {
+        beginThumbLoad();
+      }
+    } else {
+      beginThumbLoad();
+    }
   }
 
   function normalizeSkillGroupName(name) {
@@ -374,9 +408,11 @@
     var ordered = sortClassModSkillParts(item._cmGroupParts).slice(0, count);
     state.slots.perk = keep.concat(ordered);
 
-    try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
-    try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-    syncChecklistClassModOutputs();
+    if (cmBulkSuppressDepth <= 0) {
+      try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+      try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
+      syncChecklistClassModOutputs();
+    }
   }
 
   function isChecklistItemSelected(item) {
@@ -445,6 +481,7 @@
       }
       var code = partCodeOf(p);
       if (!code || seen.has(code)) continue;
+      if (isBrokenClassmodPlaceholderPart(p)) continue;
       seen.add(code);
       out.push({
         name: String((p.name || p.legendaryName || code) || '').trim() || code,
@@ -512,7 +549,7 @@
     var state = getState();
     var slots = state.slots || {};
     var codeStr = String(code || '').trim();
-    var arrs = [slots.perk, slots.universal, slots.firmware];
+    var arrs = [slots.perk, slots.universal, slots.secondary, slots.firmware];
     for (var a = 0; a < arrs.length; a++) {
       var arr = Array.isArray(arrs[a]) ? arrs[a] : [];
       for (var i = 0; i < arr.length; i++) {
@@ -527,6 +564,8 @@
     if (!it) return 'perk';
     var src = String((it._cmSource || it.source || it.kind) || '').toLowerCase();
     if (src.indexOf('firmware') !== -1) return 'firmware';
+    if (src === 'secondary') return 'secondary';
+    if (src === 'universal') return 'universal';
     return 'universal';
   }
 
@@ -562,23 +601,33 @@
         arr.push(part);
       }
     } else {
-      ['perk', 'universal', 'firmware'].forEach(function (k) {
+      ['perk', 'universal', 'secondary', 'firmware'].forEach(function (k) {
         var arr = ensureArr(k);
         var idx = findIdx(arr);
         if (idx !== -1) arr.splice(idx, 1);
       });
     }
-    try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
-    try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-    syncChecklistClassModOutputs();
+    if (cmBulkSuppressDepth <= 0) {
+      try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+      try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
+      syncChecklistClassModOutputs();
+    }
   }
 
   function setCheckedBulk(items, checked) {
     if (!Array.isArray(items) || !items.length) return;
-    for (var i = 0; i < items.length; i++) {
-      var it = items[i];
-      if (it && it.code) setChecked(it.code, checked, it);
+    cmBulkSuppressDepth++;
+    try {
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if (it && it.code) setChecked(it.code, checked, it);
+      }
+    } finally {
+      cmBulkSuppressDepth--;
     }
+    try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
+    try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
+    syncChecklistClassModOutputs();
   }
 
   function setActiveClassButton(cls) {
@@ -813,6 +862,18 @@
   };
   var RARITY_TIER_ORDER = { common: 1, uncommon: 2, rare: 3, epic: 4, legendary: 5 };
 
+  /**
+   * Legendary class-mod **rarity row** itemId in the vault-hunter family, keyed by the
+   * leg-effect / name code (10–15). Pairs the correct comp_05 row with the chosen name
+   * so the deserialized tail matches the game’s expected `{family:rarityId}` then `{family:nameId}` order.
+   */
+  var LEGENDARY_RARITY_ITEM_BY_NAME_CODE = {
+    Vex: { 10: 56, 11: 55, 12: 54, 13: 53, 14: 52, 15: 51 },
+    Amon: { 10: 25, 11: 24, 12: 23, 13: 22, 14: 21, 15: 20 },
+    Rafa: { 10: 26, 11: 25, 12: 24, 13: 23, 14: 22, 15: 21 },
+    Harlowe: { 10: 26, 11: 25, 12: 24, 13: 23, 14: 22, 15: 21 }
+  };
+
   /** Comp_Rarity display names for C4sh (Robodealer) when STX/name parts omit them. Source: community reference list (item id within family 404). */
   var C4SH_COMP_RARITY_NAMES = {
     217: 'Whale',
@@ -1035,14 +1096,24 @@
 
     if (state.slots && state.slots.namePart) {
       var nameToken = partTokenForChecklist(state.slots.namePart);
-      if (nameToken) tokens.push(nameToken);
+      if (nameToken) {
+        tokens.push(nameToken);
+        /* Harlowe + legendary: append `{27}` after the leg-effect / name token (game format). */
+        var raritySelEl = byId('cmRaritySelect');
+        var isLegCm = raritySelEl && String(raritySelEl.value || '').toLowerCase() === 'legendary';
+        var dispCm = getDisplayClassName(getSelectedCharacter());
+        if (isLegCm && (charToKey(getSelectedCharacter()) === 'harlowe' || dispCm === 'Harlowe')) {
+          var has27 = tokens.some(function (t) { return String(t || '').trim() === '{27}'; });
+          if (!has27) tokens.push('{27}');
+        }
+      }
     }
     if (state.slots && state.slots.rarityNamePart) {
       var rarityNameToken = partTokenForChecklist(state.slots.rarityNamePart);
       if (rarityNameToken) tokens.push(rarityNameToken);
     }
 
-    ['perk', 'universal', 'firmware'].forEach(function (slotKey) {
+    ['universal', 'secondary', 'perk', 'firmware'].forEach(function (slotKey) {
       var arr = Array.isArray(state && state.slots && state.slots[slotKey]) ? state.slots[slotKey] : [];
       for (var i = 0; i < arr.length; i++) {
         var tok = partTokenForChecklist(arr[i]);
@@ -1064,16 +1135,20 @@
       (byId('ccGuidedBuybackFlag') && byId('ccGuidedBuybackFlag').checked)
     );
 
+    /* Prefix carries vault-hunter family — always truncate same-family refs to bare `{id}` after `||`. */
     var normalizedTokens = (typeof window.normalizeIdTokensForBaseFamily === 'function')
-      ? window.normalizeIdTokensForBaseFamily(tokens, family)
+      ? window.normalizeIdTokensForBaseFamily(tokens, family, { compactSameFamily: true })
       : tokens.slice();
+    if (typeof window.compressConsecutiveFamilyRefs === 'function') {
+      try { normalizedTokens = window.compressConsecutiveFamilyRefs(normalizedTokens); } catch (_) {}
+    }
 
     var out = family + ', 0, 1, ' + level + '|';
     if (lockFirmware || buybackFlag) out += ' 9, 1|';
     if (Number(seed) !== 0) out += ' 2, ' + seed + '||';
     else out += '||';
     out += normalizedTokens.length ? (' ' + normalizedTokens.join(' ') + '|') : '|';
-    return out;
+    return String(out || '').replace(/\s+\|$/, '|');
   }
 
   function syncChecklistClassModOutputs() {
@@ -1154,7 +1229,36 @@
     return true;
   }
 
+  function isBrokenClassmodPlaceholderPart(p) {
+    if (!p) return false;
+    if (typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === 'function') {
+      try { return !!window.stxIsBrokenClassmodDatasetPlaceholderPart(p); } catch (_) {}
+    }
+    var nm = String((p.name || p.legendaryName) || '').trim();
+    var code = String(partCodeOf(p) || '').toLowerCase();
+    var ef = String((p.effects || p.effect || '') || '');
+    var blob = (nm + ' ' + code + ' ' + ef).toLowerCase();
+    if (/\bbroken\s*(red|green|blue|white)\b/i.test(blob)) return true;
+    if (/\bbroken[\s_]*\?{2,}/i.test(blob) || /\bbroken\?{2,}/i.test(blob.replace(/\s+/g, ''))) return true;
+    var nn = nm.toLowerCase().replace(/\s+/g, '');
+    if (/broken(red|green|blue|white)/.test(nn)) return true;
+    if (/^broken\?+$/.test(nn) || /^broken\?{3,}$/i.test(nn.replace(/\s+/g, ''))) return true;
+    return false;
+  }
+
+  function isBrokenClassmodPlaceholderPerk(it) {
+    if (!it) return false;
+    if (it.part && isBrokenClassmodPlaceholderPart(it.part)) return true;
+    return isBrokenClassmodPlaceholderPart({
+      name: (it && it.name) || '',
+      legendaryName: (it && it.legendaryName) || '',
+      code: (it && it.code) || '',
+      effects: (it && (it.effects || (it.part && (it.part.effects || it.part.effect)))) || ''
+    });
+  }
+
   function isGuidedPerkEntry(it) {
+    if (isBrokenClassmodPlaceholderPerk(it)) return false;
     var nm = String((it && it.name) || '').toLowerCase();
     var kd = String((it && it.kind) || '').toLowerCase();
     var pt = String((it && it.partType) || (it && it.part && it.part.partType) || '').toLowerCase();
@@ -1175,52 +1279,6 @@
     var m = raw.match(/:\s*(\d+)$/);
     if (m) { var n = Number(m[1]); return n >= 10 && n <= 15; }
     return false;
-  }
-
-  function classModRarityOptionSuffix(entry) {
-    if (!entry) return '';
-    if (entry.legendaryName) return entry.legendaryName;
-    if (entry.tier !== 'legendary') return '';
-    var row = entry.row;
-    if (!row) return '';
-    var src = String(row.source || '').trim();
-    if (src) return src;
-    var itStr = String(row.itemTypeString || '').trim();
-    var m = itStr.match(/\.(comp_[a-z0-9_]+)\s*$/i);
-    if (!m || !m[1]) return '';
-    return String(m[1]).replace(/^comp_/i, '').replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
-  }
-
-  function buildRarityIdOptions() {
-    var sel = byId('cmRarityIdSelect');
-    if (!sel) return;
-    var cls = getSelectedCharacter();
-    var raritySel = byId('cmRaritySelect');
-    var wantedTier = String((raritySel && raritySel.value) || '').trim().toLowerCase();
-    var entries = getClassModRarityEntries(cls);
-    if (wantedTier) {
-      var tierEntries = entries.filter(function (entry) { return entry && entry.tier === wantedTier; });
-      if (tierEntries.length) entries = tierEntries;
-    }
-    var currentValue = String(sel.value || '').trim();
-    sel.innerHTML = '<option value="">-- Rarity ID --</option>';
-    entries.forEach(function (entry) {
-      if (!entry || !entry.code) return;
-      var label = String(entry.tierLabel || 'Rarity');
-      var suffix = classModRarityOptionSuffix(entry);
-      if (suffix) label += ' - ' + suffix;
-      label += ' [' + entry.code + ']';
-      var opt = document.createElement('option');
-      opt.value = entry.code;
-      opt.textContent = label;
-      sel.appendChild(opt);
-    });
-    if (currentValue) {
-      var canKeep = Array.prototype.some.call(sel.options || [], function (opt) {
-        return String((opt && opt.value) || '').trim() === currentValue;
-      });
-      if (canKeep) sel.value = currentValue;
-    }
   }
 
   function buildNameOptions() {
@@ -1256,6 +1314,11 @@
       var nb = String((b && b.name) || '').trim();
       return na.localeCompare(nb, undefined, { sensitivity: 'base' });
     });
+    var preserveTok = String(sel.value || '').trim();
+    if (!preserveTok) {
+      var stKeep = getState();
+      if (stKeep && stKeep.slots && stKeep.slots.namePart) preserveTok = String(partCodeOf(stKeep.slots.namePart) || '').trim();
+    }
     sel.innerHTML = '<option value="">-- Select name --</option>';
     filtered.forEach(function (p) {
       var opt = document.createElement('option');
@@ -1266,6 +1329,12 @@
       if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) opt.title = t; }
       sel.appendChild(opt);
     });
+    if (preserveTok) {
+      var canKeepName = Array.prototype.some.call(sel.options || [], function (opt) {
+        return String((opt && opt.value) || '').trim() === preserveTok;
+      });
+      if (canKeepName) sel.value = preserveTok;
+    }
   }
 
   function createRarityMainPart() {
@@ -1303,6 +1372,41 @@
         legendaryName: ''
       };
     }
+
+    /* Legendary: rarity row itemId must match the selected leg-effect code (10–15), not the first STX legendary row. */
+    if (String(tier).toLowerCase() === 'legendary') {
+      var nameCode = null;
+      var nameSel0 = byId('cmNameSelect');
+      if (nameSel0 && nameSel0.value) {
+        var pp0 = parseFamilyItemToken(String(nameSel0.value).trim());
+        if (pp0 && Number.isFinite(pp0.itemId) && pp0.itemId >= 10 && pp0.itemId <= 15) nameCode = pp0.itemId;
+      }
+      if (nameCode == null) {
+        var st0 = getState();
+        if (st0 && st0.slots && st0.slots.namePart) {
+          var nid = getNumericItemId(st0.slots.namePart);
+          if (Number.isFinite(nid) && nid >= 10 && nid <= 15) nameCode = nid;
+        }
+      }
+      if (nameCode != null) {
+        var byName = LEGENDARY_RARITY_ITEM_BY_NAME_CODE[cls];
+        var legRid = byName && Number.isFinite(Number(byName[nameCode])) ? Number(byName[nameCode]) : null;
+        if (Number.isFinite(legRid)) {
+          var famL = resolveClassModFamilyIdForCharacter(cls);
+          if (Number.isFinite(Number(famL))) {
+            entry = {
+              code: '{' + Number(famL) + ':' + legRid + '}',
+              familyId: Number(famL),
+              itemId: legRid,
+              tierLabel: 'Legendary',
+              legendaryName: String((entry && entry.legendaryName) || '').trim(),
+              row: entry && entry.row
+            };
+          }
+        }
+      }
+    }
+
     return {
       code: entry.code,
       idRaw: entry.familyId + ':' + entry.itemId,
@@ -1317,29 +1421,8 @@
     var state = getState();
     var baseMain = createRarityMainPart();
     state.mainPart = baseMain;
-    var selRarityId = byId('cmRarityIdSelect');
-    if (selRarityId && selRarityId.value) {
-      var code = String(selRarityId.value).trim();
-      var pair = parseFamilyItemToken(code);
-      var opt = selRarityId.options[selRarityId.selectedIndex];
-      var human = opt ? String(opt.textContent || '').replace(/\s*\[[^\]]+\]\s*$/, '').trim() : '';
-      var pickedPart = {
-        code: code,
-        idRaw: pair ? (pair.family + ':' + pair.itemId) : code.replace(/[{}]/g, ''),
-        family: pair ? pair.family : null,
-        id: pair ? pair.itemId : null,
-        name: human || 'Rarity',
-        partType: 'Rarity'
-      };
-      var baseCode = String((baseMain && (baseMain.code || baseMain.idRaw || '')) || '').trim();
-      var pickCode = String(code || '').trim();
-      if (!state.slots) state.slots = {};
-      // Keep the classmod base rarity ID as mainPart; selected rarity ID becomes an additional part.
-      if (pickCode && pickCode !== baseCode) state.slots.rarityNamePart = pickedPart;
-      else state.slots.rarityNamePart = null;
-    } else {
-      if (state.slots) state.slots.rarityNamePart = null;
-    }
+    if (!state.slots) state.slots = {};
+    state.slots.rarityNamePart = null;
     var nameSel = byId('cmNameSelect');
     if (!nameSel) {
       // Name selection is hidden/disabled in simplified C4sh classmod flow.
@@ -1386,7 +1469,6 @@
     var rarityNameRow = byId('classmodRarityNameRow');
     if (rarityNameRow) rarityNameRow.style.display = isUniversal ? 'none' : 'flex';
 
-    buildRarityIdOptions();
     buildNameOptions();
     applyRarityAndName();
 
@@ -1419,9 +1501,10 @@
     renderChecklist(byId('cmUniversalList'), universalItems);
     renderChecklist(byId('cmFirmwareList'), firmwareItems);
 
+    /* Emit checklist serial first so Simple `refreshOutputs` sees rarity/name slots (spawn mode used to drop names). */
+    syncChecklistClassModOutputs();
     try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
     try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-    syncChecklistClassModOutputs();
     try { syncCmChecklistRowHeights(); } catch (_) {}
   }
 
@@ -1431,36 +1514,23 @@
 
     var raritySel = byId('cmRaritySelect');
     var nameSel = byId('cmNameSelect');
-    var rarityIdSel = byId('cmRarityIdSelect');
-
     if (raritySel && !raritySel.__cmBound) {
       raritySel.__cmBound = true;
       raritySel.addEventListener('change', function () {
-        buildRarityIdOptions();
         buildNameOptions();
         applyRarityAndName();
+        syncChecklistClassModOutputs();
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
         try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-        syncChecklistClassModOutputs();
-      });
-    }
-
-    if (rarityIdSel && !rarityIdSel.__cmBound) {
-      rarityIdSel.__cmBound = true;
-      rarityIdSel.addEventListener('change', function () {
-        applyRarityAndName();
-        try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
-        try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-        syncChecklistClassModOutputs();
       });
     }
     if (nameSel && !nameSel.__cmBound) {
       nameSel.__cmBound = true;
       nameSel.addEventListener('change', function () {
         applyRarityAndName();
+        syncChecklistClassModOutputs();
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
         try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
-        syncChecklistClassModOutputs();
       });
     }
 

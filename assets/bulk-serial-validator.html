@@ -5,9 +5,9 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme">
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
+<meta content="https://save-editor.be/Scooters_TBX/counter_v2.php" name="stx-counter-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/items-bump.php" name="stx-items-bump-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
@@ -403,13 +403,13 @@ aside li { margin-bottom: 6px; }
 <h1 class="header-title">Bulk serial validator</h1>
 <p>
       Paste <code>@U</code> Base85 serials or <strong>deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). That text is not the same bytes as WASM <code>@U</code>; the decoder iframe parses it when WASM cannot. YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
-      then checked with the same <strong>data-backed</strong> rules as <a href="../legacy/legit-builder.html" rel="noopener" target="_blank">Legit Builder</a>
+      then checked with the same <strong>data-backed</strong> rules as <a href='/legacy/legit-builder' rel='noopener' target='_blank'>Legit Builder</a>
       (manifest, NCS, <strong>inv composition tags</strong> from <code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>, loot schedules, weights, source tables, stats coverage). Parts not on the manifest loot-pool export are listed as <strong>FYI</strong> only (rewards/vendors/quests are still valid). Drop hints use <code>SOURCE_PATHS_DATA</code> when applicable.
     </p>
 </div>
 <div class="bv-header-actions">
-<a class="btn btn--brand bv-back-link" href="../index.html">Scooter's Toolbox</a>
-<a class="btn btn--brand bv-back-link" href="./stx-save-yaml-full.html">Save / YAML</a>
+<a class='btn btn--brand bv-back-link' href='/'>Scooter's Toolbox</a>
+<a class='btn btn--brand bv-back-link' href='/assets/stx-save-yaml-full'>Save / YAML</a>
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
@@ -570,7 +570,7 @@ Keep duplicate lines</label>
 <ul>
 <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
 <li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rule set as save-editor.be <strong>Legit Item Builder</strong>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
-<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href="../legacy/legit-builder.html">Legit Builder</a> (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
+<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href='/legacy/legit-builder'>Legit Builder</a> (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
 <li><strong>Loot-pool FYI</strong>: <code>off_pool_*</code> rows are reported for visibility only. They do not hard-fail by themselves.</li>
 <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
 <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>

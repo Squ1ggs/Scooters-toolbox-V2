@@ -494,7 +494,13 @@
     if (d === "classmod"){
       var cm = dedupeByCode(asArr(window.CLASSMOD_PARTS).filter(isClassmodLike));
       var extra = dedupeByCode(allParts().filter(isClassmodLike));
-      return dedupeByCode(cm.concat(extra));
+      var merged = dedupeByCode(cm.concat(extra));
+      if (typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === "function"){
+        merged = merged.filter(function (p){
+          try { return !window.stxIsBrokenClassmodDatasetPlaceholderPart(p); } catch (_e) { return true; }
+        });
+      }
+      return merged;
     }
     if (d === "aicar"){
       return dedupeByCode(quickSpecialPool("aicar"));

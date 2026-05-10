@@ -67,6 +67,32 @@
     if (!code) return;
     code = normalizeBracedIdToken(code);
     var n = Math.max(1, parseInt((qty && qty.value) || "1", 10) || 1);
+    if (out.id === "guidedOutputDeserialized" && typeof window.appendToOutCodeGuided === "function") {
+      for (var qi = 0; qi < n; qi++) window.appendToOutCodeGuided(code);
+      try { window.__CC_LAST_CODE_TARGET = "guided"; } catch (_) {}
+      return;
+    }
+    /* Simple Builder: merge presets into state.extras — textarea + refreshOutputs() drops tail-only edits. */
+    if (out.id === "outCode" && typeof window.stxAppendQuickPresetNumericTokens === "function") {
+      code = normalizeBracedIdToken(code);
+      var serialSb = (out.value || "").trim();
+      var baseFamSb = getBaseFamilyIdFromSerial(serialSb);
+      var piecesSb = [];
+      for (var isb = 0; isb < n; isb++) piecesSb.push(code);
+      var normPiecesSb = piecesSb;
+      if (typeof window.normalizeIdTokensForBaseFamily === "function" && baseFamSb != null) {
+        normPiecesSb = window.normalizeIdTokensForBaseFamily(piecesSb, baseFamSb);
+      } else {
+        for (var jsb = 0; jsb < piecesSb.length; jsb++) {
+          normPiecesSb[jsb] = normalizeIdTokenForBaseFamily(piecesSb[jsb], baseFamSb);
+        }
+      }
+      try { window.__CC_LAST_CODE_TARGET = "simple"; } catch (_) {}
+      if (window.stxAppendQuickPresetNumericTokens(normPiecesSb, { replaceBareQuickPresets: isRarityTokenBootstrap(code) })) {
+        try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
+        return;
+      }
+    }
     var serial = (out.value || "").trim();
     var dbl = serial.indexOf("||");
     var tail = dbl >= 0 ? serial.slice(dbl + 2) : "";
@@ -96,9 +122,18 @@
       }
     } catch (_) {}
   }
-  function appendToOutCode(tok) {
-    var out = (typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode");
+  function appendToOutCode(tok, forceTarget, replaceRarity) {
+    var out = forceTarget || ((typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode"));
     if (!out) return;
+    if (out.id === "guidedOutputDeserialized" && typeof window.appendToOutCodeGuided === "function") {
+      window.appendToOutCodeGuided(tok, forceTarget, replaceRarity);
+      return;
+    }
+    /* Simple Builder: `{fam:id}` / `{id}` presets must hit state.extras — plain textarea append is overwritten by refreshOutputs(). */
+    if (out.id === "outCode" && typeof window.stxAppendTailTokenViaExtras === "function") {
+      var tNorm = normalizeBracedIdToken(tok);
+      if (window.stxAppendTailTokenViaExtras(tNorm)) return;
+    }
     var serial = (out.value || "").trim();
     var dbl = serial.indexOf("||");
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : "";
@@ -133,6 +168,11 @@
   }
   function parseBrace(s) {
     s = String(s || "").trim();
+    var bm = s.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+    if (bm){
+      var idsPacked = (bm[2].match(/\d+/g) || []).join(' ');
+      return { a: Number(bm[1]), b: null, id: null, packed: true, bracketIds: idsPacked };
+    }
     var m = s.match(/^\{\s*(\d+)\s*(?::\s*(\d+)\s*)?\}$/);
     if (!m) return null;
     var a = Number(m[1]);
@@ -195,12 +235,21 @@
       var firstBrace = work.indexOf("{");
       tail = firstBrace >= 0 ? work.slice(firstBrace).trim() : work;
     }
+    try {
+      if (typeof window.__ccNormalizeTruncatedTailBracketTokens === "function") {
+        tail = window.__ccNormalizeTruncatedTailBracketTokens(tail);
+      }
+    } catch (_) {}
     var rawTokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\|\s*["']?c["']?\s*,\s*\d+\s*\||[A-Za-z_][A-Za-z0-9_.:-]*/g) || []);
     var out = [];
     for (var i = 0; i < rawTokens.length; i++) {
       var tok = String(rawTokens[i] || "").trim();
       if (!tok) continue;
-      if (/^\{\s*\d+\s*(?::\s*\d+\s*)?\}$/.test(tok) || /^\"[^\"]+\"$/.test(tok) || /^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/.test(tok) || /[A-Za-z_]/.test(tok)) {
+      if (/^\{\s*\d+\s*(?::\s*\d+\s*)?\}$/.test(tok)
+        || /^\{\s*\d+\s*:\s*\[[^\]]+\]\s*\}$/.test(tok)
+        || /^\"[^\"]+\"$/.test(tok)
+        || /^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/.test(tok)
+        || /[A-Za-z_]/.test(tok)) {
         out.push(tok);
       }
     }
@@ -320,6 +369,8 @@
 
   function normTailTokenKeyIpi(t) {
     var u = String(t || "").trim().replace(/^"+|"+$/g, "");
+    var bk = u.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+    if (bk) return bk[1] + ":[" + bk[2].trim().replace(/\s+/g, " ") + "]";
     var m = u.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
     if (m) return m[1] + ":" + m[2];
     m = u.match(/^\{\s*(\d+)\s*\}$/);
@@ -407,8 +458,11 @@
       var rawCode = String(rep).replace(/^"+|"+$/g, "");
       var brace = parseBrace(rawCode);
       var fam = p ? getFamilyForPart(p) : (brace && brace.b != null ? String(brace.a) : "");
-      var familyOrSpawn = (brace && brace.b != null) ? String(brace.a) : (fam || rawCode || "—");
-      var numericId = (brace && brace.b != null) ? String(brace.b) : (brace ? String(brace.id) : (p && p.id != null ? String(p.id) : "—"));
+      var familyOrSpawn = (brace && brace.packed) ? String(brace.a)
+        : ((brace && brace.b != null) ? String(brace.a) : (fam || rawCode || "—"));
+      var numericId = (brace && brace.packed && brace.bracketIds)
+        ? ("[" + String(brace.bracketIds).trim().replace(/\s+/g, " ") + "]")
+        : ((brace && brace.b != null) ? String(brace.b) : (brace ? String(brace.id) : (p && p.id != null ? String(p.id) : "—")));
       var stats = p ? getStatsText(p) : "";
       var cnt = counts[key];
       var encTok = encodeURIComponent(String(rep).trim());
@@ -602,7 +656,8 @@
     window.refreshBuildStatsCore = refreshBuildStatsCore;
     window.appendToOutCode = appendToOutCode;
   }
-  function refreshBuildStatsCore() {
+  var __ccRefreshBuildStatsRaf = 0;
+  function refreshBuildStatsCoreFlush() {
     var grid = byId("buildStatsCoreGrid");
     var sub = byId("buildStatsCoreSubtitle");
     if (!grid || !sub) return;
@@ -895,6 +950,13 @@
       }
     }
     }
+  }
+  function refreshBuildStatsCore() {
+    if (__ccRefreshBuildStatsRaf) return;
+    __ccRefreshBuildStatsRaf = requestAnimationFrame(function () {
+      __ccRefreshBuildStatsRaf = 0;
+      refreshBuildStatsCoreFlush();
+    });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else setTimeout(init, 500);

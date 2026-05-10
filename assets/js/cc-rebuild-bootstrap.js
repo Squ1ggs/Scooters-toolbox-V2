@@ -171,6 +171,12 @@
       var n = 1;
       try { n = Math.max(1, parseInt((qty && qty.value) || '1', 10) || 1); } catch (_) {}
 
+      if (out.id === 'guidedOutputDeserialized' && typeof window.appendToOutCodeGuided === 'function') {
+        for (var qj = 0; qj < n; qj++) window.appendToOutCodeGuided(code);
+        try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
+        return;
+      }
+
       var serial = String(out.value || '').trim();
       var dbl = serial.indexOf('||');
       var tail = dbl >= 0 ? serial.slice(dbl + 2) : '';

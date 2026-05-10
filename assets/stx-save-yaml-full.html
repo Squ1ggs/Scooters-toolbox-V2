@@ -6,9 +6,9 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
 <title>Save / YAML — Scooter's Toolbox</title>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
+<meta content="https://save-editor.be/Scooters_TBX/counter_v2.php" name="stx-counter-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/items-bump.php" name="stx-items-bump-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
@@ -372,10 +372,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <p>Full-page editor — same tools as the <strong>Save / YAML</strong> slide-out on the main toolbox. Use this when you want more room for large saves, YAML edits, and serial lists.</p>
 </div>
 <div class="bv-header-actions">
-<a class="btn btn--brand" href="../index.html">← Full toolbox</a>
-<a class="btn btn--brand" href="../legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
-<a class="btn btn--brand" href="./bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
-<a class="btn btn--brand" href="../legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
+<a class='btn btn--brand' href='/'>← Full toolbox</a>
+<a class='btn btn--brand' href='/legacy/legit-builder' rel='noopener noreferrer' target='_blank'>Legit Builder</a>
+<a class='btn btn--brand' href='/assets/bulk-serial-validator' rel='noopener noreferrer' target='_blank'>Bulk serial validator</a>
+<a class='btn btn--brand' href='/legacy/bl4-bulk-decoder' rel='noopener noreferrer' target='_blank'>Bulk decoder</a>
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; craft tallies">📊 Stats</summary>
 <div aria-label="Toolbox stats" class="support-menu__panel stx-counter-menu__panel" role="region">
@@ -502,9 +502,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div style="color: #00f3ff; font-weight: 700; font-size: 0.95em; margin-bottom: 6px;">Data validation (Legit Builder)</div>
 <p style="color: rgba(255,255,255,0.72); font-size: 0.88em; margin: 0 0 12px 0; line-height: 1.45;">Same <code>legit-builder-core</code> checks as the standalone pages — open in a new tab.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-<a class="btn btn--brand" href="../legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
-<a class="btn btn--brand" href="./bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
-<a class="btn" href="../legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
+<a class='btn btn--brand' href='/legacy/legit-builder' rel='noopener noreferrer' target='_blank'>Legit Builder</a>
+<a class='btn btn--brand' href='/assets/bulk-serial-validator' rel='noopener noreferrer' target='_blank'>Bulk serial validator</a>
+<a class='btn' href='/legacy/bl4-bulk-decoder' rel='noopener noreferrer' target='_blank'>Bulk decoder</a>
 </div>
 </div>
 <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
@@ -824,7 +824,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <details id="rebuildPasteCodeDetails" open="" style="margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(0,243,255,0.28); border-radius: 12px; background: rgba(0,243,255,0.05);">
 <summary style="cursor: pointer; color: #00f3ff; font-weight: 700;">Builder import buffer</summary>
-<p style="color: rgba(233,254,255,0.78); font-size: 0.88em; margin: 10px 0; line-height: 1.45;">Serial search <strong>Add Selected to Editor</strong> and each backpack row’s <strong>Import</strong> fill this area (Base85 is converted to deserialized when possible). Copy into the <a href="../index.html" style="color:#7dd3fc;">full toolbox</a> paste/import box, or use <strong>Append to Add serials</strong> below.</p>
+<p style="color: rgba(233,254,255,0.78); font-size: 0.88em; margin: 10px 0; line-height: 1.45;">Serial search <strong>Add Selected to Editor</strong> and each backpack row’s <strong>Import</strong> fill this area (Base85 is converted to deserialized when possible). Copy into the <a href='/' style='color:#7dd3fc;'>full toolbox</a> paste/import box, or use <strong>Append to Add serials</strong> below.</p>
 <label for="importBox" style="color:#00c8ff;font-size:0.85em;display:block;margin-top:8px;">Deserialized / import buffer</label>
 <textarea id="importBox" name="importBox" placeholder="Imported code appears here…" rows="6" style="width:100%;box-sizing:border-box;padding:10px;margin-top:6px;background:#1a2332;border:1px solid rgba(0,243,255,0.35);border-radius:8px;color:#b8e6f0;font-family:ui-monospace,Consolas,monospace;font-size:12px;resize:vertical;"></textarea>
 <textarea aria-hidden="true" id="outCode" name="outCode" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1"></textarea>

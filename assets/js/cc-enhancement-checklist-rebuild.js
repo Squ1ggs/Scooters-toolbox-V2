@@ -64,7 +64,8 @@
     });
   }
 
-  function buildStackTickboxes() {
+  /** Stacking perks from other manufacturers (same filter as the tick list). */
+  function getFilteredStackRecs() {
     var current = (byId('enhMfgSel') || {}).value;
     var q = ((byId('enhStackFilter') || {}).value || '').toLowerCase();
     var recs = [];
@@ -79,6 +80,45 @@
       });
     });
     recs.sort(function(a,b){ return (a.code - b.code) || (a.idx - b.idx); });
+    return recs;
+  }
+
+  function addAllManufacturerPerks() {
+    [1,2,3,9].forEach(function(code){
+      var cb = byId('enhPerk_' + code);
+      if (cb) cb.checked = true;
+    });
+    rebuildEnhOutput();
+  }
+
+  function addAllStackFiltered() {
+    window.__enhStackMap = window.__enhStackMap || {};
+    getFilteredStackRecs().forEach(function(r){
+      if (!window.__enhStackMap[r.code]) window.__enhStackMap[r.code] = [];
+      var a = window.__enhStackMap[r.code];
+      if (a.indexOf(r.idx) === -1) a.push(r.idx);
+    });
+    buildStackTickboxes();
+    rebuildEnhOutput();
+  }
+
+  function getFiltered247Recs() {
+    var recs = getPayload().secondary_247 || [];
+    var q = ((byId('enhFilter247') || {}).value || '').toLowerCase();
+    return recs.filter(function(r){ return (r.name || '').toLowerCase().indexOf(q) !== -1; });
+  }
+
+  function addAll247Filtered() {
+    window.__enhList247 = window.__enhList247 || [];
+    getFiltered247Recs().forEach(function(r){
+      window.__enhList247.push(r.code);
+    });
+    build247Tickboxes();
+    rebuildEnhOutput();
+  }
+
+  function buildStackTickboxes() {
+    var recs = getFilteredStackRecs();
     var box = byId('enhStackBox');
     if (!box) return;
     box.innerHTML = '';
@@ -169,9 +209,7 @@
   }
 
   function build247Tickboxes() {
-    var recs = getPayload().secondary_247 || [];
-    var q = ((byId('enhFilter247') || {}).value || '').toLowerCase();
-    var filtered = recs.filter(function(r){ return (r.name || '').toLowerCase().indexOf(q) !== -1; });
+    var filtered = getFiltered247Recs();
     var box = byId('enh247Box');
     if (!box) return;
     box.innerHTML = '';
@@ -293,7 +331,10 @@
     var delim = ((byId('enhDelim247') || {}).value || ' ').slice(0,3);
     if (list247.length) parts.push(' {247:[' + list247.join(delim) + ']}');
     out.value = parts.join(' ');
+    try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_t) {}
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
   }
 
   function populateManufacturers() {
@@ -343,6 +384,12 @@
     if (filter247) filter247.addEventListener('input', build247Tickboxes);
     var dice = byId('enhDice');
     if (dice) dice.addEventListener('click', function(){ window.__enhRndSeed = Math.floor(1000 + Math.random() * 9000); rebuildEnhOutput(); });
+    var addAllPerks = byId('enhAddAllPerks');
+    if (addAllPerks) addAllPerks.addEventListener('click', addAllManufacturerPerks);
+    var addAllStack = byId('enhAddAllStack');
+    if (addAllStack) addAllStack.addEventListener('click', addAllStackFiltered);
+    var addAll247 = byId('enhAddAll247');
+    if (addAll247) addAll247.addEventListener('click', addAll247Filtered);
   }
 
   window.__ccEnhancementChecklistRender = function() {

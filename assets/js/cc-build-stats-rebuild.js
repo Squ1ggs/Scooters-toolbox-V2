@@ -17,7 +17,8 @@
 
   /** Text fields scanned for part refs + slug hints (standalone builders + main toolbox). */
   var BUILD_STATS_TEXT_SOURCE_IDS = [
-    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'outCodeB85', 'deserialized-code-output',
+    /* Omit outCodeB85: Base85 strings falsely match `\\d+:\\d+` and inflate part lists / damage aggregates. */
+    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'deserialized-code-output',
     'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml',
     'output-code-live', 'output-code-yaml', 'output-code', 'importBox', 'code-output',
     'yamlInput', 'bv-input', 'yamlAddSerialsInput', 'serialLibraryPasteArea'
@@ -154,8 +155,40 @@
     return null;
   }
 
+  function dedupeExcelStatRows(stats) {
+    if (!stats || !stats.length) return stats;
+    var seen = new Set();
+    var out = [];
+    for (var di = 0; di < stats.length; di++) {
+      var s = stats[di];
+      if (!s || typeof s !== 'object') continue;
+      var k = String(s.bucket || '') + '\t' + String(s.stat_field || '') + '\t' + String(s.stat_value) + '\t' + String(s.combine || '');
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push(s);
+    }
+    return out.length ? out : stats;
+  }
+
+  /**
+   * PARTS_STATS_DATA often exports weapon-part damage_scale as combine "mul" with values in (0,1)
+   * (e.g. 0.475). Those are fractional layers in the game's stack, not literal ×0.475 vs a neutral gun.
+   * Rarity / perk rows use mul ≥ 1 (1.1, 1.3). For display + build comparison, map sub-unity
+   * damage_scale mul to a bonus multiplier (1 + v) so the Damage card matches "+damage" parts.
+   */
+  function partsStatsDamageScaleMulToDisplayMult(statField, combine, val) {
+    var field = String(statField || '').toLowerCase();
+    if (field !== 'damage_scale') return null;
+    if (String(combine || '').trim().toLowerCase() !== 'mul') return null;
+    var v = Number(val);
+    if (!Number.isFinite(v) || v <= 0) return null;
+    if (v >= 1) return v;
+    return 1 + v;
+  }
+
   function applyExcelStatsToBuckets(stats, buckets, record, partLabel) {
     if (!stats || !Array.isArray(stats)) return;
+    stats = dedupeExcelStatRows(stats);
     var pl = partLabel || '';
     for (var i = 0; i < stats.length; i++) {
       var s = stats[i];
@@ -169,6 +202,8 @@
       var mult = 1;
       if (comb === 'mul') {
         mult = val;
+        var dmgFix = partsStatsDamageScaleMulToDisplayMult(s.stat_field, comb, val);
+        if (dmgFix != null) mult = dmgFix;
       } else if (comb === 'add' || !comb) {
         mult = 1 + val;
       } else {
@@ -447,13 +482,6 @@
       addRefsFromText(txtC, refs);
     }
     try {
-      var selects = document.querySelectorAll('select');
-      for (var j = 0; j < selects.length; j++) {
-        var v = String((selects[j].value || '')).trim();
-        if (v) addRefsFromText(v, refs);
-      }
-    } catch (_) {}
-    try {
       var sd = window.selectedData || null;
       if (sd && typeof sd === 'object') {
         var seenWalk = new Set();
@@ -491,7 +519,14 @@
     var deduped = [];
     for (var d = 0; d < resolved.length; d++) {
       var p = resolved[d];
-      var k = (p && typeof p === 'object' && (p.partRef || p.id || p.name)) ? String(p.partRef || p.id || p.name) : String(p);
+      var k;
+      if (p && typeof p === 'object') {
+        k = String((p.idRaw || p.idraw || p.partRef || p.code || '') || '').trim();
+        if (!k && p.family != null && p.id != null) k = String(p.family) + ':' + String(p.id);
+        if (!k) k = String(p.partRef || p.id || p.name || '');
+      } else {
+        k = String(p);
+      }
       if (seen.has(k)) continue;
       seen.add(k);
       deduped.push(p);
@@ -779,13 +814,6 @@
       var txtD = String(elD.value != null ? elD.value : elD.textContent || '').slice(0, 200000);
       addRefsFromText(txtD, refs);
     }
-    try {
-      var selects = document.querySelectorAll('select');
-      for (var j = 0; j < selects.length; j++) {
-        var v = String((selects[j].value || '')).trim();
-        if (v) addRefsFromText(v, refs);
-      }
-    } catch (_) {}
     try {
       var sd = window.selectedData || null;
       if (sd && typeof sd === 'object') {

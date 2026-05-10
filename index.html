@@ -6,9 +6,9 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
 
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/track" name="stx-analytics-endpoint"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/counter" name="stx-counter-url"/>
-<meta content="https://scooters-toolbox.netlify.app/.netlify/functions/items-bump" name="stx-items-bump-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
+<meta content="https://save-editor.be/Scooters_TBX/counter_v2.php" name="stx-counter-url"/>
+<meta content="https://save-editor.be/Scooters_TBX/items-bump.php" name="stx-items-bump-url"/>
 <meta content="counter_v2.php" name="stx-php-counter-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
@@ -19,9 +19,9 @@
 <meta content="Scooter's Toolbox" name="application-name"/>
 <meta content="#060a12" name="theme-color"/>
 <meta content="BL4 save editor, BL4 YAML editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder" name="keywords"/>
-<link href="https://scooters-toolbox.netlify.app/" rel="canonical"/>
+<link href="https://save-editor.be/Scooters_TBX/" rel="canonical"/>
 <meta content="website" property="og:type"/>
-<meta content="https://scooters-toolbox.netlify.app/" property="og:url"/>
+<meta content="https://save-editor.be/Scooters_TBX/" property="og:url"/>
 <meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" property="og:title"/>
 <meta content="Browser BL4 save editor: decrypt and edit .sav as YAML, tweak inventory serials, bulk-decode items, guided builder — offline-friendly." property="og:description"/>
 <meta content="en_US" property="og:locale"/>
@@ -29,7 +29,7 @@
 <meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" name="twitter:title"/>
 <meta content="Browser BL4 save editor: .sav ? YAML, item serial tools, bulk decode, guided builder." name="twitter:description"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","url":"https://scooters-toolbox.netlify.app/","applicationCategory":"GameApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based BL4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools."}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","url":"https://save-editor.be/Scooters_TBX/","applicationCategory":"GameApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based BL4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools."}
 </script>
 <link href="./assets/favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./assets/favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -43,8 +43,8 @@
 <script defer="" src="./assets/data/stx_rarities.js"></script>
 <script defer="" src="./assets/data/source_paths_data.js"></script>
 <script defer="" src="./assets/js/cc-itempool-drop-check.js"></script>
-<script src="./assets/data/skin_data.js"></script>
-<script src="./assets/js/cc-rebuild-populate.js"></script>
+<script defer="" src="./assets/data/skin_data.js"></script>
+<script defer="" src="./assets/js/cc-rebuild-populate.js"></script>
 <script defer="" src="./assets/data/legacy_classmod_names.js"></script>
 <script defer="" src="./assets/data/legacy_classmod_skills_full.js"></script>
 <script defer="" src="./assets/data/classmod_perk_meta.js"></script>
@@ -53,13 +53,13 @@
 <script defer="" src="./assets/js/cc-rebuild-bootstrap.js"></script>
 <script defer="" src="./legacy/ncs_slot_map.js"></script>
 <script defer="" src="./assets/js/cc-item-slug.js"></script>
-<script defer="" src="./assets/js/stx-simple-builder-core.js?v=20260509b"></script>
-<script defer="" src="./assets/js/cc-guided-builder-rebuild.js?v=20260509b"></script>
-<script defer="" src="./assets/js/cc-classmod-checklist-rebuild.js"></script>
-<script defer="" src="./assets/js/cc-enhancement-checklist-rebuild.js"></script>
+<script defer="" src="./assets/js/stx-simple-builder-core.js?v=20260510v"></script>
+<script defer="" src="./assets/js/cc-guided-builder-rebuild.js?v=20260510s"></script>
+<script defer="" src="./assets/js/cc-classmod-checklist-rebuild.js?v=20260510r"></script>
+<script defer="" src="./assets/js/cc-enhancement-checklist-rebuild.js?v=20260510s"></script>
 <script defer="" src="./assets/js/cc-adv-search-stable.js"></script>
 <script defer="" src="./assets/data/weapon_stats_data.js"></script>
-<script defer="" src="./assets/js/cc-build-stats-rebuild.js"></script>
+<script defer="" src="./assets/js/cc-build-stats-rebuild.js?v=20260510v"></script>
 <script defer="" src="./assets/vendor/cryptojs-inline.js"></script>
 <script defer="" src="./assets/vendor/pako-inline.js"></script>
 <script defer="" src="./assets/vendor/jsyaml-inline.js"></script>
@@ -70,20 +70,20 @@
 <script defer="" src="./assets/js/cc-sav-crypto-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-yaml-save-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-stx-decoder-bridge.js"></script>
-<script src="./assets/data/serials_data.js"></script>
-<script src="./assets/data/godroll_serials_data.js"></script>
-<script src="./assets/data/godroll_grimeey_serials_data.js"></script>
-<script src="./assets/data/bl4_spawncodes_bundle_serials.js"></script>
-<script src="./assets/data/bl4_spawncodes_bundle_notes.js"></script>
-<script src="./assets/data/parts_stats_data.js"></script>
+<script defer="" src="./assets/data/serials_data.js"></script>
+<script defer="" src="./assets/data/godroll_serials_data.js"></script>
+<script defer="" src="./assets/data/godroll_grimeey_serials_data.js"></script>
+<script defer="" src="./assets/data/bl4_spawncodes_bundle_serials.js"></script>
+<script defer="" src="./assets/data/bl4_spawncodes_bundle_notes.js"></script>
+<script defer="" src="./assets/data/parts_stats_data.js"></script>
 <script defer="" src="./assets/js/cc-prefix-item-search-rebuild.js"></script>
-<script src="./assets/data/preset_data.js"></script>
+<script defer="" src="./assets/data/preset_data.js"></script>
 <script defer="" src="./assets/js/cc-preset-data-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-preset-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-part-tooltip-rebuild.js"></script>
-<script defer="" src="./assets/js/cc-custom-select-rebuild.js?v=20260508t"></script>
+<script defer="" src="./assets/js/cc-custom-select-rebuild.js?v=20260510t"></script>
 <script defer="" src="./assets/js/cc-skin-mixer-rebuild.js"></script>
-<script defer="" src="./assets/js/rebuild-presets-random.js"></script>
+<script defer="" src="./assets/js/rebuild-presets-random.js?v=20260510v"></script>
 <script defer="" src="./assets/js/rebuild-credits-eggs.js"></script>
 <script defer="" src="./assets/js/cc-toolbox-analytics-v2.js?v=7"></script>
 <script defer="" src="./assets/js/cc-toolbox-items-made.js?v=10"></script>
@@ -119,6 +119,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       :root { --transition-fast: 0ms; --transition-mid: 0ms; }
+      .splash { transition: opacity 0.08s ease, visibility 0.08s ease; }
     }
 
     textarea.stx-yaml-drop-target.stx-yaml-drop-hover {
@@ -135,6 +136,26 @@
     .stx-sav-load-btn-with-icon img {
       flex-shrink: 0;
       opacity: 0.92;
+    }
+    .stx-sav-flow-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .stx-sav-flow-btn .stx-sav-flow-arrow {
+      font-weight: 800;
+      font-size: 1.05em;
+      line-height: 1;
+      opacity: 0.88;
+      color: rgba(0, 243, 255, 0.95);
+    }
+    .stx-sav-flow-btn svg,
+    .stx-sav-load-btn-with-icon svg.stx-sav-inline-ico {
+      flex-shrink: 0;
+      opacity: 0.92;
+      color: rgba(180, 240, 255, 0.95);
     }
 
     * { box-sizing: border-box; }
@@ -174,6 +195,9 @@
       justify-content: center;
       background: radial-gradient(ellipse 100% 100% at 50% 50%, #0a0e1a 0%, #050810 70%);
       transition: opacity 0.35s ease, visibility 0.35s ease;
+      contain: strict;
+      content-visibility: auto;
+      will-change: opacity;
     }
     .splash.dismissed { opacity: 0; visibility: hidden; pointer-events: none; }
     .splash__logo { width: 128px; height: 128px; margin-bottom: 18px; filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5)) drop-shadow(0 0 12px rgba(255, 0, 200, 0.35)); }
@@ -195,6 +219,7 @@
       color: #fff;
       cursor: pointer;
       font-weight: 600;
+      touch-action: manipulation;
       transition: background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
     }
     .splash__btn:hover { background: linear-gradient(135deg, rgba(0, 243, 255, 0.25) 0%, rgba(255, 0, 200, 0.2) 100%); box-shadow: var(--glow-mix); transform: translateY(-2px); }
@@ -1182,6 +1207,60 @@
     #buildStatsCoreSubtitle span { color: rgba(236, 248, 255, 0.9); }
     #buildStatsCoreSubtitle .cc-stats-disclaimer strong { color: rgba(255, 255, 255, 0.95); }
 
+    /* CLS: async stats panels — reserve height before JS fills innerHTML */
+    #buildStatsFinalEstimates.cc-final-estimates-wrap {
+      min-height: 128px;
+      box-sizing: border-box;
+    }
+    #buildStatsFullStats.cc-full-stats-wrap {
+      min-height: 44px;
+      box-sizing: border-box;
+    }
+    #buildStatsBucketBreakdown.cc-bucket-wrap {
+      min-height: 36px;
+      box-sizing: border-box;
+    }
+
+    /* CLS: import textarea — fixed box avoids font metric jump on monospace swap */
+    #importBox.editor-output-code {
+      height: 120px;
+      min-height: 120px;
+      max-height: 320px;
+      resize: vertical;
+      box-sizing: border-box;
+      line-height: 1.45;
+    }
+
+    /* CLS: Tools — advanced search mounts after idle */
+    #ccAdvancedMount {
+      min-height: 72px;
+      box-sizing: border-box;
+    }
+
+    /* CLS: bundled-search result lists — stable footprint while JSON indexes load */
+    #prefixItemSearchResults {
+      min-height: 120px;
+      box-sizing: border-box;
+    }
+    #godrollSearchResults {
+      min-height: 140px;
+      box-sizing: border-box;
+    }
+
+    /* CLS: paste / tools panels — reduce vertical jump when siblings populate */
+    #rebuildPasteCodeSection.panel {
+      min-height: 204px;
+      box-sizing: border-box;
+    }
+    #rebuildToolsPanel.panel {
+      min-height: 260px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 720px) {
+      #rebuildPasteCodeSection.panel { min-height: 180px; }
+      #rebuildToolsPanel.panel { min-height: 220px; }
+    }
+
     
     .output-section {
       display: flex;
@@ -1209,6 +1288,13 @@
       outline: none;
       border-color: var(--accent-cyan);
       box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.2), 0 0 12px rgba(255, 0, 200, 0.15);
+    }
+    .cc-code-char-count-row {
+      font-size: 11px;
+      color: rgba(200, 235, 255, 0.72);
+      font-variant-numeric: tabular-nums;
+      margin-top: 4px;
+      user-select: none;
     }
 
     
@@ -1373,7 +1459,7 @@
     #classmodChecklistSection .cm-checked { border-color: rgba(0,255,200,0.75); background: rgba(0,255,200,0.08); box-shadow: 0 0 0 2px rgba(0,255,200,0.18), 0 0 18px rgba(0,255,200,0.12); }
     #classmodChecklistSection .classmod-class-selected { box-shadow: 0 0 0 2px rgba(0,255,200,0.55), 0 0 18px rgba(0,255,200,0.22) !important; }
     #classmodChecklistSection :where(button, .btn) { transform: none !important; transition: box-shadow .18s ease, filter .18s ease, opacity .18s ease !important; }
-    #classmodChecklistSection .cm-classmod-rarity-id-select {
+    #classmodChecklistSection #cmNameSelect {
       min-height: 40px;
       font-size: 13px;
     }
@@ -1947,6 +2033,30 @@
     .custom-select-option {
       background: #050a14 !important;
     }
+
+    /* Custom selects: avoid dropdown painting under later siblings (Enhancement Mfg vs perk sections; hub vs Skin/Camo). */
+    #ccGearGuidedHub {
+      position: relative;
+      z-index: 160;
+    }
+    #ccGuidedBuilderControls {
+      position: relative;
+      z-index: 172;
+    }
+    #ccGunBuilder {
+      position: relative;
+      z-index: 168;
+    }
+    .rebuild-details.cc-custom-select-lift,
+    .rebuild-part-expandable.cc-custom-select-lift {
+      z-index: 220 !important;
+    }
+    #rebuildGuidedBuilderSection .rebuild-details:has(.custom-select-wrapper.is-open),
+    #stxSimpleBuilderPanel .rebuild-details:has(.custom-select-wrapper.is-open),
+    #rebuildToolsPanel .rebuild-details:has(.custom-select-wrapper.is-open),
+    #rebuildToolsPanel .rebuild-part-expandable:has(.custom-select-wrapper.is-open) {
+      z-index: 220 !important;
+    }
     .quick-part-button-groups {
       margin-top: 14px;
       display: grid;
@@ -1971,8 +2081,8 @@
       gap: 6px;
     }
     #rebuildBuildStatsSection[open] {
-      min-height: 280px;
-      contain-intrinsic-size: auto 280px;
+      min-height: 380px;
+      contain-intrinsic-size: auto 380px;
       will-change: min-height;
     }
     #ccGuidedSkinCamoDetails[open] {
@@ -2746,6 +2856,21 @@
 <p class="splash__sub">Cyber workshop · V2 - 2.5.3</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
+<script>
+/* Splash dismiss runs during HTML parse so Enter works before deferred bundles finish (better INP). */
+(function () {
+  var splash = document.getElementById('splash');
+  var btn = document.getElementById('splashDismiss');
+  if (!splash || !btn || splash.dataset.ccDismissBound === '1') return;
+  splash.dataset.ccDismissBound = '1';
+  function dismiss() {
+    splash.classList.add('dismissed');
+    try { splash.style.willChange = 'auto'; } catch (_e) {}
+  }
+  btn.addEventListener('pointerdown', dismiss, { passive: true });
+  btn.addEventListener('click', dismiss, { passive: true });
+})();
+</script>
 <div class="app-shell">
 <header class="header-bar">
 <img alt="" class="header-icon" height="48" src="./assets/favicon.ico" width="48"/>
@@ -3050,19 +3175,23 @@
 <button class="btn" id="btnCopyCodeB85" style="padding:4px 10px;font-size:12px;" title="Copy BL-base85 to clipboard" type="button">Copy Base85</button>
 </div>
 </div>
-<textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4"></textarea>
+<textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeCharCount">0</span> characters</div>
 </div>
 <div style="margin-top:8px;">
 <label for="outCodeB85">Simple Builder Serial (BL-base85)</label>
-<textarea class="editor-output-code" id="outCodeB85" name="outCodeB85" placeholder="—" rows="2" readonly=""></textarea>
+<textarea class="editor-output-code" id="outCodeB85" name="outCodeB85" placeholder="—" rows="2" readonly="" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeB85CharCount">0</span> characters</div>
 </div>
 <div style="margin-top:8px;">
 <label for="outList">Parts List</label>
-<textarea class="editor-output-code" id="outList" name="outList" placeholder="(Editable)" rows="2"></textarea>
+<textarea class="editor-output-code" id="outList" name="outList" placeholder="(Editable)" rows="2" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="outListCharCount">0</span> characters</div>
 </div>
 <div style="margin-top:8px;">
 <label for="outJson">JSON</label>
-<textarea class="editor-output-code" id="outJson" name="outJson" placeholder="(JSON output — editable)" rows="4"></textarea>
+<textarea class="editor-output-code" id="outJson" name="outJson" placeholder="(JSON output — editable)" rows="4" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="outJsonCharCount">0</span> characters</div>
 </div>
 </div>
 </div>
@@ -3082,14 +3211,16 @@
 <label for="guidedOutputSerial" style="color:#00c8ff; font-size:0.9em;">Serial (BL-base85)</label>
 <button class="btn" id="btnCopyGuidedSerial" style="padding:2px 8px;font-size:11px;" title="Copy serial" type="button">Copy</button>
 </div>
-<textarea class="editor-output-code" id="guidedOutputSerial" name="guidedOutputSerial" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below"></textarea>
+<textarea class="editor-output-code" id="guidedOutputSerial" name="guidedOutputSerial" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="guidedOutputSerialCharCount">0</span> characters</div>
 </div>
 <div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
 <label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Guided Builder Generated Code (Deserialized)</label>
 <button class="btn" id="btnCopyGuidedDeser" style="padding:2px 8px;font-size:11px;" title="Copy deserialized" type="button">Copy</button>
 </div>
-<textarea class="editor-output-code" id="guidedOutputDeserialized" name="guidedOutputDeserialized" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below"></textarea>
+<textarea class="editor-output-code" id="guidedOutputDeserialized" name="guidedOutputDeserialized" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="guidedOutputDeserializedCharCount">0</span> characters</div>
 </div>
 </div>
 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
@@ -3276,12 +3407,18 @@
 </details>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Manufacturer perks (1, 2, 3, 9)</summary>
+<div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+<button class="btn btn-Firmware" id="enhAddAllPerks" type="button">Add all</button>
+</div>
 <div id="enhPerksBox" style="margin-top:10px; display:flex; flex-direction:column; gap:8px;"></div>
 </details>
 <details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Perk stacking — from other manufacturers</summary>
 <div style="margin-top:8px;">
 <input id="enhStackFilter" name="enhStackFilter" placeholder="Filter stacked perks..." style="width:100%;max-width:320px;margin-bottom:8px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,243,255,0.3);color:#fff;" type="text">
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
+<button class="btn btn-Firmware" id="enhAddAllStack" title="Add one stack token for each visible row (filtered list)" type="button">Add all (filtered)</button>
+</div>
 <div class="enh-tickbox-list" id="enhStackBox" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(0,243,255,0.2);"></div>
 </div>
 </details>
@@ -3292,6 +3429,7 @@
 <input id="enhFilter247" name="enhFilter247" placeholder="Filter 247 stats..." style="width:200px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,243,255,0.3);color:#fff;" type="text"/>
 <input id="enhDelim247" name="enhDelim247" placeholder="Delimiter" style="width:80px;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,243,255,0.3);color:#fff;" type="text" value=" "/>
 <button class="btn btn-Firmware btn-clear" id="enhClear247" type="button">Clear 247</button>
+<button class="btn btn-Firmware" id="enhAddAll247" title="Append each visible stat code once (respects filter)" type="button">Add all (filtered)</button>
 </div>
 <div class="enh-tickbox-list" id="enh247Box" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(0,243,255,0.2);"></div>
 </div>
@@ -3335,9 +3473,9 @@
 </select>
 </div>
 <div style="flex:1 1 320px; min-width:min(100%, 520px); max-width:100%;">
-<label for="cmRarityIdSelect" style="display:block; color:#00c8ff; font-size:0.9em; margin-bottom:4px;">Rarity ID</label>
-<select class="editor-select cm-classmod-rarity-id-select" id="cmRarityIdSelect" name="cmRarityIdSelect" style="width:100%; min-width:0;">
-<option value="">-- Rarity ID --</option>
+<label for="cmNameSelect" style="display:block; color:#00c8ff; font-size:0.9em; margin-bottom:4px;">Name / leg effect</label>
+<select class="editor-select" id="cmNameSelect" name="cmNameSelect" style="width:100%; min-width:0;">
+<option value="">-- Select name --</option>
 </select>
 </div>
 </div>
@@ -3404,7 +3542,7 @@
 <div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(0, 0, 10, 1);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
 <div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:10px;">Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.</div>
-<div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:60px;"></div>
+<div class="cc-core-snapshot-grid" id="buildStatsCoreGrid" style="min-height:200px;"></div>
 <div aria-live="polite" class="cc-final-estimates-wrap" id="buildStatsFinalEstimates"></div>
 <div aria-live="polite" class="cc-full-stats-wrap" id="buildStatsFullStats"></div>
 <div aria-live="polite" class="cc-bucket-wrap" id="buildStatsBucketBreakdown"></div>
@@ -3755,18 +3893,19 @@
 <input accept=".yaml,.yml" aria-label="Upload YAML file" id="yamlFileInput" name="yamlFileInput" style="display: none;" type="file"/>
 <div style="display:flex; gap:10px; width:100%; margin-top:10px; flex-wrap: wrap;">
 <button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('yamlFileInput').click()" style="flex: 1; min-width: 150px;" title="Open a .yaml / .yml file into the editor" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/favicon.svg" width="20"/><span>Load YAML file</span></button>
-<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick a character .sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/icon.ico" width="20"/><span>Load .sav file</span></button>
-<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick profile.sav — decrypts into the editor automatically" type="button"><img alt="" decoding="async" height="20" loading="lazy" src="./assets/icon.ico" width="20"/><span>Load profile.sav</span></button>
-<button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button">Convert .sav to YAML</button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('savFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick a character .sav — decrypts into the editor automatically" type="button"><svg class="stx-sav-inline-ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v4h10"/></svg><span>Load .sav file</span></button>
+<button class="btn btn-Firmware sav-load-btn stx-sav-load-btn-with-icon" onclick="document.getElementById('profileSavFileInput').click()" style="flex: 1; min-width: 150px;" title="Pick profile.sav — decrypts into the editor automatically" type="button"><svg class="stx-sav-inline-ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10"/><path d="M7 13h6"/><circle cx="17" cy="10" r="2"/></svg><span>Load profile.sav</span></button>
+<button class="btn btn-Firmware sav-convert-btn pinkblue-convert-btn stx-sav-flow-btn" id="convertSAVToYAMLBtn" style="flex: 1; min-width: 150px;" type="button"><span class="stx-sav-flow-arrow" aria-hidden="true">→</span><img alt="" decoding="async" height="18" loading="lazy" src="./assets/favicon.svg" width="18"/><span>Convert .sav to YAML</span></button>
 </div>
 <div id="sav-file-info" style="margin-top: 0; padding: 12px; width: 100%; background: linear-gradient(90deg, rgba(255, 0, 150, 0.25), rgba(0, 255, 200, 0.35), rgba(0, 150, 255, 0.25)), rgba(0, 0, 0, 0.35); border-radius: 0 0 8px 8px; color: #fff; font-size: 1.05em; font-weight: 700; display: none; text-align: center;">Loaded - now click convert to YAML</div>
 <div style="display:flex; gap:10px; width:100%; margin-top:10px;">
 <button class="btn btn-primary" id="saveYAMLToSAVBtn" style="flex: 1;" type="button">Save YAML</button>
-<button class="btn btn-primary primary-save-gradient pinkblue-convert-btn" id="convertYAMLToSAVBtn" style="flex: 1; min-width: 150px;" type="button">Convert to .sav</button>
+<button class="btn btn-primary primary-save-gradient pinkblue-convert-btn stx-sav-flow-btn" id="convertYAMLToSAVBtn" style="flex: 1; min-width: 150px;" type="button"><span class="stx-sav-flow-arrow" aria-hidden="true">→</span><svg class="stx-sav-inline-ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v4h10"/></svg><span>Convert to .sav</span></button>
 </div>
 </div>
 </div>
-<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML, load a file with the buttons above, or drag &amp; drop a .yaml / .yml / .sav here (character or profile)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
+<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML, load a file with the buttons above, or drag &amp; drop a .yaml / .yml / .sav here (character or profile)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="yamlInputCharCount">0</span> characters <span style="opacity:0.65">(large saves OK — no fixed cap)</span></div>
 <div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
 <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
@@ -4127,7 +4266,8 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <button class="btn btn--brand" id="floatingAddItemToYaml" type="button">💾 Add Item to YAML</button>
 <button class="btn btn--brand" disabled="" id="floatingAddItemToBank" title="Load profile .sav or YAML first." type="button">🏦 Add Item to Bank</button>
 </div>
-<textarea class="editor-output-code" id="floating-output-code" name="floating-output-code" placeholder="Paste Base85 or deserialized code, or select parts to generate" rows="6" style="width:100%;resize:vertical;" title="Editable — paste code and use Convert buttons to switch formats"></textarea>
+<textarea class="editor-output-code" id="floating-output-code" name="floating-output-code" placeholder="Paste Base85 or deserialized code, or select parts to generate" rows="6" style="width:100%;resize:vertical;" title="Editable — paste code and use Convert buttons to switch formats" spellcheck="false"></textarea>
+<div class="cc-code-char-count-row" aria-live="polite"><span id="floatingOutputCodeCharCount">0</span> characters</div>
 <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
 <button class="btn" id="floatingConvertBase85" type="button">Convert to BL-base85</button>
 <button class="btn" id="floatingConvertDeserialized" type="button">Convert to Deserialized</button>
@@ -4296,15 +4436,14 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
       function initSplash() {
         var splash = byId('splash');
         var btn = byId('splashDismiss');
-        if (btn && splash) {
-          btn.addEventListener('click', function () {
-            requestAnimationFrame(function () {
-              requestAnimationFrame(function () {
-                splash.classList.add('dismissed');
-              });
-            });
-          });
+        if (!btn || !splash || splash.dataset.ccDismissBound === '1') return;
+        splash.dataset.ccDismissBound = '1';
+        function dismiss() {
+          splash.classList.add('dismissed');
+          try { splash.style.willChange = 'auto'; } catch (_e) {}
         }
+        btn.addEventListener('pointerdown', dismiss, { passive: true });
+        btn.addEventListener('click', dismiss, { passive: true });
       }
 
       function initDockToggle() {
@@ -4585,15 +4724,18 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var outCode = byId('outCode');
         
         function getPrimaryOutputEl() {
-          var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
-          if (last === 'simple') return byId('outCode');
-          
+          var outCodeEl = byId('outCode');
           var guidedDeser = byId('guidedOutputDeserialized');
+          var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
+          /* Simple Builder edits must drive the floating mirror whenever Simple was last touched — otherwise a stale
+             prefix-only row in #guidedOutputDeserialized steals the panel while #outCode holds the full serial. */
+          if (last === 'simple') return outCodeEl || guidedDeser;
           if (last === 'guided' && guidedDeser) return guidedDeser;
-          
-          // Fallback
+          if (guidedModeActive() && guidedDeser && String(guidedDeser.value || '').trim()) {
+            return guidedDeser;
+          }
           if (guidedDeser && (guidedDeser.value || '').indexOf('||') >= 0) return guidedDeser;
-          return byId('outCode');
+          return outCodeEl;
         }
         var guidedSerialEl = byId('guidedOutputSerial');
         var guidedDeserEl = byId('guidedOutputDeserialized');
@@ -4791,50 +4933,90 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         var selIds = ['ccGuidedItemType','ccGuidedManufacturer','ccGuidedWeaponType','stx_itemType','stx_manufacturer','weaponType','mainPart','rarity','skinSelect','camoSelect'];
         for (var j = 0; j < selIds.length; j++) {
           var sel = byId(selIds[j]);
-          if (sel) {
-            sel.value = '';
-            sel.dispatchEvent(new Event('change', { bubbles: true }));
+          if (!sel) continue;
+          var prev = String(sel.value || '');
+          sel.value = '';
+          if (prev) {
+            try { sel.dispatchEvent(new Event('change', { bubbles: true })); } catch (_) {}
           }
         }
         try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
       }
+      function syncCodeCharCounts() {
+        var pairs = [
+          ['outCode', 'outCodeCharCount'],
+          ['outCodeB85', 'outCodeB85CharCount'],
+          ['outList', 'outListCharCount'],
+          ['outJson', 'outJsonCharCount'],
+          ['guidedOutputSerial', 'guidedOutputSerialCharCount'],
+          ['guidedOutputDeserialized', 'guidedOutputDeserializedCharCount'],
+          ['floating-output-code', 'floatingOutputCodeCharCount'],
+          ['yamlInput', 'yamlInputCharCount']
+        ];
+        for (var i = 0; i < pairs.length; i++) {
+          var ta = byId(pairs[i][0]);
+          var sp = byId(pairs[i][1]);
+          if (!ta || !sp) continue;
+          var n = typeof ta.value === 'string' ? ta.value.length : 0;
+          sp.textContent = String(n);
+        }
+      }
+      function initCodeCharCounts() {
+        var ids = ['outCode', 'outCodeB85', 'outList', 'outJson', 'guidedOutputSerial', 'guidedOutputDeserialized', 'floating-output-code', 'yamlInput'];
+        function bump() { syncCodeCharCounts(); }
+        for (var i = 0; i < ids.length; i++) {
+          var el = byId(ids[i]);
+          if (!el) continue;
+          el.addEventListener('input', bump);
+          el.addEventListener('change', bump);
+          el.addEventListener('paste', function () { setTimeout(bump, 0); });
+        }
+        window.__ccSyncCodeCharCounts = syncCodeCharCounts;
+        syncCodeCharCounts();
+      }
       function init() {
-        clearRebuildOnLoad();
         initSplash();
         initDockToggle();
         initScrollToSections();
-        initImportToBuilder();
         initSaveYamlDrawer();
-        initGuidedOutputPreview();
-        initFloatingCodePanel();
-        try { if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons(); } catch (_) {}
-        var convertYamlBtn = byId('convertSAVToYAMLBtn');
-        var convertSavBtn = byId('convertYAMLToSAVBtn');
-        var saveYamlBtn = byId('saveYAMLToSAVBtn');
-        if (convertYamlBtn) convertYamlBtn.addEventListener('click', function () { if (typeof window.convertSAVToYAML === 'function') window.convertSAVToYAML(); else alert('Save conversion not loaded.'); });
-        if (convertSavBtn) convertSavBtn.addEventListener('click', function () { if (typeof window.convertYAMLToSAV === 'function') window.convertYAMLToSAV(); else alert('Save conversion not loaded.'); });
-        if (saveYamlBtn) saveYamlBtn.addEventListener('click', function () { if (typeof window.saveYAMLToSAV === 'function') window.saveYAMLToSAV(); else alert('Save YAML not loaded.'); });
-        var btnCopyCode = byId('btnCopyCode');
-        if (btnCopyCode) btnCopyCode.addEventListener('click', function () {
-          var outCode = byId('outCode');
-          var guidedSerial = byId('guidedOutputSerial');
-          var txt = (outCode && outCode.value) || (guidedSerial && guidedSerial.value) || '';
-          if (txt) {
-            try { navigator.clipboard.writeText(txt.trim()); btnCopyCode.textContent = 'Copied!'; setTimeout(function(){ btnCopyCode.textContent = 'Copy'; }, 1200); } catch (_) {}
-            if (window.stxLogHistory) window.stxLogHistory(txt.trim());
-          }
-        });
-        var btnCopyCodeB85 = byId('btnCopyCodeB85');
-        if (btnCopyCodeB85) btnCopyCodeB85.addEventListener('click', function () {
-          var b = byId('outCodeB85');
-          var t = (b && b.value) ? String(b.value).trim() : '';
-          if (t) {
-            try { navigator.clipboard.writeText(t); btnCopyCodeB85.textContent = 'Copied!'; setTimeout(function(){ btnCopyCodeB85.textContent = 'Copy Base85'; }, 1200); } catch (_) {}
-            if (window.stxLogHistory) window.stxLogHistory(t);
-          }
-        });
-
-        setTimeout(clearRebuildOnLoad, 400);
+        function initHeavy() {
+          clearRebuildOnLoad();
+          initImportToBuilder();
+          initGuidedOutputPreview();
+          initFloatingCodePanel();
+          try { if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons(); } catch (_) {}
+          var convertYamlBtn = byId('convertSAVToYAMLBtn');
+          var convertSavBtn = byId('convertYAMLToSAVBtn');
+          var saveYamlBtn = byId('saveYAMLToSAVBtn');
+          if (convertYamlBtn) convertYamlBtn.addEventListener('click', function () { if (typeof window.convertSAVToYAML === 'function') window.convertSAVToYAML(); else alert('Save conversion not loaded.'); });
+          if (convertSavBtn) convertSavBtn.addEventListener('click', function () { if (typeof window.convertYAMLToSAV === 'function') window.convertYAMLToSAV(); else alert('Save conversion not loaded.'); });
+          if (saveYamlBtn) saveYamlBtn.addEventListener('click', function () { if (typeof window.saveYAMLToSAV === 'function') window.saveYAMLToSAV(); else alert('Save YAML not loaded.'); });
+          var btnCopyCode = byId('btnCopyCode');
+          if (btnCopyCode) btnCopyCode.addEventListener('click', function () {
+            var outCode = byId('outCode');
+            var guidedSerial = byId('guidedOutputSerial');
+            var txt = (outCode && outCode.value) || (guidedSerial && guidedSerial.value) || '';
+            if (txt) {
+              try { navigator.clipboard.writeText(txt.trim()); btnCopyCode.textContent = 'Copied!'; setTimeout(function(){ btnCopyCode.textContent = 'Copy'; }, 1200); } catch (_) {}
+              if (window.stxLogHistory) window.stxLogHistory(txt.trim());
+            }
+          });
+          var btnCopyCodeB85 = byId('btnCopyCodeB85');
+          if (btnCopyCodeB85) btnCopyCodeB85.addEventListener('click', function () {
+            var b = byId('outCodeB85');
+            var t = (b && b.value) ? String(b.value).trim() : '';
+            if (t) {
+              try { navigator.clipboard.writeText(t); btnCopyCodeB85.textContent = 'Copied!'; setTimeout(function(){ btnCopyCodeB85.textContent = 'Copy Base85'; }, 1200); } catch (_) {}
+              if (window.stxLogHistory) window.stxLogHistory(t);
+            }
+          });
+          initCodeCharCounts();
+        }
+        if (typeof requestIdleCallback === 'function') {
+          requestIdleCallback(initHeavy, { timeout: 650 });
+        } else {
+          setTimeout(initHeavy, 1);
+        }
       }
 
       // --- Items Made history (local browser storage; prefers deserialized codes) ---
@@ -5182,13 +5364,19 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         });
         document.addEventListener('stx-items-made-bump', function() {
           setTimeout(stxLogCurrentBuiltItem, 80);
+          try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
         });
       });
 
+      function scheduleInit() {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(init);
+        });
+      }
       if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', scheduleInit);
       } else {
-        init();
+        scheduleInit();
       }
     })();
   </script>
@@ -5196,16 +5384,23 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 <script>
   (function () {
     'use strict';
-    var PLACEHOLDER_SRC = './assets/img/icon-missing.svg';
     function wireImg(img) {
       if (!img || img.__ccMissingWired) return;
       img.__ccMissingWired = true;
+      img.addEventListener('load', function () {
+        try {
+          if (img.dataset) img.dataset.ccMissingApplied = '';
+          img.style.opacity = '';
+          img.style.visibility = '';
+        } catch (_) {}
+      });
       img.addEventListener('error', function () {
         try {
           if (img.dataset && img.dataset.ccMissingApplied === '1') return;
           if (img.dataset) img.dataset.ccMissingApplied = '1';
-          img.src = PLACEHOLDER_SRC;
-          img.style.opacity = '0.7';
+          img.removeAttribute('src');
+          img.style.opacity = '0';
+          img.style.visibility = 'hidden';
         } catch (_) {}
       });
     }

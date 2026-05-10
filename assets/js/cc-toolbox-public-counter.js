@@ -30,7 +30,7 @@
   function shouldPreferConfiguredCounter() {
     try {
       var h = String(location.hostname || '').toLowerCase();
-      return h === 'scooters-toolbox.netlify.app' || h === 'localhost' || h === '127.0.0.1';
+      return h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be' || h === 'localhost' || h === '127.0.0.1';
     } catch (_) {
       return false;
     }

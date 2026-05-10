@@ -21,8 +21,8 @@
     }
     try {
       var h = String(location.hostname || '').toLowerCase();
-      if (h === 'scooters-toolbox.netlify.app') return true;
-      /* Shared-host and mirror domains: disable remote analytics POST to avoid 403/404 spam. */
+      if (h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be') return true;
+      /* Other mirrors: disable remote analytics POST to avoid 403/404 spam. */
       return false;
     } catch (_) {
       return false;

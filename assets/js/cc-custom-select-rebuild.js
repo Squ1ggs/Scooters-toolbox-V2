@@ -53,23 +53,25 @@
 
     function bindIconErrorFallback(im, o) {
       if (!im || !o) return;
-      var missing = './assets/img/icon-missing.svg';
       var alt = iconAltSrcForOption(o);
       var triedAlt = false;
-      var triedMiss = false;
+      im.addEventListener('load', function onIconOk() {
+        try {
+          im.style.visibility = '';
+          im.style.opacity = '';
+        } catch (_) {}
+      });
       im.addEventListener('error', function onIconErr() {
         if (!triedAlt && alt) {
           triedAlt = true;
           im.src = alt;
           return;
         }
-        if (!triedMiss) {
-          triedMiss = true;
-          if (String(im.src || '').indexOf(missing) === -1) {
-            im.src = missing;
-            return;
-          }
-        }
+        try {
+          im.style.visibility = 'hidden';
+          im.style.opacity = '0';
+          im.removeAttribute('src');
+        } catch (_) {}
         im.removeEventListener('error', onIconErr);
       });
     }
@@ -161,6 +163,41 @@
       });
     }
 
+    function clearSelectLift(w) {
+      var nodes = w.__ccLiftNodes;
+      if (!nodes || !nodes.length) return;
+      for (var i = 0; i < nodes.length; i++) {
+        try {
+          nodes[i].classList.remove('cc-custom-select-lift');
+        } catch (_) {}
+      }
+      w.__ccLiftNodes = null;
+    }
+
+    /** Raise ancestor <details> / part panels so this dropdown stacks above following sections. */
+    function applySelectLift(w) {
+      clearSelectLift(w);
+      var lift = [];
+      var cur = w.parentElement;
+      while (cur && cur !== document.body) {
+        var cl = cur.classList;
+        if (cl && (cl.contains('rebuild-details') || cl.contains('rebuild-part-expandable'))) {
+          cur.classList.add('cc-custom-select-lift');
+          lift.push(cur);
+        }
+        cur = cur.parentElement;
+      }
+      w.__ccLiftNodes = lift;
+    }
+
+    function finishCloseDropdown() {
+      list.style.display = 'none';
+      wrapper.classList.remove('is-open');
+      wrapper.style.zIndex = '';
+      clearSelectLift(wrapper);
+      document.removeEventListener('click', closeHandler);
+    }
+
     function buildList() {
       if (!wrapperListDirty) return;
 
@@ -236,10 +273,7 @@
           e.stopPropagation();
           sel.value = this.dataset.value;
           updateDisplay();
-          list.style.display = 'none';
-          wrapper.classList.remove('is-open');
-          wrapper.style.zIndex = '';
-          document.removeEventListener('click', closeHandler);
+          finishCloseDropdown();
           setTimeout(function () {
             sel.dispatchEvent(new Event('change', { bubbles: true }));
           }, 1);
@@ -307,15 +341,13 @@
       wrapper.classList.add('is-open');
       wrapper.style.zIndex = '2147483000';
       list.style.display = 'block';
+      applySelectLift(wrapper);
       document.addEventListener('click', closeHandler);
     }
 
     function closeHandler(e) {
       if (!wrapper.contains(e.target)) {
-        list.style.display = 'none';
-        wrapper.classList.remove('is-open');
-        wrapper.style.zIndex = '';
-        document.removeEventListener('click', closeHandler);
+        finishCloseDropdown();
       }
     }
 
@@ -352,37 +384,68 @@
       attributeFilter: ['data-cc-barrel-sub', 'data-cc-primary-tone', 'data-cc-icon', 'data-cc-icon-alt', 'data-cc-icon-filter']
     });
 
-    sel.__customSelectSync = updateDisplay;
+    sel.__customSelectSync = function ccSelectSyncInvalidate() {
+      try {
+        if (display && display.dataset) {
+          delete display.dataset.lastTxt;
+          delete display.dataset.lastSrc;
+          delete display.dataset.lastFlt;
+          delete display.dataset.lastSub;
+          delete display.dataset.lastTone;
+        }
+      } catch (_) {}
+      updateDisplay();
+    };
   }
 
   function init() {
     var selects = document.querySelectorAll('select.editor-select, .editor-page select, .app-shell select');
     for (var i = 0; i < selects.length; i++) wrapSelect(selects[i]);
 
+    var moRaf = 0;
+    var pendingMo = [];
     var observer = new MutationObserver(function (mutations) {
-      for (var m = 0; m < mutations.length; m++) {
-        var added = mutations[m].addedNodes;
-        for (var j = 0; j < added.length; j++) {
-          var n = added[j];
-          if (n.nodeType === 1) {
-            if (n.tagName === 'SELECT' && (n.classList.contains('editor-select') || n.closest('.editor-page') || n.closest('.app-shell'))) wrapSelect(n);
-            var kids = n.querySelectorAll && n.querySelectorAll('select.editor-select, select');
-            if (kids) for (var k = 0; k < kids.length; k++) wrapSelect(kids[k]);
+      for (var mi = 0; mi < mutations.length; mi++) pendingMo.push(mutations[mi]);
+      if (moRaf) return;
+      moRaf = requestAnimationFrame(function () {
+        moRaf = 0;
+        var batch = pendingMo;
+        pendingMo = [];
+        try {
+          for (var m = 0; m < batch.length; m++) {
+            var added = batch[m].addedNodes;
+            for (var j = 0; j < added.length; j++) {
+              var n = added[j];
+              if (n.nodeType === 1) {
+                if (n.tagName === 'SELECT' && (n.classList.contains('editor-select') || n.closest('.editor-page') || n.closest('.app-shell'))) wrapSelect(n);
+                var kids = n.querySelectorAll && n.querySelectorAll('select.editor-select, select');
+                if (kids) for (var k = 0; k < kids.length; k++) wrapSelect(kids[k]);
+              }
+            }
           }
-        }
-      }
+        } catch (_) {}
+      });
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
+  function bootCustomSelectRebuild() {
+    if (window.__ccCustomSelectRebuildBoot) return;
+    window.__ccCustomSelectRebuildBoot = true;
+    init();
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', bootCustomSelectRebuild);
+  } else if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(bootCustomSelectRebuild, { timeout: 2500 });
   } else {
-    setTimeout(init, 0);
+    setTimeout(bootCustomSelectRebuild, 0);
   }
-  if (typeof requestIdleCallback === 'function') {
-    requestIdleCallback(function () { init(); }, { timeout: 1500 });
-  } else {
-    setTimeout(init, 600);
-  }
+
+  try {
+    window.__ccForceCustomSelectSync = function (sel) {
+      if (!sel || typeof sel.__customSelectSync !== 'function') return;
+      sel.__customSelectSync();
+    };
+  } catch (_) {}
 })();
