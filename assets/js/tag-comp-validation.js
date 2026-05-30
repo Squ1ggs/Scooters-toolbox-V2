@@ -55,7 +55,7 @@
   /**
    * @param {{ addtags?: unknown, dependencytags?: unknown, exclusiontags?: unknown, name?: string }} part
    * @param {Set<string>} tagPool — lowercased tags currently in pool (incl. comp + prior parts)
-   * @param {{ skipUniqueExclusion?: boolean, skipExclusionTags?: string[], ignoreDependencyTags?: string[], skipAllDependencyChecks?: boolean, skipRarityPoolMatch?: boolean }} [options] — skipAllDependencyChecks: skip dependencytags entirely (bulk/editor parity — editors merge inv rows but do not simulate the comp tag pool, so uni_x/leg_x deps are never satisfied). skipRarityPoolMatch: save-editor-style bulk — do not fail on rarity tier mismatch vs pool (noisy with named comps).
+   * @param {{ skipUniqueExclusion?: boolean, skipExclusionTags?: string[], ignoreDependencyTags?: string[], skipAllDependencyChecks?: boolean, skipRarityPoolMatch?: boolean }} [options] — skipAllDependencyChecks: skip dependencytags entirely (bulk path merges inv rows but does not simulate the comp tag pool). skipRarityPoolMatch: bulk mode — do not fail on rarity tier mismatch vs pool (noisy with named comps).
    * @returns {{ ok: boolean, reasons: string[] }}
    */
   function partValidForPool(part, tagPool, options) {

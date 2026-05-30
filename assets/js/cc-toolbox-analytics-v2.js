@@ -27,7 +27,7 @@
     try {
       var h = String(location.hostname || '').toLowerCase();
       if (h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be') return true;
-      /* GitHub Pages mirror: allow POST when meta points at a real HTTPS API (patch sets save-editor track.php). */
+      /* GitHub Pages mirror: allow POST when meta points at the shared HTTPS analytics API. */
       if (h === 'github.io' || h.slice(-10) === '.github.io') {
         var ep = configuredEndpoint();
         if (ep && /^https:\/\//i.test(ep)) return true;

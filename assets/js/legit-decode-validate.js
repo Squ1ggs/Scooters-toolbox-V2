@@ -179,7 +179,7 @@
       return options[0];
     }
     /* Never default stat slots to options[0]: that maps the wrong manifest row, so Legit uses the first
-       option’s name before invDumpKey and bogus “OK” passes while save-editor shows allowlist/prereq fail. */
+       option’s name before invDumpKey and bogus “OK” passes while allowlist/prereq still fail. */
     if (
       (slotKey === 'stat_group1' || slotKey === 'stat_group2' || slotKey === 'stat_group3') &&
       options.length === 1 &&
@@ -786,7 +786,7 @@
     return out;
   }
 
-  /** Same bar as LegitBuilderApi invReasonIsSaveEditorBulkHardFail for raw composition lines (enhancement post-pass). */
+  /** Same bar as LegitBuilderApi invReasonIsBulkHardFail for raw composition lines (enhancement post-pass). */
   function rawCompositionLineIsBulkHardFail(line) {
     var s = String(line || '');
     if (/^\[layout\]\s*Weapon-type stat part on enhancement bank/i.test(s)) return true;
@@ -900,8 +900,8 @@
       } catch (_) {}
       return false;
     }
-    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 60);
-    if (!Number.isFinite(il)) il = 60;
+    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 61);
+    if (!Number.isFinite(il)) il = 61;
     if (mappedCount === 0) {
       var rawEarly = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
         rawSerial: opts.rawSerial || '',
@@ -1250,8 +1250,8 @@
         var partCount = Object.keys(selectedParts).length;
         var strictEl = document.getElementById('strict-mode');
         var ilInput = document.getElementById('item-level');
-        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 60);
-        if (!Number.isFinite(il)) il = 60;
+        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 61);
+        if (!Number.isFinite(il)) il = 61;
 
         var pre = '<div style="font-size:0.72rem;color:rgba(233,254,255,0.55);margin-bottom:6px;">' +
           'Item: <strong>' + String(manifestItem.name || '') + '</strong> (' + String(manifestItem.slug || '') + ') &middot; Dataset parts: ' + rp.length +

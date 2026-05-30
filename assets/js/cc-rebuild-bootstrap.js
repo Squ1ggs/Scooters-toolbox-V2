@@ -61,13 +61,25 @@
   }
   try { window.__ccDedupePartsByNumericId = dedupePartsByNumericIdentity; } catch (_) {}
 
+  function normCategoryLabel(cat) {
+    return String(cat || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  function categoryMatches(p, cat) {
+    if (!p) return false;
+    var c = normCategoryLabel(p.category);
+    var want = normCategoryLabel(cat);
+    if (c === want) return true;
+    if (want === 'classmod' && (c === 'class mod' || c === 'character')) return true;
+    return false;
+  }
+
   function byCategory(cat) {
     var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS))
       ? window.STX_DATASET.ALL_PARTS
       : (Array.isArray(window.ALL_PARTS) ? window.ALL_PARTS : []);
-    var c = String(cat || '').toLowerCase();
     return all.filter(function (p) {
-      return p && String(p.category || '').toLowerCase() === c;
+      return categoryMatches(p, cat);
     });
   }
 
@@ -91,11 +103,15 @@
     window.SHIELD_PARTS = dedupePartsByNumericIdentity(window.SHIELD_PARTS || byCategory('Shield'));
     window.REPKIT_PARTS = dedupePartsByNumericIdentity(window.REPKIT_PARTS || byCategory('Repkit'));
     window.ENHANCEMENT_PARTS = dedupePartsByNumericIdentity(window.ENHANCEMENT_PARTS || byCategory('Enhancement'));
-    var hw = byCategory('Heavy Weapon');
-    if (!hw || hw.length === 0) {
-      var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) ? window.STX_DATASET.ALL_PARTS : [];
-      hw = all.filter(function (p) { return p && String(p.itemType || '').trim() === 'Heavy Weapon'; });
-    }
+    var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) ? window.STX_DATASET.ALL_PARTS : [];
+    var hw = all.filter(function (p) {
+      if (!p) return false;
+      var code = String(p.code || p.spawnCode || p.importCode || '').toLowerCase();
+      if (code.indexOf('grenade_gadget.') !== -1) return false;
+      return String(p.category || '').trim() === 'Heavy Weapon' ||
+        String(p.itemType || '').trim() === 'Heavy Weapon' ||
+        /_hw[._]|_hw\b|heavy_weapon_gadget/i.test(String(p.code || ''));
+    });
     window.HEAVY_PARTS = dedupePartsByNumericIdentity(window.HEAVY_PARTS || hw);
     window.CLASSMOD_PARTS = dedupePartsByNumericIdentity(window.CLASSMOD_PARTS || byCategory('Classmod'));
     if (!window.CLASSMOD_PARTS || window.CLASSMOD_PARTS.length === 0) {
@@ -139,9 +155,11 @@
   try { window.loadPresetOptions = function () { loadPresetSectionFallback(); }; } catch (_) {}
 
   function getCodeAppendOutputEl() {
-    var last = window.__CC_LAST_CODE_TARGET;
     var g = byId('guidedOutputDeserialized');
     var o = byId('outCode');
+    if (o && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader()) return o;
+    if (o && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) return o;
+    var last = window.__CC_LAST_CODE_TARGET;
     if (last === 'guided' && g) return g;
     if (last === 'simple' && o) return o;
     if (g && o) {
@@ -150,7 +168,7 @@
       if (gv && !ov) return g;
       if (ov && !gv) return o;
     }
-    return g || o;
+    return o || g;
   }
   try { window.getCodeAppendOutputEl = getCodeAppendOutputEl; } catch (_) {}
 
@@ -159,10 +177,16 @@
     window.addPresetPart = function () {
       var partSel = byId('presetPartSelect');
       var qty = byId('presetQuantity');
-      var out = (typeof window.getCodeAppendOutputEl === 'function') ? window.getCodeAppendOutputEl() : byId('outCode');
-      if (!partSel || !out) return;
+      if (!partSel) return;
       var code = String(partSel.value || '').trim();
       if (!code) return;
+      var nBoot = 1;
+      try { nBoot = Math.max(1, parseInt((qty && qty.value) || '1', 10) || 1); } catch (_) {}
+      if (typeof window.stxAppendPresetToActiveBuilder === 'function' && window.stxAppendPresetToActiveBuilder(code, { quantity: nBoot })) {
+        return;
+      }
+      var out = (typeof window.getCodeAppendOutputEl === 'function') ? window.getCodeAppendOutputEl() : byId('outCode');
+      if (!out) return;
 
       if (/^\d+:\d+$/.test(code)) code = '{' + code + '}';
       if (/^\d+$/.test(code)) code = '{' + code + '}';
@@ -175,6 +199,37 @@
         for (var qj = 0; qj < n; qj++) window.appendToOutCodeGuided(code);
         try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
         return;
+      }
+
+      /* Simple Builder: merge into state.extras — refreshOutputs() rebuilds outCode from slots + extras. */
+      if (out.id === 'outCode' && typeof window.stxAppendQuickPresetNumericTokens === 'function') {
+        var serialSb = String(out.value || '').trim();
+        var baseFamSb = null;
+        try {
+          var dblSb = serialSb.indexOf('||');
+          var prefixSb = dblSb >= 0 ? serialSb.slice(0, dblSb).trim() : serialSb;
+          var mSb = prefixSb.match(/^\s*(\d+)\s*[,\|]/) || prefixSb.match(/^\s*(\d+)/);
+          baseFamSb = mSb ? Number(mSb[1]) : null;
+        } catch (_) {}
+        var piecesSb = [];
+        for (var isb = 0; isb < n; isb++) piecesSb.push(code);
+        var normPiecesSb = piecesSb;
+        if (typeof window.normalizeIdTokensForBaseFamily === 'function' && baseFamSb != null) {
+          normPiecesSb = window.normalizeIdTokensForBaseFamily(piecesSb, baseFamSb);
+        }
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        if (window.stxAppendQuickPresetNumericTokens(normPiecesSb, { replaceBareQuickPresets: false })) {
+          try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+          return;
+        }
+        if (typeof window.stxAppendPartTokenViaExtras === 'function') {
+          for (var ia = 0; ia < normPiecesSb.length; ia++) {
+            var skipRefresh = ia < normPiecesSb.length - 1;
+            if (!window.stxAppendPartTokenViaExtras(normPiecesSb[ia], { type: 'quickPreset', skipRefresh: skipRefresh })) break;
+          }
+          try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+          return;
+        }
       }
 
       var serial = String(out.value || '').trim();
@@ -196,14 +251,18 @@
         tokens = window.normalizeIdTokensForBaseFamily(tokens, baseFamilyId, { compactSameFamily: false });
       }
       var newTail = tokens.join(' ');
+      if (!dbl && !serial) {
+        alert('Pick a rarity / main part in Simple Builder first so the item header (family, level) exists before adding presets.');
+        return;
+      }
       var newSerial = dbl >= 0
         ? serial.slice(0, dbl + 2) + newTail
-        : (serial ? (serial + ' || ' + newTail) : ('|| ' + newTail));
+        : (serial + ' || ' + newTail);
 
       out.value = newSerial;
       try { window.__CC_LAST_CODE_TARGET = (out.id === 'outCode') ? 'simple' : 'guided'; } catch (_) {}
       try {
-        if (out.id === 'outCode') { if (window.refreshOutputs) window.refreshOutputs(); }
+        if (out.id === 'outCode') { if (window.refreshOutputs) window.refreshOutputs(true); }
         else {
           if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview();
           if (window.syncFloatingOutput) window.syncFloatingOutput(true);
@@ -247,6 +306,9 @@
   }
 
   function runAllLoaders() {
+    try {
+      if (typeof window.applyPartDisplayOverrides === 'function') window.applyPartDisplayOverrides();
+    } catch (_) {}
     patchLegendaryPerkStats();
     ensurePools();
     try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}

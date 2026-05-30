@@ -90,7 +90,7 @@
     (function postNext(i) {
       if (i >= urls.length) return;
       var u = urls[i];
-      /* When embedded on a foreign origin (e.g. save-editor.be) a remote Netlify bump triggers
+      /* When embedded on a foreign origin (allowed host list) a remote Netlify bump triggers
          a CORS preflight due to the custom auth header. Keep the global counter unified by
          switching to a no-cors, query-key request (best-effort; response is opaque). */
       var useNoCors = false;

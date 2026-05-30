@@ -1,7 +1,3 @@
-/**
- * Auto-generated from borderlands4_skilltree_perks.csv.
- * Do not edit by hand; run tools/build-classmod-perk-meta.js.
- */
 (function(){
   'use strict';
   window.__CLASSMOD_PERK_META = {

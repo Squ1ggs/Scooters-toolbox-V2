@@ -1,7 +1,7 @@
 /**
  * cc-guided-builder-rebuild.js
  * Main Guided Builder: populates dropdowns from STX_DATASET, wires Add buttons,
- * emits codes to outCode. Supports Weapon, Heavy, Shield, Grenade, Repkit, Enhancement, Class Mod.
+ * emits codes to outCode. Supports Weapon, Heavy, Gadget, Shield, Grenade, Repkit, Enhancement, Class Mod.
  */
 (function () {
   'use strict';
@@ -32,6 +32,7 @@
     setIcon('ccGuidedItemType', 'Grenade', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_grenade.png'));
     setIcon('ccGuidedItemType', 'Enhancement', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_classmod.png'));
     setIcon('ccGuidedItemType', 'Class Mod', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_classmod.png'));
+    setIcon('ccGuidedItemType', 'Gadget', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_heavy.png'));
     setIcon('ccGuidedItemType', 'Heavy Weapon', ccPearlPipUrlInsteadOfLegendaryAug(base + 'legendary-augments/ico_legendary_aug_heavy.png'));
     setIcon('ccGuidedWeaponType', 'Assault Rifle', base + 'weapon-type/ico_ui_art_assault_small.png');
     setIcon('ccGuidedWeaponType', 'Pistol', base + 'weapon-type/ico_ui_art_pistol_small.png');
@@ -296,16 +297,16 @@
     var nm = String((p.legendaryName || p.name || '')).toLowerCase();
     var blob = its + ' ' + code + ' ' + nm;
 
-    // Infer BL comp tier (0..5) from row tokens.
     var tier = null;
-    // Pearlescent tier only for user-curated pearlescent rarity-id names (shared allowlist).
-    if (ccPartMatchesPearlRarityAllowlist(p)) tier = 5;
+    if (blob.indexOf('comp_06_pearlescent') !== -1 || blob.indexOf('pearlescent') !== -1) tier = 5;
+    if (tier == null && blob.indexOf('comp_05_legendary') !== -1) {
+      tier = ccPartMatchesPearlRarityAllowlist(p) ? 5 : 4;
+    }
     if (tier == null) {
       if (blob.indexOf('comp_01_common') !== -1) tier = 0;
       else if (blob.indexOf('comp_02_uncommon') !== -1) tier = 1;
       else if (blob.indexOf('comp_03_rare') !== -1) tier = 2;
       else if (blob.indexOf('comp_04_epic') !== -1) tier = 3;
-      else if (blob.indexOf('comp_05_legendary') !== -1) tier = 4;
     }
     if (tier == null) return;
 
@@ -465,9 +466,30 @@
     conflux: 'sniper rifle',
     eigenburst: 'shotgun',
     handcannon: 'pistol',
-    crowdsourced: 'sniper rifle',
-    soulsurvivor: 'assault rifle',
-    crazedearl: 'smg',
+    crowdsourced: 'assault rifle',
+    crowsourced: 'assault rifle',
+    soulsurvivor: 'pistol',
+    crazedearl: 'shotgun',
+    jailbroken: 'smg',
+    jailbrokengatling: 'smg',
+    jailbrokenkatling: 'smg',
+    mercurious: 'smg',
+    mercury: 'smg',
+    fleabag: 'assault rifle',
+    hairtrigger: 'shotgun',
+    shalashaska: 'pistol',
+    gomie: 'assault rifle',
+    herald: 'pistol',
+    loomingconstable: 'shotgun',
+    looming: 'shotgun',
+    firestorm: 'smg',
+    firework: 'smg',
+    abyss: 'sniper rifle',
+    constable: 'shotgun',
+    screwstonian: 'smg',
+    screwed: 'smg',
+    parasite: 'smg',
+    solartemper: 'smg',
     chainreaction: 'classmod'
   };
 
@@ -498,11 +520,13 @@
   // the rarity-id icon.
   var CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL = null;
   var CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL = null;
+  var CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL = null;
 
   function ccInitRarityIdIconLookups() {
-    if (CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL) return;
+    if (CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL && CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL) return;
     CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL = Object.create(null);
     CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL = Object.create(null);
+    CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL = Object.create(null);
 
     var all = getAllParts();
     if (!all || !all.length) return;
@@ -538,13 +562,27 @@
         .replace(/[^a-z0-9]/g, '')
         .toLowerCase();
 
-      // Legendary rarity-id: uses `comp_05_legendary` in code.
       if (code.indexOf('comp_05_legendary') !== -1) {
-        var iconUrl = ccLegendaryAugIconUrlForPartGear(p);
-        if (iconUrl) CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL[effectsKeyNorm] = iconUrl;
-        if (rarityTokenFromCode && iconUrl) CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[rarityTokenFromCode] = iconUrl;
+        var isPearlRow = ccPartMatchesPearlRarityAllowlist(p);
+        var iconUrl = isPearlRow
+          ? (ccPearlSlotAugFullUrl(p) || (CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png'))
+          : ccLegendaryAugIconUrlForPartGear(p);
+        if (!iconUrl) continue;
+        if (isPearlRow) {
+          if (rarityTokenFromCode) CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL[rarityTokenFromCode] = iconUrl;
+        } else {
+          CC_RARITY_ID_EFFECT_TO_LEGENDARY_AUG_URL[effectsKeyNorm] = iconUrl;
+          if (rarityTokenFromCode) CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[rarityTokenFromCode] = iconUrl;
+        }
       }
     }
+  }
+
+  function ccBarrelTokenFromPart(p) {
+    if (typeof window.stxBarrelPearlLegendTokenFromPart === 'function') {
+      return window.stxBarrelPearlLegendTokenFromPart(p);
+    }
+    return '';
   }
 
   function ccLegendaryAugIconUrlForPartIfTiedByName(p) {
@@ -569,11 +607,14 @@
         token = code.split('_').pop();
       }
     }
-    token = String(token || '')
+    token = ccBarrelTokenFromPart(p) || String(token || '')
       .replace(/[^a-z0-9]/g, '')
       .toLowerCase();
     var isW = ccSpawnCodeLooksLikeWeaponFamily(p);
     var shortNumericTok = /^[0-9]+$/.test(token) && token.length <= 2;
+    if (token && !shortNumericTok && CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL && CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL[token]) {
+      return CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL[token];
+    }
     if (token && !shortNumericTok && CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token]) {
       var uTok = CC_RARITY_ID_LEGENDARY_TOKEN_TO_AUG_URL[token];
       if (!isW || !/ico_legendary_aug_classmod/i.test(uTok)) return ccPearlPipUrlInsteadOfLegendaryAug(uTok);
@@ -592,7 +633,9 @@
     if (!p) return false;
     var pt = String(p.partType || '').trim().toLowerCase();
     if (!/barrel|body/.test(pt)) return false;
-    return ccPartMatchesPearlRarityAllowlist(p);
+    ccInitRarityIdIconLookups();
+    var token = ccBarrelTokenFromPart(p);
+    return !!(token && CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL && CC_RARITY_ID_PEARL_TOKEN_TO_AUG_URL[token]);
   }
 
   function ccPartLooksLegendaryBarrel(p) {
@@ -795,16 +838,20 @@
       var code2 = String(p.code || '').toLowerCase();
       var nm2 = String((p.legendaryName || p.name || '')).toLowerCase();
       var blob2 = its2 + ' ' + code2 + ' ' + nm2;
-      if (ccPartMatchesPearlRarityAllowlist(p)) {
-        applyGuidedRarityPartOptionIcon(opt, p);
+      if (ccIsPearlByRarityIdEffectName(p)) {
+        var pearlUrl = ccLegendaryAugIconUrlForPartIfTiedByName(p);
+        if (pearlUrl) {
+          applyDataCcIconFullUrl(opt, pearlUrl);
+          return;
+        }
+        applyDataCcIconFullUrl(opt, CC_GUIDED_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
         return;
       }
 
-      // Legendary body/barrel rows: `legendary_augments` art (per gear class).
       var looksLegendary2 =
-        ccPartLooksLegendaryBarrel(p) ||
-        /comp_05_legendary/.test(blob2) ||
-        nm2.indexOf('legendary') !== -1;
+        (ccPartLooksLegendaryBarrel(p) && !ccIsPearlByRarityIdEffectName(p)) ||
+        (/comp_05_legendary/.test(blob2) && !ccPartMatchesPearlRarityAllowlist(p)) ||
+        (nm2.indexOf('legendary') !== -1 && !ccPartMatchesPearlRarityAllowlist(p));
       if (looksLegendary2) {
         var leg2 = ccLegendaryAugIconUrlForPartGear(p);
         if (leg2) {
@@ -969,6 +1016,9 @@
     if (!p) return '-';
     var rawCode = guidedNormCode(p);
     var unquoted = rawCode.replace(/^["']|["']$/g, '').trim();
+    var codeL = String(unquoted || '').toLowerCase();
+    var pt = String(p.partType || '').trim().toLowerCase();
+    var isRarityComp = pt === 'rarity' || /\.comp_0[1-6]_/.test(codeL) || /\bcomp_0[1-6]_/.test(codeL);
     var spawnSeg = guidedSpawnSegmentFromCode(rawCode);
     var datasetName = String((p.name || p.legendaryName || '').trim() || '');
     var id = String(p.idRaw != null && p.idRaw !== '' ? p.idRaw : (p.idraw != null ? p.idraw : (p.id != null ? p.id : ''))).trim();
@@ -976,27 +1026,35 @@
     if (stats.length > 44) stats = stats.substring(0, 43) + '…';
 
     var bits = [];
-    if (spawnSeg) bits.push(spawnSeg);
-    else if (unquoted) bits.push(unquoted.length <= 52 ? unquoted : unquoted.substring(0, 49) + '…');
+    if (isRarityComp && typeof window.stxRarityIdHumanTitleForPart === 'function') {
+      var humanTitle = String(window.stxRarityIdHumanTitleForPart(p) || '').trim();
+      if (humanTitle) bits.push(humanTitle);
+    }
+    if (!bits.length) {
+      if (spawnSeg) bits.push(spawnSeg);
+      else if (unquoted) bits.push(unquoted.length <= 52 ? unquoted : unquoted.substring(0, 49) + '…');
 
-    if (datasetName) {
-      var dCompact = datasetName.replace(/\s+/g, ' ');
-      if (dCompact.length > 56) dCompact = dCompact.substring(0, 55) + '…';
-      var spawnLc = (spawnSeg || '').toLowerCase();
-      var dLc = dCompact.toLowerCase().replace(/[^a-z0-9]/g, '');
-      var sLc = spawnLc.replace(/[^a-z0-9]/g, '');
-      if (!spawnSeg || (dLc !== sLc && dLc.indexOf(sLc) === -1 && dCompact.toLowerCase().indexOf(spawnLc) === -1)) {
-        bits.push(dCompact);
+      if (datasetName) {
+        var dCompact = datasetName.replace(/\s+/g, ' ');
+        if (dCompact.length > 56) dCompact = dCompact.substring(0, 55) + '…';
+        var spawnLc = (spawnSeg || '').toLowerCase();
+        var dLc = dCompact.toLowerCase().replace(/[^a-z0-9]/g, '');
+        var sLc = spawnLc.replace(/[^a-z0-9]/g, '');
+        if (!spawnSeg || (dLc !== sLc && dLc.indexOf(sLc) === -1 && dCompact.toLowerCase().indexOf(spawnLc) === -1)) {
+          bits.push(dCompact);
+        }
       }
     }
 
-    // Only mark (Pearl) when the row is truly pearl/pearlescent — avoid false positives from stats text.
+    // `(Pearl)` only on rarity-ID comp rows (main rarity picker), not barrels or other slots.
     (function () {
-      var codeL = String(unquoted || '').toLowerCase();
+      if (/part_pearl/i.test(codeL) || /part_barrel/.test(codeL) || pt === 'barrel') return;
+      if (!isRarityComp) return;
       var isPearl =
-        (/part_pearl/i.test(codeL)) ||
         (/(?:^|[._])comp_06_pearlescent/.test(codeL)) ||
-        (typeof ccPartMatchesPearlRarityAllowlist === 'function' && ccPartMatchesPearlRarityAllowlist(p));
+        (typeof ccPartMatchesPearlRarityAllowlist === 'function' && ccPartMatchesPearlRarityAllowlist(p) && /comp_05_legendary/.test(codeL));
+      var item = Number(p.itemId != null ? p.itemId : p.id);
+      if (Number.isFinite(item) && item >= 51 && item <= 60) isPearl = true;
       if (!isPearl) return;
       var lineSoFar = bits.join(' · ');
       if (lineSoFar.indexOf('(Pearl)') === -1) bits.push('(Pearl)');
@@ -1847,6 +1905,13 @@
   }
 
   function getEffectiveManufacturerForFilter() {
+    var itemSel = byId('ccGuidedItemType');
+    var itemType = itemSel ? String(itemSel.value || '').trim() : '';
+    if (itemType === 'Gadget') return '';
+    if (itemType === 'Enhancement') {
+      var enhMfg = byId('enhMfgSel');
+      if (enhMfg && String(enhMfg.value || '').trim()) return String(enhMfg.value || '').trim();
+    }
     var toggle = byId('ccGuidedAllManufacturers');
     if (toggle && toggle.checked) return '';
     return (getGuidedState().manufacturer || '').trim();
@@ -1977,8 +2042,10 @@
     if (seen['Sniper'] && !seen['Sniper Rifle']) wtypes.push('Sniper Rifle');
     wtypes = wtypes.filter(function (w) { return w !== 'Sniper'; });
     wtypes = wtypes.filter(function (w) { return String(w).trim().toLowerCase() !== 'weapon'; });
+    wtypes = wtypes.filter(function (w) { return !/^heavy(?:\s*weapon)?$/i.test(String(w || '').trim()); });
     wtypes.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); });
     var preserveWt = (wtSel.value || '').trim();
+    if (/^heavy(?:\s*weapon)?$/i.test(preserveWt)) preserveWt = '';
     wtSel.innerHTML = '<option value="">Select weapon type...</option>';
     for (var j = 0; j < wtypes.length; j++) {
       if (!wtypes[j]) continue;
@@ -2002,13 +2069,19 @@
     var wtSel = byId('ccGuidedWeaponType');
     if (!manSel) return;
     var itemType = (itemSel && itemSel.value ? itemSel.value : (stxItem && stxItem.value ? stxItem.value : '')).trim();
+    var fromStx = !!(stxItem && stxItem.value) && (!itemSel || !itemSel.value || itemSel.value === stxItem.value);
+    if (itemType === 'Gadget') {
+      manSel.innerHTML = '<option value="">All gadget pools</option>';
+      manSel.disabled = true;
+      syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
+      return;
+    }
     if (itemType === 'Enhancement') {
       manSel.innerHTML = '<option value="">Choose below</option>';
       manSel.disabled = true;
       syncGuidedManufacturerSelects(manSel, stxMan, fromStx);
       return;
     }
-    var fromStx = !!(stxItem && stxItem.value) && (!itemSel || !itemSel.value || itemSel.value === stxItem.value);
     var placeholder = (itemType === 'Class Mod') ? 'Select character...' : 'Select manufacturer...';
     var preserveMan = (manSel.value || '').trim();
     if (!preserveMan) {
@@ -2094,7 +2167,7 @@
     }
 
     var seen = {};
-    var map = { 'Weapon': ['Assault Rifle','Pistol','Shotgun','SMG','Sniper Rifle','Sniper','Heavy Weapon'], 'Heavy Weapon': ['Heavy Weapon','Gadget'] };
+    var map = { 'Weapon': ['Assault Rifle','Pistol','Shotgun','SMG','Sniper Rifle','Sniper'], 'Heavy Weapon': ['Heavy Weapon','Gadget'] };
     var rarities = window.STX_RARITIES;
     if (Array.isArray(rarities)) {
       for (var i = 0; i < rarities.length; i++) {
@@ -2184,8 +2257,8 @@
     if (!itemType) return '';
 
     var levelEl = byId('ccGuidedLevel');
-    var level = parseGuidedHeaderNumber(levelEl && levelEl.value, 60);
-    if (!Number.isFinite(level) || level <= 0) level = 60;
+    var level = parseGuidedHeaderNumber(levelEl && levelEl.value, 61);
+    if (!Number.isFinite(level) || level <= 0) level = 61;
 
     var buybackEl = byId('ccGuidedBuybackFlag');
     var buyback = !!(buybackEl && buybackEl.checked);
@@ -2565,6 +2638,9 @@
   window.clearGuidedImportLock = clearGuidedImportLock;
 
   function appendToOutCode(token, forceTarget, replaceRarity) {
+    if (!forceTarget && typeof window.stxAppendPresetToActiveBuilder === 'function') {
+      if (window.stxAppendPresetToActiveBuilder(token, { quantity: 1 })) return;
+    }
     var out = forceTarget || getGuidedOutputEl();
     if (!out) return;
     // Once user explicitly adds/removes parts, stop pinning outputs to the imported snapshot.
@@ -3113,6 +3189,7 @@
     'Repkit': 'ccRepkitBuilderDetails',
     'Enhancement': 'ccEnhancementBuilderDetails',
     'Class Mod': 'ccClassModBuilderDetails',
+    'Gadget': 'ccGadgetBuilderDetails',
     'Heavy Weapon': 'ccHeavyBuilderDetails',
     'Heavy': 'ccHeavyBuilderDetails'
   };
@@ -3153,7 +3230,27 @@
       { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccRepkitFirmwareSelect', btnId: 'ccRepkitFirmwareAdd' },
       { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccRepkitLegendarySelect', btnId: 'ccRepkitLegendaryAdd' }
     ],
-    Enhancement: [],
+    Enhancement: [
+      { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccEnhancementRaritySelect', btnId: 'ccEnhancementRarityAdd' },
+      { key: 'body', label: 'Body', partType: 'Body', selectId: 'ccEnhancementBodySelect', btnId: 'ccEnhancementBodyAdd' },
+      { key: 'core', label: 'Core / legendary effect', partType: 'Core', selectId: 'ccEnhancementCoreSelect', btnId: 'ccEnhancementCoreAdd' },
+      { key: 'stats', label: 'Stat Group 1', partType: 'Stats', selectId: 'ccEnhancementStatsSelect', btnId: 'ccEnhancementStatsAdd' },
+      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccEnhancementFirmwareSelect', btnId: 'ccEnhancementFirmwareAdd' },
+      { key: 'other', label: 'Other parts (stack)', partType: '', selectId: 'ccEnhancementOtherSelect', btnId: 'ccEnhancementOtherAdd' }
+    ],
+    Gadget: [
+      { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccGadgetRaritySelect', btnId: 'ccGadgetRarityAdd' },
+      { key: 'body', label: 'Body', partType: 'Body', selectId: 'ccGadgetBodySelect', btnId: 'ccGadgetBodyAdd' },
+      { key: 'bodyAcc', label: 'Body Accessory', partType: 'Body Accessory', selectId: 'ccGadgetBodyAccSelect', btnId: 'ccGadgetBodyAccAdd' },
+      { key: 'barrel', label: 'Barrel', partType: 'Barrel', selectId: 'ccGadgetBarrelSelect', btnId: 'ccGadgetBarrelAdd' },
+      { key: 'barrelAcc', label: 'Barrel Accessory', partType: 'Barrel Accessory', selectId: 'ccGadgetBarrelAccSelect', btnId: 'ccGadgetBarrelAccAdd' },
+      { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccGadgetElementSelect', btnId: 'ccGadgetElementAdd' },
+      { key: 'payload', label: 'Payload', partType: 'Payload', selectId: 'ccGadgetPayloadSelect', btnId: 'ccGadgetPayloadAdd' },
+      { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccGadgetAugmentSelect', btnId: 'ccGadgetAugmentAdd' },
+      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccGadgetFirmwareSelect', btnId: 'ccGadgetFirmwareAdd' },
+      { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccGadgetLegendarySelect', btnId: 'ccGadgetLegendaryAdd' },
+      { key: 'other', label: 'Other parts (stack)', partType: '', selectId: 'ccGadgetOtherSelect', btnId: 'ccGadgetOtherAdd' }
+    ],
     'Class Mod': [
       { key: 'perk', label: 'Perks', partType: 'Skill', selectId: 'ccClassModPerkSelect', btnId: 'ccClassModPerkAdd' },
       { key: 'universal', label: 'Universal Parts', partType: 'Universal', selectId: 'ccClassModUniversalSelect', btnId: 'ccClassModUniversalAdd' },
@@ -3346,6 +3443,10 @@
         manLabel.textContent = 'Choose below';
         manSel.innerHTML = '<option value="">Choose below</option>';
         manSel.disabled = true;
+      } else if (itemType === 'Gadget') {
+        manLabel.textContent = 'Gadget pool';
+        manSel.innerHTML = '<option value="">All gadget pools</option>';
+        manSel.disabled = true;
       } else {
         manLabel.textContent = 'Manufacturer';
         if (manSel.options.length && manSel.options[0]) manSel.options[0].text = 'Select manufacturer...';
@@ -3356,13 +3457,13 @@
     if (isWeapon) {
       refreshWeaponDropdowns();
     } else if (itemType && gearHub) {
-      var builderIds = ['ccShieldBuilderDetails', 'ccGrenadeBuilderDetails', 'ccRepkitBuilderDetails', 'ccEnhancementBuilderDetails', 'ccClassModBuilderDetails', 'ccHeavyBuilderDetails'];
+      var builderIds = ['ccShieldBuilderDetails', 'ccGrenadeBuilderDetails', 'ccRepkitBuilderDetails', 'ccEnhancementBuilderDetails', 'ccClassModBuilderDetails', 'ccGadgetBuilderDetails', 'ccHeavyBuilderDetails'];
       var activeId = ITEM_TYPE_TO_BUILDER[itemType];
       for (var b = 0; b < builderIds.length; b++) {
         var el = byId(builderIds[b]);
         if (el) el.style.display = (builderIds[b] === activeId) ? '' : 'none';
       }
-      if (activeId && GEAR_SLOTS_BY_CATEGORY[itemType] && itemType !== 'Class Mod' && itemType !== 'Enhancement') {
+      if (activeId && GEAR_SLOTS_BY_CATEGORY[itemType] && itemType !== 'Class Mod') {
         // Defer Heavy Weapon dropdown refresh to avoid blocking UI (12 filter runs over large dataset)
         if (itemType === 'Heavy Weapon') {
           setTimeout(function () { refreshGearDropdowns(itemType); }, 0);
@@ -4032,11 +4133,15 @@
       presetBtn.addEventListener('click', function () {
         var partSel = byId('ccGuidedPresetPartSelect');
         var qtyEl = byId('ccGuidedPresetQuantity');
-        var out = getGuidedOutputEl();
-        if (!partSel || !out) return;
+        if (!partSel) return;
         var code = (partSel.value || '').trim();
         if (!code) return;
         var n = Math.max(1, parseInt((qtyEl && qtyEl.value) || '1', 10) || 1);
+        if (typeof window.stxAppendPresetToActiveBuilder === 'function' && window.stxAppendPresetToActiveBuilder(code, { quantity: n })) {
+          return;
+        }
+        var out = getGuidedOutputEl();
+        if (!out) return;
         for (var i = 0; i < n; i++) appendToOutCode(code);
         try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
       });

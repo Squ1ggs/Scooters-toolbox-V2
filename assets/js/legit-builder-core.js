@@ -165,6 +165,57 @@
       return 'Unknown';
     }
 
+    function normalizeStxSpawnCode(code) {
+      return String(code || '')
+        .replace(/^\\"|\\"$/g, '')
+        .replace(/^"|"$/g, '')
+        .trim()
+        .toLowerCase();
+    }
+
+    /** Barrel rows present in STX dataset but missing from static bl4_manifest / NCS extract (Raid 2 named barrels). */
+    function getExtraStxBarrelOptions(item, existingOptions) {
+      var parts =
+        typeof window !== 'undefined' &&
+        window.STX_DATASET &&
+        Array.isArray(window.STX_DATASET.ALL_PARTS)
+          ? window.STX_DATASET.ALL_PARTS
+          : [];
+      if (!item || !parts.length) return [];
+      var slug = String(item.slug || '').trim().toLowerCase();
+      if (!slug || !/_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slug)) return [];
+      var seenIdx = {};
+      var seenName = {};
+      (existingOptions || []).forEach(function (o) {
+        var idx = Number(o && o.index);
+        if (Number.isFinite(idx)) seenIdx[idx] = true;
+        var nm = String(o && o.name || '').trim().toLowerCase();
+        if (nm) seenName[nm] = true;
+      });
+      var out = [];
+      for (var i = 0; i < parts.length; i++) {
+        var row = parts[i];
+        if (!row || String(row.partType || '') !== 'Barrel') continue;
+        var code = normalizeStxSpawnCode(row.code);
+        if (!code || code.indexOf(slug + '.') !== 0) continue;
+        var pk = code.split('.').pop() || '';
+        if (!/^part_barrel_/.test(pk)) continue;
+        var itemId = Number(row.id);
+        if (!Number.isFinite(itemId) || seenIdx[itemId]) continue;
+        if (seenName[pk]) continue;
+        out.push({
+          index: itemId,
+          name: pk,
+          in_pool: true,
+          invDumpKey: code,
+          _fromStxDataset: true
+        });
+        seenIdx[itemId] = true;
+        seenName[pk] = true;
+      }
+      return out;
+    }
+
     function getExtraRarityOptions(item, existingOptions) {
       if (!item || !Array.isArray(STX_RAR) || !STX_RAR.length) return [];
       var fam = Number(item.category_id);
@@ -410,11 +461,11 @@
 
     function getItemLevel() {
       var el = itemLevelInput || document.getElementById('item-level');
-      if (!el) return 60;
+      if (!el) return 61;
       var n = parseInt(el.value, 10);
-      if (!Number.isFinite(n)) return 60;
+      if (!Number.isFinite(n)) return 61;
       if (n < 1) return 1;
-      if (n > 60) return 60;
+      if (n > 61) return 61;
       return n;
     }
 
@@ -568,7 +619,7 @@
 
     /**
      * Repair-kit manifest rows often stuff manufacturer bases + unique augments into `unknown`.
-     * Pull them into the NCS lanes save-editor.be exposes (body / primary_augment).
+     * Pull them into the NCS lanes used for repair kits (body / primary_augment).
      */
     function mergeManifestUnknownRepkitOptions(slotName, item, ncsOpts) {
       var slug = item && item.slug;
@@ -1332,6 +1383,10 @@
             if (isRarity) {
               var extraRarity = getExtraRarityOptions(item, options);
               if (extraRarity.length) options = options.concat(extraRarity);
+            }
+            if (isWeaponSlug && (slotName === 'barrel' || manifestKey === 'barrel')) {
+              var extraBarrel = getExtraStxBarrelOptions(item, options);
+              if (extraBarrel.length) options = options.concat(extraBarrel);
             }
             if (options.length === 0) continue;
             if (isRarity) options.forEach(function(o) { o.in_pool = true; });
@@ -2530,7 +2585,7 @@
           tagPool.add('unique');
           if (!tagPool.has('legendary') && (/legendary|pearlescent|comp_06|_pearlescent/i.test(compName))) tagPool.add('legendary');
         }
-        /* When compBasetags in the bundle is missing or corrupt, still seed tier tags from the comp key (save-editor–style pool). Plain comps must NOT pre-load uni_/leg_ from other parts — that falsely satisfies legendary deps on green frames. */
+        /* When compBasetags in the bundle is missing or corrupt, still seed tier tags from the comp key. Plain comps must NOT pre-load uni_/leg_ from other parts — that falsely satisfies legendary deps on green frames. */
         (function seedRarityFromCompKey(cn, pool) {
           if (!cn) return;
           var c = String(cn).trim().toLowerCase();
@@ -2581,7 +2636,7 @@
           var exf = TC.formatTags(meta.exclusiontags);
           if (exf.indexOf('barrel_01') >= 0 && skBase === 'underbarrel') skipExTags.push('barrel_01');
         }
-        /* Match __stxRefreshLegitSlotOptionValidity / save-editor style: named comps often carry rarity addtags
+        /* Match __stxRefreshLegitSlotOptionValidity: named comps often carry rarity addtags
            that do not intersect the linear pool’s tier set — do not false-fail; real cheats still miss deps or hit exclusions.
            Note: tag-comp-validation.js now handles Legendary->Epic matching strictly; no automatic skip here. */
         var skipRarityPoolMatchActual = false;
@@ -2623,7 +2678,7 @@
         TC.applyPartAddTagsToPool(tagPool, meta);
       }
 
-      if (progOpts.saveEditorLegitBulk) {
+      if (progOpts.bulkLegitStrictInvTags) {
         /* Bulk parity: order-independent exclusion-only recheck. Prefer every manifest-mapped decode row
            (bulkGlobalExclRows) so duplicate slots (e.g. two barrel_acc) still contribute addtags; collapsing
            to selectedParts alone dropped tags from non-first rows. Fallback: selected slots only. */
@@ -2737,7 +2792,7 @@
         /* Bulk cheat-audit: full inv_comp min/max caused large false-positive waves. Keep strict behavior for
            normal validation, but in bulk mode re-enable only actionable under-min on barrel_acc using every
            mapped decode row (incl. duplicate-slot rows via bulkGlobalExclRows). */
-        if (!progOpts.saveEditorLegitBulk) {
+        if (!progOpts.bulkLegitStrictInvTags) {
           var countsByCompSlot = {};
           for (var ti = 0; ti < sortedKeys.length; ti++) {
             var sk = sortedKeys[ti];
@@ -2753,7 +2808,7 @@
             var cnt = countsByCompSlot[compSlot];
             var min = typeof r.min === 'number' ? r.min : (r.parts && r.parts.length ? 1 : 0);
             var max = typeof r.max === 'number' ? r.max : 999;
-            /* Match Nexus/save-editor legit-builder: merged rules often imply min 1 when firmware options
+            /* Match Nexus legit-builder rules: merged rules often imply min 1 when firmware options
                exist, but serials and the online editor treat firmware as optional. */
             if (compSlot === 'firmware' && min > 0) min = 0;
             if (cnt < min || cnt > max) {
@@ -2941,7 +2996,7 @@
     }
 
     /**
-     * Dependency basetags where linear slot→tagPool progression often disagrees with Nexus / save-editor
+     * Dependency basetags where linear slot→tagPool progression often disagrees with strict Nexus simulation
      * (v23–v25). Barrel_01/02: satisfied via barrel-slot name seed above — do not mark as bulk noise or
      * real cheats that still have other bad deps/exclusions won’t pass.
      */
@@ -2958,9 +3013,9 @@
     /**
      * Bulk page only: hard-fail lines that match interactive Legit Builder’s inv-tag bar (exclusion clash,
      * comp-slot under-min, comp allowlist mismatch, actionable missing deps). Dependency lines that are
-     * editor-parity noise stay FYI via bulkMissingDepTagIsEditorParityNoise.
+     * soft dependency noise stay FYI via bulkMissingDepTagIsEditorParityNoise.
      */
-    function invReasonIsSaveEditorBulkHardFail(line) {
+    function invReasonIsBulkHardFail(line) {
       var s = String(line || '');
       if (/^Comp allowlist:/i.test(s)) return true;
       if (/rarity tags do not match pool/i.test(s)) return true;
@@ -3011,14 +3066,14 @@
         /* Interactive builder: treat under-min as "incomplete build" (not hard fail yet). */
         if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi) return false;
       }
-      if (invReasonIsSaveEditorBulkHardFail(s)) return true;
+      if (invReasonIsBulkHardFail(s)) return true;
       if (/^Comp allowlist:/i.test(s)) return true;
       return false;
     }
 
     /**
      * Data-backed checks (same as manual slot selection). Used by updateValidation and decode-from-serial path.
-     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page — save-editor Legit parity: only Fail (data) from inv chain on exclusion / comp-slot under-min; other inv messages are FYI. bulkGlobalExclRows: all manifest-mapped decode rows (incl. duplicate slots) for order-independent exclusion pool; decode path sets this. When invTagFailuresAsErr is false (interactive Legit Builder UI), inv-tag globalReasons only promote Fail if invReasonIsSaveEditorBulkHardFail — matching slot-dropdown ✓/✗ (skipRarityPoolMatch) and avoiding false “Uncertain (inv tags)”.
+     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page uses strict inv hard-fails only (exclusion / comp-slot under-min / allowlist). bulkGlobalExclRows: all manifest-mapped decode rows for order-independent exclusion pool. Interactive UI promotes Fail from inv-tag lines only when invReasonIsBulkHardFail.
      */
     function computeLegitValidationState(selectedItem, selectedParts, opts) {
       opts = opts || {};
@@ -3182,7 +3237,7 @@
         tagProgResult = runInvTagProgression(selectedParts, tagInv, ncsSlotsForTag, {
           skipCompSlotRules: !!(selectedItem && slugSkipsInvCompSlotRules(selectedItem.slug, selectedItem)),
           relaxUniLegDeps: opts.relaxInvUniLegDeps === true,
-          saveEditorLegitBulk: bulkAudit === true,
+          bulkLegitStrictInvTags: bulkAudit === true,
           manifestSlug: selectedItem ? selectedItem.slug : '',
           bulkGlobalExclRows: Array.isArray(opts.bulkGlobalExclRows) ? opts.bulkGlobalExclRows : null
         });
@@ -3257,7 +3312,7 @@
                   var hasBulkHardInv = false;
                   var hbi;
                   for (hbi = 0; hbi < tagProgResult.globalReasons.length; hbi++) {
-                    if (invReasonIsSaveEditorBulkHardFail(tagProgResult.globalReasons[hbi])) {
+                    if (invReasonIsBulkHardFail(tagProgResult.globalReasons[hbi])) {
                       hasBulkHardInv = true;
                       break;
                     }
@@ -3269,7 +3324,7 @@
                     status = 'ok';
                     statusText = 'OK (data)';
                     details.push(
-                      'Bulk save-editor parity: inv scan reported FYI lines only (no exclusion clash, comp-slot under-min, or comp allowlist mismatch).'
+                      'Bulk inv scan: FYI lines only (no exclusion clash, comp-slot under-min, or comp allowlist mismatch).'
                     );
                   }
                 } else {
@@ -3277,7 +3332,7 @@
                   statusText = 'Fail (data)';
                 }
               } else {
-                /* Interactive Legit Builder (invTagFailuresAsErr off): same hard-fail bar as bulk save-editor parity —
+                /* Interactive Legit Builder (invTagFailuresAsErr off): same hard-fail bar as bulk strict inv —
                    dropdown ✓/✗ uses skipRarityPoolMatch; FYI lines (allowlist, soft deps) must not force Uncertain. */
                 var legitHardInv = false;
                 var underMinSlots = [];

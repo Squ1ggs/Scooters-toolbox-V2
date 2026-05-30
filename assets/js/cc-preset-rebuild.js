@@ -15,7 +15,6 @@
     return byId('yamlInput') || byId('fullYamlInput') || document.querySelector('textarea[aria-label="YAML editor"]');
   }
 
-  /** Oak2_CharacterXP_Progression from Nexus-Data-xp_progression0.json (GbxExperienceFunction_Exponential). No per-level table in Nexus; scale is fixed so cumulative XP at level 50 matches known legit saves (3430227). */
   var __oak2CharXpProg = { multiplier: 60, power: 2.8, offset: 7.33, levelCap: 60, anchorLevel: 50, anchorCumulativePoints: 3430227 };
   var __oak2CharXpScale = null;
   function oak2CharacterCumulativeXpPoints(level) {
@@ -571,7 +570,7 @@
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return alert('Load or paste a YAML file first.');
     data.globals = data.globals || {};
-    data.globals.highest_unlocked_vault_hunter_level = 6;
+    data.globals.highest_unlocked_vault_hunter_level = 7;
     data.globals.vault_hunter_level = 1;
     window.commitYamlDataToEditor(data);
   };
@@ -781,7 +780,7 @@
   }
 
   /** Bundled max values written to `stats.achievements` (challenge-style / profile counters). */
-  var CC_ACHIEVEMENT_COUNTERS_MAX = { '00_level_10': 1, '01_level_30': 1, '02_level_50': 1, '02_level_60': 1, '03_uvh_5': 1, '04_cosmetics_collect': 60, '05_vehicles_collect': 10, '06_legendaries_equip': 1, '07_challenges_gear': 1, '08_challenges_manufacturer': 1, '10_worldevents_colosseum': 1, '11_worldevents_airship': 1, '12_worldevents_meteor': 1, '13_contracts_complete': 80, '14_discovery_grasslands': 54, '15_discovery_mountains': 62, '16_discovery_shatteredlands': 47, '17_discovery_city': 21, '18_worldboss_defeat': 1, '19_vaultguardian_defeat': { '19_vaultguardian_grasslands': 1, '19_vaultguardian_mountains': 1, '19_vaultguardian_shatteredlands': 1 }, '20_missions_survivalist': 3, '21_missions_auger': 7, '22_missions_electi': 3, '23_missions_claptrap': 5, '24_missions_side': 98, '25_missions_grasslands': 1, '26_missions_mountains': 1, '27_missions_shatteredlands': 1, '28_missions_elpis': 1, '29_missions_main': 1, '30_moxxi_hidden': 1, '31_tannis_hidden': 1, '32_zane_hidden': 1, '33_oddman_hidden': 1, '34_dave_hidden': 1 };
+  var CC_ACHIEVEMENT_COUNTERS_MAX = { '00_level_10': 1, '01_level_30': 1, '02_level_50': 1, '02_level_60': 1, '03_uvh_5': 1, '03_uvh_6': 1, '04_cosmetics_collect': 63, '05_vehicles_collect': 10, '06_legendaries_equip': 1, '07_challenges_gear': 1, '08_challenges_manufacturer': 1, '10_worldevents_colosseum': 1, '11_worldevents_airship': 1, '12_worldevents_meteor': 1, '13_contracts_complete': 80, '14_discovery_grasslands': 54, '15_discovery_mountains': 62, '16_discovery_shatteredlands': 47, '17_discovery_city': 21, '18_worldboss_defeat': 1, '19_vaultguardian_defeat': { '19_vaultguardian_grasslands': 1, '19_vaultguardian_mountains': 1, '19_vaultguardian_shatteredlands': 1 }, '20_missions_survivalist': 3, '21_missions_auger': 7, '22_missions_electi': 3, '23_missions_claptrap': 5, '24_missions_side': 98, '25_missions_grasslands': 1, '26_missions_mountains': 1, '27_missions_shatteredlands': 1, '28_missions_elpis': 1, '29_missions_main': 1, '30_moxxi_hidden': 1, '31_tannis_hidden': 1, '32_zane_hidden': 1, '33_oddman_hidden': 1, '34_dave_hidden': 1 };
 
   window.__ccGetBundledAchievementCountersMax = function () {
     return CC_ACHIEVEMENT_COUNTERS_MAX;
@@ -855,7 +854,7 @@
     if (!(window.ensurePresetDataLoaded && window.ensurePresetDataLoaded())) return stubNeedFullToolbox('Complete All Challenges');
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return alert('Load or paste a YAML file first.');
-    var uvh = { mission_uvh_1a: 1, mission_uvh_1b: 1, mission_uvh_1c: 1, mission_uvh_2a: 1, mission_uvh_2b: 1, mission_uvh_2c: 1, mission_uvh_2d: 1, mission_uvh_3a: 1, mission_uvh_3b: 1, mission_uvh_3c: 1, mission_uvh_3d: 1, mission_uvh_4a: 1, mission_uvh_4b: 1, mission_uvh_4c: 1, mission_uvh_4d: 1, mission_uvh_5a: 1, mission_uvh_5b: 1, mission_uvh_5c: 1, mission_uvh_6a: 1, uvh_1_finalchallenge: 1, uvh_2_finalchallenge: 1, uvh_3_finalchallenge: 1, uvh_4_finalchallenge: 1, uvh_5_finalchallenge: 1 };
+    var uvh = { mission_uvh_1a: 1, mission_uvh_1b: 1, mission_uvh_1c: 1, mission_uvh_2a: 1, mission_uvh_2b: 1, mission_uvh_2c: 1, mission_uvh_2d: 1, mission_uvh_3a: 1, mission_uvh_3b: 1, mission_uvh_3c: 1, mission_uvh_3d: 1, mission_uvh_4a: 1, mission_uvh_4b: 1, mission_uvh_4c: 1, mission_uvh_4d: 1, mission_uvh_5a: 1, mission_uvh_5b: 1, mission_uvh_5c: 1, mission_uvh_6a: 1, uvh_1_finalchallenge: 1, uvh_2_finalchallenge: 1, uvh_3_finalchallenge: 1, uvh_4_finalchallenge: 1, uvh_5_finalchallenge: 1, uvh_6_finalchallenge: 1 };
     updateStatsCounters(uvh);
     if (typeof window.mergeMissionsetsWithPrefix === 'function') window.mergeMissionsetsWithPrefix('missionset_zoneactivity_');
   };

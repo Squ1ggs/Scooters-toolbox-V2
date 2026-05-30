@@ -1,15 +1,7 @@
 {
   "_meta": {
-    "builtAt": "2026-05-07T20:35:48.465Z",
-    "inputDir": "c:\\Users\\picto\\Downloads\\Borderlands-4.NcsParser-220-1-0-0-1768940952\\Borderlands-4.NcsParser\\output\\json",
-    "invFiles": [
-      "Nexus-Data-inv0.json",
-      "Nexus-Data-inv4.json",
-      "Nexus-Data-inv6.json"
-    ],
     "totalRootsScanned": 133,
-    "totalRootsKept": 133,
-    "note": "Gear-only compact rootKey→parttypes bundle extracted from NcsParser Nexus JSON output."
+    "totalRootsKept": 133
   },
   "roots": [
     {
@@ -18,8 +10,7 @@
       "baseType": "inv'Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "atl_enhancement",
@@ -35,8 +26,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "bor_enhancement",
@@ -52,8 +42,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "bor_hw",
@@ -71,8 +60,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "bor_repair_kit",
@@ -98,8 +86,7 @@
           "part_aug_o_elemental_dmg_on_use_sec",
           "part_aug_o_SplashDmg_on_use_sec"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "bor_sg",
@@ -128,8 +115,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "bor_shield",
@@ -146,8 +132,7 @@
         "endgame",
         "unique"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "bor_sm",
@@ -176,8 +161,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "bor_sr",
@@ -207,8 +191,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "bor_terminal_barrier",
@@ -216,8 +199,7 @@
       "baseType": "inv'terminal_gadget_barrier'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "bor_turret_gadget",
@@ -225,8 +207,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "borg_grenade_gadget",
@@ -238,8 +219,7 @@
         "payload": [
           "part_payload_unique_buoy"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "classmod",
@@ -256,8 +236,7 @@
         "stat_group3",
         "firmware"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "classmod_dark_siren",
@@ -282,8 +261,7 @@
           "statspecial_phaseclone_healthloss",
           "statspecial_lifesteal"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "classmod_exo_soldier",
@@ -308,8 +286,7 @@
           "stat_melee_damage",
           "Stat_Weapon_Damage"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "classmod_gravitar",
@@ -334,8 +311,7 @@
           "statspecial_stasis_damage",
           "stat_splash_damage"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "classmod_paladin",
@@ -360,8 +336,7 @@
           "statspecial_detonation_damage",
           "statspecial_forgeskill_damage"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "cov_enhancement",
@@ -377,8 +352,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "dad_ar",
@@ -405,8 +379,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "dad_enhancement",
@@ -422,8 +395,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "dad_grenade_gadget",
@@ -431,8 +403,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "dad_ps",
@@ -458,8 +429,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "dad_repair_kit",
@@ -471,8 +441,7 @@
         "primary_augment": [
           "part_augment_unique_pacemaker"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "dad_sg",
@@ -499,8 +468,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "dad_shield",
@@ -508,8 +476,7 @@
       "baseType": "inv'energy_shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "dad_sm",
@@ -536,8 +503,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "dad_terminal_combat",
@@ -549,8 +515,7 @@
         "active_augment": [
           "part_hot_off_the_press"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "dad_turret_gadget",
@@ -558,8 +523,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "default_repair_kit",
@@ -574,8 +538,7 @@
         "payload": [
           "part_payload_small"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv0.json"
+      }
     },
     {
       "rootKey": "energy_shield",
@@ -583,8 +546,7 @@
       "baseType": "inv'Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "enhancement",
@@ -607,8 +569,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv0.json"
+      }
     },
     {
       "rootKey": "gadget",
@@ -616,8 +577,7 @@
       "baseType": "",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "grenade_gadget",
@@ -635,8 +595,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "heavy_weapon_gadget",
@@ -644,8 +603,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "hyp_enhancement",
@@ -661,8 +619,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "invdef_pickup_firstrepkit_intro",
@@ -670,8 +627,7 @@
       "baseType": "inv'mission_pickup'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "jak_ar",
@@ -695,8 +651,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "jak_enhancement",
@@ -712,8 +667,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "jak_grenade_gadget",
@@ -731,8 +685,7 @@
         "stat_augment": [
           "part_stat_05_jak_oversized"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "jak_ps",
@@ -756,8 +709,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "jak_repair_kit",
@@ -765,8 +717,7 @@
       "baseType": "inv'repair_kit'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "jak_sg",
@@ -794,8 +745,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "jak_shield",
@@ -803,8 +753,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "jak_sr",
@@ -828,8 +777,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "jak_terminal_combat",
@@ -841,8 +789,7 @@
         "active_augment": [
           "part_me_layhem"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "jak_turret_gadget",
@@ -850,8 +797,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "mal_enhancement",
@@ -867,8 +813,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "mal_grenade_gadget",
@@ -876,8 +821,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "mal_hw",
@@ -896,8 +840,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "mal_repair_kit",
@@ -909,8 +852,7 @@
         "primary_augment": [
           "part_augment_unique_BloodAnalyzer"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "mal_sg",
@@ -938,8 +880,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "mal_shield",
@@ -962,8 +903,7 @@
           "part_eng_recharge_delay_primary",
           "part_eng_trigger_happy_primary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "mal_sm",
@@ -991,8 +931,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "mal_sr",
@@ -1020,8 +959,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "mal_terminal_healing",
@@ -1033,8 +971,7 @@
         "active_augment": [
           "part_active_shield_stabilizer"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "mal_turret_gadget",
@@ -1042,8 +979,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ord_ar",
@@ -1069,8 +1005,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ord_enhancement",
@@ -1086,8 +1021,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ord_grenade_gadget",
@@ -1095,8 +1029,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ord_ps",
@@ -1122,8 +1055,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ord_repair_kit",
@@ -1131,8 +1063,7 @@
       "baseType": "inv'repair_kit'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ord_shield",
@@ -1176,8 +1107,7 @@
           "part_unv_capacity_secondary",
           "part_unv_reflect_secondary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ord_sr",
@@ -1203,8 +1133,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ord_terminal_healing",
@@ -1217,8 +1146,7 @@
           "part_active_bogo",
           "part_active_healer_on_the_go"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ord_turret_gadget",
@@ -1230,8 +1158,7 @@
         "turret_weapon": [
           "part_unique_beam_anchor"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "overshield_booster_pickup",
@@ -1239,8 +1166,7 @@
       "baseType": "",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "repair_kit",
@@ -1264,8 +1190,7 @@
         "vile": [
           "part_vile"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv0.json"
+      }
     },
     {
       "rootKey": "shield",
@@ -1283,8 +1208,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "shield_armor_pickup",
@@ -1292,8 +1216,7 @@
       "baseType": "",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "shield_booster_pickup",
@@ -1301,8 +1224,7 @@
       "baseType": "",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ted_ar",
@@ -1330,8 +1252,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ted_enhancement",
@@ -1347,8 +1268,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ted_grenade_gadget",
@@ -1356,8 +1276,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ted_ps",
@@ -1385,8 +1304,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ted_repair_kit",
@@ -1398,8 +1316,7 @@
         "primary_augment": [
           "part_augment_unique_KillSpring"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ted_sg",
@@ -1427,8 +1344,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "ted_shield",
@@ -1445,8 +1361,7 @@
         "endgame",
         "unique"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ted_terminal_barrier",
@@ -1458,8 +1373,7 @@
         "active_augment": [
           "part_active_sit_rep"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "ted_turret_gadget",
@@ -1467,8 +1381,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "terminal_gadget",
@@ -1484,8 +1397,7 @@
         "firmware",
         "endgame"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "terminal_gadget_barrier",
@@ -1493,8 +1405,7 @@
       "baseType": "inv'Terminal_Gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "terminal_gadget_combat",
@@ -1502,8 +1413,7 @@
       "baseType": "inv'Terminal_Gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "terminal_gadget_healing",
@@ -1511,8 +1421,7 @@
       "baseType": "inv'Terminal_Gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "tor_ar",
@@ -1539,8 +1448,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "tor_enhancement",
@@ -1556,8 +1464,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "tor_grenade_gadget",
@@ -1565,8 +1472,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "tor_hw",
@@ -1601,8 +1507,7 @@
         "firmware": [
           "part_firmware_god_killer"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "tor_ps",
@@ -1629,8 +1534,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "tor_repair_kit",
@@ -1642,8 +1546,7 @@
         "primary_augment": [
           "part_augment_unique_ShinyWarPaint"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "tor_sg",
@@ -1670,8 +1573,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "tor_shield",
@@ -1679,8 +1581,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "tor_terminal_combat",
@@ -1692,8 +1593,7 @@
         "active_augment": [
           "part_nova_bomb_active"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "tor_turret_gadget",
@@ -1701,8 +1601,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "turret_gadget",
@@ -1719,8 +1618,7 @@
         "firmware",
         "endgame"
       ],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "turret_weapon_basic",
@@ -1737,8 +1635,7 @@
         "secondary_augment": [
           "turret_weapon_augment_basic_pierce"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "turret_weapon_beam",
@@ -1758,8 +1655,7 @@
         "underbarrel": [
           "Part_TurretWeapon_Beam_Underbarrel"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "turret_weapon_chaingun",
@@ -1785,8 +1681,7 @@
         "body_ele": [
           "part_normal"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "turret_weapon_longrifle",
@@ -1806,8 +1701,7 @@
         "underbarrel": [
           "Part_TurretWeapon_Longrifle_Underbarrel"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "turret_weapon_rocketlauncher",
@@ -1833,8 +1727,7 @@
         "body_ele": [
           "part_normal"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "turret_weapon_shotgun",
@@ -1860,8 +1753,7 @@
         "body_ele": [
           "part_normal"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "vla_ar",
@@ -1891,8 +1783,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "vla_enhancement",
@@ -1907,8 +1798,7 @@
           "Part_Body_04_Epic",
           "Part_Body_05_Legendary"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "vla_grenade_gadget",
@@ -1916,8 +1806,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "vla_hw",
@@ -1940,8 +1829,7 @@
         "barrel": [
           "part_unique_barrel_01_atlinggun"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "vla_repair_kit",
@@ -1953,8 +1841,7 @@
         "primary_augment": [
           "part_augment_unique_AdrenalinePump"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv4.json"
+      }
     },
     {
       "rootKey": "vla_shield",
@@ -1962,8 +1849,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "vla_sm",
@@ -1992,8 +1878,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "vla_sr",
@@ -2022,8 +1907,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "vla_terminal_barrier",
@@ -2031,8 +1915,7 @@
       "baseType": "inv'terminal_gadget_barrier'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "vla_turret_gadget",
@@ -2040,8 +1923,7 @@
       "baseType": "inv'turret_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "weapon",
@@ -2049,8 +1931,7 @@
       "baseType": "",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_ai_custombase",
@@ -2058,8 +1939,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_ar",
@@ -2067,8 +1947,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_brute_facelaser",
@@ -2079,8 +1958,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_gadget_turret",
@@ -2088,8 +1966,7 @@
       "baseType": "inv'weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {},
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": {}
     },
     {
       "rootKey": "weapon_gunship_maingun",
@@ -2100,8 +1977,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv4.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_meathead_chaingun",
@@ -2112,8 +1988,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_meathead_flamethrower",
@@ -2124,8 +1999,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_meathead_rocket",
@@ -2136,8 +2010,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_missionturret_chaingun",
@@ -2148,8 +2021,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_orderdrone",
@@ -2160,8 +2032,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_ps",
@@ -2169,8 +2040,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_ripperturret_flamethrower",
@@ -2181,8 +2051,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_ripperturret_rocket",
@@ -2193,8 +2062,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_sg",
@@ -2202,8 +2070,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_sm",
@@ -2211,8 +2078,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_soldier_sprayer",
@@ -2223,8 +2089,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_splicearm_launcher",
@@ -2246,8 +2111,7 @@
           "part_radiation",
           "part_shock"
         ]
-      },
-      "sourceFile": "Nexus-Data-inv6.json"
+      }
     },
     {
       "rootKey": "weapon_splicespiderjumbo_rocketgun",
@@ -2258,8 +2122,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_sr",
@@ -2267,8 +2130,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_turret_chaingun",
@@ -2279,8 +2141,7 @@
         "body",
         "body_ele"
       ],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv6.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_vehicle_mg",
@@ -2288,8 +2149,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     },
     {
       "rootKey": "weapon_vehicle_rl",
@@ -2297,8 +2157,7 @@
       "baseType": "inv'Weapon'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": null,
-      "sourceFile": "Nexus-Data-inv0.json"
+      "slotAllowlist": null
     }
   ]
 }

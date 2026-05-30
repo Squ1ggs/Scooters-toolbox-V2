@@ -465,7 +465,7 @@
       statusLine('Nothing to export — run validation first.', 'warn');
       return;
     }
-    var il = parseInt(($('bv-level') && $('bv-level').value) || '60', 10);
+    var il = parseInt(($('bv-level') && $('bv-level').value) || '61', 10);
     var filtered = $('bv-export-filtered') && $('bv-export-filtered').checked;
     var flat = rows.map(flattenRowForExport);
     var payload = {
@@ -488,7 +488,7 @@
       },
       alignment_summary: buildAlignmentSummary(rows),
       options: {
-        item_level: Number.isFinite(il) ? il : 60,
+        item_level: Number.isFinite(il) ? il : 61,
         validation_profile: 'bulk_cheat_audit',
         strict_mode: true,
         bulk_cheat_audit_mode: true,
@@ -1018,8 +1018,8 @@
     state.running = true;
     state.page = 0;
     state.rows = [];
-    var itemLevel = parseInt(($('bv-level') && $('bv-level').value) || '60', 10);
-    if (!Number.isFinite(itemLevel)) itemLevel = 60;
+    var itemLevel = parseInt(($('bv-level') && $('bv-level').value) || '61', 10);
+    if (!Number.isFinite(itemLevel)) itemLevel = 61;
     var strictMode = true;
 
     if (!window.LegitBuilderApi || typeof window.LegitBuilderApi.computeLegitValidationState !== 'function') {

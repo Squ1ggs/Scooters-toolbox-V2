@@ -1,4 +1,4 @@
-/** Editor weapon/item id catalog (save-editor.be offline snapshot). window.EDITOR_EXTRACTED_CATALOG */
+/** Editor weapon/item id catalog. window.EDITOR_EXTRACTED_CATALOG */
 window.EDITOR_EXTRACTED_CATALOG = {
   "weapons": [
     {
@@ -361,5 +361,3 @@ window.EDITOR_EXTRACTED_CATALOG = {
   "legendaryItems": {}
 };
 
-// Auto-generated part selection data from pakchunk4-Windows_6_P-Nexus-Data-inv4.json
-// Generated: 2025-12-27T04:26:00.555Z;

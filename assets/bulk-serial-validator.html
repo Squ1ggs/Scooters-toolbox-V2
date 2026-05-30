@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -569,8 +569,8 @@ Keep duplicate lines</label>
 <div class="panel__title">How it works</div>
 <ul>
 <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
-<li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rule set as save-editor.be <strong>Legit Item Builder</strong>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
-<li><strong>Save-editor Legit–style bulk</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive <a href='/legacy/legit-builder'>Legit Builder</a> (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
+<li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rules as <a href="/legacy/legit-builder">Legit Builder</a>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
+<li><strong>Bulk strict inv</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive Legit Builder (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
 <li><strong>Loot-pool FYI</strong>: <code>off_pool_*</code> rows are reported for visibility only. They do not hard-fail by themselves.</li>
 <li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
 <li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
@@ -658,7 +658,10 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="js/stx-nicnl-serial-pack.js"></script>
 <script src="js/stx-go-wasm-polyfill.js"></script>
 <script src="js/stx-parts-db.js"></script>
-<script src="data/stx_dataset.js"></script>
+<script src="data/stx_dataset.js?v=20260529a"></script>
+<script src="data/stx_dataset_supplement.js?v=20260529d"></script>
+<script src="data/stx_raid2_supplement.js?v=20260529e"></script>
+<script src="data/part_display_overrides.js?v=20260529c"></script>
 <script src="data/part_ref_meta.js"></script>
 <script src="js/stx-bulk-decoder-main.js"></script>
 <script src="js/stx-bulk-decoder-patch-parts-lookup.js"></script>

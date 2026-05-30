@@ -351,7 +351,8 @@ const PART_SELECTION_DATA = {
         "leg_body_03",
         "leg_body_04",
         "leg_body_05",
-        "leg_body_06"
+        "leg_body_06",
+        "leg_body_raid2"
       ],
       "min": 0,
       "max": 1
@@ -382,7 +383,8 @@ const PART_SELECTION_DATA = {
         "leg_body_03",
         "leg_body_04",
         "leg_body_05",
-        "leg_body_06"
+        "leg_body_06",
+        "leg_body_raid2"
       ],
       "min": 0,
       "max": 1
@@ -408,7 +410,8 @@ const PART_SELECTION_DATA = {
         "leg_body_03",
         "leg_body_04",
         "leg_body_05",
-        "leg_body_06"
+        "leg_body_06",
+        "leg_body_raid2"
       ],
       "min": 0,
       "max": 1
@@ -434,7 +437,8 @@ const PART_SELECTION_DATA = {
         "leg_body_03",
         "leg_body_04",
         "leg_body_05",
-        "leg_body_06"
+        "leg_body_06",
+        "leg_body_raid2"
       ],
       "min": 0,
       "max": 1
@@ -448,6 +452,26 @@ const PART_SELECTION_DATA = {
         "statspecial_detonation_damage",
         "statspecial_forgeskill_damage"
       ],
+      "min": 0,
+      "max": 1
+    }
+  },
+  "classmod_robodealer_legendary": {
+    "class_mod_body": {
+      "parts": [
+        "leg_body_01",
+        "leg_body_02",
+        "leg_body_03",
+        "leg_body_04",
+        "leg_body_05",
+        "leg_body_06",
+        "leg_body_raid2"
+      ],
+      "min": 0,
+      "max": 1
+    },
+    "stat_group1": {
+      "parts": [],
       "min": 0,
       "max": 1
     }
@@ -3208,6 +3232,23 @@ const PART_SELECTION_DATA = {
       "parts": [
         "part_foregrip_01"
       ],
+      "min": 0,
+      "max": 1
+    }
+  },
+  "TOR_AR_legendary": {
+    "body_mag": {
+      "parts": [],
+      "min": 0,
+      "max": 1
+    },
+    "secondary_ammo": {
+      "parts": [],
+      "min": 0,
+      "max": 1
+    },
+    "secondary_ele": {
+      "parts": [],
       "min": 0,
       "max": 1
     }

@@ -78,6 +78,118 @@
     return window.PART_REF_META[id] || null;
   }
 
+  var PART_SUFFIX_TO_INTERNAL = {
+    part_barrel_licensed_jak: "jak_barrel_acc",
+    part_barrel_licensed_hyp: "hyp_shield",
+    part_barrel_licensed_ted: "licensed_ted",
+    part_barrel_licensed_ted_combo: "ted_combo",
+    part_barrel_licensed_ted_mirv: "ted_mirv",
+    part_barrel_licensed_ted_shooting: "ted_shooting",
+    part_mag_04_cov: "cov_mag",
+    part_mag_03_tor: "tor_mag",
+    part_mag_05_borg: "borg_mag",
+  };
+
+  function partCodeSuffix(code){
+    var c = stripQuotes(q(code)).toLowerCase();
+    var dot = c.lastIndexOf(".");
+    return dot >= 0 ? c.slice(dot + 1) : c;
+  }
+
+  function resolvePartInternalKey(p2, code){
+    var suf = partCodeSuffix(code);
+    if (PART_SUFFIX_TO_INTERNAL[suf]) return PART_SUFFIX_TO_INTERNAL[suf];
+    try{
+      var ik = q(p2 && (p2.internalKey || p2.internalName || p2.tableRowKey));
+      if (ik) return ik;
+    }catch(_){}
+    return "";
+  }
+
+  function isPartListbox(el){
+    return !!(el && el.classList && el.classList.contains("cc-stable-part-listbox"));
+  }
+
+  function getSelectedResultEl(sel){
+    if (!sel) return null;
+    if (isPartListbox(sel)){
+      return sel.querySelector(".cc-stable-part-row.is-selected:not(.cc-stable-part-placeholder)")
+        || sel.querySelector(".cc-stable-part-row.is-selected");
+    }
+    if (sel.selectedIndex >= 1 && sel.options) return sel.options[sel.selectedIndex];
+    return null;
+  }
+
+  function getSelectedResultIndex(sel){
+    if (!sel) return 0;
+    if (isPartListbox(sel)){
+      var rows = sel.querySelectorAll(".cc-stable-part-row:not(.cc-stable-part-placeholder)");
+      for (var i = 0; i < rows.length; i++){
+        if (rows[i].classList.contains("is-selected")) return i + 1;
+      }
+      return 0;
+    }
+    return sel.selectedIndex;
+  }
+
+  function setSelectedResultIndex(sel, idx){
+    if (!sel) return;
+    if (isPartListbox(sel)){
+      var rows = sel.querySelectorAll(".cc-stable-part-row:not(.cc-stable-part-placeholder)");
+      for (var i = 0; i < rows.length; i++){
+        rows[i].classList.toggle("is-selected", i + 1 === idx);
+      }
+      return;
+    }
+    sel.selectedIndex = idx;
+  }
+
+  function buildPartRowLabelHtml(labelMain, internalKey, likely){
+    var badge = likely
+      ? '<span class="cc-adv-likely-badge" title="Spawn code uses this prefix table\'s gun manufacturer (e.g. ted_ps), not the licensed brand in the part name">Likely · </span>'
+      : '';
+    var main = escapeMeta(labelMain);
+    if (!internalKey) return badge + main;
+    return badge + main + '<span class="cc-adv-part-internal"> · ' + escapeMeta(internalKey) + '</span>';
+  }
+
+  var ADV_WEAPON_GUN_SPAWN_PREFIXES = {
+    bor: 1, dad: 1, jak: 1, mal: 1, ord: 1, ted: 1, tor: 1, vla: 1,
+  };
+
+  function normalizeAdvLikelySpawnHint(hint){
+    hint = q(hint).toLowerCase();
+    if (!/^[a-z]{3}$/.test(hint)) return "";
+    return ADV_WEAPON_GUN_SPAWN_PREFIXES[hint] ? hint : "";
+  }
+
+  function readAdvLikelyHintFromUrl(){
+    try{
+      var params = new URLSearchParams(window.location.search);
+      return {
+        spawn: normalizeAdvLikelySpawnHint(params.get("advlikely") || params.get("advspawn")),
+        label: q(params.get("advlikelylabel") || params.get("advlikelymfr")),
+      };
+    }catch(_){
+      return { spawn: "", label: "" };
+    }
+  }
+
+  function getAdvLikelySpawnHint(){
+    return normalizeAdvLikelySpawnHint(window.__ccAdvLikelySpawnPrefixV1 || "");
+  }
+
+  function partMatchesAdvLikelySpawnHint(p2, code, hint){
+    hint = normalizeAdvLikelySpawnHint(hint);
+    if (!hint) return false;
+    var c = stripQuotes(q(code)).toLowerCase();
+    if (!c) return false;
+    if (!new RegExp("^\"?" + hint + "_(?:ar|ps|sg|sm|sr|hw)\\.", "i").test(c)) return false;
+    var reqSuf = q(window.__ccAdvRequiredPartSuffixV1 || "");
+    if (reqSuf && partCodeSuffix(c) !== reqSuf) return false;
+    return true;
+  }
+
   function partRefTags(fi, p2){
     var ir = "";
     try{
@@ -154,6 +266,8 @@
     if (stH) blocks.push("Stats: " + stH);
     var efH = q(ds.effectsHint);
     if (efH) blocks.push("Red text: " + efH);
+    var ikey = q(ds.internalKey);
+    if (ikey) blocks.push("Internal: " + ikey);
 
     return blocks.filter(Boolean).join("\n");
   }
@@ -200,6 +314,10 @@
     if (stH) html.push('<div style="margin-bottom:4px;font-size:11px;"><strong>Stats:</strong> ' + escapeMeta(stH) + '</div>');
     var efH = q(ds.effectsHint);
     if (efH) html.push('<div style="font-size:11px;"><strong>Red text:</strong> <span style="color:#e07a5a;">' + escapeMeta(efH) + '</span></div>');
+    var ikey = q(ds.internalKey);
+    if (ikey){
+      html.push('<div style="margin-bottom:4px;font-size:11px;"><strong>Internal:</strong> <code style="color:#00f3ff;">' + escapeMeta(ikey) + '</code></div>');
+    }
     return html.join("");
   }
 
@@ -210,8 +328,8 @@
     try{
       meta.style.whiteSpace = "normal";
     }catch(_){}
-    if (sel.selectedIndex >= 1){
-      var opt = sel.options[sel.selectedIndex];
+    if (getSelectedResultIndex(sel) >= 1){
+      var opt = getSelectedResultEl(sel);
       var html = metaHTMLForOption(opt);
       meta.innerHTML = '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(0,243,255,0.2);font-size:11px;color:rgba(255,255,255,0.7);">' + escapeMeta(base) + '</div>' + (html || "");
     } else {
@@ -455,8 +573,8 @@
         if (kind === "enhancement") return cat === "enhancement" || it === "enhancement" || code.indexOf("enhancement") !== -1;
         if (kind === "heavy") return cat === "heavy" || it === "heavy" || code.indexOf("_hw.") !== -1 || code.indexOf("heavy_weapon") !== -1;
         if (kind === "aicar"){
-          var aiHay = (cat + " " + it + " " + code + " " + q(p.partType).toLowerCase() + " " + q(p.name).toLowerCase());
-          return /(^|\W)(aicar|vehicle|turret|terminal|np_turret|np_term|runner)(\W|$)/i.test(aiHay);
+          var aiHay = (cat + " " + it + " " + code + " " + q(p.partType).toLowerCase() + " " + q(p.name).toLowerCase() + " " + q(p.weaponType).toLowerCase());
+          return /(^|\W)(aicar|vehicle|turret|terminal|np_turret|np_term|runner|terminal_gadget|turret_gadget|turret_weapon)(\W|$)/i.test(aiHay);
         }
         if (kind === "other"){
           if (isClassmodLike(p)) return false;
@@ -639,7 +757,7 @@
 
   function optionToken(opt){
     if (!opt) return "";
-    var code = q(opt.dataset && opt.dataset.code ? opt.dataset.code : opt.value);
+    var code = q(opt.dataset && opt.dataset.code ? opt.dataset.code : (opt.value != null ? opt.value : ""));
     if (isNumericMode()){
       var prefTok = q(opt.dataset && (opt.dataset.token || opt.dataset.ccToken || opt.dataset.idToken));
       var mPref = prefTok.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
@@ -713,7 +831,7 @@
       if (/^\d+$/.test(fam) && /^\d+$/.test(id)) return "fid:" + fam + ":" + id;
     }catch(_){}
     try{
-      var code = q(opt.dataset && opt.dataset.code ? opt.dataset.code : opt.value);
+      var code = q(opt.dataset && opt.dataset.code ? opt.dataset.code : (opt.value != null ? opt.value : ""));
       if (code) return "code:" + normCodeKey(code);
     }catch(_){}
     try{
@@ -724,17 +842,56 @@
   }
 
   function haystack(p){
+    var code = stripQuotes(q(p && (p.code || p.spawnCode || p.importCode)));
     return [
       q(p && p.name),
+      q(p && p.searchAlias),
       q(p && p.manufacturer),
       q(p && p.category),
       q(p && p.itemType),
       q(p && p.weaponType),
       q(p && p.partType),
-      stripQuotes(q(p && (p.code || p.spawnCode || p.importCode))),
+      code,
+      resolvePartInternalKey(p, code),
       q(p && p.idRaw),
       q(p && (p.effects || p.effect))
     ].join(" ").toLowerCase();
+  }
+
+  function requiredPartSuffixFromQuery(qv){
+    qv = q(qv).toLowerCase();
+    var m = qv.match(/\b(part_[a-z0-9_]+)\b/);
+    return m ? m[1] : "";
+  }
+
+  function codeMatchesRequiredPartSuffix(code, reqSuf){
+    reqSuf = q(reqSuf).toLowerCase();
+    if (!reqSuf) return true;
+    return partCodeSuffix(code) === reqSuf;
+  }
+
+  function queryMatchesHaystack(hs, qv){
+    qv = q(qv).toLowerCase();
+    if (!qv) return true;
+    hs = q(hs).toLowerCase();
+    var reqSuf = requiredPartSuffixFromQuery(qv);
+    if (reqSuf){
+      var codeMatch = hs.match(/[a-z]{3}_(?:ar|ps|sg|sm|sr|hw|enhancement|hw)\.(part_[a-z0-9_]+)/i);
+      if (codeMatch && codeMatch[1] !== reqSuf) return false;
+    }
+    var tokens = qv.split(/\s+/).filter(Boolean);
+    for (var ti = 0; ti < tokens.length; ti++){
+      var tok = tokens[ti];
+      if (tok.indexOf("part_") === 0){
+        if (hs.indexOf(tok) === -1) return false;
+        continue;
+      }
+      if (hs.indexOf(tok) !== -1) continue;
+      var underscored = tok.replace(/\s+/g, "_");
+      if (underscored && hs.indexOf(underscored) !== -1) continue;
+      return false;
+    }
+    return true;
   }
 
   function removeLegacyPanels(){
@@ -783,7 +940,7 @@
     panel.id = "ccAdvStablePanel";
     panel.style.cssText = "border:1px solid rgba(0,255,200,0.4);border-radius:10px;padding:12px;margin-bottom:0;max-width:100%;box-sizing:border-box;background:rgba(8,16,24,0.65);";
     panel.innerHTML = [
-      '<div style="margin-bottom:8px;color:#b9faff;font-size:12px;line-height:1.35;">Search parts and append serial tokens. <code style="color:#ff9b7d;">[not in STX]</code> = missing from dataset.</div>',
+      '<div style="margin-bottom:8px;color:#b9faff;font-size:12px;line-height:1.35;">Search parts and append serial tokens. <code style="color:#ff9b7d;">[not in STX]</code> = missing from dataset. Licensed-prefix parts show <span style="color:#00f3ff;font-weight:600;">internal keys</span> in cyan after the name.</div>',
       '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">',
       '<div style="min-width:90px;flex:1 1 90px;">',
       '<label for="ccStablePartDomain" style="display:block;color:#00f3ff;font-weight:700;margin-bottom:2px;font-size:11px;">Part domain</label>',
@@ -819,7 +976,7 @@
       '</div>',
       '</div>',
       '<div style="margin-top:8px;">',
-      '<select id="ccStablePartResults" name="ccStablePartResults" class="parts-select" size="8" style="width:100%;min-height:120px;max-height:180px;box-sizing:border-box;"></select>',
+      '<div id="ccStablePartResults" class="cc-stable-part-listbox parts-select" role="listbox" tabindex="0" aria-label="Part search results" style="width:100%;min-height:120px;max-height:180px;box-sizing:border-box;"></div>',
       '<div id="ccStablePartMeta" class="small muted" style="margin-top:6px;white-space:pre-line;">-</div>',
       '</div>'
     ].join("");
@@ -831,8 +988,10 @@
   function renderPlaceholder(sel, meta, text, detail){
     if (!sel || !meta) return;
     sel.innerHTML = "";
-    var ph = document.createElement("option");
-    ph.value = "";
+    var ph = document.createElement("div");
+    ph.className = "cc-stable-part-row cc-stable-part-placeholder";
+    ph.setAttribute("role", "option");
+    ph.dataset.index = "0";
     ph.textContent = text;
     sel.appendChild(ph);
     meta.textContent = detail || "-";
@@ -860,7 +1019,7 @@
     var domainNow = q(dom.value).toLowerCase();
     var prevKey = "";
     try{
-      var cur = (sel.selectedIndex >= 1 && sel.options) ? sel.options[sel.selectedIndex] : null;
+      var cur = getSelectedResultIndex(sel) >= 1 ? getSelectedResultEl(sel) : null;
       prevKey = stableOptionKey(cur);
       if (!prevKey && window.__ccStablePartLastSelDomainV1 === domainNow){
         prevKey = q(window.__ccStablePartLastSelKeyV1);
@@ -913,9 +1072,11 @@
       });
     }
     var qv = q(query.value).toLowerCase();
+    var reqPartSuf = requiredPartSuffixFromQuery(qv);
+    try{ window.__ccAdvRequiredPartSuffixV1 = reqPartSuf; }catch(_){}
     var manuVal = (manuFilter && showFilters) ? q(manuFilter.value) : "";
     var typeVal = (typeFilter && showFilters) ? q(typeFilter.value) : "";
-    var renderKey = domainNow + "|" + qv + "|" + String(pool.length || 0) + "|" + manuVal + "|" + typeVal;
+    var renderKey = domainNow + "|" + qv + "|" + reqPartSuf + "|" + String(pool.length || 0) + "|" + manuVal + "|" + typeVal;
     var prevState = window.__ccStablePartRenderStateV1;
     if (prevState && prevState.key === renderKey && prevState.ready){
       try{ refreshStableMeta(sel, meta); }catch(_){}
@@ -926,11 +1087,23 @@
     for (var i = 0; i < pool.length; i++){
       var p = pool[i];
       if (!p) continue;
-      if (qv && haystack(p).indexOf(qv) === -1) continue;
+      if (qv && !queryMatchesHaystack(haystack(p), qv)) continue;
+      if (reqPartSuf){
+        var pcode = stripQuotes(q(p && (p.code || p.spawnCode || p.importCode)));
+        if (!codeMatchesRequiredPartSuffix(pcode, reqPartSuf)) continue;
+      }
       filtered.push(p);
     }
 
+    var likelyHint = getAdvLikelySpawnHint();
     filtered.sort(function(a, b){
+      if (likelyHint){
+        var ac = q(a && (a.code || a.spawnCode || a.importCode));
+        var bc = q(b && (b.code || b.spawnCode || b.importCode));
+        var al = partMatchesAdvLikelySpawnHint(a, ac, likelyHint) ? 0 : 1;
+        var bl = partMatchesAdvLikelySpawnHint(b, bc, likelyHint) ? 0 : 1;
+        if (al !== bl) return al - bl;
+      }
       var an = q(a && (a.name || a.code)).toLowerCase();
       var bn = q(b && (b.name || b.code)).toLowerCase();
       if (an < bn) return -1;
@@ -945,8 +1118,10 @@
 
     sel.innerHTML = "";
     var frag = document.createDocumentFragment();
-    var ph = document.createElement("option");
-    ph.value = "";
+    var ph = document.createElement("div");
+    ph.className = "cc-stable-part-row cc-stable-part-placeholder";
+    ph.setAttribute("role", "option");
+    ph.dataset.index = "0";
     ph.textContent = filtered.length
       ? (isInitialPreview ? ("-- Showing first " + cap + " of " + filtered.length + " (type to search all) --") : ("-- " + filtered.length + " matches --"))
       : "-- No matches --";
@@ -956,8 +1131,11 @@
       var p2 = filtered[j];
       var code = q(p2 && (p2.code || p2.spawnCode || p2.importCode || p2.raw || p2.value || p2.name));
       if (!code) continue;
-      var opt = document.createElement("option");
-      opt.value = code;
+      var opt = document.createElement("div");
+      opt.className = "cc-stable-part-row";
+      opt.setAttribute("role", "option");
+      opt.dataset.index = String(j + 1);
+      opt.dataset.code = stripQuotes(code);
       try{ opt.dataset.code = stripQuotes(code); }catch(_){ }
       try{
         opt.dataset.manufacturer = q(p2 && (p2.manufacturer || p2.mfr));
@@ -1011,8 +1189,21 @@
       var ef = q(p2 && (p2.effects || p2.effect));
       var efSuffix = ef ? (" — " + clipDetail(ef, 55)) : "";
       var label = tags.prefix + tok + name + (partType ? (" - " + partType) : "") + (manu ? (" | " + manu) : "") + efSuffix + tags.suffix;
-      opt.textContent = label;
+      var internalKey = resolvePartInternalKey(p2, code);
+      if (internalKey){
+        try{ opt.dataset.internalKey = internalKey; }catch(_){}
+        try{ opt.dataset.labelMain = label; }catch(_){}
+      }
+      var isLikely = likelyHint && partMatchesAdvLikelySpawnHint(p2, code, likelyHint);
+      if (isLikely){
+        opt.className = "cc-stable-part-row cc-stable-part-row--likely";
+        try{ opt.dataset.likelyMatch = "1"; }catch(_){}
+      }
+      opt.innerHTML = buildPartRowLabelHtml(label, internalKey, isLikely);
       if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p2); if (t) opt.title = t; }
+      if (internalKey){
+        opt.title = (opt.title ? String(opt.title) + "\n" : "") + "Internal: " + internalKey;
+      }
       try{
         var tt = metaLineForOption(opt);
         if (tt){
@@ -1028,8 +1219,8 @@
     sel.appendChild(frag);
     if (restoreIndex >= 1){
       try{
-        sel.selectedIndex = restoreIndex;
-        var chosen = sel.options[restoreIndex];
+        setSelectedResultIndex(sel, restoreIndex);
+        var chosen = getSelectedResultEl(sel);
         var chosenKey = stableOptionKey(chosen);
         if (chosenKey){
           window.__ccStablePartLastSelKeyV1 = chosenKey;
@@ -1038,11 +1229,26 @@
       }catch(_){ }
     }
 
+    var likelyCount = 0;
+    if (likelyHint){
+      for (var lc = 0; lc < filtered.length; lc++){
+        var lp = filtered[lc];
+        var lcode = q(lp && (lp.code || lp.spawnCode || lp.importCode));
+        if (partMatchesAdvLikelySpawnHint(lp, lcode, likelyHint)) likelyCount++;
+      }
+    }
+    var likelyLabel = q(window.__ccAdvLikelySpawnLabelV1 || "");
     var filterMsg = cap < filtered.length
       ? (isInitialPreview
           ? ("Showing first " + cap + " of " + filtered.length + ". Type to search all, or use filters above.")
           : ("Showing first " + cap + " of " + filtered.length + " matches. Narrow the search to see the rest faster."))
       : (filtered.length ? "Select a part and click Add to serial." : "-");
+    if (likelyHint && filtered.length){
+      var who = likelyLabel || likelyHint.toUpperCase();
+      filterMsg = likelyCount
+        ? (likelyCount + " likely — " + who + " gun type IDs only (green · Likely). Other rows are the same part on different manufacturers.")
+        : ("No " + who + " gun type IDs in this list — check the prefix table weapon family.");
+    }
     window.__ccStablePartLastFilterMsgV1 = filterMsg;
     try{ refreshStableMeta(sel, meta); }catch(_){}
     window.__ccStablePartRenderStateV1 = { key: renderKey, ready: true };
@@ -1053,11 +1259,11 @@
     if (!panel) return false;
     var dom = panel.querySelector("#ccStablePartDomain");
     var sel = panel.querySelector("#ccStablePartResults");
-    if (!sel || sel.selectedIndex < 1) return false;
-    var opt = sel.options[sel.selectedIndex];
+    if (!sel || getSelectedResultIndex(sel) < 1) return false;
+    var opt = getSelectedResultEl(sel);
     if (!opt) return false;
     var domainNow = q(dom && dom.value).toLowerCase();
-    var rawChoice = q(opt && (opt.value || (opt.dataset && opt.dataset.code)));
+    var rawChoice = q(opt && ((opt.dataset && opt.dataset.code) || opt.value));
     function looksLikeFullItemSerial(v){
       var s = q(v);
       if (!s) return false;
@@ -1139,7 +1345,7 @@
     var token = optionToken(opt);
     if (numericModeNow){
       try{
-        var mLbl = q(opt.textContent).match(/^\s*\{\s*(\d+)\s*:\s*(\d+)\s*\}/);
+        var mLbl = q(opt.textContent || opt.innerText).match(/^\s*\{\s*(\d+)\s*:\s*(\d+)\s*\}/);
         if (mLbl) token = "{" + mLbl[1] + ":" + mLbl[2] + "}";
       }catch(_){}
     }
@@ -1352,6 +1558,7 @@
                 var keepForBuckets = noReorderMode ? 0 : keepMax;
                 for (var ai = 0; ai < arrKeys.length; ai++){
                   var ak = arrKeys[ai];
+                  if (ak === "partsOrder") continue;
                   if (Array.isArray(sdx[ak])) sdx[ak] = trimTokenArrayByCode(sdx[ak], tok, keepForBuckets);
                 }
                 try{ root.selectedData = sdx; }catch(_){}
@@ -1503,9 +1710,6 @@
               window.__ccAllowDuplicateAdd
             );
           }catch(_){ allowDupNow = false; }
-          if (!allowDupNow && prevDirect && prevDirect.sig === directSig && (nowTs - Number(prevDirect.ts || 0)) < 450){
-            return false;
-          }
           var nextDirect = { sig: directSig, ts: nowTs };
           try{ root.__ccStableDirectAddGuardV1 = nextDirect; }catch(_){}
           try{ window.__ccStableDirectAddGuardV1 = nextDirect; }catch(_){}
@@ -1681,42 +1885,51 @@
           try{
             if (appendTokenWithoutReorder(tok, preTokenCount)){
               try{
+                if (typeof window.stxAppendPartTokenViaExtras === "function"){
+                  window.stxAppendPartTokenViaExtras(tok, { type: "advSearch", skipRefresh: true });
+                }
+              }catch(_){}
+              try{
                 enforceSingleDirectToken(tok, preTokenCount);
                 setTimeout(function(){ enforceSingleDirectToken(tok, preTokenCount); }, 40);
                 setTimeout(function(){ enforceSingleDirectToken(tok, preTokenCount); }, 140);
-                setTimeout(function(){ enforceSingleDirectToken(tok, preTokenCount); }, 420);
-                setTimeout(function(){ enforceSingleDirectToken(tok, preTokenCount); }, 900);
               }catch(_){}
               try{ root.selectedData = sd; }catch(_){}
               try{ window.selectedData = sd; }catch(_){}
               try{
-                if (typeof root.__ccGuidedOutputApplyNow === "function") root.__ccGuidedOutputApplyNow();
-                else if (typeof window.__ccGuidedOutputApplyNow === "function") window.__ccGuidedOutputApplyNow();
+                if (typeof window.refreshOutputs === "function" && document.getElementById("outCode")){
+                  window.refreshOutputs(true);
+                }
               }catch(_){}
               return true;
             }
           }catch(_){}
         }
         try{
-          if (!hasTailSerial){
-            if (typeof root.updateOutputCode === "function") root.updateOutputCode();
-            else if (typeof root.generateItem === "function") root.generateItem();
-            else if (typeof root.updateCodePreview === "function") root.updateCodePreview();
-            else if (typeof window.updateOutputCode === "function") window.updateOutputCode();
-            else if (typeof window.generateItem === "function") window.generateItem();
-            else if (typeof window.updateCodePreview === "function") window.updateCodePreview();
-          } else {
-            if (typeof root.updateCodePreview === "function") root.updateCodePreview();
-            else if (typeof root.updateOutputCode === "function") root.updateOutputCode();
-            else if (typeof root.generateItem === "function") root.generateItem();
-            else if (typeof window.updateCodePreview === "function") window.updateCodePreview();
-            else if (typeof window.updateOutputCode === "function") window.updateOutputCode();
-            else if (typeof window.generateItem === "function") window.generateItem();
+          if (typeof window.stxAppendPartTokenViaExtras === "function"){
+            window.stxAppendPartTokenViaExtras(tok, { type: "advSearch", skipRefresh: true });
           }
         }catch(_){}
         try{
-          if (typeof root.__ccGuidedOutputApplyNow === "function") root.__ccGuidedOutputApplyNow();
-          else if (typeof window.__ccGuidedOutputApplyNow === "function") window.__ccGuidedOutputApplyNow();
+          if (!noReorderMode){
+            if (!hasTailSerial){
+              if (typeof root.updateOutputCode === "function") root.updateOutputCode();
+              else if (typeof root.generateItem === "function") root.generateItem();
+              else if (typeof root.updateCodePreview === "function") root.updateCodePreview();
+              else if (typeof window.updateOutputCode === "function") window.updateOutputCode();
+              else if (typeof window.generateItem === "function") window.generateItem();
+              else if (typeof window.updateCodePreview === "function") window.updateCodePreview();
+            } else {
+              if (typeof root.updateCodePreview === "function") root.updateCodePreview();
+              else if (typeof root.updateOutputCode === "function") root.updateOutputCode();
+              else if (typeof root.generateItem === "function") root.generateItem();
+              else if (typeof window.updateCodePreview === "function") window.updateCodePreview();
+              else if (typeof window.updateOutputCode === "function") window.updateOutputCode();
+              else if (typeof window.generateItem === "function") window.generateItem();
+            }
+          } else if (typeof window.refreshOutputs === "function" && document.getElementById("outCode")){
+            window.refreshOutputs(true);
+          }
         }catch(_){}
         try{
           // Clear stable select-gate after a successful explicit add so other dropdown
@@ -2302,8 +2515,8 @@
         }
         var selected = "";
         try{
-          var opt = sel && sel.options && sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex] : null;
-          if (opt && sel.selectedIndex >= 1){
+          var opt = sel ? getSelectedResultEl(sel) : null;
+          if (opt && getSelectedResultIndex(sel) >= 1){
             try{
               var sk = stableOptionKey(opt);
               if (sk){
@@ -2401,15 +2614,43 @@
       try{ window.__ccStablePartRenderStateV1 = null; }catch(_){ }
       scheduleRender(80);
     }, true);
-    sel.addEventListener("change", function(){
+    function onStableResultPick(row){
+      if (!row || row.classList.contains("cc-stable-part-placeholder")) return;
+      sel.querySelectorAll(".cc-stable-part-row.is-selected").forEach(function(r){
+        r.classList.remove("is-selected");
+      });
+      row.classList.add("is-selected");
       markStableSelectChanging(550);
       try{
         var p = ensurePanel();
         if (!p) return;
         refreshStableMeta(p.querySelector("#ccStablePartResults"), p.querySelector("#ccStablePartMeta"));
       }catch(_){}
+    }
+    sel.addEventListener("click", function(e){
+      var row = e.target && e.target.closest ? e.target.closest(".cc-stable-part-row") : null;
+      if (!row || !sel.contains(row)) return;
+      onStableResultPick(row);
     }, true);
-    sel.addEventListener("input", function(){ markStableSelectChanging(550); }, true);
+    sel.addEventListener("keydown", function(e){
+      if (!isPartListbox(sel)) return;
+      var key = e.key;
+      if (key !== "ArrowUp" && key !== "ArrowDown" && key !== "Enter") return;
+      var rows = Array.prototype.slice.call(sel.querySelectorAll(".cc-stable-part-row:not(.cc-stable-part-placeholder)"));
+      if (!rows.length) return;
+      var idx = -1;
+      for (var ri = 0; ri < rows.length; ri++){
+        if (rows[ri].classList.contains("is-selected")) { idx = ri; break; }
+      }
+      if (key === "Enter"){
+        if (idx >= 0) addSelected();
+        return;
+      }
+      e.preventDefault();
+      var next = key === "ArrowDown" ? Math.min(rows.length - 1, idx + 1) : Math.max(0, idx - 1);
+      if (idx < 0) next = 0;
+      onStableResultPick(rows[next]);
+    }, true);
     add.addEventListener("click", function(e){
       try{
         e.preventDefault();
@@ -2452,11 +2693,39 @@
     }, true);
   }
 
+  function applyAdvSearchFromUrl(){
+    try{
+      var params = new URLSearchParams(window.location.search);
+      var advq = q(params.get("advq") || params.get("partq"));
+      var hint = readAdvLikelyHintFromUrl();
+      window.__ccAdvLikelySpawnPrefixV1 = hint.spawn;
+      window.__ccAdvLikelySpawnLabelV1 = hint.label;
+      if (!advq && !hint.spawn) return;
+      var panel = ensurePanel();
+      if (!panel) return;
+      var query = panel.querySelector("#ccStablePartQuery");
+      var dom = panel.querySelector("#ccStablePartDomain");
+      if (!query) return;
+      if (advq) query.value = advq;
+      if (hint.spawn && dom){
+        try{ dom.value = "gun"; }catch(_){}
+      }
+      try{
+        var details = document.getElementById("ccAdvancedPartsSearch");
+        if (details && !details.open) details.open = true;
+        if (details && details.scrollIntoView) details.scrollIntoView({ behavior: "smooth", block: "start" });
+      }catch(_){}
+      try{ window.__ccStablePartRenderStateV1 = null; }catch(_){}
+      render();
+    }catch(_){}
+  }
+
   function install(){
     hideLegacyPanels();
     ensurePanel();
     wire();
     render();
+    applyAdvSearchFromUrl();
   }
 
   try{ window.__ccStablePartInstallV1 = install; }catch(_){ }

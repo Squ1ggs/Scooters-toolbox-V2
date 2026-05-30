@@ -168,6 +168,8 @@
     return out;
   }
 
+  window.parseSerialMeta = parseSerialMeta;
+
   function looksLikePartOrStatName(name) {
     var n = String(name || '').trim();
     return !n || /^comp[_\-]?\d{2}\s*(epic|legendary|rare|uncommon|common)$/i.test(n) ||
@@ -1520,6 +1522,101 @@
     resultsEl.dataset.stxSerialSearchWired = '1';
     window.serialLibrarySerials = window.serialLibrarySerials || [];
     var library = window.serialLibrarySerials;
+    var catalogSerials = null;
+    var catalogLoadPromise = null;
+    var catalogSelection = Object.create(null);
+    var serialSearchRenderLimit = 80;
+    var lastFilteredRows = [];
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function loadCatalogSerials() {
+      if (catalogSerials) return Promise.resolve(catalogSerials);
+      if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) {
+        catalogSerials = window.STX_SERIALS_DATA.serials;
+        return Promise.resolve(catalogSerials);
+      }
+      if (catalogLoadPromise) return catalogLoadPromise;
+      var proto = (typeof location !== 'undefined' && location.protocol) || '';
+      if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
+        catalogSerials = [];
+        catalogLoadPromise = Promise.resolve(catalogSerials);
+        return catalogLoadPromise;
+      }
+      catalogLoadPromise = fetch('./assets/data/serials.json')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          catalogSerials = data && data.serials ? data.serials : [];
+          return catalogSerials;
+        })
+        .catch(function () {
+          catalogSerials = [];
+          return catalogSerials;
+        });
+      return catalogLoadPromise;
+    }
+
+    function catalogMatches(item, q) {
+      if (!q) return true;
+      var name = String(item.name || '').toLowerCase();
+      var serial = String(item.serial || '').toLowerCase();
+      if (name.indexOf(q) >= 0) return true;
+      if (serial.indexOf(q) >= 0) return true;
+      var meta = parseSerialMeta(item.serial);
+      var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
+      if (idStr && idStr.toLowerCase().indexOf(q) >= 0) return true;
+      if (meta.name && String(meta.name).toLowerCase().indexOf(q) >= 0) return true;
+      return false;
+    }
+
+    function isRowSelected(row) {
+      if (!row) return false;
+      if (row.source === 'library' && Number.isFinite(row._idx) && library[row._idx]) {
+        return !!library[row._idx].selected;
+      }
+      return !!catalogSelection[row.serial];
+    }
+
+    function setRowSelected(row, on) {
+      if (!row) return;
+      if (row.source === 'library' && Number.isFinite(row._idx) && library[row._idx]) {
+        library[row._idx].selected = !!on;
+      } else if (row.serial) {
+        catalogSelection[row.serial] = !!on;
+      }
+    }
+
+    function getSelectedRows() {
+      var out = [];
+      var seen = Object.create(null);
+      for (var i = 0; i < lastFilteredRows.length; i++) {
+        var row = lastFilteredRows[i];
+        if (!isRowSelected(row)) continue;
+        var ser = String(row.serial || '').trim();
+        if (!ser || seen[ser]) continue;
+        seen[ser] = true;
+        out.push(row);
+      }
+      return out;
+    }
+
+    function openSaveYamlDrawer() {
+      var drawer = byId('rp-saveyaml-drawer');
+      if (drawer) {
+        drawer.classList.add('rp-open');
+        document.body.classList.add('rp-saveyaml-drawer-open');
+      }
+    }
+
+    function getSerialSearchInjectCopies() {
+      try {
+        var mq = byId('serialSearchInjectCopies');
+        if (mq) return normalizeYamlInjectCopies(mq.value);
+      } catch (_) {}
+      return 1;
+    }
 
     function detectSerialTextMode(raw) {
       var r = String(raw || '');
@@ -1606,59 +1703,158 @@
     }
 
     function renderResults(filtered) {
+      lastFilteredRows = filtered || [];
       resultsEl.innerHTML = '';
       if (!filtered || !filtered.length) {
-        resultsEl.innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:0.9em;">No serials match.</div>';
+        resultsEl.innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:0.9em;">No matches. Try another name, serial, or ID (e.g. 272:11).</div>';
         return;
       }
-      filtered.forEach(function (item, idx) {
+      var show = filtered.slice(0, serialSearchRenderLimit);
+      show.forEach(function (item) {
         var meta = parseSerialMeta(item.serial);
-        var name = meta.name || 'Unknown Item';
+        var name = item.name || meta.name || lookupNameBySerial(item.serial) || 'Unknown Item';
         var level = Number.isFinite(meta.level) ? ' Lv' + meta.level : '';
         var idStr = (meta.familyId != null && meta.itemId != null) ? ' (' + meta.familyId + ':' + meta.itemId + ')' : '';
+        var tag = item.source === 'library' ? ' <span style="opacity:0.55;font-size:0.75em;">(your list)</span>' : '';
         var row = document.createElement('div');
-        row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;border:1px solid rgba(0,200,255,0.2);';
+        row.style.cssText = 'display:flex;align-items:flex-start;gap:8px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;border:1px solid rgba(0,200,255,0.2);';
         var cb = document.createElement('input');
         cb.type = 'checkbox';
-        cb.id = 'ccYamlLibPick_' + String(item._idx);
-        cb.name = cb.id;
-        cb.checked = item.selected || false;
-        cb.setAttribute('data-idx', String(item._idx));
+        cb.checked = isRowSelected(item);
         cb.addEventListener('change', function () {
-          var i = parseInt(this.getAttribute('data-idx'), 10);
-          if (Number.isFinite(i) && library[i]) library[i].selected = this.checked;
+          setRowSelected(item, this.checked);
         });
-        var label = document.createElement('label');
-        label.style.cssText = 'flex:1;cursor:pointer;color:rgba(255,255,255,0.9);font-size:0.9em;';
-        label.appendChild(cb);
-        label.appendChild(document.createTextNode(' ' + name + level + idStr));
+        var label = document.createElement('div');
+        label.style.cssText = 'flex:1;min-width:0;color:rgba(255,255,255,0.9);font-size:0.9em;';
+        label.innerHTML = escapeHtml(name + level + idStr) + tag;
         row.appendChild(cb);
         row.appendChild(label);
+        var btnStyle = 'padding:4px 8px;font-size:11px;';
+        ['Copy', 'Editor', 'YAML', 'Bank'].forEach(function (lbl, bi) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn';
+          btn.style.cssText = btnStyle;
+          btn.textContent = lbl;
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var ser = String(item.serial || '').trim();
+            if (!ser) return;
+            if (bi === 0) {
+              try { navigator.clipboard.writeText(ser); } catch (_) {}
+              if (statusEl) statusEl.textContent = 'Copied serial.';
+              return;
+            }
+            if (bi === 1) {
+              importSerialToEditor(ser);
+              return;
+            }
+            var mult = getSerialSearchInjectCopies();
+            if (bi === 2) {
+              if (window.appendSerialToYAML && window.appendSerialToYAML(ser, mult)) {
+                openSaveYamlDrawer();
+                if (statusEl) statusEl.textContent = 'Added to character backpack.';
+              } else if (typeof window.stxAlertNeedSaveForYamlInject === 'function') {
+                window.stxAlertNeedSaveForYamlInject('backpack');
+              } else alert('Load a character save YAML (root state:) first.');
+              return;
+            }
+            if (window.appendSerialToProfileBank && window.appendSerialToProfileBank(ser, mult)) {
+              openSaveYamlDrawer();
+              if (statusEl) statusEl.textContent = 'Added to profile bank.';
+            } else if (typeof window.stxAlertNeedSaveForYamlInject === 'function') {
+              window.stxAlertNeedSaveForYamlInject('bank');
+            } else alert('Load profile .sav or YAML first.');
+          });
+          row.appendChild(btn);
+        });
         resultsEl.appendChild(row);
       });
+      if (filtered.length > serialSearchRenderLimit) {
+        var moreWrap = document.createElement('div');
+        moreWrap.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;';
+        var more = document.createElement('div');
+        more.style.cssText = 'color:rgba(255,255,255,0.6);font-size:0.85em;';
+        more.textContent = 'Showing ' + serialSearchRenderLimit + ' of ' + filtered.length + '.';
+        var moreBtn = document.createElement('button');
+        moreBtn.type = 'button';
+        moreBtn.className = 'btn';
+        moreBtn.style.cssText = 'padding:4px 8px;font-size:11px;';
+        moreBtn.textContent = 'Show more';
+        moreBtn.addEventListener('click', function () {
+          serialSearchRenderLimit += 80;
+          renderResults(filtered);
+        });
+        moreWrap.appendChild(more);
+        moreWrap.appendChild(moreBtn);
+        resultsEl.appendChild(moreWrap);
+      }
+    }
+
+    function buildFilteredRows(q) {
+      var filtered = [];
+      var seen = Object.create(null);
+      function pushRow(row) {
+        var ser = String(row.serial || '').trim();
+        if (!ser || seen[ser]) return;
+        seen[ser] = true;
+        filtered.push(row);
+      }
+      if (catalogSerials && catalogSerials.length) {
+        var pool = q
+          ? catalogSerials.filter(function (it) { return catalogMatches(it, q); })
+          : catalogSerials.slice(0, 120);
+        for (var c = 0; c < pool.length; c++) {
+          var ent = pool[c];
+          pushRow({
+            serial: ent.serial,
+            name: ent.name,
+            source: 'catalog',
+          });
+        }
+      }
+      for (var i = 0; i < library.length; i++) {
+        var it = library[i];
+        var meta = parseSerialMeta(it.serial);
+        var name = (it.name || meta.name || lookupNameBySerial(it.serial) || '').toLowerCase();
+        var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
+        var serial = (it.serial || '').toLowerCase();
+        if (!q || name.indexOf(q) >= 0 || idStr.toLowerCase().indexOf(q) >= 0 || serial.indexOf(q) >= 0) {
+          pushRow({
+            serial: it.serial,
+            name: meta.name || lookupNameBySerial(it.serial),
+            source: 'library',
+            _idx: i,
+          });
+        }
+      }
+      return filtered;
     }
 
     function applyFilter() {
       loadPasteIntoLibraryIfEmpty();
       var q = (searchInput && searchInput.value || '').trim().toLowerCase();
-      if (!library.length) {
-        resultsEl.innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:0.9em;">Load a serial file, click <strong>Load from Paste</strong>, or paste in the box and type here — the library auto-loads from the paste area when it is still empty.</div>';
-        if (statusEl) {
-          statusEl.textContent = q ? 'No serials loaded yet. Paste or load a file first.' : '';
-        }
+      if (!q) serialSearchRenderLimit = 80;
+      if (!catalogSerials) {
+        if (statusEl) statusEl.textContent = 'Loading item catalog…';
+        loadCatalogSerials().then(function () {
+          var filtered = buildFilteredRows(q);
+          if (statusEl) {
+            var libN = library.length;
+            statusEl.textContent = q
+              ? filtered.length + ' match(es) · catalog + your list' + (libN ? ' (' + libN + ' pasted)' : '')
+              : (catalogSerials.length + ' items in catalog' + (libN ? ' · ' + libN + ' in your list' : '') + '. Type to search.');
+          }
+          renderResults(filtered);
+        });
         return;
       }
-      var filtered = [];
-      for (var i = 0; i < library.length; i++) {
-        var it = library[i];
-        var meta = parseSerialMeta(it.serial);
-        var name = (meta.name || '').toLowerCase();
-        var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-        var idStrLower = idStr.toLowerCase();
-        var serial = (it.serial || '').toLowerCase();
-        if (!q || name.indexOf(q) >= 0 || idStrLower.indexOf(q) >= 0 || serial.indexOf(q) >= 0) {
-          filtered.push({ serial: it.serial, selected: it.selected, _idx: i });
-        }
+      var filtered = buildFilteredRows(q);
+      if (statusEl) {
+        var libN2 = library.length;
+        statusEl.textContent = q
+          ? filtered.length + ' match(es) · catalog + your list' + (libN2 ? ' (' + libN2 + ' pasted)' : '')
+          : (catalogSerials.length + ' items in catalog' + (libN2 ? ' · ' + libN2 + ' in your list' : '') + '. Type to search.');
       }
       renderResults(filtered);
     }
@@ -1709,28 +1905,20 @@
     if (searchInput) searchInput.addEventListener('input', applyFilter);
     if (searchInput) searchInput.addEventListener('keyup', applyFilter);
     if (selectAllBtn) selectAllBtn.addEventListener('click', function () {
-      loadPasteIntoLibraryIfEmpty();
-      var q = (searchInput && searchInput.value || '').trim().toLowerCase();
-      for (var i = 0; i < library.length; i++) {
-        var it = library[i];
-        var meta = parseSerialMeta(it.serial);
-        var name = (meta.name || '').toLowerCase();
-        var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-        var idStrLower = idStr.toLowerCase();
-        var serial = (it.serial || '').toLowerCase();
-        if (!q || name.indexOf(q) >= 0 || idStrLower.indexOf(q) >= 0 || serial.indexOf(q) >= 0) it.selected = true;
-      }
+      for (var s = 0; s < lastFilteredRows.length; s++) setRowSelected(lastFilteredRows[s], true);
       applyFilter();
     });
     if (clearBtn) clearBtn.addEventListener('click', function () {
       library.length = 0;
+      catalogSelection = Object.create(null);
       if (statusEl) statusEl.textContent = '';
       if (searchInput) searchInput.value = '';
-      resultsEl.innerHTML = '<div style="color:rgba(255,255,255,0.6);font-size:0.9em;">Load a file or paste serials above to search.</div>';
-    });    
+      serialSearchRenderLimit = 80;
+      applyFilter();
+    });
     if (addToYamlBtn) addToYamlBtn.addEventListener('click', function () {
-      var selected = library.filter(function (it) { return it.selected; });
-      if (!selected.length) { alert('Select at least one serial first.'); return; }
+      var selected = getSelectedRows();
+      if (!selected.length) { alert('Select at least one item first.'); return; }
       var yaml = getYamlText();
       if (!yaml.text || !yaml.text.trim()) {
         if (typeof window.stxAlertNeedSaveForYamlInject === 'function') window.stxAlertNeedSaveForYamlInject('backpack');
@@ -1743,20 +1931,17 @@
         else alert('Load a character save YAML (root state:) first.');
         return;
       }
-      var mult = 1;
-      try {
-        var mq = byId('serialSearchInjectCopies');
-        if (mq) mult = normalizeYamlInjectCopies(mq.value);
-      } catch (_) {}
+      var mult = getSerialSearchInjectCopies();
       var added = 0;
       for (var a = 0; a < selected.length; a++) {
         if (window.appendSerialToYAML && window.appendSerialToYAML(selected[a].serial, mult)) added += mult;
       }
+      if (added) openSaveYamlDrawer();
       if (statusEl) statusEl.textContent = added ? ('Added ' + added + ' item(s) to character backpack.') : 'Could not add (check backpack section).';
     });
     if (addToBankBtn) addToBankBtn.addEventListener('click', function () {
-      var selected = library.filter(function (it) { return it.selected; });
-      if (!selected.length) { alert('Select at least one serial first.'); return; }
+      var selected = getSelectedRows();
+      if (!selected.length) { alert('Select at least one item first.'); return; }
       var yaml = getYamlText();
       if (!yaml.text || !yaml.text.trim()) {
         if (typeof window.stxAlertNeedSaveForYamlInject === 'function') window.stxAlertNeedSaveForYamlInject('bank');
@@ -1769,11 +1954,7 @@
         else alert('Load profile .sav or YAML first.');
         return;
       }
-      var multB = 1;
-      try {
-        var mqB = byId('serialSearchInjectCopies');
-        if (mqB) multB = normalizeYamlInjectCopies(mqB.value);
-      } catch (_) {}
+      var multB = getSerialSearchInjectCopies();
       var serials = [];
       for (var b = 0; b < selected.length; b++) {
         var sb0 = String(selected[b].serial || '').trim();
@@ -1784,14 +1965,15 @@
       }
       if (!serials.length) { alert('No serials to add.'); return; }
       if (typeof window.insertSerials === 'function' && window.insertSerials(serials)) {
+        openSaveYamlDrawer();
         if (statusEl) statusEl.textContent = 'Added ' + serials.length + ' item(s) to profile bank.';
       } else if (statusEl) {
         statusEl.textContent = 'Could not add to bank (load profile YAML first).';
       }
     });
     if (addToEditorBtn) addToEditorBtn.addEventListener('click', function () {
-      var selected = library.filter(function (it) { return it.selected; });
-      if (!selected.length) { alert('Select at least one serial first.'); return; }
+      var selected = getSelectedRows();
+      if (!selected.length) { alert('Select at least one item first.'); return; }
       var codes = selected.map(function (it) { return it.serial; });
       if (codes.length === 1) {
         importSerialToEditor(codes[0]);

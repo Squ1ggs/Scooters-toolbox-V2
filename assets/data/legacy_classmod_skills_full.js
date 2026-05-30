@@ -1,7 +1,3 @@
-/**
- * Full legacy Class Mod skill fallback for the Guided Class Mod Builder.
- * Auto-generated from assets/js/stx-bulk-decoder-patch-v10.js.
- */
 (function () {
   'use strict';
   var root = window.__LEGACY_CLASSMOD_PARTS_BY_KEY = window.__LEGACY_CLASSMOD_PARTS_BY_KEY || {};

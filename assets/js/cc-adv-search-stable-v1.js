@@ -726,6 +726,7 @@
   function haystack(p){
     return [
       q(p && p.name),
+      q(p && p.searchAlias),
       q(p && p.manufacturer),
       q(p && p.category),
       q(p && p.itemType),

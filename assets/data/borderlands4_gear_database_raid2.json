@@ -1,0 +1,213 @@
+{
+  "version": "Raid 2 (May 2026)",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX)",
+  "pearlescent_weapons": [
+    {
+      "name": "Jail-Broken Gatling",
+      "weaponType": "SMG",
+      "manufacturer": "Ripper",
+      "expectedInv": "bor_sm",
+      "spawnTokens": ["jailbroken", "jailbrokengatling"],
+      "redText": "Get busy shooting or get busy dying.",
+      "ability": "Jailbroken — On hit, gain a stack of Backfire. Each Backfire stack increases Fire Rate and increases the chance to fire additional projectiles.",
+      "source": "Subjugator & Thol the Invincible (Raid 2)",
+      "status": "verified"
+    },
+    {
+      "name": "Gomie",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Jakobs",
+      "expectedInv": "jak_ar",
+      "spawnTokens": ["gomie"],
+      "redText": null,
+      "ability": "Ascending Storm — On hit, gain Firestorm stacks. Each stack increases weapon damage by 5%. Reloading releases accumulated Firestorm damage to nearby enemies.",
+      "source": "World Drop (Raid 2)",
+      "status": "verified"
+    },
+    {
+      "name": "Herald",
+      "weaponType": "Pistol",
+      "manufacturer": "Torgue",
+      "expectedInv": "tor_ps",
+      "spawnTokens": ["herald"],
+      "redText": "Out of 87 bazillion, ONE of them had to be the best.",
+      "ability": "Unkempt — Spiritual successor to the Unkempt Harold.",
+      "source": "World Drop (Raid 2)",
+      "status": "partial",
+      "notes": "Dataset may use comp_06_pearl_herald instead of comp_05_legendary"
+    },
+    {
+      "name": "Conflux",
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Maliwan",
+      "expectedInv": "mal_sr",
+      "spawnTokens": ["conflux", "vestigialconflux"],
+      "redText": "It's self indulgent, I admit it.",
+      "ability": "Sinew — Deals +100% damage for each status effect currently affecting the target.",
+      "source": "World Drop",
+      "status": "verified"
+    },
+    {
+      "name": "Soul Survivor",
+      "weaponType": "Pistol",
+      "manufacturer": "Daedalus",
+      "expectedInv": "dad_ps",
+      "spawnTokens": ["soulsurvivor"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Crow-Sourced",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Order",
+      "expectedInv": "ord_ar",
+      "spawnTokens": ["crowdsourced", "crowsourced"],
+      "status": "needs_verification",
+      "notes": "Community DB: Order AR; parsed Nexus may still expose VLA_SR CrowdSourced until inv tables update"
+    },
+    {
+      "name": "Crazed Earl",
+      "weaponType": "Shotgun",
+      "manufacturer": "Ripper",
+      "expectedInv": "bor_sg",
+      "spawnTokens": ["crazedearl"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Eigenburst",
+      "weaponType": "Shotgun",
+      "manufacturer": "Tediore",
+      "expectedInv": "ted_sg",
+      "spawnTokens": ["eigenburst", "iigenburst", "eagenburst"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Handcannon",
+      "weaponType": "Pistol",
+      "manufacturer": "Torgue",
+      "expectedInv": "tor_ps",
+      "spawnTokens": ["handcannon", "handconnon"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Mercurious",
+      "weaponType": "SMG",
+      "manufacturer": "Vladof",
+      "expectedInv": "vla_sm",
+      "spawnTokens": ["mercurious", "mercury"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Fleabag",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Torgue",
+      "expectedInv": "tor_ar",
+      "spawnTokens": ["fleabag"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Hair Trigger",
+      "weaponType": "Shotgun",
+      "manufacturer": "Ripper",
+      "spawnTokens": ["hairtrigger"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Shalashaska",
+      "weaponType": "Pistol",
+      "manufacturer": "Jakobs",
+      "expectedInv": "jak_ps",
+      "spawnTokens": ["shalashaska"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Abyss",
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Ripper",
+      "expectedInv": "bor_sr",
+      "spawnTokens": ["abyss"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Looming Constable",
+      "weaponType": "Shotgun",
+      "manufacturer": "Jakobs",
+      "expectedInv": "jak_sg",
+      "spawnTokens": ["loomingconstable", "looming", "constable"],
+      "status": "needs_verification"
+    },
+    {
+      "name": "Firestorm",
+      "weaponType": "SMG",
+      "manufacturer": "Maliwan",
+      "expectedInv": "mal_sm",
+      "spawnTokens": ["firestorm", "firework"],
+      "status": "needs_verification",
+      "notes": "May map to MAL_SM Firework until Firestorm comp exists"
+    },
+    {
+      "name": "Screwstonian",
+      "weaponType": "SMG",
+      "manufacturer": "Daedalus",
+      "expectedInv": "dad_sm",
+      "spawnTokens": ["screwstonian", "screwed"],
+      "status": "community_discovered",
+      "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary"
+    },
+    {
+      "name": "Parasite",
+      "spawnTokens": ["parasite"],
+      "status": "community_discovered"
+    },
+    {
+      "name": "SolarTemper",
+      "spawnTokens": ["solartemper"],
+      "status": "community_discovered"
+    }
+  ],
+  "raid2_legendaries": [
+    {
+      "name": "Lockjaw",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Torgue",
+      "expectedInv": "tor_ar",
+      "spawnTokens": ["lockjaw"],
+      "source": "Subjugator & Thol",
+      "isPearlescent": false
+    },
+    {
+      "name": "Shammy Kablammy",
+      "weaponType": "Pistol",
+      "manufacturer": "Tediore",
+      "expectedInv": "ted_ps",
+      "spawnTokens": ["shammy"],
+      "source": "Subjugator & Thol",
+      "isPearlescent": false
+    },
+    {
+      "name": "Flak Cannon",
+      "weaponType": "Heavy Weapon",
+      "manufacturer": "Vladof",
+      "expectedInv": "vla_hw",
+      "spawnTokens": ["flak"],
+      "source": "Subjugator & Thol",
+      "isPearlescent": false
+    },
+    {
+      "name": "Collector",
+      "weaponType": "Shield",
+      "manufacturer": "Order",
+      "expectedInv": "ord_shield",
+      "spawnTokens": ["collector"],
+      "source": "Subjugator & Thol",
+      "isPearlescent": false
+    },
+    {
+      "name": "Active Fire",
+      "weaponType": "Firmware",
+      "spawnTokens": ["activefire"],
+      "expectedSpawn": "grenade_gadget.part_firmware_active_fire",
+      "source": "Subjugator & Thol",
+      "isPearlescent": false
+    }
+  ]
+}

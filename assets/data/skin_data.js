@@ -1,7 +1,3 @@
-/*!
- * Skin/camo data for rebuild – SPAWN_SKINS, SKINS (numeric), __CC_EXTRA_NUMERIC_SKINS.
- * Ported from ScootersToolbox.html for standalone rebuild use.
- */
 (function () {
   'use strict';
 
@@ -51,6 +47,15 @@
     { value: "Cosmetics_Weapon_Mat43_Snowfall", label: "Baby You're Cold Inside - Snowfall" },
     { value: "Cosmetics_Weapon_Mat44_GiftWrap", label: "So Much More Than A Bag - GiftWrap" },
     { value: "Cosmetics_Weapon_Mat45_Gingerbread", label: "Eat Me - Gingerbread" },
+    { value: "Cosmetics_Weapon_Mat46_MechYeah", label: "MechYeah - MechYeah" },
+    { value: "Cosmetics_Weapon_Mat47_Assault", label: "Assault - Assault" },
+    { value: "Cosmetics_Weapon_Mat48_Boltron", label: "Boltron - Boltron" },
+    { value: "Cosmetics_Weapon_Mat49_Furboy", label: "Furboy - Furboy" },
+    { value: "Cosmetics_Weapon_Mat50_SpicyIguana", label: "SpicyIguana - SpicyIguana" },
+    { value: "Cosmetics_Weapon_Mat51_Gore", label: "Gore - Gore" },
+    { value: "Cosmetics_Weapon_Mat52_Ghostly", label: "Ghostly - Ghostly" },
+    { value: "Cosmetics_Weapon_Mat53_Occult", label: "Occult - Occult" },
+    { value: "Cosmetics_Weapon_Mat54_Shipwreck", label: "Shipwreck - Shipwreck" },
     { value: "Cosmetics_Weapon_Shiny_anarchy", label: "Phosphene - Anarchy" },
     { value: "Cosmetics_Weapon_Shiny_Asher", label: "Phosphene - Asher" },
     { value: "Cosmetics_Weapon_Shiny_ATLien", label: "Phosphene - ATLien" },
@@ -105,12 +110,12 @@
     { value: "Cosmetics_Weapon_Shiny_Prince", label: "Phosphene - Prince" },
     { value: "Cosmetics_Weapon_Shiny_QueensRest", label: "Phosphene - QueensRest" },
     { value: "Cosmetics_Weapon_Shiny_QuickDraw", label: "Phosphene - QuickDraw" },
-    { value: "Cosmetics_Weapon_Shiny_rainmaker", label: "Phosphene - Rainmaker" },
     { value: "Cosmetics_Weapon_Shiny_RainbowVomit", label: "Phosphene - RainbowVomit" },
+    { value: "Cosmetics_Weapon_Shiny_rainmaker", label: "Phosphene - Rainmaker" },
     { value: "Cosmetics_Weapon_Shiny_Rangefinder", label: "Phosphene - Rangefinder" },
     { value: "Cosmetics_Weapon_Shiny_Roach", label: "Phosphene - Roach" },
-    { value: "Cosmetics_Weapon_Shiny_roil", label: "Phosphene - Roil" },
     { value: "Cosmetics_Weapon_Shiny_RocketReload", label: "Phosphene - RocketReload" },
+    { value: "Cosmetics_Weapon_Shiny_roil", label: "Phosphene - Roil" },
     { value: "Cosmetics_Weapon_Shiny_Rowan", label: "Phosphene - Rowan" },
     { value: "Cosmetics_Weapon_Shiny_rowdy", label: "Phosphene - Rowdy" },
     { value: "Cosmetics_Weapon_Shiny_RubysGrasp", label: "Phosphene - RubysGrasp" },
@@ -132,7 +137,7 @@
     { value: "Cosmetics_Weapon_Shiny_Zipgun", label: "Phosphene - Zipgun" }
   ];
 
-  var EXTRA_SKINS = [
+var EXTRA_SKINS = [
     { name: "Zipper", code: "{2:54}" },
     { name: "Rangefinder", code: "{2:59}" },
     { name: "King's Gambit", code: "{3:76}" },
@@ -303,7 +308,6 @@
 
   window.SPAWN_SKINS = SPAWN_SKINS;
   window.CAMO_TOKENS = CAMO_TOKENS;
-  /** Shared pattern: mixable weapon skin rarity braces `{fam:id}` / `{fam:[a b]}`. Exposed for skin mixer + populate logic. */
   try { window.__CC_NUMERIC_SKIN_BRACE_RE = NUMERIC_BRACE_RE; } catch (_e) {}
   window.SKINS = {
     "Legendary Skins": EXTRA_SKINS.slice(),

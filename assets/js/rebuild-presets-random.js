@@ -61,12 +61,17 @@
   function addPresetPart(){
     var partSel = byId("presetPartSelect");
     var qty = byId("presetQuantity");
-    var out = (typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode");
-    if (!partSel || !out) return;
+    if (!partSel) return;
     var code = (partSel.value || "").trim();
     if (!code) return;
     code = normalizeBracedIdToken(code);
     var n = Math.max(1, parseInt((qty && qty.value) || "1", 10) || 1);
+    if (typeof window.stxAppendPresetToActiveBuilder === "function" && window.stxAppendPresetToActiveBuilder(code, { quantity: n })) {
+      try { if (typeof window.refreshBuildStatsCore === "function") window.refreshBuildStatsCore(); } catch(_){}
+      return;
+    }
+    var out = (typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode");
+    if (!out) return;
     if (out.id === "guidedOutputDeserialized" && typeof window.appendToOutCodeGuided === "function") {
       for (var qi = 0; qi < n; qi++) window.appendToOutCodeGuided(code);
       try { window.__CC_LAST_CODE_TARGET = "guided"; } catch (_) {}
@@ -88,7 +93,7 @@
         }
       }
       try { window.__CC_LAST_CODE_TARGET = "simple"; } catch (_) {}
-      if (window.stxAppendQuickPresetNumericTokens(normPiecesSb, { replaceBareQuickPresets: isRarityTokenBootstrap(code) })) {
+      if (window.stxAppendQuickPresetNumericTokens(normPiecesSb, { replaceBareQuickPresets: false })) {
         try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
         return;
       }
@@ -123,16 +128,23 @@
     } catch (_) {}
   }
   function appendToOutCode(tok, forceTarget, replaceRarity) {
+    if (!forceTarget && typeof window.stxAppendPresetToActiveBuilder === "function") {
+      if (window.stxAppendPresetToActiveBuilder(tok, { quantity: 1 })) return;
+    }
     var out = forceTarget || ((typeof window.getCodeAppendOutputEl === "function") ? window.getCodeAppendOutputEl() : byId("outCode"));
     if (!out) return;
     if (out.id === "guidedOutputDeserialized" && typeof window.appendToOutCodeGuided === "function") {
       window.appendToOutCodeGuided(tok, forceTarget, replaceRarity);
       return;
     }
-    /* Simple Builder: `{fam:id}` / `{id}` presets must hit state.extras — plain textarea append is overwritten by refreshOutputs(). */
-    if (out.id === "outCode" && typeof window.stxAppendTailTokenViaExtras === "function") {
+    /* Simple Builder: tail tokens must hit state.extras — plain textarea append is overwritten by refreshOutputs(). */
+    if (out.id === "outCode" && typeof window.stxAppendPartTokenViaExtras === "function") {
       var tNorm = normalizeBracedIdToken(tok);
-      if (window.stxAppendTailTokenViaExtras(tNorm)) return;
+      if (window.stxAppendPartTokenViaExtras(tNorm, { type: "quickPreset" })) return;
+    }
+    if (out.id === "outCode" && typeof window.stxAppendTailTokenViaExtras === "function") {
+      var tNormLegacy = normalizeBracedIdToken(tok);
+      if (window.stxAppendTailTokenViaExtras(tNormLegacy)) return;
     }
     var serial = (out.value || "").trim();
     var dbl = serial.indexOf("||");

@@ -24,21 +24,67 @@
     'yamlInput', 'bv-input', 'yamlAddSerialsInput', 'serialLibraryPasteArea'
   ];
 
-  function addRefsFromText(text, refs) {
+  function inferBaseFamilyFromSerialText(text) {
+    var s = String(text || '').trim();
+    var dbl = s.indexOf('||');
+    var prefix = dbl >= 0 ? s.slice(0, dbl).trim() : s;
+    var m = prefix.match(/^\s*(\d+)\s*,\s*0\s*,\s*1\s*,\s*\d+\s*\|/) || prefix.match(/^\s*(\d+)\s*[,\|]/);
+    return m ? Number(m[1]) : null;
+  }
+
+  /** Push one ref key onto refList (array). Preserves duplicates for stacked preset parts. */
+  function pushRef(refList, ref) {
+    var r = q(ref);
+    if (r) refList.push(r);
+  }
+
+  function addRefsFromToken(tok, refList, opts) {
+    var t = q(tok);
+    if (!t) return;
+    var o = opts || {};
+    var baseFam = o.baseFamilyId;
+    var dm = t.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (dm) { pushRef(refList, dm[1] + ':' + dm[2]); return; }
+    var bm = t.match(/^\{\s*(\d+)\s*\}$/);
+    if (bm) {
+      if (baseFam != null && Number.isFinite(Number(baseFam))) pushRef(refList, String(baseFam) + ':' + bm[1]);
+      else pushRef(refList, bm[1]);
+      return;
+    }
+    if (/^\d+:\d+$/.test(t)) { pushRef(refList, t); return; }
+    if (/^\d+$/.test(t)) {
+      if (baseFam != null && Number.isFinite(Number(baseFam))) pushRef(refList, String(baseFam) + ':' + t);
+      else pushRef(refList, t);
+      return;
+    }
+    pushRef(refList, t.replace(/^"+|"+$/g, ''));
+  }
+
+  function addRefsFromText(text, refList, opts) {
+    if (!refList || typeof refList.push !== 'function') return;
     var s = String(text || '');
+    var o = opts || {};
+    var baseFam = o.baseFamilyId != null ? o.baseFamilyId : inferBaseFamilyFromSerialText(s);
     var ms = s.match(/\b\d{1,6}:\d{1,6}\b/g);
-    if (ms) ms.forEach(function (r) { refs.add(r); });
+    if (ms) ms.forEach(function (r) { pushRef(refList, r); });
     var braceMs = s.match(/\{\s*(\d{1,6})\s*:\s*(\d{1,6})\s*\}/g);
     if (braceMs) braceMs.forEach(function (b) {
       var m = b.match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/);
-      if (m) refs.add(m[1] + ':' + m[2]);
+      if (m) pushRef(refList, m[1] + ':' + m[2]);
+    });
+    var bareMs = s.match(/\{\s*(\d{1,6})\s*\}/g);
+    if (bareMs) bareMs.forEach(function (b) {
+      var m = b.match(/\{\s*(\d+)\s*\}/);
+      if (!m) return;
+      if (baseFam != null && Number.isFinite(Number(baseFam))) pushRef(refList, String(baseFam) + ':' + m[1]);
+      else pushRef(refList, m[1]);
     });
     try {
       var reQuoted = /"([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)+)"/g;
       var m;
       while ((m = reQuoted.exec(s)) !== null) {
         var tok = q(m[1]);
-        if (tok) refs.add(tok);
+        if (tok) pushRef(refList, tok);
       }
     } catch (_) {}
     var reList = /\{(\d{1,6})\s*:\s*\[\s*([0-9,\s]+)\s*\]\s*\}/g;
@@ -47,7 +93,7 @@
       var fam = m2[1];
       var list = String(m2[2] || '').replace(/,/g, ' ').trim().split(/\s+/).filter(Boolean);
       for (var i = 0; i < list.length; i++) {
-        if (/^\d{1,6}$/.test(list[i])) refs.add(fam + ':' + list[i]);
+        if (/^\d{1,6}$/.test(list[i])) pushRef(refList, fam + ':' + list[i]);
       }
     }
   }
@@ -472,53 +518,92 @@
     };
   }
 
-  /** Shared by accumulateFromSelected + getFullStatsBreakdown */
-  function collectRefsAndDedupedParts() {
-    var refs = new Set();
-    for (var ci = 0; ci < BUILD_STATS_TEXT_SOURCE_IDS.length; ci++) {
-      var elC = byId(BUILD_STATS_TEXT_SOURCE_IDS[ci]);
-      if (!elC) continue;
-      var txtC = String(elC.value != null ? elC.value : elC.textContent || '').slice(0, 200000);
-      addRefsFromText(txtC, refs);
+  function walkSelectedDataRefs(sd, refList, baseFam) {
+    if (!sd || typeof sd !== 'object') return;
+    var seenWalk = new Set();
+    function walk(v) {
+      if (v == null) return;
+      if (typeof v === 'string') { addRefsFromText(v, refList, { baseFamilyId: baseFam }); return; }
+      if (typeof v !== 'object') return;
+      if (seenWalk.has(v)) return;
+      seenWalk.add(v);
+      if (v.idRaw) addRefsFromToken(String(v.idRaw), refList, { baseFamilyId: baseFam });
+      if (v.code) addRefsFromToken(String(v.code), refList, { baseFamilyId: baseFam });
+      if (v.spawnCode) addRefsFromToken(String(v.spawnCode), refList, { baseFamilyId: baseFam });
+      if (Array.isArray(v)) { for (var k = 0; k < v.length; k++) walk(v[k]); return; }
+      var keys = Object.keys(v);
+      for (var kk = 0; kk < keys.length; kk++) {
+        if (keys[kk] === 'yaml' || keys[kk] === 'yamlText' || keys[kk] === 'raw' || keys[kk] === 'rawText') continue;
+        walk(v[keys[kk]]);
+      }
     }
+    walk(sd);
+  }
+
+  function appendSimpleExtrasRefs(refList, baseFam) {
+    try {
+      var st = window.state || window.__STX_SIMPLE_STATE;
+      if (!st || !Array.isArray(st.extras)) return;
+      for (var ei = 0; ei < st.extras.length; ei++) {
+        var ex = st.extras[ei];
+        var tok = ex && typeof ex === 'object' ? String(ex.tok || '').trim() : String(ex || '').trim();
+        if (tok) addRefsFromToken(tok, refList, { baseFamilyId: baseFam });
+      }
+    } catch (_) {}
+  }
+
+  /**
+   * Collect part refs for stat accumulation — keeps duplicate/stacked tokens (presets, qty, repeated tail parts).
+   */
+  function collectRefsListForStats() {
+    var refList = [];
+    var outEl = byId('outCode');
+    var useSimplePrimary = false;
+    try {
+      useSimplePrimary = !!(outEl && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader());
+    } catch (_) {}
+
+    if (useSimplePrimary) {
+      var txtOut = String(outEl.value != null ? outEl.value : outEl.textContent || '').slice(0, 200000);
+      var baseFam = inferBaseFamilyFromSerialText(txtOut);
+      addRefsFromText(txtOut, refList, { baseFamilyId: baseFam });
+      appendSimpleExtrasRefs(refList, baseFam);
+    } else {
+      for (var ci = 0; ci < BUILD_STATS_TEXT_SOURCE_IDS.length; ci++) {
+        var elC = byId(BUILD_STATS_TEXT_SOURCE_IDS[ci]);
+        if (!elC) continue;
+        var txtC = String(elC.value != null ? elC.value : elC.textContent || '').slice(0, 200000);
+        addRefsFromText(txtC, refList, { baseFamilyId: inferBaseFamilyFromSerialText(txtC) });
+      }
+      appendSimpleExtrasRefs(refList, null);
+    }
+
     try {
       var sd = window.selectedData || null;
       if (sd && typeof sd === 'object') {
-        var seenWalk = new Set();
-        function walk(v) {
-          if (v == null) return;
-          if (typeof v === 'string') { addRefsFromText(v, refs); return; }
-          if (typeof v !== 'object') return;
-          if (seenWalk.has(v)) return;
-          seenWalk.add(v);
-          if (v.idRaw) addRefsFromText(String(v.idRaw), refs);
-          if (v.code) addRefsFromText(String(v.code), refs);
-          if (v.spawnCode) addRefsFromText(String(v.spawnCode), refs);
-          if (Array.isArray(v)) { for (var k = 0; k < v.length; k++) walk(v[k]); return; }
-          var keys = Object.keys(v);
-          for (var kk = 0; kk < keys.length; kk++) {
-            if (keys[kk] === 'yaml' || keys[kk] === 'yamlText' || keys[kk] === 'raw' || keys[kk] === 'rawText') continue;
-            walk(v[keys[kk]]);
-          }
-        }
-        walk(sd);
+        var bfSd = useSimplePrimary && outEl ? inferBaseFamilyFromSerialText(String(outEl.value || '')) : null;
+        walkSelectedDataRefs(sd, refList, bfSd);
       }
     } catch (_) {}
-    var arr = Array.from(refs);
-    if (!arr.length) return null;
+
+    if (!refList.length) return null;
     var resolved = [];
-    for (var r = 0; r < arr.length; r++) {
+    for (var r = 0; r < refList.length; r++) {
       try {
-        var p = resolvePart(arr[r]);
-        resolved.push(p || arr[r]);
+        var p = resolvePart(refList[r]);
+        resolved.push(p || refList[r]);
       } catch (_) {
-        resolved.push(arr[r]);
+        resolved.push(refList[r]);
       }
     }
+    return { refList: refList, parts: resolved };
+  }
+
+  function dedupePartsList(parts) {
     var seen = new Set();
     var deduped = [];
-    for (var d = 0; d < resolved.length; d++) {
-      var p = resolved[d];
+    for (var d = 0; d < parts.length; d++) {
+      var p = parts[d];
       var k;
       if (p && typeof p === 'object') {
         k = String((p.idRaw || p.idraw || p.partRef || p.code || '') || '').trim();
@@ -531,7 +616,14 @@
       seen.add(k);
       deduped.push(p);
     }
-    return { refList: arr, deduped: deduped };
+    return deduped;
+  }
+
+  /** Unique parts for full-stats panel display (stacked duplicates collapsed). */
+  function collectRefsAndDedupedParts() {
+    var col = collectRefsListForStats();
+    if (!col) return null;
+    return { refList: col.refList, deduped: dedupePartsList(col.parts) };
   }
 
   function partDisplayName(part) {
@@ -718,9 +810,9 @@
   }
 
   function accumulateFromSelected() {
-    var col = collectRefsAndDedupedParts();
-    if (!col) return null;
-    var deduped = col.deduped;
+    var col = collectRefsListForStats();
+    if (!col || !col.parts.length) return null;
+    var deduped = col.parts;
     var slug = inferSlugHint();
     var pname = function (part) { return partDisplayName(part); };
 
@@ -807,37 +899,8 @@
   }
 
   function getBuildStatsDebugInfo() {
-    var refs = new Set();
-    for (var di = 0; di < BUILD_STATS_TEXT_SOURCE_IDS.length; di++) {
-      var elD = byId(BUILD_STATS_TEXT_SOURCE_IDS[di]);
-      if (!elD) continue;
-      var txtD = String(elD.value != null ? elD.value : elD.textContent || '').slice(0, 200000);
-      addRefsFromText(txtD, refs);
-    }
-    try {
-      var sd = window.selectedData || null;
-      if (sd && typeof sd === 'object') {
-        var seen = new Set();
-        function walk(v) {
-          if (v == null) return;
-          if (typeof v === 'string') { addRefsFromText(v, refs); return; }
-          if (typeof v !== 'object') return;
-          if (seen.has(v)) return;
-          seen.add(v);
-          if (v.idRaw) addRefsFromText(String(v.idRaw), refs);
-          if (v.code) addRefsFromText(String(v.code), refs);
-          if (v.spawnCode) addRefsFromText(String(v.spawnCode), refs);
-          if (Array.isArray(v)) { for (var k = 0; k < v.length; k++) walk(v[k]); return; }
-          var keys = Object.keys(v);
-          for (var kk = 0; kk < keys.length; kk++) {
-            if (keys[kk] === 'yaml' || keys[kk] === 'yamlText' || keys[kk] === 'raw' || keys[kk] === 'rawText') continue;
-            walk(v[keys[kk]]);
-          }
-        }
-        walk(sd);
-      }
-    } catch (_) {}
-    var arr = Array.from(refs);
+    var col = collectRefsListForStats();
+    var arr = col && col.refList ? col.refList.slice() : [];
     var resolved = [];
     var withStats = [];
     var withoutStats = [];

@@ -361,5 +361,3 @@ window.INVENTORY_ITEM_CATALOG = {
   "legendaryItems": {}
 };
 
-// Auto-generated part selection data from pakchunk4-Windows_6_P-Nexus-Data-inv4.json
-// Generated: 2025-12-27T04:26:00.555Z

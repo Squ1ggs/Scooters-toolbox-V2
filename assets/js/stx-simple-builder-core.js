@@ -3,32 +3,31 @@
 
   const $ = (id)=>document.getElementById((id==='itemType')?'stx_itemType':(id==='manufacturer')?'stx_manufacturer':id);
 
-  /** Collapse legacy **Gadget** / **Heavy Weapon** labels into one Simple item type: **Heavy** (still uses weapon row + Heavy Weapon pools). */
+  /** Collapse legacy **Heavy Weapon** labels into one Simple item type: **Heavy** (still uses weapon row + Heavy Weapon pools). */
   function stxNormalizeSimpleBuilderItemTypeUi(v){
     const s = String(v || '').trim();
-    if (s === 'Gadget' || s === 'Heavy Weapon') return 'Heavy';
+    if (s === 'Heavy Weapon') return 'Heavy';
     return s;
   }
-  /** Heavy guns: legacy item types, or **Weapon** + Heavy Weapon weapon type. `wtOverride` = guided weapon type when applicable. */
+  /** Heavy guns: item type **Heavy** / **Heavy Weapon** only (not Weapon + Heavy Weapon weapon type). */
   function stxSimpleBuilderItemTypeIsHeavyUi(catUi, wtOverride){
     const raw = String(catUi || '').trim();
-    if (/^(Gadget|Heavy Weapon|Heavy)$/i.test(raw)) return true;
-    const s = stxNormalizeSimpleBuilderItemTypeUi(raw);
-    if (s !== 'Weapon') return false;
-    let w = '';
-    if (wtOverride !== undefined && wtOverride !== null) w = String(wtOverride).trim();
-    else {
-      try {
-        // Prefer the live weapon-type control so Weapon → Heavy Weapon updates apply immediately
-        // (state.weaponType can lag one tick behind the #weaponType select on index.html).
-        if (typeof $ === 'function'){
-          const wtEl = $('weaponType');
-          if (wtEl && String(wtEl.value || '').trim()) w = String(wtEl.value || '').trim();
-        }
-        if (!w) w = String((typeof state !== 'undefined' && state && state.weaponType) || '').trim();
-      } catch (_e) {}
-    }
+    if (/^(Heavy Weapon|Heavy)$/i.test(raw)) return true;
+    return stxNormalizeSimpleBuilderItemTypeUi(raw) === 'Heavy';
+  }
+
+  function stxWeaponTypeIsHeavyLabel(wt){
+    const w = String(wt || '').trim();
     return /^heavy(?:\s*weapon)?$/i.test(w) || /heavy\s*weapon/i.test(w);
+  }
+
+  function stxStripLegendaryRarityDisplayPrefix(s){
+    const t = String(s || '').trim();
+    if (!t) return '';
+    const m = t.match(/^legendary\s*[-–—]\s*(.+)$/i);
+    if (m) return m[1].trim();
+    if (/^legendary$/i.test(t)) return '';
+    return t;
   }
 
   
@@ -43,7 +42,7 @@
     itemType: '',
     manufacturer: '',
     weaponType: '',
-    level: 60,
+    level: 61,
     rarity: '',
     idMode: true,
     allParts: false,
@@ -157,6 +156,8 @@
       const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
       if (c.indexOf('repair_kit.') === 0 && Number.isFinite(idOnly)) return 'fid:243:' + idOnly;
       if (/heavy_weapon_gadget\./.test(c) && Number.isFinite(idOnly)) return 'fid:244:' + idOnly;
+      const enhFam = stxEnhancementTypeFamilyIdFromSpawnCode(c);
+      if (enhFam != null && Number.isFinite(idOnly)) return 'fid:' + enhFam + ':' + idOnly;
     }
     return 'code:' + normCode(p.code || '');
   }
@@ -223,8 +224,10 @@
   ]);
   const PEARL_WEAPON_MAINPART_HINTS = [
     'eigenburst','laserdisc','mercredi','bubbles','tankbuster','handcannon','roulette',
-    'arctic','conflux','songbird','doeshot','fleabag','mercury','shalashaska','demo',
-    'crowdsourced','midnightdefiance','soulsurvivor','crazedearl'
+    'arctic','conflux','songbird','doeshot','fleabag','mercury','mercurious','shalashaska','demo',
+    'crowdsourced','midnightdefiance','soulsurvivor','crazedearl','jailbroken','jailbrokengatling',
+    'hairtrigger','herald','gomie','abyss','loomingconstable','looming','constable',
+    'firestorm','firework','screwstonian','screwed','parasite','solartemper'
   ];
 
   const CORE_PARTTYPE_BY_CATEGORY = {
@@ -236,7 +239,7 @@
     Grenade: 'Rarity',
     /* Same heavy / turret pools as `Weapon` + Heavy (`*_HW.comp_*`); not grenade `Base` rows. */
     Gadget: 'Rarity',
-    Enhancement: 'Core',
+    Enhancement: 'Rarity',
     Character: 'Body',
     'Class Mod': 'Body',
     Other: 'Base'
@@ -408,7 +411,7 @@
   }
 
   const SIMPLE_SCHEMA_BY_CATEGORY = {
-    /* Shield slots / labels mirror `GEAR_SLOTS_BY_CATEGORY.Shield` in cc-guided-builder-rebuild.js (save-editor.be simple flow). */
+    /* Shield slots / labels mirror `GEAR_SLOTS_BY_CATEGORY.Shield` in cc-guided-builder-rebuild.js. */
     Shield: [
       {key:'body', label:'Body', partType:'Body'},
       {key:'elementType1', label:'Element / resist (Shield 246)', partType:'TypeID1Element', customType:'type1Element'},
@@ -463,15 +466,12 @@
       {key:'firmware', label:'Firmware', partType:'Firmware'},
       {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
     ],
-    /* Enhancement: NCS `body → core_augment → firmware → stat_group1` — firmware slot last among fixed rows (before “other”). */
+    /* Enhancement: NCS `body → core_augment → firmware → stat_group1`; body/firmware use Add+qty like Shield. */
     Enhancement: [
-      {key:'body', label:'Body', partType:'Body'},
-      {key:'legendary', label:'Legendary perks', partType:'Legendary Perks', multi:true},
-      {key:'legendary2', label:'Core / augment', partType:'Core'},
-      {key:'stats', label:'Stats', partType:'Stats', multi:true},
-      {key:'special', label:'Special / Unique', partType:'', multi:true},
-      {key:'element', label:'Elements', partType:'Status', multi:true},
-      {key:'firmware', label:'Firmware', partType:'Firmware'},
+      {key:'body', label:'Body', partType:'Body', multi:true},
+      {key:'legendary', label:'Core / legendary effect', partType:'Core'},
+      {key:'stats', label:'Stat Group 1', partType:'Stats', multi:true},
+      {key:'firmware', label:'Firmware', partType:'Firmware', multi:true},
       {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
     ],
     Character: [
@@ -499,7 +499,7 @@
     return s;
   }
 
-  /** Spawn-code family prefix for shield rows (`ted_shield`, `bor_shield`, …) — aligns pools with save-editor.be / guided builder. */
+  /** Spawn-code family prefix for shield rows (`ted_shield`, `bor_shield`, …) — aligns with guided builder pools. */
   function stxShieldSpawnPrefixForUiManufacturer(man){
     const m = String(man || '').trim().toLowerCase();
     const map = {
@@ -652,6 +652,34 @@
     return em[1] === pref3;
   }
 
+  /** TypeID (family) for `ted_enhancement.*` / `mal_enhancement.*` when the part row omits `family` / `idRaw` — used for dropdown dedupe and tier gates. */
+  function stxEnhancementTypeFamilyIdFromSpawnCode(codeNormLo){
+    const c = String(codeNormLo || '').toLowerCase();
+    const em = c.match(/^([a-z]{3})_enhancement\./);
+    if (!em || !em[1]) return null;
+    const m3 = em[1];
+    const mfr =
+      (m3 === 'atl') ? 'Atlas' :
+      (m3 === 'cov') ? 'COV' :
+      (m3 === 'dad') ? 'Daedalus' :
+      (m3 === 'hyp') ? 'Hyperion' :
+      (m3 === 'jak') ? 'Jakobs' :
+      (m3 === 'mal') ? 'Maliwan' :
+      (m3 === 'ord') ? 'Order' :
+      (m3 === 'bor') ? 'Ripper' :
+      (m3 === 'ted') ? 'Tediore' :
+      (m3 === 'tor') ? 'Torgue' :
+      (m3 === 'vla') ? 'Vladof' :
+      '';
+    if (!mfr) return null;
+    try{
+      const rr = (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : (typeof STX_RARITIES !== 'undefined' ? STX_RARITIES : [])) || [];
+      const row = rr.find(r => String(r && r.itemType || '').trim() === 'Enhancement' && String(r && r.manufacturer || '').trim() === mfr);
+      const fam = row ? Number(row.familyId) : NaN;
+      return Number.isFinite(fam) ? fam : null;
+    }catch(_e){ return null; }
+  }
+
   /** Heavy / Gadget pool: `MAL_HW`, `BOR_HW`, … vs shared `heavy_weapon_gadget`. */
   function stxGadgetHwSpawnPrefixForUiManufacturer(wantMan){
     const m = String(wantMan || '').trim().toLowerCase();
@@ -728,6 +756,26 @@
     doeshot: true,
     doshot: true,
     shalashaska: true,
+    jailbroken: true,
+    jailbrokengatling: true,
+    jailbrokenkatling: true,
+    mercurious: true,
+    mercury: true,
+    fleabag: true,
+    hairtrigger: true,
+    herald: true,
+    gomie: true,
+    loomingconstable: true,
+    looming: true,
+    firestorm: true,
+    firework: true,
+    abyss: true,
+    constable: true,
+    screwstonian: true,
+    screwed: true,
+    screwstonian: true,
+    parasite: true,
+    solartemper: true,
     // Pearl main-barrel / curated list hints (same set as PEARL_WEAPON_MAINPART_HINTS, normalized).
     laserdisc: true,
     mercredi: true,
@@ -736,14 +784,142 @@
     roulette: true,
     arctic: true,
     songbird: true,
-    fleabag: true,
-    mercury: true,
     demo: true
+  };
+
+  /** Curated in-game titles for pearlescent rarity-id rows (keys = stxNormPearlAllowKey). */
+  window.STX_PEARL_RARITY_DISPLAY_BY_NORM = {
+    soulsurvivor: 'Soul Survivor',
+    conflux: 'Conflux',
+    crowdsourced: 'Crow-Sourced',
+    crowsourced: 'Crow-Sourced',
+    crazedearl: 'Crazed Earl',
+    eigenburst: 'Eigenburst',
+    iigenburst: 'Eigenburst',
+    eagenburst: 'Eigenburst',
+    handcannon: 'Handcannon',
+    handconnon: 'Handcannon',
+    jailbroken: 'Jail-Broken Gatling',
+    jailbrokengatling: 'Jail-Broken Gatling',
+    jailbrokenkatling: 'Jail-Broken Gatling',
+    mercurious: 'Mercurious',
+    mercury: 'Mercurious',
+    fleabag: 'Fleabag',
+    hairtrigger: 'Hair Trigger',
+    shalashaska: 'Shalashaska',
+    gomie: 'Gomie',
+    herald: 'Herald',
+    loomingconstable: 'Looming Constable',
+    looming: 'Looming Constable',
+    firestorm: 'Firestorm',
+    firework: 'Firestorm',
+    vestigialconflux: 'Conflux',
+    midnightdefiance: 'Midnight Defiance',
+    doeshot: 'Doeshot',
+    doshot: 'Doeshot',
+    laserdisc: 'Laserdisc',
+    mercredi: 'Mercredi',
+    bubbles: 'Bubbles',
+    tankbuster: 'Tankbuster',
+    roulette: 'Roulette',
+    arctic: 'Arctic',
+    songbird: 'Songbird',
+    demo: 'Demo',
+    ohmigot: 'Ohm I Got',
+    abyss: 'Abyss',
+    constable: 'Looming Constable',
+    screwstonian: 'Screwstonian',
+    screwed: 'Screwstonian',
+    parasite: 'Parasite',
+    solartemper: 'SolarTemper'
   };
 
   function stxNormPearlAllowKey(s){
     return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   }
+
+  function stxHumanizeLegendToken(tok){
+    const t = String(tok || '').trim();
+    if (!t) return '';
+    if (/^0?\d{1,2}$/.test(t)) return '';
+    const spaced = t.replace(/_/g, ' ').replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+    return spaced.replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  function stxRarityIdHumanTitleForPart(p){
+    if (!p) return '';
+    const map = window.STX_PEARL_RARITY_DISPLAY_BY_NORM;
+    const eff0 = String(p.effects || p.effect || '').split(/\s*-\s*/)[0].trim();
+    if (eff0 && eff0.length <= 64 && !/^(use |\+|reload|damage|\d)/i.test(eff0)){
+      const ek = stxNormPearlAllowKey(eff0);
+      if (map && map[ek]) return map[ek];
+      if (eff0.length <= 40) return eff0;
+    }
+    const nameHead = stxStripLegendaryRarityDisplayPrefix(String(p.name || '').split(/\s*-\s*/)[0]);
+    const tryKeys = [
+      stxRarityLegendTokenFromPart(p),
+      stxNormPearlAllowKey(eff0),
+      stxNormPearlAllowKey(nameHead)
+    ];
+    for (let i = 0; i < tryKeys.length; i++){
+      const k = tryKeys[i];
+      if (k && map && map[k]) return map[k];
+    }
+    if (nameHead && !/^comp_0[56]_/i.test(nameHead) && nameHead.length <= 72) return nameHead;
+    const hum = stxHumanizeLegendToken(stxRarityLegendTokenFromPart(p));
+    if (hum) return hum;
+    return spawnSegmentFromNormCode(normCode(p.code || '')) || '';
+  }
+  try { window.stxRarityIdHumanTitleForPart = stxRarityIdHumanTitleForPart; } catch (_e) {}
+
+  function stxApplyPearlGearCatalogLookups(){
+    const cat = window.STX_PEARL_GEAR_CATALOG;
+    if (!cat || !cat.byNorm) return;
+    const allow = window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM;
+    const disp = window.STX_PEARL_RARITY_DISPLAY_BY_NORM;
+    for (const [k, row] of Object.entries(cat.byNorm)){
+      if (!row || !row.isPearlescent) continue;
+      if (allow) allow[k] = true;
+      if (row.name && disp) disp[k] = row.name;
+      const tokens = row.spawnTokens || [];
+      for (let i = 0; i < tokens.length; i++){
+        const tk = stxNormPearlAllowKey(tokens[i]);
+        if (!tk) continue;
+        if (allow) allow[tk] = true;
+        if (row.name && disp) disp[tk] = row.name;
+      }
+    }
+  }
+
+  function stxPearlGearCatalogRowForPart(p){
+    if (!p) return null;
+    const cat = window.STX_PEARL_GEAR_CATALOG && window.STX_PEARL_GEAR_CATALOG.byNorm;
+    if (!cat) return null;
+    const keys = [
+      stxRarityLegendTokenFromPart(p),
+      stxNormPearlAllowKey(String(p.effects || p.effect || '').split(/\s*-\s*/)[0]),
+      stxNormPearlAllowKey(stxStripLegendaryRarityDisplayPrefix(String(p.name || '').split(/\s*-\s*/)[0]))
+    ];
+    const barrelTok = typeof stxBarrelPearlLegendTokenFromPart === 'function' ? stxBarrelPearlLegendTokenFromPart(p) : '';
+    if (barrelTok) keys.push(barrelTok);
+    for (let i = 0; i < keys.length; i++){
+      const k = keys[i];
+      if (k && cat[k]) return cat[k];
+    }
+    return null;
+  }
+
+  /** Red text / ability / drop source from gear database (pearls + documented raid rows). */
+  function stxCatalogFlavorLineForPart(p){
+    const row = stxPearlGearCatalogRowForPart(p);
+    if (!row) return '';
+    const bits = [];
+    if (row.redText) bits.push(`"${row.redText}"`);
+    if (row.ability) bits.push(row.ability);
+    if (row.source && !String(row.ability || '').includes(row.source)) bits.push(`Source: ${row.source}`);
+    return bits.join(' — ');
+  }
+  try { window.stxCatalogFlavorLineForPart = stxCatalogFlavorLineForPart; } catch (_e) {}
 
   function stxRarityLegendTokenFromPart(p){
     if (!p) return '';
@@ -753,42 +929,110 @@
     return '';
   }
 
+  function stxPartIsExplicitPearlescentComp(p){
+    if (!p) return false;
+    const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    const its = String(p.itemTypeString || '').toLowerCase();
+    if (/(?:^|[._])comp_06_pearlescent/.test(code) || /\bpearlescent\b/.test(its)) return true;
+    const item = Number((p.itemId != null) ? p.itemId : p.id);
+    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
+    if (/\bpearl_(?:damage|reload|firerate|handling|normal|shock|radiation|corrosive|cryo|fire|sonic)\b/.test(its)) return true;
+    return false;
+  }
+
+  /** Barrel/body code suffix token (e.g. `part_barrel_02_eigenburst` → `eigenburst`). */
+  function stxBarrelPearlLegendTokenFromPart(p){
+    if (!p) return '';
+    const fromComp = stxRarityLegendTokenFromPart(p);
+    if (fromComp) return fromComp;
+    const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    let m = code.match(/part_barrel_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
+    if (m) return stxNormPearlAllowKey(m[1]);
+    m = code.match(/part_body_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
+    if (m) return stxNormPearlAllowKey(m[1]);
+    return '';
+  }
+  try { window.stxBarrelPearlLegendTokenFromPart = stxBarrelPearlLegendTokenFromPart; } catch (_e) {}
+
+  /**
+   * Pearlescent rarity-id rows: `comp_06_*`, pearl item ids 51–60, or curated `comp_05_legendary_<token>`.
+   * Does not treat every part whose display name says "Legendary" as pearl.
+   */
   function stxPartMatchesPearlRarityIdAllowlist(p){
     const allow = window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM;
     if (!p || !allow) return false;
-    const keys = [
-      stxNormPearlAllowKey(p.effects),
-      stxNormPearlAllowKey(p.effect),
-      stxNormPearlAllowKey(p.name),
-      stxNormPearlAllowKey(p.legendaryName),
-      stxRarityLegendTokenFromPart(p)
-    ];
-    for (let i = 0; i < keys.length; i++) {
-      if (keys[i] && allow[keys[i]]) return true;
+    if (stxPartIsExplicitPearlescentComp(p)) return true;
+
+    const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    const compTok = stxRarityLegendTokenFromPart(p);
+    if (compTok && allow[compTok] && /comp_05_legendary/.test(code)) return true;
+
+    const barrelTok = stxBarrelPearlLegendTokenFromPart(p);
+    if (barrelTok && allow[barrelTok] && /\.part_(?:barrel|body)_/.test(code)) return true;
+
+    if (isStxRarityIdCompIconPart(p)) {
+      const eff0 = String(p.effects || p.effect || '').split(/\s*-\s*/)[0];
+      if (eff0 && allow[stxNormPearlAllowKey(eff0)]) return true;
+      if (/comp_05_legendary/.test(code)) {
+        const n0 = String(p.name || '').split(/\s*-\s*/)[0];
+        if (n0 && allow[stxNormPearlAllowKey(n0)]) return true;
+      }
     }
-    const eff0 = String(p.effects || p.effect || '').split(/\s*-\s*/)[0];
-    if (eff0 && allow[stxNormPearlAllowKey(eff0)]) return true;
-    const n0 = String(p.name || '').split(/\s*-\s*/)[0];
-    if (n0 && allow[stxNormPearlAllowKey(n0)]) return true;
     return false;
   }
   try { window.stxPartMatchesPearlRarityIdAllowlist = stxPartMatchesPearlRarityIdAllowlist; } catch (_e) {}
 
-  /** True when UI labels should show the pearlescent / Pearl suffix (stats-only pearl regex is not enough). */
-  function stxPartQualifiesForPearlUiLabel(p){
-    if (!p) return false;
-    if (/pearl/i.test(String(p.stats || ''))) return true;
+  try { stxApplyPearlGearCatalogLookups(); } catch (_e) {}
+
+  function stxPearlSlotIconUrlForPart(p, schemaItem){
     try{
-      if (typeof isPearlWeaponMainPart === 'function' && isPearlWeaponMainPart(p)) return true;
+      const ctx = stxCompIconContext();
+      const pfn = stxPearlSlotIconFilenameFromContext(ctx);
+      if (pfn) return STX_CC_PEARL_ITEMTYPE_BASE + pfn;
     }catch(_e){}
-    const code = String(normCode(p.code || '') || '').toLowerCase();
-    const blob = String(p.itemTypeString || '') + ' ' + code;
-    if (rarityTierFromItemTypeString(blob, p) === 5) return true;
-    if (typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(p)){
-      if (/comp_05_legendary|part_pearl|comp_06_pearlescent|(?:^|[._])pearl_/.test(code)) return true;
-    }
+    return STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png';
+  }
+
+  /** Pearl pip (`ico_pearl_aug_*`) only on curated pearl guns — rarity ID row and barrel row, not mag/grip/body/etc. */
+  function stxPartUsesPearlRarityBarrelIcon(p, schemaItem){
+    if (!p) return false;
+    const allow = window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM;
+    if (!allow) return false;
+    const lo = String(normCode(p.code) || '').toLowerCase();
+    if (/part_pearl/i.test(lo)) return false;
+    const ncs = schemaItem && String(schemaItem.ncsSlot || '').toLowerCase();
+    if (ncs === 'pearl_elem' || ncs === 'pearl_stat') return false;
+    if (schemaItem && schemaItem.customType === 'weaponPearl') return false;
+
+    const ptl = String(p.partType || '').toLowerCase();
+    const sk = schemaItem && String(schemaItem.key || '').toLowerCase();
+
+    if (isStxRarityIdCompIconPart(p)) return stxPartMatchesPearlRarityIdAllowlist(p);
+
+    const barrelTok = stxBarrelPearlLegendTokenFromPart(p);
+    const onBarrelSlot = sk === 'barrel' || sk === 'barrelacc' || sk === 'barrel2' || sk === 'mainpart' || ptl === 'barrel' || /\.part_barrel/.test(lo);
+    if (onBarrelSlot && barrelTok && allow[barrelTok]) return true;
+    if (typeof isPearlWeaponMainPart === 'function' && isPearlWeaponMainPart(p) && barrelTok && allow[barrelTok] && /part_barrel|\.barrel/.test(lo)) return true;
+
     return false;
   }
+  try { window.stxPartUsesPearlRarityBarrelIcon = stxPartUsesPearlRarityBarrelIcon; } catch (_e) {}
+
+  /** `(Pearl)` suffix only on rarity-ID comp rows — that selection sets pearlescent rarity, not barrels/mags/etc. */
+  function stxPartQualifiesForPearlUiLabel(p){
+    if (!p) return false;
+    if (!isStxRarityIdCompIconPart(p)) return false;
+    const code = String(normCode(p.code || '') || '').toLowerCase();
+    if (/part_pearl/i.test(code)) return false;
+    const item = Number((p.itemId != null) ? p.itemId : p.id);
+    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
+    if (/(?:^|[._])comp_06_pearlescent/.test(code)) return true;
+    if (typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(p) && /comp_05_legendary/.test(code)) return true;
+    const blob = String(p.itemTypeString || '') + ' ' + code;
+    if (rarityTierFromItemTypeString(blob, p) === 5) return true;
+    return false;
+  }
+  try { window.stxPartQualifiesForPearlUiLabel = stxPartQualifiesForPearlUiLabel; } catch (_e) {}
 
   /** Emit `{fam:id}` / `{id}` style token when dataset metadata allows; else ''. */
   function numericTokenFromPart(p){
@@ -1328,7 +1572,10 @@
 
     if (stxPartQualifiesForPearlUiLabel(p) && out.indexOf('(Pearl)') === -1) out = out + ' (Pearl)';
     const ef = String(p.effects ?? p.effect ?? '').trim();
-    if (ef) out = out + ' — ' + (ef.length > 50 ? ef.slice(0, 49) + '…' : ef);
+    const catFlavor = stxCatalogFlavorLineForPart(p);
+    if (catFlavor && (stxPartQualifiesForPearlUiLabel(p) || isStxRarityIdCompIconPart(p))) {
+      out = out + ' — ' + (catFlavor.length > 120 ? catFlavor.slice(0, 119) + '…' : catFlavor);
+    } else if (ef) out = out + ' — ' + (ef.length > 50 ? ef.slice(0, 49) + '…' : ef);
     return out;
   }
 
@@ -1357,6 +1604,34 @@
     if (!c) return '';
     const seg = c.indexOf('.') >= 0 ? c.slice(c.lastIndexOf('.') + 1) : c;
     return String(seg).replace(/^["']|["']$/g, '').trim();
+  }
+
+  /** Rarity-ID comp rows (#mainPart): human weapon title + id, not raw `comp_05_legendary_*` segment. */
+  function dropdownLabelRarityIdCompPart(p){
+    if (!p) return '-';
+    let line = stxRarityIdHumanTitleForPart(p) || '-';
+    const id = String(p.idRaw ?? p.idraw ?? p.id ?? '').trim();
+    const fam = partFamilyIdOf(p);
+    const item = partItemIdOf(p);
+    let tok = '';
+    if (Number.isFinite(fam) && Number.isFinite(item)) tok = `{${Number(fam)}:${Number(item)}}`;
+    else {
+      const baseFam = stxBaseFamilyIdForCompactIds();
+      if (Number.isFinite(baseFam) && Number.isFinite(item)) tok = `{${Number(baseFam)}:${Number(item)}}`;
+    }
+    if (!tok && id){
+      const idM = id.match(/^(\d+)\s*:\s*(\d+)\s*$/);
+      if (idM) tok = `{${Number(idM[1])}:${Number(idM[2])}}`;
+    }
+    if (stxPartQualifiesForPearlUiLabel(p) && line.indexOf('(Pearl)') === -1) line += ' (Pearl)';
+    if (tok && !line.includes(tok)) line = `${line} ${tok}`;
+    else if (id && !line.includes(id)) line = `${line} ${id}`;
+    if (line.length > 140) line = line.slice(0, 137) + '…';
+    return line;
+  }
+
+  function dropdownLabelForMainPartList(p){
+    return isStxRarityIdCompIconPart(p) ? dropdownLabelRarityIdCompPart(p) : dropdownLabelCompactForPart(p);
   }
 
   /** Short list label: single line; stats/long text live in tooltip + part preview. */
@@ -1729,7 +2004,7 @@ function getAllParts(){
       itemType,
       manufacturer: getVal(gm),
       weaponType: getVal(gw),
-      level: Number(gl && gl.value || 60) || 60
+      level: Number(gl && gl.value || 61) || 61
     };
   }
 
@@ -2156,7 +2431,6 @@ function getAllParts(){
     if (schemaItem && schemaItem.customType === 'weaponPearl') return true;
     const lo = String(normCode(p && p.code) || '').toLowerCase();
     if (/part_pearl|comp_06_pearlescent/.test(lo)) return true;
-    if (typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && p && stxPartMatchesPearlRarityIdAllowlist(p) && /comp_05_legendary/.test(lo)) return true;
     return false;
   }
 
@@ -2224,8 +2498,11 @@ function getAllParts(){
     const codeEarly = String(normCode(p.code || '') || '').toLowerCase();
     const itsEarly = String(p.itemTypeString || '').toLowerCase();
     const ptEarly = String(p.partType || '').trim().toLowerCase();
-    if (/comp_05_legendary/.test(codeEarly) || /comp_05_legendary/.test(itsEarly)) return 4;
     if (/comp_06_pearlescent|comp_06_pearl/.test(codeEarly) || /pearlescent/.test(itsEarly)) return 5;
+    if (/comp_05_legendary/.test(codeEarly) || /comp_05_legendary/.test(itsEarly)) {
+      if (typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(p)) return 5;
+      return 4;
+    }
     if (ptEarly === 'legendary perks' || ptEarly === 'legendary perk') return 4;
 
     let t = rarityTierFromItemTypeString(p.itemTypeString, p);
@@ -2254,32 +2531,25 @@ function getAllParts(){
     const wtFallback = ctx.weaponType || 'Assault Rifle';
 
     if (tier === 5){
-      if (!stxPartMatchesPearlRarityIdAllowlist(p)) {
-        const catLow = stxResolveGearCategoryForCompIcons(ctx);
-        const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
-        if (legFn) opt.setAttribute('data-cc-icon', stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + legFn));
-        else {
-          const u = stxResolvePartIconUrl(p, { partType: 'Rarity', key: 'rarity' }, state.itemType || '');
-          if (u) stxSetOptionDataCcIconFromUrl(opt, u);
-        }
+      if (stxPartMatchesPearlRarityIdAllowlist(p)) {
+        opt.setAttribute('data-cc-icon', stxPearlSlotIconUrlForPart(p, { key: 'rarity', partType: 'Rarity' }));
         return;
       }
-      const elFn = stxGuessPearlElementIconFilename(p);
-      if (elFn){
-        const base = (elFn === 'ico_misc_pearl.png') ? STX_CC_PEARL_ITEMTYPE_BASE : STX_CC_ELEMENT_ICON_BASE;
-        opt.setAttribute('data-cc-icon', base + elFn);
-        return;
+      const catLow = stxResolveGearCategoryForCompIcons(ctx);
+      const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
+      if (legFn) opt.setAttribute('data-cc-icon', stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + legFn));
+      else {
+        const u = stxResolvePartIconUrl(p, { partType: 'Rarity', key: 'rarity' }, state.itemType || '');
+        if (u) stxSetOptionDataCcIconFromUrl(opt, u);
       }
-      const pfn = stxPearlSlotIconFilenameFromContext(ctx);
-      if (pfn){
-        opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + pfn);
-        return;
-      }
-      opt.setAttribute('data-cc-icon', STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png');
       return;
     }
 
     if (tier === 4){
+      if (stxPartMatchesPearlRarityIdAllowlist(p)) {
+        opt.setAttribute('data-cc-icon', stxPearlSlotIconUrlForPart(p, { key: 'rarity', partType: 'Rarity' }));
+        return;
+      }
       const catLow = stxResolveGearCategoryForCompIcons(ctx);
       const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
       if (legFn){
@@ -2419,24 +2689,9 @@ function getAllParts(){
       if (el) return STX_CC_ELEMENT_ICON_BASE + el;
     }
 
-    // 1. Curated pearl-tier weapons: prefer class pearl aug over generic element guess (barrel / rarity rows).
-    if (stxPartMatchesPearlRarityIdAllowlist(p)){
-      const pcat = String(p.category || '').trim();
-      const ptl = String(p.partType || '').toLowerCase();
-      const nc = String(normCode(p.code) || '').toLowerCase();
-      if (pcat === 'Weapon' && (ptl === 'rarity' || ptl === 'barrel' || nc.includes('part_barrel') || nc.includes('comp_05_legendary'))){
-        try{
-          const ctx = stxCompIconContext();
-          const pfn = stxPearlSlotIconFilenameFromContext(ctx);
-          if (pfn) return STX_CC_PEARL_ITEMTYPE_BASE + pfn;
-        }catch(_e){}
-        return STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png';
-      }
-      const elFn = stxGuessPearlElementIconFilename(p);
-      if (elFn) return STX_CC_ELEMENT_ICON_BASE + elFn;
-      const pearlUrl = stxPearlAugFullUrlFromPart(p);
-      if (pearlUrl) return pearlUrl;
-      return STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png';
+    // 1. Curated pearl guns: pearl pip only on rarity-ID and barrel rows (not mag/grip/body on the same gun).
+    if (stxPartUsesPearlRarityBarrelIcon(p, schemaItem)){
+      return stxPearlSlotIconUrlForPart(p, schemaItem);
     }
 
     // Legendary Perks rows: item-type chip even when name/effects are empty (synthetic / placeholder dataset rows).
@@ -2477,7 +2732,6 @@ function getAllParts(){
     if (!s){
       if (String(cat || catRaw || '').trim() === 'Enhancement' && schemaKeyLo){
         const augChip = ()=> stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png');
-        if (schemaKeyLo === 'legendary2') return augChip();
         if (schemaKeyLo === 'legendary'){
           const ptL = String(pt||'').trim().toLowerCase();
           if (ptL === 'core' || codeNormLo.includes('part_core_')) return augChip();
@@ -2502,6 +2756,8 @@ function getAllParts(){
       if (fw === 'atlasinfinum' || fw === 'atlasinfiniumm') fw = 'atlasinfinium';
       if (fw === 'daeddyo') fw = 'daedyo';
       if (fw === 'getthrowin') fw = 'getthrowd';
+      if (fw === 'firmwareactivefire' || fw === 'activefire') fw = 'activefire';
+      if (fw === 'firmwareskillcraft' || fw === 'skillcraft') fw = 'skillcraft';
       return './assets/img/classmod-firmware/' + fw + '.png';
     }
 
@@ -2554,8 +2810,12 @@ function getAllParts(){
       if (mfr === 'robodealer' || mfr === 'c4sh') return './assets/img/vault-hunters/player_robodealer.png';
     }
 
-    // 5. Legendary Augments
-    const looksLegendary = stxPartLooksLegendaryBarrel(p) || /comp_05_legendary/.test(blob) || nm.indexOf('legendary') !== -1;
+    // 5. Legendary Augments (true legendaries only — not pearlescent comp_05 allowlist rows)
+    const looksLegendary = (
+      (stxPartLooksLegendaryBarrel(p) && !stxPartUsesPearlRarityBarrelIcon(p, schemaItem))
+      || (/comp_05_legendary/.test(blob) && !stxPartMatchesPearlRarityIdAllowlist(p))
+      || (nm.indexOf('legendary') !== -1 && !stxPartMatchesPearlRarityIdAllowlist(p))
+    );
     if (looksLegendary){
       const uiCat = String(category || '').trim().toLowerCase();
       if (uiCat === 'enhancement'){
@@ -2632,11 +2892,37 @@ function getAllParts(){
     row.appendChild(im);
   }
 
+  function stxEnhancementCoreEffectText(p){
+    try{
+      if (!p || !window.__ENHANCEMENT_PAYLOAD || !window.__ENHANCEMENT_PAYLOAD.manufacturers) return '';
+      const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+      if (!/enhancement\./.test(c) || !/part_core_|core_augment/.test(c)) return '';
+      const rowName = stxFoldDiacriticsForPerkIconKey(String(p.name || p.legendaryName || ''))
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '');
+      if (!rowName) return '';
+      const mfgs = window.__ENHANCEMENT_PAYLOAD.manufacturers || {};
+      for (const key of Object.keys(mfgs)){
+        const perks = (mfgs[key] && Array.isArray(mfgs[key].perks)) ? mfgs[key].perks : [];
+        for (const rec of perks){
+          const full = String(rec && rec.name || '').trim();
+          if (!full) continue;
+          const m = full.match(/^(.+?)\s*[-–]\s*(.+)$/);
+          const title = stxFoldDiacriticsForPerkIconKey(m ? m[1] : full)
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '');
+          if (title && title === rowName) return (m ? m[2] : full).trim();
+        }
+      }
+    }catch(_e){}
+    return '';
+  }
+
   /** In-game / card “red text” (effects line) for custom-select secondary row — works for barrels, perks, legends. */
   function stxPartRedTextSubForDropdown(p){
     if (!p) return '';
     const efRaw = String(p.effects != null ? p.effects : (p.effect ?? p.effects_text ?? '')).trim();
-    if (!efRaw) return '';
+    if (!efRaw) return stxEnhancementCoreEffectText(p);
     const s = efRaw;
     let idx = -1;
     let sepLen = 0;
@@ -2992,15 +3278,23 @@ function getAllParts(){
     if (p.family != null && Number.isFinite(Number(p.family))) return Number(p.family);
     const idRaw = String((p.idRaw ?? p.idraw ?? '') || '').trim();
     const m = idRaw.match(/^(\d+)\s*:/);
-    return m ? Number(m[1]) : null;
+    if (m) return Number(m[1]);
+    const enhFam = stxEnhancementTypeFamilyIdFromSpawnCode(String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase());
+    return enhFam != null ? enhFam : null;
   }
 
   function partItemIdOf(p){
     if (!p) return null;
     if (p.id != null && Number.isFinite(Number(p.id))) return Number(p.id);
+    if (p.itemId != null && Number.isFinite(Number(p.itemId))) return Number(p.itemId);
     const idRaw = String((p.idRaw ?? p.idraw ?? '') || '').trim();
     const m = idRaw.match(/^\d+\s*:\s*(\d+)\s*$/);
-    return m ? Number(m[1]) : null;
+    if (m) return Number(m[1]);
+    const bare = idRaw.match(/^(\d+)$/);
+    if (bare && (p.id == null || !Number.isFinite(Number(p.id))) && (p.itemId == null || !Number.isFinite(Number(p.itemId)))) {
+      return Number(bare[1]);
+    }
+    return null;
   }
 
   /** Keys `familyId:itemId` from STX_RARITIES-style rows. Tier gates must use pairs, not separate fam + item sets (IDs collide across families). */
@@ -3443,7 +3737,7 @@ function getAllParts(){
           const pcNorm = pc.trim().toLowerCase().replace(/\s+/g, '');
           if (!(pcNorm === 'character' || pcNorm === 'classmod')) return false;
         } else if (__isHeavyWeapon){
-          const allow = (pc === datasetCategory || pc === 'Prefix' || pc === 'Rarity' || pc === 'Gadget' || pc === 'Enhancement');
+          const allow = (pc === datasetCategory || pc === 'Heavy Weapon' || pc === 'Heavy' || pc === 'Prefix' || pc === 'Rarity' || pc === 'Gadget' || pc === 'Enhancement');
           if (!allow) return false;
           // Grenade kits share dataset category "Gadget" (and sometimes "Rarity"/others).
           // Heavy weapons should never include `*_grenade_gadget.*` pools.
@@ -3860,7 +4154,6 @@ function getAllParts(){
     const visibleCats = (hasClassMod ? categories.filter(c => c !== 'Character' && c !== 'Prefix') : categories.filter(c => c !== 'Prefix'))
       .filter(c =>
         c !== 'Firmware' &&
-        c !== 'Gadget' &&
         c !== 'Heavy Weapon' &&
         c !== 'Heavy'
       );
@@ -4093,7 +4386,7 @@ function getAllParts(){
   function refreshManufacturer(){
     const itEl = $('itemType');
     const rawPick = String((itEl && itEl.value) || state.itemType || '').trim();
-    const legacyHeavyItem = /^(Gadget|Heavy Weapon|Heavy)$/i.test(rawPick);
+    const legacyHeavyItem = /^(Heavy Weapon|Heavy)$/i.test(rawPick);
     let catUi = stxNormalizeSimpleBuilderItemTypeUi(rawPick);
     state.itemType = catUi;
     if (legacyHeavyItem) state.weaponType = 'Heavy Weapon';
@@ -4240,6 +4533,9 @@ function getAllParts(){
     const parts = filterParts({category:'Weapon', manufacturer: mansel});
     let wtypes = unique(parts.map(p=>p.weaponType || p.itemType).filter(Boolean));
     wtypes = wtypes.filter(w => String(w).trim().toLowerCase() !== 'weapon');
+    // Heavy is its own item type — never offer Heavy Weapon in the Weapon weapon-type picker.
+    wtypes = wtypes.filter(w => !stxWeaponTypeIsHeavyLabel(w));
+    if (stxWeaponTypeIsHeavyLabel(state.weaponType)) state.weaponType = '';
     /* Dataset mixes "Sniper" vs "Sniper Rifle" (same gameplay row); one menu entry avoids duplicate picks. */
     const seenWt = new Set();
     wtypes = wtypes.map(w=>{
@@ -4253,14 +4549,6 @@ function getAllParts(){
       seenWt.add(w);
       return true;
     });
-    // Ensure Heavy Weapon appears if the rarity sheet exposes it for this manufacturer.
-    try{
-      const rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
-      const hasHeavy = mansel
-        ? rows.some(r => String(r && r.manufacturer || '') === String(mansel || '') && String(r && r.itemType || '') === 'Heavy Weapon')
-        : rows.some(r => String(r && r.itemType || '') === 'Heavy Weapon');
-      if (hasHeavy) wtypes.push('Heavy Weapon');
-    }catch(_e){}
     wtypes = unique(wtypes).sort((a,b)=>a.localeCompare(b, undefined, {numeric:true}));
     setSelectOptions($('weaponType'), wtypes, {
       placeholder: 'Select weapon type...',
@@ -4393,7 +4681,7 @@ function refreshMainPart(){
       state.__mainPartByOptionKey = mainPartByOptionKey;
       setSelectOptions($('mainPart'), aicarList, {
         placeholder: 'Select AI / car / guns preset...',
-        getLabel: dropdownLabelCompactForPart,
+        getLabel: dropdownLabelForMainPartList,
         getValue: (p) => String((p && p.__mainOptKey) ? p.__mainOptKey : '')
       });
       if (state.mainPart){
@@ -4580,7 +4868,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
 
     // Non-weapon main parts: if any manufacturer-specific parts exist, hide generic pools.
     // This prevents Shield main parts from showing every manufacturer when a specific one is selected.
-    if (!isAllPartsEnabled() && cat !== 'Weapon' && cat !== 'Class Mod' && cat !== 'Gadget' && man){
+    // Enhancement: many `TED_Enhancement.*` / `MAL_Enhancement.*` cores ship with an empty `manufacturer` field;
+    // strict string match would drop every core and leave an empty "Rarity ID" / Core dropdown (e.g. Hydrator = Banger + Digi-Divider).
+    if (!isAllPartsEnabled() && cat !== 'Weapon' && cat !== 'Class Mod' && cat !== 'Gadget' && cat !== 'Enhancement' && man){
       const manL = String(man||'').trim().toLowerCase();
       const strict = partsList.filter(p => String(p.manufacturer||'').trim().toLowerCase() === manL);
       if (strict.length) partsList = strict;
@@ -4686,7 +4976,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         ? `Select rarity ID part (${rarityTierLabel(selectedTier)})...`
         : 'Select rarity ID part...',
       groupBy: useRarityTierGroups ? ((p) => stxRarityOptgroupLabelFromPart(p, man)) : null,
-      getLabel: dropdownLabelCompactForPart,
+      getLabel: dropdownLabelForMainPartList,
       getTitle: (p)=> dropdownLabelForPart(p),
       getValue: (p)=>String((p && p.__mainOptKey) ? p.__mainOptKey : ''),
       appendIdRawToLabel: true,
@@ -5054,7 +5344,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else if (schemaItem && schemaItem.customType === 'otherParts') {
       // Experimental stackable pool: GLOBAL parts universe (cross-category + cross-manufacturer).
-      // Intentionally large; used for “part stacking” experiments like save-editor.be modded builder.
+      // Intentionally large; used for part-stacking experiments in modded builder mode.
       rawOpts = getAllParts()
         .filter(p=>{
           if (!p) return false;
@@ -5079,7 +5369,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         return /part_pearl/i.test(normCode(p.code));
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else {
-      const isLooseFilter = (schemaItem.key === 'legendary' || schemaItem.key === 'legendary2');
+      const isLooseFilter = (schemaItem.key === 'legendary');
       const slotKeySimple = schemaItem && schemaItem.key ? String(schemaItem.key) : '';
       /* Slots with schema `partType: ''` often need the whole category pool; dataset rows use mixed labels.
          Omit strict partType matching and let category-specific filters below narrow options. */
@@ -5161,8 +5451,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         if (targetPt === 'legendary perks' && category === 'Weapon'){
           const barrelLegendary = filterParts({
             category:'Weapon',
-            manufacturer: state.manufacturer,
-            weaponType: state.weaponType,
+            manufacturer: '',
+            weaponType: '',
             partType:'Barrel'
           }).filter(p => stxPartCarriesLegendaryEffectWeaponFamilyBarrel(p));
           rawOpts = rawOpts.concat(barrelLegendary);
@@ -5189,7 +5479,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         if (targetPt === 'legendary perks' && category === 'Gadget'){
           const barrelLegendary = filterParts({
             category:'Gadget',
-            manufacturer: state.manufacturer,
+            manufacturer: '',
             weaponType:'',
             partType:'Barrel'
           }).filter(p => stxPartCarriesLegendaryEffectWeaponFamilyBarrel(p));
@@ -5569,6 +5859,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         weaponType: '',
         partType: undefined
       });
+      const allEnhancementAnyManufacturer = () => filterParts({
+        category,
+        manufacturer: '',
+        weaponType: '',
+        partType: undefined
+      });
       const sortParts = (arr)=>arr.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
       const isRarityish = (p)=>{
         const pt = String((p && p.partType) || '').trim().toLowerCase();
@@ -5621,7 +5917,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         if (pt === 'augment' && (code.includes('part_core') || code.includes('core_augment'))) return true;
         return false;
       };
-      /** Legendary / supplemental perk rows — exclude cores so this list does not duplicate Core / augment. */
+      /** Supplemental legendary rows. Enhancement's selectable legendary-effect slot itself uses the core_augment pool. */
       const isEnhancementLegendaryPerkPool = (p)=>{
         if (isRarityish(p)) return false;
         if (isEnhancementCoreAugmentPool(p)) return false;
@@ -5662,16 +5958,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } else if (slotKey === 'stats'){
         rawOpts = sortParts(allEnhancement().filter((p)=>isStatsLike(p) && !isRarityish(p)));
       } else if (slotKey === 'legendary'){
-        rawOpts = sortParts(allEnhancement().filter((p)=>isEnhancementLegendaryPerkPool(p)));
-        rawOpts = rawOpts.filter((p)=>{
-          const pt = String((p && p.partType) || '').trim().toLowerCase();
-          if (pt === 'rarity') return false;
-          const c = String(normCode(p && p.code || '') || '').toLowerCase();
-          if (/(?:^|[._])comp_0[1-6]_/.test(c) || /pearl_/.test(c) || /\.comp_/.test(c)) return false;
-          return true;
-        });
-      } else if (slotKey === 'legendary2'){
-        rawOpts = sortParts(allEnhancement().filter((p)=>isEnhancementCoreAugmentPool(p)));
+        rawOpts = sortParts(allEnhancementAnyManufacturer().filter((p)=>isEnhancementCoreAugmentPool(p)));
         rawOpts = rawOpts.filter((p)=>{
           const pt = String((p && p.partType) || '').trim().toLowerCase();
           if (pt === 'rarity') return false;
@@ -5836,10 +6123,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       (schemaItem.customType === 'otherParts' && category !== 'Class Mod') ||
       ((category === 'Enhancement') && (
         schemaItem.key === 'stats' ||
-        schemaItem.key === 'legendary' ||
-        schemaItem.key === 'legendary2' ||
-        schemaItem.key === 'special' ||
-        schemaItem.key === 'element'
+        schemaItem.key === 'legendary'
       ))
     );
     const showInlinePicked = !(category === 'Class Mod' && useTickPicker);
@@ -5881,10 +6165,26 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       list.style.padding = '6px';
       list.style.background = 'rgba(0,0,0,0.18)';
 
+      const tickHoverPreview = document.createElement('div');
+      tickHoverPreview.className = 'stx-part-preview small stx-tick-hover-preview';
+      tickHoverPreview.setAttribute('role', 'status');
+      tickHoverPreview.innerHTML = '<span class="muted">Hover a part to see token, IDs, spawn code, and stats.</span>';
+
+      function tickRowTooltip(part){
+        if (category === 'Enhancement' && schemaItem.key === 'legendary'){
+          const core = stxEnhancementCoreEffectText(part);
+          if (core) return core;
+        }
+        if (typeof window.partTooltipText === 'function'){
+          try { return String(window.partTooltipText(part) || '').trim(); } catch (_e) {}
+        }
+        return '';
+      }
+
       const perRowTickMultiQty = !!(schemaItem.multi && (
         schemaItem.customType === 'weaponAdditionalParts' ||
         schemaItem.customType === 'otherParts' ||
-        (category === 'Enhancement' && ['stats','legendary','legendary2','special','element'].includes(String(schemaItem.key || '')))
+        (category === 'Enhancement' && ['stats','legendary'].includes(String(schemaItem.key || '')))
       ));
       const tickQtyInput = (schemaItem.multi && !perRowTickMultiQty) ? document.createElement('input') : null;
       if (tickQtyInput){
@@ -6070,6 +6370,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
             refreshOutputs();
           });
 
+          const tip = tickRowTooltip(part);
+          if (tip) row.title = tip;
+          row.addEventListener('mouseenter', ()=>{
+            tickHoverPreview.innerHTML = formatPartPreviewHtml(part);
+          });
+
           row.appendChild(input);
           if (rowQty) row.appendChild(rowQty);
           try { stxAttachTickRowPartIcon(row, part, schemaItem, category); } catch (_e) {}
@@ -6139,6 +6445,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }
 
       wrap.appendChild(list);
+      wrap.appendChild(tickHoverPreview);
       slot.appendChild(wrap);
 
       renderList();
@@ -6154,7 +6461,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     sel.id = 'stx-sel-' + (schemaItem.key || category || 'part');
     sel.name = sel.id;
     sel.setAttribute('aria-label', schemaItem.label || schemaItem.key || 'Select part');
-    const isShieldSimpleSlot = (category === 'Shield');
+    const useQtyAddSlot =
+      (category === 'Shield') ||
+      (category === 'Enhancement' && (schemaItem.key === 'body' || schemaItem.key === 'firmware'));
     const partByOptionKey = new Map();
     for (let i=0; i<opts.length; i++){
       const p = opts[i];
@@ -6167,13 +6476,27 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     const barrelSlot = isBarrelFamilySchemaSlot(schemaItem, category);
     const raritySlot = String(schemaItem.partType || '').trim().toLowerCase() === 'rarity';
     const getLabelPick = barrelSlot ? barrelFamilyDropdownLabelCompact : dropdownLabelCompactForPart;
+    function simpleSlotOptionTitle(p){
+      if (barrelSlot) return barrelFamilyOptionTitle(p);
+      if (category === 'Enhancement' && schemaItem.key === 'legendary'){
+        const core = stxEnhancementCoreEffectText(p);
+        if (core) return core;
+      }
+      if (typeof window.partTooltipText === 'function'){
+        try{
+          const t = String(window.partTooltipText(p) || '').trim();
+          if (t) return t;
+        }catch(_e){}
+      }
+      return dropdownLabelForPart(p);
+    }
     setSelectOptions(sel, opts, {
-      placeholder: isShieldSimpleSlot
+      placeholder: useQtyAddSlot
         ? 'Select a part to add...'
         : (schemaItem.multi ? '(add one or more...)' : '(optional)'),
       getLabel: getLabelPick,
       getValue: (p)=>String((p && p.__slotOptKey) ? p.__slotOptKey : ''),
-      getTitle: barrelSlot ? barrelFamilyOptionTitle : ((p)=> dropdownLabelForPart(p)),
+      getTitle: simpleSlotOptionTitle,
       groupBy: raritySlot ? ((p) => stxRarityOptgroupLabelFromPart(p, state.manufacturer)) : null,
       appendIdRawToLabel: true,
       decorateOption: (opt, p)=>{ stxApplySlotPartOptionDecoration(opt, p, schemaItem, category); }
@@ -6246,12 +6569,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
 
     const addBtn = document.createElement('button');
     addBtn.type = 'button';
-    addBtn.textContent = isShieldSimpleSlot ? 'Add' : (schemaItem.multi ? 'Add' : 'Set');
+    addBtn.textContent = useQtyAddSlot || schemaItem.multi ? 'Add' : 'Set';
     addBtn.className = 'primary';
-    addBtn.style.marginTop = isShieldSimpleSlot ? '0' : '8px';
+    addBtn.style.marginTop = useQtyAddSlot ? '0' : '8px';
 
     let qtyInput = null;
-    if (isShieldSimpleSlot){
+    if (useQtyAddSlot){
       qtyInput = document.createElement('input');
       qtyInput.type = 'number';
       qtyInput.id = 'stx-qty-' + (schemaItem.key || 'shield');
@@ -6333,7 +6656,24 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           state.slots[schemaItem.key] = arr;
         }
       } else {
-        state.slots[schemaItem.key] = part;
+        const existing = state.slots[schemaItem.key];
+        if (existing){
+          const stackTok = tokenForPart(part) || normCode(part.code);
+          if (stackTok && typeof stxAppendPartTokenViaExtras === 'function'){
+            stxAppendPartTokenViaExtras(stackTok, { type: 'stackedSlot', skipRefresh: true });
+          } else {
+            state.extras = Array.isArray(state.extras) ? state.extras : [];
+            let maxOrd = 0;
+            for (const ex of state.extras){
+              const ord = ex && typeof ex.order === 'number' ? ex.order : 0;
+              if (ord > maxOrd) maxOrd = ord;
+            }
+            const t = tokenForPart(part) || normCode(part.code);
+            if (t) state.extras.push({ tok: String(t), order: maxOrd + 1, type: 'stackedSlot' });
+          }
+        } else {
+          state.slots[schemaItem.key] = part;
+        }
       }
       state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
       state.__simpleSlotDropdownSelections[schemaItem.key] = key;
@@ -6342,7 +6682,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       refreshOutputs();
     });
 
-    if (isShieldSimpleSlot && qtyInput){
+    if (useQtyAddSlot && qtyInput){
       const actionRow = document.createElement('div');
       actionRow.className = 'row';
       actionRow.style.marginTop = '8px';
@@ -6729,7 +7069,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     if (state.mainPart.__fullDeserialized) return [];
 
     // Weapons: emit in stable weapon slot schema order (then elements/extras handled elsewhere).
-    // For all other item types, emit in a stable slot order (like save-editor.be's builder):
+    // For all other item types, emit in a stable slot order:
     // main part first, then schema slots in schema order, then any extra slots.
     if (cat === 'Weapon') {
       const schema = getActiveWeaponSlotSchema() || [];
@@ -7116,7 +7456,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       out.push(state.mainPart);
       seen.add(state.mainPart);
       pushVal(state.slots.body);
-      /* Shield token order matches guided / save-editor.be: element → resistance → perks → armor/energy → firmware → unique */
+      /* Shield token order: element → resistance → perks → armor/energy → firmware → unique */
       const shieldEmitOrder = [
         'elementType1',
         'resistance',
@@ -7236,7 +7576,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       };
       out.push(state.mainPart);
       seen.add(state.mainPart);
-      const enhEmitOrder = ['body', 'rarity', 'legendary', 'legendary2', 'stats', 'special', 'element', 'firmware', 'otherParts'];
+      const enhEmitOrder = ['body', 'legendary', 'stats', 'firmware', 'otherParts'];
       const enhEmitted = new Set();
       for (const k of enhEmitOrder){
         enhEmitted.add(k);
@@ -8389,6 +8729,17 @@ function computeFullDeserializedCode(){
   const guided = getGuidedContext();
   const useGuided = guided && guided.itemType;
   let base = getSelectedBaseItem();
+  if (!base) {
+    try {
+      const existing = String(($('outCode') && $('outCode').value) || '').trim();
+      const dblEx = existing.indexOf('||');
+      if (dblEx >= 0) {
+        const prefixEx = existing.slice(0, dblEx).trim();
+        const mEx = prefixEx.match(/^\s*(\d+)\s*[,\|]/) || prefixEx.match(/^\s*(\d+)/);
+        if (mEx) base = { familyId: Number(mEx[1]), itemId: null };
+      }
+    } catch (_) {}
+  }
   if (!base) return '';
   const level = useGuided ? (Number(guided.level) || 60) : Number(state.level || 60);
 
@@ -8602,7 +8953,7 @@ function computeFullDeserializedCode(){
 
   const catTail = outputCategory;
   // Shields mix gadget pool 246 (element/resist + perks + firmware) with base-family tokens.
-  // Packing consecutive `{246:a} {246:b} …` into `{246:[a b …]}` often fails to spawn — emit separate tokens (matches typical save-editor output).
+  // Packing consecutive `{246:a} {246:b} …` into `{246:[a b …]}` often fails to spawn — emit separate tokens.
   // Repkits likewise use packed `{243:…}` pools; bracket compression after `||` often fails in-game (spawn rejects).
   const shieldSkipCompress = (catTail === 'Shield');
   const repkitSkipCompress = (catTail === 'Repkit');
@@ -8648,17 +8999,33 @@ function computeFullDeserializedCode(){
   return String(out || '').replace(/\s+\|$/, '|');
 }
 
+  function stxNormalizePartExtraToken(rawTok){
+    let t = String(rawTok || '').trim();
+    if (!t) return '';
+    if (/^\d+:\d+$/.test(t)) return `{${t}}`;
+    if (/^\d+$/.test(t)) return `{${t}}`;
+    if (/^\{\s*\d+\s*:\s*\[/.test(t)) return t;
+    if (/^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t)) return t;
+    if (/^\{\s*\d+\s*\}$/.test(t)) return t;
+    const bare = t.replace(/^"+|"+$/g, '').trim();
+    if (!bare) return '';
+    if (bare.includes('.')) return `"${bare}"`;
+    return t;
+  }
+
   /**
-   * Quick-add `{family:itemId}` tokens must merge into `state.extras` — otherwise `refreshOutputs()`
-   * regenerates `outCode` from slots alone and wipes textarea-only appends (floating panel goes stale too).
+   * Append one part token into `state.extras` so `refreshOutputs()` keeps stacked tail parts.
+   * Accepts `{fam:id}`, `{id}`, and quoted spawn codes (e.g. `"MAL_SG.part_barrel_foo"`).
    */
-  function stxAppendTailTokenViaExtras(rawTok){
-    let t = String(rawTok || '').trim().replace(/^"+|"+$/g, '');
-    if (/^\d+:\d+$/.test(t)) t = `{${t}}`;
-    else if (/^\d+$/.test(t)) t = `{${t}}`;
+  function stxAppendPartTokenViaExtras(rawTok, opts){
+    const o = opts || {};
+    const t = stxNormalizePartExtraToken(rawTok);
+    if (!t) return false;
     const isDual = /^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t);
     const isBareId = /^\{\s*\d+\s*\}$/.test(t);
-    if (!isDual && !isBareId) return false;
+    const isBracketList = /^\{\s*\d+\s*:\s*\[/.test(t);
+    const isQuotedSpawn = /^".+"$/.test(t);
+    if (!isDual && !isBareId && !isBracketList && !isQuotedSpawn) return false;
 
     clearImportedOutputLock();
     try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
@@ -8666,15 +9033,30 @@ function computeFullDeserializedCode(){
     state.extras = Array.isArray(state.extras) ? state.extras : [];
     let maxOrd = 0;
     for (const ex of state.extras){
-      const o = ex && typeof ex.order === 'number' ? ex.order : 0;
-      if (o > maxOrd) maxOrd = o;
+      const ord = ex && typeof ex.order === 'number' ? ex.order : 0;
+      if (ord > maxOrd) maxOrd = ord;
     }
-    state.extras.push({ tok: t, order: maxOrd + 1, type: 'quickPreset' });
+    state.extras.push({
+      tok: t,
+      order: maxOrd + 1,
+      type: String(o.type || 'stackedPart')
+    });
 
-    refreshOutputs(true);
-    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    if (!o.skipRefresh){
+      refreshOutputs(true);
+      try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    }
     return true;
+  }
+  try { window.stxAppendPartTokenViaExtras = stxAppendPartTokenViaExtras; } catch (_) {}
+
+  /**
+   * Quick-add `{family:itemId}` tokens must merge into `state.extras` — otherwise `refreshOutputs()`
+   * regenerates `outCode` from slots alone and wipes textarea-only appends (floating panel goes stale too).
+   */
+  function stxAppendTailTokenViaExtras(rawTok){
+    return stxAppendPartTokenViaExtras(rawTok, { type: 'quickPreset' });
   }
   try { window.stxAppendTailTokenViaExtras = stxAppendTailTokenViaExtras; } catch (_) {}
 
@@ -8723,6 +9105,84 @@ function computeFullDeserializedCode(){
     return true;
   }
   try { window.stxAppendQuickPresetNumericTokens = stxAppendQuickPresetNumericTokens; } catch (_) {}
+
+  /** True when #outCode already has a toolbox-style item header before `||`. */
+  function stxOutCodeHasItemHeader(){
+    try {
+      const existing = String(($('outCode') && $('outCode').value) || '').trim();
+      const dbl = existing.indexOf('||');
+      if (dbl < 0) return false;
+      const prefix = existing.slice(0, dbl).trim();
+      return /^\d+\s*,\s*0\s*,\s*1\s*,\s*\d+\s*\|/.test(prefix) || /^\d+\s*,/.test(prefix);
+    } catch (_) {
+      return false;
+    }
+  }
+  try { window.stxOutCodeHasItemHeader = stxOutCodeHasItemHeader; } catch (_) {}
+
+  /** Simple Builder has a real item (slots/main part or a full serialized header in #outCode). */
+  function stxSimpleBuilderHasActiveBuild(){
+    if (state.mainPart) return true;
+    if (stxOutCodeHasItemHeader()) return true;
+    try {
+      const slots = state.slots;
+      if (slots && typeof slots === 'object'){
+        for (const k of Object.keys(slots)){
+          if (slots[k]) return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+  try { window.stxSimpleBuilderHasActiveBuild = stxSimpleBuilderHasActiveBuild; } catch (_) {}
+
+  /**
+   * Append preset / quick-add tokens into Simple `state.extras` when Simple already has a build.
+   * Used by Guided preset UI and Tools so tail edits are not lost to `refreshOutputs()`.
+   */
+  function stxAppendPresetToActiveBuilder(rawCode, opts){
+    const o = opts || {};
+    if (!stxSimpleBuilderHasActiveBuild()) return false;
+    let code = String(rawCode || '').trim();
+    if (!code) return false;
+    if (/^\d+:\d+$/.test(code)) code = `{${code}}`;
+    if (/^\d+$/.test(code)) code = `{${code}}`;
+    code = code.replace(/^"+|"+$/g, '');
+    const n = Math.max(1, parseInt(o.quantity, 10) || 1);
+
+    const serialSb = String(($('outCode') && $('outCode').value) || '').trim();
+    let baseFamSb = null;
+    try {
+      const dblSb = serialSb.indexOf('||');
+      const prefixSb = dblSb >= 0 ? serialSb.slice(0, dblSb).trim() : serialSb;
+      const mSb = prefixSb.match(/^\s*(\d+)\s*[,\|]/) || prefixSb.match(/^\s*(\d+)/);
+      baseFamSb = mSb ? Number(mSb[1]) : null;
+    } catch (_) {}
+
+    const piecesSb = [];
+    for (let i = 0; i < n; i++) piecesSb.push(code);
+    let normPiecesSb = piecesSb;
+    if (typeof window.normalizeIdTokensForBaseFamily === 'function' && baseFamSb != null) {
+      normPiecesSb = window.normalizeIdTokensForBaseFamily(piecesSb, baseFamSb, { compactSameFamily: false });
+    }
+
+    try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+
+    /* Stat presets stack — do not strip prior bare `{id}` quickPreset rows (legacy replace was for rarity-only picks). */
+    if (stxAppendQuickPresetNumericTokens(normPiecesSb, { replaceBareQuickPresets: false })) {
+      try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      return true;
+    }
+    for (let ia = 0; ia < normPiecesSb.length; ia++) {
+      const skipRefresh = ia < normPiecesSb.length - 1;
+      if (!stxAppendPartTokenViaExtras(normPiecesSb[ia], { type: 'quickPreset', skipRefresh })) return false;
+    }
+    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    return true;
+  }
+  try { window.stxAppendPresetToActiveBuilder = stxAppendPresetToActiveBuilder; } catch (_) {}
 
   let __refreshOutputsPending = false;
   function refreshOutputs(force){
@@ -8816,7 +9276,7 @@ function resetAll(){
     state.itemType = 'Weapon';
     state.manufacturer = '';
     state.weaponType = '';
-    state.level = 60;
+    state.level = 61;
     state.rarity = '';
     state.swapBodyLegendary = false;
     state.__seedEnabled = false;
@@ -9848,6 +10308,16 @@ function resetAll(){
         }
       } else {
         for (const p of partsLeft){
+          if (cat === 'Enhancement'){
+            const c = String(normCode(p && p.code) || '').toLowerCase();
+            const pt = String((p && p.partType) || '').trim().toLowerCase();
+            let sEnh = null;
+            if (/part_core_|core_augment/.test(c) || pt === 'core') sEnh = slotByKey.get('legendary') || null;
+            else if (/part_stat/.test(c) || pt === 'stats' || pt === 'stat') sEnh = slotByKey.get('stats') || null;
+            else if (/part_firmware/.test(c) || pt === 'firmware') sEnh = slotByKey.get('firmware') || null;
+            else if (/part_body_/.test(c) || pt === 'body') sEnh = slotByKey.get('body') || null;
+            if (assignSlot(sEnh, p)) continue;
+          }
           const matches = schema.filter(s => String(s.partType || '') === String((p && p.partType) || ''));
           let s = null;
           if (matches.length){
@@ -9929,6 +10399,8 @@ function resetAll(){
   function wireEvents(){
     $('itemType').addEventListener('change', ()=>{
       clearImportedOutputLock();
+      const itPick = stxNormalizeSimpleBuilderItemTypeUi(String($('itemType').value || '').trim());
+      if (itPick === 'Weapon' && stxWeaponTypeIsHeavyLabel(state.weaponType)) state.weaponType = '';
       clearBuilderState(false);
       refreshManufacturer();
       refreshWeaponType();
@@ -10175,9 +10647,13 @@ function resetAll(){
         if (!out) return;
         const serial = String(out.value || '').trim();
         const dbl = serial.indexOf('||');
+        if (!dbl && !serial) {
+          alert('Pick a rarity / main part in Simple Builder first so the item header exists before adding presets.');
+          return;
+        }
         const tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
         const nextTail = (tail ? tail + ' ' : '') + code;
-        out.value = dbl >= 0 ? serial.slice(0, dbl + 2) + nextTail : (serial ? serial + ' || ' + nextTail : '|| ' + nextTail);
+        out.value = dbl >= 0 ? serial.slice(0, dbl + 2) + nextTail : (serial + ' || ' + nextTail);
         try { refreshOutputs(true); } catch (_) {}
         try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
       });
@@ -10314,10 +10790,10 @@ function resetAll(){
     // Ensure level defaults are sane on first load (some browsers may ignore initial value in srcdoc).
     try{
       const lv = $('level');
-      if (lv && (!String(lv.value||'').trim() || Number(lv.value) <= 1)) lv.value = '60';
+      if (lv && (!String(lv.value||'').trim() || Number(lv.value) <= 1)) lv.value = '61';
       const lv2 = $('level2');
-      if (lv2 && (!String(lv2.value||'').trim() || Number(lv2.value) <= 1)) lv2.value = '60';
-      state.level = 60;
+      if (lv2 && (!String(lv2.value||'').trim() || Number(lv2.value) <= 1)) lv2.value = '61';
+      state.level = 61;
     }catch(_e){}
 
     refreshTopSelectors();

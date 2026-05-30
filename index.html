@@ -37,10 +37,15 @@
 <link href="./assets/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="./assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 
-<script defer="" src="./assets/data/stx_dataset.js"></script>
-<script defer="" src="./assets/data/stx_dataset_supplement.js"></script>
+<script defer="" src="./assets/data/stx_dataset.js?v=20260529a"></script>
+<script defer="" src="./assets/data/stx_dataset_supplement.js?v=20260529d"></script>
+<script defer="" src="./assets/data/stx_raid2_supplement.js?v=20260530b"></script>
+<script defer="" src="./assets/data/part_display_overrides.js?v=20260529c"></script>
+<script defer="" src="./assets/data/inv_comp_tag_data.js"></script>
+<script defer="" src="./assets/js/tag-comp-validation.js"></script>
 <script defer="" src="./assets/data/part_ref_meta.js"></script>
 <script defer="" src="./assets/data/stx_rarities.js"></script>
+<script defer="" src="./assets/data/stx_rarities_raid2_patch.js?v=20260529f"></script>
 <script defer="" src="./assets/data/source_paths_data.js"></script>
 <script defer="" src="./assets/js/cc-itempool-drop-check.js"></script>
 <script defer="" src="./assets/data/skin_data.js"></script>
@@ -53,13 +58,14 @@
 <script defer="" src="./assets/js/cc-rebuild-bootstrap.js"></script>
 <script defer="" src="./legacy/ncs_slot_map.js"></script>
 <script defer="" src="./assets/js/cc-item-slug.js"></script>
-<script defer="" src="./assets/js/stx-simple-builder-core.js?v=20260510v"></script>
-<script defer="" src="./assets/js/cc-guided-builder-rebuild.js?v=20260510s"></script>
+<script defer="" src="./assets/js/stx-pearl-gear-catalog.js?v=20260530a"></script>
+<script defer="" src="./assets/js/stx-simple-builder-core.js?v=20260530a"></script>
+<script defer="" src="./assets/js/cc-guided-builder-rebuild.js?v=20260529a"></script>
 <script defer="" src="./assets/js/cc-classmod-checklist-rebuild.js?v=20260510r"></script>
 <script defer="" src="./assets/js/cc-enhancement-checklist-rebuild.js?v=20260510s"></script>
 <script defer="" src="./assets/js/cc-adv-search-stable.js"></script>
 <script defer="" src="./assets/data/weapon_stats_data.js"></script>
-<script defer="" src="./assets/js/cc-build-stats-rebuild.js?v=20260510v"></script>
+<script defer="" src="./assets/js/cc-build-stats-rebuild.js?v=20260529b"></script>
 <script defer="" src="./assets/vendor/cryptojs-inline.js"></script>
 <script defer="" src="./assets/vendor/pako-inline.js"></script>
 <script defer="" src="./assets/vendor/jsyaml-inline.js"></script>
@@ -68,15 +74,16 @@
 <script defer="" src="./assets/js/cc-serial-nicnl-rebuild.js"></script>
 <script defer="" src="./assets/js/stx-decode-bridge-shared.js"></script>
 <script defer="" src="./assets/js/cc-sav-crypto-rebuild.js"></script>
-<script defer="" src="./assets/js/cc-yaml-save-rebuild.js"></script>
+<script defer="" src="./assets/js/cc-yaml-save-rebuild.js?v=20260529a"></script>
 <script defer="" src="./assets/js/cc-stx-decoder-bridge.js"></script>
-<script defer="" src="./assets/data/serials_data.js"></script>
-<script defer="" src="./assets/data/godroll_serials_data.js"></script>
-<script defer="" src="./assets/data/godroll_grimeey_serials_data.js"></script>
+<script defer="" src="./assets/data/serials_data.js?v=20260529a"></script>
+<script defer="" src="./assets/data/godroll_serials_data.js?v=20260529a"></script>
+<script defer="" src="./assets/data/godroll_grimeey_serials_data.js?v=20260529a"></script>
 <script defer="" src="./assets/data/bl4_spawncodes_bundle_serials.js"></script>
 <script defer="" src="./assets/data/bl4_spawncodes_bundle_notes.js"></script>
 <script defer="" src="./assets/data/parts_stats_data.js"></script>
-<script defer="" src="./assets/js/cc-prefix-item-search-rebuild.js"></script>
+<script defer="" src="./assets/js/stat_parts_lookup_data.js"></script>
+<script defer="" src="./assets/js/cc-prefix-item-search-rebuild.js?v=20260529a"></script>
 <script defer="" src="./assets/data/preset_data.js"></script>
 <script defer="" src="./assets/js/cc-preset-data-rebuild.js"></script>
 <script defer="" src="./assets/js/cc-preset-rebuild.js"></script>
@@ -783,7 +790,6 @@
       background: rgba(4, 12, 22, 0.96);
       overflow: hidden;
       pointer-events: none;
-      forced-colors-adjust: none;
     }
     .custom-select-icon-filter-wrap {
       display: flex;
@@ -810,7 +816,6 @@
       background: transparent;
       border-radius: 0;
       vertical-align: middle;
-      forced-colors-adjust: none;
     }
     .custom-select-display .custom-select-display-text {
       flex: 1;
@@ -1923,7 +1928,6 @@
       border: 1px solid rgba(0, 243, 255, 0.28);
       background: rgba(4, 12, 22, 0.96);
       box-sizing: border-box;
-      forced-colors-adjust: none;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
     }
@@ -1954,7 +1958,7 @@
     #ccAdvStablePanel > div:first-child { font-size: 12px; margin-bottom: 8px; line-height: 1.35; }
     #ccAdvStablePanel label { color: rgba(190, 246, 255, 0.98); font-weight: 700; font-size: 11px; margin-bottom: 2px; }
     #ccStablePartDomain,
-    #ccStablePartResults {
+    #ccStablePartResults.cc-stable-part-listbox {
       border: 1px solid rgba(0, 243, 255, 0.4);
       border-radius: 6px;
       background: rgba(5, 12, 24, 0.9);
@@ -1962,15 +1966,49 @@
       font-size: 12px;
       box-sizing: border-box;
     }
-    #ccStablePartResults {
+    #ccStablePartResults.cc-stable-part-listbox {
       width: 100%;
       min-height: 120px;
       max-height: 180px;
-      padding: 6px 8px;
+      padding: 4px 6px;
       margin-top: 8px;
       display: block;
+      overflow-y: auto;
     }
-    #ccStablePartResults option { padding: 3px 6px; background: rgba(0, 60, 120, 0.6); color: #fff; }
+    .cc-stable-part-row {
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .cc-stable-part-row:hover,
+    .cc-stable-part-row.is-selected {
+      background: rgba(0, 100, 140, 0.45);
+    }
+    .cc-stable-part-placeholder {
+      cursor: default;
+      color: rgba(200, 230, 255, 0.55);
+      font-style: italic;
+    }
+    .cc-stable-part-placeholder:hover { background: transparent; }
+    .cc-adv-part-internal {
+      color: #00f3ff;
+      font-weight: 600;
+    }
+    .cc-stable-part-row--likely {
+      background: rgba(0, 180, 100, 0.14);
+      border-left: 3px solid rgba(125, 255, 179, 0.85);
+    }
+    .cc-stable-part-row--likely:hover,
+    .cc-stable-part-row--likely.is-selected {
+      background: rgba(0, 140, 90, 0.38);
+    }
+    .cc-adv-likely-badge {
+      color: #7dffb3;
+      font-weight: 700;
+      font-size: 11px;
+    }
     #ccStablePartQuery {
       width: 100%;
       padding: 8px 10px;
@@ -2853,7 +2891,7 @@
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
 <h1 class="splash__title" id="stxToolboxSplashTitle">Scooter's Toolbox</h1>
-<p class="splash__sub">Cyber workshop · V2 - 2.5.3</p>
+<p class="splash__sub">Cyber workshop · V2 - 2.5.4</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
 <script>
@@ -3080,6 +3118,7 @@
 <select class="editor-select" id="stx_itemType" name="stx_itemType" style="width:100%;margin-bottom:10px;">
 <option value="">Select item type...</option>
 <option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
+<option value="Heavy" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Heavy</option>
 <option value="Shield" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_shield.png">Shield</option>
 <option value="Repkit" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_repkit.png">Repkit</option>
 <option value="Grenade" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_grenade.png">Grenade</option>
@@ -3246,6 +3285,7 @@
 <option value="Grenade" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_grenade.png">Grenade</option>
 <option value="Enhancement" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Enhancement</option>
 <option value="Class Mod" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Class Mod</option>
+<option value="Gadget" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Gadget / Turret</option>
 <option value="Heavy Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_heavy.png">Heavy Weapon</option>
 </select>
 </div>
@@ -3406,6 +3446,17 @@
 </div>
 </details>
 <details class="rebuild-details" open="">
+<summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Physical part slots (body / core / stats / firmware / stack)</summary>
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
+<div><label for="ccEnhancementRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementRaritySelect" name="ccEnhancementRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementRarityAdd" type="button">Add</button></div></div>
+<div><label for="ccEnhancementBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementBodySelect" name="ccEnhancementBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementBodyAdd" type="button">Add</button></div></div>
+<div><label for="ccEnhancementCoreSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Core / legendary effect</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementCoreSelect" name="ccEnhancementCoreSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementCoreAdd" type="button">Add</button></div></div>
+<div><label for="ccEnhancementStatsSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Stat Group 1</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementStatsSelect" name="ccEnhancementStatsSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementStatsAdd" type="button">Add</button></div></div>
+<div><label for="ccEnhancementFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementFirmwareSelect" name="ccEnhancementFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementFirmwareAdd" type="button">Add</button></div></div>
+<div><label for="ccEnhancementOtherSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Other parts (stack)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccEnhancementOtherSelect" name="ccEnhancementOtherSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccEnhancementOtherAdd" type="button">Add</button></div></div>
+</div>
+</details>
+<details class="rebuild-details" open="">
 <summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Manufacturer perks (1, 2, 3, 9)</summary>
 <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap;">
 <button class="btn btn-Firmware" id="enhAddAllPerks" type="button">Add all</button>
@@ -3432,6 +3483,26 @@
 <button class="btn btn-Firmware" id="enhAddAll247" title="Append each visible stat code once (respects filter)" type="button">Add all (filtered)</button>
 </div>
 <div class="enh-tickbox-list" id="enh247Box" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid rgba(0,243,255,0.2);"></div>
+</div>
+</details>
+</div>
+<div class="cc-gear-builder" id="ccGadgetBuilderDetails" style="display:none;">
+<div style="font-weight:800;color:#00f3ff;margin-bottom:10px;">Guided Gadget / Turret Builder</div>
+<p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px;">Build terminal, turret, and other gadget-family items from the refreshed dataset. Use Other parts for stack-only rows.</p>
+<details class="rebuild-details" open="">
+<summary style="color:#00f3ff;font-weight:700;cursor:pointer;">Gadget slots</summary>
+<div class="cc-guided-slots-grid" style="margin-top:10px;">
+<div><label for="ccGadgetRaritySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Rarity ID</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetRaritySelect" name="ccGadgetRaritySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetRarityAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetBodySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetBodySelect" name="ccGadgetBodySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetBodyAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetBodyAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Body Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetBodyAccSelect" name="ccGadgetBodyAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetBodyAccAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetBarrelSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetBarrelSelect" name="ccGadgetBarrelSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetBarrelAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetBarrelAccSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Barrel Accessory</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetBarrelAccSelect" name="ccGadgetBarrelAccSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetBarrelAccAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetElementSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetElementSelect" name="ccGadgetElementSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetElementAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetPayloadSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Payload</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetPayloadSelect" name="ccGadgetPayloadSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetPayloadAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetAugmentSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Augment</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetAugmentSelect" name="ccGadgetAugmentSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetAugmentAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetFirmwareSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Firmware</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetFirmwareSelect" name="ccGadgetFirmwareSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetFirmwareAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetLegendarySelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Legendary Perks</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetLegendarySelect" name="ccGadgetLegendarySelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetLegendaryAdd" type="button">Add</button></div></div>
+<div><label for="ccGadgetOtherSelect" style="display:block;color:#00c8ff;font-size:0.95em;margin-bottom:6px;">Other parts (stack)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select id="ccGadgetOtherSelect" name="ccGadgetOtherSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccGadgetOtherAdd" type="button">Add</button></div></div>
 </div>
 </details>
 </div>
@@ -4024,7 +4095,7 @@
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP (Oak2 curve from Nexus)" type="button">Max Level (60)</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP" type="button">Max Level (60)</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="setMaxSDU" data-requires="character" title="Maxes SDU upgrades" type="button">Max SDU</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockVaultPowers" data-requires="character" title="Unlocks all vault powers" type="button">Unlock All Vault Powers</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllHoverDrives" data-requires="character" title="Unlocks all hover drives" type="button">Unlock All Hover Drives</button>
@@ -4061,7 +4132,7 @@
 </div>
 <div>
 <label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/reward-icons/ico_reward_exp.png" width="22"/>Experience Points:</label>
-<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ˜ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
+<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>
@@ -4196,7 +4267,7 @@
 </div>
 <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load a file or paste serials below, then use the search box to filter. If you type in the search box with paste filled but nothing loaded yet, the list auto-loads from the paste area.</p>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Search the full item catalog (same database as Prefix / Item Search). Optionally load your own serial file or paste list — results merge both. Select rows and use <strong>Add Selected</strong> for YAML, bank, or editor.</p>
 <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
 <textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
 </details>
@@ -4726,6 +4797,12 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
         function getPrimaryOutputEl() {
           var outCodeEl = byId('outCode');
           var guidedDeser = byId('guidedOutputDeserialized');
+          if (outCodeEl && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader()) {
+            return outCodeEl;
+          }
+          if (outCodeEl && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) {
+            return outCodeEl;
+          }
           var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
           /* Simple Builder edits must drive the floating mirror whenever Simple was last touched — otherwise a stale
              prefix-only row in #guidedOutputDeserialized steals the panel while #outCode holds the full serial. */

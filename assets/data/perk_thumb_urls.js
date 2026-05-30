@@ -1,4 +1,3 @@
-/** Auto-generated from assets/data/perk_image_map.tsv — run: node tools/build-perk-thumb-urls.js */
 (function () {
   'use strict';
   window.__PERK_THUMB_URL_BY_KEY = {

@@ -222,6 +222,55 @@ tr:hover { background:rgba(0,243,255,0.04); }
 .exact-parts { color:#00ffc8; text-shadow:0 0 8px rgba(0,255,200,0.2); }
 .raw-parts { font-size:11px; color:var(--stx-muted); cursor:pointer; padding:2px 4px; margin:-2px -4px; border-radius:4px; }
 .raw-parts:hover { background:rgba(0,243,255,0.1); }
+.variant-summary { font-size:15px; margin:0 0 8px; line-height:1.5; }
+.spawn-tokens { margin-top:10px; font-size:13px; }
+.spawn-tokens summary { cursor:pointer; color:var(--stx-cyan-dim); }
+.spawn-token-list { margin:8px 0 0; padding-left:1.25rem; }
+.spawn-token-list li { margin:6px 0; }
+.spawn-token-label { color:var(--stx-muted); margin-right:6px; }
+.editor-match { margin-top:10px; padding:10px 12px; border-radius:8px; border:1px solid rgba(0,243,255,0.2); background:rgba(0,40,60,0.25); }
+.editor-match ol { margin:8px 0 0; padding-left:1.25rem; }
+.editor-match li { margin:8px 0; }
+.editor-match code { font-size:12px; }
+.editor-match .editor-search-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.prefix-part-finder { margin-top:12px; padding-top:10px; border-top:1px solid rgba(0,243,255,0.15); }
+.prefix-part-finder-btns { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+.prefix-part-finder-list {
+  max-height:200px; overflow:auto; margin:0; padding:0; list-style:none;
+  border:1px solid rgba(0,243,255,0.18); border-radius:8px; background:rgba(0,0,0,0.25);
+}
+.prefix-part-finder-list li {
+  padding:6px 10px; font-size:12px; font-family:ui-monospace, SFMono-Regular, monospace;
+  border-bottom:1px solid rgba(255,255,255,0.06); cursor:pointer;
+}
+.prefix-part-finder-list li:last-child { border-bottom:none; }
+.prefix-part-finder-list li:hover { background:rgba(0,243,255,0.1); }
+.prefix-part-finder-list li.likely { border-left:3px solid rgba(125,255,179,0.85); background:rgba(0,180,100,0.12); }
+.prefix-part-finder-list li .pf-badge { color:#7dffb3; font-weight:700; margin-right:6px; font-family:system-ui,sans-serif; }
+.prefix-part-finder-list li .pf-ids { color:#00f3ff; font-weight:700; margin-right:6px; }
+.prefix-part-finder-list li .pf-type { color:rgba(233,254,255,0.5); font-size:10px; margin-right:6px; font-family:system-ui,sans-serif; }
+.prefix-part-finder-list li .pf-path { color:var(--stx-muted); font-size:11px; word-break:break-all; }
+.prefix-part-finder-meta { font-size:11px; color:var(--stx-muted); margin-top:6px; }
+.stat-match-panel {
+  margin-top:10px; padding:12px 14px; border-radius:10px;
+  border:1px solid rgba(255,180,80,0.35); background:rgba(40,28,8,0.35);
+}
+.stat-match-kicker {
+  display:inline-block; font-size:10px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+  color:rgba(255,200,120,0.95); margin-bottom:8px;
+}
+.stat-match-hero { margin-bottom:12px; }
+.stat-match-hero p { margin:6px 0; line-height:1.45; }
+.stat-match-hero .stat-match-primary,
+.stat-match-hero .stat-match-secondary { font-size:15px; color:var(--stx-text); }
+.stat-match-hero .stat-match-primary strong,
+.stat-match-hero .stat-match-secondary strong { color:#ffd080; text-shadow:0 0 10px rgba(255,180,80,0.25); }
+.stat-match-note { font-size:12px; color:var(--stx-muted); margin-top:8px !important; }
+.stat-exact-parts { margin:10px 0; padding:8px 10px; border-radius:8px; background:rgba(0,0,0,0.22); border:1px solid rgba(255,180,80,0.2); }
+.stat-exact-parts strong { color:#ffd080; }
+.stat-raw-keys { margin-top:10px; font-size:12px; color:var(--stx-muted); }
+.stat-raw-keys summary { cursor:pointer; color:var(--stx-cyan-dim); }
+.detail-panel .variant-summary.stat-variant-muted { font-size:13px; color:var(--stx-muted); }
 .status { font-size:12px; color:var(--stx-muted); margin-top:8px; }
 .checklist { list-style:none; margin:4px 0 0; padding:0; }
 .checklist li { padding:4px 0; font-size:12px; word-break:break-all; }
@@ -324,8 +373,22 @@ tr:hover { background:rgba(0,243,255,0.04); }
   .stx-back:hover { transform: none; transition: none; }
 }
 .stx-site-stats-hidden { display: none !important; }
+.prefix-primary-intro { margin:0 0 14px; max-width:72ch; }
+.prefix-testing-panel { margin-top:16px; }
+.prefix-testing-panel > summary {
+  cursor:pointer; padding:12px 14px; font-weight:700; color:var(--stx-cyan);
+  background:rgba(0,243,255,0.06); border-radius:10px; list-style:none;
+}
+.prefix-testing-panel > summary::-webkit-details-marker { display:none; }
+.prefix-testing-panel > summary::before { content:'▸ '; }
+.prefix-testing-panel[open] > summary::before { content:'▾ '; }
+.prefix-testing-panel[open] > summary { margin-bottom:14px; border-radius:10px 10px 0 0; }
+.prefix-testing-panel .prefix-testing-inner { padding-top:4px; }
+@media print {
+  .prefix-testing-panel { display:none !important; }
+}
 </style>
-</meta></meta></meta></meta></head>
+</head>
 <body class="stx-prefix-page">
 <header class="stx-page-topbar" role="banner">
 <img alt="" height="48" src="../assets/favicon.ico" width="48"/>
@@ -353,8 +416,8 @@ tr:hover { background:rgba(0,243,255,0.04); }
 <summary class="stx-back" title="Open Scooter's Toolbox instructions">📄 Instructions</summary>
 <div aria-label="Scooter's Toolbox instructions" class="support-menu__panel instructions-menu__panel" role="region">
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-<button class="stx-back active" id="stxInstructionsExpandedBtnPrefix" style="padding:6px 10px;" type="button">Expanded</button>
-<button class="stx-back" id="stxInstructionsSimpleBtnPrefix" style="padding:6px 10px;" type="button">Simple</button>
+<button class="stx-back active" id="stxInstructionsExpandedBtnPrefix" style="padding:6px 10px;" type="button">Full guide</button>
+<button class="stx-back" id="stxInstructionsSimpleBtnPrefix" style="padding:6px 10px;" type="button">Quick guide</button>
 </div>
 <pre class="instructions-menu__text" id="stxInstructionsTextPrefix">Loading instructions…</pre>
 <iframe class="instructions-menu__embed" id="stxInstructionsFramePrefix" style="display:none;width:100%;min-height:420px;border:1px solid #2a2f3a;border-radius:8px;background:#0b1020;" title="Scooter's Toolbox instructions"></iframe>
@@ -454,13 +517,26 @@ tr:hover { background:rgba(0,243,255,0.04); }
 })();
 </script>
 <main>
-<section class="card">
-<h2 class="lookup-title">Search &amp; table</h2>
-<p>Search prefixes and parts. Reverse lookup: search by part ID (e.g. jak_barrel_acc, CritDamage) to see which prefixes use it. <strong>Click a prefix</strong> to see exact parts. <span class="type" id="totalCountHint"></span></p>
+<section class="card prefix-primary">
+<h1 class="lookup-title">Prefix lookup</h1>
+<p class="prefix-primary-intro type">Prefixes name <strong>enhancements</strong> from matched core part pairs — not weapon barrel parts. Click a prefix for exact requirements and build steps. Reverse lookup: search a part ID (e.g. <code>Part_Core_ATL_Protractor</code>) to see which prefixes need it.</p>
 <p class="type" id="datasetMeta" style="margin-top:6px;"></p>
-<p class="type" style="margin-top:6px;">Share a search: add <code>?q=</code> to this page’s URL (e.g. <code>prefix-lookup.html?q=crit</code>).</p>
+<p class="type" id="totalCountHint"></p>
+<div class="simple-list-search-wrap" style="margin-top:12px;">
+<label class="type" for="mainSearch" style="display:block;margin-bottom:6px;">Search</label>
+<input autocomplete="off" autofocus="" id="mainSearch" name="mainSearch" placeholder="Prefix name or part ID…" type="search"/>
+</div>
+<p class="type" style="margin-top:8px;">Share: <code>?q=</code> in the URL (e.g. <code>prefix-lookup.html?q=crit</code>). <strong>Extended tools</strong> below has filters, CSV export, and compare.</p>
+<div aria-live="polite" class="status" id="simpleListStatus">Loading…</div>
+<div class="simple-prefix-list" id="simpleListBody"></div>
+</section>
+<details class="card prefix-testing-panel" id="prefixTestingPanel" open>
+<summary>Extended tools</summary>
+<div class="prefix-testing-inner">
+<h2 class="lookup-title" style="font-size:1.15rem;margin-top:0;">Table, filters &amp; export</h2>
+<p class="type">Full data grid for power users: type filters, weapon family, favorites, stat/slot indexes, CSV/TSV, and side-by-side compare.</p>
 <div class="toolbar">
-<input autofocus="" id="search" name="search" placeholder="Search prefix or part (e.g. Slutty, Lethal, jak_barrel_acc, CritDamage)" type="search"/>
+<input id="search" name="search" placeholder="Same as main search (synced)" type="search"/>
 <div class="filters">
 <label><input checked="" id="filter-legendary" name="filter-legendary" type="checkbox"/> Legendary</label>
 <label><input checked="" id="filter-part-display" name="filter-part-display" type="checkbox"/> Part display</label>
@@ -502,17 +578,8 @@ tr:hover { background:rgba(0,243,255,0.04); }
 <tbody id="tbody"></tbody>
 </table>
 </div>
-</section>
-<section aria-labelledby="simpleListHeading" class="card simple-list-section" id="simplePrefixListSection">
-<h2 class="lookup-title" id="simpleListHeading">Simple prefix list</h2>
-<p class="type">Every prefix in one scrollable list. Each bullet is a separate rule/variant (slot, stats, legendary parts, etc.). Click a prefix name to open the full detail panel.</p>
-<div class="simple-list-search-wrap">
-<label class="type" for="simpleListSearch" style="display:block;margin-bottom:6px;">Filter this list</label>
-<input autocomplete="off" id="simpleListSearch" name="simpleListSearch" placeholder="Filter by prefix or requirement text…" type="search"/>
 </div>
-<div aria-live="polite" class="status" id="simpleListStatus"></div>
-<div class="simple-prefix-list" id="simpleListBody"></div>
-</section>
+</details>
 </main>
 <div aria-labelledby="detailTitle" aria-modal="true" id="detailModal" role="dialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; align-items:center; justify-content:center; padding:24px; box-sizing:border-box;">
 <div class="card" style="max-width:600px; max-height:80vh; overflow:auto;">
@@ -534,11 +601,14 @@ tr:hover { background:rgba(0,243,255,0.04); }
 </div>
 <script src="../assets/js/prefix_parts_table_data.js"></script>
 <script src="../assets/js/stat_parts_lookup_data.js"></script>
+<script defer="" id="stxDatasetForPrefixLookup" src="../assets/data/stx_dataset.js?v=20260529a"></script>
 <script>
 (function(){
+  const mainSearchEl = document.getElementById('mainSearch');
   const searchEl = document.getElementById('search');
   const tbody = document.getElementById('tbody');
   const statusEl = document.getElementById('status');
+  const testingPanel = document.getElementById('prefixTestingPanel');
   const exportCsvBtn = document.getElementById('exportCsv');
   const exportTsvBtn = document.getElementById('exportTsv');
   const detailModal = document.getElementById('detailModal');
@@ -657,6 +727,13 @@ tr:hover { background:rgba(0,243,255,0.04); }
     customdesc1: 'Custom description',
   };
 
+  const MANUFACTURER_LABELS = {
+    jak: 'Jakobs', bor: 'Ripper', dad: 'Daedalus', mal: 'Maliwan', ord: 'Order',
+    ted: 'Tediore', tor: 'Torgue', vla: 'Vladof', hyp: 'Hyperion',
+    JAK: 'Jakobs', BOR: 'Ripper', DAD: 'Daedalus', MAL: 'Maliwan', ORD: 'Order',
+    TED: 'Tediore', TOR: 'Torgue', VLA: 'Vladof', HYP: 'Hyperion',
+  };
+
   function humanizeSlotKey(k) {
     if (!k || typeof k !== 'string') return k;
     return k.split(/[_\s]+/).map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
@@ -676,6 +753,52 @@ tr:hover { background:rgba(0,243,255,0.04); }
     var norm = low.replace(/^part_core_[a-z]+_/, 'core_').replace(/^part_core_/, 'core_');
     if (SLOT_LABELS[norm]) return SLOT_LABELS[norm];
     return humanizeSlotKey(k);
+  }
+
+  function stripSpawnHash(k) {
+    if (!k || typeof k !== 'string') return '';
+    return k.trim().replace(/_[0-9a-f]{20,}$/i, '');
+  }
+
+  function labelSpawnToken(s) {
+    var raw = (s || '').trim();
+    if (!raw) return '';
+    var k = stripSpawnHash(raw);
+    if (SLOT_LABELS[k] || SLOT_LABELS[k.toLowerCase()]) return SLOT_LABELS[k] || SLOT_LABELS[k.toLowerCase()];
+    var low = k.toLowerCase();
+    if (SLOT_LABELS[low]) return SLOT_LABELS[low];
+    var mag = low.match(/^(tor|cov|borg|jak|bor|dad|mal|ord|ted|hyp|vla)_mag(?:_(\d+))?$/);
+    if (mag) {
+      var name = MANUFACTURER_LABELS[mag[1]] || humanizeSlotKey(mag[1]);
+      return name + ' magazine' + (mag[2] ? ' (tier ' + mag[2] + ')' : '') + ' — licensed part';
+    }
+    var labeled = labelSlot(k);
+    if (labeled !== humanizeSlotKey(k)) return labeled;
+    if (k !== raw) return humanizeSlotKey(k) + ' (specific licensed variant)';
+    return humanizeSlotKey(k);
+  }
+
+  function labelWeaponFamily(code) {
+    if (!code) return '';
+    var c = String(code).trim();
+    var head = c.split('_')[0];
+    var up = head.toUpperCase();
+    var low = head.toLowerCase();
+    return MANUFACTURER_LABELS[up] || MANUFACTURER_LABELS[low] || head;
+  }
+
+  function isLicensedPartPrefixRow(r) {
+    return (r.table || '').indexOf('LicensedPartPrefix') >= 0;
+  }
+
+  function getVariantKindLabel(r) {
+    if (isLicensedPartPrefixRow(r)) return 'Licensed part combo';
+    var cat = getTypeCategory(r);
+    if (cat === 'legendary') return 'Legendary';
+    if (cat === 'stat') return 'Stats-based';
+    if (cat === 'part-display') return 'Part display name';
+    if (cat === 'part-slot') return 'Part slot combo';
+    return cat;
   }
 
   function getWeaponFamily(r) {
@@ -737,17 +860,675 @@ tr:hover { background:rgba(0,243,255,0.04); }
       return 'Exact part: ' + r.part_id;
     }
     if (r.type === 'part_slot_mag' && r.table) {
-      const isStat = (r.table || '').indexOf('StatPrefix') >= 0;
+      const isStat = (r.table || '').indexOf('StatPrefix') >= 0 || (r.table || '').indexOf('StatCombinations') >= 0;
       if (isStat && r.row_key && r.col_key) {
         const primary = labelStat(r.row_key);
         const secondary = labelStat(r.col_key);
         return 'Stats-based: Primary = ' + primary + ', Secondary = ' + secondary + '. Use parts that give these as top stats.';
       }
-      const slot = labelSlot(r.row_key);
-      const mag = labelSlot(r.col_key);
-      return 'Part slot: ' + slot + ' + Mag: ' + mag;
+      const slot = labelSpawnToken(r.row_key);
+      const mag = labelSpawnToken(r.col_key);
+      if (isLicensedPartPrefixRow(r)) {
+        const mfr = labelWeaponFamily(getWeaponFamily(r));
+        return (mfr ? mfr + ': ' : '') + slot + ' + ' + mag;
+      }
+      return 'Part slot: ' + slot + ' + ' + mag;
     }
     return null;
+  }
+
+  function getVariantSummary(r) {
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+      return 'Requires these exact parts: ' + r.required_parts.join(', ');
+    }
+    if (r.type === 'part_display_name' && r.part_id) {
+      return 'Tied to part: ' + r.part_id;
+    }
+    if (r.type === 'part_slot_mag' && r.table) {
+      const isStat = (r.table || '').indexOf('StatPrefix') >= 0 || (r.table || '').indexOf('StatCombinations') >= 0;
+      if (isStat && r.row_key && r.col_key) {
+        return 'Stats: ' + labelStat(r.row_key) + ' + ' + labelStat(r.col_key);
+      }
+      const slot = labelSpawnToken(r.row_key);
+      const mag = labelSpawnToken(r.col_key);
+      if (isLicensedPartPrefixRow(r)) {
+        const mfr = labelWeaponFamily(getWeaponFamily(r));
+        return (mfr ? mfr + ' licensed prefix — ' : 'Licensed prefix — ')
+          + 'pair ' + slot + ' with ' + mag + ' on the same enhancement core.';
+      }
+      return 'Part slot combo: ' + slot + ' + ' + mag;
+    }
+    return getExactPartsRequired(r) || formatParts(r.required_parts) || '';
+  }
+
+  const LICENSED_SLOT_EDITOR = {
+    jak_barrel_acc: { label: 'Jakobs licensed barrel', search: 'part_barrel_licensed_jak', partSuffix: 'part_barrel_licensed_jak' },
+    hyp_shield: { label: 'Hyperion licensed barrel', search: 'part_barrel_licensed_hyp', partSuffix: 'part_barrel_licensed_hyp' },
+    licensed_ted: { label: 'Tediore licensed barrel', search: 'part_barrel_licensed_ted', partSuffix: 'part_barrel_licensed_ted' },
+    ted_mirv: { label: 'Tediore MIRV barrel', search: 'part_barrel_licensed_ted_mirv', partSuffix: 'part_barrel_licensed_ted_mirv' },
+    ted_shooting: { label: 'Tediore shooting barrel', search: 'part_barrel_licensed_ted_shooting', partSuffix: 'part_barrel_licensed_ted_shooting' },
+    ted_combo: { label: 'Tediore combo barrel', search: 'part_barrel_licensed_ted_combo', partSuffix: 'part_barrel_licensed_ted_combo' },
+    default: { label: 'Default barrel (no extra licensed barrel)', search: 'part_barrel_01', partSuffix: 'part_barrel_01' },
+    NewRow: { label: 'Licensed barrel slot', search: 'part_barrel_licensed', partSuffix: 'part_barrel_licensed' },
+  };
+
+  const LICENSED_MAG_EDITOR = {
+    cov_mag: { label: 'COV licensed magazine', search: 'mag_04_cov', partSuffix: 'part_mag_04_cov' },
+    tor_mag: { label: 'Torgue licensed magazine', search: 'mag_03_tor', partSuffix: 'part_mag_03_tor' },
+    borg_mag: { label: 'Borg licensed magazine', search: 'mag_05_borg', partSuffix: 'part_mag_05_borg' },
+    default: { label: 'Default magazine', search: 'part_mag_01', partSuffix: 'part_mag_01' },
+  };
+
+  function licensedMagBaseKey(colKey) {
+    var k = stripSpawnHash(colKey || '');
+    if (LICENSED_MAG_EDITOR[k]) return k;
+    var m = k.match(/^(cov_mag|tor_mag|borg_mag)/);
+    return m ? m[1] : k.replace(/_\d+.*$/, '').replace(/_([0-9a-f]{8,}).*$/, '');
+  }
+
+  function getLicensedSlotEditorHint(rowKey) {
+    var k = stripSpawnHash(rowKey || '') || 'default';
+    return LICENSED_SLOT_EDITOR[k] || {
+      label: labelSpawnToken(rowKey),
+      search: k.replace(/_/g, ' '),
+      partSuffix: '',
+    };
+  }
+
+  function getLicensedMagEditorHint(colKey) {
+    var base = licensedMagBaseKey(colKey);
+    if (LICENSED_MAG_EDITOR[base]) return LICENSED_MAG_EDITOR[base];
+    return {
+      label: labelSpawnToken(colKey),
+      search: base.replace(/_/g, ' '),
+      partSuffix: '',
+    };
+  }
+
+  const WEAPON_MFR_HEAD_TO_SPAWN = {
+    BOR: 'bor', DAD: 'dad', JAK: 'jak', MAL: 'mal', ORD: 'ord',
+    TED: 'ted', TOR: 'tor', VLA: 'vla',
+  };
+
+  const WEAPON_GUN_SPAWN_PREFIXES = {
+    bor: 1, dad: 1, jak: 1, mal: 1, ord: 1, ted: 1, tor: 1, vla: 1,
+  };
+
+  function normalizeGunSpawnPrefix(hint) {
+    hint = String(hint || '').toLowerCase();
+    if (!/^[a-z]{3}$/.test(hint)) return '';
+    return WEAPON_GUN_SPAWN_PREFIXES[hint] ? hint : '';
+  }
+
+  function spawnMatchesGunPrefix(spawn, gunPrefix) {
+    gunPrefix = normalizeGunSpawnPrefix(gunPrefix);
+    if (!gunPrefix || !spawn) return false;
+    return new RegExp('^' + gunPrefix + '_(?:ar|ps|sg|sm|sr|hw)$', 'i').test(String(spawn));
+  }
+
+  function spawnPrefixForPrefixRow(r) {
+    if (!r) return '';
+    if (isLicensedPartPrefixRow(r)) {
+      var wf = getWeaponFamily(r);
+      var head = (wf || '').split('_')[0].toUpperCase();
+      return WEAPON_MFR_HEAD_TO_SPAWN[head] || '';
+    }
+    if (r.part_id) {
+      var m = String(r.part_id).toLowerCase().match(/^([a-z]{3})_/);
+      if (m) return normalizeGunSpawnPrefix(m[1]);
+    }
+    return '';
+  }
+
+  function partSuffixMatchesRow(part, suffix) {
+    part = String(part || '').toLowerCase();
+    suffix = String(suffix || '').toLowerCase();
+    if (!suffix) return true;
+    return part === suffix;
+  }
+
+  function advSearchQuery(hint) {
+    return String(hint && (hint.partSuffix || hint.search) || '').trim();
+  }
+
+  function advSearchHref(query, r) {
+    var url = new URL('../index.html', window.location.href);
+    url.searchParams.set('advq', query);
+    if (r) {
+      var sp = spawnPrefixForPrefixRow(r);
+      var wf = getWeaponFamily(r);
+      if (sp) {
+        url.searchParams.set('advlikely', sp);
+        url.searchParams.set('advlikelylabel', labelWeaponFamily(wf) || sp.toUpperCase());
+      }
+    }
+    url.hash = 'ccAdvancedPartsSearch';
+    return url.pathname + url.search + url.hash;
+  }
+
+  var weaponSpawnIndexV1 = null;
+
+  function ensureWeaponSpawnIndex() {
+    if (weaponSpawnIndexV1) return weaponSpawnIndexV1;
+    var out = [];
+    var seen = Object.create(null);
+    var stat = window.STAT_PARTS_LOOKUP;
+    if (!stat || !stat.bucket_to_parts) {
+      weaponSpawnIndexV1 = out;
+      return out;
+    }
+    var buckets = stat.bucket_to_parts;
+    for (var bk in buckets) {
+      if (!Object.prototype.hasOwnProperty.call(buckets, bk)) continue;
+      var arr = buckets[bk];
+      if (!Array.isArray(arr)) continue;
+      for (var i = 0; i < arr.length; i++) {
+        var raw = String(arr[i] || '').trim();
+        var m = raw.match(/^([a-z]{3}_(?:ar|ps|sg|sm|sr|hw))\.(part_[\w]+)$/i)
+          || raw.match(/^(enhancement)\.(part_[\w]+)$/i)
+          || raw.match(/^([a-z]{3}_enhancement)\.(part_[\w]+)$/i);
+        if (!m) continue;
+        var spawn = m[1].toLowerCase();
+        var part = m[2].toLowerCase();
+        var path = spawn + '.' + part;
+        if (seen[path]) continue;
+        seen[path] = true;
+        out.push({ spawn: spawn, part: part, path: path });
+      }
+    }
+    weaponSpawnIndexV1 = out;
+    return out;
+  }
+
+  function searchWeaponSpawnPaths(partSuffix, likelySpawn, limit) {
+    partSuffix = String(partSuffix || '').toLowerCase();
+    likelySpawn = normalizeGunSpawnPrefix(likelySpawn);
+    limit = limit || 60;
+    var pool = ensureWeaponSpawnIndex().filter(function(row) {
+      return partSuffixMatchesRow(row.part, partSuffix);
+    });
+    pool.sort(function(a, b) {
+      var al = spawnMatchesGunPrefix(a.spawn, likelySpawn) ? 0 : 1;
+      var bl = spawnMatchesGunPrefix(b.spawn, likelySpawn) ? 0 : 1;
+      if (al !== bl) return al - bl;
+      return a.path.localeCompare(b.path);
+    });
+    return pool.slice(0, limit);
+  }
+
+  var spawnIdIndexV1 = null;
+
+  function normSpawnPathKey(path) {
+    return String(path || '').trim().replace(/^"+|"+$/g, '').toLowerCase();
+  }
+
+  function ensureSpawnIdIndex() {
+    if (spawnIdIndexV1) return spawnIdIndexV1;
+    spawnIdIndexV1 = Object.create(null);
+    var parts = window.STX_DATASET && window.STX_DATASET.ALL_PARTS;
+    if (!Array.isArray(parts)) return spawnIdIndexV1;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      var code = normSpawnPathKey(p.code || p.spawnCode || p.importCode);
+      if (!code || code.indexOf('.') < 0) continue;
+      var idRaw = String(p.idRaw != null ? p.idRaw : (p.idraw != null ? p.idraw : '')).trim();
+      if (!idRaw && p.family != null && p.id != null) {
+        idRaw = String(p.family) + ':' + String(p.id);
+      }
+      if (!idRaw || spawnIdIndexV1[code]) continue;
+      var typeId = String(p.family != null ? p.family : (idRaw.split(':')[0] || ''));
+      var partId = String(p.id != null ? p.id : (idRaw.split(':')[1] || ''));
+      spawnIdIndexV1[code] = { idRaw: idRaw, typeId: typeId, partId: partId };
+    }
+    return spawnIdIndexV1;
+  }
+
+  var spawnSuffixIdIndexV1 = null;
+
+  function partSuffixFromPath(path) {
+    var k = normSpawnPathKey(path);
+    var dot = k.lastIndexOf('.');
+    return dot >= 0 ? k.slice(dot + 1) : k;
+  }
+
+  function ensureSpawnSuffixIdIndex() {
+    if (spawnSuffixIdIndexV1) return spawnSuffixIdIndexV1;
+    spawnSuffixIdIndexV1 = Object.create(null);
+    ensureSpawnIdIndex();
+    var parts = window.STX_DATASET && window.STX_DATASET.ALL_PARTS;
+    if (!Array.isArray(parts)) return spawnSuffixIdIndexV1;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i];
+      if (!p) continue;
+      var code = normSpawnPathKey(p.code || p.spawnCode || p.importCode);
+      if (!code) continue;
+      var suf = partSuffixFromPath(code);
+      if (!suf || suf.indexOf('part_') !== 0) continue;
+      var idRaw = String(p.idRaw != null ? p.idRaw : (p.idraw != null ? p.idraw : '')).trim();
+      if (!idRaw && p.family != null && p.id != null) idRaw = String(p.family) + ':' + String(p.id);
+      if (!idRaw) continue;
+      var entry = { idRaw: idRaw, typeId: String(p.family != null ? p.family : (idRaw.split(':')[0] || '')), partId: String(p.id != null ? p.id : (idRaw.split(':')[1] || '')), code: code };
+      if (!spawnSuffixIdIndexV1[suf]) spawnSuffixIdIndexV1[suf] = [];
+      spawnSuffixIdIndexV1[suf].push(entry);
+    }
+    return spawnSuffixIdIndexV1;
+  }
+
+  function lookupSpawnPartRef(path) {
+    var key = normSpawnPathKey(path);
+    if (!key) return null;
+    var hit = ensureSpawnIdIndex()[key];
+    if (hit) return hit;
+    var suf = partSuffixFromPath(key);
+    var list = ensureSpawnSuffixIdIndex()[suf];
+    if (!list || !list.length) return null;
+    var enh = key.indexOf('enhancement.') === 0 || key.indexOf('part_stat') >= 0;
+    if (enh) {
+      for (var j = 0; j < list.length; j++) {
+        if (list[j].code.indexOf('enhancement') >= 0 || /_enhancement\./i.test(list[j].code)) return list[j];
+      }
+    }
+    return list[0];
+  }
+
+  function enrichSpawnRow(row) {
+    var ref = lookupSpawnPartRef(row.path);
+    if (!ref) {
+      return {
+        path: row.path,
+        likely: row.likely,
+        idRaw: '',
+        typeId: '',
+        partId: '',
+        token: '',
+      };
+    }
+    return {
+      path: row.path,
+      likely: row.likely,
+      idRaw: ref.idRaw,
+      typeId: ref.typeId,
+      partId: ref.partId,
+      token: '{' + ref.idRaw + '}',
+    };
+  }
+
+  function renderPrefixFinderList(listEl, metaEl, rows, mfrLabel) {
+    if (!listEl) return;
+    if (!rows.length) {
+      listEl.innerHTML = '<li class="type" style="cursor:default;">No weapon spawn paths found for this part suffix.</li>';
+      if (metaEl) metaEl.textContent = 'Try the full Parts DB search or check that stat lookup data loaded.';
+      return;
+    }
+    var likelyN = 0;
+    var withIds = 0;
+    var stxReady = !!(window.STX_DATASET && window.STX_DATASET.ALL_PARTS && window.STX_DATASET.ALL_PARTS.length);
+    listEl.innerHTML = rows.map(function(row) {
+      if (row.likely) likelyN++;
+      if (row.token) withIds++;
+      var badge = row.likely ? '<span class="pf-badge">Likely</span>' : '';
+      var copyVal = row.token || row.path;
+      var title = row.token
+        ? ('Type ID ' + row.typeId + ', Part ID ' + row.partId + ' — click to copy ' + row.token)
+        : ('Click to copy spawn path');
+      var idHtml = row.token
+        ? '<span class="pf-ids">' + escapeHtml(row.token) + '</span>'
+          + '<span class="pf-type">type ' + escapeHtml(row.typeId) + ' · part ' + escapeHtml(row.partId) + '</span>'
+        : '';
+      return '<li class="' + (row.likely ? 'likely' : '') + '" data-copy="' + escapeHtml(copyVal) + '" title="' + escapeHtml(title) + '">'
+        + badge + idHtml + '<span class="pf-path">' + escapeHtml(row.path) + '</span></li>';
+    }).join('');
+    if (metaEl) {
+      var meta = rows.length + ' path(s)'
+        + (likelyN ? (' · ' + likelyN + ' match this prefix table (' + (mfrLabel || 'weapon') + ' gun type IDs only)') : '')
+        + (withIds ? (' · ' + withIds + ' with numeric IDs') : (stxReady ? ' · no IDs matched in STX' : ' · loading part IDs…'));
+      meta += ' · click a row to copy {type:part} token (or spawn path if ID missing)';
+      metaEl.textContent = meta;
+    }
+  }
+
+  function runPrefixPartFinder(box, target) {
+    if (!box) return;
+    box.setAttribute('data-last-target', target || 'slot');
+    var likely = box.getAttribute('data-likely-spawn') || '';
+    var mfrLabel = box.getAttribute('data-mfr-label') || '';
+    var suffix = target === 'mag'
+      ? box.getAttribute('data-mag-suffix')
+      : box.getAttribute('data-slot-suffix');
+    var listEl = box.querySelector('.prefix-part-finder-list');
+    var metaEl = box.querySelector('.prefix-part-finder-meta');
+    var gunPrefix = normalizeGunSpawnPrefix(likely);
+    var rows = searchWeaponSpawnPaths(suffix, gunPrefix, 80).map(function(row) {
+      return enrichSpawnRow({
+        path: row.path,
+        likely: spawnMatchesGunPrefix(row.spawn, gunPrefix),
+      });
+    });
+    renderPrefixFinderList(listEl, metaEl, rows, mfrLabel);
+  }
+
+  function refreshOpenPrefixPartFinders() {
+    var root = document.getElementById('detailBody');
+    if (!root) return;
+    root.querySelectorAll('.prefix-part-finder:not(.stat-part-finder)').forEach(function(box) {
+      runPrefixPartFinder(box, box.getAttribute('data-last-target') || 'slot');
+    });
+    root.querySelectorAll('.stat-part-finder').forEach(function(box) {
+      runStatPartFinder(box, box.getAttribute('data-last-target') || 'both');
+    });
+  }
+
+  function wirePrefixPartFinders(root) {
+    if (!root) return;
+    root.querySelectorAll('.prefix-part-finder').forEach(function(box) {
+      box.querySelectorAll('.prefix-finder-run').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          runPrefixPartFinder(box, btn.getAttribute('data-target'));
+        });
+      });
+      box.querySelectorAll('.prefix-part-finder-list').forEach(function(list) {
+        list.addEventListener('click', function(ev) {
+          var li = ev.target && ev.target.closest ? ev.target.closest('li[data-copy]') : null;
+          if (!li) return;
+          var t = li.getAttribute('data-copy');
+          if (t) {
+            copyToClipboard(t);
+            li.classList.add('paste-flash');
+            setTimeout(function() { li.classList.remove('paste-flash'); }, 400);
+          }
+        });
+      });
+      runPrefixPartFinder(box, 'slot');
+    });
+  }
+
+  function isStatPrefixRow(r) {
+    return getTypeCategory(r) === 'stat' && r.row_key && r.col_key;
+  }
+
+  function isEnhancementStatPrefixRow(r) {
+    var t = r.table || '';
+    return t.indexOf('EnhancementNamingStatCombinations') >= 0
+      || (r.row_key || '').indexOf('Part_Stat_') >= 0
+      || (r.col_key || '').indexOf('part_stat_') >= 0;
+  }
+
+  function normalizeEnhSpawnPath(key) {
+    var k = String(key || '').trim().toLowerCase();
+    if (!k) return '';
+    if (k.indexOf('enhancement.') === 0) return k;
+    if (k.indexOf('part_stat') === 0) return 'enhancement.' + k;
+    return '';
+  }
+
+  function getStatSlotLabels(r) {
+    var b1 = statKeyToBucket(r.row_key);
+    var b2 = (r.col_key === 'single' || r.col_key === 'default') ? null : statKeyToBucket(r.col_key);
+    return {
+      bucket1: b1,
+      bucket2: b2,
+      primary: labelStat(r.row_key),
+      secondary: b2 ? labelStat(r.col_key) : '',
+      primaryStat: b1 ? (BUCKET_STAT_LABELS[b1] || labelStat(r.row_key)) : labelStat(r.row_key),
+      secondaryStat: b2 ? (BUCKET_STAT_LABELS[b2] || labelStat(r.col_key)) : '',
+    };
+  }
+
+  function pathMatchesGunPrefix(path, gunPrefix) {
+    return spawnMatchesGunPrefix(String(path || '').split('.')[0], gunPrefix);
+  }
+
+  function pathIsEnhancementStatPart(path) {
+    var pl = String(path || '').toLowerCase();
+    return pl.indexOf('enhancement.') === 0 || pl.indexOf('_enhancement.') >= 0 || /\.part_stat/.test(pl);
+  }
+
+  function getStatPartPathsForRow(r, slot) {
+    var lookup = window.STAT_PARTS_LOOKUP;
+    if (!lookup || !lookup.bucket_to_parts) return [];
+    var slots = getStatSlotLabels(r);
+    var isEnh = isEnhancementStatPrefixRow(r);
+    var gunPrefix = spawnPrefixForPrefixRow(r);
+    var limit = 80;
+    var seen = Object.create(null);
+    var out = [];
+
+    function push(path, likely) {
+      path = String(path || '').trim();
+      if (!path || seen[path]) return;
+      seen[path] = 1;
+      out.push({ path: path, likely: !!likely });
+    }
+
+    if (isEnh) {
+      [r.row_key, r.col_key].forEach(function(k) {
+        var p = normalizeEnhSpawnPath(k);
+        if (p && p.indexOf('part_stat') >= 0) push(p, true);
+      });
+      var buckets = [];
+      if (slot === 'primary' || slot === 'both') buckets.push({ b: slots.bucket1, stat: slots.primaryStat });
+      if (slot === 'secondary' || slot === 'both') buckets.push({ b: slots.bucket2, stat: slots.secondaryStat });
+      buckets.forEach(function(x) {
+        if (!x.b) return;
+        (lookup.bucket_to_parts[x.b] || []).forEach(function(p) {
+          var pl = String(p).toLowerCase();
+          if (!pathIsEnhancementStatPart(pl)) return;
+          if (x.stat && getStatsForPart(pl).indexOf(x.stat) === -1) return;
+          push(pl, true);
+        });
+      });
+      return out.slice(0, limit);
+    }
+
+    function wantBucket(b, statLbl) {
+      if (!b) return;
+      (lookup.bucket_to_parts[b] || []).forEach(function(p) {
+        var pl = String(p).toLowerCase();
+        if (pathIsEnhancementStatPart(pl)) return;
+        if (gunPrefix && !pathMatchesGunPrefix(pl, gunPrefix)) return;
+        if (statLbl && getStatsForPart(pl).indexOf(statLbl) === -1) return;
+        push(pl, gunPrefix && pathMatchesGunPrefix(pl, gunPrefix));
+      });
+    }
+    if (slot === 'primary' || slot === 'both') wantBucket(slots.bucket1, slots.primaryStat);
+    if (slot === 'secondary' || slot === 'both') wantBucket(slots.bucket2, slots.secondaryStat);
+    if (slot === 'both' && slots.bucket1 && slots.bucket2 && slots.primaryStat && slots.secondaryStat) {
+      var both = [];
+      var rest = [];
+      out.forEach(function(row) {
+        var stats = getStatsForPart(row.path);
+        var has1 = stats.indexOf(slots.primaryStat) >= 0;
+        var has2 = stats.indexOf(slots.secondaryStat) >= 0;
+        if (has1 && has2) both.push(row);
+        else rest.push(row);
+      });
+      out = both.concat(rest);
+    }
+    return out.slice(0, limit);
+  }
+
+  function renderStatFinderList(listEl, metaEl, rows, hintText) {
+    var enriched = rows.map(function(row) {
+      return enrichSpawnRow({ path: row.path, likely: row.likely });
+    });
+    renderPrefixFinderList(listEl, metaEl, enriched, hintText);
+  }
+
+  function runStatPartFinder(box, target) {
+    if (!box) return;
+    box.setAttribute('data-last-target', target || 'both');
+    var rowJson = box.getAttribute('data-stat-row');
+    if (!rowJson) return;
+    var r;
+    try { r = JSON.parse(rowJson.replace(/&quot;/g, '"').replace(/&amp;/g, '&')); } catch (_) { return; }
+    var listEl = box.querySelector('.prefix-part-finder-list');
+    var metaEl = box.querySelector('.prefix-part-finder-meta');
+    var slots = getStatSlotLabels(r);
+    var hint = labelWeaponFamily(getWeaponFamily(r)) || 'Enhancement';
+    var rows = getStatPartPathsForRow(r, target);
+    var metaHint = target === 'primary' ? slots.primary
+      : (target === 'secondary' ? slots.secondary : (slots.primary + ' + ' + slots.secondary));
+    renderStatFinderList(listEl, metaEl, rows, hint + ' · ' + metaHint);
+  }
+
+  function wireStatPartFinders(root) {
+    if (!root) return;
+    root.querySelectorAll('.stat-part-finder').forEach(function(box) {
+      box.querySelectorAll('.prefix-finder-run').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          runStatPartFinder(box, btn.getAttribute('data-target'));
+        });
+      });
+      box.querySelectorAll('.prefix-part-finder-list').forEach(function(list) {
+        list.addEventListener('click', function(ev) {
+          var li = ev.target && ev.target.closest ? ev.target.closest('li[data-copy]') : null;
+          if (!li) return;
+          var t = li.getAttribute('data-copy');
+          if (t) {
+            copyToClipboard(t);
+            li.classList.add('paste-flash');
+            setTimeout(function() { li.classList.remove('paste-flash'); }, 400);
+          }
+        });
+      });
+      runStatPartFinder(box, 'both');
+    });
+  }
+
+  function renderStatMatchBlock(r) {
+    var slots = getStatSlotLabels(r);
+    var wf = getWeaponFamily(r);
+    var mfrLabel = labelWeaponFamily(wf) || '';
+    var isEnh = isEnhancementStatPrefixRow(r);
+    var gunPrefix = spawnPrefixForPrefixRow(r);
+    var rowSafe = JSON.stringify({
+      table: r.table, row_key: r.row_key, col_key: r.col_key, type: r.type,
+    }).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    var html = '<div class="stat-match-panel">';
+    html += '<div class="stat-match-hero">';
+    html += '<span class="stat-match-kicker">Stats-based prefix · ' + (isEnh ? 'Enhancement stat parts' : (mfrLabel ? (mfrLabel + ' weapon stats') : 'Weapon stats')) + '</span>';
+    html += '<p class="stat-match-primary">Primary stat: <strong>' + escapeHtml(slots.primary) + '</strong></p>';
+    if (slots.secondary) {
+      html += '<p class="stat-match-secondary">Secondary stat: <strong>' + escapeHtml(slots.secondary) + '</strong></p>';
+    } else {
+      html += '<p class="stat-match-secondary">Secondary: <strong>Single stat only</strong></p>';
+    }
+    html += '<p class="stat-match-note">Build on an <strong>enhancement</strong> with parts that roll these as top stats. '
+      + (isEnh ? 'Use the exact <code>part_stat_*</code> codes below when possible.' : (mfrLabel
+        ? 'For weapon naming tables, listed parts are <strong>' + escapeHtml(mfrLabel) + '</strong> items that actually grant these stats (not every barrel in the bucket).'
+        : 'Pick parts from the lists below that grant these stat buckets.'))
+      + '</p>';
+    html += '</div>';
+
+    var exactPaths = [];
+    if (isEnh) {
+      [r.row_key, r.col_key].forEach(function(k) {
+        var p = normalizeEnhSpawnPath(k);
+        if (p && exactPaths.indexOf(p) === -1) exactPaths.push(p);
+      });
+    }
+    if (exactPaths.length) {
+      html += '<div class="stat-exact-parts"><strong>Exact enhancement codes</strong> (from prefix table)</div>';
+      html += renderChecklist(exactPaths, true);
+    }
+
+    html += '<div class="prefix-part-finder stat-part-finder" data-stat-row="' + rowSafe + '" data-likely-spawn="' + escapeHtml(gunPrefix) + '" data-mfr-label="' + escapeHtml(mfrLabel || 'Enhancement') + '">';
+    html += '<p class="type" style="margin:8px 0 6px;"><strong>Find parts here</strong> — filtered by stat bucket'
+      + (gunPrefix && !isEnh ? (' · <span style="color:#7dffb3;">Likely</span> = ' + escapeHtml(mfrLabel) + ' gun IDs') : '')
+      + ' · shows <code>{type:part}</code> when known.</p>';
+    html += '<div class="prefix-part-finder-btns">';
+    html += '<button type="button" class="btn prefix-finder-run" data-target="both">Both stats</button>';
+    html += '<button type="button" class="btn prefix-finder-run" data-target="primary">Primary: ' + escapeHtml(slots.primary) + '</button>';
+    if (slots.secondary) {
+      html += '<button type="button" class="btn prefix-finder-run" data-target="secondary">Secondary: ' + escapeHtml(slots.secondary) + '</button>';
+    }
+    html += '</div>';
+    html += '<ul class="prefix-part-finder-list" aria-live="polite"></ul>';
+    html += '<p class="prefix-part-finder-meta type"></p>';
+    html += '</div>';
+
+    html += '<details class="stat-raw-keys"><summary>Internal table keys (reference only)</summary>';
+    html += '<p class="type">Row: <code>' + escapeHtml(r.row_key || '') + '</code> · Column: <code>' + escapeHtml(r.col_key || '') + '</code></p>';
+    html += '<p class="type">These keys name the stat combo in game data — not spawn codes to paste.</p>';
+    html += '</details>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderEditorMatchBlock(r) {
+    var wf = getWeaponFamily(r);
+    var mfrLabel = labelWeaponFamily(wf) || 'this manufacturer';
+    var slot = getLicensedSlotEditorHint(r.row_key);
+    var mag = getLicensedMagEditorHint(r.col_key);
+    var spHint = spawnPrefixForPrefixRow(r);
+    var html = '<div class="editor-match">';
+    html += '<p><strong>Weapon parts for this prefix</strong> — licensed <em>gun</em> barrel + mag (not enhancement cores). Build on <strong>' + escapeHtml(mfrLabel) + '</strong> (<code>' + escapeHtml(spHint) + '_ps</code>, <code>' + escapeHtml(spHint) + '_ar</code>, …).</p>';
+    html += '<div class="prefix-part-finder" data-likely-spawn="' + escapeHtml(spHint) + '" data-mfr-label="' + escapeHtml(mfrLabel) + '" data-slot-suffix="' + escapeHtml(slot.partSuffix) + '" data-mag-suffix="' + escapeHtml(mag.partSuffix) + '">';
+    html += '<p class="type" style="margin:0 0 6px;"><strong>Find parts here</strong> — <span style="color:#7dffb3;">Likely</span> = only <strong>' + escapeHtml(mfrLabel) + '</strong> gun type IDs (<code>' + escapeHtml(spHint) + '_ar</code> / <code>_ps</code> / …), not the licensed brand in the part name.</p>';
+    html += '<div class="prefix-part-finder-btns">';
+    html += '<button type="button" class="btn prefix-finder-run" data-target="slot">Show ' + escapeHtml(slot.label) + '</button>';
+    html += '<button type="button" class="btn prefix-finder-run" data-target="mag">Show ' + escapeHtml(mag.label) + '</button>';
+    html += '</div>';
+    html += '<ul class="prefix-part-finder-list" aria-live="polite"></ul>';
+    html += '<p class="prefix-part-finder-meta type"></p>';
+    html += '</div>';
+    html += '<div class="editor-search-btns">';
+    html += '<a href="' + advSearchHref(advSearchQuery(slot), r) + '" class="btn" target="_blank" rel="noopener">Full editor: ' + escapeHtml(slot.label) + ' →</a>';
+    html += '<a href="' + advSearchHref(advSearchQuery(mag), r) + '" class="btn" target="_blank" rel="noopener">Full editor: ' + escapeHtml(mag.label) + ' →</a>';
+    html += '</div>';
+    var tokens = getSpawnTokensForVariant(r);
+    if (tokens.length) {
+      html += '<details class="spawn-tokens" style="margin-top:10px;"><summary>Internal table keys (reference only)</summary><ul class="spawn-token-list">';
+      tokens.forEach(function(t) {
+        html += '<li><code class="part-id-copy raw-parts" data-copy="' + escapeHtml(t.token) + '" title="Click to copy">' + escapeHtml(t.token) + '</code></li>';
+      });
+      html += '</ul></details>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderPartMatchBlock(r) {
+    if (isStatPrefixRow(r)) return renderStatMatchBlock(r);
+    if (isLicensedPartPrefixRow(r)) return renderEditorMatchBlock(r);
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+      return '<p><strong>Exact parts (click to copy):</strong></p>' + renderChecklist(r.required_parts, true);
+    }
+    if (r.part_id) {
+      return '<p><strong>Part ID (click to copy):</strong> <span class="part-id-copy" data-copy="' + escapeHtml(r.part_id) + '" title="Click to copy">' + escapeHtml(r.part_id) + '</span></p>';
+    }
+    var tokens = getSpawnTokensForVariant(r);
+    if (!tokens.length) return '';
+    var html = '<details class="spawn-tokens"><summary>Spawn / part tokens</summary><ul class="spawn-token-list">';
+    tokens.forEach(function(t) {
+      html += '<li><span class="spawn-token-label">' + escapeHtml(t.label) + '</span> '
+        + '<code class="part-id-copy raw-parts" data-copy="' + escapeHtml(t.token) + '" title="Click to copy">' + escapeHtml(t.token) + '</code></li>';
+    });
+    html += '</ul></details>';
+    return html;
+  }
+
+  function getSpawnTokensForVariant(r) {
+    var out = [];
+    var seen = Object.create(null);
+    function add(token, role) {
+      token = (token || '').trim();
+      if (!token || seen[token]) return;
+      seen[token] = 1;
+      out.push({ token: token, label: (role ? role + ': ' : '') + labelSpawnToken(token) });
+    }
+    if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
+      r.required_parts.forEach(function(p) { add(p, 'Part'); });
+      return out;
+    }
+    if (r.part_id) { add(r.part_id, 'Part'); return out; }
+    if (r.row_key) add(r.row_key, 'Part slot');
+    if (r.col_key && r.col_key !== r.row_key) add(r.col_key, 'Mag / second slot');
+    if (r.required_parts && typeof r.required_parts === 'string') {
+      r.required_parts.split(/\s*\+\s*/).forEach(function(t) { add(t.trim(), 'Build token'); });
+    }
+    return out;
   }
 
   function formatParts(rp) {
@@ -759,9 +1540,12 @@ tr:hover { background:rgba(0,243,255,0.04); }
     if (!r) return [];
     if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) return r.required_parts.filter(Boolean);
     if (r.type === 'part_display_name' && r.part_id) return [r.part_id];
+    if (isLicensedPartPrefixRow(r)) return [];
     if (getTypeCategory(r) === 'part-slot' && r.required_parts) {
       var s = Array.isArray(r.required_parts) ? r.required_parts.join(' ') : String(r.required_parts);
-      return s.split(/[\s;+]+/).map(function(x) { return x.trim(); }).filter(Boolean);
+      return s.split(/[\s;+]+/).map(function(x) { return x.trim(); }).filter(function(x) {
+        return x && !/^[a-z]+_(barrel_acc|shield|mag)/i.test(x) && x.indexOf('licensed_') !== 0;
+      });
     }
     return [];
   }
@@ -798,10 +1582,11 @@ tr:hover { background:rgba(0,243,255,0.04); }
       }
       if (q) {
         const parts = formatParts(r.required_parts).toLowerCase();
-        const exact = (getExactPartsRequired(r) || '').toLowerCase();
-        const weapon = getWeaponFamily(r).toLowerCase();
+        const summary = (getVariantSummary(r) || '').toLowerCase();
+        const wf = getWeaponFamily(r);
+        const weapon = (wf + ' ' + labelWeaponFamily(wf)).toLowerCase();
         const match = (r.prefix || '').toLowerCase().replace(/\s+/g,' ').includes(q) ||
-          parts.includes(q) || exact.includes(q) || weapon.includes(q) ||
+          parts.includes(q) || summary.includes(q) || weapon.includes(q) ||
           (r.row_key || '').toLowerCase().includes(q) || (r.col_key || '').toLowerCase().includes(q) ||
           (r.part_id || '').toLowerCase().includes(q);
         if (!match) return false;
@@ -923,21 +1708,19 @@ tr:hover { background:rgba(0,243,255,0.04); }
 
   function getBuildGuide(r) {
     if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
-      return '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select Manufacturer + Item Type for this weapon</li><li>Use Advanced Part Search to find each part by ID, or paste a code if you have one</li><li>Copy the part IDs above and search for them in STX</li></ol></div>';
+      return '<div class="build-guide"><strong>Prefixes apply to Enhancements only</strong><p>They come from a matched pair of <em>core</em> parts on an enhancement item — not from weapon barrel/mag parts. You cannot paste a prefix onto a gun serial and expect the same name roll.</p><strong>Build this prefix on an enhancement:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a> → item type <strong>Enhancement</strong> (manufacturer matches the core family, e.g. Atlas → ATL enhancement).</li><li>Add every core part listed in the checklist above (both cores in the pair).</li><li>Fill body / firmware / stat slots as needed, then validate in <a href="../legacy/legit-builder.html" class="part-link" target="_blank">Legit Builder</a>.</li><li>To mimic a god-roll <em>weapon</em>, use Advanced Part Search for stat parts in the same buckets — not the enhancement prefix row.</li></ol></div>';
     }
     if (r.type === 'part_display_name' && r.part_id) {
       return '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select the matching item type (e.g. Shield for shield parts)</li><li>Search for part ID: <code>' + escapeHtml(r.part_id) + '</code></li></ol></div>';
     }
-    if (getTypeCategory(r) === 'stat' || getTypeCategory(r) === 'part-slot') {
-      let guide = '';
-      if (getTypeCategory(r) === 'stat' && r.row_key && r.col_key) {
-        const est = getEstimatedPartsForStat(r.row_key, r.col_key, getWeaponFamily(r));
-        if (est.length) {
-          guide += '<div class="build-guide" style="margin-bottom:12px;"><strong>Estimated parts that may contribute:</strong> <em>(click to copy)</em>' + renderChecklist(est.slice(0, 20), true) + (est.length > 20 ? '<p class="type">+' + (est.length - 20) + ' more. Use Copy estimated parts for full list.</p>' : '') + '</div>';
-        }
-      }
-      guide += '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select Manufacturer + Item Type</li><li>Choose parts that give the stats/slots shown above</li><li>Use Advanced Search to filter by stat or part slot</li></ol></div>';
-      return guide;
+    if (getTypeCategory(r) === 'stat') {
+      return '<div class="build-guide"><strong>How to build in STX:</strong><ol>'
+        + '<li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a> → <strong>Enhancement</strong> (manufacturer matches your cores).</li>'
+        + '<li>Add stat parts from the panel above (prefer exact <code>part_stat_*</code> rows when listed).</li>'
+        + '<li>Validate in <a href="../legacy/legit-builder.html" class="part-link" target="_blank">Legit Builder</a>.</li></ol></div>';
+    }
+    if (getTypeCategory(r) === 'part-slot') {
+      return '<div class="build-guide"><strong>How to build in STX:</strong><ol><li>Open <a href="../index.html#rebuildPasteCodeSection" class="part-link" target="_blank">Parts DB</a></li><li>Select Manufacturer + Item Type</li><li>Choose parts that give the stats/slots shown above</li><li>Use Advanced Search to filter by stat or part slot</li></ol></div>';
     }
     return '';
   }
@@ -946,12 +1729,10 @@ tr:hover { background:rgba(0,243,255,0.04); }
     filteredData = rows;
     const favs = getFavorites();
     tbody.innerHTML = rows.map(function(r) {
-      const exact = getExactPartsRequired(r);
-      const raw = formatParts(r.required_parts);
-      const rawSafe = raw ? escapeHtml(raw) : '';
-      const partsCell = exact
-        ? '<span class="exact-parts">' + escapeHtml(exact) + '</span>' + (raw ? '<br><span class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</span>' : '')
-        : (raw ? '<span class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</span>' : '');
+      const summary = getVariantSummary(r) || getExactPartsRequired(r) || formatParts(r.required_parts);
+      const partsCell = summary
+        ? '<span class="exact-parts">' + escapeHtml(summary) + '</span>'
+        : '';
       const weapon = getWeaponFamily(r);
       const prefix = (r.prefix || '').trim();
       const isFav = favs.includes(prefix);
@@ -1017,37 +1798,29 @@ tr:hover { background:rgba(0,243,255,0.04); }
     });
     let html = '<p>' + matches.length + ' variant(s) for this prefix.</p>';
     matches.forEach(function(r, i) {
-      const raw = formatParts(r.required_parts);
-      const partIds = Array.isArray(r.required_parts) ? r.required_parts : (r.part_id ? [r.part_id] : []);
+      const partIds = Array.isArray(r.required_parts) ? r.required_parts : (r.part_id ? [r.part_id] : getSpawnTokensForVariant(r).map(function(t) { return t.token; }));
       const partsText = partIds.join('\n');
+      const wf = getWeaponFamily(r);
       html += '<div class="detail-panel">';
-      html += '<h4>#' + (i + 1) + ' – ' + escapeHtml(getTypeCategory(r)) + (getWeaponFamily(r) ? ' (' + getWeaponFamily(r) + ')' : '') + '</h4>';
-      html += '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>';
-      if (raw) html += '<p class="raw-parts" data-copy="' + escapeHtml(raw) + '" title="Click to copy">' + escapeHtml(raw) + '</p>';
-      if (r.type === 'legendary_required' && Array.isArray(r.required_parts)) {
-        html += '<p><strong>Checklist (click part to copy):</strong></p>' + renderChecklist(r.required_parts, true);
-      }
-      if (r.part_id) {
-        html += '<p><strong>Part ID (click to copy):</strong> <span class="part-id-copy" data-copy="' + escapeHtml(r.part_id) + '" title="Click to copy">' + escapeHtml(r.part_id) + '</span></p>';
-      }
+      html += '<h4>#' + (i + 1) + ' – ' + escapeHtml(getVariantKindLabel(r)) + (wf ? ' (' + escapeHtml(labelWeaponFamily(wf)) + ')' : '') + '</h4>';
+      html += '<p class="variant-summary' + (isStatPrefixRow(r) ? ' stat-variant-muted' : '') + '">' + escapeHtml(getVariantSummary(r)) + '</p>';
+      html += renderPartMatchBlock(r);
       html += '<div class="build-actions">';
-      if (getTypeCategory(r) === 'part-slot') {
+      if (isLicensedPartPrefixRow(r)) {
+        var slotHint = getLicensedSlotEditorHint(r.row_key);
+        var magHint = getLicensedMagEditorHint(r.col_key);
+        html += '<a href="' + advSearchHref(advSearchQuery(slotHint), r) + '" class="btn" target="_blank" rel="noopener">Full editor: ' + escapeHtml(slotHint.label) + ' →</a>';
+        html += '<a href="' + advSearchHref(advSearchQuery(magHint), r) + '" class="btn" target="_blank" rel="noopener">Full editor: ' + escapeHtml(magHint.label) + ' →</a>';
+      } else if (getTypeCategory(r) === 'part-slot' || getTypeCategory(r) === 'legendary') {
         var buildPartIds = getPartIdsForBuild(r);
         var buildHref = '../index.html';
         if (buildPartIds.length) buildHref += '?parts=' + encodeURIComponent(buildPartIds.join(','));
         buildHref += '#ccAdvancedPartsSearch';
-        html += '<a href="' + buildHref + '" class="btn" target="_blank">Build in STX (Advanced Part Search) →</a>';
+        html += '<a href="' + buildHref + '" class="btn" target="_blank" rel="noopener">Open Advanced Part Search →</a>';
       }
-      if (partsText) {
+      if (partsText && !isStatPrefixRow(r)) {
         const safe = partsText.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
         html += '<button type="button" class="btn copy-parts-btn" data-parts="' + safe + '">Copy part IDs</button>';
-      }
-      if (getTypeCategory(r) === 'stat' && r.row_key && r.col_key) {
-        const est = getEstimatedPartsForStat(r.row_key, r.col_key, getWeaponFamily(r));
-        if (est.length) {
-          const estSafe = est.join('\n').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-          html += '<button type="button" class="btn copy-parts-btn" data-parts="' + estSafe + '">Copy estimated parts</button>';
-        }
       }
       html += '</div>';
       html += getBuildGuide(r);
@@ -1055,6 +1828,8 @@ tr:hover { background:rgba(0,243,255,0.04); }
     });
     detailBody.innerHTML = html;
     detailModal.style.display = 'flex';
+    wirePrefixPartFinders(detailBody);
+    wireStatPartFinders(detailBody);
     var closeBtn = document.getElementById('detailClose');
     if (closeBtn) { closeBtn.focus(); }
     detailBody.querySelectorAll('[data-copy]').forEach(function(el) {
@@ -1096,7 +1871,10 @@ tr:hover { background:rgba(0,243,255,0.04); }
       }).join(', ') + (prefs.length > 5 ? ' +' + (prefs.length - 5) + ' more' : '') + '</div>';
     }).join('');
     el.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function(e) { e.preventDefault(); var p = a.getAttribute('data-prefix'); searchEl.value = p; if (p) addSearchHistory(p); filter(); showPrefixDetail(p); });
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        applySearchQuery(a.getAttribute('data-prefix'), { showDetail: true });
+      });
     });
   }
 
@@ -1120,7 +1898,10 @@ tr:hover { background:rgba(0,243,255,0.04); }
       }).join(', ') + (prefs.length > 5 ? ' +' + (prefs.length - 5) + ' more' : '') + '</div>';
     }).join('');
     el.querySelectorAll('a').forEach(function(a) {
-      a.addEventListener('click', function(e) { e.preventDefault(); var p = a.getAttribute('data-prefix'); searchEl.value = p; if (p) addSearchHistory(p); filter(); showPrefixDetail(p); });
+      a.addEventListener('click', function(e) {
+        e.preventDefault();
+        applySearchQuery(a.getAttribute('data-prefix'), { showDetail: true });
+      });
     });
   }
 
@@ -1135,30 +1916,61 @@ tr:hover { background:rgba(0,243,255,0.04); }
     }).join('');
     el.querySelectorAll('span').forEach(function(s) {
       s.addEventListener('click', function() {
-        searchEl.value = s.getAttribute('data-q');
-        filter();
+        applySearchQuery(s.getAttribute('data-q'), { openTesting: true });
         var rows = applyFiltersAndSort(data);
         if (rows.length === 1) showPrefixDetail((rows[0].prefix || '').trim());
       });
     });
   }
 
+  function syncExtendedSearchFromMain() {
+    if (searchEl && mainSearchEl) searchEl.value = mainSearchEl.value;
+  }
+
+  function applySearchQuery(q, opts) {
+    opts = opts || {};
+    if (mainSearchEl) mainSearchEl.value = q;
+    if (searchEl) searchEl.value = q;
+    if (q) addSearchHistory(q);
+    onMainSearchInput();
+    if (opts.openTesting && testingPanel) testingPanel.open = true;
+    if (testingPanel && testingPanel.open) filter();
+    if (opts.showDetail) showPrefixDetail(q);
+  }
+
+  function getMainQuery() {
+    return (mainSearchEl && mainSearchEl.value || searchEl && searchEl.value || '').trim();
+  }
+
   function filter() {
+    syncExtendedSearchFromMain();
     const q = (searchEl.value || '').trim();
     const rows = applyFiltersAndSort(data);
     render(rows);
-    statusEl.textContent = 'Showing ' + rows.length + ' of ' + data.length + ' entries.';
+    if (statusEl) statusEl.textContent = 'Showing ' + rows.length + ' of ' + data.length + ' entries.';
     updateUrl();
     renderSearchHistory();
+    renderSimplePrefixList();
+  }
+
+  function onMainSearchInput() {
+    syncExtendedSearchFromMain();
+    renderSimplePrefixList();
+    if (testingPanel && testingPanel.open) filter();
+    else {
+      updateUrl();
+      renderSearchHistory();
+    }
   }
 
   function updateUrl() {
-    const q = (searchEl.value || '').trim();
+    const q = getMainQuery();
     const url = new URL(window.location.href);
     if (q) url.searchParams.set('q', q);
     else url.searchParams.delete('q');
+    if (testingPanel && testingPanel.open) url.searchParams.set('view', 'extended');
+    else url.searchParams.delete('view');
     window.history.replaceState({}, '', url);
-
   }
 
   function variantLinesForPrefix(prefix) {
@@ -1166,8 +1978,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
     const out = [];
     const seen = Object.create(null);
     matches.forEach(function(r) {
-      const main = getExactPartsRequired(r) || formatParts(r.required_parts) || '';
-      const display = main || '(see raw table row — no parsed requirement)';
+      const display = getVariantSummary(r) || '(no parsed requirement)';
       const w = getWeaponFamily(r);
       const key = display + '\0' + (w || '');
       if (seen[key]) return;
@@ -1180,7 +1991,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
   function renderSimplePrefixList() {
     const body = document.getElementById('simpleListBody');
     const st = document.getElementById('simpleListStatus');
-    const inp = document.getElementById('simpleListSearch');
+    const inp = mainSearchEl;
     if (!body) return;
     if (!data.length) {
       body.innerHTML = '<p class="type">No data loaded.</p>';
@@ -1231,12 +2042,13 @@ tr:hover { background:rgba(0,243,255,0.04); }
   }
 
   function exportCsv() {
+    syncExtendedSearchFromMain();
     const q = (searchEl.value || '').trim().toLowerCase();
     const rows = applyFiltersAndSort(data);
     const headers = ['Prefix','Type','Weapon','Exact Parts Required','Raw','Source'];
     const lines = [headers.map(escapeCsv).join(',')];
     rows.forEach(function(r) {
-      const exact = getExactPartsRequired(r) || '';
+      const exact = getVariantSummary(r) || getExactPartsRequired(r) || '';
       const raw = formatParts(r.required_parts);
       lines.push([r.prefix, getTypeCategory(r), getWeaponFamily(r), exact, raw, r.source].map(escapeCsv).join(','));
     });
@@ -1249,12 +2061,13 @@ tr:hover { background:rgba(0,243,255,0.04); }
   }
 
   function exportTsv() {
+    syncExtendedSearchFromMain();
     const q = (searchEl.value || '').trim().toLowerCase();
     const rows = applyFiltersAndSort(data);
     const headers = ['Prefix','Type','Weapon','Exact Parts Required','Raw','Source'];
     const lines = [headers.join('\t')];
     rows.forEach(function(r) {
-      const exact = getExactPartsRequired(r) || '';
+      const exact = getVariantSummary(r) || getExactPartsRequired(r) || '';
       const raw = formatParts(r.required_parts);
       lines.push([r.prefix, getTypeCategory(r), getWeaponFamily(r), exact, raw, r.source].join('\t'));
     });
@@ -1266,17 +2079,41 @@ tr:hover { background:rgba(0,243,255,0.04); }
     setTimeout(function() { URL.revokeObjectURL(a.href); }, 100);
   }
 
-  searchEl.addEventListener('input', filter);
-  searchEl.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { searchEl.value = ''; filter(); }
-    else if (e.key === 'Enter') { var q = (searchEl.value || '').trim(); if (q) addSearchHistory(q); filter(); }
-  });
-
-  var simpleListSearchEl = document.getElementById('simpleListSearch');
-  if (simpleListSearchEl) {
-    simpleListSearchEl.addEventListener('input', renderSimplePrefixList);
-    simpleListSearchEl.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') { simpleListSearchEl.value = ''; renderSimplePrefixList(); }
+  if (searchEl) {
+    searchEl.addEventListener('input', filter);
+    searchEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (mainSearchEl) mainSearchEl.value = '';
+        searchEl.value = '';
+        onMainSearchInput();
+      } else if (e.key === 'Enter') {
+        var q = (searchEl.value || '').trim();
+        if (q) addSearchHistory(q);
+        filter();
+      }
+    });
+  }
+  if (mainSearchEl) {
+    mainSearchEl.addEventListener('input', onMainSearchInput);
+    mainSearchEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        mainSearchEl.value = '';
+        if (searchEl) searchEl.value = '';
+        onMainSearchInput();
+      } else if (e.key === 'Enter') {
+        var q = (mainSearchEl.value || '').trim();
+        if (q) addSearchHistory(q);
+        onMainSearchInput();
+        if (testingPanel && !testingPanel.open) testingPanel.open = true;
+        if (testingPanel && testingPanel.open) filter();
+      }
+    });
+  }
+  if (testingPanel) {
+    testingPanel.addEventListener('toggle', function() {
+      if (!testingPanel.open) return;
+      syncExtendedSearchFromMain();
+      filter();
     });
   }
 
@@ -1358,9 +2195,14 @@ tr:hover { background:rgba(0,243,255,0.04); }
     }
     const params = new URLSearchParams(window.location.search);
     const q = params.get('q');
-    if (q) { searchEl.value = q; }
-    filter();
+    if (q) {
+      if (mainSearchEl) mainSearchEl.value = q;
+      if (searchEl) searchEl.value = q;
+    }
+    if (params.get('view') === 'extended' && testingPanel) testingPanel.open = true;
     renderSimplePrefixList();
+    if (testingPanel && testingPanel.open) filter();
+    else if (statusEl) statusEl.textContent = 'Expand Extended tools for the full table.';
     } catch (e) {
       if (statusEl) statusEl.textContent = 'Error loading data: ' + (e && e.message ? e.message : String(e));
       console.error('loadData error:', e);
@@ -1384,8 +2226,8 @@ tr:hover { background:rgba(0,243,255,0.04); }
         const b = data.filter(function(r) { return (r.prefix || '').trim() === sB.value; });
         const cA = document.getElementById('compareContentA');
         const cB = document.getElementById('compareContentB');
-        if (cA) cA.innerHTML = a.map(function(r) { var raw = formatParts(r.required_parts); var rawSafe = raw ? escapeHtml(raw) : ''; return '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>' + (raw ? '<p class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</p>' : ''); }).join('') || '<p class="type">No data</p>';
-        if (cB) cB.innerHTML = b.map(function(r) { var raw = formatParts(r.required_parts); var rawSafe = raw ? escapeHtml(raw) : ''; return '<p>' + escapeHtml(getExactPartsRequired(r) || raw) + '</p>' + (raw ? '<p class="raw-parts" data-copy="' + rawSafe + '" title="Click to copy">' + escapeHtml(raw) + '</p>' : ''); }).join('') || '<p class="type">No data</p>';
+        if (cA) cA.innerHTML = a.map(function(r) { return '<p>' + escapeHtml(getVariantSummary(r)) + '</p>' + renderPartMatchBlock(r); }).join('') || '<p class="type">No data</p>';
+        if (cB) cB.innerHTML = b.map(function(r) { return '<p>' + escapeHtml(getVariantSummary(r)) + '</p>' + renderPartMatchBlock(r); }).join('') || '<p class="type">No data</p>';
       }
       sA.addEventListener('change', updateCompare);
       sB.addEventListener('change', updateCompare);
@@ -1398,11 +2240,14 @@ tr:hover { background:rgba(0,243,255,0.04); }
     document.getElementById('compareModal').style.display = 'flex';
   }
 
-  document.getElementById('compareBtn').addEventListener('click', showCompareModal);
-  document.getElementById('compareClose').addEventListener('click', function() {
+  var compareBtn = document.getElementById('compareBtn');
+  if (compareBtn) compareBtn.addEventListener('click', showCompareModal);
+  var compareClose = document.getElementById('compareClose');
+  if (compareClose) compareClose.addEventListener('click', function() {
     document.getElementById('compareModal').style.display = 'none';
   });
-  document.getElementById('compareModal').addEventListener('click', function(e) {
+  var compareModal = document.getElementById('compareModal');
+  if (compareModal) compareModal.addEventListener('click', function(e) {
     if (e.target.id === 'compareModal') document.getElementById('compareModal').style.display = 'none';
   });
 
@@ -1419,7 +2264,9 @@ tr:hover { background:rgba(0,243,255,0.04); }
     loadData(prefixJson);
   }
 
-  statusEl.textContent = 'Loading...';
+  var simpleListStatusEl = document.getElementById('simpleListStatus');
+  if (simpleListStatusEl) simpleListStatusEl.textContent = 'Loading…';
+  if (statusEl) statusEl.textContent = 'Loading…';
   try {
     if (window.PREFIX_PARTS_TABLE && window.STAT_PARTS_LOOKUP) {
       finishLoad(window.PREFIX_PARTS_TABLE, window.STAT_PARTS_LOOKUP);
@@ -1429,16 +2276,31 @@ tr:hover { background:rgba(0,243,255,0.04); }
         fetch(STAT_DATA_URL).then(function(res) { return res.ok ? res.json() : Promise.reject('stat ' + res.status); })
       ]).then(function(pair) { finishLoad(pair[0], pair[1]); })
         .catch(function(err) {
-          statusEl.textContent = 'Failed to load data (' + err + '). Ensure assets/js/prefix_parts_table_data.js and stat_parts_lookup_data.js exist, or serve the repo and keep assets/data/*.json.';
+          var msg = 'Failed to load data (' + err + '). Run: python tools/generate_prefix_lookup_data_js.py';
+          if (simpleListStatusEl) simpleListStatusEl.textContent = msg;
+          if (statusEl) statusEl.textContent = msg;
         });
     } else {
-      statusEl.textContent = 'Prefix data scripts missing. From the repo root run: python tools/generate_prefix_lookup_data_js.py';
+      var miss = 'Prefix data scripts missing. From the repo root run: python tools/generate_prefix_lookup_data_js.py';
+      if (simpleListStatusEl) simpleListStatusEl.textContent = miss;
+      if (statusEl) statusEl.textContent = miss;
       var metaEl = document.getElementById('datasetMeta');
       if (metaEl) metaEl.textContent = '';
     }
   } catch (e) {
-    statusEl.textContent = 'Error: ' + (e && e.message ? e.message : String(e));
+    var errMsg = 'Error: ' + (e && e.message ? e.message : String(e));
+    if (simpleListStatusEl) simpleListStatusEl.textContent = errMsg;
+    if (statusEl) statusEl.textContent = errMsg;
     console.error('Prefix lookup init error:', e);
+  }
+
+  var stxDsScript = document.getElementById('stxDatasetForPrefixLookup');
+  if (stxDsScript) {
+    stxDsScript.addEventListener('load', function() {
+      spawnIdIndexV1 = null;
+      spawnSuffixIdIndexV1 = null;
+      refreshOpenPrefixPartFinders();
+    });
   }
 })();
 </script>

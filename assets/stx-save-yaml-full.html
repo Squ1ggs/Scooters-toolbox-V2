@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -652,7 +652,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">Character / Progression</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
-<button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP (Oak2 curve from Nexus)" type="button">Max Level (60)</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="setCharacterToMaxLevel" data-requires="character" title="Sets character level to 60 with matching XP" type="button">Max Level (60)</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="setMaxSDU" data-requires="character" title="Maxes SDU upgrades" type="button">Max SDU</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockVaultPowers" data-requires="character" title="Unlocks all vault powers" type="button">Unlock All Vault Powers</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllHoverDrives" data-requires="character" title="Unlocks all hover drives" type="button">Unlock All Hover Drives</button>
@@ -689,7 +689,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div>
 <label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./img/reward-icons/ico_reward_exp.png" width="22"/>Experience Points:</label>
-<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60 ≈ 6352462 (Oak2 curve from Nexus, scaled to match level-50 saves)" type="number"/>
+<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 60" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>
@@ -835,7 +835,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </details>
 <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Load a file or paste serials below, then search. Typing in the search box will auto-load from the paste area if you have not clicked Load from Paste yet.</p>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Search the full item catalog (same as Prefix / Item Search on the main toolbox). Optionally load your own serial file or paste list. Select rows and use <strong>Add Selected</strong> for YAML, bank, or editor.</p>
 <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
 <textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
 </details>
@@ -909,11 +909,14 @@ Example: paste several lines from the bulk decoder or builder output" style="wid
 window.STX_BULK_DECODER_PAGE = '../legacy/bl4-bulk-decoder.html';
 window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 </script>
-<script src="data/stx_dataset.js"></script>
+<script src="data/stx_dataset.js?v=20260529a"></script>
+<script src="data/stx_dataset_supplement.js?v=20260529d"></script>
+<script src="data/stx_raid2_supplement.js?v=20260529e"></script>
+<script src="data/part_display_overrides.js?v=20260529c"></script>
 <script src="data/part_ref_meta.js"></script>
 <script src="data/weapon_stats_data.js"></script>
 <script src="data/parts_stats_data.js"></script>
-<script src="data/serials_data.js"></script>
+<script src="data/serials_data.js?v=20260529a"></script>
 <script src="vendor/cryptojs-inline.js"></script>
 <script src="vendor/pako-inline.js"></script>
 <script src="vendor/jsyaml-inline.js"></script>
@@ -922,7 +925,7 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="js/cc-base85-rebuild.js"></script>
 <script src="js/stx-nicnl-serial-pack.js"></script>
 <script src="js/cc-sav-crypto-rebuild.js"></script>
-<script src="js/cc-yaml-save-rebuild.js"></script>
+<script src="js/cc-yaml-save-rebuild.js?v=20260529a"></script>
 <script src="js/cc-preset-rebuild.js"></script>
 <script src="js/cc-stx-decoder-bridge.js"></script>
 <script src="js/cc-yaml-drawer-wiring-rebuild.js"></script>

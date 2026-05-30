@@ -1,6 +1,6 @@
 /**
  * Canonical BL-base85 serialization via the same Nicnl-compatible API used by BL4 save editors
- * (reference: save-editor.be/nicnl/api.php — POST { deserialized } → { serial_b85 }).
+ * NICNL serialize API — POST { deserialized } → { serial_b85 } (hosted endpoint in meta / below).
  * Falls back to window.serializeToBase85 when offline, CORS-blocked, or API errors.
  */
 (function () {

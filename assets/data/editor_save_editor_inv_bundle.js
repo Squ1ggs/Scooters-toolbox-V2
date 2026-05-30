@@ -1,4 +1,4 @@
-/** save-editor.be part-selection-data.js (PART_SELECTION_DATA, EXCLUSION_TAGS, PART_WEIGHTS, MIN_MAX_PARTS). Tooling reference — not used by bulk validator logic yet. */
+/** Inv selection reference bundle (PART_SELECTION_DATA, EXCLUSION_TAGS, PART_WEIGHTS, MIN_MAX_PARTS). Tooling only — not loaded by the live editor. */
 (function(){
 const PART_SELECTION_DATA = {
   "ATL_Enhancement_common": {
