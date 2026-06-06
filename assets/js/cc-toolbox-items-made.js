@@ -305,7 +305,7 @@
         (e.name ? ('— ' + safeTrim(e.name, 120)) : '')
       ].join(' ').replace(/\s+/g, ' ').trim();
       out.push(header);
-      out.push(safeTrim(e.deserialized, 4000));
+      out.push(safeTrim(e.deserialized));
       out.push('');
     }
     return out.join('\n');
