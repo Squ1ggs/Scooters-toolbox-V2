@@ -631,17 +631,121 @@
     return String(part.name || part.code || part.idRaw || part.spawnCode || part.partRef || '').trim() || 'Part';
   }
 
-  function formatExcelStatRow(s) {
+  var STAT_DISPLAY_BUCKET_LABELS = {
+    damage: 'Damage', crit: 'Crit', elemental: 'Elemental', accuracy: 'Accuracy',
+    ads: 'ADS/Handling', firerate: 'Fire Rate', reload_time: 'Reload Time',
+    reload_speed: 'Reload Speed', ammo_mag: 'Ammo/Mag', projectiles: 'Projectiles', misc: 'Misc'
+  };
+
+  function isScaleStatField(field) {
+    return /_scale$/i.test(String(field || ''));
+  }
+
+  /** Display multiplier for one PARTS_STATS_DATA row (matches bucket accumulation rules). */
+  function statRowToDisplayMult(s) {
+    if (!s || typeof s !== 'object') return null;
+    var comb = String(s.combine || '').trim().toLowerCase();
+    if (comb === 'value') return null;
+    var val = Number(s.stat_value);
+    if (!Number.isFinite(val)) return null;
+    var mult = 1;
+    if (comb === 'mul') {
+      mult = val;
+      var dmgFix = partsStatsDamageScaleMulToDisplayMult(s.stat_field, comb, val);
+      if (dmgFix != null) mult = dmgFix;
+    } else if (comb === 'add' || !comb) {
+      mult = 1 + val;
+    } else {
+      return null;
+    }
+    if (s.invert && mult !== 0) mult = 1 / mult;
+    return mult;
+  }
+
+  /**
+   * Human-readable stat line: scale fields as ×1.0500, bonuses as +20% Damage.
+   * Raw engine offsets (combine value) show as offsets, not bogus percentages.
+   */
+  function formatPartStatRowForDisplay(s) {
     if (!s || typeof s !== 'object') return '';
     var sf = s.stat_field != null ? String(s.stat_field) : '';
-    var sv = s.stat_value;
     var bucket = s.bucket != null ? String(s.bucket) : '';
-    var comb = s.combine != null ? String(s.combine) : '';
-    var line = sf ? (sf + ': ' + sv) : String(sv);
-    var meta = [bucket, comb].filter(Boolean).join(' · ');
-    if (meta) line += ' [' + meta + ']';
-    if (s.invert) line += ' (invert)';
-    return line;
+    var comb = String(s.combine || '').trim().toLowerCase();
+    var val = Number(s.stat_value);
+    var lbl = STAT_DISPLAY_BUCKET_LABELS[bucket] || bucket || sf;
+
+    if (!Number.isFinite(val)) {
+      return sf ? (sf + ': ' + s.stat_value) : String(s.stat_value);
+    }
+
+    if (comb === 'value') {
+      if (isScaleStatField(sf)) {
+        return lbl + ': ×' + val.toFixed(4) + ' scale';
+      }
+      return sf + ': ' + val + ' (engine offset)';
+    }
+
+    if (comb === 'mul' && isScaleStatField(sf)) {
+      var multS = statRowToDisplayMult(s);
+      var line = lbl + ': ×' + val.toFixed(4) + ' scale';
+      if (multS != null) {
+        var pctS = (multS - 1) * 100;
+        if (Math.abs(pctS) <= 500) {
+          line += ' (' + (pctS >= 0 ? '+' : '') + pctS.toFixed(1) + '%)';
+        }
+      }
+      return line;
+    }
+
+    var mult = statRowToDisplayMult(s);
+    if (mult == null) return sf ? (sf + ': ' + val) : String(val);
+    var pct = (mult - 1) * 100;
+    if (Math.abs(pct) > 500) {
+      return lbl + ': ×' + mult.toFixed(4) + ' scale';
+    }
+    return (pct >= 0 ? '+' : '') + pct.toFixed(1) + '% ' + lbl;
+  }
+
+  function formatExcelStatRow(s) {
+    return formatPartStatRowForDisplay(s);
+  }
+
+  var SUMMARY_BUCKET_ORDER = ['damage', 'crit', 'firerate', 'ammo_mag', 'reload_speed', 'reload_time', 'accuracy', 'splash', 'elemental', 'ads', 'projectiles'];
+
+  /** Compact stats for inspector rows / tooltips (meaningful buckets only). */
+  function formatPartStatsSummary(part, maxLines) {
+    maxLines = maxLines == null ? 3 : Math.max(1, maxLines);
+    var excelStats = null;
+    try { excelStats = getExcelStatsForPart(part); } catch (_) {}
+    if (!excelStats || !excelStats.length) return '';
+    excelStats = dedupeExcelStatRows(excelStats);
+    var picked = [];
+    var used = new Set();
+    function tryPick(bucket) {
+      for (var i = 0; i < excelStats.length; i++) {
+        var s = excelStats[i];
+        if (!s || used.has(i)) continue;
+        if (String(s.bucket || '') !== bucket) continue;
+        if (String(s.combine || '').toLowerCase() === 'value' && !isScaleStatField(s.stat_field)) continue;
+        var line = formatPartStatRowForDisplay(s);
+        if (!line) continue;
+        used.add(i);
+        picked.push(line);
+        return true;
+      }
+      return false;
+    }
+    for (var bi = 0; bi < SUMMARY_BUCKET_ORDER.length && picked.length < maxLines; bi++) {
+      tryPick(SUMMARY_BUCKET_ORDER[bi]);
+    }
+    for (var j = 0; j < excelStats.length && picked.length < maxLines; j++) {
+      if (used.has(j)) continue;
+      var s2 = excelStats[j];
+      if (String(s2.combine || '').toLowerCase() === 'value' && !isScaleStatField(s2.stat_field)) continue;
+      var line2 = formatPartStatRowForDisplay(s2);
+      if (line2) picked.push(line2);
+    }
+    return picked.slice(0, maxLines).join(', ');
   }
 
   /**
@@ -929,20 +1033,46 @@
   window.getFullStatsBreakdown = getFullStatsBreakdown;
   window.getFullStatLinesForPart = getFullStatLinesForPart;
   window.sortFullStatLinesByImpact = sortFullStatLinesByImpact;
+  window.statRowToDisplayMult = statRowToDisplayMult;
+  window.formatPartStatRowForDisplay = formatPartStatRowForDisplay;
+  window.formatPartStatsSummary = formatPartStatsSummary;
 
-  function triggerRefresh() {
-    try {
-      if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore();
-    } catch (_) {}
+  var __ccStatsTriggerTimer = 0;
+  function isBuildStatsActive() {
+    var sec = document.getElementById('rebuildBuildStatsSection');
+    if (sec && sec.open) return true;
+    var guided = document.getElementById('ccGuidedFullStatsPreview');
+    if (guided && guided.checked) return true;
+    var gr = document.getElementById('godrollShowFullStatsToggle');
+    if (gr && gr.checked) return true;
+    return false;
   }
+  function triggerRefresh() {
+    if (!isBuildStatsActive()) return;
+    if (__ccStatsTriggerTimer) clearTimeout(__ccStatsTriggerTimer);
+    __ccStatsTriggerTimer = setTimeout(function () {
+      __ccStatsTriggerTimer = 0;
+      var run = function () {
+        try {
+          if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore();
+        } catch (_) {}
+      };
+      if (typeof window.__ccEnsurePartsStatsData === 'function' && !window.PARTS_STATS_DATA) {
+        window.__ccEnsurePartsStatsData().then(run);
+      } else {
+        run();
+      }
+    }, 300);
+  }
+
+  try { window.__ccRefreshBuildStatsAfterStatsLoad = triggerRefresh; } catch (_) {}
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(triggerRefresh, 100);
-      setTimeout(triggerRefresh, 400);
+      setTimeout(triggerRefresh, 200);
     });
   } else {
-    setTimeout(triggerRefresh, 100);
+    setTimeout(triggerRefresh, 200);
   }
 
   document.addEventListener('change', function (ev) {

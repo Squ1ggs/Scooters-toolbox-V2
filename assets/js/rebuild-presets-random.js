@@ -230,10 +230,47 @@
     }
     return null;
   }
+  function scanTailTokensFast(tail) {
+    var out = [];
+    var s = String(tail || "");
+    var i = 0;
+    while (i < s.length) {
+      var c = s.charAt(i);
+      if (c === " " || c === "\t" || c === "\n" || c === "\r" || c === ",") { i++; continue; }
+      if (c === "{") {
+        var close = s.indexOf("}", i + 1);
+        if (close < 0) break;
+        out.push(s.slice(i, close + 1));
+        i = close + 1;
+        continue;
+      }
+      if (c === '"') {
+        var endQ = s.indexOf('"', i + 1);
+        if (endQ < 0) break;
+        out.push(s.slice(i, endQ + 1));
+        i = endQ + 1;
+        continue;
+      }
+      if (c === "|") {
+        var mC = s.slice(i).match(/^\|\s*["']?c["']?\s*,\s*\d+\s*\|/);
+        if (mC) {
+          out.push(mC[0]);
+          i += mC[0].length;
+          continue;
+        }
+      }
+      var start = i;
+      while (i < s.length && /[A-Za-z0-9_.:-]/.test(s.charAt(i))) i++;
+      if (i > start) out.push(s.slice(start, i));
+      else i++;
+    }
+    return out;
+  }
+
   function extractInspectorTokens(src) {
     var work = String(src || "").trim();
     if (!work) return [];
-    if (work && (work.indexOf('@u') === 0 || work.indexOf('@U') === 0 || (work.indexOf("||") < 0 && work.indexOf("{") < 0 && work.length > 20)) && typeof window.deserializeBase85 === "function") {
+    if (work.indexOf("||") < 0 && (work.indexOf('@u') === 0 || work.indexOf('@U') === 0 || (work.indexOf("{") < 0 && work.length > 20)) && typeof window.deserializeBase85 === "function") {
       try {
         var deser = window.deserializeBase85(work);
         if (deser && typeof deser === "string" && deser.indexOf("||") >= 0) work = deser.trim();
@@ -252,6 +289,18 @@
         tail = window.__ccNormalizeTruncatedTailBracketTokens(tail);
       }
     } catch (_) {}
+    if (tail.length > 3000) {
+      return scanTailTokensFast(tail).filter(function (tok) {
+        tok = String(tok || "").trim();
+        return tok && tok !== "|" && tok !== "||";
+      });
+    }
+    if (typeof window.parseImportTokenList === "function") {
+      return window.parseImportTokenList(tail).filter(function (tok) {
+        tok = String(tok || "").trim();
+        return tok && tok !== "|" && tok !== "||";
+      });
+    }
     var rawTokens = (tail.match(/\{[^}]+\}|\"[^\"]+\"|\|\s*["']?c["']?\s*,\s*\d+\s*\||[A-Za-z_][A-Za-z0-9_.:-]*/g) || []);
     var out = [];
     for (var i = 0; i < rawTokens.length; i++) {
@@ -287,69 +336,19 @@
     return "";
   }
   function getStatsText(part) {
-    var BUCKET_LABELS = {
-      damage: 'Damage',
-      crit: 'Crit',
-      elemental: 'Elemental',
-      accuracy: 'Accuracy',
-      ads: 'ADS/Handling',
-      firerate: 'Fire Rate',
-      reload_time: 'Reload Time',
-      reload_speed: 'Reload Speed',
-      ammo_mag: 'Ammo/Mag',
-      projectiles: 'Projectiles'
-    };
-    function fromPartsStatsData(p) {
-      try {
-        var data = window.PARTS_STATS_DATA;
-        if (!data) return '';
-        var keys = [];
-        var c1 = String((p && (p.code || p.spawnCode || p.importCode || '')) || '').trim().replace(/^"+|"+$/g, '');
-        if (c1) keys.push(c1);
-        var idRaw = String((p && (p.idRaw || p.idraw || '')) || '').trim();
-        if (idRaw) keys.push(idRaw);
-        if (p && p.family != null && p.id != null) keys.push(String(p.family) + ':' + String(p.id));
-        for (var i = 0; i < keys.length; i++) {
-          var k = String(keys[i] || '').trim();
-          if (!k) continue;
-          var rows = (data.by_id_raw && data.by_id_raw[k]) || (data.by_part_code && data.by_part_code[k]);
-          if (!rows && data.by_part_code) rows = data.by_part_code[String(k).toLowerCase()];
-          if (!rows && data.by_code_suffix) {
-            var suffix = String(k).split('.').pop();
-            rows = data.by_code_suffix[String(suffix || '').toLowerCase()];
-          }
-          if (!rows || !rows.length) continue;
-          var out = [];
-          for (var j = 0; j < Math.min(rows.length, 4); j++) {
-            var s = rows[j];
-            var v = Number(s && s.stat_value);
-            if (!Number.isFinite(v)) continue;
-            var bucket = (s && s.bucket) ? String(s.bucket).trim() : '';
-            var lbl = BUCKET_LABELS[bucket] || bucket || 'Stat';
-            var mult = (s && s.combine === 'mul') ? v : (1 + v);
-            if (s && s.invert && mult) mult = 1 / mult;
-            var pct = ((mult - 1) * 100).toFixed(0);
-            out.push((pct >= 0 ? '+' : '') + pct + '% ' + lbl);
-          }
-          if (out.length) return out.join(', ');
-        }
-      } catch (_) {}
-      return '';
-    }
     try {
-      if (typeof window.getPrecisePartStats === "function") {
-        var val = window.getPrecisePartStats(part);
-        var s = String(val || "").trim();
-        if (s && !/^no stat changes/i.test(s)) return s;
+      if (typeof window.formatPartStatsSummary === 'function') {
+        var sum = window.formatPartStatsSummary(part, 3);
+        if (sum) return sum;
       }
-    } catch(_){}
-    try {
-      var direct = fromPartsStatsData(part);
-      if (direct) return direct;
     } catch (_) {}
     try {
-      var st = String(part && (part.stats || part.statText || part.effects || part.effect) || '').trim();
+      var st = String(part && (part.stats || part.statText || '') || '').trim();
       if (st && !/^barrel part for/i.test(st)) return st;
+    } catch (_) {}
+    try {
+      var ef = String(part && (part.effects || part.effect) || '').trim();
+      if (ef) return ef;
     } catch (_) {}
     return "";
   }
@@ -390,14 +389,43 @@
     return u;
   }
 
-  function refreshImportedInspector() {
+  var __ipiRenderGen = 0;
+  var __ipiRefreshTimer = 0;
+  var __ipiLastSrc = '';
+
+  function refreshImportedInspectorNow() {
     var tbody = byId("ipiBody");
     var badge = byId("ipiCount");
     var src = getInspectorSerialSource();
     if (!tbody || !badge) return;
+    if (src === __ipiLastSrc && tbody.children && tbody.children.length) return;
+    __ipiLastSrc = src;
+    if (src && src.length > 7000) {
+      badge.textContent = "Loading…";
+      tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);padding:12px;">Parsing long serial…</td></tr>';
+      var srcCopy = src;
+      setTimeout(function () { refreshImportedInspectorCore(srcCopy); }, 50);
+      return;
+    }
+    refreshImportedInspectorCore(src);
+  }
 
-    // Support Base85 deserialization in inspector
-    if (src && (src.indexOf('@u') === 0 || src.indexOf('@U') === 0 || (src.indexOf('||') < 0 && src.indexOf('{') < 0 && src.length > 20)) && typeof window.deserializeBase85 === 'function') {
+  function refreshImportedInspector() {
+    if (__ipiRefreshTimer) clearTimeout(__ipiRefreshTimer);
+    __ipiRefreshTimer = setTimeout(function () {
+      __ipiRefreshTimer = 0;
+      refreshImportedInspectorNow();
+    }, 280);
+  }
+
+  function refreshImportedInspectorCore(src) {
+    var tbody = byId("ipiBody");
+    var badge = byId("ipiCount");
+    if (!tbody || !badge) return;
+    var renderGen = ++__ipiRenderGen;
+
+    // Support Base85 deserialization in inspector (skip when already deserialized)
+    if (src && src.indexOf("||") < 0 && (src.indexOf('@u') === 0 || src.indexOf('@U') === 0 || (src.indexOf('{') < 0 && src.length > 20)) && typeof window.deserializeBase85 === 'function') {
       try {
         var deser = window.deserializeBase85(src);
         if (deser && typeof deser === 'string') src = deser.trim();
@@ -407,7 +435,7 @@
     var baseFamilyId = getBaseFamilyIdFromSerial(src);
     var tokens = extractInspectorTokens(src);
     
-    var rows = [];
+    var headerRows = [];
 
     // Resolve item header details (Type, Manufacturer, Rarity name)
     if (baseFamilyId != null) {
@@ -423,7 +451,7 @@
         var rCat = String(rarityRow.itemType || rarityRow.category || "—").trim();
         var rMan = String(rarityRow.manufacturer || "—").trim();
         var rName = String(rarityRow.name || rarityRow.legendaryName || "Item Header").trim();
-        rows.push(
+        headerRows.push(
           "<tr style=\"background:rgba(0,243,255,0.08);border-bottom:2px solid rgba(0,243,255,0.2);\">" +
           "<td style=\"color:rgba(0,243,255,1);font-weight:700;\">" + esc(rCat) + "</td>" +
           "<td style=\"color:rgba(255,255,255,0.95);\">" + esc(rName) + "</td>" +
@@ -438,11 +466,11 @@
 
     if (!tokens.length) {
       badge.textContent = "0 added";
-      if (!rows.length) {
+      if (!headerRows.length) {
         tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);">No part tokens after <code>||</code>. Paste or import a serial above, or build in Guided / Simple Builder.</td></tr>';
       } else {
-        rows.push('<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.4);padding:10px;text-align:center;">No parts found after <code>||</code></td></tr>');
-        tbody.innerHTML = rows.join("");
+        headerRows.push('<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.4);padding:10px;text-align:center;">No parts found after <code>||</code></td></tr>');
+        tbody.innerHTML = headerRows.join("");
       }
       return;
     }
@@ -460,34 +488,57 @@
       counts[k]++;
     }
     badge.textContent = tokens.length + (tokens.length === 1 ? " token" : " tokens") + " (" + order.length + " unique)";
-    var rows = [];
-    for (var oi = 0; oi < order.length; oi++) {
-      var key = order[oi];
-      var rep = firstTok[key];
-      var p = resolveTokenWithContext(rep, baseFamilyId);
-      var cat = p ? String(p.category || p.itemType || "").trim() || "—" : "—";
-      var name = p ? String(p.name || p.legendaryName || rep).trim() || "(unknown)" : String(rep);
-      var rawCode = String(rep).replace(/^"+|"+$/g, "");
-      var brace = parseBrace(rawCode);
-      var fam = p ? getFamilyForPart(p) : (brace && brace.b != null ? String(brace.a) : "");
-      var familyOrSpawn = (brace && brace.packed) ? String(brace.a)
-        : ((brace && brace.b != null) ? String(brace.a) : (fam || rawCode || "—"));
-      var numericId = (brace && brace.packed && brace.bracketIds)
-        ? ("[" + String(brace.bracketIds).trim().replace(/\s+/g, " ") + "]")
-        : ((brace && brace.b != null) ? String(brace.b) : (brace ? String(brace.id) : (p && p.id != null ? String(p.id) : "—")));
-      var stats = p ? getStatsText(p) : "";
-      var cnt = counts[key];
-      var encTok = encodeURIComponent(String(rep).trim());
-      var statsShort = stats.length > 120 ? stats.slice(0, 117) + "…" : stats;
-      rows.push(
-        "<tr><td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);\">" + esc(cat) + "</td><td>" + esc(name) + "</td><td style=\"color:rgba(0,243,255,0.95);\">" + esc(familyOrSpawn) + "</td><td>" + esc(numericId) + "</td>" +
-        "<td style=\"text-align:center;font-weight:700;\">" + cnt + "</td>" +
-        "<td style=\"white-space:nowrap;\"><button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"-1\" data-ipi-tok=\"" + encTok + "\" title=\"Remove one\">−</button> " +
-        "<button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"1\" data-ipi-tok=\"" + encTok + "\" title=\"Add one\">+</button></td>" +
-        "<td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);white-space:pre-line;font-size:0.88em;\">" + esc(statsShort) + "</td></tr>"
-      );
+
+    var IPI_MAX_ROWS = 320;
+    var displayOrder = order.length > IPI_MAX_ROWS ? order.slice(0, IPI_MAX_ROWS) : order;
+    var hiddenUnique = order.length > IPI_MAX_ROWS ? (order.length - IPI_MAX_ROWS) : 0;
+
+    var headerHtml = headerRows.join("");
+    var RESOLVE_CHUNK = 40;
+    var resolveIdx = 0;
+
+    function resolveAndPaintChunk() {
+      if (renderGen !== __ipiRenderGen) return;
+      var end = Math.min(resolveIdx + RESOLVE_CHUNK, displayOrder.length);
+      var chunkHtml = [];
+      for (var oi = resolveIdx; oi < end; oi++) {
+        var key = displayOrder[oi];
+        var rep = firstTok[key];
+        var p = resolveTokenWithContext(rep, baseFamilyId);
+        var cat = p ? String(p.category || p.itemType || "").trim() || "—" : "—";
+        var name = p ? String(p.name || p.legendaryName || rep).trim() || "(unknown)" : String(rep);
+        var rawCode = String(rep).replace(/^"+|"+$/g, "");
+        var brace = parseBrace(rawCode);
+        var fam = p ? getFamilyForPart(p) : (brace && brace.b != null ? String(brace.a) : "");
+        var familyOrSpawn = (brace && brace.packed) ? String(brace.a)
+          : ((brace && brace.b != null) ? String(brace.a) : (fam || rawCode || "—"));
+        var numericId = (brace && brace.packed && brace.bracketIds)
+          ? ("[" + String(brace.bracketIds).trim().replace(/\s+/g, " ") + "]")
+          : ((brace && brace.b != null) ? String(brace.b) : (brace ? String(brace.id) : (p && p.id != null ? String(p.id) : "—")));
+        var stats = p ? getStatsText(p) : "";
+        var cnt = counts[key];
+        var encTok = encodeURIComponent(String(rep).trim());
+        var statsShort = stats.length > 120 ? stats.slice(0, 117) + "…" : stats;
+        chunkHtml.push(
+          "<tr><td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);\">" + esc(cat) + "</td><td>" + esc(name) + "</td><td style=\"color:rgba(0,243,255,0.95);\">" + esc(familyOrSpawn) + "</td><td>" + esc(numericId) + "</td>" +
+          "<td style=\"text-align:center;font-weight:700;\">" + cnt + "</td>" +
+          "<td style=\"white-space:nowrap;\"><button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"-1\" data-ipi-tok=\"" + encTok + "\" title=\"Remove one\">−</button> " +
+          "<button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"1\" data-ipi-tok=\"" + encTok + "\" title=\"Add one\">+</button></td>" +
+          "<td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);white-space:pre-line;font-size:0.88em;\">" + esc(statsShort) + "</td></tr>"
+        );
+      }
+      if (resolveIdx === 0) tbody.innerHTML = headerHtml;
+      if (chunkHtml.length) tbody.insertAdjacentHTML("beforeend", chunkHtml.join(""));
+      resolveIdx = end;
+      if (resolveIdx < displayOrder.length) {
+        (window.requestAnimationFrame || function (fn) { setTimeout(fn, 0); })(resolveAndPaintChunk);
+      } else if (hiddenUnique > 0) {
+        tbody.insertAdjacentHTML("beforeend",
+          '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.55);padding:10px;text-align:center;">+ ' + hiddenUnique + ' more unique part row(s) not shown — serial is fully imported.</td></tr>'
+        );
+      }
     }
-    tbody.innerHTML = rows.join("");
+    resolveAndPaintChunk();
   }
 
   function wireImportedInspectorQtyButtons() {
@@ -615,7 +666,9 @@
     if (btnLegAll) btnLegAll.addEventListener("click", function(){
       var s=byId("legendaryPerkSelect"); if(!s) return;
       var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-      var leg = all.filter(function(p){ return p && /legendary\s*perk/i.test(String(p.partType || "")); });
+      var leg = (typeof window.collectLegendaryPerkDropdownParts === "function")
+        ? window.collectLegendaryPerkDropdownParts(all)
+        : all.filter(function(p){ return p && /legendary\s*perk/i.test(String(p.partType || "")); });
       for (var i=0;i<leg.length;i++) {
         var p=leg[i];
         var raw=(p.idRaw||p.idraw||"").trim();
@@ -793,6 +846,9 @@
           var b = Number(base);
           var m = Number(mult);
           if (!Number.isFinite(b) || !Number.isFinite(m)) return '—';
+          if (suffix === '%' && (Math.abs(m) > 5 || Math.abs(m - 1) > 4)) {
+            return '×' + m.toFixed(3) + ' scale';
+          }
           var val = b * m;
           return val.toFixed(Math.max(0, Number(decimals || 0))) + (suffix || '');
         }

@@ -842,8 +842,9 @@
   }
 
   function haystack(p){
+    if (p && p.__ccAdvHaystackV1) return p.__ccAdvHaystackV1;
     var code = stripQuotes(q(p && (p.code || p.spawnCode || p.importCode)));
-    return [
+    var hs = [
       q(p && p.name),
       q(p && p.searchAlias),
       q(p && p.manufacturer),
@@ -856,6 +857,8 @@
       q(p && p.idRaw),
       q(p && (p.effects || p.effect))
     ].join(" ").toLowerCase();
+    try { if (p) p.__ccAdvHaystackV1 = hs; } catch (_){}
+    return hs;
   }
 
   function requiredPartSuffixFromQuery(qv){
@@ -1003,7 +1006,15 @@
     }catch(_){ }
     queryRenderTimer = setTimeout(function(){
       queryRenderTimer = 0;
-      render();
+      try{
+        var panel = ensurePanel();
+        if (panel){
+          var sel = panel.querySelector("#ccStablePartResults");
+          var meta = panel.querySelector("#ccStablePartMeta");
+          renderPlaceholder(sel, meta, "Searching…", "Loading matches…");
+        }
+      }catch(_){}
+      requestAnimationFrame(function(){ render(); });
     }, Math.max(0, Number(delay) || 0));
   }
 
@@ -1230,8 +1241,11 @@
     }
 
     var likelyCount = 0;
+    var likelyCountIsPartial = false;
     if (likelyHint){
-      for (var lc = 0; lc < filtered.length; lc++){
+      var scanN = filtered.length <= 600 ? filtered.length : cap;
+      likelyCountIsPartial = scanN < filtered.length;
+      for (var lc = 0; lc < scanN; lc++){
         var lp = filtered[lc];
         var lcode = q(lp && (lp.code || lp.spawnCode || lp.importCode));
         if (partMatchesAdvLikelySpawnHint(lp, lcode, likelyHint)) likelyCount++;
@@ -2693,6 +2707,17 @@
     }, true);
   }
 
+  function wireAdvPanelLazyRender(){
+    var det = document.getElementById("ccAdvancedPartsSearch");
+    if (!det || det.__ccAdvLazyRenderWired) return;
+    det.__ccAdvLazyRenderWired = true;
+    det.addEventListener("toggle", function(){
+      if (!det.open || window.__ccAdvStableInitialRenderV1) return;
+      window.__ccAdvStableInitialRenderV1 = true;
+      scheduleRender(0);
+    });
+  }
+
   function applyAdvSearchFromUrl(){
     try{
       var params = new URLSearchParams(window.location.search);
@@ -2713,19 +2738,42 @@
       try{
         var details = document.getElementById("ccAdvancedPartsSearch");
         if (details && !details.open) details.open = true;
-        if (details && details.scrollIntoView) details.scrollIntoView({ behavior: "smooth", block: "start" });
       }catch(_){}
       try{ window.__ccStablePartRenderStateV1 = null; }catch(_){}
-      render();
+      window.__ccAdvStableInitialRenderV1 = true;
+      scheduleRender(0);
+      requestAnimationFrame(function(){
+        try{
+          var details2 = document.getElementById("ccAdvancedPartsSearch");
+          if (details2 && details2.scrollIntoView) details2.scrollIntoView({ behavior: "auto", block: "start" });
+        }catch(_){}
+      });
     }catch(_){}
   }
 
+  var advInstallDone = false;
   function install(){
     hideLegacyPanels();
-    ensurePanel();
-    wire();
-    render();
-    applyAdvSearchFromUrl();
+    var panel = ensurePanel();
+    if (!panel) return;
+    if (!advInstallDone){
+      wire();
+      wireAdvPanelLazyRender();
+      advInstallDone = true;
+      if (typeof requestIdleCallback === "function"){
+        requestIdleCallback(function(){ try{ buildCodeIdMap(); }catch(_){ } }, { timeout: 3000 });
+      } else {
+        setTimeout(function(){ try{ buildCodeIdMap(); }catch(_){ } }, 200);
+      }
+    }
+    var deepLink = false;
+    try{
+      deepLink = typeof window.__ccIsAdvSearchDeepLinkV1 === "function" && window.__ccIsAdvSearchDeepLinkV1();
+    }catch(_){}
+    if (deepLink){
+      applyAdvSearchFromUrl();
+      return;
+    }
   }
 
   try{ window.__ccStablePartInstallV1 = install; }catch(_){ }
@@ -2787,7 +2835,4 @@
   } else {
     install();
   }
-
-  setTimeout(install, 900);
-  window.addEventListener("load", install, { once:true });
 })();

@@ -601,7 +601,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
 </div>
 <script src="../assets/js/prefix_parts_table_data.js"></script>
 <script src="../assets/js/stat_parts_lookup_data.js"></script>
-<script defer="" id="stxDatasetForPrefixLookup" src="../assets/data/stx_dataset.js?v=20260529a"></script>
+<script defer="" id="stxDatasetForPrefixLookup" src="../assets/data/stx_dataset.js"></script>
 <script>
 (function(){
   const mainSearchEl = document.getElementById('mainSearch');
@@ -617,6 +617,9 @@ tr:hover { background:rgba(0,243,255,0.04); }
   const detailClose = document.getElementById('detailClose');
   let data = [];
   let filteredData = [];
+  let prefixListCache = null;
+  const MAIN_SEARCH_DEBOUNCE_MS = 350;
+  let mainSearchDebounceTimer = null;
   const STORAGE_FAV = 'prefix_lookup_favorites';
   const STORAGE_NOTES = 'prefix_lookup_notes';
   const STORAGE_HISTORY = 'prefix_lookup_search_history';
@@ -1932,7 +1935,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
     if (mainSearchEl) mainSearchEl.value = q;
     if (searchEl) searchEl.value = q;
     if (q) addSearchHistory(q);
-    onMainSearchInput();
+    onMainSearchInput(true);
     if (opts.openTesting && testingPanel) testingPanel.open = true;
     if (testingPanel && testingPanel.open) filter();
     if (opts.showDetail) showPrefixDetail(q);
@@ -1953,7 +1956,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
     renderSimplePrefixList();
   }
 
-  function onMainSearchInput() {
+  function onMainSearchInputNow() {
     syncExtendedSearchFromMain();
     renderSimplePrefixList();
     if (testingPanel && testingPanel.open) filter();
@@ -1961,6 +1964,15 @@ tr:hover { background:rgba(0,243,255,0.04); }
       updateUrl();
       renderSearchHistory();
     }
+  }
+
+  function onMainSearchInput(immediate) {
+    clearTimeout(mainSearchDebounceTimer);
+    if (immediate) {
+      onMainSearchInputNow();
+      return;
+    }
+    mainSearchDebounceTimer = setTimeout(onMainSearchInputNow, MAIN_SEARCH_DEBOUNCE_MS);
   }
 
   function updateUrl() {
@@ -1988,6 +2000,26 @@ tr:hover { background:rgba(0,243,255,0.04); }
     return out;
   }
 
+  function buildPrefixListCache() {
+    const byPref = Object.create(null);
+    data.forEach(function(r) {
+      const pref = (r.prefix || '').trim();
+      if (!pref) return;
+      if (!byPref[pref]) byPref[pref] = { lines: [], seen: Object.create(null) };
+      const display = getVariantSummary(r) || '(no parsed requirement)';
+      const w = getWeaponFamily(r);
+      const key = display + '\0' + (w || '');
+      if (byPref[pref].seen[key]) return;
+      byPref[pref].seen[key] = 1;
+      byPref[pref].lines.push({ main: display, weapon: w });
+    });
+    prefixListCache = Object.keys(byPref).sort(function(a, b) { return a.localeCompare(b); }).map(function(pref) {
+      const lines = byPref[pref].lines;
+      const hay = (pref.toLowerCase() + ' ' + lines.map(function(L) { return (L.main + ' ' + (L.weapon || '')).toLowerCase(); }).join(' ')).replace(/\s+/g, ' ');
+      return { pref: pref, lines: lines, hay: hay };
+    });
+  }
+
   function renderSimplePrefixList() {
     const body = document.getElementById('simpleListBody');
     const st = document.getElementById('simpleListStatus');
@@ -1999,18 +2031,16 @@ tr:hover { background:rgba(0,243,255,0.04); }
       return;
     }
     const q = (inp && inp.value || '').trim().toLowerCase();
-    const prefs = [...new Set(data.map(function(r) { return (r.prefix || '').trim(); }).filter(Boolean))].sort(function(a, b) { return a.localeCompare(b); });
+    if (!prefixListCache) buildPrefixListCache();
     let lineCount = 0;
     const blocks = [];
-    prefs.forEach(function(pref) {
-      const lines = variantLinesForPrefix(pref);
-      const hay = (pref.toLowerCase() + ' ' + lines.map(function(L) { return (L.main + ' ' + (L.weapon || '')).toLowerCase(); }).join(' ')).replace(/\s+/g, ' ');
-      if (q && hay.indexOf(q) === -1) return;
-      lineCount += lines.length;
-      const liHtml = lines.map(function(L) {
+    prefixListCache.forEach(function(entry) {
+      if (q && entry.hay.indexOf(q) === -1) return;
+      lineCount += entry.lines.length;
+      const liHtml = entry.lines.map(function(L) {
         return '<li>' + escapeHtml(L.main) + (L.weapon ? ' <span class="simple-prefix-weapon">(' + escapeHtml(L.weapon) + ')</span>' : '') + '</li>';
       }).join('');
-      blocks.push('<div class="simple-prefix-block"><div class="simple-prefix-name" data-prefix="' + escapeHtml(pref) + '" role="button" tabindex="0">' + escapeHtml(pref) + '</div><ul>' + liHtml + '</ul></div>');
+      blocks.push('<div class="simple-prefix-block"><div class="simple-prefix-name" data-prefix="' + escapeHtml(entry.pref) + '" role="button" tabindex="0">' + escapeHtml(entry.pref) + '</div><ul>' + liHtml + '</ul></div>');
     });
     body.innerHTML = blocks.length ? blocks.join('') : '<p class="type">No prefixes match this filter.</p>';
     if (st) {
@@ -2085,7 +2115,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
       if (e.key === 'Escape') {
         if (mainSearchEl) mainSearchEl.value = '';
         searchEl.value = '';
-        onMainSearchInput();
+        onMainSearchInput(true);
       } else if (e.key === 'Enter') {
         var q = (searchEl.value || '').trim();
         if (q) addSearchHistory(q);
@@ -2094,16 +2124,16 @@ tr:hover { background:rgba(0,243,255,0.04); }
     });
   }
   if (mainSearchEl) {
-    mainSearchEl.addEventListener('input', onMainSearchInput);
+    mainSearchEl.addEventListener('input', function() { onMainSearchInput(false); });
     mainSearchEl.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         mainSearchEl.value = '';
         if (searchEl) searchEl.value = '';
-        onMainSearchInput();
+        onMainSearchInput(true);
       } else if (e.key === 'Enter') {
         var q = (mainSearchEl.value || '').trim();
         if (q) addSearchHistory(q);
-        onMainSearchInput();
+        onMainSearchInput(true);
         if (testingPanel && !testingPanel.open) testingPanel.open = true;
         if (testingPanel && testingPanel.open) filter();
       }
@@ -2187,6 +2217,8 @@ tr:hover { background:rgba(0,243,255,0.04); }
     }
     buildStatIndex();
     buildSlotIndex();
+    prefixListCache = null;
+    buildPrefixListCache();
     var hint = document.getElementById('totalCountHint');
     if (hint) {
       var total = json.total_entries != null ? json.total_entries : data.length;
@@ -2302,11 +2334,43 @@ tr:hover { background:rgba(0,243,255,0.04); }
       refreshOpenPrefixPartFinders();
     });
   }
+
+  (function wireFullEditorPrefetch() {
+    var prefetched = false;
+    function prefetchEditorAssets() {
+      if (prefetched) return;
+      prefetched = true;
+      var urls = [
+        '../index.html',
+        '../assets/data/stx_dataset.js',
+        '../assets/js/cc-adv-search-stable.js',
+        '../assets/js/cc-lazy-bundles-rebuild.js',
+      ];
+      for (var i = 0; i < urls.length; i++) {
+        try {
+          var link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = urls[i];
+          document.head.appendChild(link);
+        } catch (_) {}
+      }
+    }
+    function maybePrefetch(ev) {
+      var a = ev.target && ev.target.closest ? ev.target.closest('a[href*="index.html"]') : null;
+      if (!a) return;
+      var href = String(a.getAttribute('href') || '');
+      if (href.indexOf('advq=') >= 0 || href.indexOf('ccAdvancedPartsSearch') >= 0 || a.classList.contains('btn')) {
+        prefetchEditorAssets();
+      }
+    }
+    document.addEventListener('mouseover', maybePrefetch, true);
+    document.addEventListener('focusin', maybePrefetch, true);
+  })();
 })();
 </script>
-<script src="../assets/js/cc-toolbox-analytics-v2.js?v=7"></script>
-<script src="../assets/js/cc-toolbox-items-made.js?v=7"></script>
-<script src="../assets/js/cc-toolbox-public-counter.js?v=7"></script>
+<script src="../assets/js/cc-toolbox-analytics.js"></script>
+<script src="../assets/js/cc-toolbox-items-made.js"></script>
+<script src="../assets/js/cc-toolbox-public-counter.js"></script>
 </body>
 </html>
 

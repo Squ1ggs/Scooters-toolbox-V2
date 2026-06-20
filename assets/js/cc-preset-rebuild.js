@@ -37,6 +37,12 @@
   }
   window.getCharacterCumulativeXpForLevel = oak2CharacterCumulativeXpPoints;
   window.getCharacterLevelCap = function () { return __oak2CharXpProg.levelCap; };
+  window.STX_MAX_ITEM_LEVEL = __yamlItemLevelCap;
+  window.clampItemLevel = function (n) {
+    var L = Math.floor(Number(n));
+    if (!Number.isFinite(L)) L = __yamlItemLevelCap;
+    return Math.max(1, Math.min(__yamlItemLevelCap, L));
+  };
 
   var __yamlItemLevelCap = 60;
   function clampYamlItemLevel(n) {

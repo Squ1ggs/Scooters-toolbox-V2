@@ -43,11 +43,28 @@
   var godrollStatsCache = {};
   var prefixRenderLimit = 80;
   var godrollRenderLimit = 80;
+  var SEARCH_DEBOUNCE_MS = 350;
+  var MIN_SEARCH_QUERY_LEN = 2;
+  var INDEX_CHUNK_SIZE = 2000;
+  var serialSearchIndexReady = false;
+  var godrollSearchIndexReady = false;
+  var serialIndexInFlight = false;
+  var godrollIndexInFlight = false;
+  var prefixSearchDebounceTimer = null;
+  var godrollSearchDebounceTimer = null;
+
+  function scheduleIndexStep(fn) {
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(function () { fn(); }, { timeout: 120 });
+    } else {
+      setTimeout(fn, 0);
+    }
+  }
 
   var loadPromise = null;
   function loadSerials() {
     if (serialsData) return Promise.resolve(serialsData);
-    if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) {
+    if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials && window.STX_SERIALS_DATA.serials.length) {
       serialsData = window.STX_SERIALS_DATA.serials;
       return Promise.resolve(serialsData);
     }
@@ -58,17 +75,26 @@
       loadPromise = Promise.resolve(serialsData);
       return loadPromise;
     }
-    loadPromise = fetch('./assets/data/serials.json')
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        serialsData = data && data.serials ? data.serials : [];
+    var ensure = (typeof window.__ccEnsureSerialsCatalog === 'function')
+      ? window.__ccEnsureSerialsCatalog()
+      : Promise.resolve([]);
+    loadPromise = ensure.then(function (arr) {
+      if (arr && arr.length) {
+        serialsData = arr;
         return serialsData;
-      })
-      .catch(function (e) {
-        serialsData = [];
-        console.warn('Could not load serials.json. Click "Load from file" or use embedded serials.', e);
-        return serialsData;
-      });
+      }
+      return fetch('./assets/data/serials.json')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          serialsData = data && data.serials ? data.serials : [];
+          return serialsData;
+        })
+        .catch(function (e) {
+          serialsData = [];
+          console.warn('Could not load serials catalog. Click "Load from file" or use embedded serials.', e);
+          return serialsData;
+        });
+    });
     return loadPromise;
   }
 
@@ -77,19 +103,74 @@
     return el ? String(el.value || '').trim().toLowerCase() : '';
   }
 
+  function buildSerialSearchHay(item, allowDecode) {
+    var parts = [
+      String(item.name || '').toLowerCase(),
+      String(item.serial || '').toLowerCase(),
+    ];
+    if (item.familyId != null && item.itemId != null) {
+      parts.push(String(item.familyId) + ':' + String(item.itemId));
+    }
+    if (item.idRaw) parts.push(String(item.idRaw).toLowerCase());
+    if (allowDecode && window.parseSerialMeta) {
+      try {
+        var meta = window.parseSerialMeta(item.serial);
+        if (meta.familyId != null && meta.itemId != null) {
+          parts.push(String(meta.familyId) + ':' + String(meta.itemId));
+        }
+        if (meta.name) parts.push(String(meta.name).toLowerCase());
+      } catch (_e) {}
+    }
+    return parts.join('\x00');
+  }
+
+  function ensureSerialSearchIndex(done) {
+    if (serialSearchIndexReady || !serialsData || !serialsData.length) {
+      if (done) done();
+      return;
+    }
+    if (serialIndexInFlight) {
+      ensureSerialSearchIndex.__pendingDone = done;
+      return;
+    }
+    serialIndexInFlight = true;
+    var i = 0;
+    function step() {
+      var end = Math.min(i + INDEX_CHUNK_SIZE, serialsData.length);
+      for (; i < end; i++) {
+        if (!serialsData[i].__searchHay) {
+          serialsData[i].__searchHay = buildSerialSearchHay(serialsData[i], false);
+        }
+      }
+      if (i < serialsData.length) {
+        scheduleIndexStep(step);
+      } else {
+        serialSearchIndexReady = true;
+        serialIndexInFlight = false;
+        var pending = ensureSerialSearchIndex.__pendingDone;
+        ensureSerialSearchIndex.__pendingDone = null;
+        if (done) done();
+        if (pending && pending !== done) pending();
+      }
+    }
+    step();
+  }
+
   function matches(item, q) {
     if (!q) return true;
-    var name = String(item.name || '').toLowerCase();
-    var serial = String(item.serial || '').toLowerCase();
-    if (name.indexOf(q) >= 0) return true;
-    if (serial.indexOf(q) >= 0) return true;
-    if (window.parseSerialMeta) {
-      var meta = window.parseSerialMeta(item.serial);
-      var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-      if (idStr && idStr.indexOf(q) >= 0) return true;
-      if (meta.name && String(meta.name).toLowerCase().indexOf(q) >= 0) return true;
+    var hay = item.__searchHay || buildSerialSearchHay(item, false);
+    if (hay.indexOf(q) >= 0) return true;
+    if (!/\d/.test(q)) return false;
+    if (!item.__searchHayDecoded) {
+      item.__searchHayDecoded = buildSerialSearchHay(item, true);
     }
-    return false;
+    return item.__searchHayDecoded.indexOf(q) >= 0;
+  }
+
+  function filterSerials(q) {
+    if (!serialsData) return [];
+    if (!q) return serialsData;
+    return serialsData.filter(function (item) { return matches(item, q); });
   }
 
   function renderResults(items) {
@@ -250,6 +331,33 @@
     return { name: base, prefixHint: prefixHint };
   }
 
+  function godrollMaxItemLevel() {
+    if (typeof window.getCharacterLevelCap === 'function') return window.getCharacterLevelCap();
+    if (typeof window.STX_MAX_ITEM_LEVEL === 'number') return window.STX_MAX_ITEM_LEVEL;
+    return 60;
+  }
+
+  function ensureGodrollItemMaxLevel(item) {
+    if (!item || typeof item !== 'object') return item;
+    var maxLv = godrollMaxItemLevel();
+    var cur = Number(item.level);
+    if (Number.isFinite(cur) && cur >= maxLv) return item;
+    item.level = maxLv;
+    if (item.deserialized) {
+      item.deserialized = String(item.deserialized).replace(
+        /^(\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*)\d+(\s*\|)/,
+        '$1' + maxLv + '$2'
+      );
+    }
+    if (typeof window.updateSerialLevelFlexible === 'function' && item.serial) {
+      try {
+        var bumped = window.updateSerialLevelFlexible(item.serial, maxLv);
+        if (bumped && String(bumped).trim()) item.serial = String(bumped).trim();
+      } catch (_e) {}
+    }
+    return item;
+  }
+
   function normalizeGodrollEntry(entry, godrollCategory) {
     if (!entry || typeof entry !== 'object') return null;
     var serial = String(entry.input || entry.serial || entry.base85 || '').trim();
@@ -264,7 +372,7 @@
     var prefixHint = String(derived.prefixHint || '').trim();
     if (!name && maker && type) name = [titleCaseWords(maker), titleCaseWords(type)].filter(Boolean).join(' ');
     var deser = String(entry.deserialized || '').trim();
-    return {
+    var out = {
       serial: serial,
       name: name,
       manufacturer: maker,
@@ -278,6 +386,7 @@
       rpParts: rpNorm.slice(),
       rpRaw: Array.isArray(entry.rp || entry.resolvedParts) ? (entry.rp || entry.resolvedParts) : []
     };
+    return ensureGodrollItemMaxLevel(out);
   }
 
   function godrollShouldShowFullStats() {
@@ -571,52 +680,108 @@
 
   function loadGodrolls() {
     if (godrollData) return Promise.resolve(godrollData);
-    var merged = mergeBundledGodrolls();
-    if (merged.length) {
-      godrollData = merged;
-      return Promise.resolve(godrollData);
-    }
     if (godrollLoadPromise) return godrollLoadPromise;
-    var proto = (typeof location !== 'undefined' && location.protocol) || '';
-    if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
-      godrollData = [];
-      godrollLoadPromise = Promise.resolve(godrollData);
-      return godrollLoadPromise;
-    }
-    godrollLoadPromise = fetch('./assets/data/godroll_serials.json')
-      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
-      .then(function (data) {
-        var arr = Array.isArray(data) ? data : (Array.isArray(data && data.items) ? data.items : []);
-        godrollData = arr.map(function (e) { return normalizeGodrollEntry(e, 'community'); }).filter(Boolean);
+    var ensure = (typeof window.__ccEnsureGodrollBundles === 'function')
+      ? window.__ccEnsureGodrollBundles()
+      : Promise.resolve();
+    godrollLoadPromise = ensure.then(function () {
+      var merged = mergeBundledGodrolls();
+      if (merged.length) {
+        godrollData = merged;
         return godrollData;
-      })
-      .catch(function () {
+      }
+      var proto = (typeof location !== 'undefined' && location.protocol) || '';
+      if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
         godrollData = [];
         return godrollData;
-      });
+      }
+      return fetch('./assets/data/godroll_serials.json')
+        .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+        .then(function (data) {
+          var arr = Array.isArray(data) ? data : (Array.isArray(data && data.items) ? data.items : []);
+          godrollData = arr.map(function (e) { return normalizeGodrollEntry(e, 'community'); }).filter(Boolean);
+          return godrollData;
+        })
+        .catch(function () {
+          godrollData = [];
+          return godrollData;
+        });
+    });
     return godrollLoadPromise;
+  }
+
+  function buildGodrollSearchHay(item, allowDecode) {
+    var parts = [
+      String(item.name || '').toLowerCase(),
+      String(item.serial || '').toLowerCase(),
+      String(item.manufacturer || '').toLowerCase(),
+      String(item.itemType || '').toLowerCase(),
+      String(item.rarity || '').toLowerCase(),
+      String(item.prefixHint || '').toLowerCase(),
+      formatGodrollPartsLine(item.rpParts || [], { max: 200 }).toLowerCase(),
+    ];
+    if (allowDecode) {
+      if (item.deserialized) parts.push(String(item.deserialized).toLowerCase());
+      else parts.push(String(getCachedDeserialized(item) || '').toLowerCase());
+      if (window.parseSerialMeta) {
+        try {
+          var meta = window.parseSerialMeta(item.serial);
+          if (meta.familyId != null && meta.itemId != null) {
+            parts.push(String(meta.familyId) + ':' + String(meta.itemId));
+          }
+          if (meta.name) parts.push(String(meta.name).toLowerCase());
+        } catch (_e) {}
+      }
+    }
+    return parts.join('\x00');
+  }
+
+  function ensureGodrollSearchIndex(done) {
+    if (godrollSearchIndexReady || !godrollData || !godrollData.length) {
+      if (done) done();
+      return;
+    }
+    if (godrollIndexInFlight) {
+      ensureGodrollSearchIndex.__pendingDone = done;
+      return;
+    }
+    godrollIndexInFlight = true;
+    var i = 0;
+    function step() {
+      var end = Math.min(i + INDEX_CHUNK_SIZE, godrollData.length);
+      for (; i < end; i++) {
+        if (!godrollData[i].__searchHay) {
+          godrollData[i].__searchHay = buildGodrollSearchHay(godrollData[i], false);
+        }
+      }
+      if (i < godrollData.length) {
+        scheduleIndexStep(step);
+      } else {
+        godrollSearchIndexReady = true;
+        godrollIndexInFlight = false;
+        var pending = ensureGodrollSearchIndex.__pendingDone;
+        ensureGodrollSearchIndex.__pendingDone = null;
+        if (done) done();
+        if (pending && pending !== done) pending();
+      }
+    }
+    step();
   }
 
   function matchesGodroll(item, q) {
     if (!q) return true;
-    var name = String(item.name || '').toLowerCase();
-    var serial = String(item.serial || '').toLowerCase();
-    var maker = String(item.manufacturer || '').toLowerCase();
-    var type = String(item.itemType || '').toLowerCase();
-    var rarity = String(item.rarity || '').toLowerCase();
-    var ph = String(item.prefixHint || '').toLowerCase();
-    if (name.indexOf(q) >= 0 || serial.indexOf(q) >= 0 || maker.indexOf(q) >= 0 || type.indexOf(q) >= 0 || rarity.indexOf(q) >= 0 || ph.indexOf(q) >= 0) return true;
-    if (window.parseSerialMeta) {
-      var meta = window.parseSerialMeta(item.serial);
-      var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-      if (idStr && idStr.indexOf(q) >= 0) return true;
-      if (meta.name && String(meta.name).toLowerCase().indexOf(q) >= 0) return true;
+    var hay = item.__searchHay || buildGodrollSearchHay(item, false);
+    if (hay.indexOf(q) >= 0) return true;
+    if (!item.__searchHayDecoded) {
+      item.__searchHayDecoded = buildGodrollSearchHay(item, true);
     }
-    var partsHay = formatGodrollPartsLine(item.rpParts || [], { max: 200 }).toLowerCase();
-    if (partsHay && partsHay.indexOf(q) >= 0) return true;
-    var desHay = String(item.deserialized || getCachedDeserialized(item) || '').toLowerCase();
-    if (desHay && desHay.indexOf(q) >= 0) return true;
-    return false;
+    return item.__searchHayDecoded.indexOf(q) >= 0;
+  }
+
+  function filterGodrollPool(pool, q) {
+    if (!pool) return [];
+    if (!q) return pool;
+    return pool.filter(function (item) { return matchesGodroll(item, q); });
   }
 
   function renderGodrollResults(items) {
@@ -726,29 +891,46 @@
     }
   }
 
-  function doSearch() {
-    var q = getSearchText();
-    var statusEl = byId('prefixItemSearchStatus');
-    if (!serialsData) {
-      if (statusEl) statusEl.textContent = 'Loading serials…';
-      loadSerials().then(function () {
-        if (statusEl) statusEl.textContent = serialsData.length + ' serials loaded.';
-        applySearch();
-      });
-      return;
-    }
-    applySearch();
-  }
-
   function applySearch() {
     var q = getSearchText();
     var statusEl = byId('prefixItemSearchStatus');
     if (!serialsData) return;
     lastSelected = null;
     if (!q) prefixRenderLimit = 80;
-    var filtered = serialsData.filter(function (item) { return matches(item, q); });
+    if (q && q.length < MIN_SEARCH_QUERY_LEN) {
+      if (statusEl) {
+        statusEl.textContent = 'Type at least ' + MIN_SEARCH_QUERY_LEN + ' characters to search ' + serialsData.length + ' serials.';
+      }
+      renderResults([]);
+      return;
+    }
+    var filtered = filterSerials(q);
     if (statusEl) statusEl.textContent = q ? (filtered.length + ' matches') : (serialsData.length + ' serials loaded. Showing popular/start of list.');
     renderResults(filtered);
+  }
+
+  function runPrefixSearch() {
+    if (!prefixSearchBootstrapped) {
+      bootstrapPrefixSearch();
+      return;
+    }
+    var q = getSearchText();
+    if (!serialSearchIndexReady && serialsData && serialsData.length && q && q.length >= MIN_SEARCH_QUERY_LEN) {
+      var statusEl = byId('prefixItemSearchStatus');
+      if (statusEl) statusEl.textContent = 'Building search index…';
+      ensureSerialSearchIndex(applySearch);
+      return;
+    }
+    applySearch();
+  }
+
+  function schedulePrefixSearch(immediate) {
+    clearTimeout(prefixSearchDebounceTimer);
+    if (immediate) {
+      runPrefixSearch();
+      return;
+    }
+    prefixSearchDebounceTimer = setTimeout(runPrefixSearch, SEARCH_DEBOUNCE_MS);
   }
 
   function getGodrollSearchText() {
@@ -790,7 +972,14 @@
     if (!q) godrollRenderLimit = 80;
     var categoryFilter = getGodrollCategoryFilter();
     var pool = getGodrollCategoryPool();
-    var filtered = pool.filter(function (item) { return matchesGodroll(item, q); });
+    if (q && q.length < MIN_SEARCH_QUERY_LEN) {
+      if (statusEl) {
+        statusEl.textContent = 'Type at least ' + MIN_SEARCH_QUERY_LEN + ' characters to search Godrolls.';
+      }
+      renderGodrollResults([]);
+      return;
+    }
+    var filtered = filterGodrollPool(pool, q);
     if (statusEl) {
       if (categoryFilter) {
         statusEl.textContent = q
@@ -803,14 +992,26 @@
     renderGodrollResults(filtered);
   }
 
-  function doGodrollSearch() {
-    var statusEl = byId('godrollSearchStatus');
-    if (!godrollData) {
-      if (statusEl) statusEl.textContent = 'Loading Godroll list…';
-      loadGodrolls().then(function () { applyGodrollSearch(); });
+  function runGodrollSearch() {
+    if (!godrollSearchBootstrapped) {
+      bootstrapGodrollSearch();
+      return;
+    }
+    var q = getGodrollSearchText();
+    if (!godrollSearchIndexReady && godrollData && godrollData.length && q && q.length >= MIN_SEARCH_QUERY_LEN) {
+      ensureGodrollSearchIndex(applyGodrollSearch);
       return;
     }
     applyGodrollSearch();
+  }
+
+  function scheduleGodrollSearch(immediate) {
+    clearTimeout(godrollSearchDebounceTimer);
+    if (immediate) {
+      runGodrollSearch();
+      return;
+    }
+    godrollSearchDebounceTimer = setTimeout(runGodrollSearch, SEARCH_DEBOUNCE_MS);
   }
 
   function wireGodrollFileLoad() {
@@ -828,7 +1029,8 @@
             var arr = Array.isArray(raw) ? raw : (Array.isArray(raw && raw.items) ? raw.items : []);
             godrollData = arr.map(function (e) { return normalizeGodrollEntry(e, 'imported'); }).filter(Boolean);
             lastGodrollSelected = null;
-            applyGodrollSearch();
+            godrollSearchIndexReady = false;
+            runGodrollSearch();
           } catch (e) {
             var statusEl = byId('godrollSearchStatus');
             if (statusEl) statusEl.textContent = 'Invalid JSON file.';
@@ -839,6 +1041,45 @@
       });
     }
   }
+
+  var prefixSearchBootstrapped = false;
+  function bootstrapPrefixSearch() {
+    if (prefixSearchBootstrapped) return;
+    prefixSearchBootstrapped = true;
+    var statusEl = byId('prefixItemSearchStatus');
+    if (statusEl) statusEl.textContent = 'Loading serials…';
+    loadSerials().then(function () {
+      if (statusEl) {
+        statusEl.textContent = serialsData.length
+          ? (serialsData.length + ' serials loaded. Type to search.')
+          : 'Serials not loaded.';
+      }
+      applySearch();
+    });
+  }
+
+  var godrollSearchBootstrapped = false;
+  function bootstrapGodrollSearch() {
+    if (godrollSearchBootstrapped) return;
+    godrollSearchBootstrapped = true;
+    var st = byId('godrollSearchStatus');
+    if (st) st.textContent = 'Loading Godroll list…';
+    loadGodrolls().then(function () {
+      if (st) st.textContent = godrollData && godrollData.length
+        ? (godrollData.length + ' Godroll serials loaded. Type to search.')
+        : 'Godroll list not bundled.';
+      try {
+        runGodrollSearch();
+      } catch (e) {
+        console.error('Godroll UI update failed', e);
+        if (st) st.textContent = 'Godroll list loaded but UI error — check console.';
+      }
+      syncGodrollCategoryHoverTip();
+    });
+  }
+
+  try { window.__ccBootstrapPrefixItemSearch = bootstrapPrefixSearch; } catch (_) {}
+  try { window.__ccBootstrapGodrollSearch = bootstrapGodrollSearch; } catch (_) {}
 
   function init() {
     var searchInput = byId('prefixItemSearchInput');
@@ -853,14 +1094,18 @@
     var godrollCopyBtn = byId('godrollCopyBtn');
 
     if (searchInput) {
-      searchInput.addEventListener('input', doSearch);
+      searchInput.addEventListener('focus', function () { bootstrapPrefixSearch(); }, { passive: true });
+      searchInput.addEventListener('input', function () { schedulePrefixSearch(false); });
+      searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') schedulePrefixSearch(true);
+      });
     }
 
     if (addEditorBtn) {
       addEditorBtn.addEventListener('click', function () {
         if (!lastSelected) {
           var q = getSearchText();
-          var filtered = serialsData ? serialsData.filter(function (item) { return matches(item, q); }) : [];
+          var filtered = filterSerials(q);
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && window.importSerialToEditor) {
@@ -875,7 +1120,7 @@
       addYamlBtn.addEventListener('click', function () {
         if (!lastSelected) {
           var q = getSearchText();
-          var filtered = serialsData ? serialsData.filter(function (item) { return matches(item, q); }) : [];
+          var filtered = filterSerials(q);
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && window.appendSerialToYAML) {
@@ -895,7 +1140,7 @@
       addBankBtn.addEventListener('click', function () {
         if (!lastSelected) {
           var q = getSearchText();
-          var filtered = serialsData ? serialsData.filter(function (item) { return matches(item, q); }) : [];
+          var filtered = filterSerials(q);
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && window.appendSerialToProfileBank) {
@@ -911,7 +1156,7 @@
       copyBtn.addEventListener('click', function () {
         if (!lastSelected) {
           var q = getSearchText();
-          var filtered = serialsData ? serialsData.filter(function (item) { return matches(item, q); }) : [];
+          var filtered = filterSerials(q);
           if (filtered.length === 1) lastSelected = filtered[0];
         }
         if (lastSelected && lastSelected.serial) {
@@ -923,22 +1168,26 @@
     }
 
     if (godrollSearchInput) {
-      godrollSearchInput.addEventListener('input', doGodrollSearch);
+      godrollSearchInput.addEventListener('focus', function () { bootstrapGodrollSearch(); }, { passive: true });
+      godrollSearchInput.addEventListener('input', function () { scheduleGodrollSearch(false); });
+      godrollSearchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') scheduleGodrollSearch(true);
+      });
     }
     var showStatsToggle = byId('godrollShowFullStatsToggle');
     if (showStatsToggle) {
-      showStatsToggle.addEventListener('change', doGodrollSearch);
+      showStatsToggle.addEventListener('change', function () { runGodrollSearch(); });
     }
     var godrollCatSel = byId('godrollCategorySelect');
     if (godrollCatSel) {
-      godrollCatSel.addEventListener('change', doGodrollSearch);
+      godrollCatSel.addEventListener('change', function () { runGodrollSearch(); });
       godrollCatSel.addEventListener('change', syncGodrollCategoryHoverTip);
     }
     if (godrollAddEditorBtn) {
       godrollAddEditorBtn.addEventListener('click', function () {
         if (!lastGodrollSelected) {
           var q = getGodrollSearchText();
-          var filtered = getGodrollCategoryPool().filter(function (item) { return matchesGodroll(item, q); });
+          var filtered = filterGodrollPool(getGodrollCategoryPool(), q);
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && window.importSerialToEditor) window.importSerialToEditor(lastGodrollSelected.serial);
@@ -949,7 +1198,7 @@
       godrollCopyBtn.addEventListener('click', function () {
         if (!lastGodrollSelected) {
           var q = getGodrollSearchText();
-          var filtered = getGodrollCategoryPool().filter(function (item) { return matchesGodroll(item, q); });
+          var filtered = filterGodrollPool(getGodrollCategoryPool(), q);
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && lastGodrollSelected.serial) {
@@ -963,7 +1212,7 @@
       godrollAddYamlBtn.addEventListener('click', function () {
         if (!lastGodrollSelected) {
           var q = getGodrollSearchText();
-          var filtered = getGodrollCategoryPool().filter(function (item) { return matchesGodroll(item, q); });
+          var filtered = filterGodrollPool(getGodrollCategoryPool(), q);
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && window.appendSerialToYAML) {
@@ -982,7 +1231,7 @@
       godrollAddBankBtn.addEventListener('click', function () {
         if (!lastGodrollSelected) {
           var q = getGodrollSearchText();
-          var filtered = getGodrollCategoryPool().filter(function (item) { return matchesGodroll(item, q); });
+          var filtered = filterGodrollPool(getGodrollCategoryPool(), q);
           if (filtered.length === 1) lastGodrollSelected = filtered[0];
         }
         if (lastGodrollSelected && window.appendSerialToProfileBank) {
@@ -996,28 +1245,11 @@
     }
     wireGodrollFileLoad();
 
-    loadSerials().then(function () {
-      var statusEl = byId('prefixItemSearchStatus');
-      if (statusEl) {
-        statusEl.textContent = serialsData.length
-          ? serialsData.length + ' serials loaded.'
-          : 'Serials not loaded.';
-      }
-      applySearch();
-    });
-    loadGodrolls().then(function () {
-      var st = byId('godrollSearchStatus');
-      if (st) st.textContent = godrollData && godrollData.length
-        ? (godrollData.length + ' Godroll serials loaded. Type to search.')
-        : 'Godroll list not bundled.';
-      try {
-        doGodrollSearch();
-      } catch (e) {
-        console.error('Godroll UI update failed', e);
-        if (st) st.textContent = 'Godroll list loaded but UI error — check console.';
-      }
-      syncGodrollCategoryHoverTip();
-    });
+    var prefixPanel = byId('rebuildPrefixItemSearchSection');
+    if (prefixPanel && prefixPanel.open) bootstrapPrefixSearch();
+    var godrollPanel = byId('rebuildGodrollSection');
+    if (godrollPanel && godrollPanel.open) bootstrapGodrollSearch();
+
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   }
 

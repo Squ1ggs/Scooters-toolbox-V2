@@ -473,7 +473,8 @@
       if (fam != null && pf !== fam) continue;
       if (k === 'firmware') {
         var pt = String((p.partType || p.kind || '') || '').toLowerCase();
-        if (pt !== 'firmware') continue;
+        var codeL = String((p.code || p.spawnCode || '') || '').toLowerCase();
+        if (pt !== 'firmware' && codeL.indexOf('part_firmware') === -1) continue;
       }
       if (k === 'universal') {
         var pt2 = String((p.partType || p.kind || '') || '').toLowerCase();
@@ -1034,7 +1035,7 @@
     var state = getState();
     var level = Number((guidedLevel && guidedLevel.value) || state.level || 60);
     if (!Number.isFinite(level) || level < 1) level = 60;
-    if (level > 100) level = 100;
+    if (level > 60) level = 60;
     return level;
   }
 

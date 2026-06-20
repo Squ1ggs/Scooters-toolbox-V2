@@ -900,8 +900,8 @@
       } catch (_) {}
       return false;
     }
-    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 61);
-    if (!Number.isFinite(il)) il = 61;
+    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 60);
+    if (!Number.isFinite(il)) il = 60;
     if (mappedCount === 0) {
       var rawEarly = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
         rawSerial: opts.rawSerial || '',
@@ -1250,8 +1250,8 @@
         var partCount = Object.keys(selectedParts).length;
         var strictEl = document.getElementById('strict-mode');
         var ilInput = document.getElementById('item-level');
-        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 61);
-        if (!Number.isFinite(il)) il = 61;
+        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 60);
+        if (!Number.isFinite(il)) il = 60;
 
         var pre = '<div style="font-size:0.72rem;color:rgba(233,254,255,0.55);margin-bottom:6px;">' +
           'Item: <strong>' + String(manifestItem.name || '') + '</strong> (' + String(manifestItem.slug || '') + ') &middot; Dataset parts: ' + rp.length +

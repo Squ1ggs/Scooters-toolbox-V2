@@ -205,6 +205,36 @@
     } catch (_) {}
   }
 
+  function getPresetItemType() {
+    try {
+      var cat = window.MODDED_PRESET_CATALOG;
+      if (cat && typeof cat.detectPresetItemType === 'function') return cat.detectPresetItemType();
+    } catch (_) {}
+    return 'weapon';
+  }
+
+  function buildPresetPoolForCategory(catKey) {
+    var base = PRESET_BOOST_POOLS[catKey] || [];
+    try {
+      var catalog = window.MODDED_PRESET_CATALOG;
+      if (catalog && typeof catalog.getCatalogPool === 'function' && typeof catalog.mergePools === 'function') {
+        var itemType = getPresetItemType();
+        return catalog.mergePools(base, catalog.getCatalogPool(itemType, catKey));
+      }
+    } catch (_) {}
+    return base.slice();
+  }
+
+  function presetCatalogGuideForToken(catKey, tok, key, value, bareId) {
+    try {
+      var catalog = window.MODDED_PRESET_CATALOG;
+      if (!catalog || typeof catalog.lookupCatalogEntry !== 'function') return '';
+      var entry = catalog.lookupCatalogEntry(getPresetItemType(), catKey, key, value, bareId);
+      if (!entry || typeof catalog.stackGuideText !== 'function') return '';
+      return catalog.stackGuideText(entry);
+    } catch (_) { return ''; }
+  }
+
   /**
    * Populate preset category and part dropdowns.
    * @param {HTMLSelectElement|null} catSel - Category select
@@ -215,84 +245,102 @@
     var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
     if (!catSel) return;
     if (catSel.options.length <= 1) {
-      var cats = ['Damage', 'Accuracy', 'Reload Speed', 'Fire Rate', 'Ammo', 'Splash Damage', 'Crit Damage'];
-      var keys = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit'];
-      catSel.innerHTML = '<option value="">-- Select Preset Category --</option>';
-      for (var ci = 0; ci < cats.length; ci++) {
-        var opt = document.createElement('option');
-        opt.value = keys[ci];
-        opt.textContent = cats[ci];
-        catSel.appendChild(opt);
-      }
+      populatePresetCategories(catSel);
     }
     if (!partSel) return;
     var catKey = (catSel.value || '').trim();
     partSel.innerHTML = '<option value="">-- Select preset --</option>';
     partSel.removeAttribute('data-loading');
     if (!catKey) return;
-    var pool = PRESET_BOOST_POOLS[catKey];
+    var pool = buildPresetPoolForCategory(catKey);
     if (!Array.isArray(pool) || pool.length === 0) return;
     var parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-    if (!parts.length) {
-      partSel.innerHTML = '<option value="">Loading…</option>';
-      partSel.setAttribute('data-loading', '');
-      return;
+    var catalog = window.MODDED_PRESET_CATALOG || null;
+    var itemType = getPresetItemType();
+    var matched = {};
+
+    function appendOption(tok, label, title) {
+      if (!tok || !/^\{/.test(String(tok))) return;
+      var o = document.createElement('option');
+      o.value = tok;
+      o.textContent = label;
+      if (title) o.title = title;
+      partSel.appendChild(o);
     }
-    try {
-      var idRawSet = {};
-      for (var i = 0; i < pool.length; i++) {
-        var e = pool[i];
-        var k = e.key != null ? e.key : e.k;
-        var v = e.value != null ? e.value : e.v;
-        if (k != null && v != null) idRawSet[String(k) + ':' + String(v)] = true;
-      }
-      for (var j = 0; j < parts.length; j++) {
-        var p = parts[j];
-        if (!p) continue;
-        var idRaw = String(p.idRaw || p.idraw || '').trim();
-        if (!idRaw || !idRawSet[idRaw]) continue;
-        var tok = tokFn(p);
-        var tokStr = String(tok || '').trim();
-        if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
-          tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
-          tokStr = String(tok || '').trim();
-        }
-        if (tokStr && /^\{/.test(tokStr)) {
-          var human = (p.name || p.legendaryName || '').substring(0, 40);
-          var ef = String(p.effects || p.effect || '').trim();
-          // Avoid duplicates like: "Atling Gun (Whistler) — Whistler"
-          // If the effects string is already present inside parentheses in the name,
-          // suppress the effects suffix.
-          if (ef) {
-            var humanLower = String(human || '').toLowerCase();
-            var efLower = String(ef || '').toLowerCase();
-            if (humanLower.indexOf('(' + efLower + ')') !== -1) ef = '';
+
+    if (parts.length) {
+      try {
+        var idRawSet = {};
+        for (var i = 0; i < pool.length; i++) {
+          var e = pool[i];
+          if (e.bareId) {
+            idRawSet[String(e.bareId)] = { bare: true, entry: e };
+            continue;
           }
-          var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
-          var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
-          var o = document.createElement('option');
-          o.value = tok;
-          o.textContent = label;
-          if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
-          if (!o.title) o.title = 'Other stats: dataset stats unavailable for this part.';
-          partSel.appendChild(o);
+          var k = e.key != null ? e.key : e.k;
+          var v = e.value != null ? e.value : e.v;
+          if (k != null && v != null) idRawSet[String(k) + ':' + String(v)] = { entry: e };
         }
-      }
-      if (partSel.options.length <= 1) {
-        for (var pi = 0; pi < pool.length; pi++) {
-          var pe = pool[pi];
-          var pk = pe.key != null ? pe.key : pe.k;
-          var pv = pe.value != null ? pe.value : pe.v;
-          if (pk == null || pv == null) continue;
-          var rawTok = '{' + String(pk) + ':' + String(pv) + '}';
-          var fallback = document.createElement('option');
-          fallback.value = rawTok;
-          fallback.textContent = rawTok + ' - Preset token';
-          fallback.title = 'Dataset name unavailable; this preset token will still be added.';
-          partSel.appendChild(fallback);
+        for (var j = 0; j < parts.length; j++) {
+          var p = parts[j];
+          if (!p) continue;
+          var idRaw = String(p.idRaw || p.idraw || '').trim();
+          if (!idRaw || !idRawSet[idRaw]) continue;
+          var meta = idRawSet[idRaw];
+          matched[idRaw] = true;
+          var tok = tokFn(p);
+          var tokStr = String(tok || '').trim();
+          if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
+            tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
+            tokStr = String(tok || '').trim();
+          }
+          if (tokStr && /^\{/.test(tokStr)) {
+            var human = (p.name || p.legendaryName || '').substring(0, 40);
+            var ef = String(p.effects || p.effect || '').trim();
+            if (ef) {
+              var humanLower = String(human || '').toLowerCase();
+              var efLower = String(ef || '').toLowerCase();
+              if (humanLower.indexOf('(' + efLower + ')') !== -1) ef = '';
+            }
+            var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
+            var guide = meta.entry ? presetCatalogGuideForToken(catKey, tokStr, meta.entry.key, meta.entry.value, meta.entry.bareId) : '';
+            var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
+            var tip = '';
+            if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) tip = t; }
+            if (!tip) tip = 'Other stats: dataset stats unavailable for this part.';
+            if (guide) tip = (tip ? tip + ' | ' : '') + 'Stack guide: ' + guide;
+            if (itemType) tip = (tip ? tip + ' | ' : '') + 'Item type: ' + itemType;
+            appendOption(tokStr, label, tip);
+          }
         }
+      } catch (_) {}
+    }
+
+    for (var pi = 0; pi < pool.length; pi++) {
+      var pe = pool[pi];
+      var rawTok = catalog && typeof catalog.catalogEntryToToken === 'function'
+        ? catalog.catalogEntryToToken(pe)
+        : '';
+      if (!rawTok) {
+        var pk = pe.key != null ? pe.key : pe.k;
+        var pv = pe.value != null ? pe.value : pe.v;
+        if (pk != null && pv != null) rawTok = '{' + String(pk) + ':' + String(pv) + '}';
+        else if (pe.bareId) rawTok = '{' + String(pe.bareId) + '}';
       }
-    } catch (_) {}
+      if (!rawTok) continue;
+      var dedupeKey = pe.bareId ? String(pe.bareId) : rawTok;
+      if (matched[dedupeKey] || matched[rawTok.replace(/^\{|\}$/g, '')]) continue;
+      var guide2 = presetCatalogGuideForToken(catKey, rawTok, pe.key, pe.value, pe.bareId);
+      var fbLabel = rawTok + ' - Modded preset';
+      if (guide2) fbLabel += ' (' + guide2.replace(/\s+/g, ' ').substring(0, 80) + ')';
+      appendOption(rawTok, fbLabel, guide2 || 'Modded catalog token for ' + itemType);
+    }
+  }
+
+  function refreshPresetPartsForItemType() {
+    var catSel = document.getElementById('presetCategorySelect');
+    var partSel = document.getElementById('presetPartSelect');
+    if (catSel && partSel && catSel.value) populatePresetParts(catSel, partSel);
   }
 
   function populatePresetCategories(catSel) {
@@ -306,6 +354,60 @@
       o.textContent = cats[i];
       catSel.appendChild(o);
     }
+  }
+
+  /**
+   * True when Simple or Guided builder is on Weapon / Heavy — legendary perk dropdowns include unique barrels.
+   */
+  function detectWeaponHeavyLegendaryContext() {
+    try {
+      var g = document.getElementById('ccGuidedItemType');
+      var gv = g ? String(g.value || '').trim().toLowerCase() : '';
+      if (gv === 'weapon' || /heavy/.test(gv)) return true;
+      if (gv === 'sniper rifle' || gv === 'smg' || gv === 'pistol' || gv === 'shotgun' || gv === 'assault rifle') return true;
+    } catch (_) {}
+    try {
+      var it = document.getElementById('itemType');
+      var iv = it ? String(it.value || '').trim().toLowerCase() : '';
+      if (iv === 'weapon' || /heavy/.test(iv)) return true;
+    } catch (_) {}
+    return false;
+  }
+
+  /** Pool for standalone legendary-perk dropdowns (includes unique barrels on weapon/heavy builds). */
+  function collectLegendaryPerkDropdownParts(all, opts) {
+    opts = opts || {};
+    var includeBarrels = opts.includeBarrels != null ? opts.includeBarrels : detectWeaponHeavyLegendaryContext();
+    var out = [];
+    var seenKey = Object.create(null);
+    function pushPart(p) {
+      if (!p) return;
+      var idRaw = String(p.idRaw || p.idraw || '').trim().replace(/\s+/g, '');
+      var code = String(p.code || p.spawnCode || '').replace(/^["']|["']$/g, '').trim().toLowerCase();
+      var key = idRaw || code || String(p.name || '').trim().toLowerCase();
+      if (!key || seenKey[key]) return;
+      seenKey[key] = true;
+      out.push(p);
+    }
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (p && /legendary\s*perk/i.test(String(p.partType || ''))) pushPart(p);
+    }
+    if (includeBarrels) {
+      var barrelFn = typeof window.stxPartCarriesLegendaryEffectWeaponFamilyBarrel === 'function'
+        ? window.stxPartCarriesLegendaryEffectWeaponFamilyBarrel
+        : function (bp) {
+          if (!bp) return false;
+          if (String(bp.partType || '').trim().toLowerCase() !== 'barrel') return false;
+          var c = String(bp.code || bp.spawnCode || '').replace(/^["']|["']$/g, '').toLowerCase();
+          return c.indexOf('part_unique_barrel') !== -1 || c.indexOf('comp_05_legendary') !== -1 || !!String(bp.legendaryName || '').trim();
+        };
+      for (var j = 0; j < all.length; j++) {
+        var bp = all[j];
+        if (barrelFn(bp)) pushPart(bp);
+      }
+    }
+    return out;
   }
 
   /**
@@ -324,7 +426,7 @@
     sel.removeAttribute('data-loading');
     sel.innerHTML = '<option value="">-- Select legendary perk --</option>';
     try {
-      var leg = all.filter(function (p) { return p && /legendary\s*perk/i.test(String(p.partType || '')); });
+      var leg = collectLegendaryPerkDropdownParts(all);
       var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
       var LEG_BASE = './assets/img/guided-dropdowns/legendary-augments/';
       var PEARL_BASE = './assets/img/guided-dropdowns/pearl-item-types/';
@@ -421,6 +523,10 @@
   window.populateSkinCamo = populateSkinCamo;
   window.populatePresetParts = populatePresetParts;
   window.populatePresetCategories = populatePresetCategories;
+  window.refreshPresetPartsForItemType = refreshPresetPartsForItemType;
+  window.getPresetItemType = getPresetItemType;
+  window.buildPresetPoolForCategory = buildPresetPoolForCategory;
   window.populateLegendaryPerks = populateLegendaryPerks;
+  window.collectLegendaryPerkDropdownParts = collectLegendaryPerkDropdownParts;
   window.PRESET_BOOST_POOLS = PRESET_BOOST_POOLS;
 })();

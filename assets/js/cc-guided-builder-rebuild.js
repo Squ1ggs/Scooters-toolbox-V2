@@ -1103,6 +1103,10 @@
   function guidedOptionTitleForSelect(sel, p) {
     var base = '';
     try {
+      if (typeof window.partEffectDescForDropdown === 'function') {
+        var eff = String(window.partEffectDescForDropdown(p) || '').trim();
+        if (eff) return eff;
+      }
       if (typeof window.partTooltipText === 'function') base = String(window.partTooltipText(p) || '').trim();
     } catch (_) {}
     if (!base) base = partOptionHoverTitle(p);
@@ -1184,8 +1188,18 @@
         }
       } catch (_) {}
     }
+    var effectDesc = (typeof window.partEffectDescForDropdown === 'function')
+      ? String(window.partEffectDescForDropdown(p) || '').trim()
+      : '';
     var ef = String(p.effects != null ? p.effects : (p.effect || '')).trim();
-    if (ef) lines.push('<div><span class="muted">Effect</span> ' + ccEscapeHtml(ef.length > 360 ? ef.slice(0, 359) + '…' : ef) + '</div>');
+    if (effectDesc) lines.push('<div><span class="muted">Effect</span> ' + ccEscapeHtml(effectDesc.length > 360 ? effectDesc.slice(0, 359) + '…' : effectDesc) + '</div>');
+    else if (ef) lines.push('<div><span class="muted">Effect</span> ' + ccEscapeHtml(ef.length > 360 ? ef.slice(0, 359) + '…' : ef) + '</div>');
+    var catalogRed = (typeof window.partRedTextForDropdown === 'function')
+      ? String(window.partRedTextForDropdown(p) || '').trim()
+      : '';
+    if (catalogRed) {
+      lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:4px;"><span class="muted">Red text</span> ' + ccEscapeHtml(catalogRed) + '</div>');
+    }
     var tip = '';
     try {
       if (typeof window.partTooltipText === 'function') tip = String(window.partTooltipText(p) || '').trim();
@@ -1320,22 +1334,29 @@
     return line || '-';
   }
 
-  /** Flavor / long perk body for coral “red text” row under the main label (custom select). */
+  /** Flavor quote for coral row — catalog red text only (abilities go in desc sub). */
   function guidedBarrelOptionSubText(p) {
-    if (!p) return '';
-    var meta = guidedBarrelEffectMeta(p);
-    var line = '';
-    if (meta.red) line = meta.perk ? (meta.perk + ' — ' + meta.red) : meta.red;
-    else if (meta.perk && meta.ef.length > 52) line = meta.ef;
-    var out = line.replace(/\s+/g, ' ').trim();
-    if (out.length > 240) out = out.slice(0, 237) + '…';
-    return out;
+    if (typeof window.partRedTextForDropdown === 'function') {
+      try { return String(window.partRedTextForDropdown(p) || '').trim(); } catch (_) {}
+    }
+    var row = (typeof window.stxGearCatalogRowForPart === 'function') ? window.stxGearCatalogRowForPart(p) : null;
+    if (row && row.redText) return String(row.redText).trim();
+    return '';
   }
 
   function applyGuidedBarrelOptionDataAttrs(sel, opt, p) {
     if (!opt || !p) return;
     if (isGuidedBarrelFamilySelect(sel)) {
       opt.textContent = guidedBarrelOptionPrimaryText(p);
+    }
+    if (typeof window.stxApplyPartDropdownMeta === 'function') {
+      try {
+        window.stxApplyPartDropdownMeta(opt, p, {
+          isBarrelSlot: isGuidedBarrelFamilySelect(sel),
+          allowLegendaryTone: isGuidedBarrelFamilySelect(sel)
+        });
+        return;
+      } catch (_) {}
     }
     var sub = guidedBarrelOptionSubText(p);
     if (sub) opt.setAttribute('data-cc-barrel-sub', sub);
@@ -1367,14 +1388,22 @@
     var efRaw = String(p.effects != null ? p.effects : (p.effect || p.effects_text || '')).trim();
     var split = splitGuidedEffectPerkBody(efRaw);
     if (split.perk) lines.push('<div class="stx-part-preview__barrel-perk">' + ccEscapeHtml(split.perk) + '</div>');
-    if (split.body) {
-      lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:2px;">' + ccEscapeHtml(split.body.length > 420 ? split.body.slice(0, 419) + '…' : split.body) + '</div>');
+    var catalogRed = (typeof window.partRedTextForDropdown === 'function')
+      ? String(window.partRedTextForDropdown(p) || '').trim()
+      : guidedBarrelOptionSubText(p);
+    if (catalogRed) {
+      lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:2px;">' + ccEscapeHtml(catalogRed.length > 420 ? catalogRed.slice(0, 419) + '…' : catalogRed) + '</div>');
     }
     var descParts = [];
+    var effectDesc = (typeof window.partEffectDescForDropdown === 'function')
+      ? String(window.partEffectDescForDropdown(p) || '').trim()
+      : '';
+    if (effectDesc && effectDesc !== catalogRed) descParts.push(effectDesc);
+    else if (split.body && !catalogRed) descParts.push(split.body);
     var statsRaw = String(p.stats != null ? p.stats : (p.stats_text || '')).replace(/\s+/g, ' ').trim();
     var statsTail = statsRaw ? stripStatsHeadlineIfRedundant(statsRaw, title) : '';
     if (/^barrel\s+part\s+for\s+/i.test(statsTail) || /^barrel\s+part\s+for\s+/i.test(statsRaw)) statsTail = '';
-    if (statsTail) descParts.push(statsTail);
+    if (statsTail && statsTail !== effectDesc) descParts.push(statsTail);
     var descMerge = descParts.filter(Boolean);
     if (descMerge.length) {
       lines.push('<div class="stx-part-preview__barrel-desc">' + ccEscapeHtml(descMerge.join('\n\n')) + '</div>');
@@ -2257,8 +2286,10 @@
     if (!itemType) return '';
 
     var levelEl = byId('ccGuidedLevel');
-    var level = parseGuidedHeaderNumber(levelEl && levelEl.value, 61);
-    if (!Number.isFinite(level) || level <= 0) level = 61;
+    var level = parseGuidedHeaderNumber(levelEl && levelEl.value, 60);
+    if (!Number.isFinite(level) || level <= 0) level = 60;
+    if (typeof window.clampItemLevel === 'function') level = window.clampItemLevel(level);
+    else if (level > 60) level = 60;
 
     var buybackEl = byId('ccGuidedBuybackFlag');
     var buyback = !!(buybackEl && buybackEl.checked);
@@ -2604,7 +2635,13 @@
     }
 
     if (Array.isArray(norm) && typeof window.compressConsecutiveFamilyRefs === 'function') {
-      if (guidedCm) {
+      var skipCompress = false;
+      try {
+        var elItSkip = document.getElementById('ccGuidedItemType');
+        var itSkip = elItSkip ? String(elItSkip.value || '').trim().toLowerCase() : '';
+        skipCompress = (itSkip === 'shield' || itSkip === 'repkit');
+      } catch (_) {}
+      if (!skipCompress) {
         try { norm = window.compressConsecutiveFamilyRefs(norm); } catch (_) {}
       }
     }
@@ -2626,6 +2663,7 @@
 
   /** Helper to unlock output generation after an import, allowing subsequent interactive edits. */
   function clearGuidedImportLock() {
+    if (window.__CC_IMPORT_IN_PROGRESS) return;
     try {
       window.__LOCK_IMPORTED_OUTPUT = false;
       window.__LAST_IMPORTED_DESERIALIZED = null;
@@ -3413,7 +3451,8 @@
     }
   }
 
-  function syncGuidedVisibility() {
+  /** Layout-only visibility toggles — no dropdown pool rebuilds (safe during long import). */
+  function syncGuidedVisibilityLayoutOnly() {
     var st = getGuidedState();
     var itemType = normalizeGuidedItemTypeForGear(st.itemType);
     var gunWrap = byId('ccGunBuilder');
@@ -3425,7 +3464,7 @@
 
     var isWeapon = /weapon/i.test(itemType) && !/heavy/i.test(itemType);
     if (!isWeapon && (itemType === 'Sniper Rifle' || itemType === 'SMG' || itemType === 'Pistol' || itemType === 'Shotgun' || itemType === 'Assault Rifle')) {
-       isWeapon = true;
+      isWeapon = true;
     }
     var isHeavy = /heavy/i.test(itemType);
     var isGear = !isWeapon && (isHeavy || itemType);
@@ -3454,8 +3493,34 @@
       }
     }
 
+    var builderIds = ['ccShieldBuilderDetails', 'ccGrenadeBuilderDetails', 'ccRepkitBuilderDetails', 'ccEnhancementBuilderDetails', 'ccClassModBuilderDetails', 'ccGadgetBuilderDetails', 'ccHeavyBuilderDetails'];
+    var activeId = ITEM_TYPE_TO_BUILDER[itemType];
+    for (var b = 0; b < builderIds.length; b++) {
+      var el = byId(builderIds[b]);
+      if (el) el.style.display = (builderIds[b] === activeId) ? '' : 'none';
+    }
+  }
+  window.syncGuidedVisibilityLayoutOnly = syncGuidedVisibilityLayoutOnly;
+
+  function syncGuidedVisibility() {
+    syncGuidedVisibilityLayoutOnly();
+    var st = getGuidedState();
+    var itemType = normalizeGuidedItemTypeForGear(st.itemType);
+    var gunWrap = byId('ccGunBuilder');
+    var gearHub = byId('ccGearGuidedHub');
+    var isWeapon = /weapon/i.test(itemType) && !/heavy/i.test(itemType);
+    if (!isWeapon && (itemType === 'Sniper Rifle' || itemType === 'SMG' || itemType === 'Pistol' || itemType === 'Shotgun' || itemType === 'Assault Rifle')) {
+       isWeapon = true;
+    }
+    var isHeavy = /heavy/i.test(itemType);
+    var isGear = !isWeapon && (isHeavy || itemType);
+
     if (isWeapon) {
-      refreshWeaponDropdowns();
+      if (window.__CC_IMPORT_IN_PROGRESS) {
+        window.__ccDeferredGuidedVisibilityRefresh = true;
+      } else {
+        refreshWeaponDropdowns();
+      }
     } else if (itemType && gearHub) {
       var builderIds = ['ccShieldBuilderDetails', 'ccGrenadeBuilderDetails', 'ccRepkitBuilderDetails', 'ccEnhancementBuilderDetails', 'ccClassModBuilderDetails', 'ccGadgetBuilderDetails', 'ccHeavyBuilderDetails'];
       var activeId = ITEM_TYPE_TO_BUILDER[itemType];
@@ -3465,21 +3530,60 @@
       }
       if (activeId && GEAR_SLOTS_BY_CATEGORY[itemType] && itemType !== 'Class Mod') {
         // Defer Heavy Weapon dropdown refresh to avoid blocking UI (12 filter runs over large dataset)
-        if (itemType === 'Heavy Weapon') {
+        if (window.__CC_IMPORT_IN_PROGRESS) {
+          window.__ccDeferredGuidedVisibilityRefresh = true;
+        } else if (itemType === 'Heavy Weapon') {
           setTimeout(function () { refreshGearDropdowns(itemType); }, 0);
         } else {
           refreshGearDropdowns(itemType);
         }
       }
       if (itemType === 'Class Mod' && typeof window.__ccClassmodChecklistRender === 'function') {
-        try { window.__ccClassmodChecklistRender(); } catch (_) {}
+        if (window.__CC_IMPORT_IN_PROGRESS) {
+          window.__ccDeferredGuidedVisibilityRefresh = true;
+        } else {
+          try { window.__ccClassmodChecklistRender(); } catch (_) {}
+        }
       }
       if (itemType === 'Enhancement' && typeof window.__ccEnhancementChecklistRender === 'function') {
-        try { window.__ccEnhancementChecklistRender(); } catch (_) {}
+        if (window.__CC_IMPORT_IN_PROGRESS) {
+          window.__ccDeferredGuidedVisibilityRefresh = true;
+        } else {
+          try { window.__ccEnhancementChecklistRender(); } catch (_) {}
+        }
       }
-      if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
+      if (typeof window.refreshPartSections === 'function') {
+        if (window.__CC_IMPORT_IN_PROGRESS) {
+          window.__ccDeferredPartSectionsRefresh = true;
+        } else {
+          window.refreshPartSections();
+        }
+      }
+    }
+
+    if (!window.__CC_IMPORT_IN_PROGRESS) {
+      var legCtx = (isWeapon || isHeavy) ? 'weapon' : 'other';
+      if (window.__ccGuidedLegPerkCtx !== legCtx) {
+        window.__ccGuidedLegPerkCtx = legCtx;
+        try { loadGuidedLegendaryPerks(); } catch (_) {}
+      }
+    }
+    try {
+      if (typeof window.refreshPresetPartsForItemType === 'function') window.refreshPresetPartsForItemType();
+    } catch (_) {}
+  }
+
+  function flushDeferredGuidedImportUi() {
+    if (window.__ccDeferredGuidedVisibilityRefresh) {
+      window.__ccDeferredGuidedVisibilityRefresh = false;
+      try { syncGuidedVisibility(); } catch (_) {}
+    }
+    if (window.__ccDeferredPartSectionsRefresh) {
+      window.__ccDeferredPartSectionsRefresh = false;
+      try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(true); } catch (_) {}
     }
   }
+  window.__ccFlushDeferredGuidedVisibility = flushDeferredGuidedImportUi;
 
   function wireGuidedFullStatsPreviewToggle() {
     var el = byId('ccGuidedFullStatsPreview');
@@ -3523,9 +3627,10 @@
         if (gm) st.manufacturer = getSelectValue(gm);
         if (gw) st.weaponType = getSelectValue(gw);
         if (gl) {
-          var lv = Number(gl.value || 50);
-          if (!Number.isFinite(lv) || lv < 1) lv = 50;
-          if (lv > 100) lv = 100;
+          var lv = Number(gl.value || 60);
+          if (!Number.isFinite(lv) || lv < 1) lv = 60;
+          if (typeof window.clampItemLevel === 'function') lv = window.clampItemLevel(lv);
+          else if (lv > 60) lv = 60;
           st.level = lv;
         }
         if (st.itemType || st.manufacturer) {
@@ -3552,9 +3657,10 @@
         if (!suppressSimpleDispatch) wt.dispatchEvent(new Event('change', { bubbles: true }));
       }
       if (gl) {
-        var lv = Number(gl.value || 50);
-        if (!Number.isFinite(lv) || lv < 1) lv = 50;
-        if (lv > 100) lv = 100;
+        var lv = Number(gl.value || 60);
+        if (!Number.isFinite(lv) || lv < 1) lv = 60;
+        if (typeof window.clampItemLevel === 'function') lv = window.clampItemLevel(lv);
+        else if (lv > 60) lv = 60;
         var levEl = byId('level') || byId('level2');
         if (levEl && Number(levEl.value || 0) !== lv) levEl.value = String(lv);
       }
@@ -3747,6 +3853,7 @@
       try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
     }
     function onItemTypeChange() {
+      if (window.__CC_IMPORT_IN_PROGRESS) return;
       clearGuidedImportLock();
       if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
@@ -3757,6 +3864,7 @@
       scheduleGuidedPreviewRefreshIfFullStats();
     }
     function onManufacturerOrWeaponChange() {
+      if (window.__CC_IMPORT_IN_PROGRESS) return;
       clearGuidedImportLock();
       if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
@@ -3766,6 +3874,7 @@
       scheduleGuidedPreviewRefreshIfFullStats();
     }
     function onWeaponTypeChange() {
+      if (window.__CC_IMPORT_IN_PROGRESS) return;
       clearGuidedImportLock();
       if (window.__ccIsHydrating) return;
       syncGuidedToSimple();
@@ -3862,7 +3971,8 @@
     sel.innerHTML = '<option value="">-- Select part --</option>';
     var isClassmodManualSection = String(sel.id || '') === 'partSelectClassMod';
     var pool = parts || [];
-    var limit = Math.min(pool.length, maxItems || 1200);
+    var cap = (window.__CC_IMPORT_HEAVY && window.__CC_IMPORT_IN_PROGRESS) ? 400 : (maxItems || 1200);
+    var limit = Math.min(pool.length, cap);
     var listForPreview = [];
     var seenTok = Object.create(null);
     for (var i = 0; i < limit; i++) {
@@ -3896,11 +4006,25 @@
     }
   }
 
-  function refreshPartSections() {
-    if (window.ensurePartPools) window.ensurePartPools();
-    if (typeof window.__ccEnsureCodeIdMap === 'function') { try { window.__ccEnsureCodeIdMap(); } catch (_) {} }
-    for (var i = 0; i < PART_SECTIONS.length; i++) {
-      var s = PART_SECTIONS[i];
+  function refreshPartSections(forceNow) {
+    if (window.__CC_IMPORT_IN_PROGRESS && !forceNow) {
+      window.__ccDeferredPartSectionsRefresh = true;
+      return;
+    }
+    if (window.__ccPartSectionsRefreshPending) return;
+    window.__ccPartSectionsRefreshPending = true;
+    var startIdx = 0;
+    function fillNextSection() {
+      if (window.ensurePartPools && startIdx === 0) window.ensurePartPools();
+      if (startIdx === 0 && typeof window.__ccEnsureCodeIdMap === 'function') {
+        try { window.__ccEnsureCodeIdMap(); } catch (_) {}
+      }
+      if (startIdx >= PART_SECTIONS.length) {
+        window.__ccPartSectionsRefreshPending = false;
+        refreshToolsStandaloneElementDropdowns();
+        return;
+      }
+      var s = PART_SECTIONS[startIdx];
       var sel = byId(s.selectId);
       var pool = window[s.poolKey];
       if (s.poolKey === 'CLASSMOD_PARTS' && typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === 'function') {
@@ -3909,8 +4033,14 @@
         });
       }
       fillPartSectionSelect(sel, pool || [], 1200);
+      startIdx++;
+      if (startIdx < PART_SECTIONS.length) {
+        (window.requestAnimationFrame || function (fn) { setTimeout(fn, 0); })(fillNextSection);
+      } else {
+        fillNextSection();
+      }
     }
-    refreshToolsStandaloneElementDropdowns();
+    fillNextSection();
   }
 
   function wirePartSectionAdd(selectId) {
@@ -4117,7 +4247,9 @@
         var s = byId('ccGuidedLegendaryPerkSelect');
         if (!s) return;
         var all = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-        var leg = all.filter(function (p) { return p && /legendary\s*perk/i.test(String(p.partType || '')); });
+        var leg = (typeof window.collectLegendaryPerkDropdownParts === 'function')
+          ? window.collectLegendaryPerkDropdownParts(all)
+          : all.filter(function (p) { return p && /legendary\s*perk/i.test(String(p.partType || '')); });
         for (var i = 0; i < leg.length; i++) {
           var tok = getPartToken(leg[i]);
           if (tok) appendToOutCode(tok);
@@ -4148,24 +4280,25 @@
     }
   }
 
+  function bootGuidedBuilder() {
+    init();
+    var advLanding = typeof window.__ccIsAdvSearchDeepLinkV1 === 'function' && window.__ccIsAdvSearchDeepLinkV1();
+    if (advLanding) return;
+    initPartSections();
+    setTimeout(initGuidedExtraSections, 100);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      init();
-      initPartSections();
-      setTimeout(initGuidedExtraSections, 100);
-    });
+    document.addEventListener('DOMContentLoaded', bootGuidedBuilder);
   } else {
-    setTimeout(function () {
-      init();
-      initPartSections();
-      setTimeout(initGuidedExtraSections, 100);
-    }, 50);
+    setTimeout(bootGuidedBuilder, 50);
   }
 
   window.refreshGuidedBuilderDropdowns = refreshWeaponDropdowns;
   window.refreshToolsStandaloneElementDropdowns = refreshToolsStandaloneElementDropdowns;
   window.syncGuidedVisibility = syncGuidedVisibility;
   window.refreshPartSections = refreshPartSections;
+  window.__ccInitPartSectionsV1 = initPartSections;
   window.ensureStaticGuidedIcons = ensureStaticGuidedIcons;
   window.loadGuidedManufacturers = loadGuidedManufacturers;
   window.loadGuidedSkinCamo = loadGuidedSkinCamo;

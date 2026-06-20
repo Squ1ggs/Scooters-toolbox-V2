@@ -2,11 +2,11 @@
   {
     "input": "@Ugd77*Fme!KxMxsmRG}Jms6>TC)kL*KeJT$s73vhK7OETq",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 3308|| {100} {2} {6} {3} {4} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
+    "deserialized": "7, 0, 1, 60| 2, 3308|| {100} {2} {6} {3} {4} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -460,11 +460,11 @@
   {
     "input": "@Ugd77*Fme!KxMxsmRG}Jms6-7N3W=(TYKi((9#ksSDO4>~IRp",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 3308|| {100} {2} {6} {3} {4} {1:14} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
+    "deserialized": "7, 0, 1, 60| 2, 3308|| {100} {2} {6} {3} {4} {1:14} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -946,11 +946,11 @@
   {
     "input": "@UgdhV<Fme!K_Ak&nRG}I*Tqqr?ChAh3%89Cj`h)6&dW9N?3X1>",
     "success": true,
-    "deserialized": "8, 0, 1, 50| 2, 1531|| {53} {2} {6} {1:11} {52} {74} {11} {15} {76} {26} {31} {30} {39} {49} {80}|",
+    "deserialized": "8, 0, 1, 60| 2, 1531|| {53} {2} {6} {1:11} {52} {74} {11} {15} {76} {26} {31} {30} {39} {49} {80}|",
     "itemTypeId": 8,
     "manufacturer": "daedalus",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Bod",
     "rarity": "legendary",
     "parts": [
@@ -1432,11 +1432,11 @@
   {
     "input": "@Ugd77*Fme!K=qylbRG/{Js74JJ3W=(TYKi((9aJmSD%361IRp",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 1332|| {100} {2} {4} {5} {6} {1:11} {64} {74} {70} {15} {26} {38} {37} {43} {51}|",
+    "deserialized": "7, 0, 1, 60| 2, 1332|| {100} {2} {4} {5} {6} {1:11} {64} {74} {70} {15} {26} {38} {37} {43} {51}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -1920,11 +1920,11 @@
   {
     "input": "@Ugd77*Fme!KxMxsmRG}Jms6-7J3W=(TYKi((9#ksSDO4>~IRp",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 3308|| {100} {2} {6} {3} {4} {1:12} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
+    "deserialized": "7, 0, 1, 60| 2, 3308|| {100} {2} {6} {3} {4} {1:12} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -2406,11 +2406,11 @@
   {
     "input": "@Ugd77*Fme!KxMxsmRG}Jms6-7L3W=(TYKi((9#ksSDO4>~IRp",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 3308|| {100} {2} {6} {3} {4} {1:13} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
+    "deserialized": "7, 0, 1, 60| 2, 3308|| {100} {2} {6} {3} {4} {1:13} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -2892,11 +2892,11 @@
   {
     "input": "@Ugd77*Fme!KxMxsmRG}Jms6-7F3W=(TYKi((9#ksSDO4>~IRp",
     "success": true,
-    "deserialized": "7, 0, 1, 50| 2, 3308|| {100} {2} {6} {3} {4} {1:10} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
+    "deserialized": "7, 0, 1, 60| 2, 3308|| {100} {2} {6} {3} {4} {1:10} {64} {74} {70} {15} {28} {36} {35} {42} {50}|",
     "itemTypeId": 7,
     "manufacturer": "ripper",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Scraping Convergence",
     "rarity": "legendary",
     "parts": [
@@ -3378,11 +3378,11 @@
   {
     "input": "@UgxFw!2}TYgTtW?<L=~!0hZ;Im5)~6Q6ZNSxs5z)Ss8gt1sBoxz2m",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 424|| {67} {2} {6} {3} {1:14} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
+    "deserialized": "22, 0, 1, 60| 2, 424|| {67} {2} {6} {3} {1:14} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Kaoson",
     "rarity": "legendary",
     "parts": [
@@ -3891,11 +3891,11 @@
   {
     "input": "@UgdhV<Fme!KU?<QzRG/))sC1~Bs7!t8CMphU4=NAp73vqNCjt",
     "success": true,
-    "deserialized": "8, 0, 1, 50| 2, 1232|| {53} {2} {3} {4} {52} {74} {12} {15} {75} {24} {29} {28} {39} {47} {78}|",
+    "deserialized": "8, 0, 1, 60| 2, 1232|| {53} {2} {3} {4} {52} {74} {12} {15} {75} {24} {29} {28} {39} {47} {78}|",
     "itemTypeId": 8,
     "manufacturer": "daedalus",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Bod",
     "rarity": "legendary",
     "parts": [
@@ -4378,11 +4378,11 @@
   {
     "input": "@UgxFw!2}TYgTtW?<L=~!0hZ-(a5)~6Q6ZNSxs5z)Ss8gt1sBoxz2m",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 424|| {67} {2} {6} {3} {1:11} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
+    "deserialized": "22, 0, 1, 60| 2, 424|| {67} {2} {6} {3} {1:11} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Kaoson",
     "rarity": "legendary",
     "parts": [
@@ -4891,11 +4891,11 @@
   {
     "input": "@UgxFw!2}TYgTtW?<L=~!0hZ-_e5)~6Q6ZNSxs5z)Ss8gt1sBoxz2m",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 424|| {67} {2} {6} {3} {1:12} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
+    "deserialized": "22, 0, 1, 60| 2, 424|| {67} {2} {6} {3} {1:12} {66} {72} {73} {15} {19} {25} {28} {35} {44} {48} {59}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Kaoson",
     "rarity": "legendary",
     "parts": [
@@ -5404,11 +5404,11 @@
   {
     "input": "@Ugd_t@Fme!K>R-@ZRG/*lsJf_osC}q@s87vB#X;pk?Loyt<w5`",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 3061|| {91} {2} {3} {6} {90} {59} {61} {62} {15} {89} {24} {28} {29} {40} {44}|",
+    "deserialized": "9, 0, 1, 60| 2, 3061|| {91} {2} {3} {6} {90} {59} {61} {62} {15} {89} {24} {28} {29} {40} {44}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Panicking T.K's Wave",
     "rarity": "legendary",
     "parts": [
@@ -5887,11 +5887,11 @@
   {
     "input": "@UgdhV<Fme!KU?<QzRG/))sC1~Bs7!q-Cn^qV4=NAp73vqNCjt",
     "success": true,
-    "deserialized": "8, 0, 1, 50| 2, 1232|| {53} {2} {3} {4} {52} {74} {12} {15} {76} {24} {29} {28} {39} {47} {78}|",
+    "deserialized": "8, 0, 1, 60| 2, 1232|| {53} {2} {3} {4} {52} {74} {12} {15} {76} {24} {29} {28} {39} {47} {78}|",
     "itemTypeId": 8,
     "manufacturer": "daedalus",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Bod",
     "rarity": "legendary",
     "parts": [
@@ -6374,11 +6374,11 @@
   {
     "input": "@Ugydj=2}TYgjO7j5hbmN}7Imm0L-/lEQ8Q65Q7uuMx`PUZ`h&WKN{1T40RR",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 3526|| {61} {2} {4} {5} {3} {1:12} {60} {69} {73} {71} {70} {13} {27} {32} {31} {43} {52} {1:48}|",
+    "deserialized": "25, 0, 1, 60| 2, 3526|| {61} {2} {4} {5} {3} {1:12} {60} {69} {73} {71} {70} {13} {27} {32} {31} {43} {52} {1:48}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Katagawa's Revenge",
     "rarity": "legendary",
     "parts": [
@@ -6948,11 +6948,11 @@
   {
     "input": "@Ugd_t@Fme!KAZ^fERG}J`7S$FN5A_aJ5A_x`2Neo63Ka{r3jq",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 3392|| {85} {2} {6} {84} {86} {56} {55} {58} {87} {25} {32} {33} {40} {45}|",
+    "deserialized": "9, 0, 1, 60| 2, 3392|| {85} {2} {6} {84} {86} {56} {55} {58} {87} {25} {32} {33} {40} {45}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Panicking Rainbow Vomit",
     "rarity": "legendary",
     "parts": [
@@ -7404,11 +7404,11 @@
   {
     "input": "@Ugd_t@Fme!K>R-@ZRG/*lsJf_osC}q@s87vB#X;pk?Loyt?Lq(",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 3061|| {91} {2} {3} {6} {90} {59} {61} {62} {15} {89} {24} {28} {29} {40} {45}|",
+    "deserialized": "9, 0, 1, 60| 2, 3061|| {91} {2} {3} {6} {90} {59} {61} {62} {15} {89} {24} {28} {29} {40} {45}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Panicking T.K's Wave",
     "rarity": "legendary",
     "parts": [
@@ -7889,11 +7889,11 @@
   {
     "input": "@UgxFw!2}TYgjGhH5jVjck61AvDg+;/g)kNJyeX0y<4{8*u6lxc09jYDz",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 1338|| {98} {2} {3} {4} {5} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
+    "deserialized": "22, 0, 1, 60| 2, 1338|| {98} {2} {3} {4} {5} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Boory",
     "rarity": "epic",
     "parts": [
@@ -8437,11 +8437,11 @@
   {
     "input": "@UgxFw!2}TYg44(xmjVjck61Aw/LXQfIiixU;x{3N!8Pp!sC{!ubF4Q_yJp=",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 1340|| {98} {2} {3} {4} {5} {1:11} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
+    "deserialized": "22, 0, 1, 60| 2, 1340|| {98} {2} {3} {4} {5} {1:11} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Boory",
     "rarity": "epic",
     "parts": [
@@ -9013,11 +9013,11 @@
   {
     "input": "@UgxFw!2}TYgjGqN6jVjck61AvdLyroJiixU;x{3N!8Pp!sC{!ubF4Q_yJp=",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 1342|| {98} {2} {3} {4} {5} {1:13} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
+    "deserialized": "22, 0, 1, 60| 2, 1342|| {98} {2} {3} {4} {5} {1:13} {7} {80} {72} {74} {75} {15} {18} {29} {33} {34} {45} {53} {58}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Boory",
     "rarity": "epic",
     "parts": [
@@ -9589,11 +9589,11 @@
   {
     "input": "@UgxFw!2}TYg%;pV>iz?Kj-lD>yKJ^kc2bBkv3UvzA3zZH5",
     "success": true,
-    "deserialized": "22, 0, 1, 50| 2, 3531|| {88} {2} {5} {87} {80} {15} {71} {25} {28} {36} {35} {46} {52}|",
+    "deserialized": "22, 0, 1, 60| 2, 3531|| {88} {2} {5} {87} {80} {15} {71} {25} {28} {36} {35} {46} {52}|",
     "itemTypeId": 22,
     "manufacturer": "vladof",
     "itemType": "smg",
-    "level": 50,
+    "level": 60,
     "baseName": "Deep State Birt's Bees",
     "rarity": "legendary",
     "parts": [
@@ -10018,11 +10018,11 @@
   {
     "input": "@Ugvelk2}TYg%#;Wki7M2g5;bfnBq}DVQ+H6OP^D0_Q1uW",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 2083|| {65} {2} {3} {4} {1:13} {64} {72} {14} {27} {35} {34} {41} {58}|",
+    "deserialized": "18, 0, 1, 60| 2, 2083|| {65} {2} {3} {4} {1:13} {64} {72} {14} {27} {35} {34} {41} {58}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Wombo Combo",
     "rarity": "legendary",
     "parts": [
@@ -10442,11 +10442,11 @@
   {
     "input": "@Ugvelk2}TYg%>4}-i7Hg04mDgTBq}DVQ+H6MP^VC{Q1uW",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 3575|| {65} {2} {4} {3} {1:11} {64} {72} {14} {27} {34} {35} {41} {58}|",
+    "deserialized": "18, 0, 1, 60| 2, 3575|| {65} {2} {4} {3} {1:11} {64} {72} {14} {27} {34} {35} {41} {58}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Wombo Combo",
     "rarity": "legendary",
     "parts": [
@@ -10866,11 +10866,11 @@
   {
     "input": "@UgdhV<Fme!K{!Y+3RG}8ts3Ak?P&HAP`czI-9aJCGEYvU5P6P",
     "success": true,
-    "deserialized": "8, 0, 1, 50| 2, 2495|| {53} {2} {5} {6} {1:12} {52} {74} {11} {15} {76} {26} {30} {41} {47} {77}|",
+    "deserialized": "8, 0, 1, 60| 2, 2495|| {53} {2} {5} {6} {1:12} {52} {74} {11} {15} {76} {26} {30} {41} {47} {77}|",
     "itemTypeId": 8,
     "manufacturer": "daedalus",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Bod",
     "rarity": "legendary",
     "parts": [
@@ -11350,11 +11350,11 @@
   {
     "input": "@Ugvelk2}TYg4CD+Ni7Hg04mD&bBq}DVQ+H6OP^D0_Q1uW",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 3264|| {65} {2} {4} {3} {1:12} {64} {72} {14} {27} {35} {34} {41} {58}|",
+    "deserialized": "18, 0, 1, 60| 2, 3264|| {65} {2} {4} {3} {1:12} {64} {72} {14} {27} {35} {34} {41} {58}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Wombo Combo",
     "rarity": "legendary",
     "parts": [
@@ -11774,11 +11774,11 @@
   {
     "input": "@Ugvelk2}TYgOq2&2i7M2g5;asPBq}DVQ+H6OP^D0_Q1uW",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 1825|| {65} {2} {3} {4} {1:10} {64} {72} {14} {27} {35} {34} {41} {58}|",
+    "deserialized": "18, 0, 1, 60| 2, 1825|| {65} {2} {3} {4} {1:10} {64} {72} {14} {27} {35} {34} {41} {58}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Wombo Combo",
     "rarity": "legendary",
     "parts": [
@@ -12198,11 +12198,11 @@
   {
     "input": "@Ugvelk2}TYg47>yyi7M2g5;b%vBq}DVQ+H6MP^VC{Q1uW",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 1136|| {65} {2} {3} {4} {1:14} {64} {72} {14} {27} {34} {35} {41} {58}|",
+    "deserialized": "18, 0, 1, 60| 2, 1136|| {65} {2} {3} {4} {1:14} {64} {72} {14} {27} {34} {35} {41} {58}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Wombo Combo",
     "rarity": "legendary",
     "parts": [
@@ -12622,11 +12622,11 @@
   {
     "input": "@Ugvelk2}TYgjOGXWhbq*fh6@cUCaNYXEUHs=P<>E;P_s~NQR`485d",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 1994|| {63} {2} {5} {1:11} {1} {72} {74} {80} {14} {26} {30} {31} {41} {86} {53} {66}|",
+    "deserialized": "18, 0, 1, 60| 2, 1994|| {63} {2} {5} {1:11} {1} {72} {74} {80} {14} {26} {30} {31} {41} {86} {53} {66}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Collectivist Lucian's Flank",
     "rarity": "legendary",
     "parts": [
@@ -13133,11 +13133,11 @@
   {
     "input": "@Ugvelk2}TYgTnY*OLltUKhZ;6CsG6v-sF<it)j{<^%/f+BokRc",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 289|| {63} {2} {5} {3} {1:13} {1} {74} {80} {72} {13} {26} {30} {41} {86} {67}|",
+    "deserialized": "18, 0, 1, 60| 2, 289|| {63} {2} {5} {3} {1:13} {1} {74} {80} {72} {13} {26} {30} {41} {86} {67}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Collectivist Lucian's Flank",
     "rarity": "legendary",
     "parts": [
@@ -13615,11 +13615,11 @@
   {
     "input": "@Ugvelk2}TYg4EF{4hbq*eh7JuXCaNYXEUHs=P<>E;P_s~NQ6&)",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 1516|| {63} {2} {3} {1:14} {1} {72} {74} {80} {14} {26} {30} {31} {41} {86} {66}|",
+    "deserialized": "18, 0, 1, 60| 2, 1516|| {63} {2} {3} {1:14} {1} {72} {74} {80} {14} {26} {30} {31} {41} {86} {66}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Collectivist Lucian's Flank",
     "rarity": "legendary",
     "parts": [
@@ -14097,11 +14097,11 @@
   {
     "input": "@Ugvelk2}TYgOos{jhbmN}h6)WTEUG3dCTdf4P<>E;P_s~NQ6~`",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 2317|| {63} {2} {4} {1:10} {1} {80} {74} {72} {13} {26} {30} {31} {41} {86} {67}|",
+    "deserialized": "18, 0, 1, 60| 2, 2317|| {63} {2} {4} {1:10} {1} {80} {74} {72} {13} {26} {30} {31} {41} {86} {67}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Collectivist Lucian's Flank",
     "rarity": "legendary",
     "parts": [
@@ -14579,11 +14579,11 @@
   {
     "input": "@Ugvelk2}TYgjO7gahbmN}h71j=CMqT>EUHs=P<>E;P_s~NQ6&)",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 3270|| {63} {2} {4} {1:12} {1} {74} {72} {80} {14} {26} {30} {31} {41} {86} {66}|",
+    "deserialized": "18, 0, 1, 60| 2, 3270|| {63} {2} {4} {1:12} {1} {74} {72} {80} {14} {26} {30} {31} {41} {86} {66}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Collectivist Lucian's Flank",
     "rarity": "legendary",
     "parts": [
@@ -15061,11 +15061,11 @@
   {
     "input": "@Ugvelk2}TYgj91WJRG/`esJ^J2sIaIps5+=Ws6MD#sJf_l2m",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 174|| {93} {2} {4} {3} {94} {76} {80} {17} {26} {31} {30} {42} {90} {56}|",
+    "deserialized": "18, 0, 1, 60| 2, 174|| {93} {2} {4} {3} {94} {76} {80} {17} {26} {31} {30} {42} {90} {56}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Whiskey Foxtrot",
     "rarity": "legendary",
     "parts": [
@@ -15513,11 +15513,11 @@
   {
     "input": "@Ugfs(8Fme!KYF<!k)Swa-sWGTaO{xxR4=NQZ7OEEN7HS>pCIS",
     "success": true,
-    "deserialized": "13, 0, 1, 50| 2, 2965|| {100} {1} {4} {8} {17} {11} {9} {26} {29} {36} {40} {42} {43} {53} {75}|",
+    "deserialized": "13, 0, 1, 60| 2, 2965|| {100} {1} {4} {8} {17} {11} {9} {26} {29} {36} {40} {42} {43} {53} {75}|",
     "itemTypeId": 13,
     "manufacturer": "daedalus",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Oscar Mike",
     "rarity": "legendary",
     "parts": [
@@ -16028,11 +16028,11 @@
   {
     "input": "@Ugfs(8Fme!Kb/g@0)SwPks7MVLs??<3pvI!=phBTip<bbOp>m<#p>84o",
     "success": true,
-    "deserialized": "13, 0, 1, 50| 2, 1051|| {100} {1} {3} {2} {8} {1:11} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
+    "deserialized": "13, 0, 1, 60| 2, 1051|| {100} {1} {3} {2} {8} {1:11} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
     "itemTypeId": 13,
     "manufacturer": "daedalus",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Oscar Mike",
     "rarity": "legendary",
     "parts": [
@@ -16627,11 +16627,11 @@
   {
     "input": "@Ugfs(8Fme!Kb/g@0)SwPks7O_6Qg2XWQFTzEP^nO_P`gmMQ14JT5d",
     "success": true,
-    "deserialized": "13, 0, 1, 50| 2, 1051|| {100} {1} {3} {2} {8} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
+    "deserialized": "13, 0, 1, 60| 2, 1051|| {100} {1} {3} {2} {8} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
     "itemTypeId": 13,
     "manufacturer": "daedalus",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Oscar Mike",
     "rarity": "legendary",
     "parts": [
@@ -17198,11 +17198,11 @@
   {
     "input": "@Ugfs(8Fme!Kb/g@0)SwPks7MVNs??<3pvI!=phBTip<bbOp>m<#p>84o",
     "success": true,
-    "deserialized": "13, 0, 1, 50| 2, 1051|| {100} {1} {3} {2} {8} {1:12} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
+    "deserialized": "13, 0, 1, 60| 2, 1051|| {100} {1} {3} {2} {8} {1:12} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
     "itemTypeId": 13,
     "manufacturer": "daedalus",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Oscar Mike",
     "rarity": "legendary",
     "parts": [
@@ -17797,11 +17797,11 @@
   {
     "input": "@Ugfs(8Fme!Kb/g@0)SwPks7MVJs??<3pvI!=phBTip<bbOp>m<#p>84o",
     "success": true,
-    "deserialized": "13, 0, 1, 50| 2, 1051|| {100} {1} {3} {2} {8} {1:10} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
+    "deserialized": "13, 0, 1, 60| 2, 1051|| {100} {1} {3} {2} {8} {1:10} {10} {9} {23} {81} {26} {32} {36} {39} {45} {44} {55} {75}|",
     "itemTypeId": 13,
     "manufacturer": "daedalus",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Oscar Mike",
     "rarity": "legendary",
     "parts": [
@@ -18396,11 +18396,11 @@
   {
     "input": "@UgbV{rFme!Kc0JHoRG/*Fs6;g?Eb1I89cmqFQ*}^(P<>FdP`^+k5d",
     "success": true,
-    "deserialized": "3, 0, 1, 50| 2, 1883|| {81} {2} {3} {5} {4} {6} {80} {51} {52} {53} {13} {26} {31} {30} {41} {47} {65}|",
+    "deserialized": "3, 0, 1, 60| 2, 1883|| {81} {2} {3} {5} {4} {6} {80} {51} {52} {53} {13} {26} {31} {30} {41} {47} {65}|",
     "itemTypeId": 3,
     "manufacturer": "jakobs",
     "itemType": "pistol",
-    "level": 50,
+    "level": 60,
     "baseName": "Prowling Seventh Sense",
     "rarity": "legendary",
     "parts": [
@@ -18941,11 +18941,11 @@
   {
     "input": "@UgbV{rFme!Kcy!QMRG/))s75U+EUFzU9cmrw9BNZ_P<>E;P_s}i5d",
     "success": true,
-    "deserialized": "3, 0, 1, 50| 2, 3612|| {81} {2} {3} {4} {6} {5} {80} {54} {52} {53} {51} {13} {26} {30} {31} {41} {70}|",
+    "deserialized": "3, 0, 1, 60| 2, 3612|| {81} {2} {3} {4} {6} {5} {80} {54} {52} {53} {51} {13} {26} {30} {31} {41} {70}|",
     "itemTypeId": 3,
     "manufacturer": "jakobs",
     "itemType": "pistol",
-    "level": 50,
+    "level": 60,
     "baseName": "Prowling Seventh Sense",
     "rarity": "legendary",
     "parts": [
@@ -19484,11 +19484,11 @@
   {
     "input": "@UgbV{rFme##l4NKss!)e&RHDM7(xKL&&Y{/&HdP1J2lWRv3-t?i5&-",
     "success": true,
-    "deserialized": "3, 0, 1, 50| 2, 402|| {81} {2} {3} {6} {4} {80} {52} {53} {51} {54} {13} {26} {30} {31} {41} {47} {67}|",
+    "deserialized": "3, 0, 1, 60| 2, 402|| {81} {2} {3} {6} {4} {80} {52} {53} {51} {54} {13} {26} {30} {31} {41} {47} {67}|",
     "itemTypeId": 3,
     "manufacturer": "jakobs",
     "itemType": "pistol",
-    "level": 50,
+    "level": 60,
     "baseName": "Prowling Seventh Sense",
     "rarity": "legendary",
     "parts": [
@@ -20029,11 +20029,11 @@
   {
     "input": "@UgbV{rFme!KVm?q$RG/`es6{nuC+Zw(9V#8F9ja4vP_s}i5d",
     "success": true,
-    "deserialized": "3, 0, 1, 50| 2, 1937|| {78} {2} {4} {3} {5} {6} {77} {51} {53} {52} {54} {14} {25} {41} {70}|",
+    "deserialized": "3, 0, 1, 60| 2, 1937|| {78} {2} {4} {3} {5} {6} {77} {51} {53} {52} {54} {14} {25} {41} {70}|",
     "itemTypeId": 3,
     "manufacturer": "jakobs",
     "itemType": "pistol",
-    "level": 50,
+    "level": 60,
     "baseName": "Persuing Phantom Flame",
     "rarity": "legendary",
     "parts": [
@@ -20512,11 +20512,11 @@
   {
     "input": "@Uguq~c2}TYg%$E-;i7M2h5;bIKP&-j!QDIPZP_<C^5C",
     "success": true,
-    "deserialized": "16, 0, 1, 50| 2, 3887|| {66} {2} {5} {4} {1:12} {1} {77} {80} {16} {26} {42} {59}|",
+    "deserialized": "16, 0, 1, 60| 2, 3887|| {66} {2} {5} {4} {1:12} {1} {77} {80} {16} {26} {42} {59}|",
     "itemTypeId": 16,
     "manufacturer": "vladof",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Finnity XXX-L",
     "rarity": "legendary",
     "parts": [
@@ -20907,11 +20907,11 @@
   {
     "input": "@Ugydj=2}TYgOuPfShbq*f8kML+4H-&<nu$7z8i^{2+EgA?D%2^/EmS)M",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 881|| {59} {2} {5} {6} {4} {3} {1:12} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
+    "deserialized": "25, 0, 1, 60| 2, 881|| {59} {2} {5} {6} {4} {3} {1:12} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Complex Root",
     "rarity": "legendary",
     "parts": [
@@ -21484,11 +21484,11 @@
   {
     "input": "@Ugydj=2}TYg%#R7Whbq*f5_PCX4Hrs-nu$7z8i^{2+EgA?D%2^/EmS)M",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 2335|| {59} {2} {5} {4} {3} {6} {1:11} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
+    "deserialized": "25, 0, 1, 60| 2, 2335|| {59} {2} {5} {4} {3} {6} {1:11} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Complex Root",
     "rarity": "legendary",
     "parts": [
@@ -22061,11 +22061,11 @@
   {
     "input": "@Ugydj=2}TYgjKvGOhbmN~4z;L64I4^>nu$7z8i^{2+EgA?D%2^/EmS)M",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 2950|| {59} {2} {6} {3} {5} {4} {1:13} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
+    "deserialized": "25, 0, 1, 60| 2, 2950|| {59} {2} {6} {3} {5} {4} {1:13} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Complex Root",
     "rarity": "legendary",
     "parts": [
@@ -22638,11 +22638,11 @@
   {
     "input": "@Ugydj=2}TYgj4seURG/{ps6#Dks8AZzNz_bKNz_Qxrt+Xtp-!Q0q1qt;",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 90|| {59} {2} {4} {6} {3} {5} {1:10} {20} {67} {73} {66} {65} {13} {28} {36} {35} {43} {54}|",
+    "deserialized": "25, 0, 1, 60| 2, 90|| {59} {2} {4} {6} {3} {5} {1:10} {20} {67} {73} {66} {65} {13} {28} {36} {35} {43} {54}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Complex Root",
     "rarity": "legendary",
     "parts": [
@@ -23215,11 +23215,11 @@
   {
     "input": "@Ugydj=2}TYgjMoghhbq*f64j_f4IN5@nu$7z8i^{2+EgA?D%2^/EmS)M",
     "success": true,
-    "deserialized": "25, 0, 1, 50| 2, 3246|| {59} {2} {5} {4} {6} {3} {1:14} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
+    "deserialized": "25, 0, 1, 60| 2, 3246|| {59} {2} {5} {4} {6} {3} {1:14} {20} {73} {67} {65} {66} {13} {28} {36} {35} {43} {54}|",
     "itemTypeId": 25,
     "manufacturer": "maliwan",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Anaretic Complex Root",
     "rarity": "legendary",
     "parts": [
@@ -23792,11 +23792,11 @@
   {
     "input": "@Ugxp/&2}TYg%%2B3gDTXa5/sv36IBwG64j/Ys8Fass9UIX2m",
     "success": true,
-    "deserialized": "23, 0, 1, 50| 2, 1855|| {19} {2} {3} {4} {20} {74} {66} {68} {14} {27} {32} {31} {43} {52}|",
+    "deserialized": "23, 0, 1, 60| 2, 1855|| {19} {2} {3} {4} {20} {74} {66} {68} {14} {27} {32} {31} {43} {52}|",
     "itemTypeId": 23,
     "manufacturer": "ripper",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Hyperventilating Stray",
     "rarity": "legendary",
     "parts": [
@@ -24250,11 +24250,11 @@
   {
     "input": "@Ugxp/&2}TYg%*O>fgDO;`5;bfn4eBJSCaNT=Q+-gaP`gm;Q2h`",
     "success": true,
-    "deserialized": "23, 0, 1, 50| 2, 1423|| {19} {2} {6} {4} {1:13} {20} {67} {74} {66} {14} {30} {38} {45} {53} {62}|",
+    "deserialized": "23, 0, 1, 60| 2, 1423|| {19} {2} {6} {4} {1:13} {20} {67} {74} {66} {14} {30} {38} {45} {53} {62}|",
     "itemTypeId": 23,
     "manufacturer": "ripper",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Hyperventilating Stray",
     "rarity": "legendary",
     "parts": [
@@ -24736,11 +24736,11 @@
   {
     "input": "@Ugd_t@Fme!KW?fKNRH1&NdZON-VxdwZ00",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 2899|| {80} {2} {79} {78} {23} {40} {68}|",
+    "deserialized": "9, 0, 1, 60| 2, 2899|| {80} {2} {79} {78} {23} {40} {68}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Hot Slugger",
     "rarity": "legendary",
     "parts": [
@@ -24989,11 +24989,11 @@
   {
     "input": "@Ugxp/&2}TYg%*O>fgDO;`5;a^X4eBJSCaNT=Q+-gaP`gm;Q2h`",
     "success": true,
-    "deserialized": "23, 0, 1, 50| 2, 1423|| {19} {2} {6} {4} {1:11} {20} {67} {74} {66} {14} {30} {38} {45} {53} {62}|",
+    "deserialized": "23, 0, 1, 60| 2, 1423|| {19} {2} {6} {4} {1:11} {20} {67} {74} {66} {14} {30} {38} {45} {53} {62}|",
     "itemTypeId": 23,
     "manufacturer": "ripper",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "baseName": "Hyperventilating Stray",
     "rarity": "legendary",
     "parts": [
@@ -25475,11 +25475,11 @@
   {
     "input": "@Uguq~c2}TYg%$5sUi7Hg07L^h;6Lk/c2i2)Qs8y&/s9LCAsC=k?2m",
     "success": true,
-    "deserialized": "16, 0, 1, 50| 2, 2859|| {69} {2} {4} {5} {68} {73} {75} {25} {14} {30} {37} {38} {42} {46} {60} {62}|",
+    "deserialized": "16, 0, 1, 60| 2, 2859|| {69} {2} {4} {5} {68} {73} {75} {25} {14} {30} {37} {38} {42} {46} {60} {62}|",
     "itemTypeId": 16,
     "manufacturer": "vladof",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -26017,11 +26017,11 @@
   {
     "input": "@Uguq~c2}TYg4D<t9i7Hg15/t8l6O/J+2Nec&2NeqS2XzZo4)qST4*>",
     "success": true,
-    "deserialized": "16, 0, 1, 50| 2, 992|| {69} {2} {6} {4} {68} {75} {76} {25} {16} {27} {32} {31} {43} {50} {55} {61}|",
+    "deserialized": "16, 0, 1, 60| 2, 992|| {69} {2} {6} {4} {68} {75} {76} {25} {16} {27} {32} {31} {43} {50} {55} {61}|",
     "itemTypeId": 16,
     "manufacturer": "vladof",
     "itemType": "sniper",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -26561,11 +26561,11 @@
   {
     "input": "@Ugd_t@Fme!KY8TL2RG/*lsF<j>sCTG%sJEy%s641xs9gv",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 725|| {85} {2} {3} {6} {72} {86} {55} {56} {87} {24} {28} {40} {45}|",
+    "deserialized": "9, 0, 1, 60| 2, 725|| {85} {2} {3} {6} {72} {86} {55} {56} {87} {24} {28} {40} {45}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Panicking Rainbow Vomit",
     "rarity": "legendary",
     "parts": [
@@ -26988,11 +26988,11 @@
   {
     "input": "@Ugd_t@Fme!K<`htARG}7?s75{NB<dY19;#A%QE^avP<c?XP`eN",
     "success": true,
-    "deserialized": "9, 0, 1, 50| 2, 563|| {98} {2} {5} {4} {6} {7} {67} {55} {56} {10} {93} {24} {29} {28} {40} {45}|",
+    "deserialized": "9, 0, 1, 60| 2, 563|| {98} {2} {5} {4} {6} {7} {67} {55} {56} {10} {93} {24} {29} {28} {40} {45}|",
     "itemTypeId": 9,
     "manufacturer": "jakobs",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Panicking Dullahan",
     "rarity": "epic",
     "parts": [
@@ -27476,11 +27476,11 @@
   {
     "input": "@UgeU_{Fme!KdL2+{RG}7?s74JJid0F/Kh#LnPt;D-9MmXOC{!%eEd&",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 861|| {98} {2} {5} {4} {6} {1:11} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
+    "deserialized": "10, 0, 1, 60| 2, 861|| {98} {2} {5} {4} {6} {1:11} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Stellium",
     "rarity": "epic",
     "parts": [
@@ -27994,11 +27994,11 @@
   {
     "input": "@UgeU_{Fme!KdL2+{RG}7?s74JNid0F/Kh#LnPt;D-9MmXOC{!%eEd&",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 861|| {98} {2} {5} {4} {6} {1:13} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
+    "deserialized": "10, 0, 1, 60| 2, 861|| {98} {2} {5} {4} {6} {1:13} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Stellium",
     "rarity": "epic",
     "parts": [
@@ -28512,11 +28512,11 @@
   {
     "input": "@UgeU_{Fme!KdL2+{RG}7?s74JHid0F/Kh#LnPt;D-9MmXOC{!%eEd&",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 861|| {98} {2} {5} {4} {6} {1:10} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
+    "deserialized": "10, 0, 1, 60| 2, 861|| {98} {2} {5} {4} {6} {1:10} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Stellium",
     "rarity": "epic",
     "parts": [
@@ -29030,11 +29030,11 @@
   {
     "input": "@UgeU_{Fme!KdL2+{RG}7?s74JPid0F/Kh#LnPt;D-9MmXOC{!%eEd&",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 861|| {98} {2} {5} {4} {6} {1:14} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
+    "deserialized": "10, 0, 1, 60| 2, 861|| {98} {2} {5} {4} {6} {1:14} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Stellium",
     "rarity": "epic",
     "parts": [
@@ -29548,11 +29548,11 @@
   {
     "input": "@UgeU_{Fme!KdL2+{RG}7?s74JLid0F/Kh#LnPt;D-9MmXOC{!%eEd&",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 861|| {98} {2} {5} {4} {6} {1:12} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
+    "deserialized": "10, 0, 1, 60| 2, 861|| {98} {2} {5} {4} {6} {1:12} {8} {66} {63} {65} {79} {77} {25} {33} {32} {40} {43}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Stellium",
     "rarity": "epic",
     "parts": [
@@ -30066,11 +30066,11 @@
   {
     "input": "@UgeU_{Fme!KbZk&+RG}I*Z0J!hQU6e3P;pRuP_t0E5C",
     "success": true,
-    "deserialized": "10, 0, 1, 50| 2, 3354|| {100} {2} {6} {1:13} {7} {71} {63} {16} {24} {29} {41} {44}|",
+    "deserialized": "10, 0, 1, 60| 2, 3354|| {100} {2} {6} {1:13} {7} {71} {63} {16} {24} {29} {41} {44}|",
     "itemTypeId": 10,
     "manufacturer": "maliwan",
     "itemType": "shotgun",
-    "level": 50,
+    "level": 60,
     "baseName": "Quincunx Kickballer",
     "rarity": "legendary",
     "parts": [
@@ -30467,11 +30467,11 @@
   {
     "input": "@Uge8^+m/)}}$pj+I#/@fPq}o>p6hE360t2;g00",
     "success": true,
-    "deserialized": "300, 0, 1, 50| 9, 1| 2, 3471|| {9} {8} {246:26} {248:[17 16]} {246:1}|",
+    "deserialized": "300, 0, 1, 60| 9, 1| 2, 3471|| {9} {8} {246:26} {248:[17 16]} {246:1}|",
     "itemTypeId": 300,
     "manufacturer": "ripper",
     "itemType": "shield",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -30672,11 +30672,11 @@
   {
     "input": "@Uge8^+m/)}}$poTIAi_*cph-oleRV+bqlqDg+P44",
     "success": true,
-    "deserialized": "300, 0, 1, 50| 9, 1| 10, 1| 2, 1155|| {9} {8} {246:26} {248:[17 6]} {246:5}|",
+    "deserialized": "300, 0, 1, 60| 9, 1| 10, 1| 2, 1155|| {9} {8} {246:26} {248:[17 6]} {246:5}|",
     "itemTypeId": 300,
     "manufacturer": "ripper",
     "itemType": "shield",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -30877,11 +30877,11 @@
   {
     "input": "@Uge8&&m/)}}!gOw+MZNDQXi)E~3jh",
     "success": true,
-    "deserialized": "292, 0, 1, 50| 2, 1741|| {5} {247:79} {1} {247:90}|",
+    "deserialized": "292, 0, 1, 60| 2, 1741|| {5} {247:79} {1} {247:90}|",
     "itemTypeId": 292,
     "manufacturer": "tediore",
     "itemType": "enhancement",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -31075,11 +31075,11 @@
   {
     "input": "@Uge8jxm/)}}!r1wsMHOm&G&zJ500",
     "success": true,
-    "deserialized": "278, 0, 1, 50| 2, 3894|| {5} {2} {245:[25 76]}|",
+    "deserialized": "278, 0, 1, 60| 2, 3894|| {5} {2} {245:[25 76]}|",
     "itemTypeId": 278,
     "manufacturer": "ripper",
     "itemType": "gadget",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -31735,11 +31735,11 @@
   {
     "input": "@Ugvelk2}TYgOw0``jVjcl8g-~4Lyx+Nnu)53+Eg7>AJiYzEYw<5Jk-z!00",
     "success": true,
-    "deserialized": "18, 0, 1, 50| 2, 3473|| {98} {2} {5} {6} {3} {1:12} {7} {75} {73} {74} {13} {26} {30} {31} {41} {85} {56} {1:30}|",
+    "deserialized": "18, 0, 1, 60| 2, 3473|| {98} {2} {5} {6} {3} {1:12} {7} {75} {73} {74} {13} {26} {30} {31} {41} {85} {56} {1:30}|",
     "itemTypeId": 18,
     "manufacturer": "vladof",
     "itemType": "assault_rifle",
-    "level": 50,
+    "level": 60,
     "baseName": "Globalist Buzzymuzz",
     "rarity": "epic",
     "parts": [
@@ -32277,11 +32277,11 @@
   {
     "input": "@Ugb)KvFme!Kc2!VlRG}KRs7T#Ib!rZ359$>v90C",
     "success": true,
-    "deserialized": "4, 0, 1, 50| 2, 2651|| {96} {2} {6} {5} {8} {59} {14} {25} {29} {39} {48}|",
+    "deserialized": "4, 0, 1, 60| 2, 2651|| {96} {2} {6} {5} {8} {59} {14} {25} {29} {39} {48}|",
     "itemTypeId": 4,
     "manufacturer": "order",
     "itemType": "pistol",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -32618,11 +32618,11 @@
   {
     "input": "@Uge8;)m/)}}!pv%*M!jz*s8H{t!6UOpDgX",
     "success": true,
-    "deserialized": "296, 0, 1, 50| 2, 1619|| {6} {247:77} {2} {247:[56 211 162]}|",
+    "deserialized": "296, 0, 1, 60| 2, 1619|| {6} {247:77} {2} {247:[56 211 162]}|",
     "itemTypeId": 296,
     "manufacturer": "ripper",
     "itemType": "enhancement",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -32912,11 +32912,11 @@
   {
     "input": "@Ugr$!Lm/)}}!dwRxs#5KvxgkFQ",
     "success": true,
-    "deserialized": "287, 0, 1, 50| 2, 231|| {2} {10} {246:[23 31]}|",
+    "deserialized": "287, 0, 1, 60| 2, 231|| {2} {10} {246:[23 31]}|",
     "itemTypeId": 287,
     "manufacturer": "tediore",
     "itemType": "shield",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -33061,11 +33061,11 @@
   {
     "input": "@Ug#2fK2}TYg%+Cu-iHg)J)ce%w)NR!NRPAVR2p0e",
     "success": true,
-    "deserialized": "255, 0, 1, 50| 2, 2975|| {68} {8} {37} {247} {227} {107} {255} {234:[24 44]}|",
+    "deserialized": "255, 0, 1, 60| 2, 2975|| {68} {8} {37} {247} {227} {107} {255} {234:[24 44]}|",
     "itemTypeId": 255,
     "manufacturer": "forgeknight",
     "itemType": "class_mod",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -33401,11 +33401,11 @@
   {
     "input": "@Ugr$!Lm/)}}!fb7zL{+MNZ9u!518Uzm00",
     "success": true,
-    "deserialized": "287, 0, 1, 50| 2, 1707|| {4} {10} {246:22} {237:25} {246:49}|",
+    "deserialized": "287, 0, 1, 60| 2, 1707|| {4} {10} {246:22} {237:25} {246:49}|",
     "itemTypeId": 287,
     "manufacturer": "tediore",
     "itemType": "shield",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -33581,11 +33581,11 @@
   {
     "input": "@Uge8v#m/)}}!u-gfN4@VSXj1Qs3jh",
     "success": true,
-    "deserialized": "286, 0, 1, 50| 2, 3103|| {7} {247:79} {9} {247:88}|",
+    "deserialized": "286, 0, 1, 60| 2, 3103|| {7} {247:79} {9} {247:88}|",
     "itemTypeId": 286,
     "manufacturer": "cov",
     "itemType": "enhancement",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -33779,11 +33779,11 @@
   {
     "input": "@Uge8&&m/)}}!ql3eM7=L8Xb=",
     "success": true,
-    "deserialized": "292, 0, 1, 50| 2, 2389|| {4} {247:80} {1}|",
+    "deserialized": "292, 0, 1, 60| 2, 2389|| {4} {247:80} {1}|",
     "itemTypeId": 292,
     "manufacturer": "tediore",
     "itemType": "enhancement",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -33925,11 +33925,11 @@
   {
     "input": "@Uge8Cmm/)}}!srE^L^UdoL6t+zL+wS?t`q<",
     "success": true,
-    "deserialized": "256, 0, 1, 50| 2, 186|| {67} {6} {280} {50} {57} {93} {234:34}|",
+    "deserialized": "256, 0, 1, 60| 2, 186|| {67} {6} {280} {50} {57} {93} {234:34}|",
     "itemTypeId": 256,
     "manufacturer": "exo_soldier",
     "itemType": "class_mod",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -34191,11 +34191,11 @@
   {
     "input": "@Uge8Cmm/)}}!szUvlc+<5F{oXrp9a<AplX)~00",
     "success": true,
-    "deserialized": "256, 0, 1, 50| 2, 3738|| {67} {3} {272} {45} {335} {398} {234:28}|",
+    "deserialized": "256, 0, 1, 60| 2, 3738|| {67} {3} {272} {45} {335} {398} {234:28}|",
     "itemTypeId": 256,
     "manufacturer": "exo_soldier",
     "itemType": "class_mod",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -34457,11 +34457,11 @@
   {
     "input": "@Uge8Cmm/)}}!qkeOl&C/UF{oXrxu~)RHRhmdM`KME00",
     "success": true,
-    "deserialized": "256, 0, 1, 50| 2, 2133|| {68} {3} {275} {45} {89} {338} {401} {234:[102 11]}|",
+    "deserialized": "256, 0, 1, 60| 2, 2133|| {68} {3} {275} {45} {89} {338} {401} {234:[102 11]}|",
     "itemTypeId": 256,
     "manufacturer": "exo_soldier",
     "itemType": "class_mod",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -34797,11 +34797,11 @@
   {
     "input": "@Ugr$xKm/)}}!a(StMiuIOG}%O&;E_(U00",
     "success": true,
-    "deserialized": "285, 0, 1, 50| 2, 3584|| {6} {2} {243:[105 98 56 77 11]}|",
+    "deserialized": "285, 0, 1, 60| 2, 3584|| {6} {2} {243:[105 98 56 77 11]}|",
     "itemTypeId": 285,
     "manufacturer": "order",
     "itemType": "repair_kit",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",
@@ -34991,11 +34991,11 @@
   {
     "input": "@Ugr$oHm/)}}!gzn6L=~!iG&!US00",
     "success": true,
-    "deserialized": "279, 0, 1, 50| 2, 2030|| {4} {2} {246:[25 37]}|",
+    "deserialized": "279, 0, 1, 60| 2, 2030|| {4} {2} {246:[25 37]}|",
     "itemTypeId": 279,
     "manufacturer": "maliwan",
     "itemType": "shield",
-    "level": 50,
+    "level": 60,
     "parts": [
       {
         "subtype": "none",

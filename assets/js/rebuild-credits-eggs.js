@@ -144,6 +144,14 @@
     document.documentElement.classList.toggle('stxEggFullAnim', enabled && isEggThemeActive());
   }
 
+  function syncAnimPauseForVisibility(){
+    try {
+      document.documentElement.classList.toggle('stx-anim-paused', !!document.hidden);
+    } catch (_) {}
+  }
+  syncAnimPauseForVisibility();
+  document.addEventListener('visibilitychange', syncAnimPauseForVisibility);
+
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCredits);
   else initCredits();
 })();

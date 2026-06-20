@@ -1527,18 +1527,37 @@
     var catalogSelection = Object.create(null);
     var serialSearchRenderLimit = 80;
     var lastFilteredRows = [];
+    var SERIAL_SEARCH_DEBOUNCE_MS = 350;
+    var SERIAL_MIN_QUERY_LEN = 2;
+    var serialSearchDebounceTimer = null;
+    var catalogSearchIndexReady = false;
+    var INDEX_CHUNK_SIZE = 2000;
+    var catalogIndexInFlight = false;
 
     function escapeHtml(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     function loadCatalogSerials() {
-      if (catalogSerials) return Promise.resolve(catalogSerials);
+      if (catalogSerials && catalogSerials.length) return Promise.resolve(catalogSerials);
+      if (catalogLoadPromise) return catalogLoadPromise;
+      var ensure = (typeof window.__ccEnsureSerialsCatalog === 'function')
+        ? window.__ccEnsureSerialsCatalog()
+        : null;
+      if (ensure) {
+        catalogLoadPromise = ensure.then(function (arr) {
+          catalogSerials = Array.isArray(arr) ? arr : [];
+          return catalogSerials;
+        }).catch(function () {
+          catalogSerials = [];
+          return catalogSerials;
+        });
+        return catalogLoadPromise;
+      }
       if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) {
         catalogSerials = window.STX_SERIALS_DATA.serials;
         return Promise.resolve(catalogSerials);
       }
-      if (catalogLoadPromise) return catalogLoadPromise;
       var proto = (typeof location !== 'undefined' && location.protocol) || '';
       if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
         catalogSerials = [];
@@ -1558,17 +1577,82 @@
       return catalogLoadPromise;
     }
 
+    function buildCatalogSearchHay(item, allowDecode) {
+      var parts = [
+        String(item.name || '').toLowerCase(),
+        String(item.serial || '').toLowerCase(),
+      ];
+      if (item.familyId != null && item.itemId != null) {
+        parts.push(String(item.familyId) + ':' + String(item.itemId));
+      }
+      if (item.idRaw) parts.push(String(item.idRaw).toLowerCase());
+      if (allowDecode) {
+        var meta = parseSerialMeta(item.serial);
+        if (meta.familyId != null && meta.itemId != null) {
+          parts.push(String(meta.familyId) + ':' + String(meta.itemId));
+        }
+        if (meta.name) parts.push(String(meta.name).toLowerCase());
+      }
+      return parts.join('\x00');
+    }
+
+    function scheduleCatalogIndexStep(fn) {
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(function () { fn(); }, { timeout: 120 });
+      } else {
+        setTimeout(fn, 0);
+      }
+    }
+
+    function ensureCatalogSearchIndex(done) {
+      if (catalogSearchIndexReady || !catalogSerials || !catalogSerials.length) {
+        if (done) done();
+        return;
+      }
+      if (catalogIndexInFlight) {
+        ensureCatalogSearchIndex.__pendingDone = done;
+        return;
+      }
+      catalogIndexInFlight = true;
+      var i = 0;
+      function step() {
+        var end = Math.min(i + INDEX_CHUNK_SIZE, catalogSerials.length);
+        for (; i < end; i++) {
+          if (!catalogSerials[i].__searchHay) {
+            catalogSerials[i].__searchHay = buildCatalogSearchHay(catalogSerials[i], false);
+          }
+        }
+        if (i < catalogSerials.length) {
+          scheduleCatalogIndexStep(step);
+        } else {
+          catalogSearchIndexReady = true;
+          catalogIndexInFlight = false;
+          var pending = ensureCatalogSearchIndex.__pendingDone;
+          ensureCatalogSearchIndex.__pendingDone = null;
+          if (done) done();
+          if (pending && pending !== done) pending();
+        }
+      }
+      step();
+    }
+
+    function buildLibrarySearchHay(it) {
+      var name = String(it.name || lookupNameBySerial(it.serial) || '').toLowerCase();
+      return [
+        name,
+        String(it.serial || '').toLowerCase(),
+      ].join('\x00');
+    }
+
     function catalogMatches(item, q) {
       if (!q) return true;
-      var name = String(item.name || '').toLowerCase();
-      var serial = String(item.serial || '').toLowerCase();
-      if (name.indexOf(q) >= 0) return true;
-      if (serial.indexOf(q) >= 0) return true;
-      var meta = parseSerialMeta(item.serial);
-      var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-      if (idStr && idStr.toLowerCase().indexOf(q) >= 0) return true;
-      if (meta.name && String(meta.name).toLowerCase().indexOf(q) >= 0) return true;
-      return false;
+      var hay = item.__searchHay || buildCatalogSearchHay(item, false);
+      if (hay.indexOf(q) >= 0) return true;
+      if (!/\d/.test(q)) return false;
+      if (!item.__searchHayDecoded) {
+        item.__searchHayDecoded = buildCatalogSearchHay(item, true);
+      }
+      return item.__searchHayDecoded.indexOf(q) >= 0;
     }
 
     function isRowSelected(row) {
@@ -1815,11 +1899,10 @@
       }
       for (var i = 0; i < library.length; i++) {
         var it = library[i];
-        var meta = parseSerialMeta(it.serial);
-        var name = (it.name || meta.name || lookupNameBySerial(it.serial) || '').toLowerCase();
-        var idStr = (meta.familyId != null && meta.itemId != null) ? (meta.familyId + ':' + meta.itemId) : '';
-        var serial = (it.serial || '').toLowerCase();
-        if (!q || name.indexOf(q) >= 0 || idStr.toLowerCase().indexOf(q) >= 0 || serial.indexOf(q) >= 0) {
+        var hay = it.__searchHay || buildLibrarySearchHay(it);
+        if (!it.__searchHay) it.__searchHay = hay;
+        if (!q || hay.indexOf(q) >= 0) {
+          var meta = parseSerialMeta(it.serial);
           pushRow({
             serial: it.serial,
             name: meta.name || lookupNameBySerial(it.serial),
@@ -1831,22 +1914,42 @@
       return filtered;
     }
 
-    function applyFilter() {
+    function runApplyFilter() {
       loadPasteIntoLibraryIfEmpty();
       var q = (searchInput && searchInput.value || '').trim().toLowerCase();
       if (!q) serialSearchRenderLimit = 80;
       if (!catalogSerials) {
         if (statusEl) statusEl.textContent = 'Loading item catalog…';
         loadCatalogSerials().then(function () {
-          var filtered = buildFilteredRows(q);
-          if (statusEl) {
-            var libN = library.length;
-            statusEl.textContent = q
-              ? filtered.length + ' match(es) · catalog + your list' + (libN ? ' (' + libN + ' pasted)' : '')
-              : (catalogSerials.length + ' items in catalog' + (libN ? ' · ' + libN + ' in your list' : '') + '. Type to search.');
+          function paint() {
+            var filtered = buildFilteredRows(q);
+            if (statusEl) {
+              var libN = library.length;
+              statusEl.textContent = q
+                ? filtered.length + ' match(es) · catalog + your list' + (libN ? ' (' + libN + ' pasted)' : '')
+                : (catalogSerials.length + ' items in catalog' + (libN ? ' · ' + libN + ' in your list' : '') + '. Type to search.');
+            }
+            renderResults(filtered);
           }
-          renderResults(filtered);
+          if (q && q.length >= SERIAL_MIN_QUERY_LEN) {
+            ensureCatalogSearchIndex(paint);
+          } else {
+            paint();
+          }
         });
+        return;
+      }
+      if (!catalogSearchIndexReady && q && q.length >= SERIAL_MIN_QUERY_LEN) {
+        if (statusEl) statusEl.textContent = 'Building search index…';
+        ensureCatalogSearchIndex(function () { runApplyFilter(); });
+        return;
+      }
+      if (q && q.length < SERIAL_MIN_QUERY_LEN) {
+        if (statusEl) {
+          statusEl.textContent = 'Type at least ' + SERIAL_MIN_QUERY_LEN + ' characters to search '
+            + catalogSerials.length + ' catalog items.';
+        }
+        renderResults([]);
         return;
       }
       var filtered = buildFilteredRows(q);
@@ -1857,6 +1960,19 @@
           : (catalogSerials.length + ' items in catalog' + (libN2 ? ' · ' + libN2 + ' in your list' : '') + '. Type to search.');
       }
       renderResults(filtered);
+    }
+
+    function scheduleApplyFilter(immediate) {
+      clearTimeout(serialSearchDebounceTimer);
+      if (immediate) {
+        runApplyFilter();
+        return;
+      }
+      serialSearchDebounceTimer = setTimeout(runApplyFilter, SERIAL_SEARCH_DEBOUNCE_MS);
+    }
+
+    function applyFilter() {
+      scheduleApplyFilter(false);
     }
 
     var pasteBtn = byId('serialLibraryPasteBtn');
@@ -1902,8 +2018,12 @@
         this.value = '';
       });
     }
-    if (searchInput) searchInput.addEventListener('input', applyFilter);
-    if (searchInput) searchInput.addEventListener('keyup', applyFilter);
+    if (searchInput) {
+      searchInput.addEventListener('input', function () { scheduleApplyFilter(false); });
+      searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') scheduleApplyFilter(true);
+      });
+    }
     if (selectAllBtn) selectAllBtn.addEventListener('click', function () {
       for (var s = 0; s < lastFilteredRows.length; s++) setRowSelected(lastFilteredRows[s], true);
       applyFilter();
@@ -2014,7 +2134,14 @@
       if (statusEl) statusEl.textContent = 'Imported ' + codes.length + ' serial(s) into editor.';
     });
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
-    applyFilter();
+    loadCatalogSerials().then(function () {
+      if (statusEl) {
+        var libN0 = library.length;
+        statusEl.textContent = (catalogSerials ? catalogSerials.length : 0) + ' items in catalog'
+          + (libN0 ? (' · ' + libN0 + ' in your list') : '') + '. Type to search.';
+      }
+      renderResults(buildFilteredRows(''));
+    });
   };
 
   function initYamlTextareaDragDrop() {
@@ -2078,19 +2205,25 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
+      var defer = (typeof requestIdleCallback === 'function')
+        ? function (fn) { requestIdleCallback(fn, { timeout: 2500 }); }
+        : function (fn) { setTimeout(fn, 500); };
+      defer(function () {
         if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
         if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
         if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
         initYamlTextareaDragDrop();
-      }, 100);
+      });
     });
   } else {
-    setTimeout(function () {
+    var deferNow = (typeof requestIdleCallback === 'function')
+      ? function (fn) { requestIdleCallback(fn, { timeout: 2500 }); }
+      : function (fn) { setTimeout(fn, 500); };
+    deferNow(function () {
       if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
       if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
       if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
       initYamlTextareaDragDrop();
-    }, 100);
+    });
   }
 })();

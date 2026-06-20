@@ -461,11 +461,11 @@
 
     function getItemLevel() {
       var el = itemLevelInput || document.getElementById('item-level');
-      if (!el) return 61;
+      if (!el) return 60;
       var n = parseInt(el.value, 10);
-      if (!Number.isFinite(n)) return 61;
+      if (!Number.isFinite(n)) return 60;
       if (n < 1) return 1;
-      if (n > 61) return 61;
+      if (n > 60) return 60;
       return n;
     }
 

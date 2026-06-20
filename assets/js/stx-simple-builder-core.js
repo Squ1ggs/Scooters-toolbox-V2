@@ -42,7 +42,7 @@
     itemType: '',
     manufacturer: '',
     weaponType: '',
-    level: 61,
+    level: 60,
     rarity: '',
     idMode: true,
     allParts: false,
@@ -2004,7 +2004,7 @@ function getAllParts(){
       itemType,
       manufacturer: getVal(gm),
       weaponType: getVal(gw),
-      level: Number(gl && gl.value || 61) || 61
+      level: Number(gl && gl.value || 60) || 60
     };
   }
 
@@ -2917,57 +2917,25 @@ function getAllParts(){
     }catch(_e){}
     return '';
   }
+  try {
+    window.stxPearlGearCatalogRowForPart = stxPearlGearCatalogRowForPart;
+    window.stxEnhancementCoreEffectText = stxEnhancementCoreEffectText;
+  } catch (_e) {}
 
-  /** In-game / card “red text” (effects line) for custom-select secondary row — works for barrels, perks, legends. */
+  /** In-game / card “red text” (flavor quote) — catalog only; see partEffectDescForDropdown for abilities. */
   function stxPartRedTextSubForDropdown(p){
-    if (!p) return '';
-    const efRaw = String(p.effects != null ? p.effects : (p.effect ?? p.effects_text ?? '')).trim();
-    if (!efRaw) return stxEnhancementCoreEffectText(p);
-    const s = efRaw;
-    let idx = -1;
-    let sepLen = 0;
-    const seps = [' - ', ' – ', ' — ', ' \u2013 ', ' \u2014 '];
-    for (let si = 0; si < seps.length; si++){
-      const j = s.indexOf(seps[si]);
-      if (j >= 0 && (idx < 0 || j < idx)){
-        idx = j;
-        sepLen = seps[si].length;
-      }
+    if (typeof window.partRedTextForDropdown === 'function') {
+      try { return String(window.partRedTextForDropdown(p) || '').trim(); } catch (_e) {}
     }
-    let perk = '';
-    let body = '';
-    if (idx >= 0){
-      perk = s.slice(0, idx).trim();
-      body = s.slice(idx + sepLen).trim();
-    } else {
-      const m = s.match(/\s[\u2013\u2014\-]\s/);
-      if (m && m.index != null){
-        idx = m.index;
-        sepLen = m[0].length;
-        perk = s.slice(0, idx).trim();
-        body = s.slice(idx + sepLen).trim();
-      } else if (s.length <= 52 && s.indexOf('.') === -1 && s.split(/\s+/).length <= 6){
-        perk = s;
-      } else {
-        body = s;
-      }
-    }
-    let line = '';
-    if (body) line = perk ? (perk + ' — ' + body) : body;
-    else if (perk && s.length > 52) line = s;
-    else if (perk) line = perk;
-    else line = s;
-    line = line.replace(/\s+/g, ' ').trim();
-    if (line.length > 240) line = line.slice(0, 237) + '…';
-    return line;
+    const row = stxPearlGearCatalogRowForPart(p);
+    const red = row && row.redText ? String(row.redText).trim() : '';
+    return red.length > 240 ? red.slice(0, 237) + '…' : red;
   }
 
   function stxBarrelSlotLegendaryPrimaryTone(p, schemaItem, category){
     if (!p || !schemaItem) return false;
     if (!isBarrelFamilySchemaSlot(schemaItem, category)) return false;
     if (stxPartLooksLegendaryBarrel(p) || stxPartCarriesLegendaryEffectWeaponFamilyBarrel(p)) return true;
-    // Heavy and some licensed rows omit `part_barrel` / strict partType — red flavor text still means legendary card styling.
-    if (String(stxPartRedTextSubForDropdown(p) || '').trim()) return true;
     return false;
   }
 
@@ -2978,6 +2946,15 @@ function getAllParts(){
     opt.removeAttribute('data-cc-icon-alt');
     const iconUrl = stxResolvePartIconUrl(p, schemaItem, category);
     if (iconUrl) stxSetOptionDataCcIconFromUrl(opt, iconUrl);
+    if (typeof window.stxApplyPartDropdownMeta === 'function') {
+      try {
+        window.stxApplyPartDropdownMeta(opt, p, {
+          isBarrelSlot: isBarrelFamilySchemaSlot(schemaItem, category),
+          allowLegendaryTone: true
+        });
+        return;
+      } catch (_e) {}
+    }
     const redSub = stxPartRedTextSubForDropdown(p);
     if (redSub) opt.setAttribute('data-cc-barrel-sub', redSub);
     else opt.removeAttribute('data-cc-barrel-sub');
@@ -4105,6 +4082,10 @@ function getAllParts(){
           const isAcc = ptNorm === 'body accessory';
           const isBoltSlotMis = ptNorm === 'body' && (codeL.includes('part_body_bolt') || codeL.includes('part_body_flap'));
           if (!(isAcc || isBoltSlotMis)) return false;
+        } else if (String(partType||'').trim().toLowerCase() === 'firmware') {
+          const codeL = String(normCode(code) || '').toLowerCase();
+          const ptL = String(pt||'').trim().toLowerCase();
+          if (!(ptL === 'firmware' || /part_firmware|\.part_firmware/i.test(codeL))) return false;
         } else {
           if (String(p.partType||'') !== String(partType||'')) return false;
         }
@@ -4982,9 +4963,13 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       appendIdRawToLabel: true,
       decorateOption(opt, p){
         stxApplyCompPartOptionDecoration(opt, p);
-        const redSub = stxPartRedTextSubForDropdown(p);
-        if (redSub) opt.setAttribute('data-cc-barrel-sub', redSub);
-        else opt.removeAttribute('data-cc-barrel-sub');
+        if (typeof window.stxApplyPartDropdownMeta === 'function') {
+          try { window.stxApplyPartDropdownMeta(opt, p, { isBarrelSlot: false, allowLegendaryTone: true }); } catch (_e) {}
+        } else {
+          const redSub = stxPartRedTextSubForDropdown(p);
+          if (redSub) opt.setAttribute('data-cc-barrel-sub', redSub);
+          else opt.removeAttribute('data-cc-barrel-sub');
+        }
         if (!opt.getAttribute('data-cc-icon')){
           const uR = stxResolvePartIconUrl(p, { partType: 'Rarity', key: 'rarity' }, state.itemType || '');
           if (uR) stxSetOptionDataCcIconFromUrl(opt, uR);
@@ -5024,6 +5009,23 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     }
 
     try { stxSyncCustomSelectIfWrapped($('mainPart')); } catch (_e) {}
+
+    try {
+      var legCtx = 'other';
+      var itUiLeg = String(state.itemType || '').trim();
+      if (itUiLeg === 'Weapon' || stxSimpleBuilderItemTypeIsHeavyUi(itUiLeg)) legCtx = 'weapon';
+      if (window.__ccSimpleLegPerkCtx !== legCtx) {
+        window.__ccSimpleLegPerkCtx = legCtx;
+        if (typeof window.populateLegendaryPerks === 'function') {
+          var ls = document.getElementById('legendaryPerkSelect');
+          if (ls) window.populateLegendaryPerks(ls);
+        }
+      }
+    } catch (_) {}
+
+    try {
+      if (typeof window.refreshPresetPartsForItemType === 'function') window.refreshPresetPartsForItemType();
+    } catch (_) {}
 
     refreshBuilder();
     syncMainPartPreview();
@@ -5122,11 +5124,21 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     const efRaw = String(part.effects != null ? part.effects : (part.effect ?? part.effects_text ?? '')).trim();
     const split = splitEffectPerkBodyForPreview(efRaw);
     if (split.perk) lines.push('<div class="stx-part-preview__barrel-perk">' + escapeHtml(split.perk) + '</div>');
+    const catalogRed = (typeof window.partRedTextForDropdown === 'function')
+      ? String(window.partRedTextForDropdown(part) || '').trim()
+      : stxPartRedTextSubForDropdown(part);
+    if (catalogRed) {
+      lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:2px;">' + escapeHtml(catalogRed.length > 420 ? catalogRed.slice(0, 419) + '…' : catalogRed) + '</div>');
+    }
     const statsRaw = String(part.stats != null ? part.stats : (part.stats_text || '')).replace(/\s+/g, ' ').trim();
     const statsTail = statsRaw ? stripStatsHeadlineIfRedundantForPreview(statsRaw, title) : '';
     const descParts = [];
-    if (split.body) descParts.push(split.body);
-    if (statsTail) descParts.push(statsTail);
+    const effectDesc = (typeof window.partEffectDescForDropdown === 'function')
+      ? String(window.partEffectDescForDropdown(part) || '').trim()
+      : '';
+    if (effectDesc && effectDesc !== catalogRed) descParts.push(effectDesc);
+    else if (split.body && !catalogRed) descParts.push(split.body);
+    if (statsTail && statsTail !== effectDesc) descParts.push(statsTail);
     if (descParts.length){
       const descText = (descParts.length === 2 && split.body)
         ? (split.body + '\n\n' + statsTail)
@@ -5168,7 +5180,15 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     const stats = statsRaw.replace(/\s+/g, ' ').trim();
     if (stats) lines.push('<div><span class="muted">Stats</span> ' + escapeHtml(stats.length > 520 ? stats.slice(0, 519) + '…' : stats) + '</div>');
     const ef = String(part.effects ?? part.effect ?? '').trim();
-    if (ef) lines.push('<div><span class="muted">Effect</span> ' + escapeHtml(ef.length > 360 ? ef.slice(0, 359) + '…' : ef) + '</div>');
+    const effectDesc = (typeof window.partEffectDescForDropdown === 'function')
+      ? String(window.partEffectDescForDropdown(part) || '').trim()
+      : '';
+    if (effectDesc) lines.push('<div><span class="muted">Effect</span> ' + escapeHtml(effectDesc.length > 360 ? effectDesc.slice(0, 359) + '…' : effectDesc) + '</div>');
+    else if (ef) lines.push('<div><span class="muted">Effect</span> ' + escapeHtml(ef.length > 360 ? ef.slice(0, 359) + '…' : ef) + '</div>');
+    const catalogRed = (typeof window.partRedTextForDropdown === 'function')
+      ? String(window.partRedTextForDropdown(part) || '').trim()
+      : stxPartRedTextSubForDropdown(part);
+    if (catalogRed) lines.push('<div class="stx-part-preview__barrel-redtext" style="color:#ff8f8f;font-size:12px;line-height:1.35;margin-top:4px;"><span class="muted">Red text</span> ' + escapeHtml(catalogRed) + '</div>');
     let tip = '';
     try{
       if (typeof window.partTooltipText === 'function'){
@@ -6295,6 +6315,28 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           line2.textContent = tokenForPart(part);
           text.appendChild(line1);
           text.appendChild(line2);
+          try {
+            const effDesc = (typeof window.partEffectDescForDropdown === 'function')
+              ? String(window.partEffectDescForDropdown(part) || '').trim()
+              : '';
+            if (effDesc) {
+              const line3 = document.createElement('div');
+              line3.className = 'small';
+              line3.style.cssText = 'color:rgba(0,243,255,0.82);margin-top:2px;line-height:1.3;';
+              line3.textContent = effDesc.length > 180 ? effDesc.slice(0, 177) + '…' : effDesc;
+              text.appendChild(line3);
+            }
+            const redLine = (typeof window.partRedTextForDropdown === 'function')
+              ? String(window.partRedTextForDropdown(part) || '').trim()
+              : '';
+            if (redLine) {
+              const line4 = document.createElement('div');
+              line4.className = 'small';
+              line4.style.cssText = 'color:#ff7b7b;margin-top:2px;line-height:1.3;font-style:italic;';
+              line4.textContent = '"' + (redLine.length > 160 ? redLine.slice(0, 157) + '…' : redLine) + '"';
+              text.appendChild(line4);
+            }
+          } catch (_e) {}
 
           let rowQty = null;
           if (perRowTickMultiQty){
@@ -6481,6 +6523,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       if (category === 'Enhancement' && schemaItem.key === 'legendary'){
         const core = stxEnhancementCoreEffectText(p);
         if (core) return core;
+      }
+      if (typeof window.partEffectDescForDropdown === 'function'){
+        try{
+          const d = String(window.partEffectDescForDropdown(p) || '').trim();
+          if (d) return d;
+        }catch(_e){}
       }
       if (typeof window.partTooltipText === 'function'){
         try{
@@ -8890,10 +8938,8 @@ function computeFullDeserializedCode(){
       }
     }
 
-    const __bracketRaw = (state.idMode && window.__CC_ENABLE_FAMILY_REF_COMPRESS === true)
-      ? compressFamilyRefsAll(bracketTokens)
-      : bracketTokens;
-    const __bracket = normalizeIdTokensForBaseFamilyWithPrefs(__bracketRaw, baseFamilyId);
+    const __bracketNorm = normalizeIdTokensForBaseFamilyWithPrefs(bracketTokens, baseFamilyId);
+    const __bracket = compressConsecutiveFamilyRefs(__bracketNorm);
 
     const seed = getSeed(base);
     // Order of components after ||: Rarity (Skin), then Parts, then Elements, then Camos.
@@ -9232,13 +9278,31 @@ function computeFullDeserializedCode(){
       $('outList').value = partsListValue;
       if ($('outCode') && (force || window.__CC_LAST_CODE_TARGET === 'simple')) $('outCode').value = code;
       try{
-        const b85 = (code && typeof window.serializeToBase85 === 'function') ? String(window.serializeToBase85(code, undefined, true) || '').trim() : '';
-        if ($('outCodeB85') && (force || window.__CC_LAST_CODE_TARGET === 'simple')) $('outCodeB85').value = b85 || '';
+        const b85El = $('outCodeB85');
+        const showB85 = b85El && (force || window.__CC_LAST_CODE_TARGET === 'simple');
+        if (showB85) {
+          const b85Code = code;
+          if (window.__stxB85RefreshTimer) clearTimeout(window.__stxB85RefreshTimer);
+          window.__stxB85RefreshTimer = setTimeout(function () {
+            window.__stxB85RefreshTimer = 0;
+            try {
+              const b85 = (b85Code && typeof window.serializeToBase85 === 'function')
+                ? String(window.serializeToBase85(b85Code, undefined, true) || '').trim()
+                : '';
+              if ($('outCodeB85')) $('outCodeB85').value = b85 || '';
+            } catch (_e3) {
+              try { if ($('outCodeB85')) $('outCodeB85').value = ''; } catch (_e4) {}
+            }
+          }, force ? 0 : 450);
+        }
       }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
       if (!force) window.__CC_LAST_CODE_TARGET = 'simple';
       $('outJson').value = JSON.stringify(json, null, 2);
-      try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch(_){}
-      try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch(_){}
+      try {
+        if (typeof window.refreshImportedInspector === 'function' && !window.__CC_IMPORT_IN_PROGRESS) {
+          window.refreshImportedInspector();
+        }
+      } catch(_){}
       try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch(_){}
       try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
       try {
@@ -9276,7 +9340,7 @@ function resetAll(){
     state.itemType = 'Weapon';
     state.manufacturer = '';
     state.weaponType = '';
-    state.level = 61;
+    state.level = 60;
     state.rarity = '';
     state.swapBodyLegendary = false;
     state.__seedEnabled = false;
@@ -9459,13 +9523,20 @@ function resetAll(){
     guidedDeserEl.value = deser;
     guidedDeserEl.__ccImportedValue = deser;
     if (guidedSerialEl && typeof window.serializeToBase85 === 'function') {
-      try {
-        var b85 = window.serializeToBase85(deser, undefined, true);
-        if (b85) {
-          guidedSerialEl.value = String(b85).trim();
-          guidedSerialEl.__ccImportedValue = String(b85).trim();
-        }
-      } catch(_) {}
+      var deserForB85 = deser;
+      var applyB85 = function (packed) {
+        if (!guidedSerialEl || !packed) return;
+        guidedSerialEl.value = String(packed).trim();
+        guidedSerialEl.__ccImportedValue = String(packed).trim();
+      };
+      if (window.__CC_IMPORT_HEAVY) {
+        guidedSerialEl.value = '…';
+        setTimeout(function () {
+          try { applyB85(window.serializeToBase85(deserForB85, undefined, true)); } catch (_) {}
+        }, 80);
+      } else {
+        try { applyB85(window.serializeToBase85(deserForB85, undefined, true)); } catch (_) {}
+      }
     }
   }
   
@@ -9484,19 +9555,26 @@ function resetAll(){
       };
       
       if (targetBuilder === 'guided' || targetBuilder === 'both') {
-        runHydrate();
-        setTimeout(function(){
+        if (!window.__CC_IMPORT_HEAVY) {
           runHydrate();
-          try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
-          try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
-          try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-        }, 150);
+          setTimeout(function(){
+            runHydrate();
+            try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+            try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+            try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+          }, 150);
+        } else {
+          setTimeout(function () {
+            try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+            try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+          }, 100);
+        }
       }
 
       if (targetBuilder === 'guided') {
         window.__CC_LAST_CODE_TARGET = 'guided';
         var anchor = document.getElementById('rebuildGuidedBuilderSection');
-        if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (anchor && !window.__CC_IMPORT_HEAVY) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
         try{
           var gi = document.getElementById('ccGuidedItemType');
           if (gi) {
@@ -9534,17 +9612,19 @@ function resetAll(){
     if (lm){
       const lvl = Number(lm[4]);
       if (Number.isFinite(lvl)){
-        const clamped = Math.min(100, Math.max(1, lvl));
-        state.level = clamped;
+        const cap = (typeof window.clampItemLevel === 'function')
+          ? window.clampItemLevel(lvl)
+          : Math.min(60, Math.max(1, lvl));
+        state.level = cap;
         if (!importTarget || importTarget === 'simple' || importTarget === 'both') {
           const le = $('level') || $('level2');
-          if (le) le.value = String(clamped);
+          if (le) le.value = String(cap);
         }
         if (importTarget === 'guided' || importTarget === 'both') {
           const gl = document.getElementById('ccGuidedLevel');
           if (gl) {
-             gl.value = String(clamped);
-             gl.dispatchEvent(new Event('change', { bubbles: true }));
+             gl.value = String(cap);
+             if (!window.__CC_IMPORT_HEAVY) gl.dispatchEvent(new Event('change', { bubbles: true }));
           }
         }
       }
@@ -9600,6 +9680,7 @@ function resetAll(){
     }
     return out;
   }
+  try { window.parseImportTokenList = parseImportTokenList; } catch (_) {}
 
   function tokenIsElement(tok) {
     const s = String(tok || '').trim();
@@ -9610,6 +9691,245 @@ function resetAll(){
       return id === 22 || id === 23 || id === 24 || id === 25 || id === 26;
     }
     return false;
+  }
+
+  function stxSetImportBusy(on) {
+    try {
+      var fb = document.getElementById('importFeedback');
+      if (fb) {
+        fb.textContent = on ? 'Importing long serial…' : fb.textContent;
+        fb.style.opacity = on ? '1' : fb.style.opacity;
+        fb.style.transition = 'opacity 0.2s';
+      }
+      var mount = document.getElementById('ccAdvancedMount');
+      var insp = document.getElementById('importedPartsInspector');
+      var busyStyle = on ? '0.55' : '';
+      if (mount) mount.style.opacity = busyStyle || '';
+      if (insp) insp.style.opacity = busyStyle || '';
+    } catch (_) {}
+  }
+
+  function stxApplyQuietHeaderFromSerial(raw, importTarget) {
+    if (raw.indexOf('||') < 0) return;
+    const dbl = raw.indexOf('||');
+    const head = raw.slice(0, dbl).trim();
+    const hm = head.match(/^\s*(\d+)/);
+    if (!hm || !Number.isFinite(Number(hm[1]))) return;
+    state.familyId = Number(hm[1]);
+    const rRow = (window.STX_RARITIES || []).find(r => Number(r.familyId || r.family) === state.familyId);
+    if (!rRow) return;
+    let rawIt = rRow.itemType || rRow.category || '';
+    if (STX_RARITY_WEAPON_ITEM_TYPES.has(rawIt)) {
+      state.itemType = 'Weapon';
+      if (rawIt === 'Sniper' || rawIt === 'Sniper Rifle') state.weaponType = 'Sniper Rifle';
+      else if (rawIt === 'Submachine Gun') state.weaponType = 'SMG';
+      else if (rawIt === 'Heavy' || rawIt === 'Heavy Weapon') state.weaponType = 'Heavy Weapon';
+      else state.weaponType = rawIt;
+    } else {
+      state.itemType = rawIt;
+    }
+    state.manufacturer = rRow.manufacturer || state.manufacturer;
+    state.itemType = stxNormalizeSimpleBuilderItemTypeUi(state.itemType);
+    if (stxSimpleBuilderItemTypeIsHeavyUi(state.itemType) && !String(state.weaponType || '').trim()) state.weaponType = 'Heavy Weapon';
+
+    const cgi = document.getElementById('ccGuidedItemType');
+    if ((importTarget === 'guided' || importTarget === 'both') && cgi) {
+      let wantCgi = state.itemType;
+      if (wantCgi === 'Weapon' || STX_RARITY_WEAPON_ITEM_TYPES.has(wantCgi)) wantCgi = 'Weapon';
+      if (wantCgi === 'Heavy' || wantCgi === 'Heavy Weapon') wantCgi = 'Heavy Weapon';
+      cgi.value = wantCgi;
+      if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgi);
+    }
+    const cgm = document.getElementById('ccGuidedManufacturer');
+    if ((importTarget === 'guided' || importTarget === 'both') && cgm && state.manufacturer) {
+      cgm.__ccPreferredManufacturer = String(state.manufacturer);
+      cgm.value = state.manufacturer;
+      if (cgm.value !== state.manufacturer) {
+        cgm.appendChild(new Option(state.manufacturer, state.manufacturer));
+        cgm.value = state.manufacturer;
+      }
+      if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm);
+    }
+    const cgw = document.getElementById('ccGuidedWeaponType');
+    if ((importTarget === 'guided' || importTarget === 'both') && cgw && (state.itemType === 'Weapon' || stxSimpleBuilderItemTypeIsHeavyUi(state.itemType)) && state.weaponType) {
+      cgw.value = state.weaponType;
+      if (cgw.value !== state.weaponType) {
+        cgw.appendChild(new Option(state.weaponType, state.weaponType));
+        cgw.value = state.weaponType;
+      }
+      if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgw);
+    }
+    if (typeof window.syncGuidedVisibilityLayoutOnly === 'function') {
+      window.syncGuidedVisibilityLayoutOnly();
+    }
+  }
+
+  function stxSyncGuidedHeaderCustomSelects() {
+    ['ccGuidedItemType', 'ccGuidedManufacturer', 'ccGuidedWeaponType', 'ccGuidedLevel'].forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el && typeof el.__customSelectSync === 'function') {
+        try { el.__customSelectSync(); } catch (_) {}
+      }
+    });
+  }
+
+  function stxHydrateGuidedHeaderAfterImport() {
+    try {
+      const wantMan = String(state.manufacturer || '').trim();
+      const wantWt = String(state.weaponType || '').trim();
+      const cgi = document.getElementById('ccGuidedItemType');
+      const cgm = document.getElementById('ccGuidedManufacturer');
+      const cgw = document.getElementById('ccGuidedWeaponType');
+      if (cgm && wantMan) cgm.__ccPreferredManufacturer = wantMan;
+
+      if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();
+
+      if (cgm && wantMan) {
+        let hasMan = false;
+        try {
+          hasMan = Array.prototype.some.call(cgm.options || [], function (o) {
+            return String(o && o.value || '').trim() === wantMan;
+          });
+        } catch (_) { hasMan = false; }
+        if (!hasMan) cgm.appendChild(new Option(wantMan, wantMan));
+        cgm.value = wantMan;
+      }
+
+      const itemType = (cgi && cgi.value) ? String(cgi.value).trim() : String(state.itemType || '').trim();
+      if (itemType === 'Weapon' && typeof window.loadGuidedWeaponTypes === 'function') {
+        window.loadGuidedWeaponTypes();
+      }
+
+      if (cgw && wantWt && (itemType === 'Weapon' || itemType === 'Heavy Weapon')) {
+        let hasWt = false;
+        try {
+          hasWt = Array.prototype.some.call(cgw.options || [], function (o) {
+            return String(o && o.value || '').trim() === wantWt;
+          });
+        } catch (_) { hasWt = false; }
+        if (!hasWt) cgw.appendChild(new Option(wantWt, wantWt));
+        cgw.value = wantWt;
+      }
+
+      stxSyncGuidedHeaderCustomSelects();
+      try {
+        if (typeof window.__ccForceCustomSelectSync === 'function') {
+          ['ccGuidedItemType', 'ccGuidedManufacturer', 'ccGuidedWeaponType', 'ccGuidedLevel'].forEach(function (id) {
+            const node = document.getElementById(id);
+            if (node) window.__ccForceCustomSelectSync(node);
+          });
+        }
+      } catch (_) {}
+    } catch (_) {}
+  }
+
+  function stxCompleteGuidedLongImportUi(finishImportFn) {
+    stxHydrateGuidedHeaderAfterImport();
+    window.__CC_IMPORT_IN_PROGRESS = false;
+    window.__ccDeferredGuidedVisibilityRefresh = false;
+    window.__ccDeferredPartSectionsRefresh = false;
+    try { if (window.__ccFlushDeferredGuidedVisibility) window.__ccFlushDeferredGuidedVisibility(); } catch (_) {}
+    try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
+    stxSetImportBusy(false);
+    finishImportFn(true);
+  }
+
+  function stxAfterPaint(fn) {
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(function () { requestAnimationFrame(fn); });
+    } else {
+      setTimeout(fn, 16);
+    }
+  }
+
+  function stxRunGuidedLongImportPipeline(ctx) {
+    const rawIn = ctx.raw;
+    const rawLooksPacked = ctx.rawLooksPacked;
+    const importedB85Original = ctx.importedB85Original;
+    const importTarget = ctx.importTarget;
+    const ib = ctx.ib;
+    const finishImportFn = ctx.finishImport;
+
+    stxAfterPaint(function () {
+      let full = rawIn;
+      if (rawLooksPacked && typeof window.deserializeBase85 === 'function') {
+        try {
+          const deser = window.deserializeBase85(rawIn);
+          if (deser && typeof deser === 'string' && deser.trim().length) full = deser.trim();
+        } catch (_) {}
+      }
+
+      stxAfterPaint(function () {
+        window.__CC_LAST_CODE_TARGET = 'guided';
+        const guidedDeserEl = document.getElementById('guidedOutputDeserialized');
+        const guidedSerialEl = document.getElementById('guidedOutputSerial');
+        if (ib) ib.value = full;
+        if (guidedDeserEl) {
+          guidedDeserEl.value = full;
+          guidedDeserEl.__ccImportedValue = full;
+        }
+        if (guidedSerialEl && importedB85Original) {
+          guidedSerialEl.value = importedB85Original;
+          guidedSerialEl.__ccImportedValue = importedB85Original;
+        }
+        applyImportedSerialHeaderToUi(full, importTarget);
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+
+        stxAfterPaint(function () {
+          stxApplyQuietHeaderFromSerial(full, importTarget);
+
+          setTimeout(function () {
+            stxCompleteGuidedLongImportUi(finishImportFn);
+          }, 50);
+        });
+      });
+    });
+  }
+
+  function stxFinishGuidedHeavyImport(full, b85Original, finishImportFn) {
+    window.__CC_LAST_CODE_TARGET = 'guided';
+    const ib = $('importBox');
+    const guidedDeserEl = document.getElementById('guidedOutputDeserialized');
+    const guidedSerialEl = document.getElementById('guidedOutputSerial');
+    if (ib && full) ib.value = full;
+    if (guidedDeserEl && full) {
+      guidedDeserEl.value = full;
+      guidedDeserEl.__ccImportedValue = full;
+    }
+    if (guidedSerialEl) {
+      if (b85Original) {
+        guidedSerialEl.value = b85Original;
+        guidedSerialEl.__ccImportedValue = b85Original;
+      } else {
+        guidedSerialEl.value = '…';
+        const fullCopy = full;
+        setTimeout(function () {
+          try {
+            if (typeof window.serializeToBase85 === 'function') {
+              const b85 = window.serializeToBase85(fullCopy, undefined, true);
+              if (b85) {
+                guidedSerialEl.value = String(b85).trim();
+                guidedSerialEl.__ccImportedValue = String(b85).trim();
+              }
+            }
+          } catch (_) {}
+        }, 100);
+      }
+    }
+    setTimeout(function () {
+      stxHydrateGuidedHeaderAfterImport();
+      window.__CC_IMPORT_IN_PROGRESS = false;
+      window.__ccDeferredGuidedVisibilityRefresh = false;
+      window.__ccDeferredPartSectionsRefresh = false;
+      try { if (window.__ccFlushDeferredGuidedVisibility) window.__ccFlushDeferredGuidedVisibility(); } catch (_) {}
+      try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
+      stxSetImportBusy(false);
+      finishImportFn(true);
+    }, 40);
   }
 
   function importTokens(rawInput, targetBuilder){
@@ -9627,27 +9947,36 @@ function resetAll(){
     if (!raw) return;
     let importedFullOriginal = '';
     let baseFamilyFromHeader = null;
+    let importHeavy = false;
+    let importedB85Original = '';
+    const rawLooksPacked = (raw.indexOf('@u') === 0 || raw.indexOf('@U') === 0 || (raw.indexOf('||') < 0 && raw.indexOf('{') < 0 && raw.length > 20));
+    if (rawLooksPacked) importedB85Original = raw;
     window.__CC_IMPORT_IN_PROGRESS = true;
-    const finishImport = ()=>{
-      // Import dispatches a few delayed synthetic change events; keep the guard
-      // up briefly so they do not clear imported deserialized output.
-      setTimeout(() => { window.__CC_IMPORT_IN_PROGRESS = false; }, 220);
+    const finishImport = (heavy)=>{
+      setTimeout(function () { window.__CC_IMPORT_IN_PROGRESS = false; }, heavy ? 650 : 220);
     };
 
-    // Accept Base85 paste directly, then operate on deserialized text.
-    if ((raw.indexOf('@u') === 0 || raw.indexOf('@U') === 0 || (raw.indexOf('||') < 0 && raw.indexOf('{') < 0 && raw.length > 20)) && typeof window.deserializeBase85 === 'function'){
-      try{
-        const deser = window.deserializeBase85(raw);
-        if (deser && typeof deser === 'string' && deser.trim().length){
-          raw = deser.trim();
-          ib.value = raw;
-        }
-      }catch(_){}
+    const isGuidedLongImport = importTarget === 'guided' && (raw.length > 2200 || rawLooksPacked);
+    if (isGuidedLongImport) {
+      window.__CC_IMPORT_HEAVY = true;
+      stxSetImportBusy(true);
+      stxRunGuidedLongImportPipeline({
+        raw: raw,
+        rawLooksPacked: rawLooksPacked,
+        importedB85Original: importedB85Original,
+        importTarget: importTarget,
+        ib: ib,
+        finishImport: finishImport
+      });
+      return;
     }
-    importedFullOriginal = String(raw || '').trim();
 
-    applyImportedSerialHeaderToUi(raw, importTarget);
-
+    const runProcessImport = function () {
+    if (importHeavy && importTarget === 'guided') {
+      stxApplyQuietHeaderFromSerial(raw, importTarget);
+      stxFinishGuidedHeavyImport(importedFullOriginal, importedB85Original, finishImport);
+      return;
+    }
     // If no part tokens are found, try to detect item type/manufacturer from the header base family ID
     if (raw.indexOf('||') >= 0){
       const dbl = raw.indexOf('||');
@@ -9677,8 +10006,7 @@ function resetAll(){
          if ((importTarget === 'simple' || importTarget === 'both') && $('itemType')) {
            $('itemType').value = state.itemType;
            stxSyncCustomSelectIfWrapped($('itemType'));
-           // Trigger change to ensure simple builder logic (like refreshing manufacturers) fires
-           $('itemType').dispatchEvent(new Event('change', { bubbles: true }));
+           if (!importHeavy) $('itemType').dispatchEvent(new Event('change', { bubbles: true }));
          }
         
          const cgi = document.getElementById('ccGuidedItemType');
@@ -9700,8 +10028,8 @@ function resetAll(){
                if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgi);
             }
 
-            // Force visibility sync and change event
-            cgi.dispatchEvent(new Event('change', { bubbles: true }));
+            // Force visibility sync; defer noisy change handlers on long imports
+            if (!importHeavy) cgi.dispatchEvent(new Event('change', { bubbles: true }));
             if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility();
          }
 
@@ -9727,10 +10055,10 @@ function resetAll(){
                 cgm.value = state.manufacturer;
              }
              if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm);
-             cgm.dispatchEvent(new Event('change', { bubbles: true }));
+             if (!importHeavy) cgm.dispatchEvent(new Event('change', { bubbles: true }));
             
              // SECOND PASS RE-CHECK: Sometimes events clear it
-             setTimeout(function() {
+             if (!importHeavy) setTimeout(function() {
                 if (cgm.value !== state.manufacturer && state.manufacturer) {
                    cgm.value = state.manufacturer;
                    if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgm);
@@ -9758,17 +10086,18 @@ function resetAll(){
                 cgw.value = state.weaponType;
              }
              if (typeof syncGuidedCustomSelectIfWrapped === 'function') syncGuidedCustomSelectIfWrapped(cgw);
-             cgw.dispatchEvent(new Event('change', { bubbles: true }));
+             if (!importHeavy) cgw.dispatchEvent(new Event('change', { bubbles: true }));
            }
          }
          // Final pass to ensure all dependent pools are correctly filtered
-         if (importTarget === 'simple' || importTarget === 'both') {
+         if ((importTarget === 'simple' || importTarget === 'both') && !importHeavy) {
             refreshMainPart();
          }
         }
       }
       raw = raw.slice(dbl + 2).trim();
     }
+
     const tokensRaw = parseImportTokenList(raw);
     const tokens = [];
     const bracketedMap = new Map(); // Map original bracketed string to its expanded individual tokens
@@ -9789,6 +10118,11 @@ function resetAll(){
         const fam = m[1];
         const ids = String(m[2] || '').match(/\d+/g);
         if (ids && ids.length) {
+          const expandCap = importHeavy ? 48 : 512;
+          if (ids.length > expandCap) {
+            tokens.push(t);
+            continue;
+          }
           const expandedForThisBracket = [];
           for (const id of ids) {
             const exp = `{${fam}:${id}}`;
@@ -9812,7 +10146,7 @@ function resetAll(){
     
     if (!tokens.length) {
       refreshOutputs(true);
-      finishImport();
+      finishImport(false);
       return;
     }
 
@@ -10333,24 +10667,96 @@ function resetAll(){
       }
     }
     
-    refreshBuilder();
-    try{
-      if (importedFullOriginal && importedFullOriginal.indexOf('||') >= 0 && (importTarget === 'simple' || importTarget === 'both')){
-        window.__LOCK_IMPORTED_OUTPUT = true;
-        window.__LAST_IMPORTED_DESERIALIZED = importedFullOriginal;
-        const outEl = $('outCode');
-        if (outEl) outEl.value = importedFullOriginal;
-        const outB85El = $('outCodeB85');
-        if (outB85El && typeof window.serializeToBase85 === 'function'){
-          try{
-            const b85 = window.serializeToBase85(importedFullOriginal, undefined, true);
-            outB85El.value = b85 ? String(b85).trim() : '';
-          }catch(_){}
+    function completeImportUi(){
+      const skipSimpleBuilder = importHeavy && importTarget === 'guided';
+      if (!skipSimpleBuilder) refreshBuilder();
+      try{
+        if (importedFullOriginal && importedFullOriginal.indexOf('||') >= 0 && (importTarget === 'simple' || importTarget === 'both')){
+          window.__LOCK_IMPORTED_OUTPUT = true;
+          window.__LAST_IMPORTED_DESERIALIZED = importedFullOriginal;
+          const outEl = $('outCode');
+          if (outEl) outEl.value = importedFullOriginal;
+          const outB85El = $('outCodeB85');
+          if (outB85El && typeof window.serializeToBase85 === 'function'){
+            if (importHeavy) {
+              outB85El.value = '…';
+              const fullCopy = importedFullOriginal;
+              setTimeout(function () {
+                try {
+                  const b85 = window.serializeToBase85(fullCopy, undefined, true);
+                  outB85El.value = b85 ? String(b85).trim() : '';
+                } catch (_) { outB85El.value = ''; }
+              }, 100);
+            } else {
+              try{
+                const b85 = window.serializeToBase85(importedFullOriginal, undefined, true);
+                outB85El.value = b85 ? String(b85).trim() : '';
+              }catch(_){}
+            }
+          }
         }
+      }catch(_){}
+      try{ finalizeCcImportToBuilders(importTarget); }catch(_){}
+      const stagger = importHeavy ? 35 : 0;
+      setTimeout(function () {
+        if (skipSimpleBuilder) {
+          stxHydrateGuidedHeaderAfterImport();
+          window.__CC_IMPORT_IN_PROGRESS = false;
+          window.__ccDeferredGuidedVisibilityRefresh = false;
+          window.__ccDeferredPartSectionsRefresh = false;
+        }
+        try { if (window.__ccFlushDeferredGuidedVisibility) window.__ccFlushDeferredGuidedVisibility(); } catch (_) {}
+        try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+        try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(true); } catch (_) {}
+        setTimeout(function () {
+          try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
+          stxSetImportBusy(false);
+          finishImport(importHeavy);
+        }, stagger);
+      }, stagger);
+    }
+    if (importHeavy) {
+      setTimeout(completeImportUi, 0);
+    } else {
+      completeImportUi();
+    }
+    };
+
+    const runImportPipeline = function () {
+      try {
+        if (rawLooksPacked && typeof window.deserializeBase85 === 'function') {
+          try {
+            const deser = window.deserializeBase85(raw);
+            if (deser && typeof deser === 'string' && deser.trim().length) {
+              raw = deser.trim();
+              ib.value = raw;
+            }
+          } catch (_) {}
+        }
+        importedFullOriginal = String(raw || '').trim();
+        const importTail = raw.indexOf('||') >= 0 ? raw.slice(raw.indexOf('||') + 2) : raw;
+        importHeavy = importedFullOriginal.length > 4000 || importTail.length > 1500 || rawLooksPacked;
+        if (!importHeavy && importTail.length > 800) {
+          try {
+            const braceCount = (importTail.match(/\{/g) || []).length;
+            if (braceCount > 40) importHeavy = true;
+          } catch (_) {}
+        }
+        window.__CC_IMPORT_HEAVY = importHeavy;
+        applyImportedSerialHeaderToUi(raw, importTarget);
+        runProcessImport();
+      } catch (_) {
+        stxSetImportBusy(false);
+        window.__CC_IMPORT_IN_PROGRESS = false;
       }
-    }catch(_){}
-    try{ finalizeCcImportToBuilders(importTarget); }catch(_){}
-    finishImport();
+    };
+
+    if (raw.length > 2200 || rawLooksPacked) {
+      stxSetImportBusy(true);
+      setTimeout(runImportPipeline, 0);
+    } else {
+      runImportPipeline();
+    }
   }
 
   async function copyToClipboard(text){
@@ -10500,8 +10906,8 @@ function resetAll(){
         const skinReady = !!($('skinSelect').options && $('skinSelect').options.length > 1);
         const camoReady = !!(!$('camoSelect') || ($('camoSelect').options && $('camoSelect').options.length > 1));
         const numericReady = hasNumericGroup();
-        if ((skinReady && camoReady && numericReady) || tries > 120) clearInterval(t);
-      }, 150);
+        if ((skinReady && camoReady && numericReady) || tries > 30) clearInterval(t);
+      }, 400);
       setTimeout(resyncSkinCamo, 300);
       setTimeout(resyncSkinCamo, 900);
       setTimeout(resyncSkinCamo, 1800);
@@ -10628,7 +11034,7 @@ function resetAll(){
       await copyToClipboard($('outJson').value||'');
     });
 
-    if ($('btnImport')) $('btnImport').addEventListener('click', ()=>importTokens('', 'both'));
+    // Import buttons are wired in index.html (initImportToBuilder) with target-specific handlers.
 
     // Simple Builder Quick Presets (`{fam:id}` rows → state.extras so serialized code + floating panel stay in sync)
     const simplePresetSel = $('simpleBuilderPresetSelect');
@@ -10681,6 +11087,13 @@ function resetAll(){
     const pools = window.PRESET_BOOST_POOLS || {};
     function tokenForPresetEntry(entry) {
       if (!entry) return '';
+      if (entry.bareId) return '{' + String(entry.bareId) + '}';
+      if (typeof window.MODDED_PRESET_CATALOG !== 'undefined' &&
+          window.MODDED_PRESET_CATALOG &&
+          typeof window.MODDED_PRESET_CATALOG.catalogEntryToToken === 'function') {
+        var ct = window.MODDED_PRESET_CATALOG.catalogEntryToToken(entry);
+        if (ct) return ct;
+      }
       const k = entry.key != null ? entry.key : entry.k;
       const v = entry.value != null ? entry.value : entry.v;
       if (k == null || v == null) return '';
@@ -10725,7 +11138,9 @@ function resetAll(){
       const currentVal = sel.value;
       sel.innerHTML = '<option value="">-- Select Preset --</option>';
       for (const [catKey, catLabel] of cats) {
-        const pool = pools[catKey] || [];
+        const pool = (typeof window.buildPresetPoolForCategory === 'function')
+          ? window.buildPresetPoolForCategory(catKey)
+          : (pools[catKey] || []);
         if (!Array.isArray(pool) || !pool.length) continue;
         const group = document.createElement('optgroup');
         group.label = catLabel;
@@ -10750,11 +11165,11 @@ function resetAll(){
         tries++;
         updateSimplePresets();
         const parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-        if ((parts.length && tries >= 2) || tries > 40) {
+        if ((parts.length && tries >= 2) || tries > 20) {
           clearInterval(sel.__simplePresetReloadTimer);
           sel.__simplePresetReloadTimer = null;
         }
-      }, 250);
+      }, 500);
     }
   }
 
@@ -10787,16 +11202,20 @@ function resetAll(){
     }catch(_){}
     updateModeLabel();
 
+    var advLanding = typeof window.__ccIsAdvSearchDeepLinkV1 === 'function' && window.__ccIsAdvSearchDeepLinkV1();
+
     // Ensure level defaults are sane on first load (some browsers may ignore initial value in srcdoc).
     try{
       const lv = $('level');
-      if (lv && (!String(lv.value||'').trim() || Number(lv.value) <= 1)) lv.value = '61';
+      if (lv && (!String(lv.value||'').trim() || Number(lv.value) <= 1)) lv.value = '60';
       const lv2 = $('level2');
-      if (lv2 && (!String(lv2.value||'').trim() || Number(lv2.value) <= 1)) lv2.value = '61';
-      state.level = 61;
+      if (lv2 && (!String(lv2.value||'').trim() || Number(lv2.value) <= 1)) lv2.value = '60';
+      state.level = 60;
     }catch(_e){}
 
-    refreshTopSelectors();
+    if (!advLanding) {
+      refreshTopSelectors();
+    }
     wireEvents();
     loadSimplePresets();
     refreshOutputs();
@@ -10822,6 +11241,7 @@ function resetAll(){
       window.filterPartsForGuided = filterParts;
       window.stxSelectLogicalDedupeKey = stxSelectLogicalDedupeKey;
       window.stxStableDropdownDedupeKey = stxStableDropdownDedupeKey;
+      window.stxPartCarriesLegendaryEffectWeaponFamilyBarrel = stxPartCarriesLegendaryEffectWeaponFamilyBarrel;
       window.stxPartDropdownRichnessScore = stxPartDropdownRichnessScore;
       window.stxRarityOptgroupLabelFromPart = stxRarityOptgroupLabelFromPart;
       window.stxGrenadeSpawnPrefixForUiManufacturer = stxGrenadeSpawnPrefixForUiManufacturer;
@@ -10832,9 +11252,13 @@ function resetAll(){
       window.importTokens = importTokens;
       window.refreshOutputs = refreshOutputs;
       window.stxPartRedTextSubForDropdown = stxPartRedTextSubForDropdown;
+      window.stxPearlGearCatalogRowForPart = stxPearlGearCatalogRowForPart;
+      window.stxEnhancementCoreEffectText = stxEnhancementCoreEffectText;
       window.__ccFinalizeImportToBuilders = finalizeCcImportToBuilders;
-      if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();
-      if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns();
+      if (!advLanding) {
+        if (typeof window.loadGuidedManufacturers === 'function') window.loadGuidedManufacturers();
+        if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns();
+      }
     } catch (_e) {}
   }
 

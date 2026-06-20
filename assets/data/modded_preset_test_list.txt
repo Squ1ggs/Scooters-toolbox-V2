@@ -1,0 +1,71 @@
+Modded BL4 preset test list — stacks are approximate (combined ≈ perStack^N)
+Source: echobot 394 serials + save-editor.be 300 modded codes
+
+=== WEAPON ===
+DAMAGE (per stack ~×1.05–1.08 for barrel/acc tokens)
+  {22:72}  ×1.08/stack → ×2≈9  ×5≈21  ×10≈30  (wild max 1096)
+  {9:28} {9:55} {9:59} {9:62} {9:68} {9:32} {9:40}  ×1.05/stack → ×2≈15
+  {13:9} {13:13}  DAD AR barrels (max 26–237 seen)
+  {7:66}  BOR SG barrel +Damage (max 180)
+
+CRIT
+  {3:6}   ×2 crit mult PER stack → ×2=1  ×5≈3  (max 34)
+  {24:33} JAK SR scope +Crit
+  {13:10} DAD AR barrel +Crit
+
+AMMO / MAG
+  {18:14} VLA AR 50-round mag (max 60 stacks)
+  {27:75} Rowan perk / FR token
+  {2:15}  DAD PS Torgue mag (max 42)
+  {247:97} Gun Magazine Size enhancement
+
+FIRE RATE
+  {27:15} JAK AR barrel +FR (max 131)
+  {14:1}  Chuck mag +FR
+  {247:90} Gun Fire Rate stat
+
+RELOAD (faster = lower mult)
+  {24:44} {9:61} scope/acc -reload
+  {8:66}  DAD SG barrel -Reload Speed (max 99)
+
+ACCURACY
+  {13:12} {9:48}
+
+SPLASH
+  {6:33}  +Blast radius (max 110) ~×2 per stack
+  {9:89} {24:18}
+
+=== HEAVY ===
+  {289:17} MAL HW +Damage (max 17)
+  {275:23} BOR HW -CD +Damage
+  {282:7}  VLA HW +Ammo body (max 65)
+  {8:40}   +Fire Rate barrel (max 283 save-editor)
+  {282:18} +Splash radius
+
+=== GRENADE (family 245) ===
+  {245:72} Explosive (max 452)
+  {245:76} Nuke (max 164)
+  {245:71} Express cooldown (max 100)
+  {245:70} Overflow extra charge (max 100)
+  {245:39} Damage amp payload
+
+=== SHIELD (family 246) ===
+  {246:54} Capacity +50% (max 214)
+  {246:56} Adaptive (max 810 save-editor)
+
+=== CLASS MOD (family 234) ===
+  {234:19} Damage Dealt +20%/stack (max 212)
+  {234:28} Elemental Damage +20%/stack
+  {234:40} Crit Damage +35%/stack
+  {234:42} Movement speed (max 80)
+
+=== ENHANCEMENT ===
+DAMAGE stats (bare id tokens)
+  {35} AR   {34} Pistol  {32} Shotgun  {31} Sniper  {33} SMG  {247:91} Gun
+CRIT stats
+  {28} SMG  {30} AR  {27} SG  {88} Gun
+FIRMWARE (common stacks)
+  {2} Trauma Bond  {3} Tracker  {4} Airstrike (max 99)  {6} Gadget Ahoy (max 150)  {5} High Caliber
+
+=== REPKIT ===
+  {247:31} cooldown  {243:27-28} immunity  {243:98-102} elemental

@@ -12,6 +12,10 @@
 
   function formatPartsStatsData(part) {
     try {
+      if (typeof window.formatPartStatsSummary === 'function') {
+        var sum = window.formatPartStatsSummary(part, 4);
+        if (sum) return sum.substring(0, 120);
+      }
       var data = window.PARTS_STATS_DATA;
       if (!data) return '';
       var codes = [];
@@ -24,8 +28,6 @@
         var c = String(codes[i] || '').trim();
         if (!c) continue;
         var arr = (data.by_id_raw && data.by_id_raw[c]) || (data.by_part_code && data.by_part_code[c]);
-        // Stats export normalizes part_code casing; dataset casing can differ.
-        // Try lowercased lookups + suffix fallback to avoid missing numeric effects.
         if (!arr && data.by_part_code) {
           arr = data.by_part_code[String(c).toLowerCase()];
         }
@@ -37,14 +39,11 @@
         var out = [];
         for (var j = 0; j < Math.min(arr.length, 4); j++) {
           var s = arr[j];
-          var bucket = (s && s.bucket) ? String(s.bucket).trim() : '';
-          var lbl = BUCKET_LABELS[bucket] || bucket;
-          var v = Number(s && s.stat_value);
-          if (!Number.isFinite(v)) continue;
-          var mult = (s.combine === 'mul') ? v : (1 + v);
-          if (s.invert && mult) mult = 1 / mult;
-          var pct = ((mult - 1) * 100).toFixed(0);
-          out.push((pct >= 0 ? '+' : '') + pct + '% ' + lbl);
+          if (String(s.combine || '').toLowerCase() === 'value' && !/_scale$/i.test(String(s.stat_field || ''))) continue;
+          var line = (typeof window.formatPartStatRowForDisplay === 'function')
+            ? window.formatPartStatRowForDisplay(s)
+            : '';
+          if (line) out.push(line);
         }
         if (out.length) return out.join(', ').substring(0, 120);
       }
@@ -139,6 +138,12 @@
     if (wt && wt !== it) ctx.push('Weapon type: ' + wt);
     if (ctx.length) parts.push(ctx.join(' · '));
     if (stats) parts.push('Effect/Stats: ' + stats);
+    try {
+      if (typeof window.partRedTextForDropdown === 'function') {
+        var rt = q(window.partRedTextForDropdown(part));
+        if (rt) parts.push('Red text: "' + rt + '"');
+      }
+    } catch (_) {}
     return parts.join(' | ') || '';
   }
 

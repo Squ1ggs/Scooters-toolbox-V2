@@ -14,6 +14,49 @@
 
   function byId(id) { return document.getElementById(id); }
 
+  function ccIsAdvSearchDeepLink() {
+    try {
+      if (/ccadvancedpartssearch/i.test(String(location.hash || ''))) return true;
+      var p = new URLSearchParams(location.search);
+      return !!(p.get('advq') || p.get('partq') || p.get('advlikely') || p.get('advspawn'));
+    } catch (_) { return false; }
+  }
+  try { window.__ccIsAdvSearchDeepLinkV1 = ccIsAdvSearchDeepLink; } catch (_) {}
+
+  var deferredFullLoadersDone = false;
+  function runDeferredFullLoaders() {
+    if (deferredFullLoadersDone) return;
+    deferredFullLoadersDone = true;
+    try {
+      if (typeof window.__ccInitPartSectionsV1 === 'function') window.__ccInitPartSectionsV1();
+      else if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
+    } catch (_) {}
+    try { loadLegendaryPerksFallback(); } catch (_) {}
+    try { ensurePresetSectionFallback(); } catch (_) {}
+    try { loadToolsSkinCamoFallback(); } catch (_) {}
+    try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {}
+    try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
+    try {
+      if (typeof window.refreshTopSelectors === 'function') window.refreshTopSelectors();
+    } catch (_) {}
+    try {
+      if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns();
+    } catch (_) {}
+  }
+
+  function scheduleDeferredFullLoaders() {
+    if (deferredFullLoadersDone || window.__ccDeferredFullLoadersScheduled) return;
+    window.__ccDeferredFullLoadersScheduled = true;
+    var run = function () { runDeferredFullLoaders(); };
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(run, { timeout: 4500 });
+    } else {
+      setTimeout(run, 1200);
+    }
+    document.addEventListener('pointerdown', run, { once: true, passive: true });
+    document.addEventListener('keydown', run, { once: true, passive: true });
+  }
+
   /** Collapse duplicate dataset rows that share the same TypeID:ItemID (e.g. main + supplement). Prefer non-supplement rows and full spawn paths. */
   function normalizeIdRawKey(p) {
     if (!p) return '';
@@ -311,24 +354,33 @@
     } catch (_) {}
     patchLegendaryPerkStats();
     ensurePools();
+    try {
+      if (typeof window.__ccEnsureCodeIdMap === 'function') window.__ccEnsureCodeIdMap();
+    } catch (_) {}
+    if (ccIsAdvSearchDeepLink()) {
+      scheduleDeferredFullLoaders();
+      return;
+    }
     try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
     try { loadLegendaryPerksFallback(); } catch (_) {}
     try { ensurePresetSectionFallback(); } catch (_) {}
     try { loadToolsSkinCamoFallback(); } catch (_) {}
     try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {}
     try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
-    (function schedule(k) {
-      if (k > 3) return;
-      setTimeout(function () {
-        try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
-        try { loadLegendaryPerksFallback(); } catch (_) {}
-        try { ensurePresetSectionFallback(); } catch (_) {}
-        try { loadToolsSkinCamoFallback(); } catch (_) {}
-        try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {}
-        try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
-        schedule(k + 1);
-      }, 150);
-    })(1);
+    deferredFullLoadersDone = true;
+    setTimeout(function () {
+      if (window.__ccPartSectionsRefreshRetried) return;
+      var need = false;
+      try {
+        var gunSel = byId('partSelectGun');
+        if (gunSel && gunSel.options && gunSel.options.length <= 1) need = true;
+      } catch (_) {}
+      if (!need) return;
+      window.__ccPartSectionsRefreshRetried = true;
+      try { if (typeof window.refreshPartSections === 'function') window.refreshPartSections(); } catch (_) {}
+      try { loadLegendaryPerksFallback(); } catch (_) {}
+      try { ensurePresetSectionFallback(); } catch (_) {}
+    }, 900);
   }
 
   function runWhenReady() {
@@ -374,6 +426,7 @@
   }
 
   function runSkinCamoEarlyPoll() {
+    if (ccIsAdvSearchDeepLink()) return;
     // skin_data.js is `defer`, so it can finish after the first few seconds.
     // Keep polling long enough that guided/tools dropdowns will populate even if STX_DATASET is slow.
     var tries = 150; // ~30 seconds at 200ms

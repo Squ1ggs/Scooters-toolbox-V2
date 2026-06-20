@@ -1,0 +1,258 @@
+/**
+ * Modded preset catalog — echobot + save-editor.be analysis (Jun 2026).
+ * Stacks multiply: combined ≈ perStackMult^N (model estimate for testing).
+ */
+(function () {
+  'use strict';
+
+  function stacks(perStack, targets) {
+    var out = {};
+    if (!perStack || perStack <= 1) return out;
+    var keys = Object.keys(targets || {});
+    for (var i = 0; i < keys.length; i++) {
+      var label = keys[i];
+      var mult = targets[label];
+      if (!mult || mult <= 1) continue;
+      out[label] = Math.ceil(Math.log(mult) / Math.log(perStack));
+    }
+    return out;
+  }
+
+  var T = { x2: 2, x3: 3, x5: 5, x10: 10 };
+
+  /** @type {Record<string, Record<string, Array>>} */
+  var BY_ITEM_TYPE = {
+    weapon: {
+      damage: [
+        { key: 22, value: '72', perStack: 1.08, note: 'VLA SMG barrel +Damage — extreme stacks in wild (64–1096)', moddedMax: 1096, stackExamples: stacks(1.08, T) },
+        { key: 9, value: '28', perStack: 1.05, note: 'Universal +Damage (scope acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '55', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '59', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '62', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '68', perStack: 1.05, note: 'Universal +Damage (foregrip)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '32', perStack: 1.05, note: 'Universal +Damage (scope acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '40', perStack: 1.05, note: 'Universal +Damage (grip)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 13, value: '9', perStack: 1.05, note: 'Daedalus AR barrel +Damage', moddedMax: 26, stackExamples: stacks(1.05, T) },
+        { key: 13, value: '13', perStack: 1.05, note: 'Daedalus AR barrel 02 +Damage', moddedMax: 237, stackExamples: stacks(1.05, T) },
+        { key: 7, value: '66', perStack: 1.05, note: 'Jakobs SG barrel +Damage', moddedMax: 180, stackExamples: stacks(1.05, T) },
+      ],
+      crit: [
+        { key: 3, value: '6', perStack: 2, note: 'JAK PS Body D +Crit — each stack ≈×2 crit mult', moddedMax: 34, stackExamples: stacks(2, T) },
+        { key: 24, value: '33', perStack: 2, note: 'JAK SR scope +Crit Damage', moddedMax: 20, stackExamples: stacks(2, T) },
+        { key: 13, value: '10', perStack: 1.1, note: 'DAD AR barrel +Crit Damage', moddedMax: 22, stackExamples: stacks(1.1, T) },
+      ],
+      ammo: [
+        { key: 18, value: '14', perStack: 1.02, note: 'VLA AR Mag 02 — 50 round mag base', moddedMax: 60, stackExamples: stacks(1.02, T) },
+        { key: 27, value: '75', perStack: 1.05, note: 'Legendary perk token (Rowan FR) — also in ammo pool', moddedMax: 22, stackExamples: stacks(1.05, T) },
+        { key: 2, value: '15', perStack: 1.03, note: 'DAD PS Torgue mag — high capacity', moddedMax: 42, stackExamples: stacks(1.03, T) },
+        { key: 247, value: '97', perStack: 1.1, note: 'Enhancement Gun Magazine Size', moddedMax: 31, stackExamples: stacks(1.1, T) },
+      ],
+      firerate: [
+        { key: 27, value: '15', perStack: 1.08, note: 'JAK AR barrel +Fire Rate — heavily stacked in modded', moddedMax: 131, stackExamples: stacks(1.08, T) },
+        { key: 14, value: '1', perStack: 1.05, note: 'TED AR Chuck mag +Fire Rate', moddedMax: 23, stackExamples: stacks(1.05, T) },
+        { key: 247, value: '90', perStack: 1.08, note: 'Enhancement Gun Fire Rate', moddedMax: 45, stackExamples: stacks(1.08, T) },
+      ],
+      reload: [
+        { key: 24, value: '44', perStack: 0.92, note: 'Faster reload (invert mult) — JAK SR scope', stackExamples: {} },
+        { key: 9, value: '61', perStack: 0.9, note: 'Faster reload accessory', stackExamples: {} },
+        { key: 8, value: '66', perStack: 0.85, note: 'DAD SG barrel -Reload Speed (faster)', moddedMax: 99, stackExamples: {} },
+      ],
+      accuracy: [
+        { key: 13, value: '12', perStack: 1.05, note: 'DAD AR barrel +Accuracy', moddedMax: 26, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '48', perStack: 1.05, note: 'Universal +Accuracy', stackExamples: stacks(1.05, T) },
+      ],
+      splash: [
+        { key: 6, value: '33', perStack: 2, note: 'TOR PS +Blast Radius — extreme stacks', moddedMax: 110, stackExamples: stacks(2, T) },
+        { key: 9, value: '89', perStack: 1.1, note: 'Splash damage accessory', stackExamples: stacks(1.1, T) },
+        { key: 24, value: '18', perStack: 1.15, note: 'Torgue gyrojets', stackExamples: stacks(1.15, T) },
+      ],
+      firmware: [
+        { bareId: '4', perStack: 1, note: 'Airstrike firmware {4}', moddedMax: 99 },
+        { bareId: '6', perStack: 1, note: 'Gadget Ahoy {6}', moddedMax: 150 },
+        { bareId: '5', perStack: 1, note: 'High Caliber {5}', moddedMax: 40 },
+      ],
+    },
+    heavy: {
+      damage: [
+        { key: 289, value: '17', perStack: 1.05, note: 'MAL HW barrel +Damage — most common in echobot', moddedMax: 17, stackExamples: stacks(1.05, T) },
+        { key: 275, value: '23', perStack: 1.05, note: 'BOR HW barrel -CD +Damage', moddedMax: 25, stackExamples: stacks(1.05, T) },
+        { key: 282, value: '7', perStack: 1.05, note: 'VLA HW body +Ammo/+Damage context', moddedMax: 65, stackExamples: stacks(1.05, T) },
+      ],
+      splash: [
+        { key: 282, value: '18', perStack: 1.1, note: 'VLA HW barrel +Splash Radius', moddedMax: 10, stackExamples: stacks(1.1, T) },
+      ],
+      firerate: [
+        { key: 8, value: '40', perStack: 1.15, note: 'Heavy barrel +Fire Rate stacks', moddedMax: 283, stackExamples: stacks(1.15, T) },
+      ],
+    },
+    grenade: {
+      damage: [
+        { key: 245, value: '72', perStack: 1.15, note: 'Explosive damage stat', moddedMax: 452, stackExamples: stacks(1.15, T) },
+        { key: 245, value: '39', perStack: 1.12, note: 'Damage Amp payload', moddedMax: 99, stackExamples: stacks(1.12, T) },
+        { key: 245, value: '76', perStack: 1.2, note: 'Nuke payload', moddedMax: 164, stackExamples: stacks(1.2, T) },
+      ],
+      reload: [
+        { key: 245, value: '71', perStack: 0.85, note: 'Express cooldown reduction', moddedMax: 100, stackExamples: {} },
+      ],
+      ammo: [
+        { key: 245, value: '70', perStack: 1.1, note: 'Overflow extra charge', moddedMax: 100, stackExamples: stacks(1.1, T) },
+      ],
+    },
+    shield: {
+      ammo: [
+        { key: 246, value: '54', perStack: 1.05, note: 'Capacity +50% perk — heavily stacked', moddedMax: 214, stackExamples: stacks(1.05, T) },
+      ],
+      resistance: [
+        { key: 246, value: '56', perStack: 1.08, note: 'Adaptive shield perk', moddedMax: 810, stackExamples: stacks(1.08, T) },
+      ],
+    },
+    classmod: {
+      damage: [
+        { key: 234, value: '19', perStack: 1.2, note: 'Damage Dealt +20% per stack', moddedMax: 212, stackExamples: stacks(1.2, T) },
+        { key: 234, value: '28', perStack: 1.2, note: 'Elemental Damage +20%', moddedMax: 176, stackExamples: stacks(1.2, T) },
+      ],
+      crit: [
+        { key: 234, value: '40', perStack: 1.35, note: 'Crit Damage +35%', moddedMax: 3, stackExamples: stacks(1.35, T) },
+        { key: 234, value: '14', perStack: 1.1, note: 'Gun Crit Hit Chance +10%', stackExamples: stacks(1.1, T) },
+      ],
+    },
+    enhancement: {
+      damage: [
+        { bareId: '35', perStack: 1.08, note: 'AR Damage {35}', moddedMax: 5, stackExamples: stacks(1.08, T) },
+        { bareId: '34', perStack: 1.08, note: 'Pistol Damage {34}', moddedMax: 15, stackExamples: stacks(1.08, T) },
+        { bareId: '32', perStack: 1.08, note: 'Shotgun Damage {32}', moddedMax: 10, stackExamples: stacks(1.08, T) },
+        { bareId: '31', perStack: 1.08, note: 'Sniper Damage {31}', moddedMax: 10, stackExamples: stacks(1.08, T) },
+        { bareId: '33', perStack: 1.08, note: 'SMG Damage {33}', moddedMax: 5, stackExamples: stacks(1.08, T) },
+        { key: 247, value: '91', perStack: 1.1, note: 'Gun Damage {247:91}', moddedMax: 5, stackExamples: stacks(1.1, T) },
+      ],
+      crit: [
+        { bareId: '28', perStack: 1.1, note: 'SMG Crit Damage {28}', moddedMax: 20, stackExamples: stacks(1.1, T) },
+        { bareId: '30', perStack: 1.1, note: 'AR Crit Damage {30}', moddedMax: 11, stackExamples: stacks(1.1, T) },
+        { bareId: '27', perStack: 1.1, note: 'SG Crit Damage {27}', moddedMax: 5, stackExamples: stacks(1.1, T) },
+        { bareId: '88', perStack: 1.1, note: 'Gun Crit Damage {88}', moddedMax: 7, stackExamples: stacks(1.1, T) },
+      ],
+      ammo: [
+        { key: 247, value: '97', perStack: 1.1, note: 'Gun Magazine Size', moddedMax: 31, stackExamples: stacks(1.1, T) },
+      ],
+      firmware: [
+        { bareId: '2', perStack: 1, note: 'Trauma Bond core {2}', moddedMax: 12 },
+        { bareId: '3', perStack: 1, note: 'Tracker Antenna {3}', moddedMax: 15 },
+        { bareId: '4', perStack: 1, note: 'Airstrike {4}', moddedMax: 99 },
+        { bareId: '6', perStack: 1, note: 'Gadget Ahoy {6}', moddedMax: 150 },
+      ],
+    },
+    repkit: {
+      reload: [
+        { key: 247, value: '31', perStack: 1.15, note: 'Repkit cooldown', stackExamples: stacks(1.15, T) },
+      ],
+      immunity: [
+        { key: 243, value: '27', perStack: 1, note: 'Repkit immunity row', stackExamples: {} },
+        { key: 243, value: '28', perStack: 1, note: 'Repkit immunity row', stackExamples: {} },
+      ],
+      elemental: [
+        { key: 243, value: '98', perStack: 1, note: 'Repkit elemental', stackExamples: {} },
+      ],
+    },
+  };
+
+  function stackGuideText(entry) {
+    if (!entry) return '';
+    var parts = [];
+    if (entry.perStack && entry.perStack !== 1) {
+      parts.push('~×' + Number(entry.perStack).toFixed(3) + ' per stack');
+    }
+    var ex = entry.stackExamples;
+    if (ex && typeof ex === 'object') {
+      var bits = [];
+      if (ex.x2) bits.push('×2≈' + ex.x2);
+      if (ex.x3) bits.push('×3≈' + ex.x3);
+      if (ex.x5) bits.push('×5≈' + ex.x5);
+      if (ex.x10) bits.push('×10≈' + ex.x10);
+      if (bits.length) parts.push('Stacks: ' + bits.join(', '));
+    }
+    if (entry.moddedMax) parts.push('Seen max ' + entry.moddedMax + '/serial');
+    if (entry.note) parts.push(entry.note);
+    return parts.join(' · ');
+  }
+
+  function detectPresetItemType() {
+    try {
+      var g = document.getElementById('ccGuidedItemType');
+      var gv = g ? String(g.value || '').trim().toLowerCase() : '';
+      if (/heavy/.test(gv) || gv === 'gadget') return 'heavy';
+      if (/grenade/.test(gv)) return 'grenade';
+      if (/shield/.test(gv)) return 'shield';
+      if (/class/.test(gv) || /mod/.test(gv)) return 'classmod';
+      if (/enhancement/.test(gv)) return 'enhancement';
+      if (/repkit/.test(gv) || /rep\s*kit/.test(gv)) return 'repkit';
+      if (/weapon|rifle|pistol|shotgun|smg|sniper|assault/.test(gv)) return 'weapon';
+      var stx = document.getElementById('stx_itemType') || document.getElementById('itemType');
+      var sv = stx ? String(stx.value || '').trim().toLowerCase() : '';
+      if (/heavy/.test(sv)) return 'heavy';
+      if (/grenade/.test(sv)) return 'grenade';
+      if (/shield/.test(sv)) return 'shield';
+      if (/class/.test(sv)) return 'classmod';
+      if (/enhancement/.test(sv)) return 'enhancement';
+      if (/repkit/.test(sv)) return 'repkit';
+      if (/weapon|rifle|pistol|shotgun|smg|sniper/.test(sv)) return 'weapon';
+    } catch (_) {}
+    return 'weapon';
+  }
+
+  function getCatalogPool(itemType, category) {
+    var it = BY_ITEM_TYPE[itemType] || BY_ITEM_TYPE.weapon;
+    return (it && it[category]) ? it[category].slice() : [];
+  }
+
+  function mergePools(basePool, catalogPool) {
+    var seen = {};
+    var out = [];
+    function add(e) {
+      if (!e) return;
+      var k = e.bareId ? ('b:' + e.bareId) : (String(e.key != null ? e.key : e.k) + ':' + String(e.value != null ? e.value : e.v));
+      if (seen[k]) return;
+      seen[k] = true;
+      out.push(e);
+    }
+    if (Array.isArray(basePool)) for (var i = 0; i < basePool.length; i++) add(basePool[i]);
+    if (Array.isArray(catalogPool)) for (var j = 0; j < catalogPool.length; j++) add(catalogPool[j]);
+    return out;
+  }
+
+  function catalogEntryToToken(e) {
+    if (!e) return '';
+    if (e.token) return String(e.token).trim();
+    if (e.bareId) return '{' + String(e.bareId).trim() + '}';
+    var k = e.key != null ? e.key : e.k;
+    var v = e.value != null ? e.value : e.v;
+    if (k != null && v != null) return '{' + String(k) + ':' + String(v) + '}';
+    return '';
+  }
+
+  function lookupCatalogEntry(itemType, category, key, value, bareId) {
+    var pool = getCatalogPool(itemType, category);
+    var wantFam = key != null && value != null ? String(key) + ':' + String(value) : '';
+    var wantBare = bareId ? String(bareId) : '';
+    for (var i = 0; i < pool.length; i++) {
+      var e = pool[i];
+      if (wantBare && e.bareId && String(e.bareId) === wantBare) return e;
+      var k = String(e.key) + ':' + String(e.value);
+      if (wantFam && k === wantFam) return e;
+    }
+    return null;
+  }
+
+  window.MODDED_PRESET_CATALOG = {
+    meta: {
+      source: 'echobot modded_serials + save-editor.be catalog',
+      stackModel: 'multiplicative per identical token: combined ≈ perStack^N',
+    },
+    byItemType: BY_ITEM_TYPE,
+    stackGuideText: stackGuideText,
+    detectPresetItemType: detectPresetItemType,
+    getCatalogPool: getCatalogPool,
+    mergePools: mergePools,
+    lookupCatalogEntry: lookupCatalogEntry,
+    catalogEntryToToken: catalogEntryToToken,
+  };
+})();
