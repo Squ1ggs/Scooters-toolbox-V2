@@ -127,9 +127,16 @@
 
     var fullAnimToggle = byId('fullAnimToggle');
     if(fullAnimToggle) {
-      fullAnimToggle.checked = fullAnimEnabled();
+      if (liteUiBlocksFullAnim()) {
+        fullAnimToggle.checked = false;
+        fullAnimToggle.disabled = true;
+        fullAnimToggle.title = 'Full anim is off on mobile / lite mode for smoother loading';
+      } else {
+        fullAnimToggle.checked = fullAnimEnabled();
+      }
       syncFullAnim();
       function onAnimToggleChange(){
+        if (liteUiBlocksFullAnim()) return;
         try { localStorage.setItem(FULLANIM_KEY, fullAnimToggle.checked ? '1' : '0'); } catch(_){}
         syncFullAnim();
       }
@@ -137,9 +144,17 @@
       fullAnimToggle.addEventListener('input', onAnimToggleChange);
     }
   }
+  function liteUiBlocksFullAnim() {
+    try {
+      return document.documentElement.classList.contains('stx-lite-ui');
+    } catch (_) {
+      return false;
+    }
+  }
   function syncFullAnim(){
     var cb = byId('fullAnimToggle');
     var enabled = cb ? !!cb.checked : fullAnimEnabled();
+    if (liteUiBlocksFullAnim()) enabled = false;
     document.documentElement.classList.toggle('fullAnimButtons', enabled);
     document.documentElement.classList.toggle('stxEggFullAnim', enabled && isEggThemeActive());
   }

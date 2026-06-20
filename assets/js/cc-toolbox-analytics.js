@@ -14,6 +14,16 @@
   }
 
   /** file://, iframe sandbox, etc. — remote Netlify has no CORS for Origin "null"; skip to avoid console noise. */
+  function isAllowedToolboxHost(hostname) {
+    var h = String(hostname || '').toLowerCase();
+    return (
+      h === 'scooters-toolbox.netlify.app' ||
+      h === 'save-editor.be' ||
+      h === 'www.save-editor.be' ||
+      h.slice(-15) === '.save-editor.be'
+    );
+  }
+
   function allowRemoteAnalyticsEndpoints() {
     if (isDesktopNoTelemetry()) return false;
     if (typeof location === 'undefined') return false;
@@ -26,7 +36,7 @@
     }
     try {
       var h = String(location.hostname || '').toLowerCase();
-      if (h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be') return true;
+      if (isAllowedToolboxHost(h)) return true;
       /* GitHub Pages mirror: allow POST when meta points at the shared HTTPS analytics API. */
       if (h === 'github.io' || h.slice(-10) === '.github.io') {
         var ep = configuredEndpoint();

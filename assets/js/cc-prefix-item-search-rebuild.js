@@ -54,7 +54,9 @@
   var godrollSearchDebounceTimer = null;
 
   function scheduleIndexStep(fn) {
-    if (typeof requestIdleCallback === 'function') {
+    if (typeof window.stxScheduleIdle === 'function') {
+      window.stxScheduleIdle(fn, 120);
+    } else if (typeof requestIdleCallback === 'function') {
       requestIdleCallback(function () { fn(); }, { timeout: 120 });
     } else {
       setTimeout(fn, 0);

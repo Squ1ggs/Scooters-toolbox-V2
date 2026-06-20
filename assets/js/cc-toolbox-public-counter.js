@@ -27,10 +27,21 @@
     return m && m.content ? String(m.content).trim() : '';
   }
 
+  function isAllowedToolboxHost(hostname) {
+    var h = String(hostname || '').toLowerCase();
+    return (
+      h === 'scooters-toolbox.netlify.app' ||
+      h === 'save-editor.be' ||
+      h === 'www.save-editor.be' ||
+      h.slice(-15) === '.save-editor.be' ||
+      h === 'localhost' ||
+      h === '127.0.0.1'
+    );
+  }
+
   function shouldPreferConfiguredCounter() {
     try {
-      var h = String(location.hostname || '').toLowerCase();
-      return h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be' || h === 'localhost' || h === '127.0.0.1';
+      return isAllowedToolboxHost(location.hostname);
     } catch (_) {
       return false;
     }

@@ -48,10 +48,12 @@
     if (deferredFullLoadersDone || window.__ccDeferredFullLoadersScheduled) return;
     window.__ccDeferredFullLoadersScheduled = true;
     var run = function () { runDeferredFullLoaders(); };
-    if (typeof requestIdleCallback === 'function') {
+    if (typeof window.stxScheduleIdle === 'function') {
+      window.stxScheduleIdle(run, 4500);
+    } else if (typeof requestIdleCallback === 'function') {
       requestIdleCallback(run, { timeout: 4500 });
     } else {
-      setTimeout(run, 1200);
+      setTimeout(run, document.documentElement.classList.contains('stx-lite-ui') ? 1800 : 1200);
     }
     document.addEventListener('pointerdown', run, { once: true, passive: true });
     document.addEventListener('keydown', run, { once: true, passive: true });

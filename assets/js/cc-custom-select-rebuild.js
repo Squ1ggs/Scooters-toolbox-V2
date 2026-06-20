@@ -69,6 +69,7 @@
 
     function iconFilterForOption(o) {
       if (!o || !o.getAttribute) return '';
+      if (document.documentElement.classList.contains('stx-lite-ui')) return '';
       return String(o.getAttribute('data-cc-icon-filter') || '').trim();
     }
 
@@ -455,14 +456,17 @@
   function init() {
     var selects = Array.prototype.slice.call(document.querySelectorAll('select.editor-select, .editor-page select, .app-shell select'));
     var idx = 0;
+    var chunk = document.documentElement.classList.contains('stx-lite-ui') ? 4 : 8;
     function wrapChunk() {
-      var end = Math.min(idx + 8, selects.length);
+      var end = Math.min(idx + chunk, selects.length);
       for (; idx < end; idx++) wrapSelect(selects[idx]);
       if (idx < selects.length) {
-        if (typeof requestIdleCallback === 'function') {
+        if (typeof window.stxScheduleIdle === 'function') {
+          window.stxScheduleIdle(wrapChunk, 1200);
+        } else if (typeof requestIdleCallback === 'function') {
           requestIdleCallback(wrapChunk, { timeout: 1200 });
         } else {
-          setTimeout(wrapChunk, 0);
+          setTimeout(wrapChunk, document.documentElement.classList.contains('stx-lite-ui') ? 16 : 0);
         }
       }
     }
@@ -503,10 +507,12 @@
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootCustomSelectRebuild);
+  } else if (typeof window.stxScheduleIdle === 'function') {
+    window.stxScheduleIdle(bootCustomSelectRebuild, 2500);
   } else if (typeof requestIdleCallback === 'function') {
     requestIdleCallback(bootCustomSelectRebuild, { timeout: 2500 });
   } else {
-    setTimeout(bootCustomSelectRebuild, 0);
+    setTimeout(bootCustomSelectRebuild, document.documentElement.classList.contains('stx-lite-ui') ? 600 : 0);
   }
 
   try {
