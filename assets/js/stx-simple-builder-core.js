@@ -891,6 +891,15 @@
     }
   }
 
+  function stxLegendTailTokenFromDisplayName(nm) {
+    const s = String(nm || '').trim();
+    if (!s) return '';
+    const m = s.match(/(?:^|\s)([A-Za-z][A-Za-z0-9_'-]*)\s*$/);
+    if (!m) return '';
+    if (/^(barrel|body|part|legendary|comp|magazine|scope|grip|stock|accessory)$/i.test(m[1])) return '';
+    return stxNormPearlAllowKey(m[1]);
+  }
+
   function stxPearlGearCatalogRowForPart(p){
     if (!p) return null;
     const cat = window.STX_PEARL_GEAR_CATALOG && window.STX_PEARL_GEAR_CATALOG.byNorm;
@@ -902,6 +911,8 @@
     ];
     const barrelTok = typeof stxBarrelPearlLegendTokenFromPart === 'function' ? stxBarrelPearlLegendTokenFromPart(p) : '';
     if (barrelTok) keys.push(barrelTok);
+    const nameTail = stxLegendTailTokenFromDisplayName(p.name || p.legendaryName);
+    if (nameTail) keys.push(nameTail);
     for (let i = 0; i < keys.length; i++){
       const k = keys[i];
       if (k && cat[k]) return cat[k];
@@ -946,9 +957,9 @@
     const fromComp = stxRarityLegendTokenFromPart(p);
     if (fromComp) return fromComp;
     const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
-    let m = code.match(/part_barrel_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
+    let m = code.match(/part_(?:barrel|body)_\d+_([a-z0-9_]+)$/);
     if (m) return stxNormPearlAllowKey(m[1]);
-    m = code.match(/part_body_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
+    m = code.match(/part_(?:barrel|body)_(?:\d+[a-z]_)([a-z0-9_]+)$/);
     if (m) return stxNormPearlAllowKey(m[1]);
     return '';
   }
@@ -5023,10 +5034,6 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }
     } catch (_) {}
 
-    try {
-      if (typeof window.refreshPresetPartsForItemType === 'function') window.refreshPresetPartsForItemType();
-    } catch (_) {}
-
     refreshBuilder();
     syncMainPartPreview();
   }
@@ -8019,10 +8026,24 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const tok = String(tok0 || '').trim();
       if (!tok) continue;
 
-      // Already-compressed list; flush any pending run and keep as-is.
-      if (/^\{\s*\d+\s*:\s*\[[^\]]+\]\s*\}$/.test(tok)){
-        flush();
-        out.push(tok);
+      // Bracket lists contribute ids to the same-family run (merge {24:[44 44]} {24:[44 44]} → one list).
+      const packed = tok.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+      if (packed) {
+        const fam = Number(packed[1]);
+        const ids = packed[2].trim().split(/\s+/).filter(Boolean).map((x) => Number(x));
+        if (!Number.isFinite(fam) || !ids.length || ids.some((n) => !Number.isFinite(n))) {
+          flush();
+          out.push(tok);
+          continue;
+        }
+        if (pendingFam == null || pendingFam === fam) {
+          pendingFam = fam;
+          pendingIds.push(...ids);
+        } else {
+          flush();
+          pendingFam = fam;
+          pendingIds = ids.slice();
+        }
         continue;
       }
 
@@ -11038,10 +11059,16 @@ function resetAll(){
 
     // Simple Builder Quick Presets (`{fam:id}` rows → state.extras so serialized code + floating panel stay in sync)
     const simplePresetSel = $('simpleBuilderPresetSelect');
+    const simpleMorePresetSel = $('simpleBuilderMorePresetSelect');
     const simplePresetAddBtn = $('simpleBuilderPresetAddBtn');
+    if (simplePresetSel && simpleMorePresetSel && typeof window.ensurePresetSelectMutex === 'function') {
+      window.ensurePresetSelectMutex(simplePresetSel, simpleMorePresetSel);
+    }
     if (simplePresetSel && simplePresetAddBtn) {
       simplePresetAddBtn.addEventListener('click', () => {
-        const code = (simplePresetSel.value || '').trim();
+        const code = (typeof window.resolveActivePresetPartValue === 'function')
+          ? window.resolveActivePresetPartValue(simplePresetSel, simpleMorePresetSel)
+          : String((simplePresetSel && simplePresetSel.value) || (simpleMorePresetSel && simpleMorePresetSel.value) || '').trim();
         if (!code) return;
         try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
         if (stxAppendTailTokenViaExtras(code)) return;
@@ -11068,6 +11095,7 @@ function resetAll(){
 
   function loadSimplePresets() {
     const sel = $('simpleBuilderPresetSelect');
+    const moreSel = $('simpleBuilderMorePresetSelect');
     if (!sel) return;
 
     const cats = [
@@ -11088,12 +11116,6 @@ function resetAll(){
     function tokenForPresetEntry(entry) {
       if (!entry) return '';
       if (entry.bareId) return '{' + String(entry.bareId) + '}';
-      if (typeof window.MODDED_PRESET_CATALOG !== 'undefined' &&
-          window.MODDED_PRESET_CATALOG &&
-          typeof window.MODDED_PRESET_CATALOG.catalogEntryToToken === 'function') {
-        var ct = window.MODDED_PRESET_CATALOG.catalogEntryToToken(entry);
-        if (ct) return ct;
-      }
       const k = entry.key != null ? entry.key : entry.k;
       const v = entry.value != null ? entry.value : entry.v;
       if (k == null || v == null) return '';
@@ -11136,11 +11158,10 @@ function resetAll(){
     }
     const updateSimplePresets = () => {
       const currentVal = sel.value;
-      sel.innerHTML = '<option value="">-- Select Preset --</option>';
+      const currentMore = moreSel ? moreSel.value : '';
+      sel.innerHTML = '<option value="">-- Select preset --</option>';
       for (const [catKey, catLabel] of cats) {
-        const pool = (typeof window.buildPresetPoolForCategory === 'function')
-          ? window.buildPresetPoolForCategory(catKey)
-          : (pools[catKey] || []);
+        const pool = pools[catKey] || [];
         if (!Array.isArray(pool) || !pool.length) continue;
         const group = document.createElement('optgroup');
         group.label = catLabel;
@@ -11156,9 +11177,21 @@ function resetAll(){
       }
       if (currentVal) sel.value = currentVal;
       try { stxSyncCustomSelectIfWrapped(sel); } catch (_) {}
+      if (moreSel && typeof window.populateFlatMorePresetParts === 'function') {
+        window.populateFlatMorePresetParts(moreSel);
+        if (currentMore) moreSel.value = currentMore;
+        try { stxSyncCustomSelectIfWrapped(moreSel); } catch (_) {}
+      }
     };
 
     updateSimplePresets();
+    const itemTypeEl = $('itemType');
+    if (itemTypeEl && !itemTypeEl.__simplePresetItemTypeBound) {
+      itemTypeEl.__simplePresetItemTypeBound = true;
+      itemTypeEl.addEventListener('change', () => {
+        try { updateSimplePresets(); } catch (_) {}
+      });
+    }
     if (!sel.__simplePresetReloadTimer) {
       var tries = 0;
       sel.__simplePresetReloadTimer = setInterval(() => {

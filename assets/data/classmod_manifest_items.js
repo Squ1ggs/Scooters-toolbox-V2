@@ -39,7 +39,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 6,
+        "option_count": 10,
         "options": [
           {
             "index": 1,
@@ -74,6 +74,21 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 7,
             "name": "leg_body_raid2",
+            "in_pool": true
+          },
+          {
+            "index": 8,
+            "name": "leg_body_raid1",
+            "in_pool": true
+          },
+          {
+            "index": 9,
+            "name": "leg_body_raid3",
+            "in_pool": true
+          },
+          {
+            "index": 10,
+            "name": "leg_body_raid4",
             "in_pool": true
           }
         ]
@@ -157,7 +172,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 6,
+        "option_count": 10,
         "options": [
           {
             "index": 1,
@@ -192,6 +207,21 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 7,
             "name": "leg_body_raid2",
+            "in_pool": true
+          },
+          {
+            "index": 8,
+            "name": "leg_body_raid1",
+            "in_pool": true
+          },
+          {
+            "index": 9,
+            "name": "leg_body_raid3",
+            "in_pool": true
+          },
+          {
+            "index": 10,
+            "name": "leg_body_raid4",
             "in_pool": true
           }
         ]
@@ -275,7 +305,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 6,
+        "option_count": 10,
         "options": [
           {
             "index": 1,
@@ -310,6 +340,21 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 7,
             "name": "leg_body_raid2",
+            "in_pool": true
+          },
+          {
+            "index": 8,
+            "name": "leg_body_raid1",
+            "in_pool": true
+          },
+          {
+            "index": 9,
+            "name": "leg_body_raid3",
+            "in_pool": true
+          },
+          {
+            "index": 10,
+            "name": "leg_body_raid4",
             "in_pool": true
           }
         ]
@@ -393,7 +438,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 6,
+        "option_count": 10,
         "options": [
           {
             "index": 1,
@@ -428,6 +473,21 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 7,
             "name": "leg_body_raid2",
+            "in_pool": true
+          },
+          {
+            "index": 8,
+            "name": "leg_body_raid1",
+            "in_pool": true
+          },
+          {
+            "index": 9,
+            "name": "leg_body_raid3",
+            "in_pool": true
+          },
+          {
+            "index": 10,
+            "name": "leg_body_raid4",
             "in_pool": true
           }
         ]
@@ -511,7 +571,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 7,
+        "option_count": 8,
         "options": [
           {
             "index": 1,
@@ -546,6 +606,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 7,
             "name": "leg_body_raid2",
+            "in_pool": true
+          },
+          {
+            "index": 8,
+            "name": "leg_body_raid1",
             "in_pool": true
           }
         ]

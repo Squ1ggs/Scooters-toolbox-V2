@@ -214,6 +214,22 @@
     return '';
   }
 
+  function fullExportLine(s) {
+    return String(s || '').replace(/\r\n/g, '\n').trim();
+  }
+
+  function bestDeserializedFromDom() {
+    var ids = ['outCode', 'guidedOutputDeserialized', 'guidedOutputSerial', 'floating-output-code'];
+    var best = '';
+    for (var i = 0; i < ids.length; i++) {
+      var el = byId(ids[i]);
+      var v = el && el.value ? String(el.value).trim() : '';
+      if (!v || v === '—' || /^[—\-–]+$/.test(v)) continue;
+      if (v.length > best.length) best = v;
+    }
+    return best;
+  }
+
   function snapshotMadeItem(source) {
     var guided = isGuidedContext();
     var itemType = '';
@@ -239,12 +255,15 @@
 
     var des = '';
     try {
-      if (guided) {
-        var gd = byId('guidedOutputDeserialized');
-        if (gd && gd.value) des = String(gd.value || '').trim();
-      } else {
-        var oc = byId('outCode');
-        if (oc && oc.value) des = String(oc.value || '').trim();
+      des = bestDeserializedFromDom();
+      if (!des) {
+        if (guided) {
+          var gd = byId('guidedOutputDeserialized');
+          if (gd && gd.value) des = String(gd.value || '').trim();
+        } else {
+          var oc = byId('outCode');
+          if (oc && oc.value) des = String(oc.value || '').trim();
+        }
       }
     } catch (_) {}
     var name = '';
@@ -305,7 +324,7 @@
         (e.name ? ('— ' + safeTrim(e.name, 120)) : '')
       ].join(' ').replace(/\s+/g, ' ').trim();
       out.push(header);
-      out.push(safeTrim(e.deserialized));
+      out.push(fullExportLine(e.deserialized));
       out.push('');
     }
     return out.join('\n');

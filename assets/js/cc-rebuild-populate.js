@@ -30,7 +30,24 @@
     var id = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
     if (raw && /^\d+:\d+$/.test(raw)) return '{' + raw + '}';
     if (fam && id) return '{' + fam + ':' + id + '}';
-    return (p.code || '').trim();
+    var code = String(p.code || p.spawnCode || '').replace(/^["']|["']$/g, '').trim();
+    return code || '';
+  }
+
+  /** When adding a preset, honor Numeric/Spawn output mode (same as manual part picks). */
+  function resolvePresetTokenForOutput(rawValue) {
+    var code = String(rawValue || '').trim();
+    if (!code) return '';
+    try {
+      if (typeof window.tryResolveToken === 'function') {
+        var p = window.tryResolveToken(code);
+        if (p && typeof window.tokenForPart === 'function') {
+          var out = window.tokenForPart(p);
+          if (out) return String(out).trim();
+        }
+      }
+    } catch (_) {}
+    return code;
   }
 
   /** Full label in native tooltip when the closed select truncates text. */
@@ -205,34 +222,275 @@
     } catch (_) {}
   }
 
-  function getPresetItemType() {
-    try {
-      var cat = window.MODDED_PRESET_CATALOG;
-      if (cat && typeof cat.detectPresetItemType === 'function') return cat.detectPresetItemType();
-    } catch (_) {}
+  function presetEntryKey(e) {
+    if (!e) return '';
+    if (e.bareId) return 'b:' + String(e.bareId).trim();
+    var k = e.key != null ? e.key : e.k;
+    var v = e.value != null ? e.value : e.v;
+    if (k != null && v != null) return String(k) + ':' + String(v);
+    return '';
+  }
+
+  function getPrimaryPoolKeySet(catKey) {
+    var pool = PRESET_BOOST_POOLS[catKey] || [];
+    var set = {};
+    for (var i = 0; i < pool.length; i++) {
+      var pk = presetEntryKey(pool[i]);
+      if (pk) set[pk] = true;
+    }
+    return set;
+  }
+
+  function detectPresetItemType() {
+    var cat = window.MODDED_PRESET_CATALOG;
+    if (cat && typeof cat.detectPresetItemType === 'function') {
+      return cat.detectPresetItemType();
+    }
     return 'weapon';
   }
 
-  function buildPresetPoolForCategory(catKey) {
-    var base = PRESET_BOOST_POOLS[catKey] || [];
-    try {
-      var catalog = window.MODDED_PRESET_CATALOG;
-      if (catalog && typeof catalog.getCatalogPool === 'function' && typeof catalog.mergePools === 'function') {
-        var itemType = getPresetItemType();
-        return catalog.mergePools(base, catalog.getCatalogPool(itemType, catKey));
-      }
-    } catch (_) {}
-    return base.slice();
+  function getMorePresetPool(catKey, itemType) {
+    var cat = window.MODDED_PRESET_CATALOG;
+    if (!cat || typeof cat.getCatalogPool !== 'function') return [];
+    var it = itemType || detectPresetItemType();
+    var catalogPool = cat.getCatalogPool(it, catKey) || [];
+    var primaryKeys = getPrimaryPoolKeySet(catKey);
+    var out = [];
+    for (var i = 0; i < catalogPool.length; i++) {
+      var e = catalogPool[i];
+      var k = presetEntryKey(e);
+      if (!k || primaryKeys[k]) continue;
+      out.push(e);
+    }
+    return out;
   }
 
-  function presetCatalogGuideForToken(catKey, tok, key, value, bareId) {
+  var PRESET_CATEGORY_LABELS = {
+    damage: 'Damage',
+    accuracy: 'Accuracy',
+    reload: 'Reload Speed',
+    firerate: 'Fire Rate',
+    ammo: 'Ammo',
+    splash: 'Splash Damage',
+    crit: 'Crit Damage',
+    splat: 'Repkit — Splat',
+    nova: 'Repkit — Nova',
+    immunity: 'Repkit — Immunity',
+    resistance: 'Repkit — Resistance',
+    elemental: 'Repkit — Elemental'
+  };
+
+  function getPresetCategoryLabel(catKey) {
+    var k = String(catKey || '').trim();
+    if (PRESET_CATEGORY_LABELS[k]) return PRESET_CATEGORY_LABELS[k];
+    return k.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+  }
+
+  function getPresetCategoryOrderKeys(extraKeys) {
+    var base = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit', 'splat', 'nova', 'immunity', 'resistance', 'elemental'];
+    var out = [];
+    var seen = Object.create(null);
+    for (var i = 0; i < base.length; i++) {
+      if (extraKeys.indexOf(base[i]) >= 0 && !seen[base[i]]) {
+        seen[base[i]] = true;
+        out.push(base[i]);
+      }
+    }
+    for (var j = 0; j < extraKeys.length; j++) {
+      if (!seen[extraKeys[j]]) out.push(extraKeys[j]);
+    }
+    return out;
+  }
+
+  /** Experimental catalog entries grouped by stat bucket (for optgroup dropdowns). */
+  function getAllMorePresetPoolGrouped(itemType) {
+    var cat = window.MODDED_PRESET_CATALOG;
+    if (!cat || !cat.byItemType) return [];
+    var it = itemType || detectPresetItemType();
+    var itData = cat.byItemType[it] || cat.byItemType.weapon || {};
+    var ordered = getPresetCategoryOrderKeys(Object.keys(itData));
+    var grouped = [];
+    for (var ci = 0; ci < ordered.length; ci++) {
+      var key = ordered[ci];
+      var pool = getMorePresetPool(key, it);
+      if (!pool.length) continue;
+      grouped.push({ key: key, label: getPresetCategoryLabel(key), entries: pool });
+    }
+    return grouped;
+  }
+
+  /** All experimental catalog entries for the active item type (not in primary boost pools). */
+  function getAllMorePresetPoolFlat(itemType) {
+    var grouped = getAllMorePresetPoolGrouped(itemType);
+    var out = [];
+    for (var gi = 0; gi < grouped.length; gi++) {
+      var entries = grouped[gi].entries || [];
+      for (var i = 0; i < entries.length; i++) out.push(entries[i]);
+    }
+    return out;
+  }
+
+  function populateFlatMorePresetParts(moreSel, getToken, opts) {
+    if (!moreSel) return;
+    var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
+    moreSel.innerHTML = '<option value="">-- More from catalog --</option>';
+    moreSel.removeAttribute('data-loading');
+    var grouped = getAllMorePresetPoolGrouped();
+    if (!grouped.length) return;
+    var parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+    if (!parts.length) {
+      moreSel.innerHTML = '<option value="">Loading…</option>';
+      moreSel.setAttribute('data-loading', '');
+      return;
+    }
     try {
-      var catalog = window.MODDED_PRESET_CATALOG;
-      if (!catalog || typeof catalog.lookupCatalogEntry !== 'function') return '';
-      var entry = catalog.lookupCatalogEntry(getPresetItemType(), catKey, key, value, bareId);
-      if (!entry || typeof catalog.stackGuideText !== 'function') return '';
-      return catalog.stackGuideText(entry);
-    } catch (_) { return ''; }
+      for (var gi = 0; gi < grouped.length; gi++) {
+        var g = grouped[gi];
+        var og = document.createElement('optgroup');
+        og.label = g.label;
+        fillMorePresetSelect(og, g.entries, parts, tokFn, opts);
+        if (og.children.length) moreSel.appendChild(og);
+      }
+      attachSelectFullTitle(moreSel);
+    } catch (_) {}
+  }
+
+  var __presetSelectMutexWired = Object.create(null);
+  function ensurePresetSelectMutex(mainSel, moreSel) {
+    if (!mainSel || !moreSel) return;
+    var wireKey = String(mainSel.id || '') + '|' + String(moreSel.id || '');
+    if (__presetSelectMutexWired[wireKey]) return;
+    __presetSelectMutexWired[wireKey] = true;
+    mainSel.addEventListener('change', function () {
+      if (mainSel.value) moreSel.value = '';
+    });
+    moreSel.addEventListener('change', function () {
+      if (moreSel.value) mainSel.value = '';
+    });
+  }
+
+  function resolveActivePresetPartValue(mainSel, moreSel) {
+    var main = mainSel ? String(mainSel.value || '').trim() : '';
+    if (main) return main;
+    return moreSel ? String(moreSel.value || '').trim() : '';
+  }
+
+  function defaultPresetPartLabel(p, tok) {
+    var human = (p.name || p.legendaryName || '').substring(0, 40);
+    var ef = String(p.effects || p.effect || '').trim();
+    if (ef) {
+      var humanLower = String(human || '').toLowerCase();
+      var efLower = String(ef || '').toLowerCase();
+      if (humanLower.indexOf('(' + efLower + ')') !== -1) ef = '';
+    }
+    var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
+    return human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
+  }
+
+  function fillPresetSelectFromIdRawPool(partSel, pool, parts, tokFn, opts) {
+    opts = opts || {};
+    var labelFn = typeof opts.formatLabel === 'function' ? opts.formatLabel : defaultPresetPartLabel;
+    var idRawSet = {};
+    for (var i = 0; i < pool.length; i++) {
+      var e = pool[i];
+      var k = e.key != null ? e.key : e.k;
+      var v = e.value != null ? e.value : e.v;
+      if (k != null && v != null) idRawSet[String(k) + ':' + String(v)] = true;
+    }
+    for (var j = 0; j < parts.length; j++) {
+      var p = parts[j];
+      if (!p) continue;
+      var idRaw = String(p.idRaw || p.idraw || '').trim();
+      if (!idRaw || !idRawSet[idRaw]) continue;
+      var tok = tokFn(p);
+      var tokStr = String(tok || '').trim();
+      if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
+        tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
+        tokStr = String(tok || '').trim();
+      }
+      if (tokStr && /^\{/.test(tokStr)) {
+        var label = labelFn(p, tokStr);
+        var o = document.createElement('option');
+        o.value = tokStr;
+        o.textContent = label;
+        if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
+        if (!o.title) o.title = 'Other stats: dataset stats unavailable for this part.';
+        if (typeof opts.onOption === 'function') opts.onOption(partSel, o, p);
+        partSel.appendChild(o);
+      }
+    }
+    if (partSel.options.length <= 1) {
+      for (var pi = 0; pi < pool.length; pi++) {
+        var pe = pool[pi];
+        var pk = pe.key != null ? pe.key : pe.k;
+        var pv = pe.value != null ? pe.value : pe.v;
+        if (pk == null || pv == null) continue;
+        var rawTok = '{' + String(pk) + ':' + String(pv) + '}';
+        var fallback = document.createElement('option');
+        fallback.value = rawTok;
+        fallback.textContent = rawTok + ' - Preset token';
+        fallback.title = 'Dataset name unavailable; this preset token will still be added.';
+        partSel.appendChild(fallback);
+      }
+    }
+  }
+
+  function fillMorePresetSelect(partSel, entries, parts, tokFn, opts) {
+    opts = opts || {};
+    var labelFn = typeof opts.formatLabel === 'function' ? opts.formatLabel : defaultPresetPartLabel;
+    var cat = window.MODDED_PRESET_CATALOG;
+    var stackGuide = cat && typeof cat.stackGuideText === 'function' ? cat.stackGuideText : null;
+    var entryTok = cat && typeof cat.catalogEntryToToken === 'function' ? cat.catalogEntryToToken : null;
+    var idRawSet = {};
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      var k = e.key != null ? e.key : e.k;
+      var v = e.value != null ? e.value : e.v;
+      if (k != null && v != null) idRawSet[String(k) + ':' + String(v)] = e;
+    }
+    var matched = Object.create(null);
+    for (var j = 0; j < parts.length; j++) {
+      var p = parts[j];
+      if (!p) continue;
+      var idRaw = String(p.idRaw || p.idraw || '').trim();
+      var entry = idRaw ? idRawSet[idRaw] : null;
+      if (!entry) continue;
+      matched[idRaw] = true;
+      var tok = tokFn(p);
+      var tokStr = String(tok || '').trim();
+      if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
+        tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
+        tokStr = String(tok || '').trim();
+      }
+      if (!tokStr || !/^\{/.test(tokStr)) continue;
+      var label = labelFn(p, tokStr);
+      var guide = stackGuide ? stackGuide(entry) : '';
+      var o = document.createElement('option');
+      o.value = tokStr;
+      o.textContent = label;
+      o.title = guide || (entry.note || 'Modded catalog preset');
+      if (typeof window.partTooltipText === 'function') {
+        var pt = window.partTooltipText(p);
+        if (pt) o.title = pt + (guide ? (' · ' + guide) : '');
+      }
+      if (typeof opts.onOption === 'function') opts.onOption(partSel, o, p);
+      partSel.appendChild(o);
+    }
+    for (var ei = 0; ei < entries.length; ei++) {
+      var ent = entries[ei];
+      var ek = ent.key != null ? ent.key : ent.k;
+      var ev = ent.value != null ? ent.value : ent.v;
+      var idKey = (ek != null && ev != null) ? (String(ek) + ':' + String(ev)) : '';
+      if (idKey && matched[idKey]) continue;
+      var tokFallback = entryTok ? entryTok(ent) : '';
+      if (!tokFallback) continue;
+      var fb = document.createElement('option');
+      fb.value = tokFallback;
+      var note = ent.note ? String(ent.note).trim() : '';
+      fb.textContent = note ? (tokFallback + ' - ' + note) : (tokFallback + ' - Catalog preset');
+      fb.title = stackGuide ? stackGuide(ent) : (note || 'Modded catalog preset');
+      partSel.appendChild(fb);
+    }
   }
 
   /**
@@ -240,8 +498,10 @@
    * @param {HTMLSelectElement|null} catSel - Category select
    * @param {HTMLSelectElement|null} partSel - Part select
    * @param {function} getToken - Optional token function for parts (default: getPartTokenForPopulate)
+   * @param {HTMLSelectElement|null} morePartSel - Optional "more catalog" part select
+   * @param {object} opts - Optional { formatLabel, onOption }
    */
-  function populatePresetParts(catSel, partSel, getToken) {
+  function populatePresetParts(catSel, partSel, getToken, morePartSel, opts) {
     var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
     if (!catSel) return;
     if (catSel.options.length <= 1) {
@@ -250,108 +510,68 @@
     if (!partSel) return;
     var catKey = (catSel.value || '').trim();
     partSel.innerHTML = '<option value="">-- Select preset --</option>';
+    if (morePartSel) {
+      morePartSel.innerHTML = '<option value="">-- More from catalog --</option>';
+      ensurePresetSelectMutex(partSel, morePartSel);
+    }
     partSel.removeAttribute('data-loading');
+    if (morePartSel) morePartSel.removeAttribute('data-loading');
     if (!catKey) return;
-    var pool = buildPresetPoolForCategory(catKey);
-    if (!Array.isArray(pool) || pool.length === 0) return;
+    var pool = PRESET_BOOST_POOLS[catKey];
+    if (!Array.isArray(pool) || pool.length === 0) {
+      populateMorePresetParts(catSel, morePartSel, getToken, opts);
+      return;
+    }
     var parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-    var catalog = window.MODDED_PRESET_CATALOG || null;
-    var itemType = getPresetItemType();
-    var matched = {};
-
-    function appendOption(tok, label, title) {
-      if (!tok || !/^\{/.test(String(tok))) return;
-      var o = document.createElement('option');
-      o.value = tok;
-      o.textContent = label;
-      if (title) o.title = title;
-      partSel.appendChild(o);
-    }
-
-    if (parts.length) {
-      try {
-        var idRawSet = {};
-        for (var i = 0; i < pool.length; i++) {
-          var e = pool[i];
-          if (e.bareId) {
-            idRawSet[String(e.bareId)] = { bare: true, entry: e };
-            continue;
-          }
-          var k = e.key != null ? e.key : e.k;
-          var v = e.value != null ? e.value : e.v;
-          if (k != null && v != null) idRawSet[String(k) + ':' + String(v)] = { entry: e };
-        }
-        for (var j = 0; j < parts.length; j++) {
-          var p = parts[j];
-          if (!p) continue;
-          var idRaw = String(p.idRaw || p.idraw || '').trim();
-          if (!idRaw || !idRawSet[idRaw]) continue;
-          var meta = idRawSet[idRaw];
-          matched[idRaw] = true;
-          var tok = tokFn(p);
-          var tokStr = String(tok || '').trim();
-          if ((!tokStr || !/^\{/.test(tokStr)) && idRaw && /^\d+:\d+$/.test(String(idRaw).replace(/\s+/g, ''))) {
-            tok = '{' + String(idRaw).replace(/\s+/g, '') + '}';
-            tokStr = String(tok || '').trim();
-          }
-          if (tokStr && /^\{/.test(tokStr)) {
-            var human = (p.name || p.legendaryName || '').substring(0, 40);
-            var ef = String(p.effects || p.effect || '').trim();
-            if (ef) {
-              var humanLower = String(human || '').toLowerCase();
-              var efLower = String(ef || '').toLowerCase();
-              if (humanLower.indexOf('(' + efLower + ')') !== -1) ef = '';
-            }
-            var efSuffix = ef ? (' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef)) : '';
-            var guide = meta.entry ? presetCatalogGuideForToken(catKey, tokStr, meta.entry.key, meta.entry.value, meta.entry.bareId) : '';
-            var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
-            var tip = '';
-            if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) tip = t; }
-            if (!tip) tip = 'Other stats: dataset stats unavailable for this part.';
-            if (guide) tip = (tip ? tip + ' | ' : '') + 'Stack guide: ' + guide;
-            if (itemType) tip = (tip ? tip + ' | ' : '') + 'Item type: ' + itemType;
-            appendOption(tokStr, label, tip);
-          }
-        }
-      } catch (_) {}
-    }
-
-    for (var pi = 0; pi < pool.length; pi++) {
-      var pe = pool[pi];
-      var rawTok = catalog && typeof catalog.catalogEntryToToken === 'function'
-        ? catalog.catalogEntryToToken(pe)
-        : '';
-      if (!rawTok) {
-        var pk = pe.key != null ? pe.key : pe.k;
-        var pv = pe.value != null ? pe.value : pe.v;
-        if (pk != null && pv != null) rawTok = '{' + String(pk) + ':' + String(pv) + '}';
-        else if (pe.bareId) rawTok = '{' + String(pe.bareId) + '}';
+    if (!parts.length) {
+      partSel.innerHTML = '<option value="">Loading…</option>';
+      partSel.setAttribute('data-loading', '');
+      if (morePartSel) {
+        morePartSel.innerHTML = '<option value="">Loading…</option>';
+        morePartSel.setAttribute('data-loading', '');
       }
-      if (!rawTok) continue;
-      var dedupeKey = pe.bareId ? String(pe.bareId) : rawTok;
-      if (matched[dedupeKey] || matched[rawTok.replace(/^\{|\}$/g, '')]) continue;
-      var guide2 = presetCatalogGuideForToken(catKey, rawTok, pe.key, pe.value, pe.bareId);
-      var fbLabel = rawTok + ' - Modded preset';
-      if (guide2) fbLabel += ' (' + guide2.replace(/\s+/g, ' ').substring(0, 80) + ')';
-      appendOption(rawTok, fbLabel, guide2 || 'Modded catalog token for ' + itemType);
+      return;
     }
+    try {
+      fillPresetSelectFromIdRawPool(partSel, pool, parts, tokFn, opts);
+      populateMorePresetParts(catSel, morePartSel, getToken, opts);
+    } catch (_) {}
   }
 
-  function refreshPresetPartsForItemType() {
-    var catSel = document.getElementById('presetCategorySelect');
-    var partSel = document.getElementById('presetPartSelect');
-    if (catSel && partSel && catSel.value) populatePresetParts(catSel, partSel);
+  function populateMorePresetParts(catSel, morePartSel, getToken, opts) {
+    if (!morePartSel || !catSel) return;
+    var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
+    var catKey = (catSel.value || '').trim();
+    morePartSel.innerHTML = '<option value="">-- More from catalog --</option>';
+    morePartSel.removeAttribute('data-loading');
+    if (!catKey) return;
+    var morePool = getMorePresetPool(catKey);
+    if (!morePool.length) return;
+    var parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
+    if (!parts.length) {
+      morePartSel.innerHTML = '<option value="">Loading…</option>';
+      morePartSel.setAttribute('data-loading', '');
+      return;
+    }
+    try {
+      var og = document.createElement('optgroup');
+      og.label = getPresetCategoryLabel(catKey);
+      fillMorePresetSelect(og, morePool, parts, tokFn, opts);
+      if (og.children.length) morePartSel.appendChild(og);
+      attachSelectFullTitle(morePartSel);
+    } catch (_) {}
   }
 
   function populatePresetCategories(catSel) {
     if (!catSel) return;
-    var cats = ['Damage', 'Accuracy', 'Reload Speed', 'Fire Rate', 'Ammo', 'Splash Damage', 'Crit Damage', 'Splat', 'Nova', 'Immunity', 'Resistance', 'Elemental'];
-    var keys = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit', 'splat', 'nova', 'immunity', 'resistance', 'elemental'];
+    var keys = getPresetCategoryOrderKeys(Object.keys(PRESET_BOOST_POOLS));
     catSel.innerHTML = '<option value="">-- Select Preset Category --</option>';
-    for (var i = 0; i < cats.length; i++) {
+    for (var i = 0; i < keys.length; i++) {
+      var pool = PRESET_BOOST_POOLS[keys[i]];
+      if (!Array.isArray(pool) || !pool.length) continue;
       var o = document.createElement('option');
       o.value = keys[i];
-      o.textContent = cats[i];
+      o.textContent = getPresetCategoryLabel(keys[i]);
       catSel.appendChild(o);
     }
   }
@@ -520,12 +740,18 @@
     } catch (_) {}
   }
 
+  window.resolvePresetTokenForOutput = resolvePresetTokenForOutput;
   window.populateSkinCamo = populateSkinCamo;
   window.populatePresetParts = populatePresetParts;
+  window.populateMorePresetParts = populateMorePresetParts;
   window.populatePresetCategories = populatePresetCategories;
-  window.refreshPresetPartsForItemType = refreshPresetPartsForItemType;
-  window.getPresetItemType = getPresetItemType;
-  window.buildPresetPoolForCategory = buildPresetPoolForCategory;
+  window.resolveActivePresetPartValue = resolveActivePresetPartValue;
+  window.getMorePresetPool = getMorePresetPool;
+  window.getAllMorePresetPoolFlat = getAllMorePresetPoolFlat;
+  window.getAllMorePresetPoolGrouped = getAllMorePresetPoolGrouped;
+  window.getPresetCategoryLabel = getPresetCategoryLabel;
+  window.populateFlatMorePresetParts = populateFlatMorePresetParts;
+  window.ensurePresetSelectMutex = ensurePresetSelectMutex;
   window.populateLegendaryPerks = populateLegendaryPerks;
   window.collectLegendaryPerkDropdownParts = collectLegendaryPerkDropdownParts;
   window.PRESET_BOOST_POOLS = PRESET_BOOST_POOLS;

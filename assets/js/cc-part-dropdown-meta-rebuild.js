@@ -46,6 +46,32 @@
     return { perk: '', body: s };
   }
 
+  function legendaryTokensFromSpawnCode(code) {
+    var keys = [];
+    var c = q(code).toLowerCase();
+    if (!c) return keys;
+    var i = c.indexOf('comp_05_legendary_');
+    if (i !== -1) keys.push(normPearlKey(c.slice(i + 'comp_05_legendary_'.length)));
+    i = c.indexOf('comp_06_pearl_');
+    if (i !== -1) keys.push(normPearlKey(c.slice(i + 'comp_06_pearl_'.length)));
+    i = c.indexOf('comp_06_pearlescent_');
+    if (i !== -1) keys.push(normPearlKey(c.slice(i + 'comp_06_pearlescent_'.length)));
+    var m = c.match(/part_(?:barrel|body)_\d+_([a-z0-9_]+)$/);
+    if (m) keys.push(normPearlKey(m[1]));
+    m = c.match(/part_(?:barrel|body)_(?:\d+[a-z]_)([a-z0-9_]+)$/);
+    if (m) keys.push(normPearlKey(m[1]));
+    return keys;
+  }
+
+  function legendaryTokenFromDisplayName(nm) {
+    var s = q(nm);
+    if (!s) return '';
+    var m = s.match(/(?:^|\s)([A-Za-z][A-Za-z0-9_'-]*)\s*$/);
+    if (!m) return '';
+    if (/^(barrel|body|part|legendary|comp|magazine|scope|grip|stock|accessory)$/i.test(m[1])) return '';
+    return normPearlKey(m[1]);
+  }
+
   function gearCatalogRowForPart(p) {
     if (!p) return null;
     try {
@@ -56,21 +82,13 @@
     var cat = window.STX_PEARL_GEAR_CATALOG && window.STX_PEARL_GEAR_CATALOG.byNorm;
     if (!cat) return null;
     var code = normCode(p).toLowerCase();
-    var keys = [];
-    var i = code.indexOf('comp_05_legendary_');
-    if (i !== -1) keys.push(normPearlKey(code.slice(i + 'comp_05_legendary_'.length)));
-    i = code.indexOf('comp_06_pearl_');
-    if (i !== -1) keys.push(normPearlKey(code.slice(i + 'comp_06_pearl_'.length)));
-    i = code.indexOf('comp_06_pearlescent_');
-    if (i !== -1) keys.push(normPearlKey(code.slice(i + 'comp_06_pearlescent_'.length)));
-    var m = code.match(/part_barrel_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
-    if (m) keys.push(normPearlKey(m[1]));
-    m = code.match(/part_body_(?:\d+[a-z]_)?([a-z0-9_]+)$/);
-    if (m) keys.push(normPearlKey(m[1]));
+    var keys = legendaryTokensFromSpawnCode(code);
     var efHead = q(p.effects != null ? p.effects : (p.effect || '')).split(/\s*-\s*/)[0];
     if (efHead) keys.push(normPearlKey(efHead));
     var nm = q(p.name || p.legendaryName).split(/\s*-\s*/)[0];
     if (nm) keys.push(normPearlKey(nm.replace(/^legendary\s+/i, '')));
+    var tail = legendaryTokenFromDisplayName(nm || q(p.legendaryName));
+    if (tail) keys.push(tail);
     for (var ki = 0; ki < keys.length; ki++) {
       var k = keys[ki];
       if (k && cat[k]) return cat[k];

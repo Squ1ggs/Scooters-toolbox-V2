@@ -298,9 +298,9 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "",
-      "expectedInv": "",
+      "status": "export_pending",
+      "notes": "DLC/Cello assets in CUE4Parse (BOR_SG_HairTrigger) but comp_06_pearl_* not in inv __dep_entries yet — re-export after game patch or merge when NcsParser emits bor_sg.comp_06_pearl_hairtrigger",
+      "expectedInv": "bor_sg",
       "spawnTokens": [
         "hairtrigger"
       ]
@@ -453,16 +453,33 @@
     "parasite": {
       "name": "Parasite",
       "isPearlescent": true,
-      "weaponType": "",
-      "manufacturer": "",
+      "weaponType": "SMG",
+      "manufacturer": "Vladof",
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "community_discovered",
-      "notes": "",
-      "expectedInv": "",
+      "status": "verified",
+      "notes": "Nexus inv_name_part Uni_VLA_SM_Locust; editor uses comp_06_pearl_locust with display name Parasite",
+      "expectedInv": "vla_sm",
       "spawnTokens": [
-        "parasite"
+        "parasite",
+        "locust"
+      ]
+    },
+    "locust": {
+      "name": "Parasite",
+      "isPearlescent": true,
+      "weaponType": "SMG",
+      "manufacturer": "Vladof",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "verified",
+      "notes": "Nexus inv_name_part Uni_VLA_SM_Locust; editor uses comp_06_pearl_locust with display name Parasite",
+      "expectedInv": "vla_sm",
+      "spawnTokens": [
+        "parasite",
+        "locust"
       ]
     },
     "solartemper": {
@@ -473,11 +490,12 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "community_discovered",
-      "notes": "",
+      "status": "not_in_export",
+      "notes": "No hit in current Nexus JSON or CUE4Parse export — catalog placeholder until game files expose comp",
       "expectedInv": "",
       "spawnTokens": [
-        "solartemper"
+        "solartemper",
+        "solar_temper"
       ]
     },
     "lockjaw": {

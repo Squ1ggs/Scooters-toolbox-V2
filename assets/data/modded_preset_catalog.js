@@ -1,6 +1,9 @@
 /**
- * Modded preset catalog — echobot + save-editor.be analysis (Jun 2026).
+ * Modded preset catalog — curated parts that stack well for modded damage / stats (Jun 2026).
+ * Used by Quick add presets only; full part lookup stays in Advanced Part Search / guided slots.
+ * Run audit-preset-catalog-coverage.mjs to find catalog rows missing from the dataset.
  * Stacks multiply: combined ≈ perStackMult^N (model estimate for testing).
+ * Firmware is excluded — only one firmware per item; use the Guided Firmware slot.
  */
 (function () {
   'use strict';
@@ -27,14 +30,9 @@
         { key: 22, value: '72', perStack: 1.08, note: 'VLA SMG barrel +Damage — extreme stacks in wild (64–1096)', moddedMax: 1096, stackExamples: stacks(1.08, T) },
         { key: 9, value: '28', perStack: 1.05, note: 'Universal +Damage (scope acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
         { key: 9, value: '55', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 9, value: '59', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 9, value: '62', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 9, value: '68', perStack: 1.05, note: 'Universal +Damage (foregrip)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 9, value: '32', perStack: 1.05, note: 'Universal +Damage (scope acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 9, value: '40', perStack: 1.05, note: 'Universal +Damage (grip)', moddedMax: 64, stackExamples: stacks(1.05, T) },
-        { key: 13, value: '9', perStack: 1.05, note: 'Daedalus AR barrel +Damage', moddedMax: 26, stackExamples: stacks(1.05, T) },
         { key: 13, value: '13', perStack: 1.05, note: 'Daedalus AR barrel 02 +Damage', moddedMax: 237, stackExamples: stacks(1.05, T) },
         { key: 7, value: '66', perStack: 1.05, note: 'Jakobs SG barrel +Damage', moddedMax: 180, stackExamples: stacks(1.05, T) },
+        { key: 13, value: '9', perStack: 1.05, note: 'Daedalus AR barrel +Damage', moddedMax: 26, stackExamples: stacks(1.05, T) },
       ],
       crit: [
         { key: 3, value: '6', perStack: 2, note: 'JAK PS Body D +Crit — each stack ≈×2 crit mult', moddedMax: 34, stackExamples: stacks(2, T) },
@@ -66,23 +64,23 @@
         { key: 9, value: '89', perStack: 1.1, note: 'Splash damage accessory', stackExamples: stacks(1.1, T) },
         { key: 24, value: '18', perStack: 1.15, note: 'Torgue gyrojets', stackExamples: stacks(1.15, T) },
       ],
-      firmware: [
-        { bareId: '4', perStack: 1, note: 'Airstrike firmware {4}', moddedMax: 99 },
-        { bareId: '6', perStack: 1, note: 'Gadget Ahoy {6}', moddedMax: 150 },
-        { bareId: '5', perStack: 1, note: 'High Caliber {5}', moddedMax: 40 },
-      ],
     },
     heavy: {
       damage: [
-        { key: 289, value: '17', perStack: 1.05, note: 'MAL HW barrel +Damage — most common in echobot', moddedMax: 17, stackExamples: stacks(1.05, T) },
+        { key: 289, value: '17', perStack: 1.05, note: 'MAL HW barrel +Damage', moddedMax: 17, stackExamples: stacks(1.05, T) },
         { key: 275, value: '23', perStack: 1.05, note: 'BOR HW barrel -CD +Damage', moddedMax: 25, stackExamples: stacks(1.05, T) },
         { key: 282, value: '7', perStack: 1.05, note: 'VLA HW body +Ammo/+Damage context', moddedMax: 65, stackExamples: stacks(1.05, T) },
+        { key: 289, value: '24', perStack: 1.08, note: 'Gamma Void legendary barrel', stackExamples: stacks(1.08, T) },
+        { key: 273, value: '35', perStack: 1.1, note: 'Gungnir / Javelin TOR HW barrel', stackExamples: stacks(1.1, T) },
       ],
       splash: [
         { key: 282, value: '18', perStack: 1.1, note: 'VLA HW barrel +Splash Radius', moddedMax: 10, stackExamples: stacks(1.1, T) },
+        { key: 289, value: '15', perStack: 1.1, note: 'MAL HW barrel +Splash', stackExamples: stacks(1.1, T) },
       ],
       firerate: [
-        { key: 8, value: '40', perStack: 1.15, note: 'Heavy barrel +Fire Rate stacks', moddedMax: 283, stackExamples: stacks(1.15, T) },
+        { key: 289, value: '14', perStack: 1.15, note: 'MAL HW Speed Loader +Fire Rate', stackExamples: stacks(1.15, T) },
+        { key: 273, value: '27', perStack: 1.12, note: 'TOR HW barrel +Fire Rate', stackExamples: stacks(1.12, T) },
+        { key: 282, value: '17', perStack: 1.12, note: 'VLA HW barrel +Fire Rate', stackExamples: stacks(1.12, T) },
       ],
     },
     grenade: {
@@ -90,67 +88,122 @@
         { key: 245, value: '72', perStack: 1.15, note: 'Explosive damage stat', moddedMax: 452, stackExamples: stacks(1.15, T) },
         { key: 245, value: '39', perStack: 1.12, note: 'Damage Amp payload', moddedMax: 99, stackExamples: stacks(1.12, T) },
         { key: 245, value: '76', perStack: 1.2, note: 'Nuke payload', moddedMax: 164, stackExamples: stacks(1.2, T) },
+        { key: 245, value: '29', perStack: 1.1, note: 'MIRV payload augment', stackExamples: stacks(1.1, T) },
+        { key: 245, value: '30', perStack: 1.1, note: 'Divider payload', stackExamples: stacks(1.1, T) },
+      ],
+      crit: [
+        { key: 245, value: '75', perStack: 1.15, note: 'Exacting — crit damage', stackExamples: stacks(1.15, T) },
+        { key: 245, value: '79', perStack: 1.12, note: 'Merciless — crit damage', stackExamples: stacks(1.12, T) },
       ],
       reload: [
         { key: 245, value: '71', perStack: 0.85, note: 'Express cooldown reduction', moddedMax: 100, stackExamples: {} },
       ],
       ammo: [
         { key: 245, value: '70', perStack: 1.1, note: 'Overflow extra charge', moddedMax: 100, stackExamples: stacks(1.1, T) },
+        { key: 245, value: '56', perStack: 1.05, note: 'Maglock augment', stackExamples: stacks(1.05, T) },
       ],
     },
     shield: {
       ammo: [
         { key: 246, value: '54', perStack: 1.05, note: 'Capacity +50% perk — heavily stacked', moddedMax: 214, stackExamples: stacks(1.05, T) },
+        { key: 246, value: '53', perStack: 1.05, note: 'Capacity perk', stackExamples: stacks(1.05, T) },
+        { key: 246, value: '45', perStack: 1.04, note: 'Magazine Booster', stackExamples: stacks(1.04, T) },
+        { key: 246, value: '46', perStack: 1.04, note: 'Magazine Booster alt', stackExamples: stacks(1.04, T) },
       ],
       resistance: [
         { key: 246, value: '56', perStack: 1.08, note: 'Adaptive shield perk', moddedMax: 810, stackExamples: stacks(1.08, T) },
+        { key: 246, value: '55', perStack: 1.06, note: 'Adaptive alt', stackExamples: stacks(1.06, T) },
+        { key: 246, value: '58', perStack: 1.05, note: 'Absorb perk', stackExamples: stacks(1.05, T) },
+        { key: 246, value: '57', perStack: 1.05, note: 'Absorb alt', stackExamples: stacks(1.05, T) },
+      ],
+      damage: [
+        { key: 246, value: '24', perStack: 1.08, note: 'Fire resistance / elemental row', stackExamples: stacks(1.08, T) },
+        { key: 246, value: '23', perStack: 1.08, note: 'Cryo resistance row', stackExamples: stacks(1.08, T) },
+        { key: 246, value: '22', perStack: 1.08, note: 'Corrosive resistance row', stackExamples: stacks(1.08, T) },
+        { key: 246, value: '26', perStack: 1.08, note: 'Shock resistance row', stackExamples: stacks(1.08, T) },
+        { key: 246, value: '25', perStack: 1.08, note: 'Radiation resistance row', stackExamples: stacks(1.08, T) },
       ],
     },
     classmod: {
       damage: [
         { key: 234, value: '19', perStack: 1.2, note: 'Damage Dealt +20% per stack', moddedMax: 212, stackExamples: stacks(1.2, T) },
         { key: 234, value: '28', perStack: 1.2, note: 'Elemental Damage +20%', moddedMax: 176, stackExamples: stacks(1.2, T) },
+        { key: 234, value: '50', perStack: 1.12, note: 'Gun Damage', stackExamples: stacks(1.12, T) },
+        { key: 234, value: '52', perStack: 1.15, note: 'Skill Damage', stackExamples: stacks(1.15, T) },
+        { key: 234, value: '17', perStack: 1.12, note: 'Ordnance Damage', stackExamples: stacks(1.12, T) },
       ],
       crit: [
         { key: 234, value: '40', perStack: 1.35, note: 'Crit Damage +35%', moddedMax: 3, stackExamples: stacks(1.35, T) },
         { key: 234, value: '14', perStack: 1.1, note: 'Gun Crit Hit Chance +10%', stackExamples: stacks(1.1, T) },
+        { key: 234, value: '60', perStack: 1.2, note: 'Critical Hit Damage', stackExamples: stacks(1.2, T) },
+      ],
+      firerate: [
+        { key: 234, value: '38', perStack: 1.1, note: 'Fire Rate +10%', stackExamples: stacks(1.1, T) },
+      ],
+      reload: [
+        { key: 234, value: '55', perStack: 0.92, note: 'Reload Speed (faster)', stackExamples: {} },
+      ],
+      ammo: [
+        { key: 234, value: '57', perStack: 1.08, note: 'Maximum Health Capacity', stackExamples: stacks(1.08, T) },
+        { key: 234, value: '47', perStack: 1.08, note: 'Maximum Shield Capacity', stackExamples: stacks(1.08, T) },
       ],
     },
     enhancement: {
       damage: [
-        { bareId: '35', perStack: 1.08, note: 'AR Damage {35}', moddedMax: 5, stackExamples: stacks(1.08, T) },
-        { bareId: '34', perStack: 1.08, note: 'Pistol Damage {34}', moddedMax: 15, stackExamples: stacks(1.08, T) },
-        { bareId: '32', perStack: 1.08, note: 'Shotgun Damage {32}', moddedMax: 10, stackExamples: stacks(1.08, T) },
-        { bareId: '31', perStack: 1.08, note: 'Sniper Damage {31}', moddedMax: 10, stackExamples: stacks(1.08, T) },
-        { bareId: '33', perStack: 1.08, note: 'SMG Damage {33}', moddedMax: 5, stackExamples: stacks(1.08, T) },
-        { key: 247, value: '91', perStack: 1.1, note: 'Gun Damage {247:91}', moddedMax: 5, stackExamples: stacks(1.1, T) },
+        { key: 247, value: '35', perStack: 1.08, note: 'AR Damage', moddedMax: 5, stackExamples: stacks(1.08, T) },
+        { key: 247, value: '33', perStack: 1.08, note: 'SMG Damage', moddedMax: 5, stackExamples: stacks(1.08, T) },
+        { key: 247, value: '91', perStack: 1.1, note: 'Gun Damage', moddedMax: 5, stackExamples: stacks(1.1, T) },
       ],
       crit: [
-        { bareId: '28', perStack: 1.1, note: 'SMG Crit Damage {28}', moddedMax: 20, stackExamples: stacks(1.1, T) },
-        { bareId: '30', perStack: 1.1, note: 'AR Crit Damage {30}', moddedMax: 11, stackExamples: stacks(1.1, T) },
-        { bareId: '27', perStack: 1.1, note: 'SG Crit Damage {27}', moddedMax: 5, stackExamples: stacks(1.1, T) },
-        { bareId: '88', perStack: 1.1, note: 'Gun Crit Damage {88}', moddedMax: 7, stackExamples: stacks(1.1, T) },
+        { key: 247, value: '28', perStack: 1.1, note: 'SMG Critical Damage', moddedMax: 20, stackExamples: stacks(1.1, T) },
+        { key: 247, value: '88', perStack: 1.1, note: 'Gun Critical Damage', moddedMax: 7, stackExamples: stacks(1.1, T) },
       ],
       ammo: [
         { key: 247, value: '97', perStack: 1.1, note: 'Gun Magazine Size', moddedMax: 31, stackExamples: stacks(1.1, T) },
       ],
-      firmware: [
-        { bareId: '2', perStack: 1, note: 'Trauma Bond core {2}', moddedMax: 12 },
-        { bareId: '3', perStack: 1, note: 'Tracker Antenna {3}', moddedMax: 15 },
-        { bareId: '4', perStack: 1, note: 'Airstrike {4}', moddedMax: 99 },
-        { bareId: '6', perStack: 1, note: 'Gadget Ahoy {6}', moddedMax: 150 },
+      firerate: [
+        { key: 247, value: '90', perStack: 1.08, note: 'Gun Fire Rate', moddedMax: 45, stackExamples: stacks(1.08, T) },
+      ],
+      reload: [
+        { key: 247, value: '82', perStack: 0.92, note: 'Gun Reload Speed (faster)', stackExamples: {} },
       ],
     },
     repkit: {
       reload: [
-        { key: 247, value: '31', perStack: 1.15, note: 'Repkit cooldown', stackExamples: stacks(1.15, T) },
+        { key: 243, value: '65', perStack: 0.9, note: 'Repkit reload speed (faster)', stackExamples: {} },
+        { key: 243, value: '88', perStack: 0.9, note: 'Repkit reload speed alt', stackExamples: {} },
+      ],
+      splat: [
+        { key: 243, value: '32', perStack: 1, note: 'Repkit splat row' },
+        { key: 243, value: '33', perStack: 1, note: 'Repkit splat row' },
+        { key: 243, value: '34', perStack: 1, note: 'Repkit splat row' },
+        { key: 243, value: '35', perStack: 1, note: 'Repkit splat row' },
+        { key: 243, value: '36', perStack: 1, note: 'Repkit splat row' },
+      ],
+      nova: [
+        { key: 243, value: '37', perStack: 1, note: 'Repkit nova row' },
+        { key: 243, value: '38', perStack: 1, note: 'Repkit nova row' },
+        { key: 243, value: '39', perStack: 1, note: 'Repkit nova row' },
+        { key: 243, value: '40', perStack: 1, note: 'Repkit nova row' },
+        { key: 243, value: '41', perStack: 1, note: 'Repkit nova row' },
       ],
       immunity: [
-        { key: 243, value: '27', perStack: 1, note: 'Repkit immunity row', stackExamples: {} },
-        { key: 243, value: '28', perStack: 1, note: 'Repkit immunity row', stackExamples: {} },
+        { key: 243, value: '27', perStack: 1, note: 'Repkit immunity row' },
+        { key: 243, value: '28', perStack: 1, note: 'Repkit immunity row' },
+        { key: 243, value: '42', perStack: 1, note: 'Repkit immunity row' },
+      ],
+      resistance: [
+        { key: 243, value: '22', perStack: 1, note: 'Repkit resistance row' },
+        { key: 243, value: '23', perStack: 1, note: 'Repkit resistance row' },
+        { key: 243, value: '24', perStack: 1, note: 'Repkit resistance row' },
+        { key: 243, value: '54', perStack: 1, note: 'Overshield row' },
       ],
       elemental: [
-        { key: 243, value: '98', perStack: 1, note: 'Repkit elemental', stackExamples: {} },
+        { key: 243, value: '98', perStack: 1, note: 'Fire elemental repkit' },
+        { key: 243, value: '99', perStack: 1, note: 'Radiation elemental repkit' },
+        { key: 243, value: '100', perStack: 1, note: 'Corrosive elemental repkit' },
+        { key: 243, value: '101', perStack: 1, note: 'Shock elemental repkit' },
+        { key: 243, value: '102', perStack: 1, note: 'Cryo elemental repkit' },
       ],
     },
   };
@@ -244,7 +297,7 @@
 
   window.MODDED_PRESET_CATALOG = {
     meta: {
-      source: 'echobot modded_serials + save-editor.be catalog',
+      source: 'editor preset catalog + stx_dataset / PARTS_STATS_DATA',
       stackModel: 'multiplicative per identical token: combined ≈ perStack^N',
     },
     byItemType: BY_ITEM_TYPE,

@@ -149,6 +149,10 @@ const NCS_PARTS = {
       "index": 13
     },
     {
+      "name": "part_body_pocketbuddies",
+      "index": 13
+    },
+    {
       "name": "part_body_c",
       "index": 14
     },
@@ -1277,6 +1281,10 @@ const NCS_PARTS = {
       "index": 16
     },
     {
+      "name": "part_payload_unique_pellet",
+      "index": 16
+    },
+    {
       "name": "part_02_divider_jak",
       "index": 17
     },
@@ -1419,7 +1427,15 @@ const NCS_PARTS = {
       "index": 8
     },
     {
+      "name": "part_augment_unique_hugger",
+      "index": 8
+    },
+    {
       "name": "part_augment_unique_paleblood",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_vitae",
       "index": 8
     },
     {
@@ -3965,6 +3981,10 @@ const NCS_PARTS = {
       "index": 9
     },
     {
+      "name": "comp_05_legendary_hugger",
+      "index": 9
+    },
+    {
       "name": "comp_05_legendary_onionlayeredguard",
       "index": 9
     },
@@ -3986,6 +4006,10 @@ const NCS_PARTS = {
     },
     {
       "name": "comp_05_legendary_supersoldier",
+      "index": 9
+    },
+    {
+      "name": "comp_05_legendary_vitae",
       "index": 9
     },
     {
@@ -4069,8 +4093,24 @@ const NCS_PARTS = {
       "index": 12
     },
     {
+      "name": "comp_05_legendary_ordinance",
+      "index": 13
+    },
+    {
+      "name": "comp_05_legendary_overswarm",
+      "index": 14
+    },
+    {
+      "name": "comp_05_legendary_pocketbuddies",
+      "index": 14
+    },
+    {
       "name": "comp_05_legendary_transmission",
       "index": 15
+    },
+    {
+      "name": "comp_05_legendary_pellet",
+      "index": 17
     },
     {
       "name": "comp_05_legendary_goldengod",
@@ -4109,6 +4149,10 @@ const NCS_PARTS = {
       "index": 28
     },
     {
+      "name": "comp_05_legendary_barrel",
+      "index": 29
+    },
+    {
       "name": "comp_05_legendary_discjockey",
       "index": 31
     },
@@ -4139,6 +4183,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_ravenfire",
       "index": 36
+    },
+    {
+      "name": "comp_05_legendary_draupner",
+      "index": 38
     },
     {
       "name": "comp_05_legendary_sidewinder",
@@ -4257,11 +4305,19 @@ const NCS_PARTS = {
       "index": 59
     },
     {
+      "name": "comp_05_legendary_conglomerate",
+      "index": 59
+    },
+    {
       "name": "comp_05_legendary_falke",
       "index": 59
     },
     {
       "name": "comp_05_legendary_rangefinder",
+      "index": 59
+    },
+    {
+      "name": "comp_zanemurder_weapon",
       "index": 59
     },
     {
@@ -4342,6 +4398,10 @@ const NCS_PARTS = {
     },
     {
       "name": "comp_02_uncommon",
+      "index": 70
+    },
+    {
+      "name": "comp_05_legendary_raiden",
       "index": 70
     },
     {
@@ -4505,6 +4565,10 @@ const NCS_PARTS = {
       "index": 80
     },
     {
+      "name": "comp_05_legendary_discybusiness",
+      "index": 81
+    },
+    {
       "name": "comp_05_legendary_gomie",
       "index": 81
     },
@@ -4517,6 +4581,10 @@ const NCS_PARTS = {
       "index": 81
     },
     {
+      "name": "comp_05_legendary_cannonbrawl",
+      "index": 82
+    },
+    {
       "name": "comp_05_legendary_conflux",
       "index": 82
     },
@@ -4525,7 +4593,19 @@ const NCS_PARTS = {
       "index": 82
     },
     {
+      "name": "comp_05_legendary_ishmael",
+      "index": 82
+    },
+    {
+      "name": "comp_05_legendary_cormano",
+      "index": 83
+    },
+    {
       "name": "comp_05_legendary_firework",
+      "index": 83
+    },
+    {
+      "name": "comp_05_legendary_fishward",
       "index": 83
     },
     {
@@ -4573,12 +4653,28 @@ const NCS_PARTS = {
       "index": 85
     },
     {
+      "name": "comp_05_legendary_shoals",
+      "index": 85
+    },
+    {
       "name": "comp_06_pearl_herald",
       "index": 85
     },
     {
       "name": "comp_05_legendary_inscriber",
       "index": 86
+    },
+    {
+      "name": "comp_05_legendary_harddark",
+      "index": 87
+    },
+    {
+      "name": "comp_05_legendary_manifest",
+      "index": 87
+    },
+    {
+      "name": "comp_05_legendary_rhythm",
+      "index": 87
     },
     {
       "name": "comp_05_legendary_beegun",
@@ -4601,6 +4697,14 @@ const NCS_PARTS = {
       "index": 90
     },
     {
+      "name": "comp_06_pearl_sharkbait",
+      "index": 90
+    },
+    {
+      "name": "comp_05_legendary_lightgun",
+      "index": 91
+    },
+    {
       "name": "comp_05_legendary_tkswave",
       "index": 91
     },
@@ -4611,6 +4715,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_wf",
       "index": 93
+    },
+    {
+      "name": "comp_05_legendary_brickhouse",
+      "index": 94
     },
     {
       "name": "comp_05_legendary_bubbles",
@@ -4659,6 +4767,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_raid2",
       "index": 544
+    },
+    {
+      "name": "comp_05_legendary_tuba",
+      "index": 546
     }
   ],
   "barrel": [
@@ -4691,11 +4803,19 @@ const NCS_PARTS = {
       "index": 1
     },
     {
+      "name": "part_barrel_licensed_conglomerate",
+      "index": 1
+    },
+    {
       "name": "part_barrel_01_dxa",
       "index": 2
     },
     {
       "name": "part_barrel_01_dxb",
+      "index": 2
+    },
+    {
+      "name": "part_barrel_02_conglomerate",
       "index": 2
     },
     {
@@ -4871,6 +4991,10 @@ const NCS_PARTS = {
       "index": 27
     },
     {
+      "name": "part_barrel_02_barrel",
+      "index": 30
+    },
+    {
       "name": "part_barrel_02_discjockey",
       "index": 30
     },
@@ -4889,6 +5013,10 @@ const NCS_PARTS = {
     {
       "name": "part_barrel_javelin",
       "index": 35
+    },
+    {
+      "name": "part_barrel_02_draupner",
+      "index": 37
     },
     {
       "name": "part_barrel_01_dividedfocus",
@@ -4979,6 +5107,10 @@ const NCS_PARTS = {
       "index": 59
     },
     {
+      "name": "part_barrel_01_raiden",
+      "index": 59
+    },
+    {
       "name": "part_barrel_02_atlien",
       "index": 59
     },
@@ -5000,6 +5132,10 @@ const NCS_PARTS = {
     },
     {
       "name": "part_barrel_02_katagawa",
+      "index": 60
+    },
+    {
+      "name": "part_barrel_cannonbrawl",
       "index": 60
     },
     {
@@ -5239,8 +5375,16 @@ const NCS_PARTS = {
       "index": 81
     },
     {
+      "name": "part_barrel_02_ishmael",
+      "index": 81
+    },
+    {
       "name": "part_barrel_02_rocketreload",
       "index": 81
+    },
+    {
+      "name": "part_barrel_01_discybusiness",
+      "index": 82
     },
     {
       "name": "part_barrel_01_hellwalker",
@@ -5252,6 +5396,10 @@ const NCS_PARTS = {
     },
     {
       "name": "part_barrel_02_firework",
+      "index": 82
+    },
+    {
+      "name": "part_barrel_02_fishward",
       "index": 82
     },
     {
@@ -5275,6 +5423,10 @@ const NCS_PARTS = {
       "index": 84
     },
     {
+      "name": "part_barrel_02_cormano",
+      "index": 84
+    },
+    {
       "name": "part_barrel_02_flashcyclone",
       "index": 84
     },
@@ -5287,6 +5439,14 @@ const NCS_PARTS = {
       "index": 84
     },
     {
+      "name": "part_barrel_shoals",
+      "index": 84
+    },
+    {
+      "name": "part_barrel_01_manifest",
+      "index": 85
+    },
+    {
       "name": "part_barrel_02_inscriber",
       "index": 85
     },
@@ -5295,7 +5455,15 @@ const NCS_PARTS = {
       "index": 86
     },
     {
+      "name": "part_barrel_02_harddark",
+      "index": 86
+    },
+    {
       "name": "part_barrel_rainbowvomit",
+      "index": 86
+    },
+    {
+      "name": "part_barrel_rhythm",
       "index": 86
     },
     {
@@ -5311,8 +5479,16 @@ const NCS_PARTS = {
       "index": 88
     },
     {
+      "name": "part_barrel_01_sharkbait",
+      "index": 89
+    },
+    {
       "name": "part_barrel_02_juliet",
       "index": 89
+    },
+    {
+      "name": "part_barrel_01_lightgun",
+      "index": 90
     },
     {
       "name": "part_barrel_tkswave",
@@ -5321,6 +5497,10 @@ const NCS_PARTS = {
     {
       "name": "part_barrel_mercury",
       "index": 91
+    },
+    {
+      "name": "part_barrel_brickhouse",
+      "index": 93
     },
     {
       "name": "part_barrel_wf",
@@ -5401,6 +5581,10 @@ const NCS_PARTS = {
       "index": 80
     },
     {
+      "name": "part_foregrip_03_cormano",
+      "index": 80
+    },
+    {
       "name": "part_foregrip_01_fleabag",
       "index": 81
     },
@@ -5411,6 +5595,14 @@ const NCS_PARTS = {
     {
       "name": "part_foregrip_02",
       "index": 81
+    },
+    {
+      "name": "part_foregrip_02_cormano",
+      "index": 81
+    },
+    {
+      "name": "part_foregrip_01_cormano",
+      "index": 82
     },
     {
       "name": "part_foregrip_03_herald",
@@ -5489,6 +5681,22 @@ const NCS_PARTS = {
     {
       "name": "part_grip_04_hyp_finnty",
       "index": 71
+    },
+    {
+      "name": "part_grip_05c_ted_jav_sharkbait",
+      "index": 85
+    },
+    {
+      "name": "part_grip_05b_ted_homing_sharkbait",
+      "index": 86
+    },
+    {
+      "name": "part_grip_05a_ted_legs_mirv_sharkbait",
+      "index": 87
+    },
+    {
+      "name": "part_grip_05a_ted_legs_sharkbait",
+      "index": 88
     }
   ],
   "magazine": [
@@ -5621,8 +5829,20 @@ const NCS_PARTS = {
       "index": 83
     },
     {
+      "name": "part_mag_torgue_sticky_sharkbait",
+      "index": 83
+    },
+    {
       "name": "part_mag_torgue_normal_inscriber",
       "index": 84
+    },
+    {
+      "name": "part_mag_torgue_normal_sharkbait",
+      "index": 84
+    },
+    {
+      "name": "part_mag_05_borg_acc_manifest",
+      "index": 86
     },
     {
       "name": "part_mag_torgue_normal_beegun",
@@ -6127,8 +6347,20 @@ const NCS_PARTS = {
       "index": 80
     },
     {
+      "name": "part_underbarrel_02_tether_snare_ishmael",
+      "index": 80
+    },
+    {
       "name": "part_underbarrel_03_discharge",
       "index": 80
+    },
+    {
+      "name": "part_underbarrel_01_cannonbrawl",
+      "index": 81
+    },
+    {
+      "name": "part_underbarrel_02_crank_fishward",
+      "index": 84
     },
     {
       "name": "part_underbarrel_07_secondbarrel",
@@ -6207,6 +6439,10 @@ const NCS_PARTS = {
     {
       "name": "leg_body_raid2",
       "index": 543
+    },
+    {
+      "name": "leg_body_tuba",
+      "index": 545
     }
   ],
   "body_energy": [
@@ -6233,6 +6469,10 @@ const NCS_PARTS = {
     {
       "name": "part_body_energy_firewall",
       "index": 11
+    },
+    {
+      "name": "part_body_energy_overswarm",
+      "index": 13
     }
   ],
   "body_armor": [

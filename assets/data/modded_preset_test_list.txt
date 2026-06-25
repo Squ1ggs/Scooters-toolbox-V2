@@ -64,8 +64,6 @@ DAMAGE stats (bare id tokens)
   {35} AR   {34} Pistol  {32} Shotgun  {31} Sniper  {33} SMG  {247:91} Gun
 CRIT stats
   {28} SMG  {30} AR  {27} SG  {88} Gun
-FIRMWARE (common stacks)
-  {2} Trauma Bond  {3} Tracker  {4} Airstrike (max 99)  {6} Gadget Ahoy (max 150)  {5} High Caliber
 
 === REPKIT ===
   {247:31} cooldown  {243:27-28} immunity  {243:98-102} elemental

@@ -190,8 +190,9 @@
   function loadPresetSectionFallback() {
     var catSel = byId('presetCategorySelect');
     var partSel = byId('presetPartSelect');
+    var moreSel = byId('presetMorePartSelect');
     if (typeof window.populatePresetParts === 'function') {
-      window.populatePresetParts(catSel, partSel);
+      window.populatePresetParts(catSel, partSel, null, moreSel);
     }
   }
 
@@ -221,10 +222,15 @@
   try {
     window.addPresetPart = function () {
       var partSel = byId('presetPartSelect');
+      var moreSel = byId('presetMorePartSelect');
       var qty = byId('presetQuantity');
-      if (!partSel) return;
-      var code = String(partSel.value || '').trim();
+      var code = (typeof window.resolveActivePresetPartValue === 'function')
+        ? window.resolveActivePresetPartValue(partSel, moreSel)
+        : String((partSel && partSel.value) || (moreSel && moreSel.value) || '').trim();
       if (!code) return;
+      if (typeof window.resolvePresetTokenForOutput === 'function') {
+        code = window.resolvePresetTokenForOutput(code) || code;
+      }
       var nBoot = 1;
       try { nBoot = Math.max(1, parseInt((qty && qty.value) || '1', 10) || 1); } catch (_) {}
       if (typeof window.stxAppendPresetToActiveBuilder === 'function' && window.stxAppendPresetToActiveBuilder(code, { quantity: nBoot })) {

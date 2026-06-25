@@ -323,8 +323,10 @@
       var vhCurrentEl = byId('yaml-profile-vh-current');
       var vc01El = byId('yaml-profile-vc01-level');
       var vc02El = byId('yaml-profile-vc02-level');
+      var vc03El = byId('yaml-profile-vc03-level');
       var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
       var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
+      var vcTok3El = byId('yaml-profile-vaultcard03-tokens');
       var echoTokEl = byId('yaml-profile-echotoken-points');
       if (data.globals && typeof data.globals === 'object') {
         var gvh = data.globals.highest_unlocked_vault_hunter_level;
@@ -368,11 +370,14 @@
         }
         var e1 = sharedExpByType('VaultCard01_Experience');
         var e2 = sharedExpByType('VaultCard02_Experience');
+        var e3 = sharedExpByType('VaultCard03_Experience');
         if (vc01El && e1 && e1.level != null) vc01El.value = String(e1.level);
         if (vc02El && e2 && e2.level != null) vc02El.value = String(e2.level);
+        if (vc03El && e3 && e3.level != null) vc03El.value = String(e3.level);
         var cur = sh.currencies || {};
         if (vcTok1El && cur.vaultcard01_tokens != null) vcTok1El.value = String(cur.vaultcard01_tokens);
         if (vcTok2El && cur.vaultcard02_tokens != null) vcTok2El.value = String(cur.vaultcard02_tokens);
+        if (vcTok3El && cur.vaultcard03_tokens != null) vcTok3El.value = String(cur.vaultcard03_tokens);
       }
       var progShared = data.domains && data.domains.local && data.domains.local.progression_shared;
       if (echoTokEl && progShared && progShared.point_pools && progShared.point_pools.echotokenprogresspoints != null) {
@@ -502,8 +507,10 @@
     var vhCurrentEl = byId('yaml-profile-vh-current');
     var vc01El = byId('yaml-profile-vc01-level');
     var vc02El = byId('yaml-profile-vc02-level');
+    var vc03El = byId('yaml-profile-vc03-level');
     var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
     var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
+    var vcTok3El = byId('yaml-profile-vaultcard03-tokens');
     var echoTokEl = byId('yaml-profile-echotoken-points');
     var vhProfUnlockedEl = byId('yaml-profile-vh-unlocked');
     var hu = parseOptionalInt(vhProfUnlockedEl);
@@ -520,14 +527,17 @@
     var sh = data.domains.local.shared;
     var t1 = parseOptionalInt(vcTok1El);
     var t2 = parseOptionalInt(vcTok2El);
-    if (t1 != null || t2 != null) {
+    var t3 = parseOptionalInt(vcTok3El);
+    if (t1 != null || t2 != null || t3 != null) {
       sh.currencies = sh.currencies || {};
       if (t1 != null) sh.currencies.vaultcard01_tokens = t1;
       if (t2 != null) sh.currencies.vaultcard02_tokens = t2;
+      if (t3 != null) sh.currencies.vaultcard03_tokens = t3;
     }
     var l1 = parseOptionalInt(vc01El);
     var l2 = parseOptionalInt(vc02El);
-    if (l1 != null || l2 != null) {
+    var l3 = parseOptionalInt(vc03El);
+    if (l1 != null || l2 != null || l3 != null) {
       sh.experience = Array.isArray(sh.experience) ? sh.experience : [];
       function setVaultCardLevelIfPresent(arr, typeName, level) {
         if (level == null || !Array.isArray(arr)) return;
@@ -537,6 +547,7 @@
       }
       setVaultCardLevelIfPresent(sh.experience, 'VaultCard01_Experience', l1);
       setVaultCardLevelIfPresent(sh.experience, 'VaultCard02_Experience', l2);
+      setVaultCardLevelIfPresent(sh.experience, 'VaultCard03_Experience', l3);
     }
     var echoN = parseOptionalInt(echoTokEl);
     if (echoN != null) {

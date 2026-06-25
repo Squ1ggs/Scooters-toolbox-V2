@@ -12,8 +12,9 @@
   function loadPresetParts(){
     var catSel = byId("presetCategorySelect");
     var partSel = byId("presetPartSelect");
+    var moreSel = byId("presetMorePartSelect");
     if (!catSel || !partSel) return;
-    if (typeof window.populatePresetParts === 'function') window.populatePresetParts(catSel, partSel);
+    if (typeof window.populatePresetParts === 'function') window.populatePresetParts(catSel, partSel, null, moreSel);
   }
   /** Only bare {n} tokens participate in legacy "rarity slot" replacement — not full {fam:id} parts. */
   function isRarityTokenBootstrap(t) {
@@ -60,10 +61,15 @@
 
   function addPresetPart(){
     var partSel = byId("presetPartSelect");
+    var moreSel = byId("presetMorePartSelect");
     var qty = byId("presetQuantity");
-    if (!partSel) return;
-    var code = (partSel.value || "").trim();
+    var code = (typeof window.resolveActivePresetPartValue === 'function')
+      ? window.resolveActivePresetPartValue(partSel, moreSel)
+      : String((partSel && partSel.value) || (moreSel && moreSel.value) || "").trim();
     if (!code) return;
+    if (typeof window.resolvePresetTokenForOutput === "function") {
+      code = window.resolvePresetTokenForOutput(code) || code;
+    }
     code = normalizeBracedIdToken(code);
     var n = Math.max(1, parseInt((qty && qty.value) || "1", 10) || 1);
     if (typeof window.stxAppendPresetToActiveBuilder === "function" && window.stxAppendPresetToActiveBuilder(code, { quantity: n })) {
@@ -191,6 +197,25 @@
     var b = m[2] != null ? Number(m[2]) : null;
     return { a: a, b: b, id: b != null ? b : a };
   }
+  /** Expand packed bracket tokens like `{1:[51 51 53]}` into individual `{1:51}` rows for inspector. */
+  function expandPackedInspectorTokens(tokens) {
+    var out = [];
+    for (var i = 0; i < tokens.length; i++) {
+      var tok = String(tokens[i] || "").trim();
+      if (!tok) continue;
+      var brace = parseBrace(tok);
+      if (brace && brace.packed && brace.bracketIds) {
+        var ids = String(brace.bracketIds).trim().split(/\s+/);
+        for (var j = 0; j < ids.length; j++) {
+          var id = String(ids[j] || "").trim();
+          if (id) out.push("{" + brace.a + ":" + id + "}");
+        }
+        continue;
+      }
+      out.push(tok);
+    }
+    return out;
+  }
   function tryResolveToken(tok) {
     var t = String(tok || "").trim();
     if (!t) return null;
@@ -209,7 +234,11 @@
       if (/^\d+$/.test(t) && Number(p.id) === Number(t)) return p;
       if (norm(p.code || p.spawnCode || "") === tNorm) return p;
       var brace = parseBrace(t);
-      if (brace && p.family != null && p.id != null && brace.a === Number(p.family) && brace.b === Number(p.id)) return p;
+      if (brace && brace.b != null) {
+        var famIdKey = String(brace.a) + ":" + String(brace.b);
+        if (String(p.idRaw || p.idraw || "").trim() === famIdKey) return p;
+      }
+      if (brace && p.family != null && p.id != null && brace.b != null && brace.a === Number(p.family) && brace.b === Number(p.id)) return p;
     }
     return null;
   }
@@ -218,15 +247,27 @@
     var p = tryResolveToken(t);
     if (p) return p;
     var brace = parseBrace(t);
-    if (!brace || brace.b != null || !Number.isFinite(baseFamilyId)) return null;
-    var targetId = Number(brace.id);
+    if (!brace) return null;
     var all = [];
     try { if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) all = all.concat(window.STX_DATASET.ALL_PARTS); } catch(_){}
     try { if (Array.isArray(window.ALL_PARTS)) all = all.concat(window.ALL_PARTS); } catch(_){}
-    for (var i = 0; i < all.length; i++) {
-      var row = all[i];
-      if (!row) continue;
-      if (Number(row.family) === Number(baseFamilyId) && Number(row.id) === targetId) return row;
+    if (brace.b != null) {
+      for (var i = 0; i < all.length; i++) {
+        var row = all[i];
+        if (!row) continue;
+        var idRaw = String(row.idRaw || row.idraw || "").trim();
+        if (idRaw === String(brace.a) + ":" + String(brace.b)) return row;
+        if (row.family != null && row.id != null && Number(row.family) === Number(brace.a) && Number(row.id) === Number(brace.b)) return row;
+      }
+    }
+    if (!Number.isFinite(baseFamilyId)) return null;
+    var targetId = brace.b != null ? Number(brace.b) : Number(brace.id);
+    if (!Number.isFinite(targetId)) return null;
+    for (var j = 0; j < all.length; j++) {
+      var row2 = all[j];
+      if (!row2) continue;
+      if (Number(row2.family) === Number(baseFamilyId) && Number(row2.id) === targetId) return row2;
+      if (Number(row2.family) === Number(baseFamilyId) && row2.id == null && Number(row2.itemId) === targetId) return row2;
     }
     return null;
   }
@@ -335,24 +376,113 @@
     if (brace && brace.b != null) return String(brace.a);
     return "";
   }
+  function isGenericInspectorPartText(s) {
+    var t = String(s || "").trim();
+    if (!t) return true;
+    if (/^(barrel|magazine|scope|body|grip|stock|underbarrel|muzzle|sight|accessory|shield|grenade|firmware|core|stat)\s+part\s+for\s+/i.test(t)) return true;
+    if (/^part\s+for\s+/i.test(t)) return true;
+    if (/^part_/i.test(t)) return true;
+    return false;
+  }
+  function titleCaseSlug(s) {
+    return String(s || "").replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+  }
+  function spawnNameFromPart(p) {
+    if (!p) return "";
+    var code = String(p.code || p.spawnCode || "").replace(/^"+|"+$/g, "").trim();
+    if (!code) return "";
+    var seg = code.indexOf(".") >= 0 ? code.slice(code.lastIndexOf(".") + 1) : code;
+    seg = seg.replace(/^comp_\d+_(legendary|pearl|pearlescent)_/i, "").replace(/^part_/i, "");
+    return seg ? titleCaseSlug(seg) : "";
+  }
+  function getInspectorPartName(p, fallbackTok) {
+    if (!p) return String(fallbackTok || "—");
+    try {
+      if (typeof window.stxRarityIdHumanTitleForPart === "function") {
+        var ht = String(window.stxRarityIdHumanTitleForPart(p) || "").trim();
+        if (ht && ht !== "-") return ht;
+      }
+    } catch (_) {}
+    var name = String(p.legendaryName || p.name || "").trim();
+    if (name.indexOf("/") >= 0) {
+      var slashParts = name.split("/").map(function (x) { return x.trim(); }).filter(Boolean);
+      if (slashParts.length) name = slashParts[slashParts.length - 1];
+    }
+    if (name && !isGenericInspectorPartText(name)) {
+      if (/^part_/i.test(name)) return titleCaseSlug(name.replace(/^part_/i, ""));
+      return name;
+    }
+    var spawn = spawnNameFromPart(p);
+    if (spawn) return spawn;
+    return String(fallbackTok || name || "—");
+  }
+  function getInspectorPartDetails(p) {
+    if (!p) return "";
+    var bits = [];
+    try {
+      if (typeof window.stxGearCatalogRowForPart === "function") {
+        var row = window.stxGearCatalogRowForPart(p);
+        if (row && row.ability) bits.push(String(row.ability).trim());
+      }
+    } catch (_) {}
+    var ef = String(p.effects != null ? p.effects : (p.effect || "")).trim();
+    var red = getInspectorPartRedText(p);
+    if (ef && !isGenericInspectorPartText(ef)) {
+      if (!red || ef.toLowerCase() !== red.toLowerCase()) bits.push(ef);
+    }
+    var pt = String(p.partType || "").trim();
+    if (pt && !isGenericInspectorPartText(pt)) {
+      var blob = bits.join(" ").toLowerCase();
+      if (blob.indexOf(pt.toLowerCase()) < 0) bits.push(pt);
+    }
+    var man = String(p.manufacturer || "").trim();
+    if (man) {
+      var blob2 = bits.join(" ").toLowerCase();
+      if (blob2.indexOf(man.toLowerCase()) < 0) bits.push(man);
+    }
+    return bits.join(" · ");
+  }
+  function getInspectorPartRedText(p) {
+    if (!p) return "";
+    try {
+      if (typeof window.partRedTextForDropdown === "function") {
+        var red = String(window.partRedTextForDropdown(p) || "").trim();
+        if (red) return red;
+      }
+    } catch (_) {}
+    try {
+      if (typeof window.stxGearCatalogRowForPart === "function") {
+        var row = window.stxGearCatalogRowForPart(p);
+        if (row && row.redText) return String(row.redText).trim();
+      }
+    } catch (_) {}
+    var direct = String(p.redText || p.red_text || p.flavorText || "").trim();
+    if (direct) return direct;
+    return "";
+  }
   function getStatsText(part) {
     try {
-      if (typeof window.formatPartStatsSummary === 'function') {
-        var sum = window.formatPartStatsSummary(part, 3);
+      if (typeof window.formatPartStatsSummary === "function") {
+        var sum = window.formatPartStatsSummary(part, 4);
         if (sum) return sum;
       }
     } catch (_) {}
     try {
-      var st = String(part && (part.stats || part.statText || '') || '').trim();
-      if (st && !/^barrel part for/i.test(st)) return st;
+      if (typeof window.getFullStatLinesForPart === "function") {
+        var full = window.getFullStatLinesForPart(part, null);
+        if (full && full.lines && full.lines.length) {
+          return full.lines.slice(0, 4).join(", ");
+        }
+      }
     } catch (_) {}
     try {
-      var ef = String(part && (part.effects || part.effect) || '').trim();
-      if (ef) return ef;
+      var st = String(part && (part.stats || part.statText || "") || "").trim();
+      if (st && !/^barrel part for/i.test(st) && !isGenericInspectorPartText(st)) return st;
     } catch (_) {}
     return "";
   }
   function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  var IPI_COL_COUNT = 9;
 
   /** Prefer explicit pasted inspector input; else active builder outputs. */
   function getInspectorSerialSource() {
@@ -402,7 +532,7 @@
     __ipiLastSrc = src;
     if (src && src.length > 7000) {
       badge.textContent = "Loading…";
-      tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);padding:12px;">Parsing long serial…</td></tr>';
+      tbody.innerHTML = '<tr><td class="ipi-dim" colspan="' + IPI_COL_COUNT + '" style="color:rgba(255,255,255,0.62);padding:12px;">Parsing long serial…</td></tr>';
       var srcCopy = src;
       setTimeout(function () { refreshImportedInspectorCore(srcCopy); }, 50);
       return;
@@ -433,7 +563,7 @@
     }
 
     var baseFamilyId = getBaseFamilyIdFromSerial(src);
-    var tokens = extractInspectorTokens(src);
+    var tokens = expandPackedInspectorTokens(extractInspectorTokens(src));
     
     var headerRows = [];
 
@@ -455,11 +585,13 @@
           "<tr style=\"background:rgba(0,243,255,0.08);border-bottom:2px solid rgba(0,243,255,0.2);\">" +
           "<td style=\"color:rgba(0,243,255,1);font-weight:700;\">" + esc(rCat) + "</td>" +
           "<td style=\"color:rgba(255,255,255,0.95);\">" + esc(rName) + "</td>" +
+          "<td class=\"ipi-dim\">—</td>" +
           "<td style=\"color:rgba(0,243,255,0.95);\">" + esc(rMan) + "</td>" +
           "<td>" + baseFamilyId + "</td>" +
           "<td style=\"text-align:center;\">—</td>" +
           "<td>—</td>" +
-          "<td class=\"ipi-dim\" style=\"color:rgba(0,243,255,0.7);font-size:0.85em;\">Item Type &amp; Base Family</td></tr>"
+          "<td class=\"ipi-dim\">—</td>" +
+          "<td class=\"ipi-dim\" style=\"color:rgba(0,243,255,0.7);font-size:0.85em;\">Item header</td></tr>"
         );
       }
     }
@@ -467,9 +599,9 @@
     if (!tokens.length) {
       badge.textContent = "0 added";
       if (!headerRows.length) {
-        tbody.innerHTML = '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.62);">No part tokens after <code>||</code>. Paste or import a serial above, or build in Guided / Simple Builder.</td></tr>';
+        tbody.innerHTML = '<tr><td class="ipi-dim" colspan="' + IPI_COL_COUNT + '" style="color:rgba(255,255,255,0.62);">No part tokens after <code>||</code>. Paste or import a serial above, or build in Guided / Simple Builder.</td></tr>';
       } else {
-        headerRows.push('<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.4);padding:10px;text-align:center;">No parts found after <code>||</code></td></tr>');
+        headerRows.push('<tr><td class="ipi-dim" colspan="' + IPI_COL_COUNT + '" style="color:rgba(255,255,255,0.4);padding:10px;text-align:center;">No parts found after <code>||</code></td></tr>');
         tbody.innerHTML = headerRows.join("");
       }
       return;
@@ -505,26 +637,37 @@
         var key = displayOrder[oi];
         var rep = firstTok[key];
         var p = resolveTokenWithContext(rep, baseFamilyId);
-        var cat = p ? String(p.category || p.itemType || "").trim() || "—" : "—";
-        var name = p ? String(p.name || p.legendaryName || rep).trim() || "(unknown)" : String(rep);
+        var cat = p ? String(p.category || p.itemType || p.partType || "").trim() || "—" : "—";
+        var name = getInspectorPartName(p, rep);
+        var details = getInspectorPartDetails(p);
         var rawCode = String(rep).replace(/^"+|"+$/g, "");
         var brace = parseBrace(rawCode);
         var fam = p ? getFamilyForPart(p) : (brace && brace.b != null ? String(brace.a) : "");
-        var familyOrSpawn = (brace && brace.packed) ? String(brace.a)
-          : ((brace && brace.b != null) ? String(brace.a) : (fam || rawCode || "—"));
-        var numericId = (brace && brace.packed && brace.bracketIds)
-          ? ("[" + String(brace.bracketIds).trim().replace(/\s+/g, " ") + "]")
-          : ((brace && brace.b != null) ? String(brace.b) : (brace ? String(brace.id) : (p && p.id != null ? String(p.id) : "—")));
+        var familyOrSpawn = (brace && brace.b != null) ? String(brace.a)
+          : ((brace && !brace.packed && brace.b == null && brace.id != null) ? String(baseFamilyId != null ? baseFamilyId : brace.a)
+          : (fam || (brace && !brace.packed ? String(brace.a) : "") || "—"));
+        var numericId = (brace && brace.b != null) ? String(brace.b)
+          : ((brace && !brace.packed && brace.id != null) ? String(brace.id) : (p && p.id != null ? String(p.id) : "—"));
         var stats = p ? getStatsText(p) : "";
+        var redText = p ? getInspectorPartRedText(p) : "";
         var cnt = counts[key];
         var encTok = encodeURIComponent(String(rep).trim());
-        var statsShort = stats.length > 120 ? stats.slice(0, 117) + "…" : stats;
+        var statsShort = stats.length > 140 ? stats.slice(0, 137) + "…" : stats;
+        var detailsShort = details.length > 140 ? details.slice(0, 137) + "…" : details;
+        var redShort = redText.length > 120 ? redText.slice(0, 117) + "…" : redText;
+        var redCell = redShort
+          ? '<span style="color:#ff8f8f;">' + esc(redShort) + '</span>'
+          : '<span class="ipi-dim">—</span>';
         chunkHtml.push(
-          "<tr><td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);\">" + esc(cat) + "</td><td>" + esc(name) + "</td><td style=\"color:rgba(0,243,255,0.95);\">" + esc(familyOrSpawn) + "</td><td>" + esc(numericId) + "</td>" +
+          "<tr><td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);\">" + esc(cat) + "</td>" +
+          "<td>" + esc(name) + "</td>" +
+          "<td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.72);white-space:pre-line;font-size:0.88em;\">" + (detailsShort ? esc(detailsShort) : "—") + "</td>" +
+          "<td style=\"color:rgba(0,243,255,0.95);\">" + esc(familyOrSpawn) + "</td><td>" + esc(numericId) + "</td>" +
           "<td style=\"text-align:center;font-weight:700;\">" + cnt + "</td>" +
           "<td style=\"white-space:nowrap;\"><button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"-1\" data-ipi-tok=\"" + encTok + "\" title=\"Remove one\">−</button> " +
           "<button type=\"button\" class=\"btn ipi-qty\" style=\"padding:2px 8px;min-width:32px;\" data-ipi-delta=\"1\" data-ipi-tok=\"" + encTok + "\" title=\"Add one\">+</button></td>" +
-          "<td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);white-space:pre-line;font-size:0.88em;\">" + esc(statsShort) + "</td></tr>"
+          "<td class=\"ipi-dim\" style=\"color:rgba(255,255,255,0.62);white-space:pre-line;font-size:0.88em;\">" + (statsShort ? esc(statsShort) : "—") + "</td>" +
+          "<td style=\"white-space:pre-line;font-size:0.88em;\">" + redCell + "</td></tr>"
         );
       }
       if (resolveIdx === 0) tbody.innerHTML = headerHtml;
@@ -534,7 +677,7 @@
         (window.requestAnimationFrame || function (fn) { setTimeout(fn, 0); })(resolveAndPaintChunk);
       } else if (hiddenUnique > 0) {
         tbody.insertAdjacentHTML("beforeend",
-          '<tr><td class="ipi-dim" colspan="7" style="color:rgba(255,255,255,0.55);padding:10px;text-align:center;">+ ' + hiddenUnique + ' more unique part row(s) not shown — serial is fully imported.</td></tr>'
+          '<tr><td class="ipi-dim" colspan="' + IPI_COL_COUNT + '" style="color:rgba(255,255,255,0.55);padding:10px;text-align:center;">+ ' + hiddenUnique + ' more unique part row(s) not shown — serial is fully imported.</td></tr>'
         );
       }
     }
@@ -1026,6 +1169,7 @@
       refreshBuildStatsCoreFlush();
     });
   }
+  window.tryResolveToken = tryResolveToken;
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else setTimeout(init, 500);
 })();
