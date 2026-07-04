@@ -46,13 +46,22 @@
     if (!GUN_WEAPONS.has(weapon)) return "—";
 
     const key = "itempool_" + mfr + "_" + weapon + "_05_legendary_" + slug + "_shiny";
-    const entry = data.by_itempool[key];
+    const entry = data.by_itempool[key] || data.by_itempool[key.toLowerCase()];
     if (!entry) return "Modded";
 
     const sources = [];
     if (Array.isArray(entry.from_itempoollist) && entry.from_itempoollist.length) {
       const names = entry.from_itempoollist.map((n) => String(n).replace(/^ItemPoolList_/, ""));
-      sources.push("Pools: " + names.join(", "));
+      sources.push("Boss/enemy pools: " + names.join(", "));
+    }
+    const lootRef = typeof window !== "undefined" && window.LOOT_REFERENCE_DATA;
+    if (lootRef && Array.isArray(lootRef.shiny_guns)) {
+      const gun = lootRef.shiny_guns.find(
+        (g) => g.itempool_shiny === key || String(g.itempool_shiny).toLowerCase() === key.toLowerCase()
+      );
+      if (gun && gun.drop_sources && gun.drop_sources.length) {
+        sources.push("Drops from: " + gun.drop_sources.map((d) => d.enemy_name).join(", "));
+      }
     }
     if (Array.isArray(entry.loot_configs) && entry.loot_configs.length) {
       sources.push("Loot: " + entry.loot_configs.length + " config(s)");

@@ -1,0 +1,140 @@
+/**
+ * Colored panel / card borders — toolbox main + standalone pages.
+ */
+
+/* ── index.html ── */
+.panel--paste-import,
+#rebuildPasteCodeSection {
+  border-color: rgba(100, 255, 190, 0.74) !important;
+  box-shadow: inset 0 0 0 1px rgba(120, 255, 200, 0.16), 0 0 22px rgba(80, 220, 160, 0.18);
+  background: linear-gradient(165deg, rgba(0, 42, 36, 0.42) 0%, rgba(0, 0, 12, 0.9) 100%);
+}
+.panel--paste-import > .panel__title,
+#rebuildPasteCodeSection > .panel__title {
+  color: #9dffd4 !important;
+  border-bottom-color: rgba(100, 255, 190, 0.32);
+}
+
+.panel--tools-parts,
+#rebuildToolsPanel {
+  border-color: rgba(255, 152, 80, 0.74) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 170, 110, 0.16), 0 0 22px rgba(255, 130, 60, 0.18);
+  background: linear-gradient(165deg, rgba(52, 28, 8, 0.4) 0%, rgba(0, 0, 12, 0.9) 100%);
+}
+.panel--tools-parts > .panel__title,
+#rebuildToolsPanel > .panel__title {
+  color: #ffc898 !important;
+  border-bottom-color: rgba(255, 152, 80, 0.32);
+}
+
+/* ── Parts stats catalog ── */
+.panel--stats-catalog {
+  border-color: rgba(150, 170, 255, 0.74) !important;
+  box-shadow: inset 0 0 0 1px rgba(170, 190, 255, 0.16), 0 0 22px rgba(120, 140, 255, 0.18);
+  background: linear-gradient(165deg, rgba(18, 22, 58, 0.42) 0%, rgba(0, 0, 12, 0.9) 100%);
+}
+
+/* ── Bulk serial validator ── */
+.panel--bv-input {
+  border-color: rgba(0, 220, 245, 0.74) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 243, 255, 0.14), 0 0 22px rgba(0, 200, 255, 0.18);
+}
+.panel--bv-input > .panel__title {
+  color: #7ef8ff !important;
+  border-bottom-color: rgba(0, 220, 245, 0.32);
+}
+
+.panel--bv-aside {
+  border-color: rgba(200, 130, 255, 0.65) !important;
+  box-shadow: inset 0 0 0 1px rgba(200, 150, 255, 0.14), 0 0 18px rgba(180, 100, 255, 0.14);
+}
+.panel--bv-aside > .panel__title {
+  color: #ddb8ff !important;
+  border-bottom-color: rgba(200, 130, 255, 0.28);
+}
+
+.panel--bv-summary {
+  border-color: rgba(120, 255, 180, 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgba(120, 255, 180, 0.16), 0 0 22px rgba(80, 220, 140, 0.16);
+}
+.panel--bv-summary > .panel__title {
+  color: #9dffc8 !important;
+  border-bottom-color: rgba(120, 255, 180, 0.32);
+}
+
+/* ── Loot reference ── */
+main .table-wrap {
+  border-color: rgba(255, 200, 100, 0.68) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 210, 120, 0.12), 0 0 22px rgba(255, 170, 60, 0.16);
+}
+
+/* ── Bulk decoder ── */
+.card.stx-accent-decode-input {
+  border-color: rgba(0, 220, 245, 0.68) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 243, 255, 0.12), 0 0 20px rgba(0, 200, 255, 0.16), 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+.card.stx-accent-decode-help {
+  border-color: rgba(255, 120, 200, 0.62) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 140, 210, 0.12), 0 0 18px rgba(255, 0, 200, 0.12), 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+.card.stx-accent-decode-results {
+  border-color: rgba(100, 180, 255, 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgba(130, 200, 255, 0.14), 0 0 22px rgba(80, 160, 255, 0.18), 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+/* ── Legit builder panels ── */
+.legit-panel.stx-accent-cyan {
+  border-color: rgba(0, 220, 245, 0.68) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0, 243, 255, 0.14), 0 0 18px rgba(0, 200, 255, 0.12);
+}
+.legit-panel.stx-accent-cyan > .legit-panel-title { color: #7ef8ff !important; }
+
+.legit-panel.stx-accent-green {
+  border-color: rgba(120, 255, 180, 0.65) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(120, 255, 180, 0.14), 0 0 18px rgba(80, 220, 140, 0.12);
+}
+.legit-panel.stx-accent-green > .legit-panel-title { color: #9dffc8 !important; }
+
+.legit-panel.stx-accent-sky {
+  border-color: rgba(100, 180, 255, 0.72) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(130, 200, 255, 0.14), 0 0 18px rgba(80, 160, 255, 0.14);
+}
+.legit-panel.stx-accent-sky > .legit-panel-title { color: #a8d4ff !important; }
+
+.legit-panel.stx-accent-gold {
+  border-color: rgba(255, 185, 70, 0.68) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 200, 100, 0.14), 0 0 18px rgba(255, 160, 50, 0.12);
+}
+.legit-panel.stx-accent-gold > .legit-panel-title { color: #ffd080 !important; }
+
+.legit-panel.stx-accent-coral {
+  border-color: rgba(255, 130, 150, 0.68) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 150, 170, 0.14), 0 0 18px rgba(255, 100, 130, 0.12);
+}
+.legit-panel.stx-accent-coral > .legit-panel-title { color: #ffb8c8 !important; }
+
+.legit-panel.stx-accent-lavender {
+  border-color: rgba(200, 110, 255, 0.62) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(200, 140, 255, 0.12), 0 0 18px rgba(180, 80, 255, 0.1);
+}
+.legit-panel.stx-accent-lavender > .legit-panel-title { color: #ddb8ff !important; }
+
+/* ── Prefix lookup ── */
+.card.prefix-primary {
+  border-color: rgba(0, 220, 245, 0.68) !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 243, 255, 0.12), 0 0 22px rgba(0, 200, 255, 0.16), 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+details.card.prefix-testing-panel {
+  border-color: rgba(200, 110, 255, 0.68) !important;
+  box-shadow: inset 0 0 0 1px rgba(200, 140, 255, 0.12), 0 0 20px rgba(180, 80, 255, 0.14), 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+details.card.prefix-testing-panel > summary {
+  color: #ddb8ff !important;
+}
+
+/* ── Save / YAML full page ── */
+.stx-saveyaml-panel.stx-accent-yaml {
+  border: 1px solid rgba(100, 180, 255, 0.72) !important;
+  box-shadow: inset 0 0 0 1px rgba(130, 200, 255, 0.14), 0 0 24px rgba(80, 160, 255, 0.18);
+  background: linear-gradient(165deg, rgba(12, 32, 62, 0.42) 0%, rgba(0, 0, 14, 0.92) 100%);
+}

@@ -298,8 +298,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "export_pending",
-      "notes": "DLC/Cello assets in CUE4Parse (BOR_SG_HairTrigger) but comp_06_pearl_* not in inv __dep_entries yet — re-export after game patch or merge when NcsParser emits bor_sg.comp_06_pearl_hairtrigger",
+      "status": "verified",
+      "notes": "Inv comp is comp_05_legendary_demo (internal codename demo, idRaw 7:56); Cello audio uses BOR_SG_HairTrigger. No separate comp_05_legendary_hairtrigger row.",
       "expectedInv": "bor_sg",
       "spawnTokens": [
         "hairtrigger"
@@ -343,8 +343,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "",
+      "status": "partial",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable",
       "expectedInv": "jak_sg",
       "spawnTokens": [
         "loomingconstable",
@@ -360,8 +360,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "",
+      "status": "partial",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable",
       "expectedInv": "jak_sg",
       "spawnTokens": [
         "loomingconstable",
@@ -377,8 +377,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "",
+      "status": "partial",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable",
       "expectedInv": "jak_sg",
       "spawnTokens": [
         "loomingconstable",
@@ -394,8 +394,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "May map to MAL_SM Firework until Firestorm comp exists",
+      "status": "partial",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns",
       "expectedInv": "mal_sm",
       "spawnTokens": [
         "firestorm",
@@ -410,8 +410,8 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "needs_verification",
-      "notes": "May map to MAL_SM Firework until Firestorm comp exists",
+      "status": "partial",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns",
       "expectedInv": "mal_sm",
       "spawnTokens": [
         "firestorm",
@@ -426,7 +426,7 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "community_discovered",
+      "status": "partial",
       "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary",
       "expectedInv": "dad_sm",
       "spawnTokens": [
@@ -442,7 +442,7 @@
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "community_discovered",
+      "status": "partial",
       "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary",
       "expectedInv": "dad_sm",
       "spawnTokens": [
@@ -482,20 +482,53 @@
         "locust"
       ]
     },
-    "solartemper": {
+    "temper": {
       "name": "SolarTemper",
       "isPearlescent": true,
-      "weaponType": "",
-      "manufacturer": "",
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Order",
       "redText": "",
       "ability": "",
       "source": "",
-      "status": "not_in_export",
-      "notes": "No hit in current Nexus JSON or CUE4Parse export — catalog placeholder until game files expose comp",
-      "expectedInv": "",
+      "status": "verified",
+      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper",
+      "expectedInv": "ord_sr",
       "spawnTokens": [
+        "temper",
         "solartemper",
         "solar_temper"
+      ]
+    },
+    "solartemper": {
+      "name": "SolarTemper",
+      "isPearlescent": true,
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Order",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "verified",
+      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper",
+      "expectedInv": "ord_sr",
+      "spawnTokens": [
+        "temper",
+        "solartemper",
+        "solar_temper"
+      ]
+    },
+    "sharkbait": {
+      "name": "Sharkbait",
+      "isPearlescent": true,
+      "weaponType": "Shotgun",
+      "manufacturer": "Tediore",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "supplement_only",
+      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB",
+      "expectedInv": "ted_sg",
+      "spawnTokens": [
+        "sharkbait"
       ]
     },
     "lockjaw": {

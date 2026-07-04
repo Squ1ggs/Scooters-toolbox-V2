@@ -16,6 +16,8 @@
   }
 
   var __oak2CharXpProg = { multiplier: 60, power: 2.8, offset: 7.33, levelCap: 60, anchorLevel: 50, anchorCumulativePoints: 3430227 };
+  var __oak2MayhemLevelCap = 20;
+  var __oak2VaultHunterLevelCap = 7;
   var __oak2CharXpScale = null;
   function oak2CharacterCumulativeXpPoints(level) {
     var p = __oak2CharXpProg;
@@ -37,6 +39,8 @@
   }
   window.getCharacterCumulativeXpForLevel = oak2CharacterCumulativeXpPoints;
   window.getCharacterLevelCap = function () { return __oak2CharXpProg.levelCap; };
+  window.getMayhemLevelCap = function () { return __oak2MayhemLevelCap; };
+  window.getVaultHunterLevelCap = function () { return __oak2VaultHunterLevelCap; };
   window.STX_MAX_ITEM_LEVEL = __yamlItemLevelCap;
   window.clampItemLevel = function (n) {
     var L = Math.floor(Number(n));
@@ -235,7 +239,7 @@
     unlockAllSpecialization: 'Specialization XP and tokens updated.',
     maxCurrency: 'Cash and eridium maxed.',
     maxAmmo: 'Ammo pools maxed.',
-    unlockMaxEverything: 'Full character unlock applied (bundled preset data; regenerate preset_data.js after game updates for new missions/collectibles).',
+    unlockMaxEverything: 'Full unlock applied to this save.',
     completeAllCollectibles: 'Collectibles merged from preset data.',
     completeAllChallenges: 'Challenge stats updated.',
     completeAllAchievements: 'Achievement counters updated.',
@@ -477,6 +481,20 @@
     window.commitYamlDataToEditor(data);
   };
 
+  function writeEchoTokenProgressPoints(data, pointTotal) {
+    if (!data || !Number.isFinite(pointTotal)) return;
+    data.progression = data.progression || {};
+    data.progression.point_pools = data.progression.point_pools || {};
+    var old = data.progression.point_pools.echotokenprogresspoints || 0;
+    if (pointTotal > old) data.progression.point_pools.echotokenprogresspoints = pointTotal;
+    if (data.domains && data.domains.local) {
+      data.domains.local.progression_shared = data.domains.local.progression_shared || {};
+      data.domains.local.progression_shared.point_pools = data.domains.local.progression_shared.point_pools || {};
+      var oldSh = data.domains.local.progression_shared.point_pools.echotokenprogresspoints || 0;
+      if (pointTotal > oldSh) data.domains.local.progression_shared.point_pools.echotokenprogresspoints = pointTotal;
+    }
+  }
+
   function updateSDUPoints() {
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return;
@@ -495,10 +513,7 @@
         else pointTotal += collectiblePoints[ck] || 0;
       }
     }
-    data.progression = data.progression || {};
-    data.progression.point_pools = data.progression.point_pools || {};
-    var old = data.progression.point_pools.echotokenprogresspoints || 0;
-    if (pointTotal > old) data.progression.point_pools.echotokenprogresspoints = pointTotal;
+    writeEchoTokenProgressPoints(data, pointTotal);
     window.commitYamlDataToEditor(data);
   }
   window.updateSDUPoints = updateSDUPoints;
@@ -576,8 +591,9 @@
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return alert('Load or paste a YAML file first.');
     data.globals = data.globals || {};
-    data.globals.highest_unlocked_vault_hunter_level = 7;
-    data.globals.vault_hunter_level = 1;
+    data.globals.highest_unlocked_vault_hunter_level = __oak2VaultHunterLevelCap;
+    data.globals.vault_hunter_level = __oak2VaultHunterLevelCap;
+    data.globals.highest_unlocked_mayhem_level = __oak2MayhemLevelCap;
     window.commitYamlDataToEditor(data);
   };
 
@@ -603,12 +619,7 @@
     window.commitYamlDataToEditor(data);
   };
 
-  window.setMaxSDU = function () {
-    var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
-    if (!data) return alert('Load or paste a YAML file first.');
-    data.progression = data.progression || {};
-    data.progression.graphs = data.progression.graphs || [];
-    data.progression.point_pools = data.progression.point_pools || {};
+  function buildMaxSduGraphPayload() {
     var points = [5, 10, 20, 30, 50, 80, 120, 235];
     var upgrades = [
       { prefix: 'Ammo_Pistol', levels: 7 }, { prefix: 'Ammo_SMG', levels: 7 }, { prefix: 'Ammo_AR', levels: 7 },
@@ -622,15 +633,42 @@
       }
     }
     var sduGraph = { name: 'sdu_upgrades', group_def_name: 'Oak2_GlobalProgressGraph_Group', nodes: nodes };
-    var existingIdx = -1;
-    for (var g = 0; g < data.progression.graphs.length; g++) {
-      if (data.progression.graphs[g].name === 'sdu_upgrades') { existingIdx = g; break; }
-    }
     var totalPoints = 0;
     for (var n = 0; n < nodes.length; n++) totalPoints += nodes[n].points_spent || 0;
-    if (existingIdx >= 0) data.progression.graphs[existingIdx] = sduGraph;
-    else data.progression.graphs.push(sduGraph);
-    data.progression.point_pools.echotokenprogresspoints = Math.max(data.progression.point_pools.echotokenprogresspoints || 0, totalPoints);
+    return { sduGraph: sduGraph, totalPoints: totalPoints };
+  }
+
+  function mergeSduGraphIntoProgressionGraphs(graphs, sduGraph) {
+    graphs = Array.isArray(graphs) ? graphs : [];
+    var existingIdx = -1;
+    for (var g = 0; g < graphs.length; g++) {
+      if (graphs[g] && graphs[g].name === 'sdu_upgrades') { existingIdx = g; break; }
+    }
+    if (existingIdx >= 0) graphs[existingIdx] = sduGraph;
+    else graphs.push(sduGraph);
+    return graphs;
+  }
+
+  window.setMaxSDU = function () {
+    var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
+    if (!data) return alert('Load or paste a YAML file first.');
+    var built = buildMaxSduGraphPayload();
+    data.progression = data.progression || {};
+    data.progression.graphs = mergeSduGraphIntoProgressionGraphs(data.progression.graphs, built.sduGraph);
+    data.progression.point_pools = data.progression.point_pools || {};
+    data.progression.point_pools.echotokenprogresspoints = Math.max(data.progression.point_pools.echotokenprogresspoints || 0, built.totalPoints);
+    if (data.domains && data.domains.local) {
+      data.domains.local.progression_shared = data.domains.local.progression_shared || {};
+      data.domains.local.progression_shared.graphs = mergeSduGraphIntoProgressionGraphs(
+        data.domains.local.progression_shared.graphs,
+        built.sduGraph
+      );
+      data.domains.local.progression_shared.point_pools = data.domains.local.progression_shared.point_pools || {};
+      data.domains.local.progression_shared.point_pools.echotokenprogresspoints = Math.max(
+        data.domains.local.progression_shared.point_pools.echotokenprogresspoints || 0,
+        built.totalPoints
+      );
+    }
     window.commitYamlDataToEditor(data);
   };
 
@@ -663,24 +701,39 @@
     return list;
   }
 
+  function mergeUnlockableEntryList(existing, addList) {
+    var merged = [];
+    var seen = {};
+    var i;
+    existing = Array.isArray(existing) ? existing : [];
+    addList = Array.isArray(addList) ? addList : [];
+    for (i = 0; i < existing.length; i++) {
+      var e = existing[i];
+      if (!seen[e]) { seen[e] = true; merged.push(e); }
+    }
+    for (i = 0; i < addList.length; i++) {
+      if (!seen[addList[i]]) { seen[addList[i]] = true; merged.push(addList[i]); }
+    }
+    merged.sort(function (a, b) { return (a || '').toLowerCase().localeCompare((b || '').toLowerCase()); });
+    return merged;
+  }
+
   window.unlockAllHoverDrives = function () {
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return alert('Load or paste a YAML file first.');
     var list = generateHoverDriveList();
+    var kind = typeof detectActiveYamlKind === 'function' ? detectActiveYamlKind() : 'character';
+    if (kind === 'profile' && ensureProfileUnlockablesRoot(data)) {
+      data.domains.local.unlockables.unlockable_hoverdrives = data.domains.local.unlockables.unlockable_hoverdrives || {};
+      var profExisting = data.domains.local.unlockables.unlockable_hoverdrives.entries || [];
+      data.domains.local.unlockables.unlockable_hoverdrives.entries = mergeUnlockableEntryList(profExisting, list);
+      window.commitYamlDataToEditor(data);
+      return;
+    }
     data.unlockables = data.unlockables || {};
     data.unlockables.unlockable_hoverdrives = data.unlockables.unlockable_hoverdrives || {};
-    var existing = Array.isArray(data.unlockables.unlockable_hoverdrives.entries) ? data.unlockables.unlockable_hoverdrives.entries : [];
-    var merged = [];
-    var seen = {};
-    for (var i = 0; i < existing.length; i++) {
-      var e = existing[i];
-      if (!seen[e]) { seen[e] = true; merged.push(e); }
-    }
-    for (var j = 0; j < list.length; j++) {
-      if (!seen[list[j]]) { seen[list[j]] = true; merged.push(list[j]); }
-    }
-    merged.sort(function (a, b) { return (a || '').toLowerCase().localeCompare((b || '').toLowerCase()); });
-    data.unlockables.unlockable_hoverdrives.entries = merged;
+    var existing = data.unlockables.unlockable_hoverdrives.entries || [];
+    data.unlockables.unlockable_hoverdrives.entries = mergeUnlockableEntryList(existing, list);
     window.commitYamlDataToEditor(data);
   };
 
@@ -722,26 +775,74 @@
     window.commitYamlDataToEditor(data);
   };
 
+  function detectActiveYamlKind() {
+    try {
+      if (typeof window.detectYamlSaveKind === 'function' && typeof window.getYamlText === 'function') {
+        var t = window.getYamlText();
+        var kind = window.detectYamlSaveKind((t && t.text) || '');
+        if (kind === 'character' || kind === 'profile') return kind;
+      }
+    } catch (_) {}
+    var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
+    if (data && data.state && (data.state.inventory || Array.isArray(data.state.experience))) return 'character';
+    if (data && data.domains && data.domains.local) return 'profile';
+    return 'unknown';
+  }
+
+  function unlockMaxEverythingProfile() {
+    var fullPreset = window.ensurePresetDataLoaded && window.ensurePresetDataLoaded();
+    if (typeof window.clearMapFog === 'function') window.clearMapFog();
+    if (typeof window.discoverAllLocations === 'function') window.discoverAllLocations();
+    if (fullPreset) {
+      if (typeof window.completeAllCollectibles === 'function') window.completeAllCollectibles();
+      if (typeof window.completeAllChallenges === 'function') window.completeAllChallenges();
+      if (typeof window.completeAllAchievements === 'function') window.completeAllAchievements();
+    }
+    if (typeof window.unlockPostgame === 'function') window.unlockPostgame();
+    if (typeof window.setMaxSDU === 'function') window.setMaxSDU();
+    if (typeof window.unlockVaultPowers === 'function') window.unlockVaultPowers();
+    if (typeof window.unlockNewGameShortcuts === 'function') window.unlockNewGameShortcuts();
+    if (typeof window.unlockAllCosmetics === 'function') window.unlockAllCosmetics();
+    if (typeof window.unlockAllHoverDrives === 'function') window.unlockAllHoverDrives();
+    if (typeof window.unlockAllShinyGear === 'function') window.unlockAllShinyGear(1);
+    tryApplyItemLevelsToMatchCharacter({ silent: true });
+    if (typeof window.updateSDUPoints === 'function') window.updateSDUPoints();
+  }
+
+  function unlockMaxEverythingCharacter() {
+    var fullPreset = window.ensurePresetDataLoaded && window.ensurePresetDataLoaded();
+    if (typeof window.clearMapFog === 'function') window.clearMapFog();
+    if (typeof window.discoverAllLocations === 'function') window.discoverAllLocations();
+    if (fullPreset) {
+      if (typeof window.completeAllMissions === 'function') window.completeAllMissions();
+      if (typeof window.completeAllCollectibles === 'function') window.completeAllCollectibles();
+      if (typeof window.completeAllChallenges === 'function') window.completeAllChallenges();
+      if (typeof window.completeAllAchievements === 'function') window.completeAllAchievements();
+    }
+    if (typeof window.unlockPostgame === 'function') window.unlockPostgame();
+    if (typeof window.setCharacterToMaxLevel === 'function') window.setCharacterToMaxLevel();
+    if (typeof window.setMaxSDU === 'function') window.setMaxSDU();
+    if (typeof window.unlockVaultPowers === 'function') window.unlockVaultPowers();
+    if (typeof window.unlockAllHoverDrives === 'function') window.unlockAllHoverDrives();
+    if (typeof window.unlockAllSpecialization === 'function') window.unlockAllSpecialization();
+    if (typeof window.maxCurrency === 'function') window.maxCurrency();
+    if (typeof window.maxAmmo === 'function') window.maxAmmo();
+    if (typeof window.unlockAllShinyGear === 'function') window.unlockAllShinyGear(1);
+    tryApplyItemLevelsToMatchCharacter({ silent: true });
+  }
+
   window.unlockMaxEverything = function () {
     try {
-      var fullPreset = window.ensurePresetDataLoaded && window.ensurePresetDataLoaded();
-      if (typeof window.clearMapFog === 'function') window.clearMapFog();
-      if (typeof window.discoverAllLocations === 'function') window.discoverAllLocations();
-      if (fullPreset) {
-        if (typeof window.completeAllMissions === 'function') window.completeAllMissions();
-        if (typeof window.completeAllCollectibles === 'function') window.completeAllCollectibles();
-        if (typeof window.completeAllChallenges === 'function') window.completeAllChallenges();
-        if (typeof window.completeAllAchievements === 'function') window.completeAllAchievements();
+      var kind = detectActiveYamlKind();
+      if (kind === 'profile') {
+        unlockMaxEverythingProfile();
+        return;
       }
-      if (typeof window.unlockPostgame === 'function') window.unlockPostgame();
-      if (typeof window.setCharacterToMaxLevel === 'function') window.setCharacterToMaxLevel();
-      if (typeof window.setMaxSDU === 'function') window.setMaxSDU();
-      if (typeof window.unlockVaultPowers === 'function') window.unlockVaultPowers();
-      if (typeof window.unlockAllHoverDrives === 'function') window.unlockAllHoverDrives();
-      if (typeof window.unlockAllSpecialization === 'function') window.unlockAllSpecialization();
-      if (typeof window.maxCurrency === 'function') window.maxCurrency();
-      if (typeof window.maxAmmo === 'function') window.maxAmmo();
-      tryApplyItemLevelsToMatchCharacter({ silent: true });
+      if (kind === 'unknown') {
+        alert('Load a character or profile YAML first.');
+        return;
+      }
+      unlockMaxEverythingCharacter();
     } catch (e) { console.error(e); }
   };
 

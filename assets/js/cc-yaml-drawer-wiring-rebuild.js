@@ -338,6 +338,12 @@
           vhCurrentEl.value = String(data.globals.vault_hunter_level);
         }
       }
+      if (typeof window.__ccSyncYamlExtrasFromData === 'function') {
+        window.__ccSyncYamlExtrasFromData(data);
+      }
+      if (typeof window.__ccSyncMissionsEditorFromYaml === 'function') {
+        window.__ccSyncMissionsEditorFromYaml();
+      }
       var kind = typeof detectYamlKind === 'function' ? detectYamlKind(text) : 'unknown';
       var bankSum = byId('yaml-profile-bank-summary');
       if (kind === 'profile' && bankSum) {
@@ -481,12 +487,15 @@
     var vhUnlockedEl = byId('yaml-vh-level-unlocked');
     if (vhUnlockedEl && vhUnlockedEl.value.trim() !== '') {
       data.globals = data.globals || {};
-      data.globals.highest_unlocked_vault_hunter_level = parseInt(vhUnlockedEl.value, 10);
+      data.globals.highest_unlocked_vault_hunter_level = clampVaultHunterLevel(parseInt(vhUnlockedEl.value, 10));
+    }
+    if (typeof window.__ccApplyYamlExtrasToData === 'function') {
+      data = window.__ccApplyYamlExtrasToData(data);
     }
     var vhCurEl = byId('yaml-profile-vh-current');
     if (vhCurEl && vhCurEl.value.trim() !== '') {
       data.globals = data.globals || {};
-      data.globals.vault_hunter_level = parseInt(vhCurEl.value, 10);
+      data.globals.vault_hunter_level = clampVaultHunterLevel(parseInt(vhCurEl.value, 10));
     }
     if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
   };
@@ -495,6 +504,12 @@
     if (!el || el.value.trim() === '') return null;
     var n = parseInt(el.value, 10);
     return Number.isFinite(n) ? n : null;
+  }
+
+  function clampVaultHunterLevel(n) {
+    if (!Number.isFinite(n)) return null;
+    var max = typeof window.getVaultHunterLevelCap === 'function' ? window.getVaultHunterLevelCap() : 7;
+    return Math.max(0, Math.min(max, n));
   }
 
   window.applyProfileYamlFieldChanges = function () {
@@ -518,8 +533,8 @@
     var vlc = parseOptionalInt(vhCurrentEl);
     if (hu != null || vlc != null) {
       data.globals = data.globals || {};
-      if (hu != null) data.globals.highest_unlocked_vault_hunter_level = hu;
-      if (vlc != null) data.globals.vault_hunter_level = vlc;
+      if (hu != null) data.globals.highest_unlocked_vault_hunter_level = clampVaultHunterLevel(hu);
+      if (vlc != null) data.globals.vault_hunter_level = clampVaultHunterLevel(vlc);
     }
     data.domains = data.domains || {};
     data.domains.local = data.domains.local || {};

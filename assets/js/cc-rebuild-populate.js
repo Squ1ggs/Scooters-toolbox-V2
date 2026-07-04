@@ -220,6 +220,13 @@
       if (skinSel) skinSel.dispatchEvent(new Event('change', { bubbles: true }));
       if (camoSel) camoSel.dispatchEvent(new Event('change', { bubbles: true }));
     } catch (_) {}
+
+    function syncPopulatedCustomSelect(el) {
+      if (!el || typeof el.__customSelectSync !== 'function') return;
+      try { el.__customSelectSync(); } catch (_) {}
+    }
+    syncPopulatedCustomSelect(skinSel);
+    syncPopulatedCustomSelect(camoSel);
   }
 
   function presetEntryKey(e) {
@@ -509,7 +516,7 @@
     }
     if (!partSel) return;
     var catKey = (catSel.value || '').trim();
-    partSel.innerHTML = '<option value="">-- Select preset --</option>';
+    partSel.innerHTML = catKey ? '<option value="">-- Select preset part --</option>' : '<option value="">— Pick a category first —</option>';
     if (morePartSel) {
       morePartSel.innerHTML = '<option value="">-- More from catalog --</option>';
       ensurePresetSelectMutex(partSel, morePartSel);
@@ -609,15 +616,27 @@
       seenKey[key] = true;
       out.push(p);
     }
+    function isLegendaryPerkRow(p) {
+      if (!p) return false;
+      var pt = String(p.partType || '').trim().toLowerCase();
+      if (pt === 'legendary perks' || pt === 'legendary perk' || pt === 'legendary') return true;
+      var code = String(p.code || p.spawnCode || '').replace(/^["']|["']$/g, '').trim().toLowerCase();
+      if (typeof window.stxIsDatasetGrenadeGadgetSpawnCode === 'function' && window.stxIsDatasetGrenadeGadgetSpawnCode(code)) return false;
+      if (/part_unique|unique_core|legendary_perk|part_legendary/.test(code)) return true;
+      var stats = String(p.stats || p.effects || p.name || '').toLowerCase();
+      return /legendary\s*perk/.test(stats);
+    }
     for (var i = 0; i < all.length; i++) {
       var p = all[i];
-      if (p && /legendary\s*perk/i.test(String(p.partType || ''))) pushPart(p);
+      if (isLegendaryPerkRow(p)) pushPart(p);
     }
     if (includeBarrels) {
       var barrelFn = typeof window.stxPartCarriesLegendaryEffectWeaponFamilyBarrel === 'function'
         ? window.stxPartCarriesLegendaryEffectWeaponFamilyBarrel
         : function (bp) {
           if (!bp) return false;
+          var bcat = String(bp.category || '').trim();
+          if (bcat !== 'Weapon' && bcat !== 'Gadget' && bcat !== 'Heavy Weapon') return false;
           if (String(bp.partType || '').trim().toLowerCase() !== 'barrel') return false;
           var c = String(bp.code || bp.spawnCode || '').replace(/^["']|["']$/g, '').toLowerCase();
           return c.indexOf('part_unique_barrel') !== -1 || c.indexOf('comp_05_legendary') !== -1 || !!String(bp.legendaryName || '').trim();
@@ -626,6 +645,27 @@
         var bp = all[j];
         if (barrelFn(bp)) pushPart(bp);
       }
+    }
+    var wtLeg = opts.weaponType != null ? String(opts.weaponType || '').trim() : '';
+    if (!wtLeg) {
+      try {
+        if (window.state && String(window.state.weaponType || '').trim()) wtLeg = String(window.state.weaponType).trim();
+      } catch (_) {}
+    }
+    if (!wtLeg) {
+      try {
+        var gwt = document.getElementById('ccGuidedWeaponType');
+        if (gwt && gwt.value) wtLeg = String(gwt.value || '').trim();
+      } catch (_) {}
+    }
+    if (!wtLeg) {
+      try {
+        var wtEl = document.getElementById('weaponType');
+        if (wtEl && wtEl.value) wtLeg = String(wtEl.value || '').trim();
+      } catch (_) {}
+    }
+    if (wtLeg && !opts.ignoreWeaponType && typeof window.stxPartMatchesLegendaryPoolWeaponType === 'function') {
+      out = out.filter(function (p) { return window.stxPartMatchesLegendaryPoolWeaponType(p, wtLeg); });
     }
     return out;
   }
@@ -726,10 +766,15 @@
             efSuffix = ' — ' + (ef.length > 55 ? ef.substring(0, 54) + '…' : ef);
           }
         }
-        var label = human ? (tok + ' - ' + human + efSuffix) : (tok + efSuffix);
+        var label = human ? (human + efSuffix) : (tok + efSuffix);
         var o = document.createElement('option');
         o.value = tok;
         o.textContent = label;
+        try {
+          if (typeof window.stxApplyPartDropdownMeta === 'function') {
+            window.stxApplyPartDropdownMeta(o, p, { isBarrelSlot: true, allowLegendaryTone: true });
+          }
+        } catch (_) {}
         try {
           var iconUrl = legendaryIconUrlForPart(p);
           if (iconUrl) o.setAttribute('data-cc-icon', iconUrl);
@@ -737,6 +782,9 @@
         if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) o.title = t; }
         sel.appendChild(o);
       }
+      try {
+        if (typeof window.__ccForceCustomSelectSync === 'function') window.__ccForceCustomSelectSync(sel);
+      } catch (_) {}
     } catch (_) {}
   }
 

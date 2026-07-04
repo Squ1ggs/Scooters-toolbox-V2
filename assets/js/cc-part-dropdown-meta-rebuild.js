@@ -112,12 +112,25 @@
     return s.length > max ? s.slice(0, max - 1) + '…' : s;
   }
 
-  /** In-game flavor quote — only from curated gear catalog when present. */
+  /** Flavor after "Perk - …" split (same rule as guided barrel dropdowns). */
+  function partRedTextFromEffectsField(p) {
+    if (!p) return '';
+    var ef = q(p.effects != null ? p.effects : (p.effect || p.effects_text));
+    if (!ef) return '';
+    var split = splitEffectPerkBody(ef);
+    if (split.body) return clip(split.body, 240);
+    return '';
+  }
+
+  /** In-game flavor quote — catalog, part fields, or effect body after perk dash. */
   function partRedTextForDropdown(p) {
     if (!p) return '';
     var row = gearCatalogRowForPart(p);
     var red = row ? q(row.redText) : '';
-    return clip(red, 240);
+    if (red) return clip(red, 240);
+    red = q(p.redText || p.red_text || p.flavorText || p.flavor_text);
+    if (red) return clip(red, 240);
+    return partRedTextFromEffectsField(p);
   }
 
   function enhancementCoreEffectText(p) {
@@ -176,6 +189,10 @@
     if (desc) opt.setAttribute('data-cc-part-desc-sub', desc);
     else opt.removeAttribute('data-cc-part-desc-sub');
 
+    var raw = normCode(p);
+    if (raw) opt.setAttribute('data-cc-spawn-sub', raw);
+    else opt.removeAttribute('data-cc-spawn-sub');
+
     if (ctx.allowLegendaryTone === false) {
       opt.removeAttribute('data-cc-primary-tone');
       return;
@@ -194,8 +211,62 @@
     else opt.removeAttribute('data-cc-primary-tone');
   }
 
+  function spawnSegmentFromCode(rawCode) {
+    var c = q(rawCode).replace(/^"+|"+$/g, '');
+    if (!c) return '';
+    var seg = c.indexOf('.') >= 0 ? c.slice(c.lastIndexOf('.') + 1) : c;
+    return seg.replace(/^"+|"+$/g, '').trim();
+  }
+
+  /** save-editor.be-style: strip part_/comp_ prefix and underscores → spaces. */
+  function formatSpawnPartName(code) {
+    return spawnSegmentFromCode(code).replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim();
+  }
+
+  function partIdTokenForDropdown(p) {
+    if (!p) return '';
+    var id = q(p.idRaw != null ? p.idRaw : (p.idraw != null ? p.idraw : p.id));
+    if (/^\d+\s*:\s*\d+$/.test(id)) {
+      var parts = id.split(':');
+      return '{' + String(parts[0]).trim() + ':' + String(parts[1]).trim() + '}';
+    }
+    return id;
+  }
+
+  /** Rich one-line label: spawn name · display name · {fam:id} · stats/effects (save-editor.be friendly). */
+  function ccRichPartDropdownLabel(p, maxLen) {
+    if (!p) return '-';
+    maxLen = maxLen || 220;
+    var raw = normCode(p);
+    var spawn = formatSpawnPartName(raw);
+    var name = q(p.name).replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim();
+    var idTok = partIdTokenForDropdown(p);
+    var stats = q(p.stats).replace(/\s+/g, ' ').trim();
+    var ef = q(p.effects || p.effect).replace(/\s+/g, ' ').trim();
+    var pt = q(p.partType);
+
+    var bits = [];
+    if (raw) bits.push(raw);
+    else if (spawn) bits.push(spawn);
+    if (name) {
+      var spawnNorm = spawn.toLowerCase().replace(/[^a-z0-9]/g, '');
+      var nameNorm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (nameNorm && nameNorm !== spawnNorm && spawnNorm.indexOf(nameNorm) === -1) bits.push(name);
+    }
+    if (idTok) bits.push(idTok);
+    if (stats) bits.push(stats.length > 44 ? stats.slice(0, 43) + '…' : stats);
+    else if (ef) bits.push(ef.length > 44 ? ef.slice(0, 43) + '…' : ef);
+    else if (pt && pt.toLowerCase() !== 'body' && pt.toLowerCase() !== 'magazine') bits.push(pt);
+
+    var line = bits.filter(Boolean).join(' · ');
+    if (line.length > maxLen) line = line.slice(0, maxLen - 1) + '…';
+    return line || spawn || raw || '-';
+  }
+
   window.partRedTextForDropdown = partRedTextForDropdown;
   window.partEffectDescForDropdown = partEffectDescForDropdown;
   window.stxApplyPartDropdownMeta = applyPartDropdownMeta;
   window.stxGearCatalogRowForPart = gearCatalogRowForPart;
+  window.ccRichPartDropdownLabel = ccRichPartDropdownLabel;
+  window.ccFormatSpawnPartName = formatSpawnPartName;
 })();

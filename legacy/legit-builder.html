@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script src="../assets/js/cc-browser-compat.js"></script>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="dark" name="color-scheme">
 <meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
@@ -18,6 +19,7 @@
 <link href="../assets/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="../assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="../assets/css/cc-build-stats-panel.css" rel="stylesheet"/>
+<link href="../assets/css/stx-section-borders.css" rel="stylesheet"/>
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -808,11 +810,16 @@
         ? '../assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
         : '../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
       if (location && location.protocol === 'file:') {
-        if (out) out.style.display = 'none';
-        if (frame) {
-          frame.style.display = 'block';
-          frame.src = url;
+        if (frame) frame.style.display = 'none';
+        if (out) out.style.display = 'block';
+        if (loaded[nextMode]) {
+          out.textContent = cache[nextMode] || 'Could not load instructions file.';
+          return;
         }
+        var localTxt = typeof window.stxLoadLocalTextSync === 'function' ? window.stxLoadLocalTextSync(url) : '';
+        loaded[nextMode] = true;
+        cache[nextMode] = localTxt || ('Could not load instructions from ' + url + '. Run a local web server (e.g. npx serve) for the full guide.');
+        if (mode === nextMode) out.textContent = cache[nextMode];
         return;
       }
       if (frame) frame.style.display = 'none';
@@ -873,7 +880,7 @@
   </script>
 <div class="legit-layout">
 <div class="legit-left-stack" style="display:flex;flex-direction:column;gap:14px;">
-<div class="legit-panel">
+<div class="legit-panel stx-accent-cyan">
 <div class="legit-panel-title">Item &amp; Parts</div>
 <div class="legit-item-select-wrap">
 <label for="item-type">Item Type</label>
@@ -883,7 +890,7 @@
 <div class="slot-empty-msg">Select an item type above to see available slots.</div>
 </div>
 </div>
-<div class="legit-panel">
+<div class="legit-panel stx-accent-green">
 <div class="legit-panel-title">Part Stat Effects</div>
 <div id="stat-effects"><div class="stats-empty">Select parts to see their stat effects.</div></div>
 </div>
@@ -903,7 +910,7 @@
 </details>
 </div>
 <div style="display:flex;flex-direction:column;gap:14px;">
-<div class="legit-panel" style="flex:1;">
+<div class="legit-panel stx-accent-sky" style="flex:1;">
 <div class="legit-panel-title">Output</div>
 <div class="output-box" id="output"><span class="o-empty">Select an item type and parts to begin.</span></div>
 <div class="output-label">Deserialized Code</div>
@@ -923,7 +930,7 @@
 </div>
 <div class="stats-ref" id="stats-ref"></div>
 </div>
-<div class="legit-panel">
+<div class="legit-panel stx-accent-gold">
 <div class="legit-panel-title">Decode @U serial &amp; check data</div>
 <p style="font-size:0.75rem;color:rgba(233,254,255,0.55);margin:0 0 8px;line-height:1.45;">Paste an <code>@U</code> serial. The STX decoder (same as BL4 Bulk Deserializer) resolves <code>resolvedParts</code>, maps names to manifest slots (best-effort), then runs the <strong>same</strong> data checks as manual selection — including <strong>inv composition tags</strong> when <code>inv_comp_tag_data.js</code> is loaded. Empty or partial mapping still runs checks on whatever matched.</p>
 <textarea id="legit-decode-input" name="legit-decode-input" placeholder="@U…" rows="3" style="width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:0.78rem;padding:8px;border-radius:6px;border:1px solid rgba(0,200,255,0.25);background:rgba(0,0,0,0.35);color:#e9feff;"></textarea>
@@ -933,22 +940,22 @@
 </div>
 <div class="validation-bar v-idle" id="legit-decode-out" style="margin-top:10px;white-space:normal;">Paste a serial and click Decode &amp; check.</div>
 </div>
-<div class="legit-panel">
+<div class="legit-panel stx-accent-coral">
 <div class="legit-panel-title">Data validation</div>
 <p style="font-size:0.72rem;color:rgba(233,254,255,0.5);margin:0 0 8px;line-height:1.45;">Uses manifest / NCS / schedules / weights / stats <em>and</em> inv tag composition rules; panel lines starting with <code>Inv tags:</code> come from the tag graph.</p>
 <div class="validation-bar v-idle" id="validation">Select parts to validate.</div>
 <span class="inv-tag-hint" id="inv-tag-rules-hint" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Inv NCS tag rules active</span>
 <label class="strict-toggle"><input checked="" id="strict-mode" name="strict-mode" type="checkbox"/> Strict mode (0% weight or level &lt; LootSchedule MinGameStage → Fail (data))</label>
 </div>
-<div class="legit-panel">
+<div class="legit-panel stx-accent-lavender">
 <div class="legit-panel-title">Item info &amp; part checklist</div>
 <div id="item-stats"><div class="stats-empty">Select an item type to see info.</div></div>
 </div>
-<div class="legit-panel">
+<div class="legit-panel stx-accent-lavender">
 <div class="legit-panel-title">Evidence (from data)</div>
 <div id="proof-evidence"><div class="stats-empty">Select parts to view proof details.</div></div>
 </div>
-<div class="legit-panel data-lineage-panel">
+<div class="legit-panel data-lineage-panel stx-accent-gold">
 <div class="legit-panel-title">Data Sources</div>
 <div class="data-lineage-text">
           bl4_manifest · NCS (itempool, gbx_ue_data_table, GbxActorPart) · PARTS_STATS_DATA (<code>parts_stats_data.js</code>) · WEAPON_STATS_DATA · LootSchedule &amp; weapon_part_weight_table · inv tag rules (<code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>)
@@ -971,9 +978,14 @@
 <script src="../assets/data/enemy_drops_data.js"></script>
 <script src="../assets/data/itempoollist_droprows_data.js"></script>
 <script src="../assets/data/source_paths_data.js"></script>
+<script src="../assets/data/loot_reference_data.js"></script>
+<script src="../assets/data/loot_rarity_pools_data.js"></script>
+<script src="../assets/data/loot_config_data.js"></script>
+<script src="../assets/data/rewards_data.js"></script>
 <script src="../assets/data/legit_schedule_data.js"></script>
 <script src="../assets/data/stx_rarities.js"></script>
 <script src="../assets/data/stx_rarities_raid2_patch.js"></script>
+<script src="../assets/data/stx_rarities_community_pearl_patch.js"></script>
 <script src="../assets/data/classmod_manifest_items.js"></script>
 <script src="../assets/js/cc-item-slug.js"></script>
 <script src="../assets/js/tag-comp-validation.js"></script>

@@ -45,7 +45,7 @@
   var godrollRenderLimit = 80;
   var SEARCH_DEBOUNCE_MS = 350;
   var MIN_SEARCH_QUERY_LEN = 2;
-  var INDEX_CHUNK_SIZE = 2000;
+  var INDEX_CHUNK_SIZE = 350;
   var serialSearchIndexReady = false;
   var godrollSearchIndexReady = false;
   var serialIndexInFlight = false;
@@ -54,7 +54,9 @@
   var godrollSearchDebounceTimer = null;
 
   function scheduleIndexStep(fn) {
-    if (typeof window.stxScheduleIdle === 'function') {
+    if (typeof window.stxYieldToMain === 'function') {
+      window.stxYieldToMain(fn);
+    } else if (typeof window.stxScheduleIdle === 'function') {
       window.stxScheduleIdle(fn, 120);
     } else if (typeof requestIdleCallback === 'function') {
       requestIdleCallback(function () { fn(); }, { timeout: 120 });
@@ -907,7 +909,7 @@
       return;
     }
     var filtered = filterSerials(q);
-    if (statusEl) statusEl.textContent = q ? (filtered.length + ' matches') : (serialsData.length + ' serials loaded. Showing popular/start of list.');
+    if (statusEl) statusEl.textContent = q ? (filtered.length + ' matches') : (serialsData.length + ' serials loaded — showing first ' + Math.min(prefixRenderLimit, filtered.length) + (filtered.length > prefixRenderLimit ? ' (use Show more)' : '') + '.');
     renderResults(filtered);
   }
 
@@ -988,7 +990,7 @@
           ? (filtered.length + ' matches in this category')
           : (filtered.length + ' in category · type to search');
       } else {
-        statusEl.textContent = q ? (filtered.length + ' Godroll matches') : (godrollData.length + ' Godroll serials loaded. Showing start of list.');
+        statusEl.textContent = q ? (filtered.length + ' Godroll matches') : (godrollData.length + ' Godrolls loaded — showing first ' + Math.min(godrollRenderLimit, filtered.length) + (filtered.length > godrollRenderLimit ? ' (use Show more)' : '') + '.');
       }
     }
     renderGodrollResults(filtered);
@@ -1246,11 +1248,6 @@
       });
     }
     wireGodrollFileLoad();
-
-    var prefixPanel = byId('rebuildPrefixItemSearchSection');
-    if (prefixPanel && prefixPanel.open) bootstrapPrefixSearch();
-    var godrollPanel = byId('rebuildGodrollSection');
-    if (godrollPanel && godrollPanel.open) bootstrapGodrollSearch();
 
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   }

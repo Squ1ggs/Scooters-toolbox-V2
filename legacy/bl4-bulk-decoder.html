@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script src="../assets/js/cc-browser-compat.js"></script>
 <meta content="dark" name="color-scheme"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
@@ -53,6 +54,7 @@ code { font-family:ui-monospace, SFMono-Regular, monospace; word-break:break-wor
 <link href="../assets/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
 <link href="../assets/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="../assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="../assets/css/stx-section-borders.css" rel="stylesheet"/>
 <style id="bl4-bulk-legacy-skin">
 :root {
   --bg:#060a12;
@@ -298,11 +300,16 @@ td { border-color:rgba(0,243,255,0.1) !important; }
       ? '../assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
       : '../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
     if (location && location.protocol === 'file:') {
-      if (out) out.style.display = 'none';
-      if (frame) {
-        frame.style.display = 'block';
-        frame.src = url;
+      if (frame) frame.style.display = 'none';
+      if (out) out.style.display = 'block';
+      if (loaded[nextMode]) {
+        out.textContent = cache[nextMode] || 'Could not load instructions file.';
+        return;
       }
+      var localTxt = typeof window.stxLoadLocalTextSync === 'function' ? window.stxLoadLocalTextSync(url) : '';
+      loaded[nextMode] = true;
+      cache[nextMode] = localTxt || ('Could not load instructions from ' + url + '. Run a local web server (e.g. npx serve) for the full guide.');
+      if (mode === nextMode) out.textContent = cache[nextMode];
       return;
     }
     if (frame) frame.style.display = 'none';
@@ -367,7 +374,7 @@ td { border-color:rgba(0,243,255,0.1) !important; }
 <p>Reads serials from YAML, TXT, or JSON, decodes them locally, and resolves part refs against your local parts datasets.</p>
 </section>
 <section class="grid cols">
-<div class="card grid">
+<div class="card grid stx-accent-decode-input">
 <div class="row">
 <input accept=".yaml,.yml,.txt,.json,.log,.save" id="fileInput" name="fileInput" type="file"/>
 <select id="modeSelect" name="modeSelect">
@@ -391,7 +398,7 @@ Include full item stats in exported JSON
 </div>
 <div class="status" id="status">Loading WASM bundle (first open may take a few seconds)…</div>
 </div>
-<div class="card grid">
+<div class="card grid stx-accent-decode-help">
 <div class="small">How resolution works</div>
 <ul>
 <li>The decoder runs fully offline; WebAssembly is loaded from this folder (no inline blob).</li>
@@ -401,7 +408,7 @@ Include full item stats in exported JSON
 </ul>
 </div>
 </section>
-<section class="card grid">
+<section class="card grid stx-accent-decode-results">
 <div class="kpis">
 <div class="kpi"><span class="small">Serials found</span><strong id="kTotal">0</strong></div>
 <div class="kpi"><span class="small">Decoded</span><strong id="kDecoded">0</strong></div>
@@ -473,17 +480,31 @@ Include full item stats in exported JSON
       st.textContent = msg;
       st.className = 'status' + (kind ? ' ' + kind : '');
     }
+    function autoDecode(label) {
+      setTimeout(function () {
+        if (typeof window.__stxBulkDecodeCurrent === 'function') {
+          window.__stxBulkDecodeCurrent('').catch(function () {});
+          return;
+        }
+        var decodeBtn = document.getElementById('decodeBtn');
+        if (decodeBtn) decodeBtn.click();
+      }, 80);
+      if (label) setStatus(label, 'good');
+    }
+    function applyPrefill(text, modeVal, label) {
+      if (!ib || !text) return false;
+      ib.value = text;
+      if (mode) mode.value = modeVal;
+      ib.dispatchEvent(new Event('input', { bubbles: true }));
+      ib.dispatchEvent(new Event('change', { bubbles: true }));
+      autoDecode(label);
+      return true;
+    }
     if (/\bprefill_yaml=1\b/i.test(location.search || '')) {
       var y = sessionStorage.getItem('stx_bulk_decoder_prefill_yaml');
       if (y) {
         sessionStorage.removeItem('stx_bulk_decoder_prefill_yaml');
-        if (ib && (!ib.value || !String(ib.value).trim())) {
-          ib.value = y;
-          if (mode) mode.value = 'yaml';
-          ib.dispatchEvent(new Event('input', { bubbles: true }));
-          ib.dispatchEvent(new Event('change', { bubbles: true }));
-          setStatus('Loaded full YAML from Toolbox. Click Decode serials when ready.', 'good');
-        }
+        applyPrefill(y, 'yaml', 'Loaded YAML from Toolbox — decoding serials…');
       }
       return;
     }
@@ -491,13 +512,7 @@ Include full item stats in exported JSON
       var raw = sessionStorage.getItem('stx_bulk_decoder_prefill');
       if (raw) {
         sessionStorage.removeItem('stx_bulk_decoder_prefill');
-        if (ib && (!ib.value || !String(ib.value).trim())) {
-          ib.value = raw;
-          if (mode) mode.value = 'txt';
-          ib.dispatchEvent(new Event('input', { bubbles: true }));
-          ib.dispatchEvent(new Event('change', { bubbles: true }));
-          setStatus('Loaded serial lines from Toolbox (TXT). Click Decode serials.', 'good');
-        }
+        applyPrefill(raw, 'txt', 'Loaded serial lines from Toolbox — decoding…');
       }
     }
   } catch (_) {}

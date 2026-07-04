@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script src="./js/cc-browser-compat.js"></script>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme"/>
 <title>Save / YAML — Scooter's Toolbox</title>
@@ -85,6 +86,18 @@ textarea.stx-yaml-drop-target.stx-yaml-drop-hover {
   object-fit: contain;
   flex-shrink: 0;
   filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(5000%) hue-rotate(343deg) brightness(1.02) contrast(1.05);
+}
+#ccMissionsEditor select,
+#ccExtraYamlEditors select {
+  color-scheme: dark;
+  background: #1a2332 !important;
+  color: #b8e6f0 !important;
+  border-color: rgba(0, 243, 255, 0.45) !important;
+}
+#ccMissionsEditor select option,
+#ccExtraYamlEditors select option {
+  background: #1a2332;
+  color: #b8e6f0;
 }
 @media (prefers-reduced-motion: reduce) {
   :root { --transition-fast: 0ms; }
@@ -362,6 +375,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   line-height: 1.4;
 }
 </style>
+<link href="./css/stx-section-borders.css" rel="stylesheet"/>
 </head>
 <body class="editor-page">
 <div class="app-shell">
@@ -424,11 +438,16 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
       ? 'SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
       : 'SCOOTERS_TOOLBOX_USER_GUIDE.txt';
     if (location && location.protocol === 'file:') {
-      if (out) out.style.display = 'none';
-      if (frame) {
-        frame.style.display = 'block';
-        frame.src = url;
+      if (frame) frame.style.display = 'none';
+      if (out) out.style.display = 'block';
+      if (loaded[nextMode]) {
+        out.textContent = cache[nextMode] || 'Could not load instructions file.';
+        return;
       }
+      var localTxt = typeof window.stxLoadLocalTextSync === 'function' ? window.stxLoadLocalTextSync(url) : '';
+      loaded[nextMode] = true;
+      cache[nextMode] = localTxt || ('Could not load instructions from ' + url + '. Run a local web server (e.g. npx serve) for the full guide.');
+      if (mode === nextMode) out.textContent = cache[nextMode];
       return;
     }
     if (frame) frame.style.display = 'none';
@@ -487,7 +506,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   });
 })();
 </script>
-<div class="stx-saveyaml-panel">
+<div class="stx-saveyaml-panel stx-accent-yaml">
 <p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">💾</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
 <div id="rp-saveyaml-drawer-body">
 <details id="saveYamlDetails" open="" style="margin-top:10px;">
@@ -576,11 +595,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));">
 <div>
 <label for="yaml-profile-vh-unlocked" style="color:#00c8ff;font-size:0.88em;display:block;margin-bottom:4px;">Highest unlocked VH (<code>globals</code>)</label>
-<input id="yaml-profile-vh-unlocked" max="999" min="0" name="yaml-profile-vh-unlocked" placeholder="e.g. 6" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<input id="yaml-profile-vh-unlocked" max="7" min="0" name="yaml-profile-vh-unlocked" placeholder="e.g. 7" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
 <div>
 <label for="yaml-profile-vh-current" style="color:#00c8ff;font-size:0.88em;display:block;margin-bottom:4px;">Current VH level (<code>globals</code>)</label>
-<input id="yaml-profile-vh-current" max="999" min="0" name="yaml-profile-vh-current" placeholder="e.g. 1" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<input id="yaml-profile-vh-current" max="7" min="0" name="yaml-profile-vh-current" placeholder="e.g. 7" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
 <div>
 <label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_01.png" width="22"/>Vault Card 1 tokens</label>
@@ -667,7 +686,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <button class="btn btn-Firmware" data-action="call" data-fn="unlockAllSpecialization" data-requires="character" title="Unlocks + maxes specializations" type="button">Unlock All Specializations</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="maxCurrency" data-requires="character" title="Sets cash+eridium to max" type="button">Max Currency</button>
 <button class="btn btn-Firmware" data-action="call" data-fn="maxAmmo" data-requires="character" title="Sets ammo pools to max" type="button">Max Ammo</button>
-<button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="character" title="Full character unlock: max level, SDU, currencies, ammo, vault powers, hover drives, spec; map/location discovery; UVHM flags; missions, collectibles, challenges, achievements from bundled preset data; sync item levels to character level" type="button">Full Unlock</button>
+<button class="btn btn-Firmware" data-action="call" data-fn="unlockMaxEverything" data-requires="both" title="Character: max level, SDU, currency, ammo, vault powers, hover drives, spec, map, missions, collectibles, challenges, achievements, shiny gear, item levels. Profile: map, collectibles, challenges, achievements, UVHM, max SDU, vault powers, cosmetics, new-game shortcuts, hover drives, shiny gear, shared bank item levels." type="button">Full Unlock</button>
 </div>
 <div style="font-weight:700;margin:14px 0 8px;">World / Challenges</div>
 <div class="btnRow" style="display:flex;flex-wrap:wrap;gap:8px;">
@@ -723,7 +742,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div style="margin-top:10px;">
 <label for="yaml-vh-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Vault Hunter level (root <code>globals</code>) — syncs with Profile save tools when a profile YAML is loaded:</label>
-<input id="yaml-vh-level-unlocked" max="999" min="0" name="yaml-vh-level-unlocked" placeholder="e.g. 6" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;" type="number"/>
+<input id="yaml-vh-level-unlocked" max="7" min="0" name="yaml-vh-level-unlocked" placeholder="e.g. 7" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;" type="number"/>
+</div>
+<div style="margin-top:10px;">
+<label for="yaml-mayhem-level-unlocked" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:5px;">Highest unlocked Mayhem level (<code>globals.highest_unlocked_mayhem_level</code>):</label>
+<input id="yaml-mayhem-level-unlocked" max="20" min="0" name="yaml-mayhem-level-unlocked" placeholder="e.g. 5" style="width:100%; padding:10px 12px; background:#1f1f1f; border:1px solid rgba(0,243,255,0.5); border-radius:8px; color:#00f3ff; font-size:1em;" type="number"/>
 </div>
 <div style="margin-top:12px;">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -806,7 +829,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <span class="yaml-serials-page-info" id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
-<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials (one per line). Use TXT or Auto mode, then Decode." type="button">Open serials in bulk decoder</button>
+<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials and starts decoding automatically." type="button">Open serials in bulk decoder</button>
 <button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB." type="button">Open full YAML in bulk decoder</button>
 </div>
 <div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
@@ -869,10 +892,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
-<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste one <strong>Base85</strong> serial per line. <strong>Character saves:</strong> <code>backpack</code>. <strong>Profile saves:</strong> <strong>Add to bank</strong> for shared bank. Lines starting with <code>#</code> are ignored.</p>
+<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste <strong>Base85</strong> serials (one per line), YAML <code>serial:</code> lines, or a <strong>JSON array</strong> with <code>"serial"</code> fields. <strong>Character saves:</strong> <code>backpack</code>. <strong>Profile saves:</strong> <strong>Add to bank</strong>. Lines starting with <code>#</code> are ignored.</p>
 <label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
-<textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One serial per line — Base85 or deserialized
-Example: paste several lines from the bulk decoder or builder output" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
+<textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One @U serial per line — or paste JSON:
+[{&quot;id&quot;:&quot;lockjaw&quot;,&quot;serial&quot;:&quot;@Ugv4...&quot;}, ...]" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;">
 <label for="yamlAddSerialsCount" style="color: rgba(0,200,255,0.9); font-size: 0.85em; display: inline-flex; align-items: center; gap: 6px;">Copies / line
 <input id="yamlAddSerialsCount" max="999" min="1" name="yamlAddSerialsCount" style="width: 52px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0;" type="number" value="1"/></label>
@@ -929,6 +952,7 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="vendor/pako-inline.js"></script>
 <script src="vendor/jsyaml-inline.js"></script>
 <script src="data/preset_data.js"></script>
+<script src="data/yaml_save_catalog.js"></script>
 <script src="js/cc-preset-data-rebuild.js"></script>
 <script src="js/cc-base85-rebuild.js"></script>
 <script src="js/stx-nicnl-serial-pack.js"></script>
@@ -936,6 +960,8 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="js/cc-yaml-save-rebuild.js"></script>
 <script src="js/cc-preset-rebuild.js"></script>
 <script src="js/cc-stx-decoder-bridge.js"></script>
+<script src="js/cc-yaml-extras-rebuild.js"></script>
+<script src="js/cc-missions-rebuild.js"></script>
 <script src="js/cc-yaml-drawer-wiring-rebuild.js"></script>
 <script src="js/cc-build-stats-rebuild.js"></script>
 <script src="js/rebuild-presets-random.js"></script>

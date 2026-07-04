@@ -21,6 +21,10 @@ const NCS_PARTS = {
       "index": 1
     },
     {
+      "name": "part_body_uberhead",
+      "index": 1
+    },
+    {
       "name": "part_body_01_ground",
       "index": 2
     },
@@ -1113,6 +1117,10 @@ const NCS_PARTS = {
     {
       "name": "part_firmware_skillcraft",
       "index": 42
+    },
+    {
+      "name": "part_firmware_bruiser",
+      "index": 106
     }
   ],
   "endgame": [
@@ -1915,6 +1923,26 @@ const NCS_PARTS = {
     {
       "name": "part_aug_u_rep_kit_cd_reduction_sec",
       "index": 97
+    },
+    {
+      "name": "part_aug_unique_geigerroid_shock_sec",
+      "index": 115
+    },
+    {
+      "name": "part_aug_unique_geigerroid_radiation_sec",
+      "index": 116
+    },
+    {
+      "name": "part_aug_unique_geigerroid_fire_sec",
+      "index": 117
+    },
+    {
+      "name": "part_aug_unique_geigerroid_cryo_sec",
+      "index": 118
+    },
+    {
+      "name": "part_aug_unique_geigerroid_corrosive_sec",
+      "index": 119
     }
   ],
   "primary_augment": [
@@ -3737,6 +3765,14 @@ const NCS_PARTS = {
       "index": 1
     },
     {
+      "name": "comp_dahlmech_emp",
+      "index": 1
+    },
+    {
+      "name": "comp_dahlmech_energygun",
+      "index": 1
+    },
+    {
       "name": "comp_dahlmech_flamespitter",
       "index": 1
     },
@@ -3813,6 +3849,10 @@ const NCS_PARTS = {
       "index": 2
     },
     {
+      "name": "comp_uberhead",
+      "index": 2
+    },
+    {
       "name": "comp_wideangle",
       "index": 2
     },
@@ -3822,6 +3862,10 @@ const NCS_PARTS = {
     },
     {
       "name": "comp_badass",
+      "index": 3
+    },
+    {
+      "name": "comp_soldier_sprayer_0",
       "index": 3
     },
     {

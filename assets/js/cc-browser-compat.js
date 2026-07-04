@@ -65,4 +65,222 @@
     }
     return window.setTimeout(fn, liteUi ? Math.min(t, 400) : 1);
   };
+
+  /** Yield so pointer/keyboard input can run (keeps INP low). */
+  window.stxYieldToMain = function (fn) {
+    if (typeof fn !== 'function') return;
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(function () {
+        window.setTimeout(fn, 0);
+      });
+    } else {
+      window.setTimeout(fn, 0);
+    }
+  };
+
+  /** Queue idle work so splash-dismiss handlers don't pile up on one frame. */
+  window.stxQueueIdleWork = function (fn, delayMs) {
+    if (typeof fn !== 'function') return;
+    window.__stxIdleWorkQueue = window.__stxIdleWorkQueue || [];
+    window.__stxIdleWorkQueue.push({ fn: fn, delay: Number(delayMs) || 0 });
+    if (window.__stxIdleWorkQueueRunning) return;
+    window.__stxIdleWorkQueueRunning = true;
+    function drain() {
+      var q = window.__stxIdleWorkQueue;
+      if (!q || !q.length) {
+        window.__stxIdleWorkQueueRunning = false;
+        return;
+      }
+      var job = q.shift();
+      var run = function () {
+        try { job.fn(); } catch (_) {}
+        window.stxYieldToMain(drain);
+      };
+      if (job.delay > 0) {
+        window.stxScheduleIdle(run, job.delay);
+      } else {
+        window.stxYieldToMain(run);
+      }
+    }
+    window.stxYieldToMain(drain);
+  };
+
+  /** Run `work(start, end)` on slices of `items`, yielding between slices. */
+  window.stxRunInSlices = function (items, sliceSize, work, done) {
+    if (!items || !items.length) {
+      if (typeof done === 'function') done();
+      return;
+    }
+    var i = 0;
+    var size = Math.max(1, Number(sliceSize) || 200);
+    function step() {
+      var end = Math.min(i + size, items.length);
+      try { work(i, end); } catch (_) {}
+      i = end;
+      if (i < items.length) {
+        window.stxYieldToMain(step);
+      } else if (typeof done === 'function') {
+        window.stxYieldToMain(done);
+      }
+    }
+    step();
+  };
+
+  function openDockToolNavOnDesktop() {
+    if (touchUi) return;
+    var det = document.getElementById('stxDockMoreTools');
+    if (det) det.setAttribute('open', '');
+  }
+
+  function collapseHeavyPanelsForLite() {
+    if (!liteUi) return;
+    var collapseIds = [
+      'rebuildBuildStatsSection',
+      'ccAdvancedPartsSearch',
+      'rebuildImportedInspectorDetails',
+      'saveYamlDetails',
+      'rebuildPrefixItemSearchSection',
+      'rebuildGodrollSection'
+    ];
+    for (var i = 0; i < collapseIds.length; i++) {
+      var el = document.getElementById(collapseIds[i]);
+      if (el && el.hasAttribute('open')) el.removeAttribute('open');
+    }
+    try {
+      var hub = document.getElementById('ccGearGuidedHub');
+      if (hub) {
+        var openDetails = hub.querySelectorAll('details[open]');
+        for (var j = 0; j < openDetails.length; j++) openDetails[j].removeAttribute('open');
+      }
+    } catch (_) {}
+  }
+
+  if (liteUi) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', collapseHeavyPanelsForLite, { once: true });
+    } else {
+      collapseHeavyPanelsForLite();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', openDockToolNavOnDesktop, { once: true });
+  } else {
+    openDockToolNavOnDesktop();
+  }
+
+  /** Prevent ghost taps on dock links / builder controls after splash dismiss (mobile). */
+  function stxEnsureSplashClickBlocker() {
+    var blocker = document.getElementById('stxSplashClickBlock');
+    if (blocker) return blocker;
+    blocker = document.createElement('div');
+    blocker.id = 'stxSplashClickBlock';
+    blocker.setAttribute('aria-hidden', 'true');
+    blocker.style.cssText = 'position:fixed;inset:0;z-index:99998;touch-action:none;background:transparent;display:none;';
+    document.body.appendChild(blocker);
+    return blocker;
+  }
+
+  window.stxDismissSplash = function (ev) {
+    var splash = document.getElementById('splash');
+    if (!splash || splash.classList.contains('dismissed')) return;
+    if (ev) {
+      try { ev.preventDefault(); } catch (_) {}
+      try { ev.stopPropagation(); } catch (_) {}
+      try { ev.stopImmediatePropagation(); } catch (_) {}
+    }
+    splash.classList.add('dismissed');
+    html.classList.add('stx-splash-dismissed');
+    try { splash.style.willChange = 'auto'; } catch (_) {}
+    var blocker = stxEnsureSplashClickBlocker();
+    blocker.style.display = 'block';
+    var guardMs = liteUi ? (touchUi ? 180 : 120) : (touchUi ? 520 : 360);
+    window.setTimeout(function () {
+      blocker.style.display = 'none';
+    }, guardMs);
+    flushSplashDismissQueue();
+  };
+
+  var splashDismissQueue = [];
+  var splashDismissPriorityQueue = [];
+  var splashDismissFlushing = false;
+
+  function flushSplashDismissQueue() {
+    if (splashDismissFlushing) return;
+    splashDismissFlushing = true;
+    while (splashDismissPriorityQueue.length) {
+      try { splashDismissPriorityQueue.shift()(); } catch (_) {}
+    }
+    function drain() {
+      if (!splashDismissQueue.length) {
+        splashDismissFlushing = false;
+        try { window.dispatchEvent(new CustomEvent('stx:splash-dismissed')); } catch (_) {}
+        return;
+      }
+      var fn = splashDismissQueue.shift();
+      var gap = liteUi ? 48 : 24;
+      window.stxQueueIdleWork(function () {
+        try { fn(); } catch (_) {}
+        window.stxYieldToMain(drain);
+      }, gap);
+    }
+    window.stxQueueIdleWork(drain, liteUi ? 32 : 16);
+  }
+
+  window.stxWhenSplashDismissed = function (fn, opts) {
+    if (typeof fn !== 'function') return;
+    var priority = !!(opts && opts.priority);
+    if (html.classList.contains('stx-splash-dismissed')) {
+      if (priority) {
+        try { fn(); } catch (_) {}
+        return;
+      }
+      window.stxQueueIdleWork(fn, liteUi ? 80 : 0);
+      return;
+    }
+    if (priority) splashDismissPriorityQueue.push(fn);
+    else splashDismissQueue.push(fn);
+  };
+
+  window.stxBindSplashDismiss = function (btn, splash) {
+    if (!btn || !splash || splash.dataset.ccDismissBound === '1') return;
+    splash.dataset.ccDismissBound = '1';
+    btn.addEventListener('click', function (ev) {
+      window.stxDismissSplash(ev);
+    });
+  };
+
+  function bindSplashEarly() {
+    window.stxBindSplashDismiss(document.getElementById('splashDismiss'), document.getElementById('splash'));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSplashEarly, { once: true });
+  } else {
+    bindSplashEarly();
+  }
+
+  window.stxIsFileProtocol = function () {
+    try {
+      return location.protocol === 'file:';
+    } catch (_) {
+      return false;
+    }
+  };
+
+  /** Sync read for local guide .txt when fetch/iframes fail on file:// */
+  window.stxLoadLocalTextSync = function (url) {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, false);
+      xhr.overrideMimeType('text/plain; charset=utf-8');
+      xhr.send(null);
+      if (xhr.status === 0 || xhr.status === 200) return String(xhr.responseText || '');
+    } catch (_) {}
+    return '';
+  };
+
+  if (window.stxIsFileProtocol()) {
+    window.STX_DECODER_USE_INLINE = true;
+  }
 })();

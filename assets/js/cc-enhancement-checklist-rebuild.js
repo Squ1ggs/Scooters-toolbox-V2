@@ -397,9 +397,5 @@
     init();
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function(){ setTimeout(init, 50); });
-  } else {
-    setTimeout(init, 50);
-  }
+  try { window.__ccEnhancementChecklistInit = init; } catch (_) {}
 })();

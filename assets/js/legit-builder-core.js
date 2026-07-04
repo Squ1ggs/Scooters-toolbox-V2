@@ -6,6 +6,7 @@
     var PSTATS = (typeof window !== 'undefined' && window.PARTS_STATS_DATA) ? window.PARTS_STATS_DATA : null;
     var IPDROPROWS = (typeof window !== 'undefined' && window.ITEMPOOLLIST_DROP_ROWS_DATA) ? window.ITEMPOOLLIST_DROP_ROWS_DATA : null;
     var SPATHS = (typeof window !== 'undefined' && window.SOURCE_PATHS_DATA) ? window.SOURCE_PATHS_DATA : null;
+    var LOOT_REF = (typeof window !== 'undefined' && window.LOOT_REFERENCE_DATA) ? window.LOOT_REFERENCE_DATA : null;
     var LSCHED = (typeof window !== 'undefined' && window.LEGIT_LOOT_SCHEDULE) ? window.LEGIT_LOOT_SCHEDULE : null;
     var WPWEIGHTS = (typeof window !== 'undefined' && window.LEGIT_WEAPON_PART_WEIGHTS) ? window.LEGIT_WEAPON_PART_WEIGHTS : null;
     var STX_RAR = (typeof window !== 'undefined' && Array.isArray(window.STX_RARITIES)) ? window.STX_RARITIES : [];
@@ -248,6 +249,52 @@
           _fromStxRarity: true
         });
         seen[itemId] = true;
+      }
+      return out;
+    }
+
+    /** Rarity comps in STX dataset but missing from manifest / stx_rarities (community pearls, DLC legendaries). */
+    function getExtraStxRarityFromDataset(item, existingOptions) {
+      var parts =
+        typeof window !== 'undefined' &&
+        window.STX_DATASET &&
+        Array.isArray(window.STX_DATASET.ALL_PARTS)
+          ? window.STX_DATASET.ALL_PARTS
+          : [];
+      if (!item || !parts.length) return [];
+      var fam = Number(item.category_id);
+      if (!Number.isFinite(fam)) return [];
+      var seenIdx = {};
+      var seenName = {};
+      (existingOptions || []).forEach(function (o) {
+        var idx = Number(o && o.index);
+        if (Number.isFinite(idx)) seenIdx[idx] = true;
+        var nm = String(o && o.name || '').trim().toLowerCase();
+        if (nm) seenName[nm] = true;
+      });
+      var out = [];
+      for (var i = 0; i < parts.length; i++) {
+        var row = parts[i];
+        if (!row || String(row.partType || '') !== 'Rarity') continue;
+        var code = normalizeStxSpawnCode(row.code);
+        if (!code) continue;
+        var pk = code.split('.').pop() || '';
+        if (!/^comp_0[56]_/.test(pk)) continue;
+        var rowFam = Number(row.family);
+        var itemId = Number(row.id);
+        if (!Number.isFinite(rowFam) || rowFam !== fam || !Number.isFinite(itemId) || seenIdx[itemId]) continue;
+        var pkLo = pk.toLowerCase();
+        if (seenName[pkLo]) continue;
+        var label = String(row.name || pk).trim() || pk;
+        out.push({
+          index: itemId,
+          name: label,
+          in_pool: true,
+          invDumpKey: code,
+          _fromStxDataset: true
+        });
+        seenIdx[itemId] = true;
+        seenName[pkLo] = true;
       }
       return out;
     }
@@ -696,9 +743,102 @@
       var n = String(rowName || '').toLowerCase();
       if (!n) return 'unknown';
       if (/mission|quest|reward|bounty|challenge|objective|mail/.test(n)) return 'reward';
-      if (/vendor|vending|shop|chest|crate|world|event|drop_pod|cache|container/.test(n)) return 'other';
-      if (/boss|miniboss|badass|chump|normal|enemy|creature|vault|raid|mob/.test(n)) return 'enemy';
+      if (/vendor|vending|shop|chest|crate|world|event|drop_pod|cache|container|loot_/.test(n)) return 'other';
+      if (/boss|miniboss|badass|chump|normal|enemy|creature|vault|raid|mob|dedicated drop/.test(n)) return 'enemy';
       return 'unknown';
+    }
+
+    function findLootRefPoolDefEntries(item) {
+      if (!LOOT_REF || !item || !item.slug) return [];
+      var slug = String(item.slug || '').toLowerCase();
+      var out = [];
+      var lists = LOOT_REF.pool_def_only_guns || [];
+      for (var i = 0; i < lists.length; i++) {
+        var g = lists[i];
+        if (String(g.slug || '').toLowerCase() !== slug) continue;
+        out.push(g);
+      }
+      if (out.length) return out;
+      (LOOT_REF.shiny_guns || []).forEach(function (g) {
+        if (g.pool_status !== 'pool_def_only') return;
+        if (String(g.slug || '').toLowerCase() !== slug) return;
+        out.push(g);
+      });
+      return out;
+    }
+
+    function findLootRefCatalogPhosEntries(item) {
+      if (!LOOT_REF || !item || !item.slug) return [];
+      var slug = String(item.slug || '').toLowerCase();
+      var out = [];
+      var lists = LOOT_REF.catalog_only_phosphenes || [];
+      for (var i = 0; i < lists.length; i++) {
+        var g = lists[i];
+        if (String(g.slug || '').toLowerCase() !== slug) continue;
+        out.push(g);
+      }
+      return out;
+    }
+
+    function formatLootRefHintLabel(g) {
+      var bits = [];
+      if (g.display_name) bits.push(g.display_name);
+      if (g.itempool_shiny) bits.push(g.itempool_shiny);
+      else if (g.yaml_key) bits.push(g.yaml_key);
+      return bits.join(' · ');
+    }
+
+    function findLootRefBossDrops(item) {
+      if (!LOOT_REF || !item || !item.slug) return [];
+      var slug = String(item.slug || '').toLowerCase();
+      var out = [];
+      var seen = {};
+      function addBoss(row) {
+        var n = String((row && row.name) || row || '').trim();
+        if (!n) return;
+        var k = n.toLowerCase();
+        if (seen[k]) {
+          if (row && typeof row.prob === 'number' && !Number.isFinite(seen[k].prob)) {
+            seen[k].prob = row.prob;
+            seen[k].prob_note = row.prob_note || seen[k].prob_note;
+          }
+          return;
+        }
+        var entry = typeof row === 'string'
+          ? { name: n, prob: null, prob_note: null, prob_slot_label: null }
+          : { name: n, prob: row.prob, prob_note: row.prob_note, prob_slot_label: row.prob_slot_label };
+        seen[k] = entry;
+        out.push(entry);
+      }
+      (LOOT_REF.shiny_guns || []).forEach(function (g) {
+        var gslug = String(g.slug || '').toLowerCase();
+        var comp = String(g.comp || '').toLowerCase();
+        if (gslug !== slug && comp.indexOf(slug.replace(/_/g, '')) < 0 && comp.indexOf(slug) < 0) return;
+        (g.drop_sources || []).forEach(function (s) { addBoss(s.enemy_name); });
+      });
+      (LOOT_REF.enemy_pools || []).forEach(function (pool) {
+        (pool.drops || []).forEach(function (d) {
+          if (d.kind !== 'legendary' && d.kind !== 'legendary_pool' && d.kind !== 'shiny' && d.kind !== 'pearl') return;
+          var dslug = String(d.slug || '').toLowerCase();
+          var comp = String(d.comp || '').toLowerCase();
+          if (dslug && dslug === slug) {
+            addBoss({
+              name: pool.display_name,
+              prob: d.drop_prob,
+              prob_note: d.drop_prob_note,
+              prob_slot_label: d.prob_slot_label,
+            });
+          } else if (comp && comp.indexOf(slug) >= 0) {
+            addBoss({
+              name: pool.display_name,
+              prob: d.drop_prob,
+              prob_note: d.drop_prob_note,
+              prob_slot_label: d.prob_slot_label,
+            });
+          }
+        });
+      });
+      return out;
     }
 
     function getSourceEvidence(item) {
@@ -803,6 +943,51 @@
         }
         for (var vci = 0; vci < vaultCardEntries.length; vci++) {
           result.other.rows.push({ name: 'Vault Card: ' + vaultCardEntries[vci], prob: null, how: null, dist: null, obtainVia: 'Vault Card' });
+        }
+      }
+
+      if (LOOT_REF && item) {
+        var bossDrops = findLootRefBossDrops(item);
+        for (var bd = 0; bd < bossDrops.length; bd++) {
+          var b = bossDrops[bd];
+          result.enemy.rows.push({
+            name: 'Dedicated drop: ' + b.name,
+            prob: (typeof b.prob === 'number' && Number.isFinite(b.prob)) ? b.prob : null,
+            how: null,
+            dist: null,
+            obtainVia: 'Named boss pool',
+            prob_note: b.prob_note || b.prob_slot_label || null,
+          });
+          if (typeof b.prob === 'number' && Number.isFinite(b.prob)) {
+            result.rowsMapped++;
+            result.probSum += b.prob;
+            result.enemy.probSum += b.prob;
+          }
+        }
+        var poolDefRows = findLootRefPoolDefEntries(item);
+        for (var pd = 0; pd < poolDefRows.length; pd++) {
+          var pg = poolDefRows[pd];
+          var hintBits = (pg.source_hints || []).slice(0, 4).map(function (h) { return (h.kind || 'hint') + ': ' + (h.label || ''); });
+          result.other.rows.push({
+            name: 'Shiny pool (no boss export): ' + formatLootRefHintLabel(pg),
+            prob: null,
+            how: null,
+            dist: null,
+            obtainVia: 'Itempool definition',
+            prob_note: pg.drop_note || pg.pool_def_label || (hintBits.length ? hintBits.join(' | ') : null),
+          });
+        }
+        var catalogRows = findLootRefCatalogPhosEntries(item);
+        for (var cp = 0; cp < catalogRows.length; cp++) {
+          var cg = catalogRows[cp];
+          result.other.rows.push({
+            name: 'YAML unlock phosphene: ' + (cg.display_name || cg.slug),
+            prob: null,
+            how: null,
+            dist: null,
+            obtainVia: 'YAML / catalog',
+            prob_note: cg.drop_note || cg.pool_def_label || cg.yaml_key || null,
+          });
         }
       }
       if (item && item.slug) sourceEvidenceCache[item.slug] = result;
@@ -911,6 +1096,7 @@
           var titleParts = [];
           var via = (r && r.obtainVia) || obtainVia;
           if (via) titleParts.push('Obtainable via: ' + via);
+          if (r.prob_note) titleParts.push(r.prob_note);
           if (how != null && typeof how === 'number' && Number.isFinite(how)) {
             titleParts.push('E[how-many] = ' + how.toFixed(2));
           }
@@ -927,7 +1113,12 @@
           var title = titleParts.length ? titleParts.join(' | ') : '';
           var titleAttr = title ? (' title="' + escapeAttr(title) + '"') : '';
           var chipHow = (how != null && typeof how === 'number' && Number.isFinite(how)) ? (' ~' + how.toFixed(2)) : '';
-          var suffix = hasProb ? (' (' + pct + '%)' + chipHow) : '';
+          var pctTxt = '';
+          if (hasProb) {
+            var pctVal = pct * 100;
+            pctTxt = pctVal >= 10 ? Math.round(pctVal) + '%' : (pctVal >= 1 ? pctVal.toFixed(1) + '%' : pctVal.toFixed(2) + '%');
+          }
+          var suffix = hasProb ? (' (' + pctTxt + ')' + chipHow) : (r.prob_note ? (' (' + escapeHtml(r.prob_note) + ')') : '');
           chips.push('<span class="drop-source-chip"' + titleAttr + '>' + escapeHtml(r.name) + suffix + '</span>');
         }
         if (!chips.length) return '';
@@ -1383,6 +1574,8 @@
             if (isRarity) {
               var extraRarity = getExtraRarityOptions(item, options);
               if (extraRarity.length) options = options.concat(extraRarity);
+              var extraRarityDataset = getExtraStxRarityFromDataset(item, options);
+              if (extraRarityDataset.length) options = options.concat(extraRarityDataset);
             }
             if (isWeaponSlug && (slotName === 'barrel' || manifestKey === 'barrel')) {
               var extraBarrel = getExtraStxBarrelOptions(item, options);

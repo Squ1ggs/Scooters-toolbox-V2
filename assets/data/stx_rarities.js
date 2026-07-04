@@ -662,7 +662,7 @@ window.STX_RARITIES = [
     "itemTypeString": "JAK_AR.comp_05_legendary_screenwriter",
     "familyId": 27,
     "itemId": 77,
-    "legendaryName": "Not implemented - purple gun with no damage",
+    "legendaryName": "Screenwriter",
     "source": ""
   },
   {

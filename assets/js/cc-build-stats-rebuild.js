@@ -229,7 +229,23 @@
     var v = Number(val);
     if (!Number.isFinite(v) || v <= 0) return null;
     if (v >= 1) return v;
-    return 1 + v;
+    /** Sub-0.5 rows are fractional damage layers (e.g. 0.475 → +47.5%); 0.5–1 are literal × multipliers. */
+    if (v < 0.5) return 1 + v;
+    return v;
+  }
+
+  /** Effective multiplier for human-readable % next to a raw ×scale value. */
+  function scaleRowDisplayMultiplier(s) {
+    if (!s || typeof s !== 'object') return null;
+    if (String(s.combine || '').trim().toLowerCase() !== 'mul') return null;
+    var sf = String(s.stat_field || '').toLowerCase();
+    if (!isScaleStatField(sf)) return null;
+    var val = Number(s.stat_value);
+    if (!Number.isFinite(val)) return null;
+    var dmgFix = partsStatsDamageScaleMulToDisplayMult(s.stat_field, s.combine, val);
+    if (dmgFix != null && sf === 'damage_scale') return dmgFix;
+    if (WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[sf] && val !== 0) return 1 / val;
+    return val;
   }
 
   function applyExcelStatsToBuckets(stats, buckets, record, partLabel) {
@@ -641,6 +657,26 @@
     return /_scale$/i.test(String(field || ''));
   }
 
+  /** User-facing cheat sheet — standard game scale multipliers. */
+  var SCALE_MULT_LEGEND_SHORT =
+    '×1.0000 = normal · ×1.1000 = +10% · ×1.2500 = +25% · ×1.5000 = +50% · ×2.0000 = +100%. ' +
+    'Shown % = (× − 1) × 100 vs a neutral (×1) part.';
+
+  function scalePctVsNormal(effectiveMult) {
+    if (!Number.isFinite(effectiveMult)) return null;
+    return (effectiveMult - 1) * 100;
+  }
+
+  function formatScalePctSuffix(pct, opts) {
+    opts = opts || {};
+    if (!Number.isFinite(pct) || Math.abs(pct) > 500) return '';
+    var sign = pct >= 0 ? '+' : '';
+    var core = sign + pct.toFixed(1) + '%';
+    if (opts.invertedBenefit) return core + ' better (lower × is better for this stat)';
+    if (opts.fractionalDamageLayer) return core + ' vs normal (fractional damage layer; effective ×' + opts.effectiveMult.toFixed(4) + ')';
+    return core + ' vs normal';
+  }
+
   /** Display multiplier for one PARTS_STATS_DATA row (matches bucket accumulation rules). */
   function statRowToDisplayMult(s) {
     if (!s || typeof s !== 'object') return null;
@@ -668,6 +704,9 @@
    */
   function formatPartStatRowForDisplay(s) {
     if (!s || typeof s !== 'object') return '';
+    if (s.description && String(s.description).trim()) {
+      return String(s.description).trim();
+    }
     var sf = s.stat_field != null ? String(s.stat_field) : '';
     var bucket = s.bucket != null ? String(s.bucket) : '';
     var comb = String(s.combine || '').trim().toLowerCase();
@@ -686,13 +725,20 @@
     }
 
     if (comb === 'mul' && isScaleStatField(sf)) {
-      var multS = statRowToDisplayMult(s);
-      var line = lbl + ': ×' + val.toFixed(4) + ' scale';
-      if (multS != null) {
-        var pctS = (multS - 1) * 100;
-        if (Math.abs(pctS) <= 500) {
-          line += ' (' + (pctS >= 0 ? '+' : '') + pctS.toFixed(1) + '%)';
-        }
+      var dispMult = scaleRowDisplayMultiplier(s);
+      var sfLow = sf.toLowerCase();
+      var invertedBenefit = !!WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[sfLow];
+      var fractionalDmg = sfLow === 'damage_scale' && val > 0 && val < 0.5;
+      var line = lbl + ': ×' + val.toFixed(4);
+      if (!fractionalDmg) line += ' scale';
+      if (dispMult != null) {
+        var pctS = scalePctVsNormal(dispMult);
+        var suffix = formatScalePctSuffix(pctS, {
+          invertedBenefit: invertedBenefit && !fractionalDmg,
+          fractionalDamageLayer: fractionalDmg,
+          effectiveMult: dispMult
+        });
+        if (suffix) line += ' (' + suffix + ')';
       }
       return line;
     }
@@ -1036,6 +1082,7 @@
   window.statRowToDisplayMult = statRowToDisplayMult;
   window.formatPartStatRowForDisplay = formatPartStatRowForDisplay;
   window.formatPartStatsSummary = formatPartStatsSummary;
+  window.SCALE_MULT_LEGEND_SHORT = SCALE_MULT_LEGEND_SHORT;
 
   var __ccStatsTriggerTimer = 0;
   function isBuildStatsActive() {
@@ -1057,7 +1104,9 @@
           if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore();
         } catch (_) {}
       };
-      if (typeof window.__ccEnsurePartsStatsData === 'function' && !window.PARTS_STATS_DATA) {
+      if (typeof window.__ccEnsureBuildStatsData === 'function' && (!window.PARTS_STATS_DATA || typeof window.WEAPON_STATS_DATA === 'undefined')) {
+        window.__ccEnsureBuildStatsData().then(run);
+      } else if (typeof window.__ccEnsurePartsStatsData === 'function' && !window.PARTS_STATS_DATA) {
         window.__ccEnsurePartsStatsData().then(run);
       } else {
         run();
@@ -1067,12 +1116,25 @@
 
   try { window.__ccRefreshBuildStatsAfterStatsLoad = triggerRefresh; } catch (_) {}
 
+  function scheduleInitialBuildStatsRefresh() {
+    var run = function () {
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(triggerRefresh, 1200);
+      } else {
+        setTimeout(triggerRefresh, 700);
+      }
+    };
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(run);
+    } else {
+      run();
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(triggerRefresh, 200);
-    });
+    document.addEventListener('DOMContentLoaded', scheduleInitialBuildStatsRefresh);
   } else {
-    setTimeout(triggerRefresh, 200);
+    scheduleInitialBuildStatsRefresh();
   }
 
   document.addEventListener('change', function (ev) {

@@ -34514,10 +34514,11 @@
     "weaponType": "Assault Rifle",
     "partType": "Barrel",
     "code": "\"JAK_AR.part_barrel_02_screenwriter\"",
-    "name": "NOT IMPLEMENTED",
+    "name": "Screenwriter",
     "idRaw": "27:76",
     "id": 76,
-    "stats": "NOT IMPLEMENTED",
+    "stats": "High fire rate assault rifle barrel",
+    "effects": "Screenwriter",
     "family": 27
   },
   {
@@ -35272,12 +35273,12 @@
     "weaponType": "Assault Rifle",
     "partType": "Rarity",
     "code": "\"JAK_AR.comp_05_legendary_screenwriter\"",
-    "name": "Legendary - Not implemented - purple gun with no damage",
+    "name": "Legendary - Screenwriter",
     "idRaw": "27:77",
     "family": 27,
     "id": 77,
     "stats": "Item Type ID: 27, Item ID: 77",
-    "effects": "Not implemented - purple gun with no damage"
+    "effects": "Screenwriter"
   },
   {
     "category": "Weapon",

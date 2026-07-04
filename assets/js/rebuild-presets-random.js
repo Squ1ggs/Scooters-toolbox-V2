@@ -497,16 +497,23 @@
     var ov = o && String(o.value || "").trim();
     var iv = imp && String(imp.value || "").trim();
     if (qv) return qv;
-    if (iv) return iv;
     if (guidedOn) {
       if (gv) return gv;
       if (ov) return ov;
+      if (iv) return iv;
       return "";
     }
     if (ov) return ov;
     if (gv) return gv;
+    if (iv) return iv;
     return "";
   }
+
+  function invalidateIpiSerialCache() {
+    __ipiLastSrc = '';
+  }
+  window.__ipiInvalidateSerialCache = invalidateIpiSerialCache;
+  window.__ipiGetInspectorSerialSource = getInspectorSerialSource;
 
   function normTailTokenKeyIpi(t) {
     var u = String(t || "").trim().replace(/^"+|"+$/g, "");
@@ -690,16 +697,25 @@
     wrap.__ipiQtyBound = true;
     wrap.addEventListener("click", function (ev) {
       var btn = ev.target && ev.target.closest ? ev.target.closest("[data-ipi-delta]") : null;
-      if (!btn || typeof window.__ccMutateSerialTailDelta !== "function") return;
+      if (!btn) return;
       var enc = btn.getAttribute("data-ipi-tok");
       if (!enc) return;
-      try {
-        var tok = decodeURIComponent(enc);
-        var d = parseInt(btn.getAttribute("data-ipi-delta"), 10);
-        if (Number.isFinite(d)) window.__ccMutateSerialTailDelta(tok, d);
-      } catch (_) {}
+      function runMutate() {
+        if (typeof window.__ccMutateSerialTailDelta !== "function") return false;
+        try {
+          var tok = decodeURIComponent(enc);
+          var d = parseInt(btn.getAttribute("data-ipi-delta"), 10);
+          if (Number.isFinite(d)) return window.__ccMutateSerialTailDelta(tok, d) !== false;
+        } catch (_) {}
+        return false;
+      }
+      if (runMutate()) return;
+      if (typeof window.stxEnsureGuidedScripts === "function") {
+        try { window.stxEnsureGuidedScripts(function () { runMutate(); }); } catch (_) {}
+      }
     });
   }
+  window.wireImportedInspectorQtyButtons = wireImportedInspectorQtyButtons;
 
   function getCombinedPasteForInspector() {
     var q = byId("ipiQuickPaste");
@@ -795,7 +811,16 @@
         }
       };
     }
-    setTimeout(loadLegendaryPerks, 300);
+    var liteUi = document.documentElement.classList.contains('stx-lite-ui') ||
+      document.documentElement.classList.contains('stx-touch-ui');
+    if (liteUi) {
+      document.addEventListener('pointerdown', function () { loadLegendaryPerks(); }, { once: true, passive: true });
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(loadLegendaryPerks, 12000);
+      }
+    } else {
+      setTimeout(loadLegendaryPerks, 300);
+    }
     function loadToolsSkinCamo() {
       var skinSel = byId("toolsSkinSelect");
       var camoSel = byId("toolsCamoSelect");

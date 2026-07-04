@@ -8,9 +8,121 @@
 
   function byId(id) { return document.getElementById(id); }
 
+  /** Read select value reliably (native + custom-select wrapped). */
+  function readSelectValue(sel) {
+    if (!sel || sel.tagName !== 'SELECT') return '';
+    var v = String(sel.value || '').trim();
+    if (v) return v;
+    try {
+      var idx = sel.selectedIndex;
+      if (idx >= 0 && sel.options && sel.options[idx]) {
+        v = String(sel.options[idx].value || '').trim();
+        if (v) return v;
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  /** Slot Add buttons: native value, then import-hydrated preferred token. */
+  function readGuidedSlotToken(sel) {
+    if (!sel) return '';
+    var v = readSelectValue(sel);
+    if (v) return v;
+    v = String(sel.__ccPreferredToken || '').trim();
+    if (v) return v;
+    try {
+      var wrap = sel.closest ? sel.closest('.custom-select-wrapper') : null;
+      var disp = wrap && wrap.querySelector ? wrap.querySelector('.custom-select-display') : null;
+      if (disp && disp.dataset && disp.dataset.lastValue) {
+        v = String(disp.dataset.lastValue || '').trim();
+        if (v) return v;
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  function extractGuidedTailTokens(serial) {
+    var s = String(serial || '').trim();
+    var dbl = s.indexOf('||');
+    var tail = dbl >= 0 ? s.slice(dbl + 2).trim() : '';
+    if (!tail) return [];
+    return (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
+      var x = String(t || '').trim();
+      return x && x !== '|' && x !== '||';
+    });
+  }
+
+  function getGuidedBuilderStateObj() {
+    try {
+      return window.state || window.__STX_SIMPLE_STATE || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /** Manufacturer + weapon type used for guided slot filtering (DOM + synced simple state). */
+  function getGuidedFilterContext() {
+    var guidedItem = byId('ccGuidedItemType');
+    var guidedMan = byId('ccGuidedManufacturer');
+    var guidedWt = byId('ccGuidedWeaponType');
+    var stxItem = byId('stx_itemType');
+    var stxMan = byId('stx_manufacturer');
+    var stxWt = byId('weaponType');
+    var gstate = getGuidedBuilderStateObj();
+
+    var itemType = readSelectValue(guidedItem) || readSelectValue(stxItem) || (gstate && gstate.itemType ? String(gstate.itemType) : '') || '';
+    var manufacturer = readSelectValue(guidedMan) || readSelectValue(stxMan) || (gstate && gstate.manufacturer ? String(gstate.manufacturer) : '') || '';
+    var weaponType = readSelectValue(guidedWt) || readSelectValue(stxWt) || (gstate && gstate.weaponType ? String(gstate.weaponType) : '') || '';
+
+    return { itemType: itemType, manufacturer: manufacturer, weaponType: weaponType };
+  }
+
+  /** Strip dataset quote wrappers + lowercase for spawn-prefix filters. */
+  function guidedSpawnCodeLo(p) {
+    var c = String((p && (p.code != null ? p.code : p.spawnCode)) || '').trim();
+    if (c.length >= 2 && c.charAt(0) === '"' && c.charAt(c.length - 1) === '"') c = c.slice(1, -1);
+    return c.toLowerCase();
+  }
+
+  function guidedSlotIsFirmwareSlot(slotMeta) {
+    if (!slotMeta) return false;
+    return slotMeta.partType === 'Firmware' || slotMeta.key === 'firmware' || slotMeta.key === 'firmware246';
+  }
+
+  /** Dataset firmware rows often omit partType (247-family dupes); match by code too. */
+  function guidedPartIsFirmware(p) {
+    if (!p) return false;
+    if (String(p.partType || '').trim().toLowerCase() === 'firmware') return true;
+    return /part_firmware|\.part_firmware/.test(guidedSpawnCodeLo(p));
+  }
+
+  function guidedItemTypeForIcons() {
+    try {
+      var gi = byId('ccGuidedItemType');
+      var v = gi ? String(readSelectValue(gi) || '').trim() : '';
+      if (/^heavy$/i.test(v)) return 'Heavy Weapon';
+      return v || 'Weapon';
+    } catch (_) {
+      return 'Weapon';
+    }
+  }
+
   function syncGuidedCustomSelectIfWrapped(sel) {
-    if (!sel || typeof sel.__customSelectSync !== 'function') return;
-    try { sel.__customSelectSync(); } catch (_) {}
+    if (!sel) return;
+    if (sel.dataset.customSelect !== 'yes' && sel.closest && sel.closest('#rebuildGuidedBuilderSection .cc-guided-slots-grid')) {
+      if (typeof window.__ccWrapGuidedSelect === 'function') {
+        try { window.__ccWrapGuidedSelect(sel); } catch (_) {}
+      }
+    }
+    if (typeof sel.__customSelectForceRebuild === 'function') {
+      try { sel.__customSelectForceRebuild(); return; } catch (_) {}
+    }
+    if (typeof sel.__customSelectSync === 'function') {
+      try { sel.__customSelectSync(); } catch (_) {}
+    }
+    if (typeof sel.__customSelectPrebuild === 'function') {
+      try { sel.__customSelectPrebuild(); } catch (_) {}
+    }
   }
 
   function ensureStaticGuidedIcons() {
@@ -60,33 +172,204 @@
     return /class\s*mod|classmod/i.test(String(val || '').trim());
   }
 
-  /** Order follows typical NCS weapon flow (see `NCS_SLOT_MAP` + Legit Builder); extras cover common part pools. */
-  var WEAPON_SLOTS = [
-    { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccRaritySelect', btnId: 'ccAddRarity' },
-    { key: 'body', label: 'Body', partType: 'Body', selectId: 'ccBodySelect', btnId: 'ccAddBody' },
-    { key: 'bodyAcc', label: 'Body Accessory', partType: 'Body Accessory', selectId: 'ccBodyAccSelect', btnId: 'ccAddBodyAcc' },
-    { key: 'bodyEle', label: 'Body Element', partType: 'Body Element', selectId: 'ccWeaponBodyEleSelect', btnId: 'ccAddWeaponBodyEle' },
-    { key: 'barrel', label: 'Barrel', partType: 'Barrel', selectId: 'ccBarrelSelect', btnId: 'ccAddBarrel' },
-    { key: 'barrelAcc', label: 'Barrel Accessory', partType: 'Barrel Accessory', selectId: 'ccBarrelAccSelect', btnId: 'ccAddBarrelAcc' },
-    { key: 'hyperionSecondaryAcc', label: 'Hyperion Amp Shield', partType: 'Manufacturer Part', selectId: 'ccWeaponHypShieldSelect', btnId: 'ccAddWeaponHypShield' },
-    { key: 'mag', label: 'Magazine', partType: 'Magazine', selectId: 'ccMagazineSelect', btnId: 'ccAddMagazine' },
-    { key: 'magazineAcc', label: 'Magazine Accessory', partType: 'Magazine', selectId: 'ccWeaponMagAccSelect', btnId: 'ccAddWeaponMagAcc' },
-    { key: 'magazineTedThrown', label: 'Tediore Thrown Mag', partType: 'Magazine', selectId: 'ccWeaponMagTedSelect', btnId: 'ccAddWeaponMagTed' },
-    { key: 'scope', label: 'Scope', partType: 'Scope', selectId: 'ccScopeSelect', btnId: 'ccAddScope' },
-    { key: 'scopeAcc', label: 'Scope Accessory', partType: 'Scope Accessory', selectId: 'ccScopeAccSelect', btnId: 'ccAddScopeAcc' },
-    { key: 'grip', label: 'Grip', partType: 'Grip', selectId: 'ccGripSelect', btnId: 'ccAddGrip' },
-    { key: 'underbarrel', label: 'Underbarrel', partType: 'Underbarrel', selectId: 'ccUnderbarrelSelect', btnId: 'ccAddUnderbarrel' },
-    { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip', selectId: 'ccForegripSelect', btnId: 'ccAddForegrip' },
-    { key: 'secondaryAmmo', label: 'Secondary Ammo', partType: 'Manufacturer Part', selectId: 'ccWeaponSecondaryAmmoSelect', btnId: 'ccAddWeaponSecondaryAmmo' },
-    { key: 'secondaryEle', label: 'Secondary Element (Maliwan)', partType: 'Element Switch', selectId: 'ccElementSwitchSelect', btnId: 'ccAddElementSwitch', maliwanOnly: true },
-    { key: 'weaponPearl', label: 'Pearl Parts', pearlPick: true, selectId: 'ccWeaponPearlSelect', btnId: 'ccAddWeaponPearl' },
-    { key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part', selectId: 'ccLicensedSelect', btnId: 'ccAddLicensed' },
-    { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccElementPartSelect', btnId: 'ccAddElementStack' }
+  /** UI wiring for weapon slot keys (NCS schema rows attach these via `attachWeaponSlotUi`). */
+  var WEAPON_SLOT_UI = {
+    rarity: { selectId: 'ccRaritySelect', btnId: 'ccAddRarity' },
+    body: { selectId: 'ccBodySelect', btnId: 'ccAddBody' },
+    bodyAcc: { selectId: 'ccBodyAccSelect', btnId: 'ccAddBodyAcc' },
+    bodyEle: { selectId: 'ccWeaponBodyEleSelect', btnId: 'ccAddWeaponBodyEle' },
+    barrel: { selectId: 'ccBarrelSelect', btnId: 'ccAddBarrel' },
+    barrelAcc: { selectId: 'ccBarrelAccSelect', btnId: 'ccAddBarrelAcc' },
+    hyperionSecondaryAcc: { selectId: 'ccWeaponHypShieldSelect', btnId: 'ccAddWeaponHypShield' },
+    mag: { selectId: 'ccMagazineSelect', btnId: 'ccAddMagazine' },
+    magazineAcc: { selectId: 'ccWeaponMagAccSelect', btnId: 'ccAddWeaponMagAcc' },
+    magazineBorg: { selectId: 'ccWeaponMagBorgSelect', btnId: 'ccAddWeaponMagBorg' },
+    scope: { selectId: 'ccScopeSelect', btnId: 'ccAddScope' },
+    scopeAcc: { selectId: 'ccScopeAccSelect', btnId: 'ccAddScopeAcc' },
+    grip: { selectId: 'ccGripSelect', btnId: 'ccAddGrip' },
+    underbarrel: { selectId: 'ccUnderbarrelSelect', btnId: 'ccAddUnderbarrel' },
+    foregrip: { selectId: 'ccForegripSelect', btnId: 'ccAddForegrip' },
+    secondaryAmmo: { selectId: 'ccWeaponSecondaryAmmoSelect', btnId: 'ccAddWeaponSecondaryAmmo' },
+    secondaryEle: { selectId: 'ccElementSwitchSelect', btnId: 'ccAddElementSwitch', maliwanOnly: true },
+    pearlElem: { selectId: 'ccWeaponPearlElemSelect', btnId: 'ccAddWeaponPearlElem', pearlElemPick: true },
+    pearlStat: { selectId: 'ccWeaponPearlStatSelect', btnId: 'ccAddWeaponPearlStat', pearlStatPick: true },
+    licensed: { selectId: 'ccLicensedSelect', btnId: 'ccAddLicensed' },
+    statMod: { selectId: 'ccWeaponStatModSelect', btnId: 'ccAddWeaponStatMod' },
+    legendary: { selectId: 'ccWeaponLegendarySelect', btnId: 'ccAddWeaponLegendary' },
+    firmware: { selectId: 'ccWeaponFirmwareSelect', btnId: 'ccAddWeaponFirmware' },
+    additionalParts: { selectId: 'ccWeaponAdditionalSelect', btnId: 'ccAddWeaponAdditional' },
+    element: { selectId: 'ccElementPartSelect', btnId: 'ccAddElementStack' }
+  };
+
+  /** Fallback when NCS slug is unknown — classic fixed order. */
+  var WEAPON_SLOTS_FALLBACK = [
+    { key: 'rarity', label: 'Rarity ID', partType: 'Rarity' },
+    { key: 'body', label: 'Body', partType: 'Body' },
+    { key: 'bodyAcc', label: 'Body Accessory', partType: 'Body Accessory' },
+    { key: 'bodyEle', label: 'Body Element', partType: 'Body Element' },
+    { key: 'barrel', label: 'Barrel', partType: 'Barrel' },
+    { key: 'barrelAcc', label: 'Barrel Accessory', partType: 'Barrel Accessory' },
+    { key: 'hyperionSecondaryAcc', label: 'Hyperion Amp Shield', partType: 'Manufacturer Part' },
+    { key: 'mag', label: 'Magazine', partType: 'Magazine' },
+    { key: 'magazineAcc', label: 'Magazine Accessory', partType: 'Magazine' },
+    { key: 'scope', label: 'Scope', partType: 'Scope' },
+    { key: 'scopeAcc', label: 'Scope Accessory', partType: 'Scope Accessory' },
+    { key: 'grip', label: 'Grip', partType: 'Grip' },
+    { key: 'underbarrel', label: 'Underbarrel', partType: 'Underbarrel' },
+    { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip' },
+    { key: 'secondaryAmmo', label: 'Secondary Ammo', partType: 'Manufacturer Part' },
+    { key: 'secondaryEle', label: 'Secondary Element (Maliwan)', partType: 'Element Switch', maliwanOnly: true },
+    { key: 'pearlElem', label: 'Pearl Element', partType: '' },
+    { key: 'pearlStat', label: 'Pearl Stat', partType: '' },
+    { key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part' },
+    { key: 'element', label: 'Element', partType: 'Element' }
   ];
+
+  function attachWeaponSlotUi(row) {
+    if (!row) return null;
+    var ui = WEAPON_SLOT_UI[row.key];
+    if (!ui || !ui.selectId) return null;
+    var out = {};
+    var k;
+    for (k in row) if (Object.prototype.hasOwnProperty.call(row, k)) out[k] = row[k];
+    for (k in ui) if (Object.prototype.hasOwnProperty.call(ui, k)) out[k] = ui[k];
+    return out;
+  }
+
+  /** NCS-accurate weapon slots for the current manufacturer + weapon type (Simple Builder parity). */
+  function getGuidedWeaponSlots() {
+    var fallback = [];
+    for (var fi = 0; fi < WEAPON_SLOTS_FALLBACK.length; fi++) {
+      var fr = attachWeaponSlotUi(WEAPON_SLOTS_FALLBACK[fi]);
+      if (fr) fallback.push(fr);
+    }
+    var gs = getGuidedState();
+    if (!gs || !String(gs.manufacturer || '').trim() || !String(gs.weaponType || '').trim()) return fallback;
+    var slug = '';
+    if (typeof window.computeSimpleBuilderItemSlug === 'function') {
+      try { slug = window.computeSimpleBuilderItemSlug(gs); } catch (_e) {}
+    }
+    if (!slug || typeof window.buildWeaponSlotSchemaFromNcs !== 'function') return fallback;
+    var schema = window.buildWeaponSlotSchemaFromNcs(slug);
+    if (!schema || !schema.length) return fallback;
+    var out = [];
+    var seen = {};
+    for (var i = 0; i < schema.length; i++) {
+      var row = attachWeaponSlotUi(schema[i]);
+      if (!row || seen[row.key]) continue;
+      seen[row.key] = true;
+      out.push(row);
+    }
+    if (out.length && !seen.rarity) {
+      var rarityRow = attachWeaponSlotUi({ key: 'rarity', label: 'Rarity ID', partType: 'Rarity' });
+      if (rarityRow) out.unshift(rarityRow);
+    }
+    ensureGuidedModdedElementSlots(out, seen, gs);
+    return out.length ? out : fallback;
+  }
+
+  /** Body / Maliwan switch / stack element rows — always available for modded builds (NCS may omit them). */
+  function ensureGuidedModdedElementSlots(out, seen, gs) {
+    if (!out || !out.length) return;
+    seen = seen || Object.create(null);
+    var itemLo = String((gs && gs.itemType) || '').trim().toLowerCase();
+    var isHeavy = itemLo === 'heavy' || itemLo === 'heavy weapon';
+    function insertBeforeBarrel(row) {
+      if (!row) return;
+      var insertAt = out.length;
+      for (var i = 0; i < out.length; i++) {
+        if (out[i].key === 'barrel') { insertAt = i; break; }
+      }
+      out.splice(insertAt, 0, row);
+    }
+    if (!seen.bodyEle) {
+      var bodyEleRow = attachWeaponSlotUi({ key: 'bodyEle', label: 'Body Element', partType: 'Body Element' });
+      if (bodyEleRow) {
+        insertBeforeBarrel(bodyEleRow);
+        seen.bodyEle = true;
+      }
+    }
+    if (!seen.secondaryEle && !isHeavy) {
+      var secEleRow = attachWeaponSlotUi({
+        key: 'secondaryEle',
+        label: 'Secondary Element (Maliwan)',
+        partType: 'Element Switch',
+        maliwanOnly: true
+      });
+      if (secEleRow) {
+        insertBeforeBarrel(secEleRow);
+        seen.secondaryEle = true;
+      }
+    }
+    if (!seen.element) {
+      var elementRow = attachWeaponSlotUi({ key: 'element', label: 'Element', partType: 'Element' });
+      if (elementRow) insertBeforeBarrel(elementRow);
+    }
+  }
+  window.getGuidedWeaponSlots = getGuidedWeaponSlots;
+  window.getGuidedFilterContext = getGuidedFilterContext;
+
+  var GUIDED_ELEMENTS_PANEL_SLOT_KEYS = { bodyEle: true, secondaryEle: true, element: true };
+
+  function setGuidedSlotRowVisible(sel, show) {
+    var row = getGuidedSlotGridRow(sel);
+    if (!row) return;
+    row.style.display = show ? '' : 'none';
+    if (show && sel) {
+      var el = sel.parentElement;
+      while (el && el !== row) {
+        try { if (el.style) el.style.display = ''; } catch (_) {}
+        el = el.parentElement;
+      }
+    }
+  }
+
+  function syncGuidedElementsPanelVisibility(ctx) {
+    var elePanel = document.querySelector('#ccGunBuilderDetails .cc-slot-panel--elements');
+    if (!elePanel) return;
+    ctx = ctx || {};
+    var itemLo = String(ctx.itemType || '').trim().toLowerCase();
+    if (itemLo === 'heavy') itemLo = 'heavy weapon';
+    var isWeapon = itemLo === 'weapon' || itemLo === 'heavy weapon';
+    var hasGunConfig = !!(String(ctx.manufacturer || '').trim() && String(ctx.weaponType || '').trim());
+    var isHeavy = itemLo === 'heavy weapon';
+    var showPanel = isWeapon && hasGunConfig;
+    elePanel.style.display = showPanel ? '' : 'none';
+    if (!showPanel) return;
+    /* Modded element panel: always show all element tools regardless of NCS slot map. */
+    setGuidedSlotRowVisible(byId('ccWeaponBodyEleSelect'), true);
+    setGuidedSlotRowVisible(byId('ccElementSwitchSelect'), !isHeavy);
+    setGuidedSlotRowVisible(byId('ccElementPartSelect'), true);
+  }
+
+  function syncGuidedWeaponSlotGridVisibility() {
+    var active = getGuidedWeaponSlots();
+    var activeKeys = Object.create(null);
+    for (var i = 0; i < active.length; i++) activeKeys[active[i].key] = true;
+    var ctx = getGuidedFilterContext();
+    var manLo = String(ctx.manufacturer || '').trim().toLowerCase();
+    var keys = Object.keys(WEAPON_SLOT_UI);
+    for (var k = 0; k < keys.length; k++) {
+      if (GUIDED_ELEMENTS_PANEL_SLOT_KEYS[keys[k]]) continue;
+      var ui = WEAPON_SLOT_UI[keys[k]];
+      var sel = ui && ui.selectId ? byId(ui.selectId) : null;
+      if (!sel) continue;
+      var show = !!activeKeys[keys[k]];
+      if (keys[k] === 'statMod') show = false;
+      if (show && ui.maliwanOnly && manLo.indexOf('maliwan') < 0) show = false;
+      setGuidedSlotRowVisible(sel, show);
+    }
+    try {
+      syncGuidedElementsPanelVisibility(ctx);
+    } catch (_) {}
+  }
+
+  /** @deprecated Use getGuidedWeaponSlots() — kept for callers that still reference WEAPON_SLOTS. */
+  var WEAPON_SLOTS = WEAPON_SLOTS_FALLBACK.map(function (r) { return attachWeaponSlotUi(r); }).filter(Boolean);
 
   /** Shown as a disabled option when a pool is empty so users know to widen filters. */
   var GUIDED_HINT_EMPTY_BODY_ELEMENT = '(Empty) No body element parts match the current filters — try "All manufacturers\' parts" if the dataset is still wide.';
-  var GUIDED_HINT_EMPTY_MALIWAN_SWITCH = '(Empty) Maliwan guns only. If nothing appears, turn on "All manufacturers\' parts in dropdowns" above so Maliwan switch parts can load.';
+  var GUIDED_HINT_EMPTY_MALIWAN_SWITCH = '(Empty) No Maliwan element-switch parts loaded — enable "All manufacturers\' parts in dropdowns" above for modded cross-manufacturer picks.';
 
   var ELEMENTS = [
     { key: 'None', code: '' },
@@ -141,14 +424,27 @@
 
   /** Pearl / part_pearl rows: generic pearl icon on the empty first option. */
   var CC_GUIDED_PEARL_SELECT_IDS = {
-    ccWeaponPearlSelect: 1,
+    ccWeaponPearlElemSelect: 1,
+    ccWeaponPearlStatSelect: 1,
     toolsPearlElementSelect: 1
   };
 
   var CC_GUIDED_LEGENDARY_PERK_SELECT_IDS = {
     ccRepkitLegendarySelect: true,
     ccHeavyLegendarySelect: true,
-    ccGuidedLegendaryPerkSelect: true
+    ccGuidedLegendaryPerkSelect: true,
+    ccWeaponLegendarySelect: true
+  };
+
+  var CC_GUIDED_FIRMWARE_SELECT_IDS = {
+    ccWeaponFirmwareSelect: true,
+    ccShieldFirmwareSelect: true,
+    ccGrenadeFirmwareSelect: true,
+    ccRepkitFirmwareSelect: true,
+    ccEnhancementFirmwareSelect: true,
+    ccGadgetFirmwareSelect: true,
+    ccClassModFirmwareSelect: true,
+    ccHeavyFirmwareSelect: true
   };
 
   function ccPartMatchesPearlRarityAllowlist(p) {
@@ -767,6 +1063,21 @@
       applyGuidedRarityPartOptionIcon(opt, p);
       return;
     }
+    if (CC_GUIDED_FIRMWARE_SELECT_IDS[sid]) {
+      try {
+        if (typeof window.stxResolvePartIconUrl === 'function') {
+          var fwUrl = window.stxResolvePartIconUrl(
+            p,
+            { key: 'firmware', partType: 'Firmware', ncsSlot: 'firmware' },
+            guidedItemTypeForIcons()
+          );
+          if (fwUrl) {
+            applyDataCcIconFullUrl(opt, fwUrl);
+            return;
+          }
+        }
+      } catch (_fwIcon) {}
+    }
     if (CC_GUIDED_LEGENDARY_PERK_SELECT_IDS[sid]) {
       // Legendary perks inherit the rarity-id style:
       // - pearlescent rows get pearl pip/aug art (from DLC rarity packs)
@@ -1014,6 +1325,12 @@
    */
   function compactGuidedPartLabel(p) {
     if (!p) return '-';
+    if (typeof window.ccRichPartDropdownLabel === 'function') {
+      try {
+        var rich = String(window.ccRichPartDropdownLabel(p, 180) || '').trim();
+        if (rich && rich !== '-') return rich;
+      } catch (_e) {}
+    }
     var rawCode = guidedNormCode(p);
     var unquoted = rawCode.replace(/^["']|["']$/g, '').trim();
     var codeL = String(unquoted || '').toLowerCase();
@@ -1077,6 +1394,12 @@
   }
 
   function guidedOptionLabelForSelect(sel, p) {
+    if (typeof window.ccRichPartDropdownLabel === 'function') {
+      try {
+        var rich = String(window.ccRichPartDropdownLabel(p) || '').trim();
+        if (rich) return rich;
+      } catch (_e) {}
+    }
     if (sel && isGuidedBarrelFamilySelect(sel)) return guidedBarrelOptionPrimaryText(p);
     return compactGuidedPartLabel(p);
   }
@@ -1622,11 +1945,10 @@
     var partsHash = (partsList && partsList.length) ? (partsList.length + ':' + (partsList[0] ? (partsList[0].code || partsList[0].name) : '')) : '0';
     if (groupByRarity) partsHash = 'rfl:' + manHint + ':' + partsHash;
     if (sel.__lastPartsHash === partsHash && !sel.dataset.forceRebuild) {
-        // Still need to ensure value is synced if preferredValue changed externally
         if (preferredValue && sel.value !== preferredValue) {
            sel.value = preferredValue;
-           syncGuidedCustomSelectIfWrapped(sel);
         }
+        syncGuidedCustomSelectIfWrapped(sel);
         return;
     }
     sel.__lastPartsHash = partsHash;
@@ -1839,6 +2161,18 @@
     syncGuidedCustomSelectIfWrapped(sel);
   }
 
+  /** Heavy gadget / HW rows — used to split legendary perk dropdown groups. */
+  function guidedLegendaryPartIsHeavy(p) {
+    if (!p) return false;
+    var cat = String(p.category || '').trim().toLowerCase();
+    if (cat === 'gadget' || cat === 'heavy weapon' || cat === 'heavy') return true;
+    var pwt = String(p.weaponType || p.itemType || '').trim().toLowerCase();
+    if (pwt === 'heavy weapon' || pwt === 'heavy' || pwt.indexOf('heavy') >= 0) return true;
+    var code = guidedSpawnCodeLo(p);
+    if (/_hw[._]|heavy_weapon_gadget/i.test(code)) return true;
+    return false;
+  }
+
   function fillSelectWithLegendaryGroups(sel, parts) {
     if (!sel) return;
     var prevValue = String((sel.value != null ? sel.value : '') || '').trim();
@@ -1847,9 +2181,8 @@
     var weapon = [];
     for (var i = 0; i < parts.length; i++) {
       var p = parts[i];
-      var cat = String(p.category || '').trim();
-      if (cat === 'Gadget') heavy.push(p);
-      else if (cat === 'Weapon') weapon.push(p);
+      if (guidedLegendaryPartIsHeavy(p)) heavy.push(p);
+      else weapon.push(p);
     }
     heavy = sortGuidedPartsByCode(heavy);
     weapon = sortGuidedPartsByCode(weapon);
@@ -1873,13 +2206,13 @@
     };
     if (heavy.length) {
       var g1 = document.createElement('optgroup');
-      g1.label = 'Heavy Legendary Perks';
+      g1.label = 'Heavy Legendary Perks & Barrels';
       for (var h = 0; h < Math.min(heavy.length, 800); h++) addPartToGroup(g1, heavy[h]);
       sel.appendChild(g1);
     }
     if (weapon.length) {
       var g2 = document.createElement('optgroup');
-      g2.label = 'Weapon Legendary Perks';
+      g2.label = 'Weapon Legendary Perks & Barrels';
       for (var w = 0; w < Math.min(weapon.length, 1200); w++) addPartToGroup(g2, weapon[w]);
       sel.appendChild(g2);
     }
@@ -1907,22 +2240,7 @@
   }
 
   function getGuidedState() {
-    var guidedItem = byId('ccGuidedItemType');
-    var guidedMan = byId('ccGuidedManufacturer');
-    var guidedWt = byId('ccGuidedWeaponType');
-    var stxItem = byId('stx_itemType');
-    var stxMan = byId('stx_manufacturer');
-    var itemType = (guidedItem && guidedItem.value) || (stxItem && stxItem.value) || '';
-    var manufacturer = '';
-    if (guidedItem && guidedItem.value) {
-      manufacturer = (guidedMan && guidedMan.value) || '';
-    } else if (stxItem && stxItem.value) {
-      manufacturer = (stxMan && stxMan.value) || '';
-    } else {
-      manufacturer = (guidedMan && guidedMan.value) || (stxMan && stxMan.value) || '';
-    }
-    var weaponType = (guidedWt && guidedWt.value) || (byId('weaponType') && byId('weaponType').value) || '';
-    return { itemType: itemType, manufacturer: manufacturer, weaponType: weaponType };
+    return getGuidedFilterContext();
   }
 
   /** Map Simple Builder `Heavy` onto Guided gear key `Heavy Weapon` for slot tables + visibility. */
@@ -1934,23 +2252,39 @@
   }
 
   function getEffectiveManufacturerForFilter() {
-    var itemSel = byId('ccGuidedItemType');
-    var itemType = itemSel ? String(itemSel.value || '').trim() : '';
+    var ctx = getGuidedFilterContext();
+    var itemType = String(ctx.itemType || '').trim();
     if (itemType === 'Gadget') return '';
     if (itemType === 'Enhancement') {
       var enhMfg = byId('enhMfgSel');
-      if (enhMfg && String(enhMfg.value || '').trim()) return String(enhMfg.value || '').trim();
+      var ev = readSelectValue(enhMfg);
+      if (ev) return ev;
     }
     var toggle = byId('ccGuidedAllManufacturers');
     if (toggle && toggle.checked) return '';
-    return (getGuidedState().manufacturer || '').trim();
+    return String(ctx.manufacturer || '').trim();
+  }
+
+  /** Body slots always use the item's selected manufacturer (ignore all-manufacturers toggle). */
+  function getSelectedItemManufacturerForBody() {
+    var ctx = getGuidedFilterContext();
+    var itemType = String(ctx.itemType || '').trim();
+    if (itemType === 'Enhancement') {
+      var enhMfg = byId('enhMfgSel');
+      var ev = readSelectValue(enhMfg);
+      if (ev) return ev;
+    }
+    return String(ctx.manufacturer || '').trim();
   }
 
   /** Body / main-body rows: once used to hide when a filter returned 0 rows; always show now so slots stay usable. */
   var GUIDED_BODY_FAMILY_KEYS_BY_CATEGORY = {
     Weapon: { body: true, bodyAcc: true, bodyEle: true },
     'Heavy Weapon': { body: true, bodyAcc: true },
-    Shield: { mainBody: true }
+    Shield: { mainBody: true, body: true },
+    Grenade: { body: true },
+    Enhancement: { body: true },
+    Repkit: { body: true }
   };
 
   function guidedSlotIsBodyFamily(category, slotKey) {
@@ -1958,9 +2292,16 @@
     return !!(m && m[slotKey]);
   }
 
-  /** Grid row: wrapper around label + flex(select, button) in guided slot grids. */
+  /** Grid row: direct child of `.cc-guided-slots-grid` (stable after custom-select wrap). */
   function getGuidedSlotGridRow(sel) {
-    if (!sel || !sel.parentElement) return null;
+    if (!sel) return null;
+    var el = sel;
+    while (el && el !== document.body) {
+      var parent = el.parentElement;
+      if (parent && parent.classList && parent.classList.contains('cc-guided-slots-grid')) return el;
+      el = parent;
+    }
+    if (!sel.parentElement) return null;
     return sel.parentElement.parentElement || null;
   }
 
@@ -2073,7 +2414,7 @@
     wtypes = wtypes.filter(function (w) { return String(w).trim().toLowerCase() !== 'weapon'; });
     wtypes = wtypes.filter(function (w) { return !/^heavy(?:\s*weapon)?$/i.test(String(w || '').trim()); });
     wtypes.sort(function (a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); });
-    var preserveWt = (wtSel.value || '').trim();
+    var preserveWt = readSelectValue(wtSel);
     if (/^heavy(?:\s*weapon)?$/i.test(preserveWt)) preserveWt = '';
     wtSel.innerHTML = '<option value="">Select weapon type...</option>';
     for (var j = 0; j < wtypes.length; j++) {
@@ -2266,6 +2607,134 @@
   function getGuidedOutputEl() {
     var el = byId('guidedOutputDeserialized');
     return el || null;
+  }
+
+  /** Live tail edit target — guided/simple output fields only (not inspector paste buffers). */
+  function getActiveTailOutputEl() {
+    var gi = byId('ccGuidedItemType');
+    var guidedOn = gi && readSelectValue(gi);
+    var g = byId('guidedOutputDeserialized');
+    var o = byId('outCode');
+    var imp = byId('importBox');
+    var gv = g && String(g.value || '').trim();
+    var ov = o && String(o.value || '').trim();
+    var iv = imp && String(imp.value || '').trim();
+    if (guidedOn) {
+      if (gv) return g;
+      if (ov) return o;
+    } else {
+      if (ov) return o;
+      if (gv) return g;
+    }
+    if (iv) return imp;
+    return g || o || null;
+  }
+
+  function getInspectorTailEditContext() {
+    var serial = '';
+    try {
+      if (typeof window.__ipiGetInspectorSerialSource === 'function') {
+        serial = String(window.__ipiGetInspectorSerialSource() || '').trim();
+      }
+    } catch (_) {}
+    var qp = byId('ipiQuickPaste');
+    var gi = byId('ccGuidedItemType');
+    var guidedOn = gi && readSelectValue(gi);
+    var g = byId('guidedOutputDeserialized');
+    var o = byId('outCode');
+    var imp = byId('importBox');
+    var qv = qp && String(qp.value || '').trim();
+    var gv = g && String(g.value || '').trim();
+    var ov = o && String(o.value || '').trim();
+    var iv = imp && String(imp.value || '').trim();
+    var el = null;
+    var target = 'guided';
+    if (serial) {
+      if (qv && serial === qv) { el = qp; target = guidedOn ? 'guided' : (ov ? 'simple' : 'guided'); }
+      else if (gv && serial === gv) { el = g; target = 'guided'; }
+      else if (ov && serial === ov) { el = o; target = 'simple'; }
+      else if (iv && serial === iv) { el = imp; target = guidedOn ? 'guided' : 'simple'; }
+    }
+    if (!el) {
+      if (qv) { el = qp; serial = qv; target = guidedOn ? 'guided' : (ov ? 'simple' : 'guided'); }
+      else if (guidedOn) {
+        if (gv) { el = g; serial = gv; target = 'guided'; }
+        else if (ov) { el = o; serial = ov; target = 'simple'; }
+        else if (iv) { el = imp; serial = iv; target = 'import'; }
+      } else {
+        if (ov) { el = o; serial = ov; target = 'simple'; }
+        else if (gv) { el = g; serial = gv; target = 'guided'; }
+        else if (iv) { el = imp; serial = iv; target = 'import'; }
+      }
+    }
+    if (!el) el = getActiveTailOutputEl();
+    if (!serial && el) serial = String(el.value || '').trim();
+    return { el: el, serial: serial, target: target };
+  }
+
+  function writeInspectorTailSerialToOutputs(newSerial, serialBefore, primaryEl, targetKey) {
+    if (!newSerial) return;
+    serialBefore = String(serialBefore || '').trim();
+    newSerial = String(newSerial || '').trim();
+    var nodes = [
+      byId('guidedOutputDeserialized'),
+      byId('outCode'),
+      byId('importBox'),
+      byId('ipiQuickPaste')
+    ];
+    var primary = primaryEl || null;
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (!node) continue;
+      var cur = String(node.value || '').trim();
+      if (node === primary || !cur || cur === serialBefore) node.value = newSerial;
+    }
+    var gDes = byId('guidedOutputDeserialized');
+    var outCode = byId('outCode');
+    if (primary && primary.id === 'ipiQuickPaste') {
+      if (targetKey === 'simple' && outCode) outCode.value = newSerial;
+      else if (gDes) {
+        gDes.value = newSerial;
+        if (newSerial.indexOf('||') >= 0) gDes.__ccUserTailEdit = true;
+      } else if (outCode) outCode.value = newSerial;
+    } else if (primary && primary.id === 'importBox') {
+      if (targetKey === 'simple' && outCode) outCode.value = newSerial;
+      else if (gDes) {
+        gDes.value = newSerial;
+        if (newSerial.indexOf('||') >= 0) gDes.__ccUserTailEdit = true;
+      }
+    } else if (primary && primary.id === 'outCode' && gDes) {
+      var gCur = String(gDes.value || '').trim();
+      if (!gCur || gCur === serialBefore) {
+        gDes.value = newSerial;
+        if (newSerial.indexOf('||') >= 0) gDes.__ccUserTailEdit = true;
+      }
+    } else if (primary && primary.id === 'guidedOutputDeserialized' && outCode) {
+      var oCur = String(outCode.value || '').trim();
+      if (!oCur || oCur === serialBefore) outCode.value = newSerial;
+    }
+    if (gDes && String(gDes.value || '').trim().indexOf('||') >= 0) gDes.__ccUserTailEdit = true;
+    try {
+      window.__CC_LAST_CODE_TARGET = (targetKey === 'simple') ? 'simple' : 'guided';
+    } catch (_) {}
+  }
+
+  function syncTailOutputMirrors(oldSerial, newSerial) {
+    if (!newSerial) return;
+    oldSerial = String(oldSerial || '').trim();
+    newSerial = String(newSerial || '').trim();
+    if (!oldSerial || oldSerial === newSerial) return;
+    var nodes = [
+      byId('guidedOutputDeserialized'),
+      byId('outCode'),
+      byId('importBox'),
+      byId('ipiQuickPaste')
+    ];
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (!node || node === getActiveTailOutputEl()) continue;
+      if (String(node.value || '').trim() === oldSerial) node.value = newSerial;
+    }
   }
 
   function parseGuidedHeaderNumber(v, fallback) {
@@ -2537,7 +3006,7 @@
     var pt = String((p.partType || p.kind || '') || '').trim().toLowerCase();
     var raw = String((p.code || p.spawnCode || '') || '').trim();
     var codeL = guidedTailNormSpawnKey(raw);
-    if (pt === 'firmware' && codeL.indexOf('part_firmware') !== -1) return 580;
+    if (guidedPartIsFirmware(p)) return 580;
     // Keep element before 234-family perk runs so firmware can pack with them at the end.
     if (pt === 'element') return 250;
     if (pt === 'skill') return 500;
@@ -2642,6 +3111,12 @@
         skipCompress = (itSkip === 'shield' || itSkip === 'repkit');
       } catch (_) {}
       if (!skipCompress) {
+        try {
+          var gDesSkip = byId('guidedOutputDeserialized');
+          if (gDesSkip && gDesSkip.__ccUserTailEdit && norm.length > 48) skipCompress = true;
+        } catch (_) {}
+      }
+      if (!skipCompress) {
         try { norm = window.compressConsecutiveFamilyRefs(norm); } catch (_) {}
       }
     }
@@ -2664,32 +3139,257 @@
   /** Helper to unlock output generation after an import, allowing subsequent interactive edits. */
   function clearGuidedImportLock() {
     if (window.__CC_IMPORT_IN_PROGRESS) return;
+    forceClearImportLockForUserEdit();
+  }
+
+  /** User edits (+/− inspector, append) must always win over imported-output pins. */
+  function forceClearImportLockForUserEdit() {
     try {
       window.__LOCK_IMPORTED_OUTPUT = false;
       window.__LAST_IMPORTED_DESERIALIZED = null;
       var gDes = byId('guidedOutputDeserialized');
       var gSer = byId('guidedOutputSerial');
-      if (gDes) gDes.__ccImportedValue = null;
+      var outCode = byId('outCode');
+      if (gDes) {
+        gDes.__ccImportedValue = null;
+        if (String(gDes.value || '').trim().indexOf('||') >= 0) gDes.__ccUserTailEdit = true;
+      }
       if (gSer) gSer.__ccImportedValue = null;
+      if (outCode) outCode.__ccImportedValue = null;
     } catch (_) {}
   }
   window.clearGuidedImportLock = clearGuidedImportLock;
 
-  function appendToOutCode(token, forceTarget, replaceRarity) {
-    if (!forceTarget && typeof window.stxAppendPresetToActiveBuilder === 'function') {
+  /** Guided output / import tail is the live edit target — not Simple `outCode` after a guided import. */
+  function shouldEditGuidedTailDirectly() {
+    try {
+      if (window.__CC_LAST_CODE_TARGET === 'guided') return true;
+    } catch (_) {}
+    var gDes = byId('guidedOutputDeserialized');
+    var gd = gDes && String(gDes.value || '').trim();
+    if (gd && gd.indexOf('||') >= 0) return true;
+    if (gDes && (gDes.__ccImportedValue || gDes.__ccUserTailEdit) && gd) return true;
+    var gi = byId('ccGuidedItemType');
+    if (!gi || !readSelectValue(gi)) return false;
+    var out = getActiveTailOutputEl();
+    if (!out) return false;
+    var v = String(out.value || '').trim();
+    return v.indexOf('||') >= 0 || (v.indexOf('{') >= 0 && v.length > 8);
+  }
+
+  function guidedHasLiveTailSerial() {
+    var gDes = byId('guidedOutputDeserialized');
+    var gd = gDes && String(gDes.value || '').trim();
+    return !!(gd && gd.indexOf('||') >= 0);
+  }
+  window.__ccGuidedHasLiveTailSerial = guidedHasLiveTailSerial;
+
+  function syncGuidedFloatingOutputFromDeser() {
+    try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
+    var gDes = byId('guidedOutputDeserialized');
+    var v = gDes ? String(gDes.value || '').trim() : '';
+    if (!v) return;
+    var outCode = byId('outCode');
+    if (outCode) outCode.value = v;
+    var imp = byId('importBox');
+    if (imp && String(imp.value || '').trim() === v) { /* already synced */ }
+    else if (imp && !String(imp.value || '').trim()) imp.value = v;
+    var floatEl = byId('floating-output-code');
+    if (floatEl && document.activeElement !== floatEl) floatEl.value = v;
+    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    try {
+      if (typeof window.syncFloatingOutput === 'function') {
+        setTimeout(function () {
+          try { window.syncFloatingOutput(true); } catch (_) {}
+        }, 0);
+      }
+    } catch (_) {}
+  }
+  window.syncGuidedFloatingOutputFromDeser = syncGuidedFloatingOutputFromDeser;
+
+  var __ccGuidedTailEditFxTimer = 0;
+  /** Keep Add/+/− snappy on long imported serials — mirror text now, defer heavy UI refresh. */
+  function deferGuidedTailEditSideEffects() {
+    try { if (typeof window.__ipiInvalidateSerialCache === 'function') window.__ipiInvalidateSerialCache(); } catch (_) {}
+    syncGuidedFloatingOutputFromDeser();
+    if (__ccGuidedTailEditFxTimer) clearTimeout(__ccGuidedTailEditFxTimer);
+    __ccGuidedTailEditFxTimer = setTimeout(function () {
+      __ccGuidedTailEditFxTimer = 0;
+      try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
+      try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+      try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
+    }, 150);
+  }
+  window.deferGuidedTailEditSideEffects = deferGuidedTailEditSideEffects;
+
+  function findGuidedSlotMetaBySelectId(selectId) {
+    if (!selectId) return null;
+    var weaponSlots = getGuidedWeaponSlots();
+    for (var wi = 0; wi < weaponSlots.length; wi++) {
+      if (weaponSlots[wi].selectId === selectId) return weaponSlots[wi];
+    }
+    var cats = Object.keys(GEAR_SLOTS_BY_CATEGORY);
+    for (var ci = 0; ci < cats.length; ci++) {
+      var gearSlots = GEAR_SLOTS_BY_CATEGORY[cats[ci]];
+      for (var gi = 0; gi < gearSlots.length; gi++) {
+        if (gearSlots[gi].selectId === selectId) return gearSlots[gi];
+      }
+    }
+    return null;
+  }
+
+  var GUIDED_STACK_SLOT_KEYS = {
+    bodyAcc: 1, barrelAcc: 1, magazineAcc: 1, scopeAcc: 1, licensed: 1, statMod: 1,
+    additionalParts: 1, legendary: 1, augment: 1, perk: 1, universal: 1, secondary: 1,
+    other: 1, grenadeKitStats: 1, stats: 1, perkResist: 1, perkImmunity: 1, perkNova: 1,
+    perkSplat: 1, specialPlaceholder: 1, primary246: 1, secondary246: 1, armor237: 1, energy248: 1,
+    special: 1
+  };
+
+  function slotWantsSingleReplace(slotMeta, replaceRarity) {
+    if (!slotMeta) return !!replaceRarity;
+    if (replaceRarity || slotMeta.key === 'rarity') return true;
+    if (GUIDED_STACK_SLOT_KEYS[slotMeta.key]) return false;
+    if (slotMeta.key === 'element' && slotMeta.selectId === 'ccElementPartSelect') return false;
+    if (slotMeta.multi) return false;
+    return !!(String(slotMeta.partType || '').trim() || slotMeta.key === 'body' || slotMeta.key === 'barrel' || slotMeta.key === 'mag');
+  }
+
+  function getBaseFamilyFromSerial(serial) {
+    var s = String(serial || '').trim();
+    var dbl = s.indexOf('||');
+    var head = dbl >= 0 ? s.slice(0, dbl).trim() : s;
+    var m = head.match(/^\s*(\d+)\s*[,\|]/);
+    return m ? Number(m[1]) : null;
+  }
+
+  function resolveGuidedTailTokenPart(tok, baseFamilyId) {
+    if (typeof window.tryResolveToken !== 'function') return null;
+    try {
+      var p = window.tryResolveToken(tok);
+      if (!p && baseFamilyId != null) {
+        var bare = String(tok || '').trim().match(/^\{\s*(\d+)\s*\}$/);
+        if (bare) p = window.tryResolveToken('{' + baseFamilyId + ':' + bare[1] + '}');
+      }
+      return p || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function tokenMatchesGuidedSlotPartType(tok, slotMeta, baseFamilyId) {
+    if (!slotMeta) return false;
+    if (slotMeta.key === 'rarity') return isRarityToken(tok);
+    if (guidedSlotIsFirmwareSlot(slotMeta)) {
+      var fwPart = resolveGuidedTailTokenPart(tok, baseFamilyId);
+      if (!fwPart || !guidedPartIsFirmware(fwPart)) {
+        var rawFw = String(tok || '').trim().replace(/^"+|"+$/g, '');
+        if (!/part_firmware|\.part_firmware/i.test(rawFw)) return false;
+      } else if (slotMeta.key === 'firmware246') {
+        var fwFam = fwPart.family != null ? Number(fwPart.family) : (fwPart.familyId != null ? Number(fwPart.familyId) : NaN);
+        if (Number(fwFam) !== 246) return false;
+      }
+      return true;
+    }
+    var want = String(slotMeta.partType || '').trim();
+    if (!want) return false;
+    var p = resolveGuidedTailTokenPart(tok, baseFamilyId);
+    if (!p) return false;
+    return String(p.partType || '').trim().toLowerCase() === want.toLowerCase();
+  }
+
+  function collectSlotReplaceTokenKeys(slotMeta, serialBefore) {
+    var keys = [];
+    if (!slotMeta) return keys;
+    var st = getGuidedBuilderStateObj();
+    var slotVal = st && st.slots && st.slots[slotMeta.key];
+    if (slotMeta.key && slotMeta.key.indexOf('aug') === 0 && st && st.slots && Array.isArray(st.slots.augment)) {
+      var augIdx = parseInt(String(slotMeta.key).replace('aug', ''), 10) - 1;
+      if (augIdx >= 0 && augIdx < st.slots.augment.length) slotVal = st.slots.augment[augIdx];
+    }
+    if (Array.isArray(slotVal)) {
+      for (var ai = 0; ai < slotVal.length; ai++) {
+        var ap = slotVal[ai];
+        if (ap && typeof window.tokenForPart === 'function') {
+          try {
+            var apt = window.tokenForPart(ap);
+            if (apt) keys.push(normTailTokenKey(apt));
+          } catch (_) {}
+        }
+      }
+    } else {
+      var part = slotVal;
+      if (part && typeof window.tokenForPart === 'function') {
+        try {
+          var pt = window.tokenForPart(part);
+          if (pt) keys.push(normTailTokenKey(pt));
+        } catch (_) {}
+      }
+    }
+    if (!keys.length && serialBefore) {
+      var baseFam = getBaseFamilyFromSerial(serialBefore);
+      var tailToks = extractGuidedTailTokens(serialBefore);
+      for (var ti = 0; ti < tailToks.length; ti++) {
+        if (tokenMatchesGuidedSlotPartType(tailToks[ti], slotMeta, baseFam)) {
+          keys.push(normTailTokenKey(tailToks[ti]));
+        }
+      }
+    }
+    return keys;
+  }
+
+  function filterTokensForGuidedSlotReplace(tokens, slotMeta, replaceRarity, newToken, serialBefore) {
+    if (!slotWantsSingleReplace(slotMeta, replaceRarity)) return tokens;
+    if (slotMeta && GUIDED_STACK_SLOT_KEYS[slotMeta.key]) return tokens;
+    var baseFam = getBaseFamilyFromSerial(serialBefore);
+    var newKey = normTailTokenKey(newToken);
+    var prevKeys = collectSlotReplaceTokenKeys(slotMeta, serialBefore);
+    return tokens.filter(function (t) {
+      var tk = normTailTokenKey(t);
+      if (replaceRarity || (slotMeta && slotMeta.key === 'rarity')) return !isRarityToken(t);
+      for (var i = 0; i < prevKeys.length; i++) {
+        if (tk === prevKeys[i]) return false;
+      }
+      return !tokenMatchesGuidedSlotPartType(t, slotMeta, baseFam);
+    });
+  }
+
+  function syncGuidedSlotStateAfterTailEdit(slotMeta, newTokenRaw) {
+    if (!slotMeta || typeof window.tryResolveToken !== 'function') return;
+    var part = null;
+    try { part = window.tryResolveToken(String(newTokenRaw || '').trim()); } catch (_) {}
+    if (!part) return;
+    var st = getGuidedBuilderStateObj();
+    if (!st) return;
+    if (!st.slots || typeof st.slots !== 'object') st.slots = {};
+    if (GUIDED_STACK_SLOT_KEYS[slotMeta.key]) {
+      var list = Array.isArray(st.slots[slotMeta.key]) ? st.slots[slotMeta.key].slice() : (st.slots[slotMeta.key] ? [st.slots[slotMeta.key]] : []);
+      list.push(part);
+      st.slots[slotMeta.key] = list;
+    } else {
+      st.slots[slotMeta.key] = part;
+    }
+  }
+
+  function appendToOutCode(token, forceTarget, replaceRarity, slotMeta) {
+    if (!forceTarget && !shouldEditGuidedTailDirectly() && typeof window.stxAppendPresetToActiveBuilder === 'function') {
       if (window.stxAppendPresetToActiveBuilder(token, { quantity: 1 })) return;
     }
-    var out = forceTarget || getGuidedOutputEl();
+    var out = forceTarget;
+    if (!out) {
+      out = shouldEditGuidedTailDirectly()
+        ? (byId('guidedOutputDeserialized') || getActiveTailOutputEl())
+        : getActiveTailOutputEl();
+    }
     if (!out) return;
-    // Once user explicitly adds/removes parts, stop pinning outputs to the imported snapshot.
-    clearGuidedImportLock();
-    var serial = (out.value || '').trim();
+    forceClearImportLockForUserEdit();
+    var serialBefore = (out.value || '').trim();
+    var serial = serialBefore;
     var dbl = serial.indexOf('||');
     var prefixStr = dbl >= 0 ? serial.slice(0, dbl).trim() : '';
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
-    // When guided output is empty (no prefix), ensure we have a prefix before appending
     var guidedItem = byId('ccGuidedItemType');
-    var isGuided = (guidedItem && (guidedItem.value || '').trim());
+    var isGuided = (guidedItem && readSelectValue(guidedItem));
     if (isGuided && !prefixStr) {
       prefixStr = computeGuidedPrefixSafe();
       if (prefixStr) {
@@ -2698,55 +3398,52 @@
         dbl = serial.indexOf('||');
       }
     }
-    // Enhanced regex to handle {14:[1 1 1]} correctly even with internal spaces
     var tokens = (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
       var s = String(t || '').trim();
       return s && s !== '|' && s !== '||';
     });
-    if (replaceRarity) {
+    if (!slotMeta && replaceRarity) {
       tokens = tokens.filter(function (t) { return !isRarityToken(t); });
     }
-    
+    var newTokenRaw = String(token || '').trim();
+    tokens = filterTokensForGuidedSlotReplace(tokens, slotMeta, replaceRarity, newTokenRaw, serialBefore);
+
     var skinTokens = [];
     var camoTokens = [];
     var otherTokens = [];
     for (var i = 0; i < tokens.length; i++) {
-        var t = tokens[i];
-        if (String(t).indexOf('|') >= 0 && String(t).indexOf('c') >= 0) {
-            // camo like |"c",123|
-            camoTokens.push(t);
-        } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(t)) {
-            skinTokens.push(t);
-        } else {
-            otherTokens.push(t);
-        }
+      var t = tokens[i];
+      if (String(t).indexOf('|') >= 0 && String(t).indexOf('c') >= 0) {
+        camoTokens.push(t);
+      } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(t)) {
+        skinTokens.push(t);
+      } else {
+        otherTokens.push(t);
+      }
     }
 
-    var newToken = token.indexOf('{') === 0 ? token : (token.indexOf('"') >= 0 ? token : '"' + token + '"');
-    
-    // Categorize the new token
+    var newToken = newTokenRaw.indexOf('{') === 0 ? newTokenRaw : (newTokenRaw.indexOf('"') >= 0 ? newTokenRaw : '"' + newTokenRaw + '"');
+
     if (String(newToken).indexOf('|') >= 0 && String(newToken).indexOf('c') >= 0) {
-        camoTokens.push(newToken);
+      camoTokens.push(newToken);
     } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(newToken)) {
-        skinTokens.push(newToken);
+      skinTokens.push(newToken);
     } else {
-        otherTokens.push(newToken);
+      otherTokens.push(newToken);
     }
 
-    // Order: Skins (Rarity) first, then other parts, then Camos at the absolute end.
     tokens = skinTokens.concat(otherTokens).concat(camoTokens);
 
     var newTail = normalizeGuidedTail(prefixStr, tokens);
-    // Ensure we don't have double pipes and that the tail ends correctly
     if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + '|';
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
+    syncTailOutputMirrors(serialBefore, newSerial);
     out.value = newSerial;
     try {
       window.__CC_LAST_CODE_TARGET = 'guided';
     } catch (_) {}
-    try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
-    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    if (slotMeta) syncGuidedSlotStateAfterTailEdit(slotMeta, newTokenRaw);
+    deferGuidedTailEditSideEffects();
   }
   /** Tools / rebuild quick-add paths call `window.appendToOutCode`; delegate here when target is Guided output. */
   try { window.appendToOutCodeGuided = appendToOutCode; } catch (_) {}
@@ -2768,12 +3465,15 @@
    * @param {string} canonicalToken — token as shown in serial (e.g. {254:10} or spawn code)
    */
   function mutateSerialTailDelta(canonicalToken, delta) {
-    var out = getGuidedOutputEl();
+    var ctx = getInspectorTailEditContext();
+    var out = ctx && ctx.el;
     if (!out || canonicalToken == null || canonicalToken === '') return false;
-    clearGuidedImportLock();
+    forceClearImportLockForUserEdit();
     var d = Number(delta);
     if (!Number.isFinite(d) || d === 0) return false;
-    var serial = (out.value || '').trim();
+    var serialBefore = String((ctx && ctx.serial) || (out.value || '')).trim();
+    if (!serialBefore) return false;
+    var serial = serialBefore;
     var dbl = serial.indexOf('||');
     var prefixStr = dbl >= 0 ? serial.slice(0, dbl).trim() : '';
     var tail = dbl >= 0 ? serial.slice(dbl + 2).trim() : '';
@@ -2816,14 +3516,9 @@
     var newTail = normalizeGuidedTail(prefixStr, tokens);
     if (newTail && !/\|\s*$/.test(newTail.trim())) newTail = newTail.trim() + '|';
     var newSerial = dbl >= 0 ? serial.slice(0, dbl + 2).trim() + (newTail ? ' ' + newTail : '') : (serial ? (serial.indexOf('||') >= 0 ? serial : serial + ' ||') + ' ' + newTail : (prefixStr ? (prefixStr.indexOf('||') >= 0 ? prefixStr.trim() + ' ' + newTail : prefixStr.trim() + ' || ' + newTail) : '|| ' + newTail));
-    out.value = newSerial;
-    try {
-      window.__CC_LAST_CODE_TARGET = 'guided';
-    } catch (_) {}
-    try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
-    try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
-    try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    writeInspectorTailSerialToOutputs(newSerial, serialBefore, out, ctx.target);
+    syncTailOutputMirrors(serialBefore, newSerial);
+    deferGuidedTailEditSideEffects();
     return true;
   }
 
@@ -2886,6 +3581,75 @@
       try { updateGuidedSelectPreview(sel); } catch (_) {}
     }
   }
+
+  /** After guided-only / heavy import: match tail tokens to slot dropdowns (state.slots may be empty). */
+  function hydrateGuidedSlotSelectsFromSerial(serial) {
+    var s = String(serial || '').trim();
+    if (!s || s.indexOf('||') < 0) return false;
+    var baseFam = getBaseFamilyFromSerial(s);
+    var tokens = extractGuidedTailTokens(s);
+    if (!tokens.length) return false;
+
+    var st = getGuidedBuilderStateObj();
+    var cat = '';
+    if (st && st.itemType) cat = String(st.itemType).trim();
+    var gi = byId('ccGuidedItemType');
+    if (!cat && gi) cat = readSelectValue(gi);
+    if (!cat) cat = 'Weapon';
+
+    var slots = null;
+    if (cat === 'Weapon' || /assault rifle|pistol|shotgun|smg|sniper/i.test(cat)) {
+      slots = getGuidedWeaponSlots();
+    } else {
+      var gearCat = normalizeGuidedItemTypeForGear(cat);
+      if (GEAR_SLOTS_BY_CATEGORY && GEAR_SLOTS_BY_CATEGORY[gearCat]) slots = GEAR_SLOTS_BY_CATEGORY[gearCat];
+    }
+    if (!slots || !slots.length) return false;
+
+    window.__ccIsHydrating = true;
+    try {
+      if (typeof refreshWeaponDropdowns === 'function' && (cat === 'Weapon' || /weapon/i.test(cat))) {
+        refreshWeaponDropdowns(true);
+      }
+      if (typeof refreshGearDropdowns === 'function' && cat !== 'Weapon') {
+        refreshGearDropdowns(normalizeGuidedItemTypeForGear(cat));
+      }
+
+      for (var si = 0; si < slots.length; si++) {
+        var slot = slots[si];
+        if (!slot || !slot.selectId) continue;
+        if (slot.key === 'element') continue;
+
+        var picked = null;
+        if (slot.key === 'rarity') {
+          for (var ri = 0; ri < tokens.length; ri++) {
+            if (isRarityToken(tokens[ri])) { picked = tokens[ri]; break; }
+          }
+        } else if (GUIDED_STACK_SLOT_KEYS[slot.key] || slot.multi) {
+          for (var ti = tokens.length - 1; ti >= 0; ti--) {
+            if (tokenMatchesGuidedSlotPartType(tokens[ti], slot, baseFam)) {
+              picked = tokens[ti];
+              break;
+            }
+          }
+        } else {
+          for (var ui = 0; ui < tokens.length; ui++) {
+            if (tokenMatchesGuidedSlotPartType(tokens[ui], slot, baseFam)) {
+              picked = tokens[ui];
+              break;
+            }
+          }
+        }
+        if (picked) setGuidedSelectByToken(slot.selectId, picked);
+      }
+      return true;
+    } catch (_) {
+      return false;
+    } finally {
+      window.__ccIsHydrating = false;
+    }
+  }
+  window.__ccHydrateGuidedSlotSelectsFromSerial = hydrateGuidedSlotSelectsFromSerial;
 
   function hydrateGuidedSlotsFromSimpleState() {
     window.__ccIsHydrating = true;
@@ -2970,7 +3734,7 @@
       var st = window.state || window.__STX_SIMPLE_STATE;
       var cat = String(st.itemType || '').trim();
       var slots = null;
-      if (cat === 'Weapon') slots = WEAPON_SLOTS;
+      if (cat === 'Weapon') slots = getGuidedWeaponSlots();
       else if (cat === 'Heavy Weapon' && GEAR_SLOTS_BY_CATEGORY) slots = GEAR_SLOTS_BY_CATEGORY['Heavy Weapon'];
       else if (GEAR_SLOTS_BY_CATEGORY && GEAR_SLOTS_BY_CATEGORY[cat]) slots = GEAR_SLOTS_BY_CATEGORY[cat];
       
@@ -3045,61 +3809,184 @@
 
   function addGunPart(selectId, replaceRarity) {
     var sel = byId(selectId);
-    if (!sel || !sel.value) return;
-    var tok = sel.value.trim();
+    if (!sel) return;
+    var tok = readGuidedSlotToken(sel);
     if (!tok) return;
-    appendToOutCode(tok, null, !!replaceRarity);
+    var slotMeta = findGuidedSlotMetaBySelectId(selectId);
+    appendToOutCode(tok, null, !!replaceRarity, slotMeta);
   }
 
   function addElement() {
     var sel = byId('ccElementPartSelect');
     if (!sel) return;
-    var code = (sel.value || '').trim();
+    var code = readSelectValue(sel);
     if (!code) return;
     appendToOutCode(code);
+    try {
+      var st = window.state || window.__STX_SIMPLE_STATE;
+      if (st && Array.isArray(ELEMENTS)) {
+        var hit = null;
+        for (var i = 0; i < ELEMENTS.length; i++) {
+          if (ELEMENTS[i] && String(ELEMENTS[i].code || '').trim() === code) { hit = ELEMENTS[i]; break; }
+        }
+        if (hit && hit.key && hit.key !== 'None') {
+          if (!st.primaryElement || st.primaryElement === 'None') st.primaryElement = hit.key;
+          else {
+            st.elementStack = Array.isArray(st.elementStack) ? st.elementStack : [];
+            st.elementStack.push(hit.key);
+          }
+          if (typeof window.stxSyncDualElementMaliwanSwitch === 'function') window.stxSyncDualElementMaliwanSwitch();
+        }
+      }
+    } catch (_e) {}
+    try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_e2) {}
   }
 
-  function refreshWeaponDropdowns() {
-    var st = getGuidedState();
+  /** Direct pool for body accessory rows scoped to manufacturer + weapon type. */
+  function guidedFilterBodyAccessoryParts(man, wt) {
+    man = String(man || '').trim();
+    wt = String(wt || '').trim();
+    if (!man) return [];
+    var out = [];
+    var all = getAllParts();
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      if (String(p.partType || '').trim().toLowerCase() !== 'body accessory') continue;
+      if (String(p.category || '').trim().toLowerCase() !== 'weapon') continue;
+      var x = guidedSpawnCodeLo(p);
+      if (wt && typeof window.stxWeaponRowMatchesSelectedManufacturer === 'function') {
+        if (!window.stxWeaponRowMatchesSelectedManufacturer(x, man.toLowerCase(), wt)) continue;
+      } else if (String(p.manufacturer || '').trim().toLowerCase() !== man.toLowerCase()) {
+        continue;
+      }
+      if (wt) {
+        var pwt = String(p.weaponType || p.itemType || '').trim().toLowerCase();
+        var wwt = wt.toLowerCase();
+        if (pwt && pwt !== wwt && pwt !== 'weapon') {
+          if (!((pwt === 'sniper' && wwt === 'sniper rifle') || (pwt === 'sniper rifle' && wwt === 'sniper'))) continue;
+        }
+      }
+      out.push(p);
+    }
+    return out;
+  }
+
+  /** Full legendary-perk universe for guided slot dropdowns (no manufacturer / weapon-type gate). */
+  function guidedCollectAllLegendaryPerkParts(includeBarrels) {
+    var all = getAllParts();
+    if (typeof window.collectLegendaryPerkDropdownParts === 'function') {
+      return window.collectLegendaryPerkDropdownParts(all, {
+        includeBarrels: includeBarrels !== false,
+        ignoreWeaponType: true
+      });
+    }
+    return all.filter(function (p) {
+      return p && /legendary\s*perk/i.test(String(p.partType || ''));
+    });
+  }
+
+  /** Shared firmware chips (`part_firmware_*`) — universal pool; prefer 247/234/246 id rows for tokens. */
+  function guidedCollectFirmwareParts() {
+    var byStem = Object.create(null);
+    var all = getAllParts();
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p || !guidedPartIsFirmware(p)) continue;
+      var code = guidedSpawnCodeLo(p);
+      var stemM = code.match(/part_firmware_([a-z0-9_]+)/);
+      var stem = stemM ? stemM[1] : code;
+      if (!stem) continue;
+      var fam = p.family != null ? Number(p.family) : (p.familyId != null ? Number(p.familyId) : NaN);
+      var score = 0;
+      if (fam === 247) score = 100;
+      else if (fam === 234) score = 90;
+      else if (fam === 246) score = 80;
+      else if (String(p.partType || '').trim().toLowerCase() === 'firmware') score += 5;
+      var idRaw = String(p.idRaw || p.idraw || '').trim();
+      if (/^\d+\s*:\s*\d+$/.test(idRaw.replace(/\s+/g, ' '))) score += 3;
+      var prev = byStem[stem];
+      if (!prev || score > prev.score) byStem[stem] = { p: p, score: score };
+    }
+    var out = [];
+    for (var k in byStem) {
+      if (Object.prototype.hasOwnProperty.call(byStem, k) && byStem[k]) out.push(byStem[k].p);
+    }
+    return out;
+  }
+
+  function refreshWeaponDropdowns(force) {
+    var ctx = getGuidedFilterContext();
+    var st = ctx;
     var it = String(st.itemType).toLowerCase();
     if (it === 'heavy') it = 'heavy weapon';
     if (it !== 'weapon' && it !== 'heavy weapon') return;
+    var refreshKey = it + '|' + String(st.manufacturer || '') + '|' + String(st.weaponType || '') + '|' + String(getEffectiveManufacturerForFilter() || '');
+    if (!force && refreshKey === __lastWeaponDropdownRefreshKey && window.__ccWeaponDropdownsHydrated) return;
+    if (force || refreshKey !== __lastWeaponDropdownRefreshKey) {
+      var clearSlots = getGuidedWeaponSlots();
+      for (var ci = 0; ci < clearSlots.length; ci++) {
+        var csel = byId(clearSlots[ci].selectId);
+        if (csel) {
+          try { delete csel.__lastPartsHash; } catch (_) {}
+        }
+      }
+    }
+    __lastWeaponDropdownRefreshKey = refreshKey;
     var man = getEffectiveManufacturerForFilter();
-    var wt = st.weaponType;
+    var wt = String(st.weaponType || '').trim();
+    var bodyMan = getSelectedItemManufacturerForBody();
     var cat = (it === 'heavy weapon') ? 'Heavy Weapon' : 'Weapon';
     var useSimpleFilter = typeof window.filterPartsForGuided === 'function';
 
-    function filterGuidedWeaponSlotParts(slot, filteredIn) {
+    function filterGuidedWeaponSlotParts(slot, filteredIn, ctxMan, ctxWt) {
       var filtered = filteredIn;
       if (!filtered || !filtered.length) return filtered;
-      var c = function (p) { return String((p && p.code) ? p.code : '').toLowerCase(); };
+      var man = String(ctxMan || '').trim();
+      var wt = String(ctxWt || '').trim();
+      var c = guidedSpawnCodeLo;
       if (slot.key === 'body') {
         return filtered.filter(function (p) {
           var x = c(p);
-          return x.indexOf('part_body_bolt') === -1 && x.indexOf('part_body_flap') === -1 && x.indexOf('part_body_ele') === -1;
+          if (x.indexOf('part_body_bolt') !== -1 || x.indexOf('part_body_flap') !== -1 || x.indexOf('part_body_ele') !== -1) return false;
+          if (man && wt && typeof window.stxIsWeaponNaturalBodyPoolRowCode === 'function') {
+            return window.stxIsWeaponNaturalBodyPoolRowCode(x, man, wt);
+          }
+          if (man && typeof window.stxWeaponRowMatchesSelectedManufacturer === 'function') {
+            return window.stxWeaponRowMatchesSelectedManufacturer(x, man.toLowerCase(), wt);
+          }
+          return /\.part_body(?:_|$|\d)/.test(x) && x.indexOf('part_body_ele') === -1;
         });
       }
-      if (slot.key === 'bodyAcc' && !useSimpleFilter) {
-        var baseAcc = filtered.slice();
+      if (slot.key === 'bodyAcc') {
+        var baseAcc = (filtered && filtered.length) ? filtered.slice() : guidedFilterBodyAccessoryParts(man, wt);
+        if (!baseAcc.length) baseAcc = guidedFilterBodyAccessoryParts(man, wt);
         var seenBt = {};
         baseAcc.forEach(function (p) {
           var t = getPartToken(p);
           if (t) seenBt[t] = true;
         });
-        try {
-          var allB = getAllParts();
-          var bodyRows = filterByPartType(allB, 'Body', cat, man, wt);
-          for (var bj = 0; bj < bodyRows.length; bj++) {
-            var pb = bodyRows[bj];
-            var xb = c(pb);
-            if (xb.indexOf('part_body_bolt') === -1 && xb.indexOf('part_body_flap') === -1) continue;
-            var tb = getPartToken(pb);
-            if (tb && !seenBt[tb]) {
-              seenBt[tb] = true;
-              baseAcc.push(pb);
+        if (useSimpleFilter && man) {
+          try {
+            var boltRows = window.filterPartsForGuided({
+              category: 'Weapon',
+              manufacturer: man,
+              weaponType: wt,
+              partType: 'Body',
+              forceItemManufacturer: true
+            }) || [];
+            for (var bj = 0; bj < boltRows.length; bj++) {
+              var pb = boltRows[bj];
+              var xb = c(pb);
+              if (xb.indexOf('part_body_bolt') === -1 && xb.indexOf('part_body_flap') === -1) continue;
+              var tb = getPartToken(pb);
+              if (tb && !seenBt[tb]) {
+                seenBt[tb] = true;
+                baseAcc.push(pb);
+              }
             }
-          }
-        } catch (_e) {}
+          } catch (_) {}
+        }
         return baseAcc;
       }
       if (slot.key === 'bodyEle') return filtered.filter(function (p) { return c(p).indexOf('part_body_ele') !== -1; });
@@ -3111,15 +3998,18 @@
       });
       if (slot.key === 'secondaryAmmo') return filtered.filter(function (p) { return c(p).indexOf('part_secondary_ammo') !== -1; });
       if (slot.key === 'licensed') return filtered.filter(function (p) { return c(p).indexOf('barrel_licensed') !== -1; });
-      /* Main magazine: exclude Tediore thrown + parts that belong in Magazine Accessory (avoids duplicates with those rows). */
+      /* Main magazine: exclude magazine accessories and Borg specialty mags. */
       if (slot.key === 'mag') {
         var matchAcc = typeof window.magazineAccessoryCodeMatchLo === 'function' ? window.magazineAccessoryCodeMatchLo : null;
         return filtered.filter(function (p) {
           var x = c(p);
-          if (x.indexOf('mag_ted_thrown') !== -1) return false;
           if (matchAcc && matchAcc(x)) return false;
+          if (/mag_05_borg|mag_.*_borg/i.test(x)) return false;
           return true;
         });
+      }
+      if (slot.key === 'magazineBorg') {
+        return filtered.filter(function (p) { return /mag_05_borg|mag_.*_borg/i.test(c(p)); });
       }
       if (slot.key === 'magazineAcc') {
         var matchLo = typeof window.magazineAccessoryCodeMatchLo === 'function' ? window.magazineAccessoryCodeMatchLo : null;
@@ -3129,14 +4019,75 @@
           return /mag_acc|magazine_acc/.test(x) || (x.indexOf('part_mag') !== -1 && x.indexOf('acc') !== -1);
         });
       }
-      if (slot.key === 'magazineTedThrown') return filtered.filter(function (p) { return c(p).indexOf('mag_ted_thrown') !== -1; });
+      if (slot.key === 'pearlElem') {
+        var matchElem = typeof window.weaponPearlElemPartMatch === 'function' ? window.weaponPearlElemPartMatch : null;
+        return filtered.filter(function (p) { return matchElem ? matchElem(p) : false; });
+      }
+      if (slot.key === 'pearlStat') {
+        var matchStat = typeof window.weaponPearlStatPartMatch === 'function' ? window.weaponPearlStatPartMatch : null;
+        return filtered.filter(function (p) { return matchStat ? matchStat(p) : false; });
+      }
       return filtered;
     }
 
-    for (var i = 0; i < WEAPON_SLOTS.length; i++) {
-      var slot = WEAPON_SLOTS[i];
+    syncGuidedWeaponSlotGridVisibility();
+    var weaponSlots = getGuidedWeaponSlots();
+    var slotIdx = 0;
+
+    function scheduleWeaponSlot(fn) {
+      setTimeout(fn, 16);
+    }
+
+    function finishWeaponSlot() {
+      if (slotIdx < weaponSlots.length) scheduleWeaponSlot(fillNextWeaponSlot);
+      else {
+        window.__ccWeaponDropdownsHydrated = true;
+        try {
+          if (typeof window.__ccBootGuidedSlotSelects === 'function') window.__ccBootGuidedSlotSelects();
+        } catch (_) {}
+        try { syncGuidedWeaponSlotGridVisibility(); } catch (_) {}
+        try {
+          if (typeof window.__stxEditorGuardWeaponDropdowns === 'function') {
+            window.__stxEditorGuardWeaponDropdowns(getGuidedFilterContext());
+          }
+        } catch (_) {}
+      }
+    }
+
+    function fillNextWeaponSlot() {
+      if (slotIdx >= weaponSlots.length) return;
+      var slot = weaponSlots[slotIdx++];
       var sel = byId(slot.selectId);
-      if (!sel) continue;
+      if (!sel) {
+        finishWeaponSlot();
+        return;
+      }
+      if (slot.pearlElemPick) {
+        var fpElem = [];
+        var allPearlElem = getAllParts();
+        var matchElemPick = typeof window.weaponPearlElemPartMatch === 'function' ? window.weaponPearlElemPartMatch : null;
+        for (var pei = 0; pei < allPearlElem.length; pei++) {
+          var pep = allPearlElem[pei];
+          if (!pep) continue;
+          if (matchElemPick && matchElemPick(pep)) fpElem.push(pep);
+        }
+        fillSelect(sel, fpElem, 80);
+        finishWeaponSlot();
+        return;
+      }
+      if (slot.pearlStatPick) {
+        var fpStat = [];
+        var allPearlStat = getAllParts();
+        var matchStatPick = typeof window.weaponPearlStatPartMatch === 'function' ? window.weaponPearlStatPartMatch : null;
+        for (var psi = 0; psi < allPearlStat.length; psi++) {
+          var psp = allPearlStat[psi];
+          if (!psp) continue;
+          if (matchStatPick && matchStatPick(psp)) fpStat.push(psp);
+        }
+        fillSelect(sel, fpStat, 80);
+        finishWeaponSlot();
+        return;
+      }
       if (slot.pearlPick) {
         var allPearl = getAllParts();
         var fp = [];
@@ -3146,7 +4097,8 @@
           if (/part_pearl/i.test(String(pp.code || ''))) fp.push(pp);
         }
         fillSelect(sel, fp, 80);
-        continue;
+        finishWeaponSlot();
+        return;
       }
       if (slot.partType === 'Element' && slot.key === 'element') {
         sel.innerHTML = '';
@@ -3163,29 +4115,52 @@
         sel.__ccGuidedPartsList = null;
         bindGuidedSelectPreviewIfNeeded(sel);
         updateGuidedSelectPreview(sel);
-        syncGuidedCustomSelectIfWrapped(sel);
-        continue;
+        if (typeof window.__ccWrapGuidedSelect === 'function') window.__ccWrapGuidedSelect(sel);
+        else syncGuidedCustomSelectIfWrapped(sel);
+        finishWeaponSlot();
+        return;
       }
       var filtered;
       var slotMan = man || '';
-      // Legendary perk pools are shared and should not be restricted by manufacturer toggle/filter.
-      if (slot.partType === 'Legendary Perks') slotMan = '';
+      var isBodyFamily = (slot.key === 'body' || slot.key === 'bodyAcc');
+      if (isBodyFamily) slotMan = getSelectedItemManufacturerForBody();
+      // Legendary perk + firmware pools are shared — no manufacturer / weapon-type gate.
+      if (slot.partType === 'Legendary Perks' || slot.key === 'legendary') slotMan = '';
+      if (slot.partType === 'Firmware' || slot.key === 'firmware') slotMan = '';
       // Element pools are shared and should not be restricted by manufacturer toggle/filter.
       if (slot.key === 'bodyEle' || slot.key === 'secondaryEle') slotMan = '';
+      var isLegSlot = (slot.partType === 'Legendary Perks' || slot.key === 'legendary');
+      var isFwSlot = (slot.partType === 'Firmware' || slot.key === 'firmware');
       if (useSimpleFilter) {
         var wtForFilter = (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || '');
-        if (slot.key === 'bodyEle') wtForFilter = '';
+        if (slot.key === 'bodyEle' || isLegSlot || isFwSlot) wtForFilter = '';
+        var isAddSlot = (slot.key === 'additionalParts' || slot.customType === 'weaponAdditionalParts');
         filtered = window.filterPartsForGuided({
           category: 'Weapon',
           manufacturer: slotMan,
           weaponType: wtForFilter,
-          partType: slot.partType
+          partType: isAddSlot ? undefined : slot.partType,
+          forceItemManufacturer: isBodyFamily,
+          ignoreWeaponType: isAddSlot || isLegSlot || isFwSlot
         });
-        filtered = filterGuidedWeaponSlotParts(slot, filtered);
+        if (isLegSlot) {
+          var legPool = guidedCollectAllLegendaryPerkParts(true);
+          if (legPool && legPool.length) filtered = legPool;
+        } else if (isFwSlot) {
+          var fwPool = guidedCollectFirmwareParts();
+          if (fwPool && fwPool.length) filtered = fwPool;
+        }
+        if (!isLegSlot) filtered = filterGuidedWeaponSlotParts(slot, filtered, bodyMan, wt);
       } else {
         var all = getAllParts();
-        filtered = filterByPartType(all, slot.partType, cat, slotMan, wt);
-        filtered = filterGuidedWeaponSlotParts(slot, filtered);
+        if (isLegSlot) {
+          filtered = guidedCollectAllLegendaryPerkParts(true);
+        } else if (isFwSlot) {
+          filtered = guidedCollectFirmwareParts();
+        } else {
+          filtered = filterByPartType(all, slot.partType, cat, slotMan, wt);
+        }
+        if (!isLegSlot) filtered = filterGuidedWeaponSlotParts(slot, filtered, bodyMan, wt);
       }
       if (filtered && filtered.length) {
         filtered = sortGuidedPartsByCode(filtered);
@@ -3196,6 +4171,10 @@
       else if (slot.key === 'secondaryEle') emptyHintWeapon = GUIDED_HINT_EMPTY_MALIWAN_SWITCH;
       if (slot.key === 'secondaryEle' && (!filtered || !filtered.length)) {
         fillElementPresetFallbackSelect(sel, '-- Secondary element --');
+      } else if (isLegSlot && filtered && filtered.length) {
+        fillSelectWithLegendaryGroups(sel, filtered);
+      } else if (isFwSlot && filtered && filtered.length) {
+        fillSelect(sel, filtered, maxItems, '', null);
       } else {
         var rarityFillOptsW = (slot.partType === 'Rarity')
           ? { groupByRarity: true, manufacturer: getEffectiveManufacturerForFilter() }
@@ -3204,12 +4183,16 @@
       }
       var fc = (filtered && filtered.length) ? filtered.length : 0;
       applyGuidedBodySlotRowVisibility(sel, 'Weapon', slot.key, fc);
+      finishWeaponSlot();
     }
+
+    fillNextWeaponSlot();
   }
 
   function wireWeaponAddButtons() {
-    for (var i = 0; i < WEAPON_SLOTS.length; i++) {
-      var slot = WEAPON_SLOTS[i];
+    var weaponSlots = getGuidedWeaponSlots();
+    for (var i = 0; i < weaponSlots.length; i++) {
+      var slot = weaponSlots[i];
       var btn = byId(slot.btnId);
       if (!btn) continue;
       (function (sid, isElementPreset, isRarity) {
@@ -3359,12 +4342,16 @@
       var sel = byId(slot.selectId);
       if (!sel) continue;
       var slotMan = man || '';
+      if (guidedSlotIsBodyFamily(category, slot.key)) slotMan = getSelectedItemManufacturerForBody();
       // Legendary perk pools are shared; never restrict these by manufacturer filter/toggle.
       if (slot.partType === 'Legendary Perks') slotMan = '';
+      if (slot.partType === 'Firmware' || slot.key === 'firmware' || slot.key === 'firmware246') slotMan = '';
       // Element pools are shared; never restrict these by manufacturer filter/toggle.
       if (slot.partType === 'Element' || slot.partType === 'TypeID1Element' || slot.partType === 'Element Switch') slotMan = '';
-      // Grenade bodies: show full cross-manufacturer `*_grenade_gadget` pool (modded-builder style).
-      if (category === 'Grenade' && slot.key === 'body') slotMan = '';
+      var isGearLegSlot = slot.partType === 'Legendary Perks' || slot.key === 'legendary';
+      var isGearFwSlot = slot.partType === 'Firmware' || slot.key === 'firmware' || slot.key === 'firmware246';
+      // Grenade bodies: manufacturer-scoped identity rows only (not cross-manufacturer when all-mfr toggle is on).
+      if (category === 'Grenade' && slot.key === 'body' && !slotMan) slotMan = getSelectedItemManufacturerForBody();
       var filtered;
       if (category === 'Grenade' && slot.key === 'grenadeKitStats') {
         var manGk = String(slotMan || '').trim().toLowerCase();
@@ -3391,13 +4378,28 @@
           category: filterCat,
           manufacturer: slotMan,
           weaponType: filterWt,
-          partType: ptSlot
+          partType: ptSlot,
+          forceItemManufacturer: guidedSlotIsBodyFamily(category, slot.key),
+          ignoreWeaponType: slot.partType === 'Legendary Perks' || isGearLegSlot || isGearFwSlot
         });
+        if (isGearLegSlot) {
+          var gearLeg = guidedCollectAllLegendaryPerkParts(true);
+          if (gearLeg && gearLeg.length) filtered = gearLeg;
+        } else if (isGearFwSlot) {
+          var gearFw = guidedCollectFirmwareParts();
+          if (gearFw && gearFw.length) filtered = gearFw;
+        }
       } else {
         var all = getAllParts();
-        var ptFb = String(slot.partType || '');
-        if (ptFb === '__grenadeVariant' || ptFb === '__grenadeKitStats') ptFb = '';
-        filtered = filterByPartType(all, ptFb, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, category === 'Heavy Weapon' ? 'Heavy Weapon' : null);
+        if (isGearLegSlot) {
+          filtered = guidedCollectAllLegendaryPerkParts(true);
+        } else if (isGearFwSlot) {
+          filtered = guidedCollectFirmwareParts();
+        } else {
+          var ptFb = String(slot.partType || '');
+          if (ptFb === '__grenadeVariant' || ptFb === '__grenadeKitStats') ptFb = '';
+          filtered = filterByPartType(all, ptFb, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, category === 'Heavy Weapon' ? 'Heavy Weapon' : null);
+        }
       }
       if (category === 'Repkit') {
         filtered = filterRepkitGuidedSpecialParts(filtered, slot.key);
@@ -3409,6 +4411,8 @@
       var emptyHintGear = (slot.key === 'elementSwitch') ? GUIDED_HINT_EMPTY_MALIWAN_SWITCH : '';
       if ((slot.key === 'elementSwitch' || slot.partType === 'Element' || slot.partType === 'TypeID1Element') && (!filtered || !filtered.length)) {
         fillElementPresetFallbackSelect(sel, slot.key === 'elementSwitch' ? '-- Secondary element --' : '-- Element --');
+      } else if (isGearLegSlot && filtered && filtered.length) {
+        fillSelectWithLegendaryGroups(sel, filtered);
       } else if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks' && filtered && filtered.length) {
         fillSelectWithLegendaryGroups(sel, filtered);
       } else {
@@ -3434,6 +4438,9 @@
       var fgc = (filtered && filtered.length) ? filtered.length : 0;
       applyGuidedBodySlotRowVisibility(sel, category, slot.key, fgc);
     }
+    try {
+      if (typeof window.__ccBootGuidedSlotSelects === 'function') window.__ccBootGuidedSlotSelects();
+    } catch (_) {}
   }
 
   function wireGearAddButtons() {
@@ -3519,7 +4526,7 @@
       if (window.__CC_IMPORT_IN_PROGRESS) {
         window.__ccDeferredGuidedVisibilityRefresh = true;
       } else {
-        refreshWeaponDropdowns();
+        refreshWeaponDropdowns(true);
       }
     } else if (itemType && gearHub) {
       var builderIds = ['ccShieldBuilderDetails', 'ccGrenadeBuilderDetails', 'ccRepkitBuilderDetails', 'ccEnhancementBuilderDetails', 'ccClassModBuilderDetails', 'ccGadgetBuilderDetails', 'ccHeavyBuilderDetails'];
@@ -3603,11 +4610,7 @@
     wireGearAddButtons();
 
     function getSelectValue(sel) {
-      if (!sel || sel.tagName !== 'SELECT') return '';
-      var v = (sel.value || '').trim();
-      if (v) return v;
-      var opt = sel.options[sel.selectedIndex];
-      return (opt && (opt.value || '').trim()) || '';
+      return readSelectValue(sel);
     }
     function syncGuidedToSimple() {
       syncIdModeFromCheckbox();
@@ -3629,6 +4632,12 @@
           if (typeof window.clampItemLevel === 'function') lv = window.clampItemLevel(lv);
           else if (lv > 60) lv = 60;
           st.level = lv;
+        }
+        if (typeof window.stxSyncAllPartsToggleUi === 'function') {
+          var gAll = byId('ccGuidedAllManufacturers');
+          var sAll = byId('allPartsToggle');
+          var on = !!(gAll && gAll.checked) || !!(sAll && sAll.checked) || !!st.allParts;
+          window.stxSyncAllPartsToggleUi(on);
         }
         if (st.itemType || st.manufacturer) {
           st.__seedEnabled = true;
@@ -3670,6 +4679,54 @@
       } catch (_) {}
     }
     window.syncGuidedToSimple = syncGuidedToSimple;
+
+    function guidedExtractHeaderPrefix(serial) {
+      var s = String(serial || '').trim();
+      var dbl = s.indexOf('||');
+      return dbl >= 0 ? s.slice(0, dbl).trim() : s;
+    }
+
+    function guidedCountTailTokens(serial) {
+      var s = String(serial || '').trim();
+      var dbl = s.indexOf('||');
+      if (dbl < 0) return 0;
+      var tail = s.slice(dbl + 2).trim();
+      if (!tail) return 0;
+      return (tail.match(/\|\s*["']?c["']?\s*,\s*\d+\s*\||\{[^}]*(?:\[[^\]]*\])?[^}]*\}|"[^\"]+"|\S+/g) || []).filter(function (t) {
+        var x = String(t || '').trim();
+        return x && x !== '|' && x !== '||';
+      }).length;
+    }
+
+    /** Imported / user-edited tails must not be rebuilt from computeGuidedPrefix (destroys modded headers + parts). */
+    function guidedShouldPreserveExistingOutput(existing, computedPrefix, deserEl) {
+      if (!existing || existing.indexOf('||') < 0) return false;
+      if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue) return true;
+      if (deserEl.__ccUserTailEdit) return true;
+      var tailN = guidedCountTailTokens(existing);
+      if (tailN < 2) return false;
+      var eh = guidedExtractHeaderPrefix(existing);
+      var cp = String(computedPrefix || '').trim();
+      if (!cp) return tailN >= 2;
+      if (eh === cp) return false;
+      var em = eh.match(/^\s*(\d+)/);
+      var cm = cp.match(/^\s*(\d+)/);
+      if (em && cm && em[1] !== cm[1]) return true;
+      if (existing.length > cp.length + 80) return true;
+      return false;
+    }
+
+    function guidedOutputWouldLoseData(existing, finalOut, deserEl) {
+      if (!existing || !finalOut) return !!existing && !finalOut;
+      if (existing === finalOut) return false;
+      if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue && existing.length > finalOut.length + 5) return true;
+      if (deserEl.__ccUserTailEdit && existing.length > finalOut.length + 15) return true;
+      var exN = guidedCountTailTokens(existing);
+      var finN = guidedCountTailTokens(finalOut);
+      if (exN >= 3 && finN < exN - 1 && existing.length > finalOut.length + 20) return true;
+      return false;
+    }
+
     function refreshGuidedOutput() {
       var deserEl = byId('guidedOutputDeserialized');
       if (!deserEl) return;
@@ -3687,16 +4744,32 @@
       }
       
       var existing = (deserEl.value || '').trim();
+      var prefixEarly = (typeof window.computeGuidedPrefix === 'function') ? window.computeGuidedPrefix() : '';
+      if (guidedShouldPreserveExistingOutput(existing, prefixEarly, deserEl)) {
+        try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
+        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        return;
+      }
       // Safety: If current value is exactly the protected imported value, don't clear it or mangle it.
       if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue) {
          if (existing.indexOf('||') >= 0) {
-            // Check if serial output is also populated, if not, update it once
             var serialEl = byId('guidedOutputSerial');
-            if (serialEl && !serialEl.value && typeof window.serializeToBase85 === 'function') {
-               try {
-                  var b85 = window.serializeToBase85(existing, undefined, true);
-                  if (b85) serialEl.value = String(b85).trim();
-               } catch(_) {}
+            if (serialEl && !serialEl.value) {
+               if (serialEl.__ccImportedValue) {
+                  serialEl.value = String(serialEl.__ccImportedValue).trim();
+               } else if (typeof window.ccSerializeToBase85Async === 'function') {
+                  serialEl.value = '…';
+                  window.ccSerializeToBase85Async(existing, function (b85) {
+                    if (!serialEl || !b85) return;
+                    serialEl.value = String(b85).trim();
+                  });
+               } else if (typeof window.serializeToBase85 === 'function') {
+                  try {
+                     var b85 = window.serializeToBase85(existing, undefined, true);
+                     if (b85) serialEl.value = String(b85).trim();
+                  } catch (_) {}
+               }
             }
             try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
             return;
@@ -3807,12 +4880,10 @@
     }
 
     if (deserEl.value !== finalOut) {
-      // Data loss prevention: If finalOut is significantly shorter than the current value, 
-      // and we have an imported value, stick with the imported value.
-      if (deserEl.__ccImportedValue && existing === deserEl.__ccImportedValue && existing.length > finalOut.length + 10) {
-          // Stay with existing
+      if (guidedOutputWouldLoseData(existing, finalOut, deserEl)) {
+        // Keep imported / edited serial intact; still refresh packed preview below.
       } else {
-          deserEl.value = finalOut;
+        deserEl.value = finalOut;
       }
     }
       try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
@@ -3828,6 +4899,7 @@
       if (out && out.__ccImportedValue && out.value === out.__ccImportedValue) {
          return;
       }
+      if (out) out.__ccUserTailEdit = false;
       
       if (out) out.value = '';
       if (outSerial) outSerial.value = '';
@@ -3888,8 +4960,14 @@
     var allMansToggle = byId('ccGuidedAllManufacturers');
     if (allMansToggle) {
       allMansToggle.addEventListener('change', function () {
+        if (typeof window.stxSyncAllPartsToggleUi === 'function') {
+          window.stxSyncAllPartsToggleUi(!!allMansToggle.checked);
+        } else {
+          try { if (window.state) window.state.allParts = !!allMansToggle.checked; } catch (_) {}
+        }
         syncGuidedVisibility();
         try { if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns(); } catch (_) {}
+        try { if (typeof window.refreshBuilder === 'function') window.refreshBuilder(); } catch (_) {}
         try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
       });
     }
@@ -3929,24 +5007,34 @@
       });
     }
 
-    if (window.ensurePartPools) window.ensurePartPools();
+    if (window.ensurePartPools && !window.__ccPartPoolsReady) window.ensurePartPools();
     loadGuidedManufacturers();
     if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
     ensureStaticGuidedIcons();
     syncGuidedVisibility();
     setTimeout(function () { refreshToolsStandaloneElementDropdowns(); }, 0);
-    setTimeout(function () {
-      var it = (guidedItem && guidedItem.value) || (byId('stx_itemType') && byId('stx_itemType').value);
-      if (it) {
-        loadGuidedManufacturers();
-        if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
-        ensureStaticGuidedIcons();
-        syncGuidedVisibility();
-      }
-      if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
-      if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput();
-      refreshToolsStandaloneElementDropdowns();
-    }, 500);
+    var guidedBootDelayMs = (function () {
+      try {
+        if (typeof window.stxIsLiteUi === 'function' && window.stxIsLiteUi()) return 0;
+        if (typeof window.stxIsTouchUi === 'function' && window.stxIsTouchUi()) return 0;
+      } catch (_) {}
+      return document.documentElement.classList.contains('stx-lite-ui') ||
+        document.documentElement.classList.contains('stx-touch-ui') ? 0 : 500;
+    })();
+    if (guidedBootDelayMs > 0) {
+      setTimeout(function () {
+        var it = (guidedItem && guidedItem.value) || (byId('stx_itemType') && byId('stx_itemType').value);
+        if (it) {
+          loadGuidedManufacturers();
+          if (typeof loadGuidedWeaponTypes === 'function') loadGuidedWeaponTypes();
+          ensureStaticGuidedIcons();
+          syncGuidedVisibility();
+        }
+        if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
+        if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput();
+        refreshToolsStandaloneElementDropdowns();
+      }, guidedBootDelayMs);
+    }
     var randBtn = byId('rebuildRandomFullBuildBtn');
     if (randBtn && typeof randomFullBuild === 'function') {
       randBtn.onclick = function () { randomFullBuild(); };
@@ -3959,14 +5047,24 @@
   }
 
   var PART_SECTIONS = [
-    { key: 'Grenade', selectId: 'partSelectGrenade', btnId: 'partAddGrenade', poolKey: 'GRENADE_PARTS' },
-    { key: 'Shield', selectId: 'partSelectShield', btnId: 'partAddShield', poolKey: 'SHIELD_PARTS' },
-    { key: 'Repkit', selectId: 'partSelectRepkit', btnId: 'partAddRepkit', poolKey: 'REPKIT_PARTS' },
-    { key: 'Enhancement', selectId: 'partSelectEnhancement', btnId: 'partAddEnhancement', poolKey: 'ENHANCEMENT_PARTS' },
-    { key: 'ClassMod', selectId: 'partSelectClassMod', btnId: 'partAddClassMod', poolKey: 'CLASSMOD_PARTS' },
-    { key: 'Heavy', selectId: 'partSelectHeavy', btnId: 'partAddHeavy', poolKey: 'HEAVY_PARTS' },
-    { key: 'Gun', selectId: 'partSelectGun', btnId: 'partAddGun', poolKey: 'GUN_PARTS' }
+    { key: 'Grenade', selectId: 'partSelectGrenade', btnId: 'partAddGrenade', poolKey: 'GRENADE_PARTS', detailsId: 'partSectionDetailsGrenade' },
+    { key: 'Shield', selectId: 'partSelectShield', btnId: 'partAddShield', poolKey: 'SHIELD_PARTS', detailsId: 'partSectionDetailsShield' },
+    { key: 'Repkit', selectId: 'partSelectRepkit', btnId: 'partAddRepkit', poolKey: 'REPKIT_PARTS', detailsId: 'partSectionDetailsRepkit' },
+    { key: 'Enhancement', selectId: 'partSelectEnhancement', btnId: 'partAddEnhancement', poolKey: 'ENHANCEMENT_PARTS', detailsId: 'partSectionDetailsEnhancement' },
+    { key: 'ClassMod', selectId: 'partSelectClassMod', btnId: 'partAddClassMod', poolKey: 'CLASSMOD_PARTS', detailsId: 'partSectionDetailsClassMod' },
+    { key: 'Heavy', selectId: 'partSelectHeavy', btnId: 'partAddHeavy', poolKey: 'HEAVY_PARTS', detailsId: 'partSectionDetailsHeavy' },
+    { key: 'Gun', selectId: 'partSelectGun', btnId: 'partAddGun', poolKey: 'GUN_PARTS', detailsId: 'partSectionDetailsGun' }
   ];
+
+  function scheduleIdleWork(fn, timeoutMs) {
+    if (typeof window.stxScheduleIdle === 'function') {
+      window.stxScheduleIdle(fn, timeoutMs || 80);
+    } else if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(fn);
+    } else {
+      setTimeout(fn, 0);
+    }
+  }
 
   function fillPartSectionSelect(sel, parts, maxItems) {
     if (!sel) return;
@@ -4008,13 +5106,73 @@
     }
   }
 
+  function poolForPartSection(s) {
+    var pool = window[s.poolKey];
+    if (s.poolKey === 'CLASSMOD_PARTS' && typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === 'function') {
+      pool = (pool || []).filter(function (p) {
+        try { return !window.stxIsBrokenClassmodDatasetPlaceholderPart(p); } catch (_e) { return true; }
+      });
+    }
+    return pool || [];
+  }
+
+  function fillOnePartSection(s) {
+    if (!s) return;
+    var sel = byId(s.selectId);
+    if (!sel) return;
+    fillPartSectionSelect(sel, poolForPartSection(s), 1200);
+    s.__filled = true;
+  }
+
+  function ensurePartSectionFilled(s) {
+    if (!s || s.__filled) return;
+    if (window.ensurePartPools) window.ensurePartPools();
+    if (typeof window.__ccEnsureCodeIdMap === 'function') {
+      try { window.__ccEnsureCodeIdMap(); } catch (_) {}
+    }
+    fillOnePartSection(s);
+  }
+
+  function wireLazyPartSections() {
+    if (window.__ccLazyPartSectionsWired) return;
+    window.__ccLazyPartSectionsWired = true;
+    for (var i = 0; i < PART_SECTIONS.length; i++) {
+      (function (sec) {
+        var det = byId(sec.detailsId);
+        if (!det || det.__ccLazyPartBound) return;
+        det.__ccLazyPartBound = true;
+        det.addEventListener('toggle', function () {
+          if (!det.open) return;
+          scheduleIdleWork(function () { ensurePartSectionFilled(sec); }, 120);
+        });
+        if (det.open) scheduleIdleWork(function () { ensurePartSectionFilled(sec); }, 200);
+      })(PART_SECTIONS[i]);
+    }
+  }
+
+  function refreshOpenPartSectionsOnly() {
+    for (var i = 0; i < PART_SECTIONS.length; i++) {
+      PART_SECTIONS[i].__filled = false;
+    }
+    for (var j = 0; j < PART_SECTIONS.length; j++) {
+      var det = byId(PART_SECTIONS[j].detailsId);
+      if (det && det.open) ensurePartSectionFilled(PART_SECTIONS[j]);
+    }
+  }
+
   function refreshPartSections(forceNow) {
     if (window.__CC_IMPORT_IN_PROGRESS && !forceNow) {
       window.__ccDeferredPartSectionsRefresh = true;
       return;
     }
+    wireLazyPartSections();
+    if (!forceNow && !window.__CC_IMPORT_HEAVY) {
+      refreshOpenPartSectionsOnly();
+      return;
+    }
     if (window.__ccPartSectionsRefreshPending) return;
     window.__ccPartSectionsRefreshPending = true;
+    for (var pi = 0; pi < PART_SECTIONS.length; pi++) PART_SECTIONS[pi].__filled = false;
     var startIdx = 0;
     function fillNextSection() {
       if (window.ensurePartPools && startIdx === 0) window.ensurePartPools();
@@ -4026,18 +5184,10 @@
         refreshToolsStandaloneElementDropdowns();
         return;
       }
-      var s = PART_SECTIONS[startIdx];
-      var sel = byId(s.selectId);
-      var pool = window[s.poolKey];
-      if (s.poolKey === 'CLASSMOD_PARTS' && typeof window.stxIsBrokenClassmodDatasetPlaceholderPart === 'function') {
-        pool = (pool || []).filter(function (p) {
-          try { return !window.stxIsBrokenClassmodDatasetPlaceholderPart(p); } catch (_e) { return true; }
-        });
-      }
-      fillPartSectionSelect(sel, pool || [], 1200);
+      fillOnePartSection(PART_SECTIONS[startIdx]);
       startIdx++;
       if (startIdx < PART_SECTIONS.length) {
-        (window.requestAnimationFrame || function (fn) { setTimeout(fn, 0); })(fillNextSection);
+        scheduleIdleWork(fillNextSection, 60);
       } else {
         fillNextSection();
       }
@@ -4078,6 +5228,7 @@
       cmSel.addEventListener('change', function () { updateClassmodPartPreview(cmSel); });
       updateClassmodPartPreview(cmSel);
     }
+    wireLazyPartSections();
     refreshPartSections();
   }
 
@@ -4090,33 +5241,17 @@
   }
 
   function loadGuidedLegendaryPerks() {
-    var sel = byId('ccGuidedLegendaryPerkSelect');
-    if (typeof window.populateLegendaryPerks === 'function') {
-      window.populateLegendaryPerks(sel, getPartToken);
-      try {
-        // `populateLegendaryPerks` only writes token text; map options back to parts
-        // so custom-select can render rarity-aware icons in this standalone section.
-        var all = getAllParts();
-        var tokToPart = Object.create(null);
-        for (var i = 0; i < all.length; i++) {
-          var p = all[i];
-          if (!p) continue;
-          if (!/legendary\s*perk/i.test(String(p.partType || ''))) continue;
-          var tok = getPartToken(p);
-          if (!tok || tokToPart[tok]) continue;
-          tokToPart[tok] = p;
-        }
-        if (sel && sel.options) {
-          for (var j = 0; j < sel.options.length; j++) {
-            var opt = sel.options[j];
-            if (!opt || !opt.value) continue;
-            var pp = tokToPart[String(opt.value || '')];
-            if (!pp) continue;
-            applyGuidedPartOptionIcon(sel, opt, pp);
-          }
-        }
-      } catch (_) {}
-      syncGuidedCustomSelectIfWrapped(sel);
+    var legPool = guidedCollectAllLegendaryPerkParts(true);
+    var selIds = ['ccGuidedLegendaryPerkSelect', 'ccWeaponLegendarySelect'];
+    for (var si = 0; si < selIds.length; si++) {
+      var sel = byId(selIds[si]);
+      if (!sel) continue;
+      if (legPool && legPool.length) {
+        fillSelectWithLegendaryGroups(sel, legPool);
+      } else if (typeof window.populateLegendaryPerks === 'function') {
+        window.populateLegendaryPerks(sel, getPartToken);
+        syncGuidedCustomSelectIfWrapped(sel);
+      }
     }
   }
 
@@ -4294,14 +5429,117 @@
         try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
       });
     }
+    wireImportedInspectorQtyButtonsEarly();
+  }
+
+  function wireImportedInspectorQtyButtonsEarly() {
+    var wrap = byId('importedPartsInspector');
+    if (!wrap || wrap.__ipiQtyBound) return;
+    wrap.__ipiQtyBound = true;
+    wrap.addEventListener('click', function (ev) {
+      var btn = ev.target && ev.target.closest ? ev.target.closest('[data-ipi-delta]') : null;
+      if (!btn) return;
+      var enc = btn.getAttribute('data-ipi-tok');
+      if (!enc) return;
+      function runMutate() {
+        if (typeof window.__ccMutateSerialTailDelta !== 'function') return false;
+        try {
+          var tok = decodeURIComponent(enc);
+          var dlt = parseInt(btn.getAttribute('data-ipi-delta'), 10);
+          if (Number.isFinite(dlt)) return window.__ccMutateSerialTailDelta(tok, dlt) !== false;
+        } catch (_) {}
+        return false;
+      }
+      if (runMutate()) return;
+      if (typeof window.stxEnsureGuidedScripts === 'function') {
+        try { window.stxEnsureGuidedScripts(function () { runMutate(); }); } catch (_) {}
+      }
+    });
+  }
+
+  var __lastWeaponDropdownRefreshKey = '';
+  var __guidedDropdownRefreshTimer = 0;
+  var __guidedDropdownsWired = false;
+
+  function runGuidedDropdownRefresh() {
+    __guidedDropdownRefreshTimer = 0;
+    var st = getGuidedState();
+    var it = String(st.itemType || '').trim();
+    var itLo = it.toLowerCase();
+    if (itLo === 'heavy') itLo = 'heavy weapon';
+    if (itLo === 'weapon' || itLo === 'heavy weapon' || /^(assault rifle|pistol|shotgun|smg|sniper rifle)$/i.test(it)) {
+      refreshWeaponDropdowns(true);
+      return;
+    }
+    var gearIt = normalizeGuidedItemTypeForGear(it);
+    if (gearIt && GEAR_SLOTS_BY_CATEGORY[gearIt]) refreshGearDropdowns(gearIt);
+  }
+
+  function scheduleGuidedDropdownRefresh(forceNow) {
+    if (__guidedDropdownRefreshTimer) {
+      clearTimeout(__guidedDropdownRefreshTimer);
+      __guidedDropdownRefreshTimer = 0;
+    }
+    if (forceNow) {
+      runGuidedDropdownRefresh();
+      return;
+    }
+    __guidedDropdownRefreshTimer = setTimeout(runGuidedDropdownRefresh, 140);
+  }
+
+  function wireLazyGuidedDropdownRefresh() {
+    if (__guidedDropdownsWired) return;
+    __guidedDropdownsWired = true;
+    var trigger = function () { scheduleGuidedDropdownRefresh(true); };
+    ['ccGuidedItemType', 'ccGuidedManufacturer', 'ccGuidedWeaponType', 'ccGuidedAllManufacturers', 'enhMfgSel'].forEach(function (id) {
+      var el = byId(id);
+      if (el && !el.__ccLazyGuidedRefreshBound) {
+        el.__ccLazyGuidedRefreshBound = true;
+        el.addEventListener('change', trigger);
+      }
+    });
+    var panel = byId('rebuildGuidedBuilderSection');
+    if (panel && !panel.__ccLazyGuidedRefreshBound) {
+      panel.__ccLazyGuidedRefreshBound = true;
+      var onInteract = function () {
+        scheduleGuidedDropdownRefresh(false);
+        panel.removeEventListener('pointerdown', onInteract);
+        panel.removeEventListener('focusin', onInteract);
+      };
+      panel.addEventListener('pointerdown', onInteract, { passive: true });
+      panel.addEventListener('focusin', onInteract);
+    }
   }
 
   function bootGuidedBuilder() {
-    init();
     var advLanding = typeof window.__ccIsAdvSearchDeepLinkV1 === 'function' && window.__ccIsAdvSearchDeepLinkV1();
-    if (advLanding) return;
-    initPartSections();
-    setTimeout(initGuidedExtraSections, 100);
+    var liteUi = document.documentElement.classList.contains('stx-lite-ui') ||
+      document.documentElement.classList.contains('stx-touch-ui');
+    var runBoot = function () {
+      init();
+      if (advLanding) return;
+      initPartSections();
+      wireLazyGuidedDropdownRefresh();
+      scheduleGuidedDropdownRefresh(true);
+      if (!liteUi) {
+        setTimeout(initGuidedExtraSections, 100);
+      } else {
+        document.addEventListener('pointerdown', function () { initGuidedExtraSections(); }, { once: true, passive: true });
+      }
+    };
+    var queueBoot = function () {
+      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runBoot);
+      else setTimeout(runBoot, 0);
+    };
+    if (document.documentElement.classList.contains('stx-splash-dismissed')) {
+      queueBoot();
+      return;
+    }
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(queueBoot, { priority: true });
+    } else {
+      queueBoot();
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -4310,7 +5548,19 @@
     setTimeout(bootGuidedBuilder, 50);
   }
 
-  window.refreshGuidedBuilderDropdowns = refreshWeaponDropdowns;
+  try {
+    window.addEventListener('stx:deferred-core-ready', function () {
+      try {
+        if (typeof scheduleGuidedDropdownRefresh === 'function') scheduleGuidedDropdownRefresh(true);
+      } catch (_) {}
+    });
+  } catch (_) {}
+
+  window.refreshGuidedBuilderDropdowns = function (force) {
+    scheduleGuidedDropdownRefresh(!!force);
+  };
+  window.scheduleGuidedDropdownRefresh = scheduleGuidedDropdownRefresh;
+  window.wireLazyGuidedDropdownRefresh = wireLazyGuidedDropdownRefresh;
   window.refreshToolsStandaloneElementDropdowns = refreshToolsStandaloneElementDropdowns;
   window.syncGuidedVisibility = syncGuidedVisibility;
   window.refreshPartSections = refreshPartSections;
@@ -4431,8 +5681,8 @@
 
   function getSlotsForModdedGen(itemType) {
     var it = String(itemType || '').trim();
-    if (/^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle)$/i.test(it)) return WEAPON_SLOTS;
-    if (/^Weapon$/i.test(it)) return WEAPON_SLOTS;
+    if (/^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle)$/i.test(it)) return getGuidedWeaponSlots();
+    if (/^Weapon$/i.test(it)) return getGuidedWeaponSlots();
     if (/Heavy/i.test(it)) return GEAR_SLOTS_BY_CATEGORY['Heavy Weapon'] || [];
     return GEAR_SLOTS_BY_CATEGORY[it] || [];
   }
@@ -4468,8 +5718,8 @@
 
   /** Sometimes skip — optional / firmware / pearl / stack extras. */
   var MODDED_GEN_OPTIONAL_SLOTS = {
-    weaponPearl: 1,
-    magazineTedThrown: 1,
+    pearlElem: 1,
+    pearlStat: 1,
     foregrip: 1,
     elementSwitch: 1,
     firmware: 1,
@@ -4744,13 +5994,7 @@
   }
 
   function syncModdedGenFloatingOutput() {
-    try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
-    var g = byId('guidedOutputDeserialized');
-    var v = g ? String(g.value || '').trim() : '';
-    var f = byId('floating-output-code');
-    if (f && v) f.value = v;
-    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    syncGuidedFloatingOutputFromDeser();
   }
 
   function runModdedGenBuild(ctx, genOpts, useAppend, targetOut) {

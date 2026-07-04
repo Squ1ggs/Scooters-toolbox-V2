@@ -19,7 +19,7 @@
     ripper_shotgun: 'BOR_SG', ripper_smg: 'BOR_SM', ripper_sniper: 'BOR_SR', ripper_heavy_weapon: 'BOR_HW',
     maliwan_shotgun: 'MAL_SG', maliwan_smg: 'MAL_SM', maliwan_sniper: 'MAL_SR', maliwan_heavy_weapon: 'MAL_HW',
     jakobs_shield: 'JAK_SH', vladof_shield: 'VLA_SH', daedalus_shield: 'DAD_SH', torgue_shield: 'TOR_SH',
-    ripper_shield: 'BOR_SH', tediore_shield: 'TED_SH', maliwan_shield: 'MAL_SH', order_shield: 'ORD_SH',
+    ripper_shield: 'BOR_SH', maliwan_shield: 'MAL_SH', order_shield: 'ORD_SH',
     maliwan_grenade_gadget: 'MAL_GR', jakobs_grenade_gadget: 'JAK_GR', daedalus_grenade_gadget: 'DAD_GR',
     ripper_grenade_gadget: 'BOR_GR', order_grenade_gadget: 'ORD_GR', torgue_grenade_gadget: 'TOR_GR',
     vladof_grenade_gadget: 'VLA_GR', tediore_grenade_gadget: 'TED_GR',
@@ -120,6 +120,7 @@
   /** NCS slot name → Simple Builder `state.slots` key (stable across UI). */
   function ncsNameToStateKey(ns) {
     var map = {
+      rarity: 'rarity',
       body: 'body', body_acc: 'bodyAcc', body_ele: 'bodyEle', body_bolt: 'bodyBolt', body_mag: 'bodyMag',
       barrel: 'barrel', barrel_acc: 'barrelAcc', barrel_licensed: 'licensed',
       hyperion_secondary_acc: 'hyperionSecondaryAcc',
@@ -136,6 +137,7 @@
   /** STX `partType` filter string (or '' for pearl rows — filtered in Simple Builder). */
   function ncsNameToPartType(ns) {
     var m = {
+      rarity: 'Rarity',
       body: 'Body', body_acc: 'Body Accessory', body_ele: 'Body Element', body_bolt: 'Body Accessory', body_mag: 'Manufacturer Part',
       barrel: 'Barrel', barrel_acc: 'Barrel Accessory', barrel_licensed: 'Manufacturer Part',
       hyperion_secondary_acc: 'Manufacturer Part',
@@ -169,6 +171,8 @@
       var ns = slots[i];
       /* Fold NCS `body_bolt` into Body Accessory UI (same parts; dataset lists bolt under Body). */
       if (ns === 'body_bolt') continue;
+      /* Thrown Tediore mags belong in the main Magazine dropdown (not a separate slot). */
+      if (ns === 'magazine_ted_thrown') continue;
       /* Firmware always renders as the final weapon slot (after legendary + additional parts). */
       if (ns === 'firmware') {
         hasNcs.firmware = true;
@@ -184,7 +188,6 @@
         partType: partType,
         ncsSlot: ns
       };
-      if (ns === 'pearl_elem' || ns === 'pearl_stat') row.customType = 'weaponPearl';
       rows.push(row);
     }
     if (!hasNcs.barrel_licensed) {
@@ -206,7 +209,7 @@
     if (x.indexOf('mag_ted_thrown') !== -1) return false;
     if (/mag_acc|magazine_acc/i.test(x)) return true;
     if (x.indexOf('part_mag') !== -1 && x.indexOf('acc') !== -1) return true;
-    if (/part_mag_torgue|part_mag_05_borg|part_mag_borg|borg_barrel/i.test(x)) return true;
+    if (/part_mag_torgue/i.test(x)) return true;
     return false;
   }
 

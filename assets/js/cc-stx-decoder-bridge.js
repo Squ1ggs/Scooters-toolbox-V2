@@ -2,6 +2,7 @@
  * cc-stx-decoder-bridge.js
  * Decodes serials via same-page WASM when window.STX_DECODER_USE_INLINE + __stxDecodeSerialsBatch (bulk serial validator),
  * otherwise loads legacy/bl4-bulk-decoder.html in a hidden iframe and uses postMessage.
+ * On file://, iframes are skipped (unique origins) — waits for inline WASM instead.
  */
 (function () {
   'use strict';
@@ -13,13 +14,30 @@
   var pending = Object.create(null);
   var nextId = 0;
 
+  function isFileProtocol() {
+    if (typeof window.stxIsFileProtocol === 'function') return window.stxIsFileProtocol();
+    try {
+      return location.protocol === 'file:';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function preferInlineDecoder() {
+    if (typeof window.STX_DECODER_USE_INLINE === 'boolean' && window.STX_DECODER_USE_INLINE === true) return true;
+    return isFileProtocol();
+  }
+
   function useInlineDecode() {
-    return typeof window.STX_DECODER_USE_INLINE === 'boolean' && window.STX_DECODER_USE_INLINE === true
-      && typeof window.__stxDecodeSerialsBatch === 'function';
+    return preferInlineDecoder() && typeof window.__stxDecodeSerialsBatch === 'function';
+  }
+
+  function shouldAvoidDecoderIframe() {
+    return preferInlineDecoder() || isFileProtocol();
   }
 
   function getIframe() {
-    if (useInlineDecode()) return null;
+    if (shouldAvoidDecoderIframe()) return null;
     if (iframe && iframe.parentNode) return iframe;
     try {
       iframe = document.createElement('iframe');
@@ -33,8 +51,34 @@
     return iframe;
   }
 
+  function waitForInlineDecode(serials, callback, options, maxAttempts) {
+    maxAttempts = maxAttempts == null ? 80 : maxAttempts;
+    var attempts = 0;
+    return new Promise(function (resolve) {
+      function retry() {
+        if (useInlineDecode()) {
+          return window.__stxDecodeSerialsBatch(serials, options).then(function (results) {
+            if (typeof callback === 'function') callback(results);
+            resolve(results);
+          }).catch(function (err) {
+            console.warn('STX inline decode failed:', err);
+            if (typeof callback === 'function') callback([]);
+            resolve([]);
+          });
+        }
+        if (attempts++ < maxAttempts) {
+          setTimeout(retry, 150);
+          return;
+        }
+        if (typeof callback === 'function') callback([]);
+        resolve([]);
+      }
+      retry();
+    });
+  }
+
   window.addEventListener('message', function (ev) {
-    if (useInlineDecode()) return;
+    if (shouldAvoidDecoderIframe()) return;
     var d = ev.data;
     if (!d || typeof d !== 'object') return;
     if (d.type === 'stx-decoder-ready') {
@@ -75,6 +119,9 @@
         return [];
       });
     }
+    if (shouldAvoidDecoderIframe()) {
+      return waitForInlineDecode(serials, callback, options);
+    }
     var f = getIframe();
     if (!f || !f.contentWindow) {
       if (typeof callback === 'function') callback([]);
@@ -108,24 +155,21 @@
 
   window.stxDecoderBridgeReady = function () {
     if (useInlineDecode()) return true;
+    if (shouldAvoidDecoderIframe()) return false;
     return ready;
   };
 
   window.initStxDecoderBridge = function () {
-    if (useInlineDecode()) {
+    if (preferInlineDecoder()) {
       if (typeof window.initDecoder === 'function') {
         try { window.initDecoder(); } catch (_) {}
       }
       return;
     }
-    getIframe();
+    // Iframe is created lazily on first decodeSerialsViaBridge() call — do not preload here.
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { initStxDecoderBridge(); }, { once: true });
-  } else {
-    initStxDecoderBridge();
-  }
+  // Decoder warms on first decode request (YAML import, backpack parse, etc.), not at page load.
 
   /**
    * Decode one @U / game serial to desktop text using the same WASM path as the bulk decoder (canonical vs JS bitstream).

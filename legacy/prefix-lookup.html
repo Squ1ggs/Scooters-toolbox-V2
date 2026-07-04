@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script src="../assets/js/cc-browser-compat.js"></script>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="#0b1020" name="theme-color"/>
 <meta content="dark" name="color-scheme"/>
@@ -388,6 +389,7 @@ tr:hover { background:rgba(0,243,255,0.04); }
   .prefix-testing-panel { display:none !important; }
 }
 </style>
+<link href="../assets/css/stx-section-borders.css" rel="stylesheet"/>
 </head>
 <body class="stx-prefix-page">
 <header class="stx-page-topbar" role="banner">
@@ -453,11 +455,16 @@ tr:hover { background:rgba(0,243,255,0.04); }
       ? '../assets/SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
       : '../assets/SCOOTERS_TOOLBOX_USER_GUIDE.txt';
     if (location && location.protocol === 'file:') {
-      if (out) out.style.display = 'none';
-      if (frame) {
-        frame.style.display = 'block';
-        frame.src = url;
+      if (frame) frame.style.display = 'none';
+      if (out) out.style.display = 'block';
+      if (loaded[nextMode]) {
+        out.textContent = cache[nextMode] || 'Could not load instructions file.';
+        return;
       }
+      var localTxt = typeof window.stxLoadLocalTextSync === 'function' ? window.stxLoadLocalTextSync(url) : '';
+      loaded[nextMode] = true;
+      cache[nextMode] = localTxt || ('Could not load instructions from ' + url + '. Run a local web server (e.g. npx serve) for the full guide.');
+      if (mode === nextMode) out.textContent = cache[nextMode];
       return;
     }
     if (frame) frame.style.display = 'none';

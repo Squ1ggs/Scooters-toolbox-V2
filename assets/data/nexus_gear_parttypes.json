@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "totalRootsScanned": 133,
-    "totalRootsKept": 133
+    "totalRootsScanned": 148,
+    "totalRootsKept": 148
   },
   "roots": [
     {
@@ -339,6 +339,38 @@
       }
     },
     {
+      "rootKey": "classmod_robodealer",
+      "inv": "classmod_robodealer",
+      "baseType": "inv'ClassMod'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {
+        "class_mod_body": [
+          "leg_body_01",
+          "leg_body_02",
+          "leg_body_03",
+          "leg_body_04",
+          "leg_body_05",
+          "leg_body_06",
+          "leg_body_dlc1",
+          "leg_body_raid1",
+          "leg_body_raid2",
+          "leg_body_tuba"
+        ],
+        "stat_group1": [
+          "stat_actionskill_damage",
+          "stat_skill_cooldown_rate",
+          "stat_crit_damage",
+          "stat_ordnance_cooldown",
+          "stat_reload_speed",
+          "stat_all_damage",
+          "stat_fire_rate",
+          "stat_ordnance_damage",
+          "stat_criticalhitchance_gun"
+        ]
+      }
+    },
+    {
       "rootKey": "cov_enhancement",
       "inv": "COV_Enhancement",
       "baseType": "inv'Enhancement'",
@@ -620,6 +652,14 @@
           "Part_Body_05_Legendary"
         ]
       }
+    },
+    {
+      "rootKey": "inv_contractitem_scavgrenade",
+      "inv": "Inv_ContractItem_ScavGrenade",
+      "baseType": "inv'mission_pickup'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {}
     },
     {
       "rootKey": "invdef_pickup_firstrepkit_intro",
@@ -1163,6 +1203,14 @@
     {
       "rootKey": "overshield_booster_pickup",
       "inv": "overshield_booster_pickup",
+      "baseType": "",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": {}
+    },
+    {
+      "rootKey": "pickup_cos_shieldbooster",
+      "inv": "Pickup_CoS_ShieldBooster",
       "baseType": "",
       "typeId": null,
       "parttypes": [],
@@ -1961,6 +2009,116 @@
       "slotAllowlist": null
     },
     {
+      "rootKey": "weapon_dahlgrunt_crashflamer",
+      "inv": "Weapon_DahlGrunt_CrashFlamer",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlgrunt_laserrifle",
+      "inv": "Weapon_DahlGrunt_LaserRifle",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlgrunt_shoulderlaserrifle",
+      "inv": "Weapon_DahlGrunt_ShoulderLaserRifle",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlgrunt_sprayer",
+      "inv": "Weapon_DahlGrunt_Sprayer",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_chaingun",
+      "inv": "Weapon_DahlMech_Chaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_emp",
+      "inv": "Weapon_DahlMech_EMP",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_energygun",
+      "inv": "Weapon_DahlMech_EnergyGun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "Body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_flamespitter",
+      "inv": "Weapon_DahlMech_FlameSpitter",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_flamespitterunderbarrel",
+      "inv": "Weapon_DahlMech_FlameSpitterUnderbarrel",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_dahlmech_grenadelauncher",
+      "inv": "Weapon_DahlMech_GrenadeLauncher",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": {}
+    },
+    {
       "rootKey": "weapon_gadget_turret",
       "inv": "weapon_gadget_turret",
       "baseType": "inv'weapon'",
@@ -2135,6 +2293,28 @@
     {
       "rootKey": "weapon_turret_chaingun",
       "inv": "Weapon_Turret_Chaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_turret_dahlchaingun",
+      "inv": "Weapon_Turret_DahlChaingun",
+      "baseType": "inv'Weapon_AI_CustomBase'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "body_ele"
+      ],
+      "slotAllowlist": null
+    },
+    {
+      "rootKey": "weapon_uberhead",
+      "inv": "Weapon_UberHead",
       "baseType": "inv'Weapon_AI_CustomBase'",
       "typeId": null,
       "parttypes": [

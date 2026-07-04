@@ -161,6 +161,12 @@
     return { kind: 'vint', val: v };
   }
 
+  /** List elements are almost always small part ids — skip per-value varint/varbit comparison. */
+  function writeListValueFast(bw, value) {
+    bw.writeBits(1, 0, 0);
+    varintWrite(bw, value >>> 0);
+  }
+
   var SUB_NONE = 0;
   var SUB_INT = 1;
   var SUB_LIST = 2;
@@ -180,14 +186,7 @@
         bw.writeBits(0, 0, 1);
         bw.writeBits(0, 1);
         for (var i = 0; i < p.values.length; i++) {
-          var tok = bestTypeForNumber(p.values[i] >>> 0);
-          if (tok.kind === 'vint') {
-            bw.writeBits(1, 0, 0);
-            varintWrite(bw, tok.val);
-          } else {
-            bw.writeBits(1, 1, 0);
-            varbitWrite(bw, tok.val);
-          }
+          writeListValueFast(bw, p.values[i]);
         }
         bw.writeBits(0, 0);
         break;

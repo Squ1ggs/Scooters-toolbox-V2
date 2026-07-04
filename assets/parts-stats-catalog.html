@@ -41,6 +41,13 @@
       color: var(--accent-cyan);
     }
     .header-main p { margin: 0; color: var(--text-secondary); font-size: 0.92rem; }
+    .catalog-accuracy-note {
+      margin: 6px 0 0;
+      max-width: 52rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: rgba(183, 197, 232, 0.92);
+    }
     .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -93,6 +100,15 @@
     table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
     th, td { border-top: 1px solid rgba(0, 243, 255, 0.12); padding: 6px 8px; text-align: left; vertical-align: top; }
     th { color: #c4d7ff; }
+    .stat-tech-id {
+      font-family: Consolas, ui-monospace, monospace;
+      font-size: 10px;
+      color: rgba(180, 200, 230, 0.55);
+      margin-top: 3px;
+      word-break: break-all;
+      line-height: 1.25;
+    }
+    td strong { color: #e8f0ff; font-weight: 600; }
     .num { text-align: right; }
     .no-stats { margin: 0 10px 10px; color: #ffb4b4; font-size: 12px; }
     .empty, #loading {
@@ -103,13 +119,135 @@
     .impact-badge { color: #ffd48a; font-weight: 600; }
     .stat-row-match { background: rgba(0, 243, 255, 0.08); }
     .stat-row-match td:first-child { color: #9ff8ff; }
+    .stat-group-row td { border-top-style: dashed; }
+    .stat-group-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #ffd48a;
+      border: 1px solid rgba(255, 212, 138, 0.35);
+      background: rgba(255, 212, 138, 0.08);
+      vertical-align: middle;
+    }
+    .stat-multi-val { display: flex; flex-direction: column; gap: 3px; align-items: flex-end; }
+    .stat-multi-val span { white-space: nowrap; }
+    .stat-multi-effect { display: flex; flex-direction: column; gap: 4px; }
+    .stat-multi-effect span { font-size: 11px; line-height: 1.35; }
+    .count-subtle { color: #8fb0d8; font-size: 11px; margin-left: 4px; }
+    .part-name {
+      font-weight: 700;
+      color: #e8f4ff;
+      font-size: 14px;
+      flex: 0 1 auto;
+      min-width: 0;
+    }
+    summary .part-name { margin-right: 4px; }
+    .stat-intro {
+      margin: 0;
+      padding: 10px 12px 0;
+      color: #b9c7e8;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .stat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 12px;
+    }
+    .stat-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.25;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      color: #e8f0ff;
+    }
+    .stat-chip--up {
+      border-color: rgba(120, 255, 170, 0.35);
+      background: rgba(80, 200, 130, 0.12);
+      color: #c8ffd9;
+    }
+    .stat-chip--down {
+      border-color: rgba(255, 150, 130, 0.35);
+      background: rgba(255, 100, 90, 0.1);
+      color: #ffd0c8;
+    }
+    .stat-chip--damage { border-color: rgba(255, 120, 90, 0.35); background: rgba(255, 90, 60, 0.1); }
+    .stat-chip--firerate { border-color: rgba(255, 200, 100, 0.35); background: rgba(255, 180, 60, 0.1); }
+    .stat-chip--accuracy { border-color: rgba(100, 200, 255, 0.35); background: rgba(60, 160, 255, 0.1); }
+    .stat-chip--reload_time { border-color: rgba(180, 140, 255, 0.35); background: rgba(140, 100, 255, 0.1); }
+    .stat-chip--elemental { border-color: rgba(120, 220, 255, 0.35); background: rgba(80, 180, 255, 0.1); }
+    .stat-chip--ammo_mag { border-color: rgba(255, 220, 120, 0.35); background: rgba(255, 200, 80, 0.1); }
+    .simple-table-wrap { padding: 0 12px 10px; }
+    .simple-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .simple-table th, .simple-table td {
+      border-top: 1px solid rgba(0, 243, 255, 0.1);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .simple-table th { color: #9ec8ff; font-weight: 600; width: 28%; }
+    .simple-table td.effect-cell { color: #dff7e8; font-weight: 600; }
+    .simple-table td.hint-cell { color: #9aa8c8; font-size: 12px; }
+    .offset-note {
+      margin: 0 12px 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #a8b8d8;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+    .tech-block {
+      margin: 0 12px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.15);
+    }
+    .tech-block > summary {
+      padding: 8px 12px;
+      cursor: pointer;
+      color: #9eb0d0;
+      font-size: 12px;
+      font-weight: 600;
+      background: transparent;
+    }
+    .tech-block[open] > summary { border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+    .tech-block .meta-grid { padding-top: 8px; }
+    .tech-block table { font-size: 11px; }
+    .tech-section {
+      margin: 0 12px 12px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tech-heading {
+      margin: 10px 0 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #9eb0d0;
+      letter-spacing: 0.02em;
+    }
+    .tech-section table { font-size: 11px; }
+    .view-toggle { margin-left: 4px; }
+    .stat-chip--match {
+      box-shadow: 0 0 0 2px rgba(0, 243, 255, 0.35);
+    }
     #sortHint {
       margin: 8px 0 0;
-      font-size: 11px;
-      color: rgba(0, 243, 255, 0.75);
+      font-size: 12px;
+      color: #9ff8ff;
       display: none;
     }
   </style>
+  <link href="./css/stx-section-borders.css" rel="stylesheet"/>
   <script defer src="./data/stx_dataset.js"></script>
   <script defer src="./data/stx_dataset_supplement.js"></script>
   <script defer src="./data/stx_raid2_supplement.js"></script>
@@ -122,6 +260,7 @@
       <div class="header-main">
         <h1>BL4 Parts Stats Catalog</h1>
         <p id="catalogMeta">Loading dataset…</p>
+        <p class="catalog-accuracy-note">See what each part does in plain language. Percentages are vs a neutral baseline (×1.0). Some legendaries list several numbers for one stat — that means different fire modes in the game files, not bonuses you add together.</p>
       </div>
       <div class="header-actions">
         <a class="btn btn--brand" href="../index.html">Full toolbox</a>
@@ -129,21 +268,22 @@
       </div>
     </header>
 
-    <section class="panel">
+    <section class="panel panel--stats-catalog">
       <div class="controls">
-        <input id="q" type="text" placeholder="Search part code, name, field, bucket, family…" />
+        <input id="q" type="text" placeholder="Part code, name, or stat (damage, fire rate, sway, reload…) — stat searches rank biggest change first" />
         <select id="cat"><option value="">All categories</option></select>
         <select id="mfr"><option value="">All manufacturers</option></select>
         <select id="slot"><option value="">All slots</option></select>
         <button id="expand" type="button">Expand shown</button>
         <button id="collapse" type="button">Collapse shown</button>
+        <label class="only-stats view-toggle"><input id="simpleView" type="checkbox" checked /> Simple view</label>
         <label class="only-stats"><input id="onlyStats" type="checkbox" checked /> Only parts with stats</label>
       </div>
       <div class="stats">
         <span class="pill">Dataset parts: <b id="totalCount">—</b></span>
         <span class="pill">With stats: <b id="withStatsCount">—</b></span>
         <span class="pill">Matching filter: <b id="visibleCount">—</b></span>
-        <span class="pill">Stat rows (shown batch): <b id="rowCount">—</b></span>
+        <span class="pill">Effects shown: <b id="rowCount">—</b></span>
       </div>
       <p id="sortHint" aria-live="polite"></p>
     </section>

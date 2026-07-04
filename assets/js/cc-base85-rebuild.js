@@ -221,6 +221,52 @@
     return true;
   }
 
+  function normalizeDeserForCache(s) {
+    return String(s || '')
+      .trim()
+      .replace(/\r\n/g, '\n')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\|\s*$/, '|');
+  }
+
+  function rememberDeserializeRoundtrip(b85In, deserOut) {
+    try {
+      if (!b85In || !deserOut) return;
+      var b = String(b85In).trim();
+      if (b.indexOf('@U') !== 0 && b.indexOf('@u') !== 0) return;
+      window.__ccStxDeserializeCache = {
+        b85In: b.indexOf('@U') === 0 ? b : ('@U' + b.replace(/^@U/i, '')),
+        deserOut: normalizeDeserForCache(deserOut),
+      };
+    } catch (_) {}
+  }
+
+  function cachedBase85ForDeserialized(deser) {
+    try {
+      var cache = window.__ccStxDeserializeCache;
+      if (!cache || !cache.b85In || !cache.deserOut) return '';
+      if (normalizeDeserForCache(deser) === cache.deserOut) return cache.b85In;
+    } catch (_) {}
+    return '';
+  }
+
+  /** Rough weight for UI deferral — large list parts dominate pack time. */
+  function deserializedPayloadWeight(s) {
+    s = String(s || '');
+    var listValues = 0;
+    var re = /\{\d+:\[([^\]]*)\]\}/g;
+    var m;
+    while ((m = re.exec(s))) {
+      var inner = (m[1] || '').trim();
+      if (inner) listValues += inner.split(/\s+/).filter(Boolean).length;
+    }
+    return {
+      len: s.length,
+      listValues: listValues,
+      heavy: s.length > 2800 || listValues > 80,
+    };
+  }
+
   function bitstreamToDeserialized(bytes, maxBits) {
     var br = new BitReader(bytes, maxBits);
     for (var i = 0; i < 7; i++) br.read();
@@ -313,6 +359,7 @@
       if (maxBits != null && rt && bytesEqual(bytes, rt.bytes)) {
         try { delete window.__ccStxRoundtrip; } catch (_) {}
       }
+      rememberDeserializeRoundtrip(b85, out);
       return out;
     } catch (e) {
       console.warn('Failed to parse bitstream:', e);
@@ -325,6 +372,8 @@
     deser = stripOuterQuotes(deser);
     deser = ensureDoublePipeBeforeTailText(deser);
     if (!deser) return '';
+    var cached = cachedBase85ForDeserialized(deser);
+    if (cached) return cached;
     var alreadyU = String(deser).trim();
     if (/^@U/i.test(alreadyU)) {
       alreadyU = alreadyU.indexOf('@U') === 0 ? alreadyU : ('@U' + alreadyU.replace(/^@U/i, ''));
@@ -731,6 +780,18 @@
   window.bytesToCustomB85 = bytesToCustomB85;
   window.deserializeBase85 = deserializeBase85;
   window.serializeToBase85 = serializeToBase85;
+  window.ccDeserializedPayloadWeight = deserializedPayloadWeight;
+  window.ccSerializeToBase85Async = function (deser, cb, headerWords) {
+    var w = deserializedPayloadWeight(deser);
+    var run = function () {
+      var out = serializeToBase85(deser, headerWords, !w.heavy);
+      if (typeof cb === 'function') cb(out);
+      return out;
+    };
+    if (!w.heavy) return run();
+    setTimeout(run, 0);
+    return '';
+  };
   window.updateSerialLevel = updateSerialLevel;
   window.updateSerialLevelFlexible = updateSerialLevelFlexible;
   window.processSlot = processSlot;

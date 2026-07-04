@@ -78,6 +78,7 @@
     godrollPromise = loadScriptsSequential([
       DATA_BASE + 'godroll_serials_data.js',
       DATA_BASE + 'godroll_grimeey_serials_data.js',
+      DATA_BASE + 'bl4_spawncodes_bundle_notes.js',
     ]).then(function () { return true; }).catch(function () {
       godrollPromise = null;
       return false;
@@ -85,48 +86,143 @@
     return godrollPromise;
   }
 
+  var lootRefPromise = null;
+  function ensureLootReferenceData() {
+    if (window.LOOT_REFERENCE_DATA) return Promise.resolve(window.LOOT_REFERENCE_DATA);
+    if (lootRefPromise) return lootRefPromise;
+    lootRefPromise = loadScript(DATA_BASE + 'loot_reference_data.js').then(function () {
+      return window.LOOT_REFERENCE_DATA || null;
+    }).catch(function () {
+      lootRefPromise = null;
+      return null;
+    });
+    return lootRefPromise;
+  }
+
+  function classmodSkillsLoaded() {
+    var src = window.__LEGACY_CLASSMOD_PARTS_BY_KEY;
+    if (!src) return false;
+    for (var key in src) {
+      if (!Object.prototype.hasOwnProperty.call(src, key)) continue;
+      var list = src[key];
+      if (!Array.isArray(list)) continue;
+      for (var i = 0; i < list.length; i++) {
+        var row = list[i];
+        if (Array.isArray(row) && row.length >= 3 && String(row[2] || '').trim() === 'Skill') return true;
+      }
+    }
+    return false;
+  }
+
+  var classmodSkillsPromise = null;
+  function ensureClassmodSkillsData() {
+    if (classmodSkillsLoaded()) {
+      return Promise.resolve(window.__LEGACY_CLASSMOD_PARTS_BY_KEY);
+    }
+    if (classmodSkillsPromise) return classmodSkillsPromise;
+    classmodSkillsPromise = loadScript(DATA_BASE + 'legacy_classmod_skills_full.js').then(function () {
+      return window.__LEGACY_CLASSMOD_PARTS_BY_KEY || {};
+    }).catch(function () {
+      classmodSkillsPromise = null;
+      return {};
+    });
+    return classmodSkillsPromise;
+  }
+
+  var weaponStatsPromise = null;
+  function ensureWeaponStatsData() {
+    if (typeof window.WEAPON_STATS_DATA !== 'undefined' && window.WEAPON_STATS_DATA) {
+      return Promise.resolve(window.WEAPON_STATS_DATA);
+    }
+    if (weaponStatsPromise) return weaponStatsPromise;
+    weaponStatsPromise = loadScript(DATA_BASE + 'weapon_stats_data.js').then(function () {
+      return window.WEAPON_STATS_DATA || null;
+    }).catch(function () {
+      weaponStatsPromise = null;
+      return null;
+    });
+    return weaponStatsPromise;
+  }
+
+  function ensureBuildStatsData() {
+    return Promise.all([
+      ensurePartsStatsData(),
+      ensureWeaponStatsData(),
+    ]).then(function (pair) {
+      return { parts: pair[0], weapon: pair[1] };
+    });
+  }
+
   window.__ccEnsurePartsStatsData = ensurePartsStatsData;
   window.__ccEnsureSerialsCatalog = ensureSerialsCatalog;
   window.__ccEnsureGodrollBundles = ensureGodrollBundles;
+  window.__ccEnsureLootReferenceData = ensureLootReferenceData;
+  window.__ccEnsureClassmodSkillsData = ensureClassmodSkillsData;
+  window.__ccEnsureWeaponStatsData = ensureWeaponStatsData;
+  window.__ccEnsureBuildStatsData = ensureBuildStatsData;
 
-  function whenDetailsOpen(id, loader, onReady) {
+  function deferHeavyPanelWork(fn, idleMs) {
+    var run = function () {
+      if (typeof window.stxScheduleIdle === 'function') {
+        var lite = typeof window.stxIsLiteUi === 'function' && window.stxIsLiteUi();
+        window.stxScheduleIdle(fn, idleMs != null ? idleMs : (lite ? 2800 : 900));
+      } else {
+        setTimeout(fn, 400);
+      }
+    };
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(run);
+    } else {
+      run();
+    }
+  }
+
+  function whenPanelNeedsData(id, loader, onReady) {
     var det = document.getElementById(id);
     if (!det) return;
-    function run() {
-      if (!det.open) return;
+    function exec() {
       loader().then(function () {
         if (typeof onReady === 'function') onReady();
       });
     }
-    det.addEventListener('toggle', run);
-    if (det.open) run();
+    function run(immediate) {
+      if (!det.open) return;
+      if (immediate) exec();
+      else deferHeavyPanelWork(exec, 12000);
+    }
+    det.addEventListener('toggle', function () { run(true); });
+    if (det.open) run(true);
   }
 
-  function scheduleIdleStatsWarm() {
-    var statsSec = document.getElementById('rebuildBuildStatsSection');
-    if (!statsSec || !statsSec.open || window.PARTS_STATS_DATA) return;
-    var run = function () {
-      ensurePartsStatsData().then(function () {
-        if (typeof window.__ccRefreshBuildStatsAfterStatsLoad === 'function') {
-          window.__ccRefreshBuildStatsAfterStatsLoad();
-        }
+  function wireSearchFocusLoad(inputId, loader, onReady) {
+    var input = document.getElementById(inputId);
+    if (!input || input.__ccLazyFocusLoad) return;
+    input.__ccLazyFocusLoad = true;
+    var once = function () {
+      loader().then(function () {
+        if (typeof onReady === 'function') onReady();
       });
     };
-    if (typeof requestIdleCallback === 'function') {
-      requestIdleCallback(run, { timeout: 8000 });
-    } else {
-      setTimeout(run, 3500);
-    }
+    input.addEventListener('focus', once, { once: true, passive: true });
+    input.addEventListener('pointerdown', once, { once: true, passive: true });
   }
 
   function wireLazyBundles() {
-    whenDetailsOpen('rebuildPrefixItemSearchSection', ensureSerialsCatalog, function () {
+    whenPanelNeedsData('rebuildPrefixItemSearchSection', ensureSerialsCatalog, function () {
       if (typeof window.__ccBootstrapPrefixItemSearch === 'function') window.__ccBootstrapPrefixItemSearch();
     });
-    whenDetailsOpen('rebuildGodrollSection', ensureGodrollBundles, function () {
+    wireSearchFocusLoad('prefixItemSearchInput', ensureSerialsCatalog, function () {
+      if (typeof window.__ccBootstrapPrefixItemSearch === 'function') window.__ccBootstrapPrefixItemSearch();
+    });
+
+    whenPanelNeedsData('rebuildGodrollSection', ensureGodrollBundles, function () {
       if (typeof window.__ccBootstrapGodrollSearch === 'function') window.__ccBootstrapGodrollSearch();
     });
-    whenDetailsOpen('rebuildBuildStatsSection', ensurePartsStatsData, function () {
+    wireSearchFocusLoad('godrollSearchInput', ensureGodrollBundles, function () {
+      if (typeof window.__ccBootstrapGodrollSearch === 'function') window.__ccBootstrapGodrollSearch();
+    });
+
+    whenPanelNeedsData('rebuildBuildStatsSection', ensureBuildStatsData, function () {
       if (typeof window.__ccRefreshBuildStatsAfterStatsLoad === 'function') {
         window.__ccRefreshBuildStatsAfterStatsLoad();
       }
@@ -135,22 +231,69 @@
     var guidedFull = document.getElementById('ccGuidedFullStatsPreview');
     if (guidedFull) {
       guidedFull.addEventListener('change', function () {
-        if (guidedFull.checked) ensurePartsStatsData();
+        if (guidedFull.checked) ensureBuildStatsData();
       });
     }
     var grFull = document.getElementById('godrollShowFullStatsToggle');
     if (grFull) {
       grFull.addEventListener('change', function () {
-        if (grFull.checked) ensurePartsStatsData();
+        if (grFull.checked) ensureBuildStatsData();
       });
+    }
+
+    function wireClassmodLazyLoad(sel) {
+      if (!sel || sel.__ccLazyClassmodLoad) return;
+      sel.__ccLazyClassmodLoad = true;
+      var loadIfClassmod = function () {
+        var v = String(sel.value || '');
+        if (!/class\s*mod|classmod/i.test(v)) return;
+        ensureClassmodSkillsData().then(function () {
+          try {
+            if (typeof window.__ccClassmodSkillsReady === 'function') window.__ccClassmodSkillsReady();
+          } catch (_) {}
+          try {
+            if (typeof window.__ccClassmodChecklistRender === 'function') window.__ccClassmodChecklistRender();
+          } catch (_) {}
+        });
+      };
+      sel.addEventListener('change', loadIfClassmod);
+      loadIfClassmod();
+    }
+    wireClassmodLazyLoad(document.getElementById('stx_itemType'));
+    wireClassmodLazyLoad(document.getElementById('ccGuidedItemType'));
+
+    function wireEnhancementLazyLoad(sel) {
+      if (!sel || sel.__ccLazyEnhLoad) return;
+      sel.__ccLazyEnhLoad = true;
+      sel.addEventListener('change', function () {
+        if (String(sel.value || '').trim() !== 'Enhancement') return;
+        try {
+          if (typeof window.__ccEnhancementChecklistRender === 'function') window.__ccEnhancementChecklistRender();
+        } catch (_) {}
+      });
+    }
+    wireEnhancementLazyLoad(document.getElementById('stx_itemType'));
+    wireEnhancementLazyLoad(document.getElementById('ccGuidedItemType'));
+
+    function preloadLootReferenceIdle() {
+      if (window.LOOT_REFERENCE_DATA) return;
+      var run = function () { ensureLootReferenceData(); };
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(run, 8000);
+      } else {
+        setTimeout(run, 4000);
+      }
+    }
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(preloadLootReferenceIdle);
+    } else {
+      preloadLootReferenceIdle();
     }
 
     var serialIn = document.getElementById('serialSearchInput');
     if (serialIn) {
       serialIn.addEventListener('focus', function () { ensureSerialsCatalog(); }, { passive: true });
     }
-
-    scheduleIdleStatsWarm();
   }
 
   if (document.readyState === 'loading') {

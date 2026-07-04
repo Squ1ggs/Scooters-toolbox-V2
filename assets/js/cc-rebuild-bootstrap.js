@@ -24,9 +24,50 @@
   try { window.__ccIsAdvSearchDeepLinkV1 = ccIsAdvSearchDeepLink; } catch (_) {}
 
   var deferredFullLoadersDone = false;
+
+  function runDeferredFullLoadersChunked(step) {
+    if (deferredFullLoadersDone) return;
+    var steps = [
+      function () {
+        if (window.ensurePartPools && !window.__ccPartPoolsReady) {
+          try { window.ensurePartPools(); window.__ccPartPoolsReady = true; } catch (_) {}
+        }
+      },
+      function () {
+        try {
+          if (typeof window.__ccInitPartSectionsV1 === 'function') window.__ccInitPartSectionsV1();
+          else if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
+        } catch (_) {}
+      },
+      function () { try { loadLegendaryPerksFallback(); } catch (_) {} },
+      function () { try { ensurePresetSectionFallback(); } catch (_) {} },
+      function () { try { loadToolsSkinCamoFallback(); } catch (_) {} },
+      function () { try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {} },
+      function () { try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {} },
+      function () { try { if (typeof window.refreshTopSelectors === 'function') window.refreshTopSelectors({ deferHeavy: true }); } catch (_) {} },
+      function () { try { wireLazyGuidedDropdownRefresh(); } catch (_) {} deferredFullLoadersDone = true; }
+    ];
+    if (step >= steps.length) return;
+    try { steps[step](); } catch (_) {}
+    if (step + 1 >= steps.length) return;
+    var next = function () { runDeferredFullLoadersChunked(step + 1); };
+    if (typeof window.stxScheduleIdle === 'function') {
+      window.stxScheduleIdle(next, 90);
+    } else {
+      setTimeout(next, 48);
+    }
+  }
+
   function runDeferredFullLoaders() {
     if (deferredFullLoadersDone) return;
+    if (ccIsLiteUi()) {
+      runDeferredFullLoadersChunked(0);
+      return;
+    }
     deferredFullLoadersDone = true;
+    if (window.ensurePartPools && !window.__ccPartPoolsReady) {
+      try { window.ensurePartPools(); window.__ccPartPoolsReady = true; } catch (_) {}
+    }
     try {
       if (typeof window.__ccInitPartSectionsV1 === 'function') window.__ccInitPartSectionsV1();
       else if (typeof window.refreshPartSections === 'function') window.refreshPartSections();
@@ -37,26 +78,48 @@
     try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {}
     try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
     try {
-      if (typeof window.refreshTopSelectors === 'function') window.refreshTopSelectors();
+      if (typeof window.refreshTopSelectors === 'function') window.refreshTopSelectors({ deferHeavy: true });
     } catch (_) {}
-    try {
-      if (typeof window.refreshGuidedBuilderDropdowns === 'function') window.refreshGuidedBuilderDropdowns();
-    } catch (_) {}
+    try { wireLazyGuidedDropdownRefresh(); } catch (_) {}
   }
 
   function scheduleDeferredFullLoaders() {
     if (deferredFullLoadersDone || window.__ccDeferredFullLoadersScheduled) return;
     window.__ccDeferredFullLoadersScheduled = true;
     var run = function () { runDeferredFullLoaders(); };
+    function arm() {
+      function armPanel(el) {
+        if (!el || el.__ccDeferredArm) return;
+        el.__ccDeferredArm = true;
+        el.addEventListener('pointerdown', run, { once: true, passive: true });
+      }
+      ['stxSimpleBuilderPanel', 'rebuildGuidedBuilderSection', 'rebuildToolsPanel'].forEach(function (id) {
+        armPanel(byId(id));
+      });
+    }
+    if (ccIsLiteUi()) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', arm, { once: true });
+      } else {
+        arm();
+      }
+      document.addEventListener('keydown', run, { once: true, passive: true });
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(run, 90000);
+      } else {
+        setTimeout(run, 90000);
+      }
+      return;
+    }
+    document.addEventListener('pointerdown', run, { once: true, passive: true });
+    document.addEventListener('keydown', run, { once: true, passive: true });
     if (typeof window.stxScheduleIdle === 'function') {
       window.stxScheduleIdle(run, 4500);
     } else if (typeof requestIdleCallback === 'function') {
       requestIdleCallback(run, { timeout: 4500 });
     } else {
-      setTimeout(run, document.documentElement.classList.contains('stx-lite-ui') ? 1800 : 1200);
+      setTimeout(run, 1200);
     }
-    document.addEventListener('pointerdown', run, { once: true, passive: true });
-    document.addEventListener('keydown', run, { once: true, passive: true });
   }
 
   /** Collapse duplicate dataset rows that share the same TypeID:ItemID (e.g. main + supplement). Prefer non-supplement rows and full spawn paths. */
@@ -162,6 +225,7 @@
     if (!window.CLASSMOD_PARTS || window.CLASSMOD_PARTS.length === 0) {
       window.CLASSMOD_PARTS = dedupePartsByNumericIdentity(byCategory('Character'));
     }
+    window.__ccPartPoolsReady = true;
   }
 
   window.byCategory = byCategory;
@@ -356,16 +420,31 @@
     }
   }
 
-  function runAllLoaders() {
+  function ccIsLiteUi() {
+    try {
+      if (typeof window.stxIsLiteUi === 'function' && window.stxIsLiteUi()) return true;
+      if (typeof window.stxIsTouchUi === 'function' && window.stxIsTouchUi()) return true;
+    } catch (_) {}
+    return document.documentElement.classList.contains('stx-lite-ui') ||
+      document.documentElement.classList.contains('stx-touch-ui');
+  }
+
+  function runCriticalLoaders() {
     try {
       if (typeof window.applyPartDisplayOverrides === 'function') window.applyPartDisplayOverrides();
     } catch (_) {}
     patchLegendaryPerkStats();
-    ensurePools();
-    try {
-      if (typeof window.__ccEnsureCodeIdMap === 'function') window.__ccEnsureCodeIdMap();
-    } catch (_) {}
-    if (ccIsAdvSearchDeepLink()) {
+    if (!ccIsLiteUi()) {
+      ensurePools();
+      try {
+        if (typeof window.__ccEnsureCodeIdMap === 'function') window.__ccEnsureCodeIdMap();
+      } catch (_) {}
+    }
+  }
+
+  function runAllLoaders() {
+    runCriticalLoaders();
+    if (ccIsAdvSearchDeepLink() || ccIsLiteUi()) {
       scheduleDeferredFullLoaders();
       return;
     }
@@ -380,8 +459,9 @@
       if (window.__ccPartSectionsRefreshRetried) return;
       var need = false;
       try {
+        var gunDet = byId('partSectionDetailsGun');
         var gunSel = byId('partSelectGun');
-        if (gunSel && gunSel.options && gunSel.options.length <= 1) need = true;
+        if (gunDet && gunDet.open && gunSel && gunSel.options && gunSel.options.length <= 1) need = true;
       } catch (_) {}
       if (!need) return;
       window.__ccPartSectionsRefreshRetried = true;
@@ -392,58 +472,115 @@
   }
 
   function runWhenReady() {
-    if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS) && window.STX_DATASET.ALL_PARTS.length > 0) {
-      if (window.__CC_DEBUG) console.log('[STX] STX_DATASET ready, parts:', window.STX_DATASET.ALL_PARTS.length);
-      runAllLoaders();
-      return;
-    }
-    var tries = 120;
-    function poll() {
+    function start() {
       if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS) && window.STX_DATASET.ALL_PARTS.length > 0) {
+        if (window.__CC_DEBUG) console.log('[STX] STX_DATASET ready, parts:', window.STX_DATASET.ALL_PARTS.length);
         runAllLoaders();
         return;
       }
-      if (tries-- > 0) setTimeout(poll, 50);
+      var tries = 120;
+      function poll() {
+        if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS) && window.STX_DATASET.ALL_PARTS.length > 0) {
+          runAllLoaders();
+          return;
+        }
+        if (tries-- > 0) setTimeout(poll, 50);
+      }
+      if (typeof window.__ccOnStxDatasetReady === 'function') {
+        var orig = window.__ccOnStxDatasetReady;
+        window.__ccOnStxDatasetReady = function () {
+          orig();
+          runAllLoaders();
+        };
+      } else {
+        window.__ccOnStxDatasetReady = function () { runAllLoaders(); };
+      }
+      setTimeout(poll, 50);
     }
-    if (typeof window.__ccOnStxDatasetReady === 'function') {
-      var orig = window.__ccOnStxDatasetReady;
-      window.__ccOnStxDatasetReady = function () {
-        orig();
-        runAllLoaders();
-      };
+    function scheduleStart() {
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(start, ccIsLiteUi() ? 500 : 900);
+      } else {
+        setTimeout(start, ccIsLiteUi() ? 400 : 700);
+      }
+    }
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(scheduleStart);
     } else {
-      window.__ccOnStxDatasetReady = function () { runAllLoaders(); };
+      scheduleStart();
     }
-    setTimeout(poll, 50);
   }
 
   // Skin/camo dropdowns depend only on `skin_data.js`, not on the full STX dataset.
   // If STX_DATASET loads late, these dropdowns would otherwise stay stuck at "-- None --".
   function reloadSkinCamoEarly() {
     try { loadToolsSkinCamoFallback(); } catch (_) {}
-    // Guided skin/camo is loaded inside initGuidedExtraSections().
-    try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
+    try {
+      if (typeof window.__stxArmSkinCamoSync === 'function') window.__stxArmSkinCamoSync();
+    } catch (_) {}
+    if (!ccIsLiteUi()) {
+      try { if (typeof window.initGuidedExtraSections === 'function') window.initGuidedExtraSections(); } catch (_) {}
+    }
   }
 
   function skinCamoHasRealOptions() {
     function has(sel) {
       try { return !!(sel && sel.options && sel.options.length > 1); } catch (_) { return false; }
     }
-    return has(byId('ccGuidedSkinSelect')) || has(byId('ccGuidedCamoSelect'))
+    return has(byId('skinSelect')) || has(byId('camoSelect'))
+      || has(byId('ccGuidedSkinSelect')) || has(byId('ccGuidedCamoSelect'))
       || has(byId('toolsSkinSelect')) || has(byId('toolsCamoSelect'));
   }
 
   function runSkinCamoEarlyPoll() {
     if (ccIsAdvSearchDeepLink()) return;
-    // skin_data.js is `defer`, so it can finish after the first few seconds.
-    // Keep polling long enough that guided/tools dropdowns will populate even if STX_DATASET is slow.
-    var tries = 150; // ~30 seconds at 200ms
-    function tick() {
-      reloadSkinCamoEarly();
-      if (skinCamoHasRealOptions() || tries-- <= 0) return;
-      setTimeout(tick, 200);
+    function run() {
+      var tries = ccIsLiteUi() ? 6 : 10;
+      var intervalMs = ccIsLiteUi() ? 1500 : 900;
+      function tick() {
+        reloadSkinCamoEarly();
+        if (skinCamoHasRealOptions() || tries-- <= 0) return;
+        setTimeout(tick, intervalMs);
+      }
+      var startPoll = function () {
+        if (typeof window.stxQueueIdleWork === 'function') {
+          window.stxQueueIdleWork(tick, ccIsLiteUi() ? 6500 : 4800);
+        } else if (typeof window.stxScheduleIdle === 'function') {
+          window.stxScheduleIdle(tick, ccIsLiteUi() ? 6500 : 4800);
+        } else {
+          setTimeout(tick, ccIsLiteUi() ? 4500 : 3200);
+        }
+      };
+      startPoll();
     }
-    tick();
+    if (typeof window.stxWhenSplashDismissed === 'function') {
+      window.stxWhenSplashDismissed(run);
+    } else {
+      run();
+    }
+  }
+
+  function wireElementDetailsLazy() {
+    var det = byId('rebuildElementDetails');
+    if (!det || det.__stxElementLazyWired) return;
+    det.__stxElementLazyWired = true;
+    det.addEventListener('toggle', function () {
+      if (!det.open) return;
+      var hydrate = function () {
+        try {
+          if (typeof window.refreshToolsStandaloneElementDropdowns === 'function') {
+            window.refreshToolsStandaloneElementDropdowns();
+          }
+        } catch (_) {}
+        try {
+          if (typeof window.__ccBootCustomSelectRebuild === 'function') {
+            window.__ccBootCustomSelectRebuild();
+          }
+        } catch (_) {}
+      };
+      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(hydrate);
+      else setTimeout(hydrate, 0);
+    }, { passive: true });
   }
 
   function initPersistLastBuild() {
@@ -481,6 +618,7 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
+      wireElementDetailsLazy();
       runSkinCamoEarlyPoll();
       runWhenReady();
       setTimeout(function () {
@@ -496,6 +634,7 @@
       }, 500);
     });
   } else {
+    wireElementDetailsLazy();
     runSkinCamoEarlyPoll();
     runWhenReady();
     setTimeout(function () {

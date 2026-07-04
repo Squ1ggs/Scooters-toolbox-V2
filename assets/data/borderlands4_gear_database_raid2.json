@@ -30,6 +30,7 @@
       "manufacturer": "Torgue",
       "expectedInv": "tor_ps",
       "spawnTokens": ["herald"],
+      "alternateEditorComps": ["tor_ps.comp_06_pearl_herald"],
       "redText": "Out of 87 bazillion, ONE of them had to be the best.",
       "ability": "Unkempt — Spiritual successor to the Unkempt Harold.",
       "source": "World Drop (Raid 2)",
@@ -110,8 +111,9 @@
       "manufacturer": "Ripper",
       "expectedInv": "bor_sg",
       "spawnTokens": ["hairtrigger"],
-      "status": "export_pending",
-      "notes": "DLC/Cello assets in CUE4Parse (BOR_SG_HairTrigger) but comp_06_pearl_* not in inv __dep_entries yet — re-export after game patch or merge when NcsParser emits bor_sg.comp_06_pearl_hairtrigger"
+      "alternateEditorComps": ["bor_sg.comp_05_legendary_demo"],
+      "status": "verified",
+      "notes": "Inv comp is comp_05_legendary_demo (internal codename demo, idRaw 7:56); Cello audio uses BOR_SG_HairTrigger. No separate comp_05_legendary_hairtrigger row."
     },
     {
       "name": "Shalashaska",
@@ -135,7 +137,9 @@
       "manufacturer": "Jakobs",
       "expectedInv": "jak_sg",
       "spawnTokens": ["loomingconstable", "looming", "constable"],
-      "status": "needs_verification"
+      "alternateEditorComps": ["jak_sg.comp_06_pearl_constable"],
+      "status": "partial",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable"
     },
     {
       "name": "Firestorm",
@@ -143,8 +147,9 @@
       "manufacturer": "Maliwan",
       "expectedInv": "mal_sm",
       "spawnTokens": ["firestorm", "firework"],
-      "status": "needs_verification",
-      "notes": "May map to MAL_SM Firework until Firestorm comp exists"
+      "alternateEditorComps": ["mal_sm.comp_06_pearl_juliet"],
+      "status": "partial",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns"
     },
     {
       "name": "Screwstonian",
@@ -152,7 +157,8 @@
       "manufacturer": "Daedalus",
       "expectedInv": "dad_sm",
       "spawnTokens": ["screwstonian", "screwed"],
-      "status": "community_discovered",
+      "alternateEditorComps": ["dad_sm.comp_06_pearl_screwed"],
+      "status": "partial",
       "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary"
     },
     {
@@ -167,9 +173,23 @@
     },
     {
       "name": "SolarTemper",
-      "spawnTokens": ["solartemper", "solar_temper"],
-      "status": "not_in_export",
-      "notes": "No hit in current Nexus JSON or CUE4Parse export — catalog placeholder until game files expose comp"
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Order",
+      "expectedInv": "ord_sr",
+      "spawnTokens": ["temper", "solartemper", "solar_temper"],
+      "alternateEditorComps": ["ord_sr.comp_05_legendary_temper"],
+      "status": "verified",
+      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper"
+    },
+    {
+      "name": "Sharkbait",
+      "weaponType": "Shotgun",
+      "manufacturer": "Tediore",
+      "expectedInv": "ted_sg",
+      "spawnTokens": ["sharkbait"],
+      "alternateEditorComps": ["ted_sg.comp_06_pearl_sharkbait"],
+      "status": "supplement_only",
+      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB"
     }
   ],
   "raid2_legendaries": [

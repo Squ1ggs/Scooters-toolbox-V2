@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script src="./js/cc-browser-compat.js"></script>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="dark" name="color-scheme">
 <meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
@@ -18,6 +19,7 @@
 <link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
 <link href="./css/cc-build-stats-panel.css" rel="stylesheet"/>
+<link href="./css/stx-section-borders.css" rel="stylesheet"/>
 <style>
 :root {
   color-scheme: dark;
@@ -466,11 +468,16 @@ aside li { margin-bottom: 6px; }
       ? 'SCOOTERS_TOOLBOX_USER_GUIDE_SIMPLE.txt'
       : 'SCOOTERS_TOOLBOX_USER_GUIDE.txt';
     if (location && location.protocol === 'file:') {
-      if (out) out.style.display = 'none';
-      if (frame) {
-        frame.style.display = 'block';
-        frame.src = url;
+      if (frame) frame.style.display = 'none';
+      if (out) out.style.display = 'block';
+      if (loaded[nextMode]) {
+        out.textContent = cache[nextMode] || 'Could not load instructions file.';
+        return;
       }
+      var localTxt = typeof window.stxLoadLocalTextSync === 'function' ? window.stxLoadLocalTextSync(url) : '';
+      loaded[nextMode] = true;
+      cache[nextMode] = localTxt || ('Could not load instructions from ' + url + '. Run a local web server (e.g. npx serve) for the full guide.');
+      if (mode === nextMode) out.textContent = cache[nextMode];
       return;
     }
     if (frame) frame.style.display = 'none';
@@ -530,7 +537,7 @@ aside li { margin-bottom: 6px; }
 })();
 </script>
 <div class="layout">
-<div class="panel">
+<div class="panel panel--bv-input">
 <div class="panel__title">Input</div>
 <div class="dropzone" id="bv-dropzone"><strong>Drop a file</strong> here or use the file picker — or paste below.</div>
 <div class="row">
@@ -565,7 +572,7 @@ Keep duplicate lines</label>
 <span class="bv-inv-tag-badge" id="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
 </div>
 </div>
-<aside class="panel">
+<aside class="panel panel--bv-aside">
 <div class="panel__title">How it works</div>
 <ul>
 <li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
@@ -580,7 +587,7 @@ Keep duplicate lines</label>
 </ul>
 <p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
 </aside>
-<div class="panel" style="grid-column: 1 / -1;">
+<div class="panel panel--bv-summary" style="grid-column: 1 / -1;">
 <div class="panel__title">Summary</div>
 <p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
 <div class="kpis">
@@ -679,6 +686,9 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="data/itempoollist_droprows_data.js"></script>
 <script src="data/source_paths_data.js"></script>
 <script src="data/legit_schedule_data.js"></script>
+<script src="data/stx_rarities.js"></script>
+<script src="data/stx_rarities_raid2_patch.js"></script>
+<script src="data/stx_rarities_community_pearl_patch.js"></script>
 <script src="data/classmod_manifest_items.js"></script>
 <script src="js/cc-item-slug.js"></script>
 <script src="js/tag-comp-validation.js"></script>

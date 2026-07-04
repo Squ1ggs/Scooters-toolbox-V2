@@ -1681,7 +1681,13 @@
   function boot() {
     installHandlers();
     initCmChecklistHeightSync();
-    renderUI();
+    var section = byId('classmodChecklistSection');
+    if (section) {
+      section.style.display = 'block';
+      section.classList.add('cm-disabled');
+      var hintEl = section.querySelector('[data-cm-hint]');
+      if (hintEl) hintEl.style.display = 'block';
+    }
   }
 
   if (document.readyState === 'loading') {

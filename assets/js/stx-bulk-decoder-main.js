@@ -666,7 +666,7 @@ async function initDecoder() {
   }
   return decoderReadyPromise;
 }
-async function decodeCurrent(filename='') {
+async function decodeCurrent(filename = '') {
   const raw = inputBox.value;
   const mode = modeSelect.value === 'auto' ? detectMode(raw, filename) : modeSelect.value;
   const serials = mode === 'yaml' ? extractFromYaml(raw) : mode === 'json' ? extractFromJson(raw) : extractFromTxt(raw);
@@ -708,6 +708,7 @@ async function decodeCurrent(filename='') {
     decodeBtn.disabled = false;
   }
 }
+window.__stxBulkDecodeCurrent = decodeCurrent;
 (function bindBulkDecoderUi(){
 if (!(fileInput && decodeBtn && inputBox && clearBtn && exportBtn && resultsBody)) return;
 fileInput.addEventListener('change', async ev => {
