@@ -98,6 +98,7 @@
       var combatOnly = opts.combatOnly;
       var hideBossRank = opts.hideBossRank;
       var isTechnical = typeof opts.isTechnical === 'function' ? opts.isTechnical : function () { return false; };
+      var formatActorHeading = typeof opts.formatActorHeading === 'function' ? opts.formatActorHeading : null;
 
       if (!enemyTiers || !lootRef) {
         return function () { return { summaryShown: 0, tierShown: 0, actorShown: 0 }; };
@@ -248,10 +249,12 @@
             if (a.is_boss) pills += '<span class="pill pill--world">boss rank</span>';
             if (isTechnical() && a.balance_row) pills += '<span class="pill">balance: ' + esc(a.balance_row) + '</span>';
             card.innerHTML =
-              '<h3>' + pills + ' ' + esc(a.display_name) + '</h3>' +
+              (formatActorHeading
+                ? formatActorHeading(a, pills + ' ')
+                : '<h3>' + pills + ' ' + esc(a.display_name) + '</h3>') +
               '<p class="subtle">Uses generic loot tiers above — not a named dedicated drop boss. ' +
               'We do not map this mob to a specific Chump/Normal/Badass row yet.</p>' +
-              (isTechnical()
+              (isTechnical() && !formatActorHeading
                 ? '<details class="tech-details"><summary>Technical IDs</summary>' +
                   '<div class="meta-grid">' +
                   '<div>Actor: <code class="copyable" data-copy-label="Actor">' + esc(a.key) + '</code></div>' +

@@ -225,6 +225,17 @@
     .gear-card__row { font-size: 0.82rem; color: var(--muted); }
     .gear-card__row strong { color: var(--text); font-weight: 600; }
     .gear-card__phos { margin-top: 2px; }
+    .boss-code-line {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 4px 0 0;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .boss-code-line code {
+      font-size: 0.78rem;
+      color: rgba(255, 190, 120, 0.95);
+    }
     body:not(.technical-on) .col-tech { display: none; }
     body:not(.technical-on) .tech-only { display: none !important; }
     .drop-scale-filters {
@@ -835,6 +846,26 @@
         return null;
       }
 
+      /** In-game boss title + table row / actor / pool codes (always visible). */
+      function formatBossHeading(e, opts) {
+        opts = opts || {};
+        var inGame = String(e.display_name || '').trim() || String(e.row_name || '').trim() || '—';
+        var pills = opts.pills || '';
+        var bits = [];
+        if (e.row_name) {
+          bits.push('Row <code class="copyable" data-copy-label="Table row">' + esc(e.row_name) + '</code>');
+        }
+        var actor = e.character_def || e.actor_file;
+        if (actor) {
+          bits.push('Actor <code class="copyable" data-copy-label="Actor">' + esc(actor) + '</code>');
+        }
+        if (opts.showPool && e.itempool_list) {
+          bits.push('Pool <code class="copyable" data-copy-label="Loot pool">' + esc(e.itempool_list) + '</code>');
+        }
+        var codeLine = bits.length ? '<div class="boss-code-line">' + bits.join(' · ') + '</div>' : '';
+        return '<h3>' + esc(inGame) + (pills ? ' ' + pills : '') + '</h3>' + codeLine;
+      }
+
       function friendlyNote(note) {
         return String(note || '')
           .replace(/\bSTX\s*·\s*/gi, '')
@@ -1400,6 +1431,15 @@
         combatOnly: combatOnly,
         hideBossRank: hideBossRank,
         isTechnical: isTechnical,
+        formatActorHeading: function (a, pillsHtml) {
+          var inGame = String(a.display_name || '').trim() || String(a.key || '').trim() || '—';
+          var bits = [];
+          if (a.key) bits.push('Actor <code class="copyable" data-copy-label="Actor">' + esc(a.key) + '</code>');
+          if (a.balance_row) bits.push('Balance <code class="copyable" data-copy-label="Balance row">' + esc(a.balance_row) + '</code>');
+          if (a.parent_actor) bits.push('Parent <code class="copyable" data-copy-label="Parent">' + esc(a.parent_actor) + '</code>');
+          var codeLine = bits.length ? '<div class="boss-code-line">' + bits.join(' · ') + '</div>' : '';
+          return '<h3>' + (pillsHtml || '') + esc(inGame) + '</h3>' + codeLine;
+        },
       });
 
       function skinKindPill(kind) {
@@ -1677,10 +1717,9 @@
           var card = document.createElement('div');
           card.className = 'card';
           var drops = (e.shiny_drops || []).map(formatShinyDropLine).join('');
+          var phosPills = e.is_true_boss ? '<span class="pill">True Boss</span>' : '';
           card.innerHTML =
-            '<h3>' + esc(e.display_name) + (e.is_true_boss ? ' <span class="pill">True Boss</span>' : '') + '</h3>' +
-            (isTechnical() && e.character_def ? '<div class="sub">Actor: <code>' + esc(e.character_def) + '</code></div>' : '') +
-            (isTechnical() ? '<div class="sub">Pool: <code>' + esc(e.itempool_list) + '</code></div>' : '') +
+            formatBossHeading(e, { pills: phosPills, showPool: true }) +
             '<ul style="margin:8px 0 0 18px; padding:0;">' + drops + '</ul>';
           enemyCards.appendChild(card);
         });
@@ -1714,14 +1753,10 @@
           if (e.shiny_drop_count) pills += '<span class="pill pill--shiny">' + e.shiny_drop_count + ' shiny</span>';
           pills += '<span class="pill">' + (kindFilter ? filteredDrops.length : e.drop_count) + ' drop' + ((kindFilter ? filteredDrops.length : e.drop_count) === 1 ? '' : 's') + '</span>';
           card.innerHTML =
-            '<h3>' + esc(e.display_name) + ' ' + pills + '</h3>' +
-            (isTechnical()
-              ? '<div class="meta-grid">' +
-                '<div>Table row: <code>' + esc(e.row_name) + '</code></div>' +
-                (e.character_def ? '<div>Actor file: <code>' + esc(e.character_def) + '</code>' + (actorName ? ' · <span class="subtle">' + esc(actorName) + '</span>' : '') + '</div>' : '<div class="sub">Actor file: — (pool only)</div>') +
-                '<div>Loot pool: <code>' + esc(e.itempool_list) + '</code></div>' +
-                '</div>'
-              : '<p class="card-blurb">' + esc(actorName || e.display_name) + ' — click a drop for details.</p>') +
+            formatBossHeading(e, { pills: pills, showPool: true }) +
+            (isTechnical() && actorName && actorName !== e.display_name
+              ? '<p class="card-blurb subtle">Actor display: ' + esc(actorName) + '</p>'
+              : '<p class="card-blurb">Click a drop for details.</p>') +
             (drops ? '<ul class="drop-list">' + drops + '</ul>' : '<p class="sub">No loot entries parsed for this boss.</p>');
           allEnemyCards.appendChild(card);
         });
