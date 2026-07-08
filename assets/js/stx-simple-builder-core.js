@@ -2321,6 +2321,14 @@ function getAllParts(){
     }
   }
 
+  function stxRebuildCustomSelectIfWrapped(sel){
+    if (!sel) return;
+    stxSyncCustomSelectIfWrapped(sel);
+    if (typeof sel.__customSelectForceRebuild === 'function') {
+      try { sel.__customSelectForceRebuild(); } catch (_) {}
+    }
+  }
+
   function stxNormWeaponKeyFromUi(wtRaw){
     let wt = String(wtRaw || '').trim().toLowerCase();
     if (wt === 'submachine gun') wt = 'smg';
@@ -3444,6 +3452,8 @@ function getAllParts(){
     const pick = rows.find(r => !String(r && r.legendaryName || '').trim()) || rows[0] || null;
     
     const level = Number(guided.level) || 60;
+    const firmwareLockEl = document.getElementById('ccGuidedFirmwareLockFlag');
+    const firmwareLock = !!(firmwareLockEl && firmwareLockEl.checked);
     const buybackEl = document.getElementById('ccGuidedBuybackFlag');
     const buyback = !!(buybackEl && buybackEl.checked);
     
@@ -3463,7 +3473,8 @@ function getAllParts(){
     const itemId = (pick && Number.isFinite(Number(pick.itemId))) ? Number(pick.itemId) : 0;
     
     let header = `${familyId}, 0, 1, ${level}|`;
-    if (buyback) header += ' 9, 1|';
+    if (firmwareLock) header += ' 9, 1|';
+    if (buyback) header += ' 10, 1|';
     const seedBase = { familyId: familyId, itemId: itemId };
     const seed = getSeed(seedBase);
     header += ` 2, ${seed}||`;
@@ -3906,6 +3917,42 @@ function getAllParts(){
     if (/^broken\?+$/.test(nn) || /^broken\?{3,}$/i.test(nn.replace(/\s+/g, ''))) return true;
     return false;
   }
+
+  /** Class-mod body rows (`classmod_paladin.body_01`, `leg_body_*`) often ship with empty `partType` in the dataset. */
+  function stxIsClassModBodyPoolCode(code){
+    const c = String(normCode(code || '') || '').toLowerCase();
+    if (!c) return false;
+    if (/\.comp_/.test(c) || /comp_0[1-6]_/.test(c)) return false;
+    if (/leg_body_/.test(c)) return true;
+    if (/\.body_\d+/.test(c)) return true;
+    return false;
+  }
+
+  /** Class-mod rarity comp rows (`classmod_paladin.comp_04_epic`, etc.) also use empty `partType`. */
+  function stxIsClassModRarityCompCode(code){
+    const c = String(normCode(code || '') || '').toLowerCase();
+    if (!c) return false;
+    return /\.comp_0[1-6]_/.test(c) || /\.comp_05_legendary/.test(c) || /\.comp_06_pearlescent/.test(c);
+  }
+
+  /**
+   * Non-legendary class-mod bodies: `body_01`..`body_10` should use item ids 1..10 (name/skin slot).
+   * Stray dataset rows reuse rarity-comp ids (e.g. `body_01` id=221, `body_10` id=220) and show as epic rarity tokens in the body dropdown.
+   */
+  function stxIsValidClassModNonLegendaryBodyPart(p){
+    if (!p) return false;
+    const codeLo = String(normCode(p && p.code || '') || '').toLowerCase();
+    if (/leg_body_/.test(codeLo)) return false;
+    if (!/(?:^|[._])body_\d+/.test(codeLo)) return false;
+    const bm = codeLo.match(/body_(\d+)/);
+    if (!bm) return false;
+    const bodyNum = Number(bm[1]);
+    if (!Number.isFinite(bodyNum) || bodyNum < 1 || bodyNum > 10) return false;
+    const itemId = partItemIdOf(p);
+    if (!Number.isFinite(itemId) || itemId < 1 || itemId > 10) return false;
+    return itemId === bodyNum;
+  }
+  try { window.stxIsValidClassModNonLegendaryBodyPart = stxIsValidClassModNonLegendaryBodyPart; } catch (_e) {}
 
   function getLegacyClassModPartsByKind(charName, kindMatcher){
     try{
@@ -4408,7 +4455,8 @@ function getAllParts(){
           if (wantNorm === 'body'){
             const isBody = (ptNorm === 'body');
             const isLegBody = codeL.includes('leg_body_');
-            if (!(isBody || isLegBody)) return false;
+            const isBodyCode = stxIsClassModBodyPoolCode(code);
+            if (!(isBody || isLegBody || isBodyCode)) return false;
           } else if (wantNorm === 'name+skin'){
             if (!ptNorm.startsWith('name+skin')) return false;
           } else if (wantNorm === 'skill'){
@@ -4429,7 +4477,8 @@ function getAllParts(){
             const isCorrectClassModFirmware = isFirmware && codeL.includes('part_firmware');
             if (!isCorrectClassModFirmware) return false;
           } else if (wantNorm === 'rarity'){
-            if (!(ptNorm === 'rarity' || ptNorm === 'item card')) return false;
+            const isRarityPt = (ptNorm === 'rarity' || ptNorm === 'item card');
+            if (!(isRarityPt || stxIsClassModRarityCompCode(code))) return false;
           } else {
             if (String(p.partType||'') !== String(partType||'')) return false;
           }
@@ -5325,6 +5374,9 @@ function refreshMainPartSync(){
         const isLeg = c.includes('leg_body_');
         return wantLegendary ? isLeg : !isLeg;
       });
+      if (!wantLegendary) {
+        partsList = partsList.filter(stxIsValidClassModNonLegendaryBodyPart);
+      }
       const seenMain = new Set();
       partsList = partsList.filter(p => {
         const iid = Number(partItemIdOf(p));
@@ -9771,19 +9823,22 @@ function computeFullDeserializedCode(){
       if (!/\|\s*$/.test(tail)) tail = tail + '|';
     }
 
-    // Optional buyback flag segment (emitted only when checked).
+    // Optional serial modifier segments after level (firmware lock 9,1; buyback 10,1).
   const lockFirmware = !!(
     (state && state.lockFirmware) ||
     ($('lockFirmware') && $('lockFirmware').checked) ||
-    ($('firmwareLock') && $('firmwareLock').checked)
+    ($('firmwareLock') && $('firmwareLock').checked) ||
+    (document.getElementById('ccGuidedFirmwareLockFlag') && document.getElementById('ccGuidedFirmwareLockFlag').checked)
   );
   const buybackFlag = !!(
     (state && state.buybackFlag) ||
-    ($('buybackFlag') && $('buybackFlag').checked)
+    ($('buybackFlag') && $('buybackFlag').checked) ||
+    (document.getElementById('ccGuidedBuybackFlag') && document.getElementById('ccGuidedBuybackFlag').checked)
   );
 
   let out = `${base.familyId}, 0, 1, ${level}|`;
-  if (lockFirmware || buybackFlag) out += ` 9, 1|`;
+  if (lockFirmware) out += ` 9, 1|`;
+  if (buybackFlag) out += ` 10, 1|`;
     out += ` 2, ${seed}||`;
     if (tail){
       out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
@@ -9825,19 +9880,22 @@ function computeFullDeserializedCode(){
   }
   const tail = tailPartsNw.join(' ').trim();
 
-  // Optional buyback flag segment (emitted only when checked).
+  // Optional serial modifier segments after level (firmware lock 9,1; buyback 10,1).
   const lockFirmware = !!(
     (state && state.lockFirmware) ||
     ($('lockFirmware') && $('lockFirmware').checked) ||
-    ($('firmwareLock') && $('firmwareLock').checked)
+    ($('firmwareLock') && $('firmwareLock').checked) ||
+    (document.getElementById('ccGuidedFirmwareLockFlag') && document.getElementById('ccGuidedFirmwareLockFlag').checked)
   );
   const buybackFlag = !!(
     (state && state.buybackFlag) ||
-    ($('buybackFlag') && $('buybackFlag').checked)
+    ($('buybackFlag') && $('buybackFlag').checked) ||
+    (document.getElementById('ccGuidedBuybackFlag') && document.getElementById('ccGuidedBuybackFlag').checked)
   );
 
   let out = `${base.familyId}, 0, 1, ${level}|`;
-  if (lockFirmware || buybackFlag) out += ` 9, 1|`;
+  if (lockFirmware) out += ` 9, 1|`;
+  if (buybackFlag) out += ` 10, 1|`;
   out += ` 2, ${seed}||`;
   if (tail){
     out += /\|\s*$/.test(tail) ? ` ${tail}` : ` ${tail}|`;
@@ -10152,7 +10210,9 @@ function resetAll(){
     state.swapBodyLegendary = false;
     state.__seedEnabled = false;
     state.buybackFlag = false;
+    state.lockFirmware = false;
     if ($('buybackFlag')) $('buybackFlag').checked = false;
+    if ($('firmwareLock')) $('firmwareLock').checked = false;
     stxSyncAllPartsToggleUi(false);
     state.seedAuto = null;
     state.seedKey = null;
@@ -11749,7 +11809,9 @@ function resetAll(){
   state.rarity = $('rarity').value||'';
   // Rarity affects the core pool for several categories (notably Class Mods and Enhancements),
   // so rebuild the rarity-id part selector and dependent slots when it changes.
-  invokeRefreshMainPart(true);
+  const runRarityRefresh = () => { try { invokeRefreshMainPart(true); } catch (_e) {} };
+  if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runRarityRefresh);
+  else runRarityRefresh();
 });
 
     if ($('skinSelect')){
@@ -11952,6 +12014,10 @@ function resetAll(){
       state.buybackFlag = $('buybackFlag').checked;
       refreshBuilder();
     });
+    if ($('firmwareLock')) $('firmwareLock').addEventListener('change', ()=>{
+      state.lockFirmware = $('firmwareLock').checked;
+      refreshBuilder();
+    });
     var pearlOv = document.getElementById('stxPearlOverride');
     if (pearlOv) {
       pearlOv.addEventListener('change', ()=>{
@@ -12022,6 +12088,32 @@ function resetAll(){
     }
   }
 
+  const STX_SIMPLE_PRESET_BOOST_POOLS_FALLBACK = Object.freeze({
+    damage: [{ key: 22, value: '72' }, { key: 9, value: '28' }, { key: 9, value: '32' }, { key: 9, value: '40' }, { key: 9, value: '55' }, { key: 9, value: '59' }, { key: 9, value: '62' }, { key: 9, value: '68' }],
+    accuracy: [{ key: 13, value: '12' }, { key: 9, value: '48' }],
+    reload: [{ key: 24, value: '44' }, { key: 9, value: '61' }],
+    firerate: [{ key: 14, value: '1' }, { key: 27, value: '15' }],
+    ammo: [{ key: 18, value: '14' }, { key: 27, value: '75' }],
+    splash: [{ key: 6, value: '33' }, { key: 9, value: '89' }, { key: 24, value: '18' }, { key: 243, value: '32' }, { key: 243, value: '33' }, { key: 243, value: '34' }, { key: 243, value: '35' }, { key: 243, value: '36' }],
+    crit: [{ key: 3, value: '6' }, { key: 24, value: '33' }, { key: 243, value: '37' }, { key: 243, value: '38' }, { key: 243, value: '39' }, { key: 243, value: '40' }, { key: 243, value: '41' }],
+    splat: [{ key: 243, value: '32' }, { key: 243, value: '33' }, { key: 243, value: '34' }, { key: 243, value: '35' }, { key: 243, value: '36' }],
+    nova: [{ key: 243, value: '37' }, { key: 243, value: '38' }, { key: 243, value: '39' }, { key: 243, value: '40' }, { key: 243, value: '41' }],
+    immunity: [{ key: 243, value: '27' }, { key: 243, value: '28' }, { key: 243, value: '29' }, { key: 243, value: '31' }, { key: 243, value: '42' }, { key: 243, value: '43' }, { key: 243, value: '44' }, { key: 243, value: '46' }],
+    resistance: [{ key: 243, value: '22' }, { key: 243, value: '23' }, { key: 243, value: '24' }, { key: 243, value: '26' }, { key: 243, value: '47' }, { key: 243, value: '49' }, { key: 243, value: '50' }, { key: 243, value: '51' }],
+    elemental: [{ key: 243, value: '98' }, { key: 243, value: '99' }, { key: 243, value: '100' }, { key: 243, value: '101' }, { key: 243, value: '102' }]
+  });
+
+  function stxSimplePresetBoostPoolsReady(pools){
+    if (!pools || typeof pools !== 'object') return false;
+    return Object.keys(pools).some((k) => Array.isArray(pools[k]) && pools[k].length);
+  }
+
+  function getSimplePresetBoostPools(){
+    const w = window.PRESET_BOOST_POOLS;
+    if (stxSimplePresetBoostPoolsReady(w)) return w;
+    return STX_SIMPLE_PRESET_BOOST_POOLS_FALLBACK;
+  }
+
   function loadSimplePresets() {
     const sel = $('simpleBuilderPresetSelect');
     const moreSel = $('simpleBuilderMorePresetSelect');
@@ -12041,7 +12133,6 @@ function resetAll(){
       ['resistance', 'Repkit — Resistance'],
       ['elemental', 'Repkit — Elemental']
     ];
-    const pools = window.PRESET_BOOST_POOLS || {};
     function tokenForPresetEntry(entry) {
       if (!entry) return '';
       if (entry.bareId) return '{' + String(entry.bareId) + '}';
@@ -12088,8 +12179,8 @@ function resetAll(){
     const updateSimplePresets = () => {
       const currentVal = sel.value;
       const currentMore = moreSel ? moreSel.value : '';
-      const poolKeys = Object.keys(pools || {});
-      const hasPools = poolKeys.some(function (k) { return Array.isArray(pools[k]) && pools[k].length; });
+      const pools = getSimplePresetBoostPools();
+      const hasPools = stxSimplePresetBoostPoolsReady(pools);
       sel.innerHTML = hasPools
         ? '<option value="">-- Select preset part --</option>'
         : '<option value="">Loading preset parts…</option>';
@@ -12109,29 +12200,41 @@ function resetAll(){
         if (group.children.length) sel.appendChild(group);
       }
       if (currentVal) sel.value = currentVal;
-      try { stxSyncCustomSelectIfWrapped(sel); } catch (_) {}
+      try { stxRebuildCustomSelectIfWrapped(sel); } catch (_) {}
       if (moreSel && typeof window.populateFlatMorePresetParts === 'function') {
         window.populateFlatMorePresetParts(moreSel);
         if (currentMore) moreSel.value = currentMore;
-        try { stxSyncCustomSelectIfWrapped(moreSel); } catch (_) {}
+        try { stxRebuildCustomSelectIfWrapped(moreSel); } catch (_) {}
       }
     };
 
-    updateSimplePresets();
-    const itemTypeEl = $('itemType');
-    if (itemTypeEl && !itemTypeEl.__simplePresetItemTypeBound) {
-      itemTypeEl.__simplePresetItemTypeBound = true;
-      itemTypeEl.addEventListener('change', () => {
+    if (!sel.__simplePresetHooksBound) {
+      sel.__simplePresetHooksBound = true;
+      const itemTypeEl = $('itemType');
+      if (itemTypeEl) {
+        itemTypeEl.addEventListener('change', () => {
+          try { updateSimplePresets(); } catch (_) {}
+        });
+      }
+      const refreshAfterDeferred = () => {
         try { updateSimplePresets(); } catch (_) {}
-      });
+      };
+      window.addEventListener('stx:deferred-core-ready', refreshAfterDeferred);
+      window.addEventListener('stx:full-scripts-ready', refreshAfterDeferred);
     }
+
+    try { window.refreshSimpleBuilderPresets = updateSimplePresets; } catch (_) {}
+
+    updateSimplePresets();
     if (!sel.__simplePresetReloadTimer) {
       var tries = 0;
       sel.__simplePresetReloadTimer = setInterval(() => {
         tries++;
         updateSimplePresets();
         const parts = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : [];
-        if ((parts.length && tries >= 2) || tries > 20) {
+        const poolsReady = stxSimplePresetBoostPoolsReady(window.PRESET_BOOST_POOLS);
+        const datasetReady = parts.length > 0;
+        if ((poolsReady && datasetReady) || tries > 40) {
           clearInterval(sel.__simplePresetReloadTimer);
           sel.__simplePresetReloadTimer = null;
         }
@@ -12229,9 +12332,11 @@ function resetAll(){
       const ccEl = document.getElementById('ccPartEntryMode');
       if (ccEl) ccEl.checked = state.idMode;
     }
-    // Buyback flag (appends "| 9, 1|" after level)
+    // Serial modifiers after level: firmware lock (9,1), buyback (10,1)
     state.buybackFlag = false;
+    state.lockFirmware = false;
     if ($('buybackFlag')) $('buybackFlag').checked = false;
+    if ($('firmwareLock')) $('firmwareLock').checked = false;
     // Part pool scope (manufacturer-only vs all manufacturers)
     stxSyncAllPartsToggleUi(false);
     state.forceTypeIdTokens = false;

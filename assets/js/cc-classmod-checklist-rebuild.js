@@ -1128,7 +1128,8 @@
     var lockFirmware = !!(
       (state && state.lockFirmware) ||
       (byId('lockFirmware') && byId('lockFirmware').checked) ||
-      (byId('firmwareLock') && byId('firmwareLock').checked)
+      (byId('firmwareLock') && byId('firmwareLock').checked) ||
+      (byId('ccGuidedFirmwareLockFlag') && byId('ccGuidedFirmwareLockFlag').checked)
     );
     var buybackFlag = !!(
       (state && state.buybackFlag) ||
@@ -1145,7 +1146,8 @@
     }
 
     var out = family + ', 0, 1, ' + level + '|';
-    if (lockFirmware || buybackFlag) out += ' 9, 1|';
+    if (lockFirmware) out += ' 9, 1|';
+    if (buybackFlag) out += ' 10, 1|';
     if (Number(seed) !== 0) out += ' 2, ' + seed + '||';
     else out += '||';
     out += normalizedTokens.length ? (' ' + normalizedTokens.join(' ') + '|') : '|';

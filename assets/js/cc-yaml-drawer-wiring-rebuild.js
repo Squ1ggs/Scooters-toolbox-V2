@@ -393,6 +393,7 @@
         syncBlackMarketFieldsFromYamlData(data);
         if (typeof window.__ccEnsureBlackMarketCompDatalist === 'function') window.__ccEnsureBlackMarketCompDatalist();
         if (typeof window.__ccUpdatePresetCosmeticUnlockCountUi === 'function') window.__ccUpdatePresetCosmeticUnlockCountUi();
+        if (typeof window.__ccSyncProfileProgressionToolsFromYaml === 'function') window.__ccSyncProfileProgressionToolsFromYaml();
         var achTa = byId('yaml-profile-stats-achievements-text');
         if (achTa && typeof window.__ccAchievementsToLines === 'function') {
           var achObj = data.stats && data.stats.achievements;
@@ -404,6 +405,7 @@
         var pt = byId('yaml-profile-cosmetics-preset-cats');
         if (pc) pc.textContent = '—';
         if (pt) pt.textContent = '—';
+        if (typeof window.__ccSyncProfileProgressionToolsFromYaml === 'function') window.__ccSyncProfileProgressionToolsFromYaml();
         var achTaClear = byId('yaml-profile-stats-achievements-text');
         if (achTaClear) achTaClear.value = '';
       }

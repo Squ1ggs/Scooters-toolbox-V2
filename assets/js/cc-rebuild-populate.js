@@ -360,6 +360,7 @@
       }
       attachSelectFullTitle(moreSel);
     } catch (_) {}
+    syncPopulatedCustomSelect(moreSel);
   }
 
   var __presetSelectMutexWired = Object.create(null);
@@ -508,6 +509,18 @@
    * @param {HTMLSelectElement|null} morePartSel - Optional "more catalog" part select
    * @param {object} opts - Optional { formatLabel, onOption }
    */
+  function syncPopulatedCustomSelect(sel) {
+    if (!sel) return;
+    if (typeof sel.__customSelectSync === 'function') {
+      try { sel.__customSelectSync(); } catch (_) {}
+    }
+    if (typeof sel.__customSelectForceRebuild === 'function') {
+      try { sel.__customSelectForceRebuild(); } catch (_) {}
+    } else if (typeof sel.__customSelectPrebuild === 'function') {
+      try { sel.__customSelectPrebuild(); } catch (_) {}
+    }
+  }
+
   function populatePresetParts(catSel, partSel, getToken, morePartSel, opts) {
     var tokFn = typeof getToken === 'function' ? getToken : getPartTokenForPopulate;
     if (!catSel) return;
@@ -543,6 +556,9 @@
       fillPresetSelectFromIdRawPool(partSel, pool, parts, tokFn, opts);
       populateMorePresetParts(catSel, morePartSel, getToken, opts);
     } catch (_) {}
+    syncPopulatedCustomSelect(catSel);
+    syncPopulatedCustomSelect(partSel);
+    syncPopulatedCustomSelect(morePartSel);
   }
 
   function populateMorePresetParts(catSel, morePartSel, getToken, opts) {
@@ -567,6 +583,7 @@
       if (og.children.length) morePartSel.appendChild(og);
       attachSelectFullTitle(morePartSel);
     } catch (_) {}
+    syncPopulatedCustomSelect(morePartSel);
   }
 
   function populatePresetCategories(catSel) {
@@ -803,4 +820,7 @@
   window.populateLegendaryPerks = populateLegendaryPerks;
   window.collectLegendaryPerkDropdownParts = collectLegendaryPerkDropdownParts;
   window.PRESET_BOOST_POOLS = PRESET_BOOST_POOLS;
+  try {
+    if (typeof window.refreshSimpleBuilderPresets === 'function') window.refreshSimpleBuilderPresets();
+  } catch (_) {}
 })();

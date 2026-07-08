@@ -61,6 +61,7 @@
     './assets/js/cc-lazy-bundles-rebuild.js',
     './assets/js/cc-prefix-item-search-rebuild.js',
     './assets/data/preset_data.js',
+    './assets/data/profile_progression_catalog.js',
     './assets/data/yaml_save_catalog.js',
     './assets/js/cc-preset-data-rebuild.js',
     './assets/js/cc-preset-rebuild.js',
@@ -75,6 +76,7 @@
     './assets/js/cc-toolbox-public-counter.js',
     './assets/js/cc-yaml-extras-rebuild.js',
     './assets/js/cc-missions-rebuild.js',
+    './assets/js/cc-profile-progression-tools-rebuild.js',
     './assets/js/cc-yaml-drawer-wiring-rebuild.js'
   ];
 

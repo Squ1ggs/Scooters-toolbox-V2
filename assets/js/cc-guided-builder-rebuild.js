@@ -2760,6 +2760,8 @@
     if (typeof window.clampItemLevel === 'function') level = window.clampItemLevel(level);
     else if (level > 60) level = 60;
 
+    var firmwareLockEl = byId('ccGuidedFirmwareLockFlag');
+    var firmwareLock = !!(firmwareLockEl && firmwareLockEl.checked);
     var buybackEl = byId('ccGuidedBuybackFlag');
     var buyback = !!(buybackEl && buybackEl.checked);
 
@@ -2823,7 +2825,8 @@
     }
 
     var header = familyId + ', 0, 1, ' + level + '|';
-    if (buyback) header += ' 9, 1|';
+    if (firmwareLock) header += ' 9, 1|';
+    if (buyback) header += ' 10, 1|';
     header += ' 2, ' + seed + '||';
     return header;
   }
@@ -4983,6 +4986,14 @@
         clearGuidedImportLock();
         syncGuidedToSimple();
         try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+      });
+    }
+    var guidedFirmwareLock = byId('ccGuidedFirmwareLockFlag');
+    if (guidedFirmwareLock) {
+      guidedFirmwareLock.addEventListener('change', function () {
+        clearGuidedImportLock();
+        try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+        try { if (typeof window.refreshOutputs === 'function') window.refreshOutputs(); } catch (_) {}
       });
     }
     var guidedBuyback = byId('ccGuidedBuybackFlag');
