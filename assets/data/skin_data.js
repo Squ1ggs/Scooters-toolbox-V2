@@ -261,7 +261,9 @@
     { value: "Cosmetics_Weapon_Shiny_wombocombo", label: "Phosphene — Wombocombo" },
     { value: "Cosmetics_Weapon_Shiny_WomboCombo", label: "Phosphene — Wombo Combo" },
     { value: "Cosmetics_Weapon_Shiny_zipgun", label: "Phosphene — Zipgun" },
-    { value: "Cosmetics_Weapon_Shiny_Zipgun", label: "Phosphene — Zipper" }
+    { value: "Cosmetics_Weapon_Shiny_Zipgun", label: "Phosphene — Zipper" },
+    { value: "Cosmetics_Weapon_Shiny_jailbroken", label: "Phosphene — Jail-Broken Gatling" },
+    { value: "Cosmetics_Weapon_Shiny_shammy", label: "Phosphene — Shammy" }
   ];
 
 var EXTRA_SKINS = [

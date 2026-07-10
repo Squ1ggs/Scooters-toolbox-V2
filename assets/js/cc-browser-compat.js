@@ -283,4 +283,91 @@
   if (window.stxIsFileProtocol()) {
     window.STX_DECODER_USE_INLINE = true;
   }
+
+  /**
+   * Shared-host deploy base (e.g. save-editor.be/Scooters_TBX).
+   * Root-absolute href="/…" would otherwise open save-editor.be/ (another toolbox).
+   */
+  function stxDetectDeployBase() {
+    try {
+      var canon = document.querySelector('link[rel="canonical"]');
+      if (canon && canon.getAttribute('href')) {
+        var cu = new URL(canon.getAttribute('href'), location.href);
+        var cp = (cu.pathname || '').replace(/\/+$/, '');
+        if (cp && cp !== '/') return cp;
+      }
+    } catch (_) {}
+    try {
+      var parts = (location.pathname || '/').split('/').filter(Boolean);
+      if (parts.length >= 2 && (parts[1] === 'legacy' || parts[1] === 'assets')) {
+        return '/' + parts[0];
+      }
+      if (parts[0] === 'legacy' || parts[0] === 'assets') return '';
+      if (parts.length === 1 && parts[0] !== 'index.html') return '/' + parts[0];
+    } catch (_) {}
+    return '';
+  }
+
+  function stxHref(path) {
+    path = String(path || '');
+    if (!path || /^[a-z][a-z0-9+.-]*:/i.test(path) || path.indexOf('//') === 0) return path;
+    if (path.charAt(0) !== '/') return path;
+    var base = window.stxDeployBase || '';
+    if (!base) return path;
+    if (path === '/') return base + '/';
+    return base + path;
+  }
+
+  function stxFixRootLinks(root) {
+    var scope = root && root.querySelectorAll ? root : document;
+    scope.querySelectorAll('a[href^="/"]').forEach(function (a) {
+      var h = a.getAttribute('href');
+      if (!h || h.charAt(0) !== '/' || h.indexOf('//') === 0) return;
+      var fixed = stxHref(h);
+      if (fixed !== h) a.setAttribute('href', fixed);
+    });
+  }
+
+  function stxRefreshDeployBase() {
+    window.stxDeployBase = stxDetectDeployBase();
+  }
+
+  stxRefreshDeployBase();
+  window.stxHref = stxHref;
+  window.stxFixRootLinks = stxFixRootLinks;
+  window.stxRefreshDeployBase = stxRefreshDeployBase;
+
+  function stxRunDeployLinkFix() {
+    stxRefreshDeployBase();
+    stxFixRootLinks(document);
+    if (touchUi) {
+      document.querySelectorAll(
+        'a.stx-touch-tool-nav-link[href][target="_blank"], .stxDockMoreToolsLinks a.btn--brand[href][target="_blank"], #rebuildToolsPanel a.btn--brand[href][target="_blank"]'
+      ).forEach(function (a) {
+        try {
+          var u = new URL(a.getAttribute('href'), location.href);
+          if (u.origin === location.origin) a.removeAttribute('target');
+        } catch (_) {}
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', stxRunDeployLinkFix, { once: true });
+  } else {
+    stxRunDeployLinkFix();
+  }
+
+  try {
+    var stxDeployLinkObserver = new MutationObserver(function (muts) {
+      muts.forEach(function (m) {
+        m.addedNodes.forEach(function (n) {
+          if (n.nodeType !== 1) return;
+          if (n.matches && n.matches('a[href^="/"]')) stxFixRootLinks(n.parentNode || document);
+          else if (n.querySelectorAll) stxFixRootLinks(n);
+        });
+      });
+    });
+    stxDeployLinkObserver.observe(document.documentElement, { childList: true, subtree: true });
+  } catch (_) {}
 })();

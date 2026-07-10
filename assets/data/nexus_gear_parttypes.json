@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "totalRootsScanned": 148,
-    "totalRootsKept": 148
+    "totalRootsScanned": 144,
+    "totalRootsKept": 144
   },
   "roots": [
     {
@@ -353,9 +353,7 @@
           "leg_body_05",
           "leg_body_06",
           "leg_body_dlc1",
-          "leg_body_raid1",
-          "leg_body_raid2",
-          "leg_body_tuba"
+          "leg_body_raid1"
         ],
         "stat_group1": [
           "stat_actionskill_damage",
@@ -365,8 +363,7 @@
           "stat_reload_speed",
           "stat_all_damage",
           "stat_fire_rate",
-          "stat_ordnance_damage",
-          "stat_criticalhitchance_gun"
+          "stat_ordnance_damage"
         ]
       }
     },
@@ -1209,14 +1206,6 @@
       "slotAllowlist": {}
     },
     {
-      "rootKey": "pickup_cos_shieldbooster",
-      "inv": "Pickup_CoS_ShieldBooster",
-      "baseType": "",
-      "typeId": null,
-      "parttypes": [],
-      "slotAllowlist": {}
-    },
-    {
       "rootKey": "repair_kit",
       "inv": "repair_kit",
       "baseType": "",
@@ -1982,14 +1971,6 @@
       "slotAllowlist": null
     },
     {
-      "rootKey": "weapon_ai_custombase",
-      "inv": "Weapon_AI_CustomBase",
-      "baseType": "inv'Weapon'",
-      "typeId": null,
-      "parttypes": [],
-      "slotAllowlist": null
-    },
-    {
       "rootKey": "weapon_ar",
       "inv": "Weapon_AR",
       "baseType": "inv'Weapon'",
@@ -2059,28 +2040,6 @@
       "typeId": null,
       "parttypes": [
         "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_emp",
-      "inv": "Weapon_DahlMech_EMP",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_energygun",
-      "inv": "Weapon_DahlMech_EnergyGun",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "Body",
         "body_ele"
       ],
       "slotAllowlist": null

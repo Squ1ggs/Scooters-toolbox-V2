@@ -7,7 +7,7 @@ window.ENEMY_DROPS_DATA = {
   "rows": [
     {
       "name": "Badass",
-      "guns_probability": 0.66,
+      "guns_probability": 0.33,
       "guns_howmany_dist": {
         "defaultValue": 2,
         "defaultChance": null,
@@ -66,7 +66,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.2,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 1
     },
     {
       "name": "BadassCorrupt",
@@ -102,11 +103,12 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.3,
       "classmods_howmany_dist": null,
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     {
       "name": "BadassSuper",
-      "guns_probability": 0.66,
+      "guns_probability": 0.5,
       "guns_howmany_dist": {
         "defaultValue": 2,
         "defaultChance": null,
@@ -138,7 +140,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.25,
       "classmods_howmany_dist": null,
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     {
       "name": "Boss",
@@ -210,7 +213,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     {
       "name": "BossMini",
@@ -282,7 +286,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     {
       "name": "BossRaid",
@@ -358,7 +363,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     {
       "name": "BossVault",
@@ -434,7 +440,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     {
       "name": "Chump",
@@ -465,7 +472,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.05,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.75
     },
     {
       "name": "Elite",
@@ -528,7 +536,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.1,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.5
     },
     {
       "name": "Loot",
@@ -600,7 +609,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     {
       "name": "Normal",
@@ -663,13 +673,14 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.05,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.5
     }
   ],
   "byName": {
     "Badass": {
       "name": "Badass",
-      "guns_probability": 0.66,
+      "guns_probability": 0.33,
       "guns_howmany_dist": {
         "defaultValue": 2,
         "defaultChance": null,
@@ -728,7 +739,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.2,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 1
     },
     "BadassCorrupt": {
       "name": "BadassCorrupt",
@@ -764,11 +776,12 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.3,
       "classmods_howmany_dist": null,
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     "BadassSuper": {
       "name": "BadassSuper",
-      "guns_probability": 0.66,
+      "guns_probability": 0.5,
       "guns_howmany_dist": {
         "defaultValue": 2,
         "defaultChance": null,
@@ -800,7 +813,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.25,
       "classmods_howmany_dist": null,
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     "Boss": {
       "name": "Boss",
@@ -872,7 +886,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     "BossMini": {
       "name": "BossMini",
@@ -944,7 +959,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     "BossRaid": {
       "name": "BossRaid",
@@ -1020,7 +1036,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     "BossVault": {
       "name": "BossVault",
@@ -1096,7 +1113,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 1,
-      "classmods_howmany_expected": 1
+      "classmods_howmany_expected": 1,
+      "currencyorammo_probability": 1
     },
     "Chump": {
       "name": "Chump",
@@ -1127,7 +1145,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.05,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.75
     },
     "Elite": {
       "name": "Elite",
@@ -1190,7 +1209,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.1,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.5
     },
     "Loot": {
       "name": "Loot",
@@ -1262,7 +1282,8 @@ window.ENEMY_DROPS_DATA = {
         ]
       },
       "classmods_howmany": 2,
-      "classmods_howmany_expected": 2
+      "classmods_howmany_expected": 2,
+      "currencyorammo_probability": 1
     },
     "Normal": {
       "name": "Normal",
@@ -1325,7 +1346,8 @@ window.ENEMY_DROPS_DATA = {
       "classmods_probability": 0.05,
       "classmods_howmany_dist": null,
       "classmods_howmany": null,
-      "classmods_howmany_expected": null
+      "classmods_howmany_expected": null,
+      "currencyorammo_probability": 0.5
     }
   }
 };

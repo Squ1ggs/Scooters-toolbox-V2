@@ -1,7 +1,7 @@
 {
-  "generated": "2026-07-02T16:35:03.403Z",
+  "generated": "2026-07-09T22:50:54.251Z",
   "source": "Nexus gbx_ue_data_table + inv_name_part + preferredparts",
-  "total_entries": 1460,
+  "total_entries": 1362,
   "by_prefix": {
     "X-Y Combo": [
       {
@@ -586,13 +586,6 @@
         "col_key": "part_core_dad_backupplan",
         "prefix": "Collector",
         "required_parts": "Part_Core_DAD_Stockpiler + part_core_dad_backupplan"
-      },
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Collector",
-        "prefix": "Collector",
-        "required_parts": "np_Collector"
       }
     ],
     "Steward": [
@@ -740,13 +733,6 @@
         "part_id": "np_cm_exo_08",
         "prefix": "Trooper",
         "required_parts": "np_cm_exo_08"
-      },
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_grav_leg_raid1",
-        "prefix": "Trooper",
-        "required_parts": "np_cm_grav_leg_raid1"
       }
     ],
     "Vanguard": [
@@ -2113,15 +2099,6 @@
         "col_key": "part_stat_weapon_equipspeed",
         "prefix": "Snappy",
         "required_parts": "Part_Stat_Weapon_FireRate + part_stat_weapon_equipspeed"
-      },
-      {
-        "source": "gbx_ue_data_table",
-        "table": "EnhancementNamingStatCombinationsTable",
-        "type": "part_slot_mag",
-        "row_key": "Part_Stat_Weapon_EquipSpeed",
-        "col_key": "part_stat_weapon_firerate",
-        "prefix": "Snappy",
-        "required_parts": "Part_Stat_Weapon_EquipSpeed + part_stat_weapon_firerate"
       }
     ],
     "Disgorging": [
@@ -2739,13 +2716,6 @@
         "col_key": "part_stat_weapon_splashdamage",
         "prefix": "Hotshot",
         "required_parts": "Part_Stat_Weapon_CriticalDamage + part_stat_weapon_splashdamage"
-      },
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_03",
-        "prefix": "Hotshot",
-        "required_parts": "np_cm_robo_leg_03"
       }
     ],
     "Collateral": [
@@ -3557,6 +3527,17 @@
         "col_key": "part_stat_weapon_equipspeed",
         "prefix": "Legerdemain",
         "required_parts": "Part_Stat_Weapon_EquipSpeed + part_stat_weapon_equipspeed"
+      }
+    ],
+    "Sanppy": [
+      {
+        "source": "gbx_ue_data_table",
+        "table": "EnhancementNamingStatCombinationsTable",
+        "type": "part_slot_mag",
+        "row_key": "Part_Stat_Weapon_EquipSpeed",
+        "col_key": "part_stat_weapon_firerate",
+        "prefix": "Sanppy",
+        "required_parts": "Part_Stat_Weapon_EquipSpeed + part_stat_weapon_firerate"
       }
     ],
     "Prestidigital": [
@@ -6517,10 +6498,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "default",
         "prefix": "-Provided",
-        "required_parts": "licensed_ted (default mag)"
+        "required_parts": "NewRow (default mag)"
       }
     ],
     "-Inspired": [
@@ -7710,10 +7691,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "borg_mag",
         "prefix": "-Stuffed",
-        "required_parts": "licensed_ted + borg_mag"
+        "required_parts": "NewRow + borg_mag"
       }
     ],
     "-Exploding": [
@@ -7721,10 +7702,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "cov_mag",
         "prefix": "-Exploding",
-        "required_parts": "licensed_ted + cov_mag"
+        "required_parts": "NewRow + cov_mag"
       }
     ],
     "-Jobbed": [
@@ -7732,10 +7713,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "default",
         "prefix": "-Jobbed",
-        "required_parts": "licensed_ted (default mag)"
+        "required_parts": "NewRow (default mag)"
       }
     ],
     "Topping": [
@@ -8480,10 +8461,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "borg_mag",
         "prefix": "-Affixed",
-        "required_parts": "licensed_ted + borg_mag"
+        "required_parts": "NewRow + borg_mag"
       }
     ],
     "-Installed": [
@@ -8491,10 +8472,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "cov_mag",
         "prefix": "-Installed",
-        "required_parts": "licensed_ted + cov_mag"
+        "required_parts": "NewRow + cov_mag"
       }
     ],
     "-Wasted": [
@@ -8502,10 +8483,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "licensed_ted",
+        "row_key": "NewRow",
         "col_key": "tor_mag",
         "prefix": "-Wasted",
-        "required_parts": "licensed_ted + tor_mag"
+        "required_parts": "NewRow + tor_mag"
       }
     ],
     "Party's": [
@@ -10283,915 +10264,6 @@
         "part_id": "np_Zipgun",
         "prefix": "Zipper",
         "required_parts": "np_Zipgun"
-      }
-    ],
-    "Abyss": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Abyss",
-        "prefix": "Abyss",
-        "required_parts": "np_Abyss"
-      }
-    ],
-    "ARC-TAN": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_arctic",
-        "prefix": "ARC-TAN",
-        "required_parts": "np_arctic"
-      }
-    ],
-    "Barb'ara": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_barb",
-        "prefix": "Barb'ara",
-        "required_parts": "np_barb"
-      }
-    ],
-    "Cooper Duper": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Barrel",
-        "prefix": "Cooper Duper",
-        "required_parts": "np_Barrel"
-      }
-    ],
-    "Bismuth-Tipped Dagger": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Bismuth",
-        "prefix": "Bismuth-Tipped Dagger",
-        "required_parts": "np_Bismuth"
-      }
-    ],
-    "Hardpoint": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Breadth",
-        "prefix": "Hardpoint",
-        "required_parts": "np_Breadth"
-      }
-    ],
-    "Brickhouse": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_brickhouse",
-        "prefix": "Brickhouse",
-        "required_parts": "np_brickhouse"
-      }
-    ],
-    "Bubbles": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_bubbles",
-        "prefix": "Bubbles",
-        "required_parts": "np_bubbles"
-      }
-    ],
-    "Configuration": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_ds_leg_dlc1",
-        "prefix": "Configuration",
-        "required_parts": "np_cm_ds_leg_dlc1"
-      }
-    ],
-    "Grim Sister": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_ds_leg_raid2",
-        "prefix": "Grim Sister",
-        "required_parts": "np_cm_ds_leg_raid2"
-      }
-    ],
-    "Reaparición": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_exo_leg_cowbell",
-        "prefix": "Reaparición",
-        "required_parts": "np_cm_exo_leg_cowbell"
-      }
-    ],
-    "Bombastic": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_exo_leg_raid2",
-        "prefix": "Bombastic",
-        "required_parts": "np_cm_exo_leg_raid2"
-      }
-    ],
-    "Phlebotomist": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_grav_leg_cowbell",
-        "prefix": "Phlebotomist",
-        "required_parts": "np_cm_grav_leg_cowbell"
-      }
-    ],
-    "Plasmaphile": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_grav_leg_raid2",
-        "prefix": "Plasmaphile",
-        "required_parts": "np_cm_grav_leg_raid2"
-      }
-    ],
-    "Tempest": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_pld_leg_cowbell",
-        "prefix": "Tempest",
-        "required_parts": "np_cm_pld_leg_cowbell"
-      }
-    ],
-    "Artificer": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_pld_leg_raid2",
-        "prefix": "Artificer",
-        "required_parts": "np_cm_pld_leg_raid2"
-      }
-    ],
-    "Pistoleer": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_01",
-        "prefix": "Pistoleer",
-        "required_parts": "np_cm_robo_01"
-      }
-    ],
-    "Bane": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_02",
-        "prefix": "Bane",
-        "required_parts": "np_cm_robo_02"
-      }
-    ],
-    "Gambler": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_03",
-        "prefix": "Gambler",
-        "required_parts": "np_cm_robo_03"
-      }
-    ],
-    "Puppeteer": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_04",
-        "prefix": "Puppeteer",
-        "required_parts": "np_cm_robo_04"
-      }
-    ],
-    "Swindler": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_05",
-        "prefix": "Swindler",
-        "required_parts": "np_cm_robo_05"
-      }
-    ],
-    "Antagonist": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_06",
-        "prefix": "Antagonist",
-        "required_parts": "np_cm_robo_06"
-      }
-    ],
-    "Powderbot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_07",
-        "prefix": "Powderbot",
-        "required_parts": "np_cm_robo_07"
-      }
-    ],
-    "Triggerbot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_08",
-        "prefix": "Triggerbot",
-        "required_parts": "np_cm_robo_08"
-      }
-    ],
-    "Crack Shot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_09",
-        "prefix": "Crack Shot",
-        "required_parts": "np_cm_robo_09"
-      }
-    ],
-    "Pack Leader": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_10",
-        "prefix": "Pack Leader",
-        "required_parts": "np_cm_robo_10"
-      }
-    ],
-    "Rounder": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_01",
-        "prefix": "Rounder",
-        "required_parts": "np_cm_robo_leg_01"
-      }
-    ],
-    "Ludopath": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_02",
-        "prefix": "Ludopath",
-        "required_parts": "np_cm_robo_leg_02"
-      }
-    ],
-    "Cooler": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_04",
-        "prefix": "Cooler",
-        "required_parts": "np_cm_robo_leg_04"
-      }
-    ],
-    "Whale": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_05",
-        "prefix": "Whale",
-        "required_parts": "np_cm_robo_leg_05"
-      }
-    ],
-    "Windrider": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_06",
-        "prefix": "Windrider",
-        "required_parts": "np_cm_robo_leg_06"
-      }
-    ],
-    "Gamer": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_dlc1",
-        "prefix": "Gamer",
-        "required_parts": "np_cm_robo_leg_dlc1"
-      }
-    ],
-    "Hooligan": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_raid1",
-        "prefix": "Hooligan",
-        "required_parts": "np_cm_robo_leg_raid1"
-      }
-    ],
-    "Prestidigitator": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_raid2",
-        "prefix": "Prestidigitator",
-        "required_parts": "np_cm_robo_leg_raid2"
-      }
-    ],
-    "Conflux": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_conflux",
-        "prefix": "Conflux",
-        "required_parts": "np_conflux"
-      }
-    ],
-    "Constable": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Constable",
-        "prefix": "Constable",
-        "required_parts": "np_Constable"
-      }
-    ],
-    "Cormano": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Cormano",
-        "prefix": "Cormano",
-        "required_parts": "np_Cormano"
-      }
-    ],
-    "Crazed Earl": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_CrazedEarl",
-        "prefix": "Crazed Earl",
-        "required_parts": "NP_CrazedEarl"
-      }
-    ],
-    "Crow-Sourced": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_crowsourced",
-        "prefix": "Crow-Sourced",
-        "required_parts": "np_crowsourced"
-      }
-    ],
-    "Heimdahl": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_DahlFather",
-        "prefix": "Heimdahl",
-        "required_parts": "np_DahlFather"
-      }
-    ],
-    "Hard Dark": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_DarkHard",
-        "prefix": "Hard Dark",
-        "required_parts": "np_DarkHard"
-      }
-    ],
-    "Hair Trigger": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_demo",
-        "prefix": "Hair Trigger",
-        "required_parts": "np_demo"
-      }
-    ],
-    "Discy Business": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_discybusiness",
-        "prefix": "Discy Business",
-        "required_parts": "np_discybusiness"
-      }
-    ],
-    "Doeshot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Doeshot",
-        "prefix": "Doeshot",
-        "required_parts": "np_Doeshot"
-      }
-    ],
-    "Eigenburst": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Eigenburst",
-        "prefix": "Eigenburst",
-        "required_parts": "np_Eigenburst"
-      }
-    ],
-    "Elpis Star": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_elpisstar",
-        "prefix": "Elpis Star",
-        "required_parts": "np_elpisstar"
-      }
-    ],
-    "Falke": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_falke",
-        "prefix": "Falke",
-        "required_parts": "np_falke"
-      }
-    ],
-    "Fearstalker": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_fearstalker",
-        "prefix": "Fearstalker",
-        "required_parts": "np_fearstalker"
-      }
-    ],
-    "Flak Cannon": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Flak",
-        "prefix": "Flak Cannon",
-        "required_parts": "np_Flak"
-      }
-    ],
-    "Countermeasure": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_flare",
-        "prefix": "Countermeasure",
-        "required_parts": "np_flare"
-      }
-    ],
-    "Flash Cyclone": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_flashcyclone",
-        "prefix": "Flash Cyclone",
-        "required_parts": "np_flashcyclone"
-      }
-    ],
-    "Fleabag": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_fleabag",
-        "prefix": "Fleabag",
-        "required_parts": "NP_fleabag"
-      }
-    ],
-    "Prowler": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_follower",
-        "prefix": "Prowler",
-        "required_parts": "np_follower"
-      }
-    ],
-    "Gomie": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Gomie",
-        "prefix": "Gomie",
-        "required_parts": "np_Gomie"
-      }
-    ],
-    "Handcannon": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Handcannon",
-        "prefix": "Handcannon",
-        "required_parts": "np_Handcannon"
-      }
-    ],
-    "Hemorrhage": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Hemorrhage",
-        "prefix": "Hemorrhage",
-        "required_parts": "np_Hemorrhage"
-      }
-    ],
-    "Herald": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Herald",
-        "prefix": "Herald",
-        "required_parts": "np_Herald"
-      }
-    ],
-    "Honey Badger": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_honeybadger",
-        "prefix": "Honey Badger",
-        "required_parts": "np_honeybadger"
-      }
-    ],
-    "Hopscotch": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Hopscotch",
-        "prefix": "Hopscotch",
-        "required_parts": "np_Hopscotch"
-      }
-    ],
-    "Ichor": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Ichor",
-        "prefix": "Ichor",
-        "required_parts": "np_Ichor"
-      }
-    ],
-    "Inscriber": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Inscriber",
-        "prefix": "Inscriber",
-        "required_parts": "np_Inscriber"
-      }
-    ],
-    "Jail-Broken Gatling": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Jailbroken",
-        "prefix": "Jail-Broken Gatling",
-        "required_parts": "np_Jailbroken"
-      }
-    ],
-    "Jetsetter": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_jetset",
-        "prefix": "Jetsetter",
-        "required_parts": "np_jetset"
-      }
-    ],
-    "Juliet's Sparkle": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Juliet",
-        "prefix": "Juliet's Sparkle",
-        "required_parts": "np_Juliet"
-      }
-    ],
-    "Laser-Cutter": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_lasercutter",
-        "prefix": "Laser-Cutter",
-        "required_parts": "np_lasercutter"
-      }
-    ],
-    "Laser Disker": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Laserdisc",
-        "prefix": "Laser Disker",
-        "required_parts": "np_Laserdisc"
-      }
-    ],
-    "Light Gun": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_LightGun",
-        "prefix": "Light Gun",
-        "required_parts": "np_LightGun"
-      }
-    ],
-    "Lockjaw": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_lockjaw",
-        "prefix": "Lockjaw",
-        "required_parts": "NP_lockjaw"
-      }
-    ],
-    "Parasite": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Locust",
-        "prefix": "Parasite",
-        "required_parts": "np_Locust"
-      }
-    ],
-    "Mantra": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_mantra",
-        "prefix": "Mantra",
-        "required_parts": "np_mantra"
-      }
-    ],
-    "Mercredi": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Mercredi",
-        "prefix": "Mercredi",
-        "required_parts": "np_Mercredi"
-      }
-    ],
-    "Mercurious": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_mercury",
-        "prefix": "Mercurious",
-        "required_parts": "np_mercury"
-      }
-    ],
-    "Missilaser": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_misslaser",
-        "prefix": "Missilaser",
-        "required_parts": "NP_misslaser"
-      }
-    ],
-    "Murmur": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Murder",
-        "prefix": "Murmur",
-        "required_parts": "np_Murder"
-      }
-    ],
-    "Over Swarm": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_OverSwarm",
-        "prefix": "Over Swarm",
-        "required_parts": "np_OverSwarm"
-      }
-    ],
-    "Artillery Sphere": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_pellet",
-        "prefix": "Artillery Sphere",
-        "required_parts": "np_pellet"
-      }
-    ],
-    "Raiden": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Raiden",
-        "prefix": "Raiden",
-        "required_parts": "np_Raiden"
-      }
-    ],
-    "Rainmaker": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_rainmaker",
-        "prefix": "Rainmaker",
-        "required_parts": "np_rainmaker"
-      }
-    ],
-    "Reminisce": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_reminisce",
-        "prefix": "Reminisce",
-        "required_parts": "np_reminisce"
-      }
-    ],
-    "Hugger": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_repkit_uni_BOR_Hugger",
-        "prefix": "Hugger",
-        "required_parts": "np_repkit_uni_BOR_Hugger"
-      }
-    ],
-    "Healthraiser": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_repkit_uni_DAD_healthraiser",
-        "prefix": "Healthraiser",
-        "required_parts": "np_repkit_uni_DAD_healthraiser"
-      }
-    ],
-    "Geiger-Roid": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_repkit_uni_MAL_GeigerRoid",
-        "prefix": "Geiger-Roid",
-        "required_parts": "np_repkit_uni_MAL_GeigerRoid"
-      }
-    ],
-    "Blood Moon": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_repkit_uni_ORD_PaleBlood",
-        "prefix": "Blood Moon",
-        "required_parts": "np_repkit_uni_ORD_PaleBlood"
-      }
-    ],
-    "Rhythm": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_Rhythm",
-        "prefix": "Rhythm",
-        "required_parts": "NP_Rhythm"
-      }
-    ],
-    "Roil": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Roil",
-        "prefix": "Roil",
-        "required_parts": "np_Roil"
-      }
-    ],
-    "Roulette": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Roulette",
-        "prefix": "Roulette",
-        "required_parts": "np_Roulette"
-      }
-    ],
-    "Rowdy Rider": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Rowdy",
-        "prefix": "Rowdy Rider",
-        "required_parts": "np_Rowdy"
-      }
-    ],
-    "Scoot'n'Shoot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_ScootShoot",
-        "prefix": "Scoot'n'Shoot",
-        "required_parts": "np_ScootShoot"
-      }
-    ],
-    "Screwstonian": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Screwed",
-        "prefix": "Screwstonian",
-        "required_parts": "np_Screwed"
-      }
-    ],
-    "Rooker": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Seamstress",
-        "prefix": "Rooker",
-        "required_parts": "np_Seamstress"
-      }
-    ],
-    "Shalashaska": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_shalashaska",
-        "prefix": "Shalashaska",
-        "required_parts": "np_shalashaska"
-      }
-    ],
-    "Shammy Kablammy": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Shammy",
-        "prefix": "Shammy Kablammy",
-        "required_parts": "np_Shammy"
-      }
-    ],
-    "Skully": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_skully",
-        "prefix": "Skully",
-        "required_parts": "np_skully"
-      }
-    ],
-    "Broken Wings": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_songbird",
-        "prefix": "Broken Wings",
-        "required_parts": "np_songbird"
-      }
-    ],
-    "Soul Survivor": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_soulsurvivor",
-        "prefix": "Soul Survivor",
-        "required_parts": "np_soulsurvivor"
-      }
-    ],
-    "Sunspot": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "NP_Sunspot",
-        "prefix": "Sunspot",
-        "required_parts": "NP_Sunspot"
-      }
-    ],
-    "Tankbuster": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_tankbuster",
-        "prefix": "Tankbuster",
-        "required_parts": "np_tankbuster"
-      }
-    ],
-    "Solar Temper": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Temper",
-        "prefix": "Solar Temper",
-        "required_parts": "np_Temper"
-      }
-    ],
-    "Undershield": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_undershield",
-        "prefix": "Undershield",
-        "required_parts": "np_undershield"
-      }
-    ],
-    "Unstable Kor": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Unstable_Kor",
-        "prefix": "Unstable Kor",
-        "required_parts": "np_Unstable_Kor"
-      }
-    ],
-    "Urchin": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_urchin",
-        "prefix": "Urchin",
-        "required_parts": "np_urchin"
       }
     ],
     "Anarchy": [
@@ -14326,31 +13398,85 @@
         "required_parts": "np_zadra_weapon_prefix"
       }
     ],
-    "Misericorde": [
+    "Hardpoint": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_ds_leg_raid1",
-        "prefix": "Misericorde",
-        "required_parts": "np_cm_ds_leg_raid1"
+        "part_id": "np_Breadth",
+        "prefix": "Hardpoint",
+        "required_parts": "np_Breadth"
       }
     ],
-    "Overdriver": [
+    "Inscriber": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_exo_leg_raid1",
-        "prefix": "Overdriver",
-        "required_parts": "np_cm_exo_leg_raid1"
+        "part_id": "np_Inscriber",
+        "prefix": "Inscriber",
+        "required_parts": "np_Inscriber"
       }
     ],
-    "Lamplighter": [
+    "Missilaser": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_pld_leg_raid1",
-        "prefix": "Lamplighter",
-        "required_parts": "np_cm_pld_leg_raid1"
+        "part_id": "NP_misslaser",
+        "prefix": "Missilaser",
+        "required_parts": "NP_misslaser"
+      }
+    ],
+    "Murmur": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_Murder",
+        "prefix": "Murmur",
+        "required_parts": "np_Murder"
+      }
+    ],
+    "Healthraiser": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_repkit_uni_DAD_healthraiser",
+        "prefix": "Healthraiser",
+        "required_parts": "np_repkit_uni_DAD_healthraiser"
+      }
+    ],
+    "Roil": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_Roil",
+        "prefix": "Roil",
+        "required_parts": "np_Roil"
+      }
+    ],
+    "Rowdy Rider": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_Rowdy",
+        "prefix": "Rowdy Rider",
+        "required_parts": "np_Rowdy"
+      }
+    ],
+    "Rooker": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_Seamstress",
+        "prefix": "Rooker",
+        "required_parts": "np_Seamstress"
+      }
+    ],
+    "Skully": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_skully",
+        "prefix": "Skully",
+        "required_parts": "np_skully"
       }
     ],
     "Swan Song": [
@@ -17487,7 +16613,7 @@
       "type": "part_slot_mag",
       "row_key": "Part_Stat_Weapon_EquipSpeed",
       "col_key": "part_stat_weapon_firerate",
-      "prefix": "Snappy",
+      "prefix": "Sanppy",
       "required_parts": "Part_Stat_Weapon_EquipSpeed + part_stat_weapon_firerate"
     },
     {
@@ -20923,28 +20049,28 @@
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "borg_mag",
       "prefix": "-Stuffed",
-      "required_parts": "licensed_ted + borg_mag"
+      "required_parts": "NewRow + borg_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "cov_mag",
       "prefix": "-Exploding",
-      "required_parts": "licensed_ted + cov_mag"
+      "required_parts": "NewRow + cov_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "default",
       "prefix": "-Jobbed",
-      "required_parts": "licensed_ted (default mag)"
+      "required_parts": "NewRow (default mag)"
     },
     {
       "source": "gbx_ue_data_table",
@@ -21571,37 +20697,37 @@
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "borg_mag",
       "prefix": "-Affixed",
-      "required_parts": "licensed_ted + borg_mag"
+      "required_parts": "NewRow + borg_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "cov_mag",
       "prefix": "-Installed",
-      "required_parts": "licensed_ted + cov_mag"
+      "required_parts": "NewRow + cov_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "tor_mag",
       "prefix": "-Wasted",
-      "required_parts": "licensed_ted + tor_mag"
+      "required_parts": "NewRow + tor_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "licensed_ted",
+      "row_key": "NewRow",
       "col_key": "default",
       "prefix": "-Provided",
-      "required_parts": "licensed_ted (default mag)"
+      "required_parts": "NewRow (default mag)"
     },
     {
       "source": "gbx_ue_data_table",
@@ -23034,727 +22160,6 @@
       "part_id": "np_Zipgun",
       "prefix": "Zipper",
       "required_parts": "np_Zipgun"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Abyss",
-      "prefix": "Abyss",
-      "required_parts": "np_Abyss"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_arctic",
-      "prefix": "ARC-TAN",
-      "required_parts": "np_arctic"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_barb",
-      "prefix": "Barb'ara",
-      "required_parts": "np_barb"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Barrel",
-      "prefix": "Cooper Duper",
-      "required_parts": "np_Barrel"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Bismuth",
-      "prefix": "Bismuth-Tipped Dagger",
-      "required_parts": "np_Bismuth"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Breadth",
-      "prefix": "Hardpoint",
-      "required_parts": "np_Breadth"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_brickhouse",
-      "prefix": "Brickhouse",
-      "required_parts": "np_brickhouse"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_bubbles",
-      "prefix": "Bubbles",
-      "required_parts": "np_bubbles"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_ds_leg_dlc1",
-      "prefix": "Configuration",
-      "required_parts": "np_cm_ds_leg_dlc1"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_ds_leg_raid2",
-      "prefix": "Grim Sister",
-      "required_parts": "np_cm_ds_leg_raid2"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_exo_leg_cowbell",
-      "prefix": "Reaparición",
-      "required_parts": "np_cm_exo_leg_cowbell"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_exo_leg_raid2",
-      "prefix": "Bombastic",
-      "required_parts": "np_cm_exo_leg_raid2"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_grav_leg_cowbell",
-      "prefix": "Phlebotomist",
-      "required_parts": "np_cm_grav_leg_cowbell"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_grav_leg_raid2",
-      "prefix": "Plasmaphile",
-      "required_parts": "np_cm_grav_leg_raid2"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_pld_leg_cowbell",
-      "prefix": "Tempest",
-      "required_parts": "np_cm_pld_leg_cowbell"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_pld_leg_raid2",
-      "prefix": "Artificer",
-      "required_parts": "np_cm_pld_leg_raid2"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_01",
-      "prefix": "Pistoleer",
-      "required_parts": "np_cm_robo_01"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_02",
-      "prefix": "Bane",
-      "required_parts": "np_cm_robo_02"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_03",
-      "prefix": "Gambler",
-      "required_parts": "np_cm_robo_03"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_04",
-      "prefix": "Puppeteer",
-      "required_parts": "np_cm_robo_04"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_05",
-      "prefix": "Swindler",
-      "required_parts": "np_cm_robo_05"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_06",
-      "prefix": "Antagonist",
-      "required_parts": "np_cm_robo_06"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_07",
-      "prefix": "Powderbot",
-      "required_parts": "np_cm_robo_07"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_08",
-      "prefix": "Triggerbot",
-      "required_parts": "np_cm_robo_08"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_09",
-      "prefix": "Crack Shot",
-      "required_parts": "np_cm_robo_09"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_10",
-      "prefix": "Pack Leader",
-      "required_parts": "np_cm_robo_10"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_01",
-      "prefix": "Rounder",
-      "required_parts": "np_cm_robo_leg_01"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_02",
-      "prefix": "Ludopath",
-      "required_parts": "np_cm_robo_leg_02"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_03",
-      "prefix": "Hotshot",
-      "required_parts": "np_cm_robo_leg_03"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_04",
-      "prefix": "Cooler",
-      "required_parts": "np_cm_robo_leg_04"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_05",
-      "prefix": "Whale",
-      "required_parts": "np_cm_robo_leg_05"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_06",
-      "prefix": "Windrider",
-      "required_parts": "np_cm_robo_leg_06"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_dlc1",
-      "prefix": "Gamer",
-      "required_parts": "np_cm_robo_leg_dlc1"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_raid1",
-      "prefix": "Hooligan",
-      "required_parts": "np_cm_robo_leg_raid1"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_raid2",
-      "prefix": "Prestidigitator",
-      "required_parts": "np_cm_robo_leg_raid2"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Collector",
-      "prefix": "Collector",
-      "required_parts": "np_Collector"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_conflux",
-      "prefix": "Conflux",
-      "required_parts": "np_conflux"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Constable",
-      "prefix": "Constable",
-      "required_parts": "np_Constable"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Cormano",
-      "prefix": "Cormano",
-      "required_parts": "np_Cormano"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_CrazedEarl",
-      "prefix": "Crazed Earl",
-      "required_parts": "NP_CrazedEarl"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_crowsourced",
-      "prefix": "Crow-Sourced",
-      "required_parts": "np_crowsourced"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_DahlFather",
-      "prefix": "Heimdahl",
-      "required_parts": "np_DahlFather"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_DarkHard",
-      "prefix": "Hard Dark",
-      "required_parts": "np_DarkHard"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_demo",
-      "prefix": "Hair Trigger",
-      "required_parts": "np_demo"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_discybusiness",
-      "prefix": "Discy Business",
-      "required_parts": "np_discybusiness"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Doeshot",
-      "prefix": "Doeshot",
-      "required_parts": "np_Doeshot"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Eigenburst",
-      "prefix": "Eigenburst",
-      "required_parts": "np_Eigenburst"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_elpisstar",
-      "prefix": "Elpis Star",
-      "required_parts": "np_elpisstar"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_falke",
-      "prefix": "Falke",
-      "required_parts": "np_falke"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_fearstalker",
-      "prefix": "Fearstalker",
-      "required_parts": "np_fearstalker"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Flak",
-      "prefix": "Flak Cannon",
-      "required_parts": "np_Flak"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_flare",
-      "prefix": "Countermeasure",
-      "required_parts": "np_flare"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_flashcyclone",
-      "prefix": "Flash Cyclone",
-      "required_parts": "np_flashcyclone"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_fleabag",
-      "prefix": "Fleabag",
-      "required_parts": "NP_fleabag"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_follower",
-      "prefix": "Prowler",
-      "required_parts": "np_follower"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Gomie",
-      "prefix": "Gomie",
-      "required_parts": "np_Gomie"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Handcannon",
-      "prefix": "Handcannon",
-      "required_parts": "np_Handcannon"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Hemorrhage",
-      "prefix": "Hemorrhage",
-      "required_parts": "np_Hemorrhage"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Herald",
-      "prefix": "Herald",
-      "required_parts": "np_Herald"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_honeybadger",
-      "prefix": "Honey Badger",
-      "required_parts": "np_honeybadger"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Hopscotch",
-      "prefix": "Hopscotch",
-      "required_parts": "np_Hopscotch"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Ichor",
-      "prefix": "Ichor",
-      "required_parts": "np_Ichor"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Inscriber",
-      "prefix": "Inscriber",
-      "required_parts": "np_Inscriber"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Jailbroken",
-      "prefix": "Jail-Broken Gatling",
-      "required_parts": "np_Jailbroken"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_jetset",
-      "prefix": "Jetsetter",
-      "required_parts": "np_jetset"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Juliet",
-      "prefix": "Juliet's Sparkle",
-      "required_parts": "np_Juliet"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_lasercutter",
-      "prefix": "Laser-Cutter",
-      "required_parts": "np_lasercutter"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Laserdisc",
-      "prefix": "Laser Disker",
-      "required_parts": "np_Laserdisc"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_LightGun",
-      "prefix": "Light Gun",
-      "required_parts": "np_LightGun"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_lockjaw",
-      "prefix": "Lockjaw",
-      "required_parts": "NP_lockjaw"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Locust",
-      "prefix": "Parasite",
-      "required_parts": "np_Locust"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_mantra",
-      "prefix": "Mantra",
-      "required_parts": "np_mantra"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Mercredi",
-      "prefix": "Mercredi",
-      "required_parts": "np_Mercredi"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_mercury",
-      "prefix": "Mercurious",
-      "required_parts": "np_mercury"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_misslaser",
-      "prefix": "Missilaser",
-      "required_parts": "NP_misslaser"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Murder",
-      "prefix": "Murmur",
-      "required_parts": "np_Murder"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_OverSwarm",
-      "prefix": "Over Swarm",
-      "required_parts": "np_OverSwarm"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_pellet",
-      "prefix": "Artillery Sphere",
-      "required_parts": "np_pellet"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Raiden",
-      "prefix": "Raiden",
-      "required_parts": "np_Raiden"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_rainmaker",
-      "prefix": "Rainmaker",
-      "required_parts": "np_rainmaker"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_reminisce",
-      "prefix": "Reminisce",
-      "required_parts": "np_reminisce"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_repkit_uni_BOR_Hugger",
-      "prefix": "Hugger",
-      "required_parts": "np_repkit_uni_BOR_Hugger"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_repkit_uni_DAD_healthraiser",
-      "prefix": "Healthraiser",
-      "required_parts": "np_repkit_uni_DAD_healthraiser"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_repkit_uni_MAL_GeigerRoid",
-      "prefix": "Geiger-Roid",
-      "required_parts": "np_repkit_uni_MAL_GeigerRoid"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_repkit_uni_ORD_PaleBlood",
-      "prefix": "Blood Moon",
-      "required_parts": "np_repkit_uni_ORD_PaleBlood"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_Rhythm",
-      "prefix": "Rhythm",
-      "required_parts": "NP_Rhythm"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Roil",
-      "prefix": "Roil",
-      "required_parts": "np_Roil"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Roulette",
-      "prefix": "Roulette",
-      "required_parts": "np_Roulette"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Rowdy",
-      "prefix": "Rowdy Rider",
-      "required_parts": "np_Rowdy"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_ScootShoot",
-      "prefix": "Scoot'n'Shoot",
-      "required_parts": "np_ScootShoot"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Screwed",
-      "prefix": "Screwstonian",
-      "required_parts": "np_Screwed"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Seamstress",
-      "prefix": "Rooker",
-      "required_parts": "np_Seamstress"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_shalashaska",
-      "prefix": "Shalashaska",
-      "required_parts": "np_shalashaska"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Shammy",
-      "prefix": "Shammy Kablammy",
-      "required_parts": "np_Shammy"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_skully",
-      "prefix": "Skully",
-      "required_parts": "np_skully"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_songbird",
-      "prefix": "Broken Wings",
-      "required_parts": "np_songbird"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_soulsurvivor",
-      "prefix": "Soul Survivor",
-      "required_parts": "np_soulsurvivor"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "NP_Sunspot",
-      "prefix": "Sunspot",
-      "required_parts": "NP_Sunspot"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_tankbuster",
-      "prefix": "Tankbuster",
-      "required_parts": "np_tankbuster"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Temper",
-      "prefix": "Solar Temper",
-      "required_parts": "np_Temper"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_undershield",
-      "prefix": "Undershield",
-      "required_parts": "np_undershield"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Unstable_Kor",
-      "prefix": "Unstable Kor",
-      "required_parts": "np_Unstable_Kor"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_urchin",
-      "prefix": "Urchin",
-      "required_parts": "np_urchin"
     },
     {
       "source": "inv_name_part",
@@ -26279,30 +24684,65 @@
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_ds_leg_raid1",
-      "prefix": "Misericorde",
-      "required_parts": "np_cm_ds_leg_raid1"
+      "part_id": "np_Breadth",
+      "prefix": "Hardpoint",
+      "required_parts": "np_Breadth"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_exo_leg_raid1",
-      "prefix": "Overdriver",
-      "required_parts": "np_cm_exo_leg_raid1"
+      "part_id": "np_Inscriber",
+      "prefix": "Inscriber",
+      "required_parts": "np_Inscriber"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_grav_leg_raid1",
-      "prefix": "Trooper",
-      "required_parts": "np_cm_grav_leg_raid1"
+      "part_id": "NP_misslaser",
+      "prefix": "Missilaser",
+      "required_parts": "NP_misslaser"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_pld_leg_raid1",
-      "prefix": "Lamplighter",
-      "required_parts": "np_cm_pld_leg_raid1"
+      "part_id": "np_Murder",
+      "prefix": "Murmur",
+      "required_parts": "np_Murder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_repkit_uni_DAD_healthraiser",
+      "prefix": "Healthraiser",
+      "required_parts": "np_repkit_uni_DAD_healthraiser"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Roil",
+      "prefix": "Roil",
+      "required_parts": "np_Roil"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Rowdy",
+      "prefix": "Rowdy Rider",
+      "required_parts": "np_Rowdy"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_Seamstress",
+      "prefix": "Rooker",
+      "required_parts": "np_Seamstress"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_skully",
+      "prefix": "Skully",
+      "required_parts": "np_skully"
     },
     {
       "source": "inv_name_part",

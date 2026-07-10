@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.YAML_SAVE_CATALOG = {
-  "generated": "2026-07-02T16:18:57.829Z",
+  "generated": "2026-07-09T22:39:25.558Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "shiny_gear": [
     {
@@ -94,7 +94,11 @@
       "key": "shiny_brickhouse",
       "cosmetic": "Cosmetics_Weapon_Shiny_brickhouse",
       "unlockable": "Unlockable_Weapons.Shiny_brickhouse",
-      "label": "Phosphene — Squeaky Clean"
+      "label": "Phosphene — Squeaky Clean",
+      "idRaw": "22:94",
+      "comp": "VLA_SM.comp_05_legendary_brickhouse",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_bubbles",
@@ -116,9 +120,13 @@
     },
     {
       "key": "shiny_cannonbrawl",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Cannonbrawl",
+      "cosmetic": "Cosmetics_Weapon_Shiny_cannonbrawl",
       "unlockable": "Unlockable_Weapons.Shiny_cannonbrawl",
-      "label": "Phosphene — Swan Song"
+      "label": "Phosphene — Swan Song",
+      "idRaw": "8:82",
+      "comp": "DAD_SG.comp_05_legendary_cannonbrawl",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_chuck",
@@ -163,9 +171,13 @@
     },
     {
       "key": "shiny_cormano",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Cormano",
-      "unlockable": "Unlockable_Weapons.Shiny_Cormano",
-      "label": "Phosphene — Cormano"
+      "cosmetic": "Cosmetics_Weapon_Shiny_cormano",
+      "unlockable": "Unlockable_Weapons.Shiny_cormano",
+      "label": "Phosphene — Cormano",
+      "idRaw": "12:83",
+      "comp": "TOR_SG.comp_05_legendary_cormano",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_crazedearl",
@@ -207,9 +219,13 @@
     },
     {
       "key": "shiny_discybusiness",
-      "cosmetic": "Cosmetics_Weapon_Shiny_DiscyBusiness",
-      "unlockable": "Unlockable_Weapons.Shiny_DiscyBusiness",
-      "label": "Phosphene — Doer"
+      "cosmetic": "Cosmetics_Weapon_Shiny_discybusiness",
+      "unlockable": "Unlockable_Weapons.Shiny_discybusiness",
+      "label": "Phosphene — Discy Business",
+      "idRaw": "10:81",
+      "comp": "MAL_SG.comp_05_legendary_discybusiness",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_dividedfocus",
@@ -267,7 +283,11 @@
       "key": "shiny_fishward",
       "cosmetic": "Cosmetics_Weapon_Shiny_fishward",
       "unlockable": "Unlockable_Weapons.Shiny_fishward",
-      "label": "Phosphene — Fishward"
+      "label": "Phosphene — Fishward",
+      "idRaw": "27:83",
+      "comp": "JAK_AR.comp_05_legendary_fishward",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_flak",
@@ -333,9 +353,13 @@
     },
     {
       "key": "shiny_harddark",
-      "cosmetic": "Cosmetics_Weapon_Shiny_HardDark",
-      "unlockable": "Unlockable_Weapons.Shiny_mercredi",
-      "label": "Phosphene — Solidified"
+      "cosmetic": "Cosmetics_Weapon_Shiny_harddark",
+      "unlockable": "Unlockable_Weapons.Shiny_harddark",
+      "label": "Phosphene — Solidified",
+      "idRaw": "13:87",
+      "comp": "DAD_AR.comp_05_legendary_harddark",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_heartgun",
@@ -396,15 +420,23 @@
     },
     {
       "key": "shiny_ishmael",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Ishmael",
-      "unlockable": "Unlockable_Weapons.Shiny_Ishmael",
-      "label": "Phosphene — Ishmael"
+      "cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
+      "unlockable": "Unlockable_Weapons.Shiny_ishmael",
+      "label": "Phosphene — Ishmael",
+      "idRaw": "26:82",
+      "comp": "ORD_SR.comp_05_legendary_ishmael",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_jailbroken",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Jailbroken",
-      "unlockable": "Unlockable_Weapons.Shiny_Jailbroken",
-      "label": "Phosphene — Jail-Broken Gatling"
+      "cosmetic": "Cosmetics_Weapon_Shiny_jailbroken",
+      "unlockable": "Unlockable_Weapons.Shiny_jailbroken",
+      "label": "Phosphene — Jail-Broken Gatling",
+      "idRaw": "19:61",
+      "comp": "BOR_SM.comp_05_legendary_jailbroken",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_juliet",
@@ -467,9 +499,13 @@
     },
     {
       "key": "shiny_lightgun",
-      "cosmetic": "Cosmetics_Weapon_Shiny_LightGun",
-      "unlockable": "Unlockable_Weapons.Shiny_LightGun",
-      "label": "Phosphene — Round the Horn"
+      "cosmetic": "Cosmetics_Weapon_Shiny_lightgun",
+      "unlockable": "Unlockable_Weapons.Shiny_lightgun",
+      "label": "Phosphene — Light Gun",
+      "idRaw": "16:91",
+      "comp": "VLA_SR.comp_05_legendary_lightgun",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_linebacker",
@@ -487,16 +523,22 @@
       "key": "shiny_lockjaw",
       "cosmetic": "Cosmetics_Weapon_Shiny_lockjaw",
       "unlockable": "Unlockable_Weapons.Shiny_lockjaw",
-      "label": "Phosphene — Lockjaw"
+      "label": "Phosphene — Lockjaw",
+      "idRaw": "17:85",
+      "comp": "TOR_AR.comp_05_legendary_lockjaw",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_locust",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Locust",
-      "unlockable": "Unlockable_Weapons.Shiny_Locust",
+      "cosmetic": null,
+      "unlockable": null,
       "label": "Pearlescent — Parasite",
-      "pearl": true,
+      "idRaw": "22:101",
       "comp": "VLA_SM.comp_06_pearl_locust",
-      "idRaw": "22:101"
+      "pearl": true,
+      "variant": "pearl",
+      "note": "Pearlescent comp (comp_06_pearl_*) — counts as shiny variant"
     },
     {
       "key": "shiny_lucian",
@@ -520,7 +562,11 @@
       "key": "shiny_manifest",
       "cosmetic": "Cosmetics_Weapon_Shiny_manifest",
       "unlockable": "Unlockable_Weapons.Shiny_manifest",
-      "label": "Phosphene — Marshall's Claw"
+      "label": "Phosphene — Marshall's Claw",
+      "idRaw": "25:87",
+      "comp": "MAL_SR.comp_05_legendary_manifest",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_mantra",
@@ -648,9 +694,13 @@
     },
     {
       "key": "shiny_rhythm",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Rhythm",
-      "unlockable": "Unlockable_Weapons.Shiny_Rhythm",
-      "label": "Phosphene — Hydropower"
+      "cosmetic": "Cosmetics_Weapon_Shiny_rhythm",
+      "unlockable": "Unlockable_Weapons.Shiny_rhythm",
+      "label": "Phosphene — Hydropower",
+      "idRaw": "4:87",
+      "comp": "ORD_PS.comp_05_legendary_rhythm",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_roach",
@@ -720,9 +770,13 @@
     },
     {
       "key": "shiny_shammy",
-      "cosmetic": "Cosmetics_Weapon_Shiny_Shammy",
-      "unlockable": "Unlockable_Weapons.Shiny_Shammy",
-      "label": "Phosphene — Shammy Kablammy"
+      "cosmetic": "Cosmetics_Weapon_Shiny_shammy",
+      "unlockable": "Unlockable_Weapons.Shiny_shammy",
+      "label": "Phosphene — Shammy",
+      "idRaw": "5:89",
+      "comp": "TED_PS.comp_05_legendary_shammy",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_sharkbait",
@@ -739,7 +793,11 @@
       "key": "shiny_shoals",
       "cosmetic": "Cosmetics_Weapon_Shiny_shoals",
       "unlockable": "Unlockable_Weapons.Shiny_shoals",
-      "label": "Phosphene — Shoals"
+      "label": "Phosphene — Shoals",
+      "idRaw": "3:85",
+      "comp": "JAK_PS.comp_05_legendary_shoals",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_sideshow",

@@ -3,13 +3,13 @@
  * Regenerate: node scripts/build-skin-list-data.mjs
  */
 window.SKIN_LIST_DATA = {
-  "generated_at": "2026-07-02T19:54:26.821Z",
+  "generated_at": "2026-07-09T22:39:49.526Z",
   "stats": {
-    "total": 1315,
+    "total": 1316,
     "weapon_mats": 62,
     "weapon_skin_codes": 178,
     "phosphenes": 125,
-    "pearlescents": 17,
+    "pearlescents": 18,
     "player_skins": 280,
     "player_skin_filters": 280,
     "player_heads": 133,
@@ -18,8 +18,8 @@ window.SKIN_LIST_DATA = {
     "companion_skins": 109,
     "companion_attachments": 23,
     "vehicle_mats": 68,
-    "with_serial": 16,
-    "with_drop_source": 1315
+    "with_serial": 17,
+    "with_drop_source": 1316
   },
   "skins": [
     {
@@ -799,7 +799,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 46,
       "inferred": false
@@ -816,7 +816,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 47,
       "inferred": false
@@ -833,7 +833,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 48,
       "inferred": false
@@ -850,7 +850,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 49,
       "inferred": false
@@ -867,7 +867,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 50,
       "inferred": false
@@ -935,7 +935,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a hearth to warm you. · Mission",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 54,
       "inferred": false
@@ -952,7 +952,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Takedown: You took down Child of Terramorphous. Treat yourself with a burger.",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 55,
       "inferred": false
@@ -1003,7 +1003,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 58,
       "inferred": false
@@ -1020,7 +1020,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 59,
       "inferred": false
@@ -1037,7 +1037,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 60,
       "inferred": false
@@ -1054,7 +1054,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 61,
       "inferred": false
@@ -1071,7 +1071,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 62,
       "inferred": false
@@ -1088,7 +1088,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{23:61}",
-      "drop_source": "Legendary skin code for Abyss — add to that gun's serial",
+      "drop_source": "Boss drop (Abyss): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1207,7 +1207,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{12:79}",
-      "drop_source": "Boss drop (ARC-TAN): Vault Card 2 (Cello) — ARC-TAN; Campaign complete — shiny unlock",
+      "drop_source": "Legendary skin code for ARC-TAN — add to that gun's serial",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1411,7 +1411,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{21:81}",
-      "drop_source": "Boss drop (Broken Wings): Ordonite Pangolin, Ordonite Pangolin TRUE",
+      "drop_source": "Legendary skin code for Broken Wings — add to that gun's serial",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1428,7 +1428,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{18:100}",
-      "drop_source": "Boss drop (Bubbles): Ordonite Cat, Ordonite Cat TRUE",
+      "drop_source": "Boss drop (Bubbles): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1632,7 +1632,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{12:83}",
-      "drop_source": "Boss drop (Cormano): Vault Card 3 — Cormano; Campaign complete — shiny unlock",
+      "drop_source": "Boss drop (Cormano): Vault Card 3 — Cormano",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1649,7 +1649,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{7:54}",
-      "drop_source": "Legendary skin code for Crazed Earl — add to that gun's serial",
+      "drop_source": "Boss drop (Crazed Earl): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1666,7 +1666,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{273:43}",
-      "drop_source": "Legendary skin code for Dahlfather — add to that gun's serial",
+      "drop_source": "Boss drop (Dahlfather): Playlist or event drop",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1768,7 +1768,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{9:100}",
-      "drop_source": "Boss drop (Doeshot): Ordonite Phalanx, Ordonite Phalanx TRUE",
+      "drop_source": "Boss drop (Doeshot): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1955,7 +1955,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{27:83}",
-      "drop_source": "Boss drop (Fishward): UVH Shiny Pool (Tuba); Campaign complete — shiny unlock",
+      "drop_source": "Boss drop (Fishward): Playlist or event drop",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -1989,7 +1989,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{17:83}",
-      "drop_source": "Boss drop (Fleabag): Ordonite Pangolin, Ordonite Pangolin TRUE",
+      "drop_source": "Boss drop (Fleabag): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2006,7 +2006,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{20:2}",
-      "drop_source": "Legendary skin code for Follower — add to that gun's serial",
+      "drop_source": "Boss drop (Follower): Siphon Scav One",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2057,7 +2057,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{15:75}",
-      "drop_source": "Boss drop (G.M.R.): Big Encore Driller Hole, Driller Hole",
+      "drop_source": "Boss drop (G.M.R.): Big Encore Drillerhole, Driller Hole",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2108,7 +2108,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{7:19}",
-      "drop_source": "Boss drop (Golden God): Big Encore Idolator Sol, Idolator Sol",
+      "drop_source": "Boss drop (Golden God): Grasslands Commander",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2142,7 +2142,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{7:20}",
-      "drop_source": "Boss drop (Goremaster): Big Encore Idolator Sol, Idolator Sol",
+      "drop_source": "Boss drop (Goremaster): Grasslands Commander",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2465,7 +2465,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{5:86}",
-      "drop_source": "Boss drop (Inscriber): Donk, Minister Screw",
+      "drop_source": "Boss drop (Inscriber): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2533,7 +2533,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{19:61}",
-      "drop_source": "Boss drop (Jail-Broken Gatling): Raid Boss 2 (Subjugator / Thol)",
+      "drop_source": "Boss drop (Jail-Broken Gatling): Subjugator & Thol the Invincible (Raid 2)",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2584,7 +2584,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{25:61}",
-      "drop_source": "Boss drop (Katagawa's Revenge): Big Encore Driller Hole, Driller Hole",
+      "drop_source": "Boss drop (Katagawa's Revenge): Big Encore Drillerhole, Driller Hole",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2669,7 +2669,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{14:79}",
-      "drop_source": "Boss drop (Laser Disker): Ordonite Meathead, Ordonite Meathead TRUE, Ordonite Splice, Ordonite Splice TRUE",
+      "drop_source": "Legendary skin code for Laser Disker — add to that gun's serial",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2822,7 +2822,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{25:87}",
-      "drop_source": "Boss drop (Marshall's Claw): Tuba hybrids, Tuba hybrids Crab",
+      "drop_source": "Boss drop (Marshall's Claw): Tuba hybrids Crab",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2907,7 +2907,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{14:77}",
-      "drop_source": "Boss drop (Murmur): October World Boss; Campaign complete — shiny unlock",
+      "drop_source": "Boss drop (Murmur): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2975,7 +2975,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{22:1}",
-      "drop_source": "Boss drop (Onslaught): Big Encore Idolator Sol, Idolator Sol",
+      "drop_source": "Boss drop (Onslaught): Grasslands Commander",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3400,7 +3400,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{4:85}",
-      "drop_source": "Boss drop (Roulette): Ordonite Phalanx, Ordonite Phalanx TRUE",
+      "drop_source": "Boss drop (Roulette): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3451,7 +3451,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{27:79}",
-      "drop_source": "Boss drop (Rowdy Rider): Donk, Minister Screw",
+      "drop_source": "Boss drop (Rowdy Rider): No shiny itempool in current Nexus export — reference / spawn codes only",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3553,7 +3553,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{3:83}",
-      "drop_source": "Boss drop (Shalashaska): Ordonite PGG Activity",
+      "drop_source": "Boss drop (Shalashaska): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3655,7 +3655,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{26:84}",
-      "drop_source": "Legendary skin code for SolarTemper — add to that gun's serial",
+      "drop_source": "Boss drop (SolarTemper): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3689,7 +3689,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{2:80}",
-      "drop_source": "Boss drop (Soul Survivor): Drone Captain",
+      "drop_source": "Boss drop (Soul Survivor): Raid 2 content",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -3825,7 +3825,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{8:82}",
-      "drop_source": "Boss drop (Swan Song): Tuba hybrids, Tuba hybrids Fish",
+      "drop_source": "Boss drop (Swan Song): Tuba hybrids Fish",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -4448,16 +4448,16 @@ window.SKIN_LIST_DATA = {
       "display_name": "Cormano",
       "cosmetic": "Cosmetics_Weapon_Shiny_cormano",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_cormano\"",
-      "skin_code": null,
-      "yaml_key": null,
+      "skin_code": "12:83",
+      "yaml_key": "shiny_cormano",
       "unlockable": "Unlockable_Weapons.Shiny_cormano",
-      "comp": null,
+      "comp": "TOR_SG.comp_05_legendary_cormano",
       "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
+      "spawn_hint": "{12:83} + \"c\" \"Cosmetics_Weapon_Shiny_cormano\"",
+      "drop_source": "Vault Card 3 — Cormano",
       "loot_link": "Cormano",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_crazedEarl",
@@ -4528,6 +4528,23 @@ window.SKIN_LIST_DATA = {
       "inferred": false
     },
     {
+      "id": "Cosmetics_Weapon_Shiny_discybusiness",
+      "kind": "phosphene",
+      "display_name": "Discy Business",
+      "cosmetic": "Cosmetics_Weapon_Shiny_discybusiness",
+      "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_discybusiness\"",
+      "skin_code": "10:81",
+      "yaml_key": "shiny_discybusiness",
+      "unlockable": "Unlockable_Weapons.Shiny_discybusiness",
+      "comp": "MAL_SG.comp_05_legendary_discybusiness",
+      "base85_serial": null,
+      "spawn_hint": "{10:81} + \"c\" \"Cosmetics_Weapon_Shiny_discybusiness\"",
+      "drop_source": "Glitch Fixer, Glitch Fixer TRUE",
+      "loot_link": "Discy Business",
+      "mat_num": null,
+      "inferred": true
+    },
+    {
       "id": "Cosmetics_Weapon_Shiny_dividedfocus",
       "kind": "phosphene",
       "display_name": "Dividedfocus",
@@ -4541,23 +4558,6 @@ window.SKIN_LIST_DATA = {
       "spawn_hint": null,
       "drop_source": "Boss or special drop — see Phosphenes tab",
       "loot_link": "Dividedfocus",
-      "mat_num": null,
-      "inferred": false
-    },
-    {
-      "id": "Cosmetics_Weapon_Shiny_discybusiness",
-      "kind": "phosphene",
-      "display_name": "Doer",
-      "cosmetic": "Cosmetics_Weapon_Shiny_discybusiness",
-      "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_discybusiness\"",
-      "skin_code": null,
-      "yaml_key": null,
-      "unlockable": "Unlockable_Weapons.Shiny_discybusiness",
-      "comp": null,
-      "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
-      "loot_link": "Doer",
       "mat_num": null,
       "inferred": false
     },
@@ -4669,13 +4669,13 @@ window.SKIN_LIST_DATA = {
       "display_name": "Fishward",
       "cosmetic": "Cosmetics_Weapon_Shiny_fishward",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_fishward\"",
-      "skin_code": "{27:83}",
+      "skin_code": "27:83",
       "yaml_key": "shiny_fishward",
       "unlockable": "Unlockable_Weapons.Shiny_fishward",
-      "comp": "jak_ar.comp_05_legendary_fishward",
+      "comp": "JAK_AR.comp_05_legendary_fishward",
       "base85_serial": null,
       "spawn_hint": "{27:83} + \"c\" \"Cosmetics_Weapon_Shiny_fishward\"",
-      "drop_source": "UVH Shiny Pool (Tuba); Campaign complete — shiny unlock",
+      "drop_source": "Playlist or event drop",
       "loot_link": "Fishward",
       "mat_num": null,
       "inferred": true
@@ -4897,7 +4897,7 @@ window.SKIN_LIST_DATA = {
       "base85_serial": null,
       "spawn_hint": "{273:43} + \"c\" \"Cosmetics_Weapon_Shiny_dahlfather\"",
       "drop_source": "Playlist or event drop",
-      "loot_link": "Heimdahl",
+      "loot_link": "Dahlfather",
       "mat_num": null,
       "inferred": true
     },
@@ -4941,16 +4941,16 @@ window.SKIN_LIST_DATA = {
       "display_name": "Hydropower",
       "cosmetic": "Cosmetics_Weapon_Shiny_rhythm",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_rhythm\"",
-      "skin_code": null,
-      "yaml_key": null,
+      "skin_code": "4:87",
+      "yaml_key": "shiny_rhythm",
       "unlockable": "Unlockable_Weapons.Shiny_rhythm",
-      "comp": null,
+      "comp": "ORD_PS.comp_05_legendary_rhythm",
       "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
-      "loot_link": "Hydropower",
+      "spawn_hint": "{4:87} + \"c\" \"Cosmetics_Weapon_Shiny_rhythm\"",
+      "drop_source": "Vault Card 3 — Rhythm",
+      "loot_link": "Rhythm",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_ichor",
@@ -5009,16 +5009,16 @@ window.SKIN_LIST_DATA = {
       "display_name": "Ishmael",
       "cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
-      "skin_code": null,
-      "yaml_key": null,
+      "skin_code": "26:82",
+      "yaml_key": "shiny_ishmael",
       "unlockable": "Unlockable_Weapons.Shiny_ishmael",
-      "comp": null,
+      "comp": "ORD_SR.comp_05_legendary_ishmael",
       "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
+      "spawn_hint": "{26:82} + \"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
+      "drop_source": "Tuba Terra",
       "loot_link": "Ishmael",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_kaleidosplode",
@@ -5066,7 +5066,7 @@ window.SKIN_LIST_DATA = {
       "comp": "mal_sr.comp_05_legendary_katagawa",
       "base85_serial": "@Ugydj=35E/MjK>bzhbmN~61Av94H?RZYKdBjnu&Ue3WK_X`hyCEs)b628o~h{#{P%ld)_Y7)8qN~S`NeC?(Y<xcIUtAFg<(@-@^a",
       "spawn_hint": "{25:61} + \"c\" \"Cosmetics_Weapon_Shiny_katagawa\"",
-      "drop_source": "Big Encore Driller Hole, Driller Hole",
+      "drop_source": "Big Encore Drillerhole, Driller Hole",
       "loot_link": "Katagawa's Revenge",
       "mat_num": null,
       "inferred": false
@@ -5140,6 +5140,23 @@ window.SKIN_LIST_DATA = {
       "inferred": false
     },
     {
+      "id": "Cosmetics_Weapon_Shiny_lightgun",
+      "kind": "phosphene",
+      "display_name": "Light Gun",
+      "cosmetic": "Cosmetics_Weapon_Shiny_lightgun",
+      "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_lightgun\"",
+      "skin_code": "16:91",
+      "yaml_key": "shiny_lightgun",
+      "unlockable": "Unlockable_Weapons.Shiny_lightgun",
+      "comp": "VLA_SR.comp_05_legendary_lightgun",
+      "base85_serial": null,
+      "spawn_hint": "{16:91} + \"c\" \"Cosmetics_Weapon_Shiny_lightgun\"",
+      "drop_source": "Vault Card 3 — Light Gun",
+      "loot_link": "Light Gun",
+      "mat_num": null,
+      "inferred": true
+    },
+    {
       "id": "Cosmetics_Weapon_Shiny_linebacker",
       "kind": "phosphene",
       "display_name": "Linebacker",
@@ -5162,16 +5179,16 @@ window.SKIN_LIST_DATA = {
       "display_name": "Lockjaw",
       "cosmetic": "Cosmetics_Weapon_Shiny_lockjaw",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_lockjaw\"",
-      "skin_code": "{17:85}",
+      "skin_code": "17:85",
       "yaml_key": "shiny_lockjaw",
       "unlockable": "Unlockable_Weapons.Shiny_lockjaw",
-      "comp": "tor_ar.comp_05_legendary_lockjaw",
+      "comp": "TOR_AR.comp_05_legendary_lockjaw",
       "base85_serial": "@Ugv4Ng35E/MOs))Ci%N%TRHB9orA4ho)kEDwb*c=i4XO_64yqKYCgNf2eHgyy?J_+*o`0/9F#PTQPSI(1{>y%k*Xr;c",
       "spawn_hint": "{17:85} + \"c\" \"Cosmetics_Weapon_Shiny_lockjaw\"",
       "drop_source": "Raid2 Thol, Raid2 Thol True",
       "loot_link": "Lockjaw",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_lucian",
@@ -5247,13 +5264,13 @@ window.SKIN_LIST_DATA = {
       "display_name": "Marshall's Claw",
       "cosmetic": "Cosmetics_Weapon_Shiny_manifest",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_manifest\"",
-      "skin_code": "{25:87}",
+      "skin_code": "25:87",
       "yaml_key": "shiny_manifest",
       "unlockable": "Unlockable_Weapons.Shiny_manifest",
-      "comp": "mal_sr.comp_05_legendary_manifest",
+      "comp": "MAL_SR.comp_05_legendary_manifest",
       "base85_serial": null,
       "spawn_hint": "{25:87} + \"c\" \"Cosmetics_Weapon_Shiny_manifest\"",
-      "drop_source": "Tuba hybrids, Tuba hybrids Crab",
+      "drop_source": "Tuba hybrids Crab",
       "loot_link": "Marshall's Claw",
       "mat_num": null,
       "inferred": true
@@ -5718,23 +5735,6 @@ window.SKIN_LIST_DATA = {
       "inferred": false
     },
     {
-      "id": "Cosmetics_Weapon_Shiny_lightgun",
-      "kind": "phosphene",
-      "display_name": "Round the Horn",
-      "cosmetic": "Cosmetics_Weapon_Shiny_lightgun",
-      "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_lightgun\"",
-      "skin_code": null,
-      "yaml_key": null,
-      "unlockable": "Unlockable_Weapons.Shiny_lightgun",
-      "comp": null,
-      "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
-      "loot_link": "Round the Horn",
-      "mat_num": null,
-      "inferred": false
-    },
-    {
       "id": "Cosmetics_Weapon_Shiny_rowan",
       "kind": "phosphene",
       "display_name": "Rowan",
@@ -5859,10 +5859,10 @@ window.SKIN_LIST_DATA = {
       "display_name": "Shoals",
       "cosmetic": "Cosmetics_Weapon_Shiny_shoals",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
-      "skin_code": "{3:85}",
+      "skin_code": "3:85",
       "yaml_key": "shiny_shoals",
       "unlockable": "Unlockable_Weapons.Shiny_shoals",
-      "comp": "jak_ps.comp_05_legendary_Shoals",
+      "comp": "JAK_PS.comp_05_legendary_shoals",
       "base85_serial": null,
       "spawn_hint": "{3:85} + \"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
       "drop_source": "Tuba Terra",
@@ -5907,19 +5907,19 @@ window.SKIN_LIST_DATA = {
     {
       "id": "Cosmetics_Weapon_Shiny_harddark",
       "kind": "phosphene",
-      "display_name": "Soothing",
+      "display_name": "Solidified",
       "cosmetic": "Cosmetics_Weapon_Shiny_harddark",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_harddark\"",
-      "skin_code": null,
-      "yaml_key": null,
+      "skin_code": "13:87",
+      "yaml_key": "shiny_harddark",
       "unlockable": "Unlockable_Weapons.Shiny_harddark",
-      "comp": null,
+      "comp": "DAD_AR.comp_05_legendary_harddark",
       "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
-      "loot_link": "Soothing",
+      "spawn_hint": "{13:87} + \"c\" \"Cosmetics_Weapon_Shiny_harddark\"",
+      "drop_source": "Playlist or event drop",
+      "loot_link": "Harddark",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_soulsurvivor",
@@ -5944,10 +5944,10 @@ window.SKIN_LIST_DATA = {
       "display_name": "Squeaky Clean",
       "cosmetic": "Cosmetics_Weapon_Shiny_brickhouse",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_brickhouse\"",
-      "skin_code": "{22:94}",
+      "skin_code": "22:94",
       "yaml_key": "shiny_brickhouse",
       "unlockable": "Unlockable_Weapons.Shiny_brickhouse",
-      "comp": "vla_sm.comp_05_legendary_brickhouse",
+      "comp": "VLA_SM.comp_05_legendary_brickhouse",
       "base85_serial": null,
       "spawn_hint": "{22:94} + \"c\" \"Cosmetics_Weapon_Shiny_brickhouse\"",
       "drop_source": "Murderer, Murderer TRUE",
@@ -6012,16 +6012,16 @@ window.SKIN_LIST_DATA = {
       "display_name": "Swan Song",
       "cosmetic": "Cosmetics_Weapon_Shiny_cannonbrawl",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_cannonbrawl\"",
-      "skin_code": null,
-      "yaml_key": null,
+      "skin_code": "8:82",
+      "yaml_key": "shiny_cannonbrawl",
       "unlockable": "Unlockable_Weapons.Shiny_cannonbrawl",
-      "comp": null,
+      "comp": "DAD_SG.comp_05_legendary_cannonbrawl",
       "base85_serial": null,
-      "spawn_hint": null,
-      "drop_source": "Boss or special drop — see Phosphenes tab",
+      "spawn_hint": "{8:82} + \"c\" \"Cosmetics_Weapon_Shiny_cannonbrawl\"",
+      "drop_source": "Tuba hybrids Fish",
       "loot_link": "Swan Song",
       "mat_num": null,
-      "inferred": false
+      "inferred": true
     },
     {
       "id": "Cosmetics_Weapon_Shiny_sweet_embrace",
@@ -6386,13 +6386,30 @@ window.SKIN_LIST_DATA = {
       "display_name": "Parasite",
       "cosmetic": "Cosmetics_Weapon_Shiny_Locust",
       "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_Locust\"",
-      "skin_code": "22:101",
+      "skin_code": "{22:101}",
       "yaml_key": "shiny_locust",
       "unlockable": "Unlockable_Weapons.Shiny_Locust",
-      "comp": "VLA_SM.comp_06_pearl_locust",
+      "comp": "vla_sm.comp_06_pearl_locust",
       "base85_serial": "@UgxFw!35E/M48;gqjVe^54mDipH7YDBC+btDQFBmtP=8RNP`Oa8QTI>-4Ih~U9>%_h;d/aL)6?Vm_gW6a-/p`eop$HH%=frHrvm",
       "spawn_hint": "{22:101} + \"c\" \"Cosmetics_Weapon_Shiny_Locust\"",
       "drop_source": "Raid 2 content",
+      "loot_link": "Parasite",
+      "mat_num": null,
+      "inferred": false
+    },
+    {
+      "id": "yaml:shiny_locust",
+      "kind": "pearlescent",
+      "display_name": "Parasite",
+      "cosmetic": null,
+      "camo_token": "\"c\" \"Cosmetics_Weapon_Shiny_Locust\"",
+      "skin_code": "22:101",
+      "yaml_key": "shiny_locust",
+      "unlockable": null,
+      "comp": "VLA_SM.comp_06_pearl_locust",
+      "base85_serial": "@UgxFw!35E/M48;gqjVe^54mDipH7YDBC+btDQFBmtP=8RNP`Oa8QTI>-4Ih~U9>%_h;d/aL)6?Vm_gW6a-/p`eop$HH%=frHrvm",
+      "spawn_hint": "{22:101} + |\"c\",1|",
+      "drop_source": "Boss or special drop — see Phosphenes tab",
       "loot_link": "Parasite",
       "mat_num": null,
       "inferred": false
@@ -6409,7 +6426,7 @@ window.SKIN_LIST_DATA = {
       "comp": "BOR_SR.comp_05_legendary_abyss",
       "base85_serial": null,
       "spawn_hint": "{23:61} + \"c\" \"Cosmetics_Weapon_Shiny_abyss\"",
-      "drop_source": "Boss or special drop — see Phosphenes tab",
+      "drop_source": "Raid 2 content",
       "loot_link": "Abyss",
       "mat_num": null,
       "inferred": true
@@ -6440,10 +6457,10 @@ window.SKIN_LIST_DATA = {
       "skin_code": "{19:61}",
       "yaml_key": "shiny_jailbroken",
       "unlockable": "Unlockable_Weapons.Shiny_Jailbroken",
-      "comp": "bor_sm.comp_05_legendary_Jailbroken",
+      "comp": "bor_sm.comp_05_legendary_jailbroken",
       "base85_serial": "@Ugv?-o35E/Mj1AB}RG}J`s9{6-P&H8{Q72KIx`X<I3WchLYKQ8F8ffsy9PlvqQ4HVncA1_Y&%f7l82)yDr/7gh/5b+5Y_a^kF1rB",
       "spawn_hint": "{19:61} + \"c\" \"Cosmetics_Weapon_Shiny_Jailbroken\"",
-      "drop_source": "Raid Boss 2 (Subjugator / Thol)",
+      "drop_source": "Subjugator & Thol the Invincible (Raid 2)",
       "loot_link": "Jail-Broken Gatling",
       "mat_num": null,
       "inferred": false
@@ -6460,7 +6477,7 @@ window.SKIN_LIST_DATA = {
       "comp": "ORD_SR.comp_05_legendary_temper",
       "base85_serial": null,
       "spawn_hint": "{26:84} + \"c\" \"Cosmetics_Weapon_Shiny_temper\"",
-      "drop_source": "Boss or special drop — see Phosphenes tab",
+      "drop_source": "Raid 2 content",
       "loot_link": "SolarTemper",
       "mat_num": null,
       "inferred": true
@@ -10200,7 +10217,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10217,7 +10234,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10234,7 +10251,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10251,7 +10268,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10268,7 +10285,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10285,7 +10302,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10302,7 +10319,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10319,7 +10336,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10336,7 +10353,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10353,7 +10370,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10370,7 +10387,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10387,7 +10404,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10404,7 +10421,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10421,7 +10438,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10438,7 +10455,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10455,7 +10472,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10880,7 +10897,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10897,7 +10914,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10914,7 +10931,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10931,7 +10948,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10948,7 +10965,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10965,7 +10982,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10982,7 +10999,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -10999,7 +11016,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11016,7 +11033,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11033,7 +11050,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11050,7 +11067,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11067,7 +11084,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11084,7 +11101,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11101,7 +11118,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11118,7 +11135,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -11135,7 +11152,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -14960,7 +14977,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -14977,7 +14994,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -14994,7 +15011,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15011,7 +15028,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15028,7 +15045,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15045,7 +15062,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15062,7 +15079,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15079,7 +15096,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15096,7 +15113,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15113,7 +15130,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15130,7 +15147,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15147,7 +15164,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15164,7 +15181,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15181,7 +15198,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15198,7 +15215,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15215,7 +15232,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15640,7 +15657,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15657,7 +15674,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15674,7 +15691,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15691,7 +15708,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You put things back together. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15708,7 +15725,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15725,7 +15742,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15742,7 +15759,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15759,7 +15776,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15776,7 +15793,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15793,7 +15810,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15810,7 +15827,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15827,7 +15844,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15844,7 +15861,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15861,7 +15878,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15878,7 +15895,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15895,7 +15912,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15912,7 +15929,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15929,7 +15946,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15946,7 +15963,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -15963,7 +15980,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17221,7 +17238,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a safe place. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17238,7 +17255,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a safe place. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17255,7 +17272,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a safe place. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17272,7 +17289,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a safe place. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17357,7 +17374,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17374,7 +17391,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17391,7 +17408,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17408,7 +17425,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17765,7 +17782,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17782,7 +17799,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17799,7 +17816,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17816,7 +17833,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17833,7 +17850,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17850,7 +17867,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17867,7 +17884,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17884,7 +17901,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17901,7 +17918,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17918,7 +17935,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17935,7 +17952,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17952,7 +17969,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17969,7 +17986,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -17986,7 +18003,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18003,7 +18020,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18020,7 +18037,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18037,7 +18054,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You learned the truth about a father and a son.",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18054,7 +18071,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You learned the truth about a father and a son. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18071,7 +18088,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You learned the truth about a father and a son. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18088,7 +18105,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You learned the truth about a father and a son. · Mission",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18105,7 +18122,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18122,7 +18139,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18139,7 +18156,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18156,7 +18173,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18173,7 +18190,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18190,7 +18207,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18207,7 +18224,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18224,7 +18241,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18241,7 +18258,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18258,7 +18275,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18275,7 +18292,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18292,7 +18309,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Character customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18666,7 +18683,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found a safe place.",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18700,7 +18717,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18717,7 +18734,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 1 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18734,7 +18751,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Pre-order bonus",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18768,7 +18785,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Rogue Challenge: You reached Level 40 as C4SH.",
+      "drop_source": "Rogue Challenge: You reached Level 30 as C4SH.",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18785,7 +18802,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 1 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18802,7 +18819,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 1 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18819,7 +18836,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 1 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18836,7 +18853,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18853,7 +18870,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18870,7 +18887,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18887,7 +18904,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18904,7 +18921,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You learned the truth about a father and a son. · Mission",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18921,7 +18938,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18938,7 +18955,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -18955,7 +18972,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "DLC — Claptrap customization",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20519,7 +20536,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: joy to the world!",
+      "drop_source": "Mission: joy to the world!",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20570,7 +20587,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20587,7 +20604,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20604,7 +20621,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20621,7 +20638,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20638,7 +20655,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: but friendship and loot are!",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20706,7 +20723,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You performed unlicensed surgery. · Mission",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20723,7 +20740,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You helped Robby acclimate to his new position. · Mission",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20757,7 +20774,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20774,7 +20791,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20791,7 +20808,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20808,7 +20825,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -20825,7 +20842,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You cracked the digi-case.",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21114,7 +21131,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You found Ellie and reunited her with Moxxi. · Mission",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21131,7 +21148,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission — Voices Carry · Mission",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21148,7 +21165,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You summoned something from beyond. · Mission",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21165,7 +21182,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21182,7 +21199,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21199,7 +21216,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21216,7 +21233,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Companion customization unlock",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -21930,7 +21947,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Daedalus Challenge: You killed 50 enemies with Ripper Guns and Gear.",
+      "drop_source": "Ripper Challenge: You killed 50 enemies with Ripper guns and gear.",
       "loot_link": null,
       "mat_num": 45,
       "inferred": false
@@ -21947,7 +21964,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Jakobs Challenge: You killed 100 enemies with Daedalus guns and gear.",
+      "drop_source": "Daedalus Challenge: You killed 50 enemies with Daedalus guns and gear.",
       "loot_link": null,
       "mat_num": 46,
       "inferred": false
@@ -21964,7 +21981,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Maliwan Challenge: You killed 100 enemies with Jakobs guns and gear.",
+      "drop_source": "Jakobs Challenge: You killed 50 enemies with Jakobs guns and gear.",
       "loot_link": null,
       "mat_num": 47,
       "inferred": false
@@ -21981,7 +21998,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Order Challenge: You killed 50 enemies with Maliwan guns and gear.",
+      "drop_source": "Maliwan Challenge: You killed 50 enemies with Maliwan guns and gear.",
       "loot_link": null,
       "mat_num": 48,
       "inferred": false
@@ -21998,7 +22015,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Tediore Challenge: You killed 200 enemies with Order guns and gear.",
+      "drop_source": "Order Challenge: You killed 50 enemies with Order guns and gear.",
       "loot_link": null,
       "mat_num": 49,
       "inferred": false
@@ -22015,7 +22032,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Torgue Challenge: You killed 200 enemies with Tediore guns and gear.",
+      "drop_source": "Tediore Challenge: You killed 50 enemies with Tediore guns and gear.",
       "loot_link": null,
       "mat_num": 50,
       "inferred": false
@@ -22032,7 +22049,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vladof Challenge: You killed 150 enemies with Torgue guns and gear.",
+      "drop_source": "Torgue Challenge: You killed 50 enemies with Torgue guns and gear.",
       "loot_link": null,
       "mat_num": 51,
       "inferred": false
@@ -22049,7 +22066,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "You killed 100 enemies with Vladof guns and gear.",
+      "drop_source": "Vladof Challenge: You killed 50 enemies with Vladof guns and gear.",
       "loot_link": null,
       "mat_num": 52,
       "inferred": false
@@ -22151,7 +22168,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 58,
       "inferred": false
@@ -22168,7 +22185,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 59,
       "inferred": false
@@ -22185,7 +22202,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 60,
       "inferred": false
@@ -22202,7 +22219,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 61,
       "inferred": false
@@ -22219,7 +22236,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 2 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 62,
       "inferred": false
@@ -22236,7 +22253,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You accepted an invitation. · Mission",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 63,
       "inferred": false
@@ -22287,7 +22304,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "DLC Mission: You helped things grow. · Mission",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 66,
       "inferred": false
@@ -22304,7 +22321,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 67,
       "inferred": false
@@ -22321,7 +22338,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 68,
       "inferred": false
@@ -22338,7 +22355,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 69,
       "inferred": false
@@ -22355,7 +22372,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 70,
       "inferred": false
@@ -22372,7 +22389,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": null,
-      "drop_source": "Vault Card 03 reward",
+      "drop_source": "Customization unlock (check challenges, missions & vault cards)",
       "loot_link": null,
       "mat_num": 71,
       "inferred": false

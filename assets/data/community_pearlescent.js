@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.COMMUNITY_PEARLESCENT_DATA = {
-  "generated_at": "2026-07-02T16:35:23.162Z",
+  "generated_at": "2026-07-09T22:51:10.982Z",
   "game_version": "Raid 2 (May 2026)",
   "gear_database_source": "Borderlands 4 Gear Database (PDF/DOCX)",
   "nexus_dir": "references/bl4_toolbox_export/ncs/json",
@@ -20,7 +20,7 @@
     "with_pearl_comp_expected": 0,
     "with_id_raw": 20,
     "with_serial_u": 8,
-    "in_nexus_export": 12,
+    "in_nexus_export": 11,
     "in_supplement": 13,
     "verified_status": 20,
     "needs_verification": 0,
@@ -986,7 +986,7 @@
       "verification": {
         "in_gear_database": true,
         "in_supplement": true,
-        "in_nexus_export": true,
+        "in_nexus_export": false,
         "in_pearl_itempool": false,
         "in_echo4": true,
         "in_yaml_catalog": true,

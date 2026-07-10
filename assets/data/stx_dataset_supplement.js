@@ -34783,12 +34783,11 @@
     "weaponType": "SMG",
     "partType": "Barrel",
     "code": "\"DAD_SM.part_barrel_02_screwed\"",
-    "name": "Screwstonian",
+    "name": "Barrel 02 Screwed",
     "idRaw": "20:71",
     "id": 71,
     "family": 20,
-    "source": "nexus_supplement",
-    "effects": "Screwstonian"
+    "source": "nexus_supplement"
   },
   {
     "category": "Gadget",
@@ -35048,30 +35047,6 @@
     "idRaw": "248:26",
     "id": 26,
     "family": 248,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Enhancement",
-    "manufacturer": "",
-    "itemType": "Enhancement",
-    "weaponType": "",
-    "partType": "Firmware",
-    "code": "\"ENHANCEMENT.part_firmware_active_fire\"",
-    "name": "Firmware Active Fire",
-    "idRaw": "249",
-    "id": 249,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Enhancement",
-    "manufacturer": "",
-    "itemType": "Enhancement",
-    "weaponType": "",
-    "partType": "Firmware",
-    "code": "\"ENHANCEMENT.part_firmware_bruiser\"",
-    "name": "Firmware Bruiser",
-    "idRaw": "250",
-    "id": 250,
     "source": "nexus_supplement"
   },
   {
@@ -35965,12 +35940,11 @@
     "weaponType": "Shotgun",
     "partType": "Rarity",
     "code": "\"MAL_SG.comp_05_legendary_discybusiness\"",
-    "name": "Discy Business",
+    "name": "Legendary Discybusiness",
     "idRaw": "10:81",
     "id": 81,
     "family": 10,
-    "source": "nexus_supplement",
-    "effects": "Discy Business"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -36005,12 +35979,11 @@
     "weaponType": "Shotgun",
     "partType": "Barrel",
     "code": "\"MAL_SG.part_barrel_01_discybusiness\"",
-    "name": "Discy Business",
+    "name": "Barrel 01 Discybusiness",
     "idRaw": "10:82",
     "id": 82,
     "family": 10,
-    "source": "nexus_supplement",
-    "effects": "Discy Business"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -38632,12 +38605,11 @@
     "weaponType": "Shotgun",
     "partType": "Rarity",
     "code": "\"TOR_SG.comp_05_legendary_cormano\"",
-    "name": "Cormano",
+    "name": "Legendary Cormano",
     "idRaw": "12:83",
     "id": 83,
     "family": 12,
-    "source": "nexus_supplement",
-    "effects": "Cormano"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -38685,12 +38657,11 @@
     "weaponType": "Shotgun",
     "partType": "Barrel",
     "code": "\"TOR_SG.part_barrel_02_cormano\"",
-    "name": "Cormano",
+    "name": "Barrel 02 Cormano",
     "idRaw": "12:84",
     "id": 84,
     "family": 12,
-    "source": "nexus_supplement",
-    "effects": "Cormano"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -40363,12 +40334,11 @@
     "weaponType": "SMG",
     "partType": "Barrel",
     "code": "\"VLA_SM.part_barrel_locust\"",
-    "name": "Parasite",
+    "name": "Barrel Locust",
     "idRaw": "22:103",
     "id": 103,
     "family": 22,
-    "source": "nexus_supplement",
-    "effects": "Parasite"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -40429,12 +40399,11 @@
     "weaponType": "Sniper",
     "partType": "Rarity",
     "code": "\"VLA_SR.comp_05_legendary_lightgun\"",
-    "name": "Light Gun",
+    "name": "Legendary Lightgun",
     "idRaw": "16:91",
     "id": 91,
     "family": 16,
-    "source": "nexus_supplement",
-    "effects": "Light Gun"
+    "source": "nexus_supplement"
   },
   {
     "category": "Weapon",
@@ -40469,12 +40438,11 @@
     "weaponType": "Sniper",
     "partType": "Barrel",
     "code": "\"VLA_SR.part_barrel_01_lightgun\"",
-    "name": "Light Gun",
+    "name": "Barrel 01 Lightgun",
     "idRaw": "16:90",
     "id": 90,
     "family": 16,
-    "source": "nexus_supplement",
-    "effects": "Light Gun"
+    "source": "nexus_supplement"
   },
   {
     "category": "Gadget",
@@ -40929,58 +40897,6 @@
     "idRaw": "418:1",
     "id": 1,
     "family": 418,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Weapon",
-    "manufacturer": "",
-    "itemType": "Weapon",
-    "weaponType": "",
-    "partType": "Rarity",
-    "code": "\"WEAPON_DAHLMECH_EMP.comp_dahlmech_emp\"",
-    "name": "Comp Dahlmech Emp",
-    "idRaw": "419:1",
-    "id": 1,
-    "family": 419,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Weapon",
-    "manufacturer": "",
-    "itemType": "Weapon",
-    "weaponType": "",
-    "partType": "Body",
-    "code": "\"WEAPON_DAHLMECH_EMP.part_body\"",
-    "name": "Body",
-    "idRaw": "419:2",
-    "id": 2,
-    "family": 419,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Weapon",
-    "manufacturer": "",
-    "itemType": "Weapon",
-    "weaponType": "",
-    "partType": "Rarity",
-    "code": "\"WEAPON_DAHLMECH_ENERGYGUN.comp_dahlmech_energygun\"",
-    "name": "Comp Dahlmech Energygun",
-    "idRaw": "471:1",
-    "id": 1,
-    "family": 471,
-    "source": "nexus_supplement"
-  },
-  {
-    "category": "Weapon",
-    "manufacturer": "",
-    "itemType": "Weapon",
-    "weaponType": "",
-    "partType": "Body",
-    "code": "\"WEAPON_DAHLMECH_ENERGYGUN.part_body\"",
-    "name": "Body",
-    "idRaw": "471:2",
-    "id": 2,
-    "family": 471,
     "source": "nexus_supplement"
   },
   {
