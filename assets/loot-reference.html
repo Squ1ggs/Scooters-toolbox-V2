@@ -236,6 +236,26 @@
       font-size: 0.78rem;
       color: rgba(255, 190, 120, 0.95);
     }
+    .skin-name-cell strong { display: inline; }
+    .skin-name-cell .boss-spawn-actor {
+      font-size: 0.78rem;
+      margin-left: 6px;
+      vertical-align: baseline;
+    }
+    .boss-spawn-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffe8ba;
+      background: rgba(255, 160, 60, 0.12);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 180, 100, 0.35);
+    }
+    .boss-ingame-name {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
     body:not(.technical-on) .col-tech { display: none; }
     body:not(.technical-on) .tech-only { display: none !important; }
     .drop-scale-filters {
@@ -846,24 +866,65 @@
         return null;
       }
 
-      /** In-game boss title + table row / actor / pool codes (always visible). */
+      function actorKeyForItempool(listName) {
+        if (!listName || !enemyRef) return null;
+        var actors = enemyRef.actors || [];
+        var i;
+        for (i = 0; i < actors.length; i++) {
+          var a = actors[i];
+          if (a.dedicated_drop && a.dedicated_drop.itempool_list === listName) return a.key;
+          if (a.itempool_lists && a.itempool_lists.indexOf(listName) >= 0) return a.key;
+        }
+        var drops = enemyRef.dedicated_drops || [];
+        for (i = 0; i < drops.length; i++) {
+          if (drops[i].itempool_list === listName && drops[i].character_def) return drops[i].character_def;
+        }
+        return null;
+      }
+
+      function resolveBossActor(e) {
+        if (!e) return null;
+        var actor = e.character_def || e.actor_file;
+        if (actor) return actor;
+        if (e.spawn_label && /^Char_/i.test(String(e.spawn_label))) return String(e.spawn_label);
+        if (e.itempool_list) return actorKeyForItempool(e.itempool_list);
+        return null;
+      }
+
+      function bossInGameTitle(e, actor) {
+        if (!e) return '—';
+        if (e.in_game_name) return String(e.in_game_name).trim();
+        var fromActor = actor ? actorDisplayName(actor) : null;
+        if (fromActor) return fromActor;
+        var dn = String(e.display_name || '').trim();
+        if (dn) {
+          var rowHuman = String(e.row_name || '').replace(/_/g, ' ').trim();
+          if (!rowHuman || dn.toLowerCase() !== rowHuman.toLowerCase()) return dn;
+        }
+        return rowHuman || dn || '—';
+      }
+
+      /** In-game name + spawn actor in title; row / balance / pool in code line. */
       function formatBossHeading(e, opts) {
         opts = opts || {};
-        var inGame = String(e.display_name || '').trim() || String(e.row_name || '').trim() || '—';
+        var actor = resolveBossActor(e);
+        var title = bossInGameTitle(e, actor);
         var pills = opts.pills || '';
         var bits = [];
         if (e.row_name) {
           bits.push('Row <code class="copyable" data-copy-label="Table row">' + esc(e.row_name) + '</code>');
         }
-        var actor = e.character_def || e.actor_file;
-        if (actor) {
-          bits.push('Actor <code class="copyable" data-copy-label="Actor">' + esc(actor) + '</code>');
+        if (e.balance_row) {
+          bits.push('Balance <code class="copyable" data-copy-label="Balance row">' + esc(e.balance_row) + '</code>');
         }
         if (opts.showPool && e.itempool_list) {
           bits.push('Pool <code class="copyable" data-copy-label="Loot pool">' + esc(e.itempool_list) + '</code>');
         }
+        var actorHtml = actor
+          ? ' <code class="copyable boss-spawn-actor" data-copy-label="Spawn actor">' + esc(actor) + '</code>'
+          : '';
         var codeLine = bits.length ? '<div class="boss-code-line">' + bits.join(' · ') + '</div>' : '';
-        return '<h3>' + esc(inGame) + (pills ? ' ' + pills : '') + '</h3>' + codeLine;
+        return '<h3>' + esc(title) + actorHtml + (pills ? ' ' + pills : '') + '</h3>' + codeLine;
       }
 
       function friendlyNote(note) {
@@ -1412,8 +1473,45 @@
         return '<li>' + kindPillWithIcon(d.kind, d.category, d) + '<strong>' + esc(title) + '</strong> ' + code + extra + ' ' + prob + '</li>';
       }
 
+      function normalizeSearchHay(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/teramorpheus/g, 'terramorphous')
+          .replace(/teramorphius/g, 'terramorphous')
+          .replace(/[^a-z0-9]+/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
       function hay(parts) {
-        return parts.filter(Boolean).join(' ').toLowerCase();
+        return normalizeSearchHay(parts.filter(Boolean).join(' '));
+      }
+
+      function searchMatchesTerm(haystack, term) {
+        if (!term) return true;
+        var h = normalizeSearchHay(haystack);
+        var t = normalizeSearchHay(term);
+        if (!t) return true;
+        if (h.indexOf(t) >= 0) return true;
+        var tParts = t.split(' ').filter(function (p) { return p.length >= 3; });
+        if (!tParts.length) return h.indexOf(t) >= 0;
+        return tParts.every(function (p) { return h.indexOf(p) >= 0; });
+      }
+
+      function bossSearchHay(e, extraParts) {
+        var parts = [
+          e.spawn_label,
+          e.character_def,
+          e.row_name,
+          e.balance_row,
+          e.display_name,
+          e.in_game_name,
+          e.itempool_list,
+          Array.isArray(e.search_aliases) ? e.search_aliases.join(' ') : '',
+        ];
+        if (extraParts && extraParts.length) parts = parts.concat(extraParts);
+        return hay(parts);
       }
 
       var renderNormalEnemies = window.LootRefNormalEnemies && window.LootRefNormalEnemies.init({
@@ -1463,10 +1561,47 @@
         return ' <button type="button" class="serial-toggle skin-goto-loot" data-q="' + esc(s.loot_link) + '">View drops</button>';
       }
 
+      function isOutfitKind(kind) {
+        return /^(player_skin|player_skin_filter|player_head|robodealer_body|robodealer_head|companion_skin|companion_attachment|vehicle_mat)$/.test(kind || '');
+      }
+
+      /** Display name + copyable cosmetic / unlock IDs (always visible, like boss headings). */
+      function formatSkinNameCell(s) {
+        var title = '<strong>' + esc(s.display_name) + '</strong>';
+        if (s.inferred) title += ' <span class="subtle">(unverified)</span>';
+        title += skinLootLink(s);
+        var cosmeticInline = s.cosmetic
+          ? ' <code class="copyable boss-spawn-actor" data-copy-label="Cosmetic">' + esc(s.cosmetic) + '</code>'
+          : '';
+        var bits = [];
+        if (s.unlockable) {
+          bits.push('Unlock <code class="copyable" data-copy-label="Unlock ID">' + esc(s.unlockable) + '</code>');
+        }
+        if (s.internal_tail && isOutfitKind(s.kind)) {
+          bits.push('Asset <code class="copyable" data-copy-label="Internal asset">' + esc(s.internal_tail) + '</code>');
+        }
+        if (s.gestalt_variants && s.gestalt_variants.length) {
+          var gestalt = s.gestalt_variants.slice(0, 4).join(', ');
+          if (s.gestalt_variants.length > 4) gestalt += '…';
+          bits.push('Gestalt <span class="subtle" title="' + esc(s.gestalt_variants.join(', ')) + '">' + esc(gestalt) + '</span>');
+        }
+        if (s.mesh_parts && s.mesh_parts.length && isTechnical()) {
+          bits.push('Mesh <span class="subtle">' + esc(s.mesh_parts.slice(0, 3).join(', ')) + '</span>');
+        }
+        if (s.yaml_key) {
+          bits.push('Key <code class="copyable" data-copy-label="Catalog key">' + esc(s.yaml_key) + '</code>');
+        }
+        var codeLine = bits.length ? '<div class="boss-code-line">' + bits.join(' · ') + '</div>' : '';
+        return '<div class="skin-name-cell">' + title + cosmeticInline + codeLine + '</div>';
+      }
+
       function skinSpawnCodes(s) {
         var bits = [];
         if (s.skin_code) bits.push('<code class="copyable" data-copy-label="Skin part">' + esc(s.skin_code) + '</code>');
         if (s.camo_token) bits.push('<code class="copyable" data-copy-label="Camo token">' + esc(s.camo_token) + '</code>');
+        if (!bits.length && s.internal_tail && (s.kind === 'weapon_mat' || s.kind === 'phosphene' || s.kind === 'pearlescent')) {
+          bits.push('<code class="copyable" data-copy-label="Internal asset">' + esc(s.internal_tail) + '</code>');
+        }
         if (!bits.length && s.spawn_hint) bits.push('<span class="subtle">' + esc(s.spawn_hint) + '</span>');
         return bits.length ? bits.join(' + ') : '<span class="subtle">—</span>';
       }
@@ -1489,10 +1624,7 @@
       function appendSkinRow(s) {
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td><strong>' + esc(s.display_name) + '</strong>' +
-            (s.inferred ? ' <span class="subtle">(unverified)</span>' : '') +
-            skinLootLink(s) +
-          '</td>' +
+          '<td>' + formatSkinNameCell(s) + '</td>' +
           '<td>' + skinKindPill(s.kind) + '</td>' +
           '<td>' + skinSpawnCodes(s) + '</td>' +
           '<td>' + base85Cell(s.base85_serial, { full: true }) + '</td>' +
@@ -1535,12 +1667,15 @@
         var names = [];
         var seen = {};
         (g.drop_sources || []).forEach(function (s) {
-          var n = String(s.enemy_name || '').replace(/\s+True Boss$/i, '').trim();
-          if (!n) return;
-          var k = n.toLowerCase();
+          var actor = s.character_def || (s.itempool_list ? actorKeyForItempool(s.itempool_list) : null);
+          var name = String(s.in_game_name || s.enemy_name || '').replace(/\s+True Boss$/i, '').trim();
+          if (!name && actor) name = actorDisplayName(actor) || '';
+          if (!name) return;
+          var label = actor ? name + ' · ' + actor : name;
+          var k = (name + '|' + (actor || '')).toLowerCase();
           if (seen[k]) return;
           seen[k] = true;
-          names.push(n);
+          names.push(label);
         });
         if (names.length) return names.join(', ');
         if (g.drop_note) return friendlyNote(g.drop_note);
@@ -1556,9 +1691,13 @@
       }
 
       function rowHayForGun(g, isPearlRow, sources) {
+        var dropHay = (g.drop_sources || []).map(function (s) {
+          var actor = s.character_def || (s.itempool_list ? actorKeyForItempool(s.itempool_list) : null);
+          return [s.in_game_name, s.enemy_name, s.row_name, actor, s.itempool_list].join(' ');
+        }).join(' ');
         return hay([
           g.display_name, g.comp, legendaryCompForGun(g), pearlCompForGun(g), g.yaml_key, g.itempool_shiny, g.skin_part, g.skin_code, g.camo_paste, g.camo_c_code,
-          base85Of(g), sources, g.drop_note, g.slug, g.pool_status, g.variant_label, g.weapon_label,
+          base85Of(g), sources, dropHay, g.drop_note, g.slug, g.pool_status, g.variant_label, g.weapon_label,
           (g.source_hints || []).map(function (h) { return h.label; }).join(' ')
         ]);
       }
@@ -1628,7 +1767,7 @@
       }
 
       function render() {
-        var term = (q.value || '').trim().toLowerCase();
+        var term = normalizeSearchHay((q.value || '').trim());
         phosBody.innerHTML = '';
         poolDefBody.innerHTML = '';
         catalogPhosBody.innerHTML = '';
@@ -1660,7 +1799,7 @@
             pearlTotal++;
             if (!gunPassesFilters(g, true)) return;
             var builtPearl = renderGunRow(g, true);
-            if (term && builtPearl.rowHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(builtPearl.rowHay, term)) return;
             pearlShown++;
             appendGunRow(pearlBody, g, true, builtPearl.sources);
             return;
@@ -1669,7 +1808,7 @@
           phosTotal++;
           if (!gunPassesFilters(g, false)) return;
           var built = renderGunRow(g, false);
-          if (term && built.rowHay.indexOf(term) === -1) return;
+          if (term && !searchMatchesTerm(built.rowHay, term)) return;
           phosShown++;
           appendGunRow(phosBody, g, false, built.sources);
         });
@@ -1679,7 +1818,7 @@
           g.pool_status = 'pool_def_only';
           if (hasSerial && hasSerial.checked && !base85Of(g)) return;
           var built = renderGunRow(g, false);
-          if (term && built.rowHay.indexOf(term) === -1) return;
+          if (term && !searchMatchesTerm(built.rowHay, term)) return;
           poolDefShown++;
           appendPoolDefRow(poolDefBody, g);
         });
@@ -1689,7 +1828,7 @@
           g.pool_status = 'catalog_only';
           if (hasSerial && hasSerial.checked && !base85Of(g)) return;
           var built = renderGunRow(g, false);
-          if (term && built.rowHay.indexOf(term) === -1) return;
+          if (term && !searchMatchesTerm(built.rowHay, term)) return;
           catalogPhosShown++;
           appendCatalogPhosRow(catalogPhosBody, g);
         });
@@ -1708,11 +1847,10 @@
         var enemyShown = 0;
         (data.enemies || []).forEach(function (e) {
           if (!e.shiny_drop_count) return;
-          var cardHay = hay([e.display_name, e.row_name, e.character_def, e.itempool_list]);
-          (e.shiny_drops || []).forEach(function (d) {
-            cardHay += ' ' + hay([d.gun_name, d.comp, d.yaml_key]);
-          });
-          if (term && cardHay.indexOf(term) === -1) return;
+          var cardHay = bossSearchHay(e, (e.shiny_drops || []).map(function (d) {
+            return [d.gun_name, d.comp, d.yaml_key].join(' ');
+          }));
+          if (term && !searchMatchesTerm(cardHay, term)) return;
           enemyShown++;
           var card = document.createElement('div');
           card.className = 'card';
@@ -1737,12 +1875,11 @@
           if (withDropsOn && !e.drop_count) return;
           var filteredDrops = (e.drops || []).filter(function (d) { return dropMatchesKind(d, kindFilter); });
           if (kindFilter && !filteredDrops.length) return;
-          var actorName = actorDisplayName(e.character_def);
-          var cardHay = hay([e.display_name, e.row_name, e.character_def, actorName, e.itempool_list]);
-          filteredDrops.forEach(function (d) {
-            cardHay += ' ' + hay([d.label, d.comp, d.itempool, d.kind, d.category, d.rarity]);
-          });
-          if (term && cardHay.indexOf(term) === -1) return;
+          var actorName = actorDisplayName(resolveBossActor(e));
+          var cardHay = bossSearchHay(e, filteredDrops.map(function (d) {
+            return [d.label, d.comp, d.itempool, d.kind, d.category, d.rarity].join(' ');
+          }).concat(actorName ? [actorName] : []).concat(resolveBossActor(e) ? [resolveBossActor(e)] : []));
+          if (term && !searchMatchesTerm(cardHay, term)) return;
           poolShown++;
           var card = document.createElement('div');
           card.className = 'card';
@@ -1773,7 +1910,7 @@
             if (needComp && !(p.inv_comps && p.inv_comps.length)) return;
             var cardHay = hay([p.itempool, p.tier, p.category, (p.child_pools || []).join(' ')]);
             (p.inv_comps || []).forEach(function (c) { cardHay += ' ' + hay([c.comp, c.label]); });
-            if (term && cardHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(cardHay, term)) return;
             rarityShown++;
             var card = document.createElement('div');
             card.className = 'card';
@@ -1802,7 +1939,7 @@
             (c.configurations || []).forEach(function (cfg) {
               cardHay += ' ' + hay([cfg.name, (cfg.itempools || []).join(' '), (cfg.inv_refs || []).join(' '), (cfg.preset_refs || []).join(' ')]);
             });
-            if (term && cardHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(cardHay, term)) return;
             chestShown++;
             var card = document.createElement('div');
             card.className = 'card';
@@ -1836,7 +1973,7 @@
         if (rewardsData && rewardCards) {
           (rewardsData.rewards || []).forEach(function (r) {
             var cardHay = hay([r.id, r.display_name, r.kind, (r.itempools || []).join(' '), (r.rarity_tags || []).join(' ')]);
-            if (term && cardHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(cardHay, term)) return;
             rewardShown++;
             var card = document.createElement('div');
             card.className = 'card';
@@ -1873,10 +2010,12 @@
             if (skinKind && s.kind !== skinKind) return;
             if (needSkinSerial && !s.base85_serial) return;
             var rowHay = hay([
-              s.display_name, s.kind, s.cosmetic, s.camo_token, s.skin_code, s.yaml_key,
-              s.unlockable, s.comp, s.base85_serial, s.spawn_hint, s.drop_source, s.loot_link
+              s.display_name, s.kind, s.cosmetic, s.internal_tail, s.camo_token, s.skin_code, s.yaml_key,
+              s.unlockable, s.comp, s.base85_serial, s.spawn_hint, s.drop_source, s.loot_link,
+              Array.isArray(s.gestalt_variants) ? s.gestalt_variants.join(' ') : '',
+              Array.isArray(s.mesh_parts) ? s.mesh_parts.join(' ') : '',
             ]);
-            if (term && rowHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(rowHay, term)) return;
             pool.push(s);
           });
           if (skinSort && skinSort.compareCosmeticRows) {
@@ -1920,7 +2059,7 @@
             if (gearCat && row.category !== gearCat) return;
             if (phosOnly && !row.phosphene) return;
             var rowHay = hay([row.label, row.comp, row.tier, row.category, row.itempool, row.phosphene]);
-            if (term && rowHay.indexOf(term) === -1) return;
+            if (term && !searchMatchesTerm(rowHay, term)) return;
             gearShown++;
             appendGearCard(row);
           });

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.ENEMY_REFERENCE_DATA = {
-  "generated_at": "2026-07-09T22:39:50.622Z",
+  "generated_at": "2026-07-10T03:55:07.481Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "ai_export_root": "references/bl4_toolbox_export/fmodel/exports/OakGame/Content/AI",
   "stats": {
@@ -10,7 +10,7 @@
     "dedicated_drops": 91,
     "ai_char_defs": 94,
     "actors_with_display": 861,
-    "bosses": 125
+    "bosses": 299
   },
   "dedicated_drops": [
     {
@@ -1277,6 +1277,21 @@
       "source_file": "Nexus-Data-gbxactor0.json"
     },
     {
+      "key": "Char_Scav_AirRaiderSteve_BossMini",
+      "display_name": "Air Raider Scremulous",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "AirRaider",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_BatBomber",
       "display_name": "Airstrike Kratch",
       "display_key": "Name_BatBomber",
@@ -1285,6 +1300,36 @@
       "true_boss_actor": null,
       "parent_actor": "Char_Bat_SHARED",
       "balance_row": "Bomber",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Kraggon_Alpha_Named",
+      "display_name": "Alpha Kraggon",
+      "display_key": "Name_Kraggon_Alpha",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_Badass",
+      "balance_row": "Alpha",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Thresher_Alpha_Named",
+      "display_name": "Alpha Thresher",
+      "display_key": "Name_Thresher_Alpha",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_ThresherTremor",
+      "balance_row": "Alpha",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -1305,6 +1350,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Robo_Totem_Arcane",
+      "display_name": "Arcane Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_NPC_PrisonBuddy",
@@ -1350,6 +1410,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor0.json"
+    },
+    {
+      "key": "Char_ArmyDahl_SHARED",
+      "display_name": "Army Dahl SHARED",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ArmyOrder_SHARED",
@@ -1611,6 +1686,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_Angry_Badass",
+      "display_name": "Badass Angry Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DroneBadass",
       "display_name": "Badass Attestor",
       "display_key": "Name_DroneBadass",
@@ -1624,6 +1714,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_GunToterHeavy_Male",
+      "display_name": "Badass Cannoner",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Heavy",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Chaos",
+      "display_name": "Badass Chaos Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_CreepBadass",
@@ -1671,6 +1791,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_Draining_Badass",
+      "display_name": "Badass Draining Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_SoldierBadass",
       "display_name": "Badass Eradication Armature",
       "display_key": "Name_SoldierBadass",
@@ -1714,6 +1849,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Robo_Totem_Flame_Badass",
+      "display_name": "Badass Flame Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Frozen_Badass",
+      "display_name": "Badass Frozen Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DarkSiren_PhaseShard_PhaseClone_GrimReaper_Badass",
@@ -1806,6 +1971,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_ScavPsychoBadass",
+      "display_name": "Badass Lunatic",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_CatBadass",
       "display_name": "Badass Mangler",
       "display_key": "Name_CatBadass",
@@ -1836,6 +2016,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_Mortar_Badass",
+      "display_name": "Badass Mortar Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PangolinBadassMount",
       "display_name": "Badass Pango Mount",
       "display_key": "Name_Pangolin_BadassMount",
@@ -1864,6 +2059,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_ScavSplice_Badass",
+      "display_name": "Badass Plug",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "SpiderBadass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_PsychoBadass",
@@ -1911,6 +2121,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_GunToterBadass_Male",
+      "display_name": "Badass Rat-a-tat",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Badass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DarkSiren_PhaseShard_PhaseClone_Reaper_Badass",
       "display_name": "Badass Reaper",
       "display_key": "Name_DarkSiren_PhaseClone_Reaper_Badass",
@@ -1941,6 +2166,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ScavGunToterBadass",
+      "display_name": "Badass Scav",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Badass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_ThresherFlyingBadass",
+      "display_name": "Badass Skydrift Thresher",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "FlyingBadass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DarkSiren_PhaseShard_PhaseClone_Specter_Badass",
       "display_name": "Badass Specter",
       "display_key": "Name_DarkSiren_PhaseClone_Specter_Badass",
@@ -1954,6 +2209,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_SpliceSpider",
+      "display_name": "Badass Splider",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "SpiderBadass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ThresherBadass",
@@ -2014,6 +2284,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_BanditTurret_Rocket",
+      "display_name": "Bandit Turret Rocket",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "RocketTurret",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_BanditTurret_RocketAttachable",
@@ -2245,6 +2530,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_BigBoss_TRUE",
+      "display_name": "Big Boss TRUE",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BigBoss_TRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_AirRaiderSteve_BossMini_TRUE",
+      "display_name": "Big Encore Air Raider Scremulous",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "AirRaiderTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PrisonBuddyBoss_RunnableTRUE",
       "display_name": "Big Encore Arjay",
       "display_key": "Name_PrisonBuddyRunnableTRUE",
@@ -2317,6 +2632,36 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Scav_HeavySplice_BossMini_TRUE",
+      "display_name": "Big Encore Big Oil",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "HeavySpliceTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_HeavySplice_Upper_Boss_TRUE",
+      "display_name": "Big Encore Big Oil",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "HeavySpliceTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE",
       "display_name": "Big Encore Bio-Bulkhead",
       "display_key": "Name_Brute_MotherbaseTRUE",
@@ -2355,6 +2700,51 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_CreepRaid1_TRUE",
+      "display_name": "Big Encore Bloomreaper the Invincible",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Raid1Boss_TRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Phalanx_OrdiniteInfused_MiniBossTRUE",
+      "display_name": "Big Encore Bore-Tex",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_OrdiniteInfused_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachmentTRUE",
+      "display_name": "Big Encore Brain Zane",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Boss_DigiZane_Phase2TRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Bat_Mine_Boss_DestroyerTRUE",
       "display_name": "Big Encore Bramblesong",
       "display_key": "Name_BatDestroyerTRUE",
@@ -2374,6 +2764,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_DahlFather_Boss_Replay_True",
+      "display_name": "Big Encore Captain Willis",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "DahlFather_Replay_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Creep_Boss_Castilleia_TRUE",
       "display_name": "Big Encore Castilleia",
       "display_key": "Name_Creep_Castilleia_TRUE",
@@ -2387,6 +2792,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Cat_OrdiniteInfused_MiniBossTRUE",
+      "display_name": "Big Encore Chiselbella",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Cat_OrdiniteInfused_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DNMGrunt_Mission04_BossMini_Replay_True",
+      "display_name": "Big Encore Colonel Crash",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission04_Replay_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Drone_Bunker_Boss_KeeperTRUE",
@@ -2406,6 +2841,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_DahlMech_Mission02_BossMini_Replay_True",
+      "display_name": "Big Encore Corporal Brennan",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission02_Replay_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_CrazyEarl_Boss_Replay_True",
+      "display_name": "Big Encore Crazed Earl",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "CrazyEarl_Replay_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
@@ -2444,6 +2909,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_Splice_OrdiniteInfused_MiniBossTRUE",
+      "display_name": "Big Encore Drang",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Splice_OrdiniteInfused_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
@@ -2772,6 +3252,27 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_GrassBoss_TrueBoss",
+      "display_name": "Big Encore Idolator Sol",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": true,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [
+        "ItemPoolList_Grasslands_Commander_TrueBoss"
+      ],
+      "dedicated_drop": {
+        "row_name": "Grasslands_Commander_TrueBoss",
+        "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+        "is_true_boss": true
+      },
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:dedicated_catalog"
     },
     {
       "key": "Char_BattleWagon_RocketTurret_TRUE",
@@ -3356,6 +3857,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Pangolin_BountyPack2_Boss_OrdiniteInfusedtrue",
+      "display_name": "Big Encore Stone Demon",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "PangolinBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DigitalPsychoTRUE",
       "display_name": "Big Encore sTruCT Gh0sT",
       "display_key": "Name_DigitalPsychoTRUE",
@@ -3369,6 +3885,51 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_Meathead_OrdiniteInfused_MiniBossTRUE",
+      "display_name": "Big Encore Sturm",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Meathead_OrdiniteInfused_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DahlGrunt_DroneCaptainBase_TRUE",
+      "display_name": "Big Encore The Penitent Steel",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptain_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Mech_DroneCaptain_BossMini_TRUE",
+      "display_name": "Big Encore The Penitent Steel",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptain_True",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Soldier_PlotMount3_CorruptDuoTRUE",
@@ -3477,6 +4038,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Scav_HeavySplice_BossMini",
+      "display_name": "Big Oil",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "HeavySplice",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_HeavySplice_Upper_Boss",
+      "display_name": "Big Oil",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "HeavySplice",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Soldier_SideGrass_SolarGuard",
       "display_name": "Big Orange Hothead",
       "display_key": "Name_SoldierSolarGuard",
@@ -3571,6 +4162,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Creep_Bitterblight_BossRift",
+      "display_name": "Bitterblight",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bitterblight",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_CatBloated",
       "display_name": "Bloated Mangler",
       "display_key": "Name_CatBloated",
@@ -3579,6 +4185,21 @@
       "true_boss_actor": null,
       "parent_actor": "Char_Cat_SHARED",
       "balance_row": "Bloated",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Kraggon_Nightmare",
+      "display_name": "Bloodstone Kraggon",
+      "display_key": "Name_KraggonNightmare",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_SHARED",
+      "balance_row": "Eridium",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -3599,6 +4220,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_CreepRaid1",
+      "display_name": "Bloomreaper the Invincible",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Raid1Boss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Psycho_SideMount_TMJake",
@@ -3631,6 +4267,21 @@
       "source_file": "Nexus-Data-gbxactor0.json"
     },
     {
+      "key": "Char_Scav_BoneBoogy_BossRift",
+      "display_name": "Bone Boogie",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BoneBoogy",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_BanditTurret_SHARED",
       "display_name": "Boom Turret",
       "display_key": "Name_BanditTurret_Rocket",
@@ -3659,6 +4310,81 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Phalanx_OrdiniteInfused_MiniBoss",
+      "display_name": "Bore-Tex",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_OrdiniteInfused_MiniBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_Botpopper_BossRift",
+      "display_name": "Botpopper",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Botpopper",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Botpopper_RocketAttachable",
+      "display_name": "Botpopper Rocket Attachable",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BotPopperRockets",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachment",
+      "display_name": "Brain Zane",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Boss_DigiZane_Phase2",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachment_CloneA",
+      "display_name": "Brain Zane",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Boss_DigiZane_CloneAdd_Phase2",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Psycho_AugerF",
@@ -3815,6 +4541,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Kraggon_Bruley_A_Named",
+      "display_name": "Bru",
+      "display_key": "Name_Kraggon_Bruley_A",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_Blaster",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
       "key": "Char_NPC_BruceBuddy",
       "display_name": "Bruce",
       "display_key": "Name_NPC_BruceBuddy",
@@ -3822,6 +4563,21 @@
       "is_true_boss": false,
       "true_boss_actor": null,
       "parent_actor": "Char_NPC_Brute_SHARED",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Kraggon_Bruley_B_Named",
+      "display_name": "Bruley",
+      "display_key": "Name_Kraggon_Bruley_B",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_Roller",
       "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
@@ -4179,6 +4935,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlFather_Boss",
+      "display_name": "Captain Willis",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "DahlFather",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Creep_Boss_Castilleia",
       "display_name": "Castilleia",
       "display_key": "Name_Creep_Castilleia",
@@ -4404,6 +5175,43 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_TubaBoss",
+      "display_name": "Child of Terramorphous",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "TubaBoss",
+      "itempool_lists": [
+        "ItemPoolList_Tuba_Terra",
+        "ItemPoolList_Tuba_Terra_True"
+      ],
+      "dedicated_drop": {
+        "row_name": "Tuba_Terra",
+        "itempool_list": "ItemPoolList_Tuba_Terra",
+        "is_true_boss": false
+      },
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Cat_OrdiniteInfused_MiniBoss",
+      "display_name": "Chiselbella",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Cat_OrdiniteInfused_MiniBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Phalanx_SideGrass_Survivalist",
       "display_name": "Chugs",
       "display_key": "Name_PhalanxSurvivalist",
@@ -4539,6 +5347,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Striker_Cleaner_BossMini",
+      "display_name": "CL34n.R",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Striker_Cleaner_MiniBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_Claptrap",
       "display_name": "Claptrap",
       "display_key": "Name_NPC_Claptrap",
@@ -4582,6 +5405,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DNMGrunt_Mission04_BossMini",
+      "display_name": "Colonel Crash",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission04",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ColonelOatmeal",
@@ -4719,6 +5557,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ScavSpliceHelo",
+      "display_name": "Copter Plug",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Drone_Bunker_Boss_Keeper",
       "display_name": "Core Observer",
       "display_key": "Name_DroneKeeper",
@@ -4738,6 +5591,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_DahlMech_Mission02_BossMini",
+      "display_name": "Corporal Brennan",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission02",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DroneKeeper_MiniDrone",
       "display_name": "Corroborating Witness",
       "display_key": "Name_DroneKeeper_MiniDrone",
@@ -4753,6 +5621,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_MutantCrab",
+      "display_name": "Crackclaw",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "MutantCrab",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_GunToter_SiblingRivalry_Crankus",
       "display_name": "Crankus",
       "display_key": "Name_GunToter_SiblingRivalry_Crankus",
@@ -4766,6 +5649,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_CrazyEarl_Boss",
+      "display_name": "Crazed Earl",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "CrazyEarl",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_CrazyEarl_Boss_Replay",
+      "display_name": "Crazy Earl Boss Replay",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "CrazyEarl_Replay",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_CreepBasic",
@@ -4871,6 +5784,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_CreepRaid1_Crystal01",
+      "display_name": "Creep Raid1 Crystal01",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BossCrystal",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Creep_SHARED",
@@ -5008,6 +5936,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Kraggon_Bruley_C_Named",
+      "display_name": "Creme Bru-lée",
+      "display_key": "Name_Kraggon_Bruley_C",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_Badass",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
       "key": "Char_Psycho_PsychoSinger",
       "display_name": "Crunch Tongue",
       "display_key": "Name_PsychoSinger",
@@ -5038,6 +5981,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Phalanx_OrdiniteInfused",
+      "display_name": "Crystallized Phalanx",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_OrdiniteInfused",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Psycho_Zanzibart",
       "display_name": "Cursed Myrmidon of the Cruel Dawn",
       "display_key": "Name_PsychoZanzibart",
@@ -5053,6 +6011,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlFather_Boss_Replay",
+      "display_name": "Dahl Father Boss Replay",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "DahlFather_Replay",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DahlGruntBadass",
       "display_name": "Dahl Grunt Badass",
       "display_key": "Name_DahlGruntBadass",
@@ -5066,6 +6039,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlGruntBadass_Flying",
+      "display_name": "Dahl Grunt Badass Flying",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "FlyingBadass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlGrunt_DeadSquadmate1_Named",
@@ -5141,6 +6129,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlGrunt_DroneCaptainBase",
+      "display_name": "Dahl Grunt Drone Captain Base",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptain",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlGruntEngineer",
@@ -5261,6 +6264,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlGruntSMG_Flying",
+      "display_name": "Dahl Grunt SMG Flying",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Aerialist",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlGruntSniper",
@@ -5398,6 +6416,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlMech_Mission02_BossMini_Replay",
+      "display_name": "Dahl Mech Mission02 Boss Mini Replay",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission02_Replay",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DahlMech_Rocket",
       "display_name": "Dahl Mech Rocket",
       "display_key": "Name_DahlMech_Rocket",
@@ -5411,6 +6444,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlMech_SHARED",
+      "display_name": "Dahl Mech SHARED",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlMech_Suicide",
@@ -5533,6 +6581,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlNMTorso",
+      "display_name": "Dahl NMTorso",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "NightmareTorso",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DahlNMTorso_Badass",
       "display_name": "Dahl NMTorso Badass",
       "display_key": null,
@@ -5546,6 +6609,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlNMTorso_BadassFlier",
+      "display_name": "Dahl NMTorso Badass Flier",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DahlNMTorso_BadassFlier_Helo",
+      "display_name": "Dahl NMTorso Badass Flier Helo",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlNMTorso_Badass_Helo",
@@ -5606,6 +6699,51 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_DahlNMTorso_Flier",
+      "display_name": "Dahl NMTorso Flier",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DahlNMTorso_Flier_Helo",
+      "display_name": "Dahl NMTorso Flier Helo",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_DahlNMTorso_Helo",
+      "display_name": "Dahl NMTorso Helo",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "NightmareTorso",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DahlNMTorso_Helo_DahlFather",
@@ -5863,6 +7001,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlGrunt_SHARED",
+      "display_name": "DahlGrunt (spawn Char_DahlGruntSMG instead)",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ThresherRancher_Female",
       "display_name": "Daisy",
       "display_key": "Name_ThresherRancher_Female",
@@ -5891,6 +7044,51 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_NPC_Botanist",
+      "display_name": "Daphne",
+      "display_key": "Name_NPC_TheBotanist",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_NPC_Gestalt",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Kraggon_EldritchSpawn",
+      "display_name": "Dark Spawn",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "EldritchSpawn",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_FixerTower_BossMini",
+      "display_name": "Data Tower",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Striker_Fixer_MiniBoss_Tower",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DefectSuicide",
@@ -6261,6 +7459,51 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_DNMGrunt_Mission04_BossMini_Replay",
+      "display_name": "DNMGrunt Mission04 Boss Mini Replay",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mission04_Replay",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Base",
+      "display_name": "Draining Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Splice_OrdiniteInfused_MiniBoss",
+      "display_name": "Drang",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Splice_OrdiniteInfused_MiniBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
       "display_name": "Driller Hole",
       "display_key": "Name_MeatheadDrillerhole",
@@ -6520,6 +7763,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Robo_Totem_Effigy",
+      "display_name": "Effigy Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_GunToter_ScrapyardLeadersDuo",
       "display_name": "Eleri",
       "display_key": "Name_GunToter_ScrapyardLeadersDuo",
@@ -6550,6 +7808,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_PhalanxMeleeAlwaysFrenzied",
+      "display_name": "Elite Zeker",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "MeleeAlwaysFrenzied",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Cat_CattieCrew_Elizabeth",
       "display_name": "Elizabeth",
       "display_key": "Name_Cat_CattieCrew_Elizabeth",
@@ -6557,6 +7830,21 @@
       "is_true_boss": false,
       "true_boss_actor": null,
       "parent_actor": "Char_CatElder",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_NPC_Ellie",
+      "display_name": "Ellie",
+      "display_key": "Name_NPC_Ellie",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_NPC",
       "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
@@ -6730,19 +8018,19 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Eyeball",
-      "display_name": "Eyeball",
-      "display_key": "Name_Eyeball",
-      "is_boss": false,
+      "key": "Char_Striker_Fixer_BossMini",
+      "display_name": "F1x.R",
+      "display_key": null,
+      "is_boss": true,
       "is_true_boss": false,
       "true_boss_actor": null,
-      "parent_actor": "Char_Drone_Bunker_Boss_Keeper",
-      "balance_row": "Eyeball",
+      "parent_actor": null,
+      "balance_row": "Striker_Fixer_MiniBoss",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
       "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_DroneConstructor",
@@ -6833,6 +8121,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_ScavPsychoFirebrand",
+      "display_name": "Firebrand Lunatic",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Flame",
+      "display_name": "Flame Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_CatYoung_Intro",
@@ -7023,6 +8341,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Creep_BitterblightAdd",
+      "display_name": "Frostblight",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BitterblightAdd",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_MysteriousMurderer",
       "display_name": "Froyo Guy",
       "display_key": "Name_NPC_MysteriousMurderer_Froyo",
@@ -7053,6 +8386,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_Frozen",
+      "display_name": "Frozen Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Kraggon_Fulgur_BossRift",
+      "display_name": "Fulgur",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Fulgur",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_BanditTurret_FlamethrowerAttachable",
       "display_name": "Fwoosh Turret",
       "display_key": "Name_BanditTurret_Flamethrower",
@@ -7066,6 +8429,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_BanditTurret_Flamethrower",
+      "display_name": "Fwoosh Turret",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "FlamethrowerTurret",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Gadget_AutoTurret_Floating",
@@ -7222,6 +8600,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_MutantThresher",
+      "display_name": "Gilgathresh",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "MutantThresher",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_DroneTurret",
       "display_name": "Glaring Witness",
       "display_key": "Name_DroneTurret",
@@ -7319,6 +8712,21 @@
       "is_true_boss": false,
       "true_boss_actor": null,
       "parent_actor": "Char_TKRedGuard_BruteBadass",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_NPC_Greg",
+      "display_name": "Greg",
+      "display_key": "Name_NPC_DemonGreg",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_NPC_Gestalt",
       "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
@@ -8160,6 +9568,21 @@
       "source_file": "Nexus-Data-gbxactor0.json"
     },
     {
+      "key": "Char_Meathead_OrdiniteInfused_MiniBoss_Clone",
+      "display_name": "Healthy Shard Meatball",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Meathead_OrdiniteInfused_MiniBoss_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_Hermes",
       "display_name": "Hermes",
       "display_key": "Name_NPC_Hermes",
@@ -8299,6 +9722,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Thresher_Icemaw_Named",
+      "display_name": "Ice Maw",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Icemaw_Named",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_MeatheadFreeze",
       "display_name": "Icebox",
       "display_key": "Name_MeatheadFreeze",
@@ -8327,6 +9765,27 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_GrassBoss",
+      "display_name": "Idolator Sol",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [
+        "ItemPoolList_Grasslands_Commander"
+      ],
+      "dedicated_drop": {
+        "row_name": "Grasslands_Commander",
+        "itempool_list": "ItemPoolList_Grasslands_Commander",
+        "is_true_boss": false
+      },
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:dedicated_catalog"
     },
     {
       "key": "Char_NPC_OrderDroneNPC_HologramProjector",
@@ -8402,6 +9861,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_ScavOutlaw_SHARED",
+      "display_name": "INVALID (spawn Char_ScavOutlawBasic instead)",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Grunt_SHARED",
@@ -8509,21 +9983,6 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Keeper_Raid2",
-      "display_name": "Keeper Raid2",
-      "display_key": "Name_Keeper_Raid2",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_Drone_Bunker_Boss_Keeper",
-      "balance_row": "Keeper",
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_NPC_NudgeCouncil01",
       "display_name": "Khalil",
       "display_key": "Name_NPC_NudgeCouncil01",
@@ -8567,6 +10026,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Phalanx_OrdiniteInfused_PearlGearGen",
+      "display_name": "King Crosis",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Phalanx_OrdiniteInfused_PearlGearGenTutorial",
+      "display_name": "King Crosis",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_BatDiver",
@@ -8659,34 +10148,19 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Kraggon_Alpha_Named",
-      "display_name": "Kraggon Alpha Named",
-      "display_key": "Name_Kraggon_Alpha",
-      "is_boss": false,
+      "key": "Char_Kraggon_Eldritch_BossRift",
+      "display_name": "Krag'thulu",
+      "display_key": null,
+      "is_boss": true,
       "is_true_boss": false,
       "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_Badass",
-      "balance_row": "Alpha",
+      "parent_actor": null,
+      "balance_row": "Eldritch",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
       "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_Kraggon_Badass",
-      "display_name": "Kraggon Badass",
-      "display_key": "Name_KraggonBadass",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_SHARED",
-      "balance_row": "Badass",
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_KraggonBasic",
@@ -8749,49 +10223,19 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Kraggon_Bruley_A_Named",
-      "display_name": "Kraggon Bruley A Named",
-      "display_key": "Name_Kraggon_Bruley_A",
-      "is_boss": false,
+      "key": "Char_Kraggon_Fuse",
+      "display_name": "Kraggon Fuse",
+      "display_key": null,
+      "is_boss": true,
       "is_true_boss": false,
       "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_Blaster",
+      "parent_actor": null,
       "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
       "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_Kraggon_Bruley_B_Named",
-      "display_name": "Kraggon Bruley B Named",
-      "display_key": "Name_Kraggon_Bruley_B",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_Roller",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_Kraggon_Bruley_C_Named",
-      "display_name": "Kraggon Bruley C Named",
-      "display_key": "Name_Kraggon_Bruley_C",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_Badass",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Kraggon_Loot",
@@ -8824,21 +10268,6 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Kraggon_Nightmare",
-      "display_name": "Kraggon Nightmare",
-      "display_key": "Name_KraggonNightmare",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_SHARED",
-      "balance_row": "Eridium",
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_Kraggon_PureEridium_Named",
       "display_name": "Kraggon Pure Eridium Named",
       "display_key": "Name_KraggonEridium",
@@ -8854,19 +10283,19 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Kraggon_Roller",
-      "display_name": "Kraggon Roller",
-      "display_key": "Name_KraggonRoller",
-      "is_boss": false,
+      "key": "Char_Kraggon_SHARED",
+      "display_name": "Kraggon SHARED",
+      "display_key": null,
+      "is_boss": true,
       "is_true_boss": false,
       "true_boss_actor": null,
-      "parent_actor": "Char_Kraggon_SHARED",
-      "balance_row": "Roller",
+      "parent_actor": null,
+      "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
       "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Kraggon_Slammer",
@@ -8897,6 +10326,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Bat_Kraggula_BossRift",
+      "display_name": "Kraggula",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Vampire",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Kraggon_Kraggula",
+      "display_name": "Kraggula",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Vampire",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_BatManaWingsOnly",
@@ -9308,6 +10767,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_LightningRod",
+      "display_name": "Lightning Rod Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_SoldierPistol",
       "display_name": "Lightweight Armature",
       "display_key": "Name_SoldierPistol",
@@ -9443,6 +10917,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Kraggon_Badass",
+      "display_name": "Loot Kraggon",
+      "display_key": "Name_KraggonBadass",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_SHARED",
+      "balance_row": "Badass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
       "key": "Char_BatLoot",
       "display_name": "Loot Kratch",
       "display_key": "Name_BatLoot",
@@ -9561,6 +11050,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_NPC_Mancubus",
+      "display_name": "Mancubus",
+      "display_key": "Name_NPC_Mancubus",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_NPC",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
       "key": "Char_Mandolin_BruteBadass",
@@ -9938,6 +11442,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_NPC_Marina",
+      "display_name": "Marina",
+      "display_key": "Name_NPC_Marina",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_NPC_Gestalt",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
       "key": "Char_BeastCalf_FriendlyMason",
       "display_name": "Mason",
       "display_key": "Name_BeastMountMason",
@@ -10178,6 +11697,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Mech_DroneCaptain_BossMini",
+      "display_name": "Mech Drone Captain Boss Mini",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptain",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Mech_DroneCaptain_Hologram",
+      "display_name": "Mech Drone Captain Hologram",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptain",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_MeleeFish",
       "display_name": "Melee Fish",
       "display_key": "Name_MeleeFish",
@@ -10302,6 +11851,66 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Robo_Totem_Draining_Mini",
+      "display_name": "Mini Draining Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Flame_Mini",
+      "display_name": "Mini Flame Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Frozen_Mini",
+      "display_name": "Mini Frozen Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Kraggon_Mini",
+      "display_name": "Minister Screw",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Mini",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_CatYoung_FriendlyMirage",
       "display_name": "Mirage",
       "display_key": "Name_CatYoung_Mirage",
@@ -10377,6 +11986,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Scav_Turret_Chaingun",
+      "display_name": "Moon Blaster",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ScavChaingun",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ShatterBoss_Elpis",
       "display_name": "Moon-Maddened Callis",
       "display_key": "Name_ShatterBoss_Elpis",
@@ -10424,6 +12048,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Robo_Totem_Mortar",
+      "display_name": "Mortar Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_MountBoss_Limbs_Right",
@@ -10703,21 +12342,6 @@
       "is_true_boss": false,
       "true_boss_actor": null,
       "parent_actor": "Char_NPC_BoltInventor",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_NPC_Botanist",
-      "display_name": "NPC Botanist",
-      "display_key": "Name_NPC_TheBotanist",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_NPC_Gestalt",
       "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
@@ -11701,21 +13325,6 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_NPC_Ellie",
-      "display_name": "NPC Ellie",
-      "display_key": "Name_NPC_Ellie",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_NPC",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_NPC_EscapedPrisoners",
       "display_name": "NPC Escaped Prisoners",
       "display_key": null,
@@ -12031,21 +13640,6 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_NPC_Greg",
-      "display_name": "NPC Greg",
-      "display_key": "Name_NPC_DemonGreg",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_NPC_Gestalt",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_NPC_GruntBasic",
       "display_name": "NPC Grunt Basic",
       "display_key": null,
@@ -12331,39 +13925,9 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_NPC_Mancubus",
-      "display_name": "NPC Mancubus",
-      "display_key": "Name_NPC_Mancubus",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_NPC",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_NPC_Mandolin_ArcadeDrunk",
       "display_name": "NPC Mandolin Arcade Drunk",
       "display_key": "Name_NPC_Mandolin_ArcadeDrunk",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_NPC_Gestalt",
-      "balance_row": null,
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_NPC_Marina",
-      "display_name": "NPC Marina",
-      "display_key": "Name_NPC_Marina",
       "is_boss": false,
       "is_true_boss": false,
       "true_boss_actor": null,
@@ -13081,6 +14645,51 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_OldThrash_Named",
+      "display_name": "Ol' Thrash",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "OldThrash",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_OldThrash_BossRift",
+      "display_name": "Old Thrash Boss Rift",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_ScrapFusRo_BossRift",
+      "display_name": "Oldbeard Worldthroat",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ScrapFusRo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_MoonShiner",
       "display_name": "Ole Shammy",
       "display_key": "Name_NPC_MoonShiner",
@@ -13119,6 +14728,21 @@
       "true_boss_actor": null,
       "parent_actor": "Char_GruntSMG",
       "balance_row": "Mount3",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Eyeball",
+      "display_name": "Order Ocular Observer",
+      "display_key": "Name_Eyeball",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Drone_Bunker_Boss_Keeper",
+      "balance_row": "Eyeball",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -13186,6 +14810,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Thresher_EldritchTentacle",
+      "display_name": "Outer Breach",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_OverKeeper",
       "display_name": "Over Keeper",
       "display_key": "Name_OverKeeper",
@@ -13194,6 +14833,21 @@
       "true_boss_actor": null,
       "parent_actor": "Char_Drone_Bunker_Boss_Keeper",
       "balance_row": "None",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Keeper_Raid2",
+      "display_name": "OverKeeper",
+      "display_key": "Name_Keeper_Raid2",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Drone_Bunker_Boss_Keeper",
+      "balance_row": "Keeper",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -13293,6 +14947,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_PangolinBasic",
+      "display_name": "Pangolin",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Basic",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_PangolinBaby",
@@ -13460,6 +15129,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlGrunt_DroneCaptainBase_Holo",
+      "display_name": "Penitent Steel Drone",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bunker_DroneCaptainHolo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_GunShipBadass",
       "display_name": "Persecutor",
       "display_key": "Name_GunShipBadass",
@@ -13468,6 +15152,21 @@
       "true_boss_actor": null,
       "parent_actor": "Char_GunShip_SHARED",
       "balance_row": "Badass",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Kraggon_Roller",
+      "display_name": "Perturbalon",
+      "display_key": "Name_KraggonRoller",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_Kraggon_SHARED",
+      "balance_row": "Roller",
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -13535,6 +15234,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_PhalanxBasic",
+      "display_name": "Phalanx",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Basic1",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_PhalanxMeleeBadass",
+      "display_name": "Phalanx Melee Badass",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PhalanxMeleeBadassAlwaysFrenzied",
       "display_name": "Phalanx Melee Badass Always Frenzied",
       "display_key": null,
@@ -13550,6 +15279,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_PhalanxRangedBadass",
+      "display_name": "Phalanx Ranged Badass",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PhalanxRangedBadassAlwaysFrenzied",
       "display_name": "Phalanx Ranged Badass Always Frenzied",
       "display_key": null,
@@ -13563,6 +15307,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_PhalanxWreck",
+      "display_name": "Phalanx Wreck",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Wreck",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_NPC_ScrappyFence",
@@ -13685,6 +15444,21 @@
       "source_file": "Nexus-Data-gbxactor0.json"
     },
     {
+      "key": "Char_GunToterPistol_Male",
+      "display_name": "Plinker",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Pistol",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PhalanxCreepy",
       "display_name": "Poison Ivan",
       "display_key": "Name_PhalanxCreepy",
@@ -13713,6 +15487,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor0.json"
+    },
+    {
+      "key": "Char_Thresher_Prime_Named",
+      "display_name": "Prime",
+      "display_key": "Name_Thresher_Prime",
+      "is_boss": false,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": "Char_ThresherFlyingBadass",
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
       "key": "Char_GrassGuard",
@@ -13870,6 +15659,21 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Robo_Totem_Protector",
+      "display_name": "Protector Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_PsychoRobot",
       "display_name": "Psych0-Bot",
       "display_key": "Name_RoboPsycho",
@@ -13883,6 +15687,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_Scav_Bot_BossAdd",
+      "display_name": "Psych0-Bot",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Bot",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_PsychoBasic_Male",
@@ -13943,6 +15762,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_PsychoBasic",
+      "display_name": "Psycho Basic",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_PsychoBasic_BossAddFemale",
@@ -14920,6 +16754,51 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Scav_BomberHelo",
+      "display_name": "Raid Boomer",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BomberHelo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_GunnerHelo",
+      "display_name": "Raid PewPew",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "GunnerHelo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_ShieldHelo",
+      "display_name": "Raid Shielder",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ShieldHelo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_OrderTurret_OrderRailgun",
       "display_name": "Rail Liner",
       "display_key": "Name_OrderTurret_Railgun",
@@ -15250,6 +17129,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_GunToterSmall_Male",
+      "display_name": "Ripper",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Small",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Splice_Ripsaw",
       "display_name": "Ripsaw",
       "display_key": "Name_Splice_Ripsaw",
@@ -15263,6 +17157,96 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_RoboDealer",
+      "display_name": "Robo Dealer",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Angry",
+      "display_name": "Robo Totem Angry",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Buff",
+      "display_name": "Robo Totem Buff",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Debuff",
+      "display_name": "Robo Totem Debuff",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Draining",
+      "display_name": "Robo Totem Draining",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Robo_Totem_Stationary",
+      "display_name": "Robo Totem Stationary",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Pangolin_Mine_Boss_RockAndRoll",
@@ -15397,6 +17381,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DigiZaneKiller_Boss_FloatingHead_DroneParent_Clone",
+      "display_name": "Scartini",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "None",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ScavGunToterAssault",
       "display_name": "Scav Gun Toter Assault",
       "display_key": "Name_ScavGunToterAssault",
@@ -15487,6 +17486,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ScavGunToter_SHARED",
+      "display_name": "Scav Gun Toter SHARED",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ScavGunToterShotgun",
       "display_name": "Scav Gun Toter Shotgun",
       "display_key": "Name_ScavGunToterShotgun",
@@ -15562,6 +17576,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Scav_GunnerAttachment",
+      "display_name": "Scav Gunner Attachment",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "GunnerHelo",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ScavOutlawArmored",
       "display_name": "Scav Outlaw Armored",
       "display_key": "Name_ScavOutlaw_Armored",
@@ -15620,6 +17649,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Scav_Plugginator_Upper_BOSS",
+      "display_name": "Scav Plugginator Upper BOSS",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ScavPsychoBasic",
@@ -16496,6 +18540,96 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Cat_OrdiniteInfused_MiniBoss_Clone",
+      "display_name": "Shard Mangler",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Cat_OrdiniteInfused_MiniBoss_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_MeatHead_OrdiniteInfused_Clone",
+      "display_name": "Shard Meatball",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Meathead_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Phalanx_OrdiniteInfused_Clone",
+      "display_name": "Shard Phalanx",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Phalanx_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Psycho_OrdiniteInfused_Clone",
+      "display_name": "Shard Psycho",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Psycho_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_GunToterMale_OrdiniteInfused_Clone",
+      "display_name": "Shard Rat-a-tat",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "GunToter_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Splice_OrdiniteInfused_MiniBoss_Clone",
+      "display_name": "Shard Splider",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Splice_OrdiniteInfused_MiniBoss_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_TED_Turret_ShieldBoi",
       "display_name": "Shield Boi",
       "display_key": "Name_TED_Turret_ShieldBoi",
@@ -16684,6 +18818,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_PhalanxSinger",
+      "display_name": "Sketch Calhoun",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Singer",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_SpliceSkitterBalm",
       "display_name": "Skitter Balm",
       "display_key": "Name_SpliceSpiderBalm",
@@ -16748,6 +18897,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Thresher_Fireskull_BossRift",
+      "display_name": "Skullfire",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Fireskull",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ThresherFlying",
       "display_name": "Skydrift Thresher",
       "display_key": "Name_ThresherFlyer",
@@ -16780,6 +18944,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_Psycho_OrdiniteInfused_PearlGearGen",
+      "display_name": "Slayowulf",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Psycho_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Grunt_Slithertongue_BossRift",
+      "display_name": "Slithertongue",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Slithertongue",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Psycho_DrunkPsycho",
@@ -17285,6 +19479,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_CreepLeaper_SpinSpawm",
+      "display_name": "Spring Creep",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Basic",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Leader_Vault_Shatt_Badass",
       "display_name": "Stochastix",
       "display_key": "Name_Leader_Vault_Shatt_Badass",
@@ -17298,6 +19507,36 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Pangolin_BountyPack2_Boss_OrdiniteInfused",
+      "display_name": "Stone Demon",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "PangolinBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Pangolin_OrdiniteInfused_Clone",
+      "display_name": "Stone Demon Shard",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Pangolin_Clone",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_Striker_SHARED",
@@ -17360,6 +19599,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Striker_Cleaner_BossMini_Replay_True",
+      "display_name": "Striker Cleaner Boss Mini Replay True",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Striker_Cleaner_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_StrikerBasic",
       "display_name": "Striker Engine",
       "display_key": "Name_StrikerBasic",
@@ -17418,6 +19672,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Striker_Fixer_BossMini_Replay_True",
+      "display_name": "Striker Fixer Boss Mini Replay True",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Striker_Fixer_MiniBossTRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_StrikerKael",
@@ -17480,6 +19749,36 @@
       "source_file": "Nexus-Data-gbxactor4.json"
     },
     {
+      "key": "Char_Meathead_OrdiniteInfused_MiniBoss",
+      "display_name": "Sturm",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Meathead_OrdiniteInfused_MiniBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_UberLeaderP",
+      "display_name": "Subjugator  the Invincible",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "LeaderBossUberRaid2",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_FreedomSue",
       "display_name": "Sue",
       "display_key": "Name_NPC_FreedomSue",
@@ -17493,6 +19792,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_PsychoSuicide_Male",
+      "display_name": "Suicide Psycho",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Suicide",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_CreepSolar",
@@ -17568,6 +19882,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_ThresherYoung",
+      "display_name": "Tadpole Thresher",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Young",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_TargetDummy",
@@ -17688,6 +20017,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor4.json"
+    },
+    {
+      "key": "Char_GunToterMale_OrdiniteInfused_PearlGearGen",
+      "display_name": "Ten-Toes",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "GunToter_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_NPC_RightJanis",
@@ -18041,6 +20385,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_DahlGruntSMG",
+      "display_name": "The Penitent Steel",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "SMG",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_Scav_Plugginator_BOSS",
+      "display_name": "The Plugginator",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Plugginator",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_ShatterBoss_Shared",
       "display_name": "the Ripper Queen",
       "display_key": "Name_ShatterBoss_Fortress",
@@ -18113,6 +20487,51 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Splice_OrdiniteInfused_PearlGearGen",
+      "display_name": "Theylob",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Splice_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_BigBoss",
+      "display_name": "Thol",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "BigBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_UberBigBoss",
+      "display_name": "Thol  the Invincible",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "UberBigBoss",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_CreepThorn",
       "display_name": "Thorn Creep",
       "display_key": "Name_CreepThorn",
@@ -18141,6 +20560,66 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_ThreshOWar_Named",
+      "display_name": "Thresh O' War",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ThreshOWar_Named",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_ThreshOWar_BossRift",
+      "display_name": "Thresh OWar Boss Rift",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ThreshOWar_BossRift",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_ThreshOWar_ChaingunAttachable",
+      "display_name": "Thresh OWar Chaingun Attachable",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ThreshOWarChaingun",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_ThreshOWar_ChaingunAttachable_Sides",
+      "display_name": "Thresh OWar Chaingun Attachable Sides",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ThreshOWarChaingun",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ThresherAdult",
@@ -18203,21 +20682,6 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
-      "key": "Char_Thresher_Alpha_Named",
-      "display_name": "Thresher Alpha Named",
-      "display_key": "Name_Thresher_Alpha",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_ThresherTremor",
-      "balance_row": "Alpha",
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
       "key": "Char_Thresher_BioArmoredBig_Runnable",
       "display_name": "Thresher Bio Armored Big Runnable",
       "display_key": null,
@@ -18235,6 +20699,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Thresher_Icemaw_BossRift",
+      "display_name": "Thresher Icemaw Boss Rift",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Icemaw_BossRift",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_ThresherNightmare",
@@ -18282,6 +20761,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ThresherNightmare_SlithertongueHead",
+      "display_name": "Thresher Nightmare Slithertongue Head",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_Thresher_Mount",
       "display_name": "Thresher Outrider",
       "display_key": "Name_ThresherMount",
@@ -18290,21 +20784,6 @@
       "true_boss_actor": null,
       "parent_actor": "Char_Thresher_SHARED",
       "balance_row": "Worm",
-      "itempool_lists": [],
-      "dedicated_drop": null,
-      "ai_path": null,
-      "ai_category": null,
-      "source_file": "Nexus-Data-gbxactor6.json"
-    },
-    {
-      "key": "Char_Thresher_Prime_Named",
-      "display_name": "Thresher Prime Named",
-      "display_key": "Name_Thresher_Prime",
-      "is_boss": false,
-      "is_true_boss": false,
-      "true_boss_actor": null,
-      "parent_actor": "Char_ThresherFlyingBadass",
-      "balance_row": null,
       "itempool_lists": [],
       "dedicated_drop": null,
       "ai_path": null,
@@ -18357,6 +20836,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ThresherTremor",
+      "display_name": "Thumper Thresher",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Tremor",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_BruteCannon",
       "display_name": "Thunderhead",
       "display_key": "Name_BruteCannon",
@@ -18370,6 +20864,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_MutantFish",
+      "display_name": "Tidebreaker",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "MutantFish",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_CreepTim",
@@ -18402,6 +20911,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_Meathead_OrdiniteInfused_PearlGearGen",
+      "display_name": "Tiny Bigs",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Meathead_OrdiniteInfused_PearlGearGen",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_NPC_CityLad03",
       "display_name": "Tomo",
       "display_key": "Name_NPC_CityLad03",
@@ -18430,6 +20954,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_Robo_Totem_Tough",
+      "display_name": "Tough Totem",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_OrderTurret_Augmenter",
@@ -18520,6 +21059,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_UberLeaderP_TRUE",
+      "display_name": "Uber Leader P TRUE",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "LeaderBossUberRaid2_TRUE",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_StrikerCloakUnstable",
@@ -18965,6 +21519,36 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_PsychoCorrupt",
+      "display_name": "Vile Psycho",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Corrupt",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
+      "key": "Char_GunToterCorrupt_Male",
+      "display_name": "Vile Ripper",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Corrupt",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_BeastCorrupt",
       "display_name": "Vile Savagehorn",
       "display_key": "Name_BeastCorrupt",
@@ -19104,6 +21688,21 @@
       "source_file": "Nexus-Data-gbxactor6.json"
     },
     {
+      "key": "Char_ThreshOWar_RocketAttachable",
+      "display_name": "War Pods",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "ThreshOWarRockets",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
+    },
+    {
       "key": "Char_LeaderBasic",
       "display_name": "Warden",
       "display_key": "Name_LeaderBasic",
@@ -19196,6 +21795,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_WaterThresher",
+      "display_name": "Water Thresher",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": null,
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     },
     {
       "key": "Char_NPC_PrisonerBystander",
@@ -19481,6 +22095,21 @@
       "ai_path": null,
       "ai_category": null,
       "source_file": "Nexus-Data-gbxactor6.json"
+    },
+    {
+      "key": "Char_PhalanxMelee",
+      "display_name": "Zerker",
+      "display_key": null,
+      "is_boss": true,
+      "is_true_boss": false,
+      "true_boss_actor": null,
+      "parent_actor": null,
+      "balance_row": "Melee1",
+      "itempool_lists": [],
+      "dedicated_drop": null,
+      "ai_path": null,
+      "ai_category": null,
+      "source_file": "supplement:squ1ggs"
     }
   ]
 };

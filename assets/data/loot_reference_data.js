@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.LOOT_REFERENCE_DATA = {
-  "generated_at": "2026-07-09T22:39:48.229Z",
+  "generated_at": "2026-07-10T04:10:02.131Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "notes": {
     "phosphene_c": "Phosphene tokens from deserialized base85 @U serials: skin {family:id} plus per-gun \"c\" \"Cosmetics_Weapon_Shiny_*\".",
@@ -13,84 +13,6 @@
     "pool_def_only": "pool_def_only_guns — shiny itempool defs without a boss ItemPoolList wire-up in the Nexus export; display_name is the in-game legendary name."
   },
   "enemies": [
-    {
-      "row_name": "Arjay_Mission",
-      "display_name": "Arjay Mission",
-      "itempool_list": "ItemPoolList_Arjay",
-      "character_def": "Char_PrisonBuddyBoss",
-      "is_true_boss": false,
-      "table": "Table_DedicatedDrops",
-      "balance_row": null,
-      "is_boss": false,
-      "actor_itempool_lists": [],
-      "shiny_drop_count": 2,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_dad_sg_05_legendary_HeartGun_shiny",
-          "comp": "dad_sg.comp_05_legendary_HeartGun",
-          "legendary_slug": "heartgun",
-          "gun_name": "Acey May",
-          "skin_code": "{8:55}",
-          "skin_part": "{8:55}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_HeartGun",
-          "camo_slot": 13,
-          "base85_serial": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=co_R1hVOa1Oiz#J-)lJxf4jd^blRQ&BFkYp{aAMc",
-          "echo4_serial_u": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=co_R1hVOa1Oiz#J-)lJxf4jd^blRQ&BFkYp{aAMc",
-          "serial_hint": "{8:55} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_HeartGun",
-          "yaml_key": "shiny_heartgun"
-        },
-        {
-          "itempool": "itempool_ord_sr_05_legendary_Fisheye_shiny",
-          "comp": "ord_sr.comp_05_legendary_Fisheye",
-          "legendary_slug": "fisheye",
-          "gun_name": "Fisheye",
-          "skin_code": "{26:1}",
-          "skin_part": "{26:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Fisheye",
-          "camo_slot": null,
-          "base85_serial": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfYJdC{$!}q*hrl-gA@3kC;zun&{I_=JXjp;eMoG$/",
-          "echo4_serial_u": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfYJdC{$!}q*hrl-gA@3kC;zun&{I_=JXjp;eMoG$/",
-          "serial_hint": "{26:1} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Fisheye",
-          "yaml_key": "shiny_fisheye"
-        }
-      ]
-    },
     {
       "row_name": "City_Cat",
       "display_name": "Axemaul",
@@ -131,12 +53,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bod",
           "yaml_key": "shiny_bod"
         }
-      ]
+      ],
+      "in_game_name": "Axemaul",
+      "actor_file": "Char_Cat_Mine_Boss_CityCat",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Axemaul"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_CityCat"
     },
     {
       "row_name": "Bango",
@@ -149,6 +79,7 @@
       "balance_row": "Drill_Boss_Bango",
       "is_boss": true,
       "actor_itempool_lists": [],
+      "in_game_name": "Bango",
       "shiny_drop_count": 2,
       "shiny_drops": [
         {
@@ -178,6 +109,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Phantom_Flame",
@@ -210,12 +142,19 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Prince",
           "yaml_key": "shiny_prince"
         }
-      ]
+      ],
+      "actor_file": "Char_Pangolin_Drill_Boss_Bango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_Bango"
     },
     {
       "row_name": "Arjay_TrueBoss",
@@ -257,6 +196,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_HeartGun",
@@ -289,12 +229,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Fisheye",
           "yaml_key": "shiny_fisheye"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Arjay",
+      "actor_file": "Char_PrisonBuddyBoss_RunnableTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Arjay"
+      ],
+      "spawn_label": "Char_PrisonBuddyBoss_RunnableTRUE"
     },
     {
       "row_name": "City_Cat_TrueBoss",
@@ -336,12 +284,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bod",
           "yaml_key": "shiny_bod"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Axemaul",
+      "actor_file": "Char_Cat_Mine_Boss_CityCat_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Axemaul"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_CityCat_TRUE"
     },
     {
       "row_name": "Bango_TrueBoss",
@@ -383,6 +339,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Phantom_Flame",
@@ -415,12 +372,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Prince",
           "yaml_key": "shiny_prince"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bango",
+      "actor_file": "Char_Pangolin_Drill_Boss_BangoTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_BangoTRUE"
     },
     {
       "row_name": "KOTO_Motherbase_Brute_TrueBoss",
@@ -462,12 +427,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_ATLien",
           "yaml_key": "shiny_atlien"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bio-Bulkhead",
+      "actor_file": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bio-Bulkhead"
+      ],
+      "spawn_label": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE"
     },
     {
       "row_name": "BioArmorThresher_TrueBoss",
@@ -509,6 +482,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bugbear",
@@ -541,12 +515,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Truck",
           "yaml_key": "shiny_truck"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bio-Thresher Omega",
+      "actor_file": "Char_Thresher_BioArmoredBig_RunnableTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bio-Thresher Omega"
+      ],
+      "spawn_label": "Char_Thresher_BioArmoredBig_RunnableTRUE"
     },
     {
       "row_name": "Destroyer_TrueBoss",
@@ -588,6 +570,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Boomslang",
@@ -620,12 +603,86 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_convergence",
           "yaml_key": "shiny_convergence"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bramblesong",
+      "actor_file": "Char_Bat_Mine_Boss_DestroyerTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bramblesong"
+      ],
+      "spawn_label": "Char_Bat_Mine_Boss_DestroyerTRUE"
+    },
+    {
+      "row_name": "Tuba_Terra_True",
+      "display_name": "Big Encore Child of Terramorphous",
+      "itempool_list": "ItemPoolList_Tuba_Terra_True",
+      "character_def": "Char_TubaBoss",
+      "actor_file": "Char_TubaBoss",
+      "balance_row": "TubaBoss",
+      "is_true_boss": true,
+      "has_boss_row": false,
+      "in_game_name": "Big Encore Child of Terramorphous",
+      "is_named_boss": true,
+      "search_aliases": [
+        "child of terramorphous",
+        "child of teramorpheus",
+        "terramorphous",
+        "teramorpheus",
+        "son of terramorphous",
+        "tuba boss",
+        "tuba terra",
+        "tubaboss",
+        "takedown terramorphous",
+        "cot",
+        "big encore child of terramorphous",
+        "true boss terramorphous",
+        "tuba terra true",
+        "Big Encore Child of Terramorphous"
+      ],
+      "spawn_label": "Char_TubaBoss",
+      "shiny_drop_count": 1,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_mal_sg_05_legendary_hemorrhage_shiny",
+          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
+          "legendary_slug": "hemorrhage",
+          "gun_name": "Hemorrhage",
+          "skin_code": "{16:88}",
+          "skin_part": "{16:88}",
+          "camo_paste": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "cosmetics_weapon_shiny_hemorrhage",
+          "camo_slot": null,
+          "base85_serial": "@Uguq~c35E/MjK>a&iz-y37L};Cs5z*bsGF#qs7~EM{XvC7%/ew!y+hqYJdAx5<M+H>rl-gA@4Xy`zun(CI_=JX(dG7AE=PyYWdH",
+          "echo4_serial_u": "@Uguq~c35E/MjK>a&iz-y37L};Cs5z*bsGF#qs7~EM{XvC7%/ew!y+hqYJdAx5<M+H>rl-gA@4Xy`zun(CI_=JX(dG7AE=PyYWdH",
+          "serial_hint": "{16:88} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.007,
+          "drop_prob_base": 0.007,
+          "drop_prob_share": 1,
+          "drop_prob_note": "True boss phosphene slot",
+          "prob_slot_label": "True boss phosphene",
+          "prob_slot": "truebossshiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.007,
+          "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hemorrhage",
+          "yaml_key": "shiny_hemorrhage"
+        }
+      ],
+      "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
     },
     {
       "row_name": "Drone_Keeper_TrueBoss",
@@ -667,6 +724,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bully",
@@ -699,12 +757,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_DividedFocus",
           "yaml_key": "shiny_dividedfocus"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Core Observer",
+      "actor_file": "Char_Drone_Bunker_Boss_KeeperTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Core Observer"
+      ],
+      "spawn_label": "Char_Drone_Bunker_Boss_KeeperTRUE"
     },
     {
       "row_name": "Red_Guard_TrueBoss",
@@ -746,6 +812,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_BonnieClyde",
@@ -778,6 +845,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Rowan",
@@ -810,12 +878,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_WF",
           "yaml_key": "shiny_wf"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Directive-0",
+      "actor_file": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Directive-0"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_RedGuardTRUE"
     },
     {
       "row_name": "Cloning_Leader_TrueBoss",
@@ -857,12 +933,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Sideshow",
           "yaml_key": "shiny_sideshow"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Divisioner",
+      "actor_file": "Char_Leader_Bunker_Boss_CloningTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Divisioner"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_CloningTRUE"
     },
     {
       "row_name": "Drillerhole_TrueBoss",
@@ -904,6 +988,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GMR",
@@ -936,12 +1021,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_katagawa",
           "yaml_key": "shiny_katagawa"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Drillerhole",
+      "actor_file": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Drillerhole"
+      ],
+      "spawn_label": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE"
     },
     {
       "row_name": "Leader_Hologram_TrueBoss",
@@ -983,12 +1076,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Chuck",
           "yaml_key": "shiny_chuck"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Fractis",
+      "actor_file": "Char_Leader_Bunker_Boss_HologramTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Fractis"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_HologramTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Meathead_TrueBoss",
@@ -1002,7 +1103,14 @@
       "is_boss": false,
       "actor_itempool_lists": [],
       "shiny_drop_count": 0,
-      "shiny_drops": []
+      "shiny_drops": [],
+      "in_game_name": "Big Encore Frank the Furnace",
+      "actor_file": "Char_MeatHeadFrackingBossTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Frank the Furnace"
+      ],
+      "spawn_label": "Char_MeatHeadFrackingBossTRUE"
     },
     {
       "row_name": "Soldier_Ancient_TrueBoss",
@@ -1044,12 +1152,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_OM",
           "yaml_key": "shiny_om"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Genone",
+      "actor_file": "Char_Soldier_Bunker_Boss_AncientTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Genone"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_AncientTRUE"
     },
     {
       "row_name": "Hovercart_TrueBoss",
@@ -1091,6 +1207,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PotatoThrower",
@@ -1123,12 +1240,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_WomboCombo",
           "yaml_key": "shiny_wombocombo"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Gruntabulous Vork",
+      "actor_file": "Char_Psycho_HovercartRiderTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Gruntabulous Vork"
+      ],
+      "spawn_label": "Char_Psycho_HovercartRiderTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Psycho_TrueBoss",
@@ -1142,7 +1267,14 @@
       "is_boss": false,
       "actor_itempool_lists": [],
       "shiny_drop_count": 0,
-      "shiny_drops": []
+      "shiny_drops": [],
+      "in_game_name": "Big Encore Hank the Welder",
+      "actor_file": "Char_PsychoFrackingLieutenantTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Hank the Welder"
+      ],
+      "spawn_label": "Char_PsychoFrackingLieutenantTRUE"
     },
     {
       "row_name": "KOTO_Lieutenant_TrueBoss",
@@ -1184,6 +1316,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_DualDamage",
@@ -1216,12 +1349,137 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RocketReload",
           "yaml_key": "shiny_rocketreload"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Horace",
+      "actor_file": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Horace"
+      ],
+      "spawn_label": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE"
+    },
+    {
+      "row_name": "Grasslands_Commander_TrueBoss",
+      "display_name": "Big Encore Idolator Sol",
+      "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+      "character_def": "Char_GrassBoss_TrueBoss",
+      "is_true_boss": true,
+      "table": "Table_DedicatedDrops",
+      "in_game_name": "Big Encore Idolator Sol",
+      "shiny_drop_count": 3,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoldenGod",
+          "legendary_slug": "goldengod",
+          "gun_name": "Golden God",
+          "skin_code": "{7:19}",
+          "skin_part": "{7:19}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
+          "camo_slot": 13,
+          "base85_serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
+          "echo4_serial_u": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
+          "serial_hint": "{7:19} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "prob_slot_label": "True boss phosphene",
+          "prob_slot": "truebossshiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.007,
+          "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoldenGod",
+          "yaml_key": "shiny_goldengod"
+        },
+        {
+          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoreMaster",
+          "legendary_slug": "goremaster",
+          "gun_name": "Goremaster",
+          "skin_code": "{7:20}",
+          "skin_part": "{7:20}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
+          "camo_slot": 14,
+          "base85_serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
+          "echo4_serial_u": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
+          "serial_hint": "{7:20} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "prob_slot_label": "True boss phosphene",
+          "prob_slot": "truebossshiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.007,
+          "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoreMaster",
+          "yaml_key": "shiny_goremaster"
+        },
+        {
+          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
+          "comp": "vla_sm.comp_05_legendary_Onslaught",
+          "legendary_slug": "onslaught",
+          "gun_name": "Onslaught",
+          "skin_code": "{22:1}",
+          "skin_part": "{22:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
+          "camo_slot": 11,
+          "base85_serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
+          "echo4_serial_u": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
+          "serial_hint": "{22:1} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "prob_slot_label": "True boss phosphene",
+          "prob_slot": "truebossshiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.007,
+          "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Onslaught",
+          "yaml_key": "shiny_onslaught"
+        }
+      ],
+      "actor_file": "Char_GrassBoss_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Idolator Sol"
+      ],
+      "spawn_label": "Char_GrassBoss_TrueBoss"
     },
     {
       "row_name": "Upgraded_Electi_Mole_TrueBoss",
@@ -1263,6 +1521,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RainbowVomit",
@@ -1295,12 +1554,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Zipgun",
           "yaml_key": "shiny_zipgun"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Leader Willem",
+      "actor_file": "Char_Soldier_SideShatterlands_ElectiMoleTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Leader Willem"
+      ],
+      "spawn_label": "Char_Soldier_SideShatterlands_ElectiMoleTRUE"
     },
     {
       "row_name": "Striker_Splitter_TrueBoss",
@@ -1342,6 +1609,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_complex_root",
@@ -1374,12 +1642,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Luty",
           "yaml_key": "shiny_luty"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Mimicron",
+      "actor_file": "Char_Striker_Bunker_Boss_SplitterTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Mimicron"
+      ],
+      "spawn_label": "Char_Striker_Bunker_Boss_SplitterTRUE"
     },
     {
       "row_name": "Shatterlands_Commander_Elpis_TrueBoss",
@@ -1421,12 +1697,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_OhmIGot",
           "yaml_key": "shiny_ohmigot"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Moon-Maddened Callis",
+      "actor_file": "Char_ShatterBoss_Elpis_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Moon-Maddened Callis"
+      ],
+      "spawn_label": "Char_ShatterBoss_Elpis_TrueBoss"
     },
     {
       "row_name": "Meat_Plant_Gunship_TrueBoss",
@@ -1468,12 +1752,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Asher",
           "yaml_key": "shiny_asher"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Oppressor",
+      "actor_file": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Oppressor"
+      ],
+      "spawn_label": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE"
     },
     {
       "row_name": "Pango_TrueBoss",
@@ -1515,6 +1807,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Phantom_Flame",
@@ -1547,12 +1840,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Stray",
           "yaml_key": "shiny_stray"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Pango",
+      "actor_file": "Char_Pangolin_Drill_Boss_PangoTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Pango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_PangoTRUE"
     },
     {
       "row_name": "Grasslands_Guardian_TrueBoss",
@@ -1594,12 +1895,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_HeavyTurret",
           "yaml_key": "shiny_heavyturret"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Inceptus",
+      "actor_file": "Char_GrassGuard_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Inceptus"
+      ],
+      "spawn_label": "Char_GrassGuard_TrueBoss"
     },
     {
       "row_name": "Mountain_Guardian_TrueBoss",
@@ -1641,12 +1950,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_KaoSon",
           "yaml_key": "shiny_kaoson"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Origo",
+      "actor_file": "Char_MountGuard_V02_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Origo"
+      ],
+      "spawn_label": "Char_MountGuard_V02_TrueBoss"
     },
     {
       "row_name": "Shatterlands_Guardian_TrueBoss",
@@ -1688,12 +2005,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_anarchy",
           "yaml_key": "shiny_anarchy"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Radix",
+      "actor_file": "Char_ShatterGuard_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Radix"
+      ],
+      "spawn_label": "Char_ShatterGuard_TrueBoss"
     },
     {
       "row_name": "City_Time_Keeper_Guardian_TrueBoss",
@@ -1735,6 +2060,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PlasmaCoil",
@@ -1767,12 +2093,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_star_helix",
           "yaml_key": "shiny_star_helix"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Timekeeper",
+      "actor_file": "Char_TkGuard_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Timekeeper"
+      ],
+      "spawn_label": "Char_TkGuard_TrueBoss"
     },
     {
       "row_name": "Rock_and_Roll_TrueBoss",
@@ -1814,6 +2148,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_QuickDraw",
@@ -1846,12 +2181,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_TKsWave",
           "yaml_key": "shiny_tkswave"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Rocken Roller",
+      "actor_file": "Char_Pangolin_Mine_Boss_RockAndROllTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Rocken Roller"
+      ],
+      "spawn_label": "Char_Pangolin_Mine_Boss_RockAndROllTRUE"
     },
     {
       "row_name": "Meathead_Riders_TrueBoss",
@@ -1893,12 +2236,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lucian",
           "yaml_key": "shiny_lucian"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Saddleback",
+      "actor_file": "Char_MeatHeadRiderTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Saddleback"
+      ],
+      "spawn_label": "Char_MeatHeadRiderTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Splice_TrueBoss",
@@ -1940,12 +2291,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lumberjack",
           "yaml_key": "shiny_lumberjack"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sal the Engineer",
+      "actor_file": "Char_SpliceFrackingEngineerTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sal the Engineer"
+      ],
+      "spawn_label": "Char_SpliceFrackingEngineerTRUE"
     },
     {
       "row_name": "Stealth_Predator_TrueBoss",
@@ -1980,7 +2339,14 @@
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Vamoose",
           "yaml_key": "shiny_vamoose"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Shadowpelt",
+      "actor_file": "Char_Cat_Mine_Boss_StealthPredator_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Shadowpelt"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_StealthPredator_TRUE"
     },
     {
       "row_name": "Spider_Jumbo_TrueBoss",
@@ -2022,12 +2388,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_NoisyCricket",
           "yaml_key": "shiny_noisycricket"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sidney Pointylegs",
+      "actor_file": "Char_Splice_Drill_Boss_SpiderJumboTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sidney Pointylegs"
+      ],
+      "spawn_label": "Char_Splice_Drill_Boss_SpiderJumboTRUE"
     },
     {
       "row_name": "Skull_Orchid_TrueBoss",
@@ -2069,12 +2443,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Roach",
           "yaml_key": "shiny_roach"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Skull Orchid",
+      "actor_file": "Char_Creep_Mine_Boss_SkullOrchid_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Skull Orchid"
+      ],
+      "spawn_label": "Char_Creep_Mine_Boss_SkullOrchid_TRUE"
     },
     {
       "row_name": "Bat_Matriarch_TrueBoss",
@@ -2116,6 +2498,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hellfire",
@@ -2148,12 +2531,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Linebacker",
           "yaml_key": "shiny_linebacker"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Skyspanner Kratch",
+      "actor_file": "Char_Bat_PlotMount1_Boss_MatriarchTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Skyspanner Kratch"
+      ],
+      "spawn_label": "Char_Bat_PlotMount1_Boss_MatriarchTRUE"
     },
     {
       "row_name": "Trash_Thresher_TrueBoss",
@@ -2195,6 +2586,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_BeeGun",
@@ -2227,12 +2619,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Kickballer",
           "yaml_key": "shiny_kickballer"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sludgemaw",
+      "actor_file": "Char_Thresher_SideGrass_Trash_True",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sludgemaw"
+      ],
+      "spawn_label": "Char_Thresher_SideGrass_Trash_True"
     },
     {
       "row_name": "Glide_Pack_Psycho_TrueBoss",
@@ -2274,12 +2674,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_LeadBalloon",
           "yaml_key": "shiny_leadballoon"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Splashzone",
+      "actor_file": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Splashzone"
+      ],
+      "spawn_label": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE"
     },
     {
       "row_name": "Mountain_Commander_TrueBoss",
@@ -2321,12 +2729,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RubysGrasp",
           "yaml_key": "shiny_rubysgrasp"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Lictor",
+      "actor_file": "Char_MountBoss_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Lictor"
+      ],
+      "spawn_label": "Char_MountBoss_TrueBoss"
     },
     {
       "row_name": "First_Corrupt_TrueBoss",
@@ -2368,6 +2784,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_KingsGambit",
@@ -2400,12 +2817,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Rangefinder",
           "yaml_key": "shiny_rangefinder"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Prototype",
+      "actor_file": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Prototype"
+      ],
+      "spawn_label": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE"
     },
     {
       "row_name": "CorruptTED_TrueBoss",
@@ -2447,6 +2872,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Goalkeeper",
@@ -2479,12 +2905,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_seventh_sense",
           "yaml_key": "shiny_seventh_sense"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Ted",
+      "actor_file": "Char_SideCity_Psycho_CorruptTED_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Ted"
+      ],
+      "spawn_label": "Char_SideCity_Psycho_CorruptTED_TRUE"
     },
     {
       "row_name": "Surprise_Attack_TrueBoss",
@@ -2526,6 +2960,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_bloodstarved",
@@ -2558,90 +2993,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PotatoThrower",
           "yaml_key": "shiny_potatothrower"
         }
-      ]
-    },
-    {
-      "row_name": "BioArmorThresher",
-      "display_name": "Bio Armor Thresher",
-      "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
-      "character_def": "Char_Thresher_BioArmoredBig_Runnable",
-      "is_true_boss": false,
-      "table": "Table_DedicatedDrops",
-      "balance_row": "Thresher_BioArmorBig_Runnable",
-      "is_boss": true,
-      "actor_itempool_lists": [],
-      "shiny_drop_count": 2,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_tor_ar_05_legendary_Bugbear_shiny",
-          "comp": "tor_ar.comp_05_legendary_Bugbear",
-          "legendary_slug": "bugbear",
-          "gun_name": "Bugbear",
-          "skin_code": "{17:1}",
-          "skin_part": "{17:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Bugbear",
-          "camo_slot": 12,
-          "base85_serial": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+J$%+dmo1HdAm$ckLTZOIShZhzf*MDo&O5!XK^_!2L",
-          "echo4_serial_u": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+J$%+dmo1HdAm$ckLTZOIShZhzf*MDo&O5!XK^_!2L",
-          "serial_hint": "{17:1} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bugbear",
-          "yaml_key": "shiny_bugbear"
-        },
-        {
-          "itempool": "itempool_jak_sr_05_legendary_Truck_shiny",
-          "comp": "jak_sr.comp_05_legendary_Truck",
-          "legendary_slug": "truck",
-          "gun_name": "Truck",
-          "skin_code": "{24:76}",
-          "skin_part": "{24:76}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Truck",
-          "camo_slot": null,
-          "base85_serial": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9uPNvFBm<p0~^N^mzWgmc#J3`#VLa-T5z7ULUUk",
-          "echo4_serial_u": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9uPNvFBm<p0~^N^mzWgmc#J3`#VLa-T5z7ULUUk",
-          "serial_hint": "{24:76} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Truck",
-          "yaml_key": "shiny_truck"
-        }
-      ]
+      ],
+      "in_game_name": "Big Encore Voraxis",
+      "actor_file": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Voraxis"
+      ],
+      "spawn_label": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE"
     },
     {
       "row_name": "KOTO_Motherbase_Brute",
@@ -2683,19 +3048,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_ATLien",
           "yaml_key": "shiny_atlien"
         }
-      ]
+      ],
+      "in_game_name": "Bio-Bulkhead",
+      "actor_file": "Char_Brute_PlotGrass2b_Boss_Motherbase",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bio-Bulkhead"
+      ],
+      "spawn_label": "Char_Brute_PlotGrass2b_Boss_Motherbase"
     },
     {
       "row_name": "Bloomreaper",
       "display_name": "Bloomreaper",
       "itempool_list": "ItemPoolList_Bloomreaper",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Bloomreaper",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -2725,6 +3102,7 @@
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.0075,
           "slot_prob_base": 0.0075,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_mantra",
@@ -2738,7 +3116,11 @@
       "display_name": "Bloomreaper TRUE",
       "itempool_list": "ItemPoolList_Bloomreaper_TRUE",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Bloomreaper_TRUE",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -2768,6 +3150,7 @@
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.01,
           "slot_prob_base": 0.01,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_mantra",
@@ -2816,6 +3199,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Boomslang",
@@ -2848,12 +3232,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_convergence",
           "yaml_key": "shiny_convergence"
         }
-      ]
+      ],
+      "in_game_name": "Bramblesong",
+      "actor_file": "Char_Bat_Mine_Boss_Destroyer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bramblesong"
+      ],
+      "spawn_label": "Char_Bat_Mine_Boss_Destroyer"
     },
     {
       "row_name": "Blaster_Brute",
@@ -2895,6 +3287,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Slugger",
@@ -2927,12 +3320,116 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Kaleidosplode",
           "yaml_key": "shiny_kaleidosplode"
         }
-      ]
+      ],
+      "in_game_name": "Callous Harbinger of Annihilating Death",
+      "actor_file": "Char_Brute_Bunker_Boss_Mountains",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Callous Harbinger of Annihilating Death"
+      ],
+      "spawn_label": "Char_Brute_Bunker_Boss_Mountains"
+    },
+    {
+      "row_name": "Tuba_Terra",
+      "display_name": "Child of Terramorphous",
+      "itempool_list": "ItemPoolList_Tuba_Terra",
+      "character_def": "Char_TubaBoss",
+      "actor_file": "Char_TubaBoss",
+      "balance_row": "TubaBoss",
+      "is_true_boss": false,
+      "has_boss_row": false,
+      "in_game_name": "Child of Terramorphous",
+      "is_named_boss": true,
+      "search_aliases": [
+        "child of terramorphous",
+        "child of teramorpheus",
+        "terramorphous",
+        "teramorpheus",
+        "son of terramorphous",
+        "tuba boss",
+        "tuba terra",
+        "tubaboss",
+        "takedown terramorphous",
+        "cot",
+        "Child of Terramorphous"
+      ],
+      "spawn_label": "Char_TubaBoss",
+      "shiny_drop_count": 2,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_ord_sr_05_legendary_Ishmael_shiny",
+          "comp": "ord_sr.comp_05_legendary_Ishmael",
+          "legendary_slug": "ishmael",
+          "gun_name": "Ishmael",
+          "skin_code": "{26:82}",
+          "skin_part": "{26:82}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
+          "camo_slot": null,
+          "base85_serial": null,
+          "echo4_serial_u": null,
+          "serial_hint": "{26:82} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0045,
+          "drop_prob_base": 0.0045,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.9% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_ishmael",
+          "yaml_key": "shiny_ishmael"
+        },
+        {
+          "itempool": "itempool_jak_ps_05_legendary_shoals_shiny",
+          "comp": "jak_ps.comp_05_legendary_shoals",
+          "legendary_slug": "shoals",
+          "gun_name": "Shoals",
+          "skin_code": "{3:85}",
+          "skin_part": "{3:85}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_shoals",
+          "camo_slot": null,
+          "base85_serial": null,
+          "echo4_serial_u": null,
+          "serial_hint": "{3:85} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0045,
+          "drop_prob_base": 0.0045,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.9% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_shoals",
+          "yaml_key": "shiny_shoals"
+        }
+      ],
+      "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
     },
     {
       "row_name": "Drone_Keeper",
@@ -2974,6 +3471,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bully",
@@ -3006,97 +3504,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_DividedFocus",
           "yaml_key": "shiny_dividedfocus"
         }
-      ]
-    },
-    {
-      "row_name": "CorruptTED",
-      "display_name": "Corrupt TED",
-      "itempool_list": "ItemPoolList_SideCity_Psycho",
-      "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
-      "is_true_boss": false,
-      "table": "Table_DedicatedDrops",
-      "balance_row": "SideCity_CorruptTED_Runnable",
-      "is_boss": true,
-      "actor_itempool_lists": [],
-      "shiny_drop_count": 2,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_ord_ar_05_legendary_Goalkeeper_shiny",
-          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
-          "legendary_slug": "goalkeeper",
-          "gun_name": "Goalkeeper",
-          "skin_code": "{15:76}",
-          "skin_part": "{15:76}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Goalkeeper",
-          "camo_slot": null,
-          "base85_serial": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFa9@v5#W-p0~^N^mzWgmc#J3`#VLa-TCkF9cHh~Wq4T*",
-          "echo4_serial_u": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFa9@v5#W-p0~^N^mzWgmc#J3`#VLa-TCkF9cHh~Wq4T*",
-          "serial_hint": "{15:76} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Goalkeeper",
-          "yaml_key": "shiny_goalkeeper"
-        },
-        {
-          "itempool": "itempool_jak_ps_05_legendary_seventh_sense_shiny",
-          "comp": "jak_ps.comp_05_legendary_seventh_sense",
-          "legendary_slug": "seventh_sense",
-          "gun_name": "Seventh Sense",
-          "skin_code": "{3:81}",
-          "skin_part": "{3:81}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_seventh_sense",
-          "camo_slot": null,
-          "base85_serial": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7vf>;sTjWJ?J_+*o`0/9F#PTQPSI(1{yQ(*%WgXQJ1@KEWdH",
-          "echo4_serial_u": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7vf>;sTjWJ?J_+*o`0/9F#PTQPSI(1{yQ(*%WgXQJ1@KEWdH",
-          "serial_hint": "{3:81} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_seventh_sense",
-          "yaml_key": "shiny_seventh_sense"
-        }
-      ]
+      ],
+      "in_game_name": "Core Observer",
+      "actor_file": "Char_Drone_Bunker_Boss_Keeper",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Core Observer"
+      ],
+      "spawn_label": "Char_Drone_Bunker_Boss_Keeper"
     },
     {
       "row_name": "Crash",
       "display_name": "Crash",
       "itempool_list": "ItemPoolList_Crash",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Crash",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3126,6 +3558,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hemorrhage",
@@ -3139,7 +3572,11 @@
       "display_name": "Crash True",
       "itempool_list": "ItemPoolList_Crash_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Crash_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3169,6 +3606,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hemorrhage",
@@ -3182,7 +3620,11 @@
       "display_name": "Crazy Earl",
       "itempool_list": "ItemPoolList_CrazyEarl",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "CrazyEarl",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3212,6 +3654,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_scootshoot",
@@ -3225,7 +3668,11 @@
       "display_name": "Crazy Earl True",
       "itempool_list": "ItemPoolList_CrazyEarl_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "CrazyEarl_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3255,6 +3702,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_scootshoot",
@@ -3268,7 +3716,11 @@
       "display_name": "d AHLf ATHER",
       "itempool_list": "ItemPoolList_dAHLfATHER",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "dAHLfATHER",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3298,6 +3750,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_reminisce",
@@ -3311,7 +3764,11 @@
       "display_name": "Dahl Father True",
       "itempool_list": "ItemPoolList_DahlFather_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "DahlFather_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3341,6 +3798,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_reminisce",
@@ -3354,7 +3812,11 @@
       "display_name": "Dahl Mech",
       "itempool_list": "ItemPoolList_DahlMech",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "DahlMech",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3384,6 +3846,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_lasercutter",
@@ -3397,7 +3860,11 @@
       "display_name": "Dahl Mech True",
       "itempool_list": "ItemPoolList_DahlMech_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "DahlMech_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3427,6 +3894,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_lasercutter",
@@ -3475,6 +3943,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_BonnieClyde",
@@ -3507,6 +3976,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Rowan",
@@ -3539,12 +4009,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_WF",
           "yaml_key": "shiny_wf"
         }
-      ]
+      ],
+      "in_game_name": "Directive-0",
+      "actor_file": "Char_Soldier_Bunker_Boss_RedGuard",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Directive-0"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_RedGuard"
     },
     {
       "row_name": "Cloning_Leader",
@@ -3586,12 +4064,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Sideshow",
           "yaml_key": "shiny_sideshow"
         }
-      ]
+      ],
+      "in_game_name": "Divisioner",
+      "actor_file": "Char_Leader_Bunker_Boss_Cloning",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Divisioner"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_Cloning"
     },
     {
       "row_name": "Drillerhole",
@@ -3633,6 +4119,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GMR",
@@ -3665,19 +4152,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_katagawa",
           "yaml_key": "shiny_katagawa"
         }
-      ]
+      ],
+      "in_game_name": "Driller Hole",
+      "actor_file": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Driller Hole"
+      ],
+      "spawn_label": "Char_Meathead_PlotShat2a_Boss_Drillerhole"
     },
     {
       "row_name": "DroneCaptain",
       "display_name": "Drone Captain",
       "itempool_list": "ItemPoolList_DroneCaptain",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "DroneCaptain",
       "shiny_drop_count": 2,
       "shiny_drops": [
         {
@@ -3707,6 +4206,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_FlashCyclone",
@@ -3740,6 +4240,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_soulsurvivor",
@@ -3788,12 +4289,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Chuck",
           "yaml_key": "shiny_chuck"
         }
-      ]
+      ],
+      "in_game_name": "Fractis",
+      "actor_file": "Char_Leader_Bunker_Boss_Hologram",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Fractis"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_Hologram"
     },
     {
       "row_name": "Foundry_Freaks_Meathead",
@@ -3807,7 +4316,14 @@
       "is_boss": true,
       "actor_itempool_lists": [],
       "shiny_drop_count": 0,
-      "shiny_drops": []
+      "shiny_drops": [],
+      "in_game_name": "Frank the Furnace",
+      "actor_file": "Char_MeatHeadFrackingBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Frank the Furnace"
+      ],
+      "spawn_label": "Char_MeatHeadFrackingBoss"
     },
     {
       "row_name": "Soldier_Ancient",
@@ -3849,19 +4365,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_OM",
           "yaml_key": "shiny_om"
         }
-      ]
+      ],
+      "in_game_name": "Genone",
+      "actor_file": "Char_Soldier_Bunker_Boss_Ancient",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Genone"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_Ancient"
     },
     {
       "row_name": "GlitchCleaner",
       "display_name": "Glitch Cleaner",
       "itempool_list": "ItemPoolList_GlitchCleaner",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "GlitchCleaner",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3891,6 +4419,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_darkhard",
@@ -3904,7 +4433,11 @@
       "display_name": "Glitch Cleaner TRUE",
       "itempool_list": "ItemPoolList_GlitchCleaner_TRUE",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "GlitchCleaner_TRUE",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -3934,6 +4467,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_darkhard",
@@ -3947,14 +4481,18 @@
       "display_name": "Glitch Fixer",
       "itempool_list": "ItemPoolList_GlitchFixer",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "GlitchFixer",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
           "itempool": "itempool_dad_ar_05_legendary_DiscyBusiness_shiny",
           "comp": "dad_ar.comp_05_legendary_DiscyBusiness",
           "legendary_slug": "discybusiness",
-          "gun_name": "Discy Business",
+          "gun_name": "Discybusiness",
           "skin_code": "{10:81}",
           "skin_part": "{10:81}",
           "camo_paste": "|\"c\",1|",
@@ -3977,6 +4515,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_discybusiness",
@@ -3990,14 +4529,18 @@
       "display_name": "Glitch Fixer TRUE",
       "itempool_list": "ItemPoolList_GlitchFixer_TRUE",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "GlitchFixer_TRUE",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
           "itempool": "itempool_dad_ar_05_legendary_DiscyBusiness_shiny",
           "comp": "dad_ar.comp_05_legendary_DiscyBusiness",
           "legendary_slug": "discybusiness",
-          "gun_name": "Discy Business",
+          "gun_name": "Discybusiness",
           "skin_code": "{10:81}",
           "skin_part": "{10:81}",
           "camo_paste": "|\"c\",1|",
@@ -4020,6 +4563,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_discybusiness",
@@ -4027,220 +4571,6 @@
         }
       ],
       "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
-    },
-    {
-      "row_name": "Grasslands_Commander",
-      "display_name": "Grasslands Commander",
-      "itempool_list": "ItemPoolList_Grasslands_Commander",
-      "character_def": "Char_GrassBoss",
-      "is_true_boss": false,
-      "table": "Table_DedicatedDrops",
-      "shiny_drop_count": 3,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoldenGod",
-          "legendary_slug": "goldengod",
-          "gun_name": "Golden God",
-          "skin_code": "{7:19}",
-          "skin_part": "{7:19}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
-          "camo_slot": 13,
-          "base85_serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
-          "echo4_serial_u": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
-          "serial_hint": "{7:19} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.001,
-          "drop_prob_base": 0.001,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoldenGod",
-          "yaml_key": "shiny_goldengod"
-        },
-        {
-          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoreMaster",
-          "legendary_slug": "goremaster",
-          "gun_name": "Goremaster",
-          "skin_code": "{7:20}",
-          "skin_part": "{7:20}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
-          "camo_slot": 14,
-          "base85_serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
-          "echo4_serial_u": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
-          "serial_hint": "{7:20} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.001,
-          "drop_prob_base": 0.001,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoreMaster",
-          "yaml_key": "shiny_goremaster"
-        },
-        {
-          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
-          "comp": "vla_sm.comp_05_legendary_Onslaught",
-          "legendary_slug": "onslaught",
-          "gun_name": "Onslaught",
-          "skin_code": "{22:1}",
-          "skin_part": "{22:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
-          "camo_slot": 11,
-          "base85_serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
-          "echo4_serial_u": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
-          "serial_hint": "{22:1} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.001,
-          "drop_prob_base": 0.001,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Onslaught",
-          "yaml_key": "shiny_onslaught"
-        }
-      ]
-    },
-    {
-      "row_name": "Grasslands_Commander_TrueBoss",
-      "display_name": "Grasslands Commander True Boss",
-      "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
-      "character_def": "Char_GrassBoss_TrueBoss",
-      "is_true_boss": true,
-      "table": "Table_DedicatedDrops",
-      "shiny_drop_count": 3,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoldenGod",
-          "legendary_slug": "goldengod",
-          "gun_name": "Golden God",
-          "skin_code": "{7:19}",
-          "skin_part": "{7:19}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
-          "camo_slot": 13,
-          "base85_serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
-          "echo4_serial_u": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
-          "serial_hint": "{7:19} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "prob_slot_label": "True boss phosphene",
-          "prob_slot": "truebossshiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.007,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoldenGod",
-          "yaml_key": "shiny_goldengod"
-        },
-        {
-          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoreMaster",
-          "legendary_slug": "goremaster",
-          "gun_name": "Goremaster",
-          "skin_code": "{7:20}",
-          "skin_part": "{7:20}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
-          "camo_slot": 14,
-          "base85_serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
-          "echo4_serial_u": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
-          "serial_hint": "{7:20} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "prob_slot_label": "True boss phosphene",
-          "prob_slot": "truebossshiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.007,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoreMaster",
-          "yaml_key": "shiny_goremaster"
-        },
-        {
-          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
-          "comp": "vla_sm.comp_05_legendary_Onslaught",
-          "legendary_slug": "onslaught",
-          "gun_name": "Onslaught",
-          "skin_code": "{22:1}",
-          "skin_part": "{22:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
-          "camo_slot": 11,
-          "base85_serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
-          "echo4_serial_u": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
-          "serial_hint": "{22:1} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "prob_slot_label": "True boss phosphene",
-          "prob_slot": "truebossshiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.007,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Onslaught",
-          "yaml_key": "shiny_onslaught"
-        }
-      ]
     },
     {
       "row_name": "Hovercart",
@@ -4282,6 +4612,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PotatoThrower",
@@ -4314,12 +4645,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_WomboCombo",
           "yaml_key": "shiny_wombocombo"
         }
-      ]
+      ],
+      "in_game_name": "Gruntabulous Vork",
+      "actor_file": "Char_Psycho_HovercartRider",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Gruntabulous Vork"
+      ],
+      "spawn_label": "Char_Psycho_HovercartRider"
     },
     {
       "row_name": "Foundry_Freaks_Psycho",
@@ -4361,12 +4700,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Chuck",
           "yaml_key": "shiny_chuck"
         }
-      ]
+      ],
+      "in_game_name": "Hank the Welder",
+      "actor_file": "Char_PsychoFrackingLieutenant",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Hank the Welder"
+      ],
+      "spawn_label": "Char_PsychoFrackingLieutenant"
     },
     {
       "row_name": "KOTO_Lieutenant",
@@ -4408,6 +4755,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_DualDamage",
@@ -4440,12 +4788,137 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RocketReload",
           "yaml_key": "shiny_rocketreload"
         }
-      ]
+      ],
+      "in_game_name": "Horace",
+      "actor_file": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Horace"
+      ],
+      "spawn_label": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant"
+    },
+    {
+      "row_name": "Grasslands_Commander",
+      "display_name": "Idolator Sol",
+      "itempool_list": "ItemPoolList_Grasslands_Commander",
+      "character_def": "Char_GrassBoss",
+      "is_true_boss": false,
+      "table": "Table_DedicatedDrops",
+      "in_game_name": "Idolator Sol",
+      "shiny_drop_count": 3,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoldenGod",
+          "legendary_slug": "goldengod",
+          "gun_name": "Golden God",
+          "skin_code": "{7:19}",
+          "skin_part": "{7:19}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
+          "camo_slot": 13,
+          "base85_serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
+          "echo4_serial_u": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
+          "serial_hint": "{7:19} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.001,
+          "drop_prob_base": 0.001,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoldenGod",
+          "yaml_key": "shiny_goldengod"
+        },
+        {
+          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoreMaster",
+          "legendary_slug": "goremaster",
+          "gun_name": "Goremaster",
+          "skin_code": "{7:20}",
+          "skin_part": "{7:20}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
+          "camo_slot": 14,
+          "base85_serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
+          "echo4_serial_u": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
+          "serial_hint": "{7:20} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.001,
+          "drop_prob_base": 0.001,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_GoreMaster",
+          "yaml_key": "shiny_goremaster"
+        },
+        {
+          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
+          "comp": "vla_sm.comp_05_legendary_Onslaught",
+          "legendary_slug": "onslaught",
+          "gun_name": "Onslaught",
+          "skin_code": "{22:1}",
+          "skin_part": "{22:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
+          "camo_slot": 11,
+          "base85_serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
+          "echo4_serial_u": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
+          "serial_hint": "{22:1} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.001,
+          "drop_prob_base": 0.001,
+          "drop_prob_share": 0.3333333333333333,
+          "drop_prob_note": "Phosphene slot 0.3% · 3 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Onslaught",
+          "yaml_key": "shiny_onslaught"
+        }
+      ],
+      "actor_file": "Char_GrassBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Idolator Sol"
+      ],
+      "spawn_label": "Char_GrassBoss"
     },
     {
       "row_name": "Upgraded_Electi_Mole",
@@ -4487,6 +4960,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RainbowVomit",
@@ -4519,12 +4993,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Zipgun",
           "yaml_key": "shiny_zipgun"
         }
-      ]
+      ],
+      "in_game_name": "Leader Willem",
+      "actor_file": "Char_Soldier_SideShatterlands_ElectiMole",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Leader Willem"
+      ],
+      "spawn_label": "Char_Soldier_SideShatterlands_ElectiMole"
     },
     {
       "row_name": "Striker_Splitter",
@@ -4566,6 +5048,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_complex_root",
@@ -4598,12 +5081,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Luty",
           "yaml_key": "shiny_luty"
         }
-      ]
+      ],
+      "in_game_name": "Mimicron",
+      "actor_file": "Char_Striker_Bunker_Boss_Splitter",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Mimicron"
+      ],
+      "spawn_label": "Char_Striker_Bunker_Boss_Splitter"
     },
     {
       "row_name": "Shatterlands_Commander_Elpis",
@@ -4645,19 +5136,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_OhmIGot",
           "yaml_key": "shiny_ohmigot"
         }
-      ]
+      ],
+      "in_game_name": "Moon-Maddened Callis",
+      "actor_file": "Char_ShatterBoss_Elpis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Moon-Maddened Callis"
+      ],
+      "spawn_label": "Char_ShatterBoss_Elpis"
     },
     {
       "row_name": "Murderer",
       "display_name": "Murderer",
       "itempool_list": "ItemPoolList_Murderer",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Murderer",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -4687,6 +5190,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_brickhouse",
@@ -4700,7 +5204,11 @@
       "display_name": "Murderer TRUE",
       "itempool_list": "ItemPoolList_Murderer_TRUE",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Murderer_TRUE",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -4730,6 +5238,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_brickhouse",
@@ -4743,7 +5252,11 @@
       "display_name": "Nightmare All Bosses",
       "itempool_list": "ItemPoolList_Nightmare_AllBosses",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Nightmare_AllBosses",
       "shiny_drop_count": 3,
       "shiny_drops": [
         {
@@ -4773,6 +5286,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_fearstalker",
@@ -4805,6 +5319,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_falke",
@@ -4837,6 +5352,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Unstable",
@@ -4856,6 +5372,7 @@
       "balance_row": "Drill_Boss_Pango",
       "is_boss": true,
       "actor_itempool_lists": [],
+      "in_game_name": "Pango",
       "shiny_drop_count": 2,
       "shiny_drops": [
         {
@@ -4885,6 +5402,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Phantom_Flame",
@@ -4917,12 +5435,19 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Stray",
           "yaml_key": "shiny_stray"
         }
-      ]
+      ],
+      "actor_file": "Char_Pangolin_Drill_Boss_Pango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Pango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_Pango"
     },
     {
       "row_name": "Grasslands_Guardian",
@@ -4964,12 +5489,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_HeavyTurret",
           "yaml_key": "shiny_heavyturret"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Inceptus",
+      "actor_file": "Char_GrassGuard",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Inceptus"
+      ],
+      "spawn_label": "Char_GrassGuard"
     },
     {
       "row_name": "Mountain_Guardian",
@@ -5011,12 +5544,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_KaoSon",
           "yaml_key": "shiny_kaoson"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Origo",
+      "actor_file": "Char_MountGuard_V02",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Origo"
+      ],
+      "spawn_label": "Char_MountGuard_V02"
     },
     {
       "row_name": "Shatterlands_Guardian",
@@ -5058,12 +5599,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_anarchy",
           "yaml_key": "shiny_anarchy"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Radix",
+      "actor_file": "Char_ShatterGuard",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Radix"
+      ],
+      "spawn_label": "Char_ShatterGuard"
     },
     {
       "row_name": "City_Time_Keeper_Guardian",
@@ -5105,6 +5654,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PlasmaCoil",
@@ -5137,19 +5687,118 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_star_helix",
           "yaml_key": "shiny_star_helix"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Timekeeper",
+      "actor_file": "Char_TkGuard",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Timekeeper"
+      ],
+      "spawn_label": "Char_TkGuard"
+    },
+    {
+      "row_name": "Arjay_Mission",
+      "display_name": "Prison Buddy Boss",
+      "itempool_list": "ItemPoolList_Arjay",
+      "character_def": "Char_PrisonBuddyBoss",
+      "is_true_boss": false,
+      "table": "Table_DedicatedDrops",
+      "balance_row": null,
+      "is_boss": false,
+      "actor_itempool_lists": [],
+      "in_game_name": "Prison Buddy Boss",
+      "shiny_drop_count": 2,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_dad_sg_05_legendary_HeartGun_shiny",
+          "comp": "dad_sg.comp_05_legendary_HeartGun",
+          "legendary_slug": "heartgun",
+          "gun_name": "Acey May",
+          "skin_code": "{8:55}",
+          "skin_part": "{8:55}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_HeartGun",
+          "camo_slot": 13,
+          "base85_serial": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=co_R1hVOa1Oiz#J-)lJxf4jd^blRQ&BFkYp{aAMc",
+          "echo4_serial_u": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=co_R1hVOa1Oiz#J-)lJxf4jd^blRQ&BFkYp{aAMc",
+          "serial_hint": "{8:55} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_HeartGun",
+          "yaml_key": "shiny_heartgun"
+        },
+        {
+          "itempool": "itempool_ord_sr_05_legendary_Fisheye_shiny",
+          "comp": "ord_sr.comp_05_legendary_Fisheye",
+          "legendary_slug": "fisheye",
+          "gun_name": "Fisheye",
+          "skin_code": "{26:1}",
+          "skin_part": "{26:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Fisheye",
+          "camo_slot": null,
+          "base85_serial": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfYJdC{$!}q*hrl-gA@3kC;zun&{I_=JXjp;eMoG$/",
+          "echo4_serial_u": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfYJdC{$!}q*hrl-gA@3kC;zun&{I_=JXjp;eMoG$/",
+          "serial_hint": "{26:1} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Fisheye",
+          "yaml_key": "shiny_fisheye"
+        }
+      ],
+      "actor_file": "Char_PrisonBuddyBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Prison Buddy Boss"
+      ],
+      "spawn_label": "Char_PrisonBuddyBoss"
     },
     {
       "row_name": "Raid2_Subjugator",
       "display_name": "Raid2 Subjugator",
       "itempool_list": "ItemPoolList_Raid2_Subjugator",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Raid2_Subjugator",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5169,11 +5818,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_shammy",
           "yaml_key": "shiny_shammy"
         }
@@ -5185,7 +5842,11 @@
       "display_name": "Raid2 Subjugator True",
       "itempool_list": "ItemPoolList_Raid2_Subjugator_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Raid2_Subjugator_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5205,11 +5866,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_shammy",
           "yaml_key": "shiny_shammy"
         }
@@ -5221,7 +5890,11 @@
       "display_name": "Raid2 Thol",
       "itempool_list": "ItemPoolList_Raid2_Thol",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Raid2_Thol",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5241,11 +5914,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_lockjaw",
           "yaml_key": "shiny_lockjaw"
         }
@@ -5257,7 +5938,11 @@
       "display_name": "Raid2 Thol True",
       "itempool_list": "ItemPoolList_Raid2_Thol_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Raid2_Thol_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5277,11 +5962,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_lockjaw",
           "yaml_key": "shiny_lockjaw"
         }
@@ -5328,6 +6021,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_QuickDraw",
@@ -5360,12 +6054,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_TKsWave",
           "yaml_key": "shiny_tkswave"
         }
-      ]
+      ],
+      "in_game_name": "Rocken Roller",
+      "actor_file": "Char_Pangolin_Mine_Boss_RockAndRoll",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Rocken Roller"
+      ],
+      "spawn_label": "Char_Pangolin_Mine_Boss_RockAndRoll"
     },
     {
       "row_name": "Meathead_Riders",
@@ -5407,12 +6109,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lucian",
           "yaml_key": "shiny_lucian"
         }
-      ]
+      ],
+      "in_game_name": "Saddleback",
+      "actor_file": "Char_MeatHeadRider",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Saddleback"
+      ],
+      "spawn_label": "Char_MeatHeadRider"
     },
     {
       "row_name": "Foundry_Freaks_Splice",
@@ -5454,12 +6164,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lumberjack",
           "yaml_key": "shiny_lumberjack"
         }
-      ]
+      ],
+      "in_game_name": "Sal the Engineer",
+      "actor_file": "Char_SpliceFrackingEngineer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sal the Engineer"
+      ],
+      "spawn_label": "Char_SpliceFrackingEngineer"
     },
     {
       "row_name": "Stealth_Predator",
@@ -5494,7 +6212,101 @@
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Vamoose",
           "yaml_key": "shiny_vamoose"
         }
-      ]
+      ],
+      "in_game_name": "Shadowpelt",
+      "actor_file": "Char_Cat_Mine_Boss_StealthPredator",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Shadowpelt"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_StealthPredator"
+    },
+    {
+      "row_name": "CorruptTED",
+      "display_name": "Side City Psycho Corrupt TED Runnable",
+      "itempool_list": "ItemPoolList_SideCity_Psycho",
+      "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
+      "is_true_boss": false,
+      "table": "Table_DedicatedDrops",
+      "balance_row": "SideCity_CorruptTED_Runnable",
+      "is_boss": true,
+      "actor_itempool_lists": [],
+      "in_game_name": "Side City Psycho Corrupt TED Runnable",
+      "shiny_drop_count": 2,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_ord_ar_05_legendary_Goalkeeper_shiny",
+          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
+          "legendary_slug": "goalkeeper",
+          "gun_name": "Goalkeeper",
+          "skin_code": "{15:76}",
+          "skin_part": "{15:76}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Goalkeeper",
+          "camo_slot": null,
+          "base85_serial": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFa9@v5#W-p0~^N^mzWgmc#J3`#VLa-TCkF9cHh~Wq4T*",
+          "echo4_serial_u": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFa9@v5#W-p0~^N^mzWgmc#J3`#VLa-TCkF9cHh~Wq4T*",
+          "serial_hint": "{15:76} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Goalkeeper",
+          "yaml_key": "shiny_goalkeeper"
+        },
+        {
+          "itempool": "itempool_jak_ps_05_legendary_seventh_sense_shiny",
+          "comp": "jak_ps.comp_05_legendary_seventh_sense",
+          "legendary_slug": "seventh_sense",
+          "gun_name": "Seventh Sense",
+          "skin_code": "{3:81}",
+          "skin_part": "{3:81}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_seventh_sense",
+          "camo_slot": null,
+          "base85_serial": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7vf>;sTjWJ?J_+*o`0/9F#PTQPSI(1{yQ(*%WgXQJ1@KEWdH",
+          "echo4_serial_u": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7vf>;sTjWJ?J_+*o`0/9F#PTQPSI(1{yQ(*%WgXQJ1@KEWdH",
+          "serial_hint": "{3:81} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_seventh_sense",
+          "yaml_key": "shiny_seventh_sense"
+        }
+      ],
+      "actor_file": "Char_SideCity_Psycho_CorruptTED_Runnable",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Side City Psycho Corrupt TED Runnable"
+      ],
+      "spawn_label": "Char_SideCity_Psycho_CorruptTED_Runnable"
     },
     {
       "row_name": "Spider_Jumbo",
@@ -5536,19 +6348,31 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_NoisyCricket",
           "yaml_key": "shiny_noisycricket"
         }
-      ]
+      ],
+      "in_game_name": "Sidney Pointylegs",
+      "actor_file": "Char_Splice_Drill_Boss_SpiderJumbo",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sidney Pointylegs"
+      ],
+      "spawn_label": "Char_Splice_Drill_Boss_SpiderJumbo"
     },
     {
       "row_name": "SiphonScavOne",
       "display_name": "Siphon Scav One",
       "itempool_list": "ItemPoolList_SiphonScavOne",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "SiphonScavOne",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5578,6 +6402,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_follower",
@@ -5591,7 +6416,11 @@
       "display_name": "Siphon Scav Two",
       "itempool_list": "ItemPoolList_SiphonScavTwo",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "SiphonScavTwo",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5621,6 +6450,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_sunspot",
@@ -5640,6 +6470,7 @@
       "balance_row": "Mine_Boss_SkullOrchid",
       "is_boss": true,
       "actor_itempool_lists": [],
+      "in_game_name": "Skull Orchid",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -5669,12 +6500,19 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Roach",
           "yaml_key": "shiny_roach"
         }
-      ]
+      ],
+      "actor_file": "Char_Creep_Mine_Boss_SkullOrchid",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Skull Orchid"
+      ],
+      "spawn_label": "Char_Creep_Mine_Boss_SkullOrchid"
     },
     {
       "row_name": "Bat_Matriarch",
@@ -5716,6 +6554,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hellfire",
@@ -5748,12 +6587,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Linebacker",
           "yaml_key": "shiny_linebacker"
         }
-      ]
+      ],
+      "in_game_name": "Skyspanner Kratch",
+      "actor_file": "Char_Bat_PlotMount1_Boss_Matriarch",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Skyspanner Kratch"
+      ],
+      "spawn_label": "Char_Bat_PlotMount1_Boss_Matriarch"
     },
     {
       "row_name": "Trash_Thresher",
@@ -5795,6 +6642,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_BeeGun",
@@ -5827,12 +6675,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Kickballer",
           "yaml_key": "shiny_kickballer"
         }
-      ]
+      ],
+      "in_game_name": "Sludgemaw",
+      "actor_file": "Char_Thresher_SideGrass_Trash",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sludgemaw"
+      ],
+      "spawn_label": "Char_Thresher_SideGrass_Trash"
     },
     {
       "row_name": "Glide_Pack_Psycho",
@@ -5874,12 +6730,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_LeadBalloon",
           "yaml_key": "shiny_leadballoon"
         }
-      ]
+      ],
+      "in_game_name": "Splashzone",
+      "actor_file": "Char_Psycho_PlotGrass1_Boss_GlidePack",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Splashzone"
+      ],
+      "spawn_label": "Char_Psycho_PlotGrass1_Boss_GlidePack"
     },
     {
       "row_name": "Backhive",
@@ -5921,12 +6785,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_StopGap",
           "yaml_key": "shiny_stopgap"
         }
-      ]
+      ],
+      "in_game_name": "The Backhive",
+      "actor_file": "Char_Beast_Mine_Boss_Backhive",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Backhive"
+      ],
+      "spawn_label": "Char_Beast_Mine_Boss_Backhive"
     },
     {
       "row_name": "Battle_Wagon",
@@ -5968,6 +6840,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bugbear",
@@ -6000,12 +6873,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Finnty",
           "yaml_key": "shiny_finnty"
         }
-      ]
+      ],
+      "in_game_name": "The Battle Wagon",
+      "actor_file": "Char_Beast_Drill_Boss_Battlewagon",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Battle Wagon"
+      ],
+      "spawn_label": "Char_Beast_Drill_Boss_Battlewagon"
     },
     {
       "row_name": "Backhive_TrueBoss",
@@ -6047,12 +6928,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_StopGap",
           "yaml_key": "shiny_stopgap"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Backhive",
+      "actor_file": "Char_Beast_Mine_Boss_Backhive_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Backhive"
+      ],
+      "spawn_label": "Char_Beast_Mine_Boss_Backhive_TRUE"
     },
     {
       "row_name": "Battle_Wagon_TrueBoss",
@@ -6094,6 +6983,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bugbear",
@@ -6126,12 +7016,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Finnty",
           "yaml_key": "shiny_finnty"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Battle Wagon",
+      "actor_file": "Char_Beast_Drill_Boss_Battlewagon_TRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Battle Wagon"
+      ],
+      "spawn_label": "Char_Beast_Drill_Boss_Battlewagon_TRUE"
     },
     {
       "row_name": "Blaster_Brute_TrueBoss",
@@ -6173,6 +7071,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Slugger",
@@ -6205,12 +7104,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Kaleidosplode",
           "yaml_key": "shiny_kaleidosplode"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Callous Harbinger of Annihilating Death",
+      "actor_file": "Char_Brute_Bunker_Boss_MountainsTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Callous Harbinger of Annihilating Death"
+      ],
+      "spawn_label": "Char_Brute_Bunker_Boss_MountainsTRUE"
     },
     {
       "row_name": "Meathead_Riders_Jockey_TrueBoss",
@@ -6252,6 +7159,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Hellwalker",
@@ -6284,12 +7192,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lucian",
           "yaml_key": "shiny_lucian"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Immortal Boneface",
+      "actor_file": "Char_Guntoter_MeatheadJockeyBossTRUE",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Immortal Boneface"
+      ],
+      "spawn_label": "Char_Guntoter_MeatheadJockeyBossTRUE"
     },
     {
       "row_name": "City_Time_Keeper_TrueBoss",
@@ -6331,6 +7247,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Ballista",
@@ -6363,12 +7280,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Symmetry",
           "yaml_key": "shiny_symmetry"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Timekeeper",
+      "actor_file": "Char_TkBoss_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Timekeeper"
+      ],
+      "spawn_label": "Char_TkBoss_TrueBoss"
     },
     {
       "row_name": "Meathead_Riders_Jockey",
@@ -6410,6 +7335,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Hellwalker",
@@ -6442,12 +7368,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Lucian",
           "yaml_key": "shiny_lucian"
         }
-      ]
+      ],
+      "in_game_name": "The Immortal Boneface",
+      "actor_file": "Char_Guntoter_MeatheadJockeyBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Immortal Boneface"
+      ],
+      "spawn_label": "Char_Guntoter_MeatheadJockeyBoss"
     },
     {
       "row_name": "Meat_Plant_Gunship",
@@ -6489,12 +7423,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Asher",
           "yaml_key": "shiny_asher"
         }
-      ]
+      ],
+      "in_game_name": "The Oppressor",
+      "actor_file": "Char_GunShip_PlotGrass2a_Boss_MeatPlant",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Oppressor"
+      ],
+      "spawn_label": "Char_GunShip_PlotGrass2a_Boss_MeatPlant"
     },
     {
       "row_name": "Shatterlands_Commander_Fortress",
@@ -6536,12 +7478,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_QueensRest",
           "yaml_key": "shiny_queensrest"
         }
-      ]
+      ],
+      "in_game_name": "the Ripper Queen",
+      "actor_file": "Char_ShatterBoss_Shared",
+      "is_named_boss": true,
+      "search_aliases": [
+        "the Ripper Queen"
+      ],
+      "spawn_label": "Char_ShatterBoss_Shared"
     },
     {
       "row_name": "Shatterlands_Commander_Fortress_TrueBoss",
@@ -6583,12 +7533,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_QueensRest",
           "yaml_key": "shiny_queensrest"
         }
-      ]
+      ],
+      "in_game_name": "the Ripper Queen",
+      "actor_file": "Char_ShatterBoss_Shared_TrueBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "the Ripper Queen"
+      ],
+      "spawn_label": "Char_ShatterBoss_Shared_TrueBoss"
     },
     {
       "row_name": "City_Time_Keeper",
@@ -6630,6 +7588,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Ballista",
@@ -6662,19 +7621,118 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Symmetry",
           "yaml_key": "shiny_symmetry"
         }
-      ]
+      ],
+      "in_game_name": "The Timekeeper",
+      "actor_file": "Char_TKBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Timekeeper"
+      ],
+      "spawn_label": "Char_TKBoss"
+    },
+    {
+      "row_name": "BioArmorThresher",
+      "display_name": "Thresher Bio Armored Big Runnable",
+      "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
+      "character_def": "Char_Thresher_BioArmoredBig_Runnable",
+      "is_true_boss": false,
+      "table": "Table_DedicatedDrops",
+      "balance_row": "Thresher_BioArmorBig_Runnable",
+      "is_boss": true,
+      "actor_itempool_lists": [],
+      "in_game_name": "Thresher Bio Armored Big Runnable",
+      "shiny_drop_count": 2,
+      "shiny_drops": [
+        {
+          "itempool": "itempool_tor_ar_05_legendary_Bugbear_shiny",
+          "comp": "tor_ar.comp_05_legendary_Bugbear",
+          "legendary_slug": "bugbear",
+          "gun_name": "Bugbear",
+          "skin_code": "{17:1}",
+          "skin_part": "{17:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Bugbear",
+          "camo_slot": 12,
+          "base85_serial": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+J$%+dmo1HdAm$ckLTZOIShZhzf*MDo&O5!XK^_!2L",
+          "echo4_serial_u": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+J$%+dmo1HdAm$ckLTZOIShZhzf*MDo&O5!XK^_!2L",
+          "serial_hint": "{17:1} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Bugbear",
+          "yaml_key": "shiny_bugbear"
+        },
+        {
+          "itempool": "itempool_jak_sr_05_legendary_Truck_shiny",
+          "comp": "jak_sr.comp_05_legendary_Truck",
+          "legendary_slug": "truck",
+          "gun_name": "Truck",
+          "skin_code": "{24:76}",
+          "skin_part": "{24:76}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
+          "camo_c_code": "|\"c\",1|",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Truck",
+          "camo_slot": null,
+          "base85_serial": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9uPNvFBm<p0~^N^mzWgmc#J3`#VLa-T5z7ULUUk",
+          "echo4_serial_u": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9uPNvFBm<p0~^N^mzWgmc#J3`#VLa-T5z7ULUUk",
+          "serial_hint": "{24:76} + |\"c\",1|",
+          "variant": "phosphene",
+          "variant_label": "Phosphene",
+          "pearl": false,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "prob_slot_label": "Phosphene",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Truck",
+          "yaml_key": "shiny_truck"
+        }
+      ],
+      "actor_file": "Char_Thresher_BioArmoredBig_Runnable",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Thresher Bio Armored Big Runnable"
+      ],
+      "spawn_label": "Char_Thresher_BioArmoredBig_Runnable"
     },
     {
       "row_name": "Tuba_hybrids_Crab",
       "display_name": "Tuba hybrids Crab",
       "itempool_list": "ItemPoolList_Tuba_hybrids_Crab",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Tuba_hybrids_Crab",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -6694,11 +7752,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_manifest",
           "yaml_key": "shiny_manifest"
         }
@@ -6710,7 +7776,11 @@
       "display_name": "Tuba hybrids Fish",
       "itempool_list": "ItemPoolList_Tuba_hybrids_Fish",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Tuba_hybrids_Fish",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -6730,11 +7800,19 @@
           "variant": "phosphene",
           "variant_label": "Phosphene",
           "pearl": false,
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "drop_prob_note": "Phosphene slot",
           "prob_slot_label": "Phosphene",
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
+          "slot_prob": 0.009,
+          "slot_prob_base": 0.009,
+          "slot_scalar": 0.001,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_cannonbrawl",
           "yaml_key": "shiny_cannonbrawl"
         }
@@ -6746,7 +7824,11 @@
       "display_name": "Tuba hybrids True",
       "itempool_list": "ItemPoolList_Tuba_hybrids_True",
       "character_def": null,
+      "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
+      "has_boss_row": false,
+      "spawn_label": "Tuba_hybrids_True",
       "shiny_drop_count": 1,
       "shiny_drops": [
         {
@@ -6776,114 +7858,11 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.007,
           "slot_prob_base": 0.007,
+          "slot_scalar": 0.0015,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_scootshoot",
           "yaml_key": "shiny_scootshoot"
-        }
-      ],
-      "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
-    },
-    {
-      "row_name": "Tuba_Terra",
-      "display_name": "Tuba Terra",
-      "itempool_list": "ItemPoolList_Tuba_Terra",
-      "character_def": null,
-      "is_true_boss": false,
-      "shiny_drop_count": 2,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_ord_sr_05_legendary_Ishmael_shiny",
-          "comp": "ord_sr.comp_05_legendary_Ishmael",
-          "legendary_slug": "ishmael",
-          "gun_name": "Ishmael",
-          "skin_code": "{26:82}",
-          "skin_part": "{26:82}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
-          "camo_slot": null,
-          "base85_serial": null,
-          "echo4_serial_u": null,
-          "serial_hint": "{26:82} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_ishmael",
-          "yaml_key": "shiny_ishmael"
-        },
-        {
-          "itempool": "itempool_jak_ps_05_legendary_shoals_shiny",
-          "comp": "jak_ps.comp_05_legendary_shoals",
-          "legendary_slug": "shoals",
-          "gun_name": "Shoals",
-          "skin_code": "{3:85}",
-          "skin_part": "{3:85}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_shoals",
-          "camo_slot": null,
-          "base85_serial": null,
-          "echo4_serial_u": null,
-          "serial_hint": "{3:85} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "prob_slot_label": "Phosphene",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "drop_prob_status": "tier_only",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_shoals",
-          "yaml_key": "shiny_shoals"
-        }
-      ],
-      "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
-    },
-    {
-      "row_name": "Tuba_Terra_True",
-      "display_name": "Tuba Terra True",
-      "itempool_list": "ItemPoolList_Tuba_Terra_True",
-      "character_def": null,
-      "is_true_boss": false,
-      "shiny_drop_count": 1,
-      "shiny_drops": [
-        {
-          "itempool": "itempool_mal_sg_05_legendary_hemorrhage_shiny",
-          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
-          "legendary_slug": "hemorrhage",
-          "gun_name": "Hemorrhage",
-          "skin_code": "{16:88}",
-          "skin_part": "{16:88}",
-          "camo_paste": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
-          "camo_c_code": "|\"c\",1|",
-          "camo_cosmetic": "cosmetics_weapon_shiny_hemorrhage",
-          "camo_slot": null,
-          "base85_serial": "@Uguq~c35E/MjK>a&iz-y37L};Cs5z*bsGF#qs7~EM{XvC7%/ew!y+hqYJdAx5<M+H>rl-gA@4Xy`zun(CI_=JX(dG7AE=PyYWdH",
-          "echo4_serial_u": "@Uguq~c35E/MjK>a&iz-y37L};Cs5z*bsGF#qs7~EM{XvC7%/ew!y+hqYJdAx5<M+H>rl-gA@4Xy`zun(CI_=JX(dG7AE=PyYWdH",
-          "serial_hint": "{16:88} + |\"c\",1|",
-          "variant": "phosphene",
-          "variant_label": "Phosphene",
-          "pearl": false,
-          "drop_prob": 0.007,
-          "drop_prob_base": 0.007,
-          "drop_prob_share": 1,
-          "drop_prob_note": "True boss phosphene slot",
-          "prob_slot_label": "True boss phosphene",
-          "prob_slot": "truebossshiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.007,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "cosmetic_spawn": "Cosmetics_Weapon_Shiny_hemorrhage",
-          "yaml_key": "shiny_hemorrhage"
         }
       ],
       "note": "ItemPoolList only — no gbx_ue_data_table boss row matched"
@@ -6928,12 +7907,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_RubysGrasp",
           "yaml_key": "shiny_rubysgrasp"
         }
-      ]
+      ],
+      "in_game_name": "Vile Lictor",
+      "actor_file": "Char_MountBoss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Vile Lictor"
+      ],
+      "spawn_label": "Char_MountBoss"
     },
     {
       "row_name": "First_Corrupt",
@@ -6975,6 +7962,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_KingsGambit",
@@ -7007,12 +7995,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_Rangefinder",
           "yaml_key": "shiny_rangefinder"
         }
-      ]
+      ],
+      "in_game_name": "Vile Prototype",
+      "actor_file": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Vile Prototype"
+      ],
+      "spawn_label": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt"
     },
     {
       "row_name": "Surprise_Attack",
@@ -7054,6 +8050,7 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_bloodstarved",
@@ -7086,12 +8083,20 @@
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
           "slot_prob_base": 0.003,
+          "slot_scalar": 0.001,
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "cosmetic_spawn": "Cosmetics_Weapon_Shiny_PotatoThrower",
           "yaml_key": "shiny_potatothrower"
         }
-      ]
+      ],
+      "in_game_name": "Voraxis",
+      "actor_file": "Char_Thresher_Mine_Boss_SurpriseAttack",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Voraxis"
+      ],
+      "spawn_label": "Char_Thresher_Mine_Boss_SurpriseAttack"
     },
     {
       "row_name": "Prison_First_Leader",
@@ -7105,165 +8110,29 @@
       "is_boss": true,
       "actor_itempool_lists": [],
       "shiny_drop_count": 0,
-      "shiny_drops": []
+      "shiny_drops": [],
+      "in_game_name": "Warden Scathe",
+      "actor_file": "Char_Leader_PlotPrison_Boss_FirstLeader",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Warden Scathe"
+      ],
+      "spawn_label": "Char_Leader_PlotPrison_Boss_FirstLeader"
     }
   ],
   "enemy_pools": [
-    {
-      "row_name": "Arjay_Mission",
-      "display_name": "Arjay Mission",
-      "itempool_list": "ItemPoolList_Arjay",
-      "character_def": "Char_PrisonBuddyBoss",
-      "actor_file": "Char_PrisonBuddyBoss",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 5,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_dad_sg_05_legendary_HeartGun_shiny",
-          "comp": "dad_sg.comp_05_legendary_HeartGun",
-          "slug": "heartgun",
-          "label": "Acey May",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Acey May",
-          "display_name": "Acey May",
-          "serial_hint": "{8:55} + \"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
-          "skin_code": "{8:55}",
-          "skin_part": "{8:55}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_HeartGun",
-          "yaml_key": "shiny_heartgun",
-          "itempool_shiny": "itempool_dad_sg_05_legendary_HeartGun_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_ord_sr_05_legendary_Fisheye_shiny",
-          "comp": "ord_sr.comp_05_legendary_Fisheye",
-          "slug": "fisheye",
-          "label": "Fisheye",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Fisheye",
-          "display_name": "Fisheye",
-          "serial_hint": "{26:1} + \"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
-          "skin_code": "{26:1}",
-          "skin_part": "{26:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Fisheye",
-          "yaml_key": "shiny_fisheye",
-          "itempool_shiny": "itempool_ord_sr_05_legendary_Fisheye_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "dad_sg.comp_05_legendary_HeartGun",
-          "slug": "heartgun",
-          "rarity": "legendary",
-          "label": "Acey May",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "tertiary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Tertiary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only",
-          "comp_nexus": "DAD_SG.comp_05_legendary_HeartGUn"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "ord_sr.comp_05_legendary_Fisheye",
-          "slug": "fisheye",
-          "rarity": "legendary",
-          "label": "Fisheye",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.06,
-          "drop_prob_base": 0.06,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot"
-        },
-        {
-          "kind": "legendary",
-          "category": "shield",
-          "comp": "dad_shield.comp_05_legendary_angel",
-          "slug": "angel",
-          "rarity": "legendary",
-          "label": "Guardian Angel",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "tertiary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Tertiary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        }
-      ]
-    },
     {
       "row_name": "City_Cat",
       "display_name": "Axemaul",
       "itempool_list": "ItemPoolList_CityCat",
       "character_def": "Char_Cat_Mine_Boss_CityCat",
       "actor_file": "Char_Cat_Mine_Boss_CityCat",
+      "balance_row": "Mine_Boss_CityCat",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Cat_CityCat",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -7281,7 +8150,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -7316,7 +8185,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -7366,13 +8235,25 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Axemaul",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Axemaul"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_CityCat"
     },
     {
       "row_name": "Bango",
@@ -7380,8 +8261,12 @@
       "itempool_list": "ItemPoolList_Bango",
       "character_def": "Char_Pangolin_Drill_Boss_Bango",
       "actor_file": "Char_Pangolin_Drill_Boss_Bango",
+      "balance_row": "Drill_Boss_Bango",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Pangolin_Bango",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -7399,7 +8284,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -7434,7 +8319,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -7507,7 +8392,13 @@
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)",
           "comp_nexus": "BOR_SM.comp_05_legendary_prince"
         }
-      ]
+      ],
+      "in_game_name": "Bango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_Bango"
     },
     {
       "row_name": "Arjay_TrueBoss",
@@ -7515,8 +8406,12 @@
       "itempool_list": "ItemPoolList_Arjay_TrueBoss",
       "character_def": "Char_PrisonBuddyBoss_RunnableTRUE",
       "actor_file": "Char_PrisonBuddyBoss_RunnableTRUE",
+      "balance_row": "PrisonBuddyRunnableTrue",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_PrisonBuddyRunnableTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -7534,7 +8429,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -7569,7 +8464,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -7604,7 +8499,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7630,7 +8525,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7655,7 +8550,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7666,7 +8561,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Arjay",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Arjay"
+      ],
+      "spawn_label": "Char_PrisonBuddyBoss_RunnableTRUE"
     },
     {
       "row_name": "City_Cat_TrueBoss",
@@ -7674,8 +8575,12 @@
       "itempool_list": "ItemPoolList_CityCat_TrueBoss",
       "character_def": "Char_Cat_Mine_Boss_CityCat_TRUE",
       "actor_file": "Char_Cat_Mine_Boss_CityCat_TRUE",
+      "balance_row": "Mine_Boss_CityCat_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Cat_CityCat_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -7693,7 +8598,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -7728,7 +8633,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7754,7 +8659,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7779,7 +8684,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -7790,7 +8695,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Axemaul",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Axemaul"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_CityCat_TRUE"
     },
     {
       "row_name": "Bango_TrueBoss",
@@ -7798,8 +8709,12 @@
       "itempool_list": "ItemPoolList_Bango_TrueBoss",
       "character_def": "Char_Pangolin_Drill_Boss_BangoTRUE",
       "actor_file": "Char_Pangolin_Drill_Boss_BangoTRUE",
+      "balance_row": "Drill_Boss_BangoTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Pangolin_BangoTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -7817,7 +8732,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -7852,7 +8767,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -7887,7 +8802,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -7913,7 +8828,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -7925,7 +8840,13 @@
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)",
           "comp_nexus": "BOR_SM.comp_05_legendary_prince"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_BangoTRUE"
     },
     {
       "row_name": "KOTO_Motherbase_Brute_TrueBoss",
@@ -7933,8 +8854,12 @@
       "itempool_list": "ItemPoolList_KOTOMotherbaseBrute_TrueBoss",
       "character_def": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE",
       "actor_file": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE",
+      "balance_row": "PlotGrass2b_Boss_MotherbaseTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Brute_MotherbaseTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -7952,7 +8877,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -7987,7 +8912,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8012,7 +8937,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8037,7 +8962,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8048,7 +8973,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bio-Bulkhead",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bio-Bulkhead"
+      ],
+      "spawn_label": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE"
     },
     {
       "row_name": "BioArmorThresher_TrueBoss",
@@ -8056,8 +8987,12 @@
       "itempool_list": "ItemPoolList_Thresher_BioArmoredBig_TrueBoss",
       "character_def": "Char_Thresher_BioArmoredBig_RunnableTRUE",
       "actor_file": "Char_Thresher_BioArmoredBig_RunnableTRUE",
+      "balance_row": "Thresher_BioArmorBig_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Thresher_BioArmorBig_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -8075,7 +9010,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8110,7 +9045,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8145,7 +9080,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -8170,7 +9105,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -8181,7 +9116,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bio-Thresher Omega",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bio-Thresher Omega"
+      ],
+      "spawn_label": "Char_Thresher_BioArmoredBig_RunnableTRUE"
     },
     {
       "row_name": "Destroyer_TrueBoss",
@@ -8189,8 +9130,12 @@
       "itempool_list": "ItemPoolList_Destroyer_TrueBoss",
       "character_def": "Char_Bat_Mine_Boss_DestroyerTRUE",
       "actor_file": "Char_Bat_Mine_Boss_DestroyerTRUE",
+      "balance_row": "Mine_Boss_DestroyerTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_BatDestroyerTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -8208,7 +9153,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8243,7 +9188,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8278,7 +9223,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8303,7 +9248,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8328,7 +9273,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8339,7 +9284,132 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Bramblesong",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Bramblesong"
+      ],
+      "spawn_label": "Char_Bat_Mine_Boss_DestroyerTRUE"
+    },
+    {
+      "row_name": "Tuba_Terra_True",
+      "display_name": "Big Encore Child of Terramorphous",
+      "itempool_list": "ItemPoolList_Tuba_Terra_True",
+      "character_def": "Char_TubaBoss",
+      "actor_file": "Char_TubaBoss",
+      "balance_row": "TubaBoss",
+      "is_true_boss": true,
+      "has_boss_row": true,
+      "drop_count": 3,
+      "shiny_drop_count": 1,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_mal_sg_05_legendary_hemorrhage_shiny",
+          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
+          "slug": "hemorrhage",
+          "label": "Hemorrhage",
+          "is_shiny": true,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
+          "prob_slot": "truebossshiny",
+          "slot_prob": 0.007,
+          "slot_scalar": 0.0015,
+          "prob_slot_label": "True boss phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.007,
+          "drop_prob_base": 0.007,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.007,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss phosphene slot",
+          "comp_nexus": "mal_sg.comp_05_legendary_hemorrhage",
+          "gun_name": "Hemorrhage",
+          "display_name": "Hemorrhage",
+          "serial_hint": "{16:88} + \"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
+          "skin_code": "{16:88}",
+          "skin_part": "{16:88}",
+          "camo_paste": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
+          "camo_c_code": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
+          "camo_cosmetic": "cosmetics_weapon_shiny_hemorrhage",
+          "yaml_key": "shiny_hemorrhage",
+          "itempool_shiny": "itempool_mal_sg_05_legendary_hemorrhage_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
+          "slug": "hemorrhage",
+          "rarity": "legendary",
+          "label": "Hemorrhage",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.125,
+          "drop_prob_base": 0.125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "repkit",
+          "comp": "ord_repair_kit.comp_05_legendary_paleblood",
+          "slug": "paleblood",
+          "rarity": "legendary",
+          "label": "paleblood",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.125,
+          "drop_prob_base": 0.125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
+        }
+      ],
+      "in_game_name": "Big Encore Child of Terramorphous",
+      "is_named_boss": true,
+      "search_aliases": [
+        "child of terramorphous",
+        "child of teramorpheus",
+        "terramorphous",
+        "teramorpheus",
+        "son of terramorphous",
+        "tuba boss",
+        "tuba terra",
+        "tubaboss",
+        "takedown terramorphous",
+        "cot",
+        "big encore child of terramorphous",
+        "true boss terramorphous",
+        "tuba terra true",
+        "Big Encore Child of Terramorphous"
+      ],
+      "spawn_label": "Char_TubaBoss"
     },
     {
       "row_name": "Drone_Keeper_TrueBoss",
@@ -8347,8 +9417,12 @@
       "itempool_list": "ItemPoolList_DroneKeeper_TrueBoss",
       "character_def": "Char_Drone_Bunker_Boss_KeeperTRUE",
       "actor_file": "Char_Drone_Bunker_Boss_KeeperTRUE",
+      "balance_row": "Bunker_Boss_KeeperTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_DroneKeeperTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -8366,7 +9440,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8401,7 +9475,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8436,7 +9510,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8461,7 +9535,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8486,7 +9560,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8497,7 +9571,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Core Observer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Core Observer"
+      ],
+      "spawn_label": "Char_Drone_Bunker_Boss_KeeperTRUE"
     },
     {
       "row_name": "Red_Guard_TrueBoss",
@@ -8505,8 +9585,12 @@
       "itempool_list": "ItemPoolList_Redguard_TrueBoss",
       "character_def": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
       "actor_file": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
+      "balance_row": "BunkerBoss_RedGuardTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Soldier_Bunker_Boss_RedGuardTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 6,
       "shiny_drop_count": 3,
       "drops": [
@@ -8524,7 +9608,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.002333333333333333,
@@ -8559,7 +9643,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.002333333333333333,
@@ -8594,7 +9678,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.002333333333333333,
@@ -8629,7 +9713,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8654,7 +9738,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8680,7 +9764,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8691,7 +9775,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Directive-0",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Directive-0"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_RedGuardTRUE"
     },
     {
       "row_name": "Cloning_Leader_TrueBoss",
@@ -8699,8 +9789,12 @@
       "itempool_list": "ItemPoolList_CloningLeader_TrueBoss",
       "character_def": "Char_Leader_Bunker_Boss_CloningTRUE",
       "actor_file": "Char_Leader_Bunker_Boss_CloningTRUE",
+      "balance_row": "Bunker_Boss_CloningTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_LeaderCloningTrue",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -8718,7 +9812,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -8753,7 +9847,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8778,7 +9872,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8803,7 +9897,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8814,7 +9908,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Divisioner",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Divisioner"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_CloningTRUE"
     },
     {
       "row_name": "Drillerhole_TrueBoss",
@@ -8822,8 +9922,12 @@
       "itempool_list": "ItemPoolList_Drillerhole_TrueBoss",
       "character_def": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
       "actor_file": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
+      "balance_row": "PlotShat2a_Boss_DrillerholeTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_MeatheadDrillerholeTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -8841,7 +9945,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8876,7 +9980,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -8911,7 +10015,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8936,7 +10040,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8961,7 +10065,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -8972,7 +10076,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Drillerhole",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Drillerhole"
+      ],
+      "spawn_label": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE"
     },
     {
       "row_name": "Leader_Hologram_TrueBoss",
@@ -8980,8 +10090,12 @@
       "itempool_list": "ItemPoolList_LeaderHologram_TrueBoss",
       "character_def": "Char_Leader_Bunker_Boss_HologramTRUE",
       "actor_file": "Char_Leader_Bunker_Boss_HologramTRUE",
+      "balance_row": "Bunker_Boss_HologramTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_LeaderHologramTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -8999,7 +10113,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -9034,7 +10148,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9059,7 +10173,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9084,7 +10198,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9095,7 +10209,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Fractis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Fractis"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_HologramTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Meathead_TrueBoss",
@@ -9103,8 +10223,12 @@
       "itempool_list": "ItemPoolList_FoundryFreak_MeatheadFrackingBoss_TrueBoss",
       "character_def": "Char_MeatHeadFrackingBossTRUE",
       "actor_file": "Char_MeatHeadFrackingBossTRUE",
+      "balance_row": "FrackingMeatheadTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_MeatheadFrackingBossTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 1,
       "shiny_drop_count": 0,
       "drops": [
@@ -9122,7 +10246,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.25,
@@ -9133,7 +10257,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Frank the Furnace",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Frank the Furnace"
+      ],
+      "spawn_label": "Char_MeatHeadFrackingBossTRUE"
     },
     {
       "row_name": "Soldier_Ancient_TrueBoss",
@@ -9141,8 +10271,12 @@
       "itempool_list": "ItemPoolList_SoldierAncient_TrueBoss",
       "character_def": "Char_Soldier_Bunker_Boss_AncientTRUE",
       "actor_file": "Char_Soldier_Bunker_Boss_AncientTRUE",
+      "balance_row": "BunkerBoss_AncientTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_SoldierAncientTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -9160,7 +10294,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -9196,7 +10330,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -9221,7 +10355,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -9232,7 +10366,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Genone",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Genone"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_AncientTRUE"
     },
     {
       "row_name": "Hovercart_TrueBoss",
@@ -9240,8 +10380,12 @@
       "itempool_list": "ItemPoolList_Hovercart_TrueBoss",
       "character_def": "Char_Psycho_HovercartRiderTRUE",
       "actor_file": "Char_Psycho_HovercartRiderTRUE",
+      "balance_row": "HovercartRiderTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_PsychoCartRiderTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -9259,7 +10403,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9294,7 +10438,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9329,7 +10473,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9354,7 +10498,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9377,7 +10521,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9388,7 +10532,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Gruntabulous Vork",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Gruntabulous Vork"
+      ],
+      "spawn_label": "Char_Psycho_HovercartRiderTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Psycho_TrueBoss",
@@ -9396,8 +10546,12 @@
       "itempool_list": "ItemPoolList_FoundryFreak_Psycho_TrueBoss",
       "character_def": "Char_PsychoFrackingLieutenantTRUE",
       "actor_file": "Char_PsychoFrackingLieutenantTRUE",
+      "balance_row": "FrackingLieutenantTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_PsychoFrackingLieutenantTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 1,
       "shiny_drop_count": 0,
       "drops": [
@@ -9415,7 +10569,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.25,
@@ -9426,7 +10580,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Hank the Welder",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Hank the Welder"
+      ],
+      "spawn_label": "Char_PsychoFrackingLieutenantTRUE"
     },
     {
       "row_name": "KOTO_Lieutenant_TrueBoss",
@@ -9434,8 +10594,12 @@
       "itempool_list": "ItemPoolList_KotoLieutenant_TrueBoss",
       "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE",
       "actor_file": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE",
+      "balance_row": "PlotGrass1_Boss_KOTOLieutenantTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_LeaderKOTOLieutenantTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -9453,7 +10617,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9488,7 +10652,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9523,7 +10687,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9548,7 +10712,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9573,7 +10737,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9584,7 +10748,314 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Horace",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Horace"
+      ],
+      "spawn_label": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE"
+    },
+    {
+      "row_name": "Grasslands_Commander_TrueBoss",
+      "display_name": "Big Encore Idolator Sol",
+      "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+      "character_def": "Char_GrassBoss_TrueBoss",
+      "actor_file": "Char_GrassBoss_TrueBoss",
+      "balance_row": null,
+      "is_true_boss": true,
+      "has_boss_row": true,
+      "table": "Table_DedicatedDrops",
+      "drop_count": 10,
+      "shiny_drop_count": 3,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoldenGod",
+          "slug": "goldengod",
+          "label": "Golden God",
+          "is_shiny": true,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
+          "prob_slot": "truebossshiny",
+          "slot_prob": 0.007,
+          "slot_scalar": 0.0015,
+          "prob_slot_label": "True boss phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.007,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "gun_name": "Golden God",
+          "display_name": "Golden God",
+          "serial_hint": "{7:19} + \"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
+          "skin_code": "{7:19}",
+          "skin_part": "{7:19}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
+          "yaml_key": "shiny_goldengod",
+          "itempool_shiny": "itempool_bor_sg_05_legendary_GoldenGod_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
+          "comp": "bor_sg.comp_05_legendary_GoreMaster",
+          "slug": "goremaster",
+          "label": "Goremaster",
+          "is_shiny": true,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
+          "prob_slot": "truebossshiny",
+          "slot_prob": 0.007,
+          "slot_scalar": 0.0015,
+          "prob_slot_label": "True boss phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.007,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "gun_name": "Goremaster",
+          "display_name": "Goremaster",
+          "serial_hint": "{7:20} + \"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
+          "skin_code": "{7:20}",
+          "skin_part": "{7:20}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
+          "yaml_key": "shiny_goremaster",
+          "itempool_shiny": "itempool_bor_sg_05_legendary_GoreMaster_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
+          "comp": "vla_sm.comp_05_legendary_Onslaught",
+          "slug": "onslaught",
+          "label": "Onslaught",
+          "is_shiny": true,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
+          "prob_slot": "truebossshiny",
+          "slot_prob": 0.007,
+          "slot_scalar": 0.0015,
+          "prob_slot_label": "True boss phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.002333333333333333,
+          "drop_prob_base": 0.002333333333333333,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.007,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
+          "gun_name": "Onslaught",
+          "display_name": "Onslaught",
+          "serial_hint": "{22:1} + \"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
+          "skin_code": "{22:1}",
+          "skin_part": "{22:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
+          "yaml_key": "shiny_onslaught",
+          "itempool_shiny": "itempool_vla_sm_05_legendary_Onslaught_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "classmod_gravitar.comp_05_legendary_01",
+          "slug": "01",
+          "rarity": "legendary",
+          "label": "Bio-Robot",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "class_mod",
+          "comp": "classmod_exo_soldier.comp_05_legendary_01",
+          "slug": "01",
+          "rarity": "legendary",
+          "label": "Dancer",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "class_mod",
+          "comp": "classmod_paladin.comp_05_legendary_01",
+          "slug": "01",
+          "rarity": "legendary",
+          "label": "Furnace",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "bor_sg.comp_05_legendary_GoldenGod",
+          "slug": "goldengod",
+          "rarity": "legendary",
+          "label": "Golden God",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "bor_sg.comp_05_legendary_GoreMaster",
+          "slug": "goremaster",
+          "rarity": "legendary",
+          "label": "Goremaster",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "vla_sm.comp_05_legendary_Onslaught",
+          "slug": "onslaught",
+          "rarity": "legendary",
+          "label": "Onslaught",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "class_mod",
+          "comp": "classmod_dark_siren.comp_05_legendary_01",
+          "slug": "01",
+          "rarity": "legendary",
+          "label": "Technomancer",
+          "is_shiny": false,
+          "prob_source": "datatable",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
+          "prob_slot": "trueboss",
+          "slot_prob": 0.25,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "True boss legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03571428571428571,
+          "drop_prob_base": 0.03571428571428571,
+          "drop_prob_share": 0.14285714285714285,
+          "slot_prob_base": 0.25,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
+        }
+      ],
+      "in_game_name": "Big Encore Idolator Sol",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Idolator Sol"
+      ],
+      "spawn_label": "Char_GrassBoss_TrueBoss"
     },
     {
       "row_name": "Upgraded_Electi_Mole_TrueBoss",
@@ -9592,8 +11063,12 @@
       "itempool_list": "ItemPoolList_UpgradedElectiMole_TrueBoss",
       "character_def": "Char_Soldier_SideShatterlands_ElectiMoleTRUE",
       "actor_file": "Char_Soldier_SideShatterlands_ElectiMoleTRUE",
+      "balance_row": "SideShatter_ElectiMoleTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_SoldierElectiMoleTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -9611,7 +11086,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9646,7 +11121,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9681,7 +11156,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9706,7 +11181,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9731,7 +11206,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9742,7 +11217,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Leader Willem",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Leader Willem"
+      ],
+      "spawn_label": "Char_Soldier_SideShatterlands_ElectiMoleTRUE"
     },
     {
       "row_name": "Striker_Splitter_TrueBoss",
@@ -9750,8 +11231,12 @@
       "itempool_list": "ItemPoolList_StrikerSplitter_TrueBoss",
       "character_def": "Char_Striker_Bunker_Boss_SplitterTRUE",
       "actor_file": "Char_Striker_Bunker_Boss_SplitterTRUE",
+      "balance_row": "Bunker_Boss_SplitterTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_StrikerSplitterTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -9769,7 +11254,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9804,7 +11289,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -9839,7 +11324,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9864,7 +11349,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9889,7 +11374,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -9900,7 +11385,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Mimicron",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Mimicron"
+      ],
+      "spawn_label": "Char_Striker_Bunker_Boss_SplitterTRUE"
     },
     {
       "row_name": "Shatterlands_Commander_Elpis_TrueBoss",
@@ -9908,8 +11399,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis_TrueBoss",
       "character_def": "Char_ShatterBoss_Elpis_TrueBoss",
       "actor_file": "Char_ShatterBoss_Elpis_TrueBoss",
+      "balance_row": "ShatterBoss_Elpis_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_ShatterBoss_Elpis_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -9927,7 +11422,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -9962,7 +11457,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -9987,7 +11482,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -9998,7 +11493,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Moon-Maddened Callis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Moon-Maddened Callis"
+      ],
+      "spawn_label": "Char_ShatterBoss_Elpis_TrueBoss"
     },
     {
       "row_name": "Meat_Plant_Gunship_TrueBoss",
@@ -10006,8 +11507,12 @@
       "itempool_list": "ItemPoolList_MeatPlantGunship_TrueBoss",
       "character_def": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE",
       "actor_file": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE",
+      "balance_row": "PlotGrass2a_Boss_MeatPlantTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_GunShip_MeatPlantTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -10025,7 +11530,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -10060,7 +11565,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -10086,7 +11591,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -10111,7 +11616,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -10122,7 +11627,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Oppressor",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Oppressor"
+      ],
+      "spawn_label": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE"
     },
     {
       "row_name": "Pango_TrueBoss",
@@ -10130,8 +11641,12 @@
       "itempool_list": "ItemPoolList_Pango_TrueBoss",
       "character_def": "Char_Pangolin_Drill_Boss_PangoTRUE",
       "actor_file": "Char_Pangolin_Drill_Boss_PangoTRUE",
+      "balance_row": "Drill_Boss_PangoTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Pangolin_PangoTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -10149,7 +11664,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -10184,7 +11699,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -10219,7 +11734,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -10245,7 +11760,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -10257,7 +11772,13 @@
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)",
           "comp_nexus": "bor_sr.comp_05_legendary_stray"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Pango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Pango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_PangoTRUE"
     },
     {
       "row_name": "Grasslands_Guardian_TrueBoss",
@@ -10265,8 +11786,12 @@
       "itempool_list": "ItemPoolList_Grasslands_Guardian_TrueBoss",
       "character_def": "Char_GrassGuard_TrueBoss",
       "actor_file": "Char_GrassGuard_TrueBoss",
+      "balance_row": "GrassGuard_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_GrassGuard_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 7,
       "shiny_drop_count": 1,
       "drops": [
@@ -10284,7 +11809,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -10319,7 +11844,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10344,7 +11869,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10369,7 +11894,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10394,7 +11919,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10419,7 +11944,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10442,7 +11967,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10453,7 +11978,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 6 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Inceptus",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Inceptus"
+      ],
+      "spawn_label": "Char_GrassGuard_TrueBoss"
     },
     {
       "row_name": "Mountain_Guardian_TrueBoss",
@@ -10461,8 +11992,12 @@
       "itempool_list": "ItemPoolList_MountainGuardian_TrueBoss",
       "character_def": "Char_MountGuard_V02_TrueBoss",
       "actor_file": "Char_MountGuard_V02_TrueBoss",
+      "balance_row": "MountGuard_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_MountGuard_V02_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 8,
       "shiny_drop_count": 1,
       "drops": [
@@ -10480,7 +12015,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -10515,7 +12050,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10540,7 +12075,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10565,7 +12100,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10590,7 +12125,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10615,7 +12150,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10640,7 +12175,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10665,7 +12200,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -10676,7 +12211,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Origo",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Origo"
+      ],
+      "spawn_label": "Char_MountGuard_V02_TrueBoss"
     },
     {
       "row_name": "Shatterlands_Guardian_TrueBoss",
@@ -10684,8 +12225,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsGuardian_TrueBoss",
       "character_def": "Char_ShatterGuard_TrueBoss",
       "actor_file": "Char_ShatterGuard_TrueBoss",
+      "balance_row": "ShatterGuard_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_ShatterGuard_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 7,
       "shiny_drop_count": 1,
       "drops": [
@@ -10703,7 +12248,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -10738,7 +12283,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10763,7 +12308,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10788,7 +12333,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10813,7 +12358,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10838,7 +12383,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10863,7 +12408,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -10874,7 +12419,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 6 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Radix",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Radix"
+      ],
+      "spawn_label": "Char_ShatterGuard_TrueBoss"
     },
     {
       "row_name": "City_Time_Keeper_Guardian_TrueBoss",
@@ -10882,8 +12433,12 @@
       "itempool_list": "ItemPoolList_Timekeeper_Guardian_TrueBoss",
       "character_def": "Char_TkGuard_TrueBoss",
       "actor_file": "Char_TkGuard_TrueBoss",
+      "balance_row": "TKGuard_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_TkGuard_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -10901,7 +12456,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -10936,7 +12491,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -10971,7 +12526,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -10996,7 +12551,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11021,7 +12576,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11032,7 +12587,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Primordial Guardian Timekeeper",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Primordial Guardian Timekeeper"
+      ],
+      "spawn_label": "Char_TkGuard_TrueBoss"
     },
     {
       "row_name": "Rock_and_Roll_TrueBoss",
@@ -11040,8 +12601,12 @@
       "itempool_list": "ItemPoolList_RockAndRoll_TrueBoss",
       "character_def": "Char_Pangolin_Mine_Boss_RockAndROllTRUE",
       "actor_file": "Char_Pangolin_Mine_Boss_RockAndROllTRUE",
+      "balance_row": "Mine_Boss_RockAndRollTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Pangolin_RockAndRollTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -11059,7 +12624,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11094,7 +12659,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11129,7 +12694,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11154,7 +12719,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11179,7 +12744,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11190,7 +12755,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Rocken Roller",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Rocken Roller"
+      ],
+      "spawn_label": "Char_Pangolin_Mine_Boss_RockAndROllTRUE"
     },
     {
       "row_name": "Meathead_Riders_TrueBoss",
@@ -11198,8 +12769,12 @@
       "itempool_list": "ItemPoolList_MeatheadRider_TrueBoss",
       "character_def": "Char_MeatHeadRiderTRUE",
       "actor_file": "Char_MeatHeadRiderTRUE",
+      "balance_row": "MeatheadRiderBossTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_MeatheadRiderTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -11217,7 +12792,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -11252,7 +12827,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -11277,7 +12852,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -11288,7 +12863,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Saddleback",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Saddleback"
+      ],
+      "spawn_label": "Char_MeatHeadRiderTRUE"
     },
     {
       "row_name": "Foundry_Freaks_Splice_TrueBoss",
@@ -11296,8 +12877,12 @@
       "itempool_list": "ItemPoolList_FoundryFreak_Splice_TrueBoss",
       "character_def": "Char_SpliceFrackingEngineerTRUE",
       "actor_file": "Char_SpliceFrackingEngineerTRUE",
+      "balance_row": "FrackingSpliceTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_SpliceFrackingTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 2,
       "shiny_drop_count": 1,
       "drops": [
@@ -11315,7 +12900,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -11350,7 +12935,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.25,
@@ -11361,7 +12946,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sal the Engineer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sal the Engineer"
+      ],
+      "spawn_label": "Char_SpliceFrackingEngineerTRUE"
     },
     {
       "row_name": "Stealth_Predator_TrueBoss",
@@ -11369,8 +12960,12 @@
       "itempool_list": "ItemPoolList_StealthPredator_TrueBoss",
       "character_def": "Char_Cat_Mine_Boss_StealthPredator_TRUE",
       "actor_file": "Char_Cat_Mine_Boss_StealthPredator_TRUE",
+      "balance_row": "Mine_Boss_StealthPredator_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_CatStealthPredator_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 0,
       "drops": [
@@ -11388,7 +12983,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11413,7 +13008,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11438,7 +13033,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11449,7 +13044,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Shadowpelt",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Shadowpelt"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_StealthPredator_TRUE"
     },
     {
       "row_name": "Spider_Jumbo_TrueBoss",
@@ -11457,8 +13058,12 @@
       "itempool_list": "ItemPoolList_SpiderJumbo_TrueBoss",
       "character_def": "Char_Splice_Drill_Boss_SpiderJumboTRUE",
       "actor_file": "Char_Splice_Drill_Boss_SpiderJumboTRUE",
+      "balance_row": "Drill_Boss_SpiderJumboTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_SpliceSpiderJumboTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -11476,7 +13081,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -11511,7 +13116,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11536,7 +13141,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11561,7 +13166,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11572,7 +13177,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sidney Pointylegs",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sidney Pointylegs"
+      ],
+      "spawn_label": "Char_Splice_Drill_Boss_SpiderJumboTRUE"
     },
     {
       "row_name": "Skull_Orchid_TrueBoss",
@@ -11580,8 +13191,12 @@
       "itempool_list": "ItemPoolList_SkullOrchid_TrueBoss",
       "character_def": "Char_Creep_Mine_Boss_SkullOrchid_TRUE",
       "actor_file": "Char_Creep_Mine_Boss_SkullOrchid_TRUE",
+      "balance_row": "Mine_Boss_SkullOrchid_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Creep_SkullOrchid_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -11599,7 +13214,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -11634,7 +13249,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11659,7 +13274,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11684,7 +13299,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11695,7 +13310,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Skull Orchid",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Skull Orchid"
+      ],
+      "spawn_label": "Char_Creep_Mine_Boss_SkullOrchid_TRUE"
     },
     {
       "row_name": "Bat_Matriarch_TrueBoss",
@@ -11703,8 +13324,12 @@
       "itempool_list": "ItemPoolList_BatMatriarch_TrueBoss",
       "character_def": "Char_Bat_PlotMount1_Boss_MatriarchTRUE",
       "actor_file": "Char_Bat_PlotMount1_Boss_MatriarchTRUE",
+      "balance_row": "PlotMount1_Boss_MatriarchTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_BatMatriarchTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -11722,7 +13347,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11757,7 +13382,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11792,7 +13417,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11817,7 +13442,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11842,7 +13467,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11853,7 +13478,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Skyspanner Kratch",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Skyspanner Kratch"
+      ],
+      "spawn_label": "Char_Bat_PlotMount1_Boss_MatriarchTRUE"
     },
     {
       "row_name": "Trash_Thresher_TrueBoss",
@@ -11861,8 +13492,12 @@
       "itempool_list": "ItemPoolList_TrashThresher_TrueBoss",
       "character_def": "Char_Thresher_SideGrass_Trash_True",
       "actor_file": "Char_Thresher_SideGrass_Trash_True",
+      "balance_row": "Trash_Thresher_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_ThresherTrash_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -11880,7 +13515,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11915,7 +13550,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -11951,7 +13586,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -11976,7 +13611,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12001,7 +13636,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12012,7 +13647,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Sludgemaw",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Sludgemaw"
+      ],
+      "spawn_label": "Char_Thresher_SideGrass_Trash_True"
     },
     {
       "row_name": "Glide_Pack_Psycho_TrueBoss",
@@ -12020,8 +13661,12 @@
       "itempool_list": "ItemPoolList_GlidePackPsycho_TrueBoss",
       "character_def": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE",
       "actor_file": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE",
+      "balance_row": "PlotGrass1_Boss_SplashZoneTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Psycho_GlidePackTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -12039,7 +13684,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -12074,7 +13719,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12099,7 +13744,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12124,7 +13769,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12135,7 +13780,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Splashzone",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Splashzone"
+      ],
+      "spawn_label": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE"
     },
     {
       "row_name": "Mountain_Commander_TrueBoss",
@@ -12143,8 +13794,12 @@
       "itempool_list": "ItemPoolList_MountainCommander_TrueBoss",
       "character_def": "Char_MountBoss_TrueBoss",
       "actor_file": "Char_MountBoss_TrueBoss",
+      "balance_row": "MountBoss_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_MountBoss_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 8,
       "shiny_drop_count": 1,
       "drops": [
@@ -12162,7 +13817,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -12197,7 +13852,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12222,7 +13877,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12247,7 +13902,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12272,7 +13927,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12297,7 +13952,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12322,7 +13977,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12347,7 +14002,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.03571428571428571,
@@ -12358,7 +14013,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Lictor",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Lictor"
+      ],
+      "spawn_label": "Char_MountBoss_TrueBoss"
     },
     {
       "row_name": "First_Corrupt_TrueBoss",
@@ -12366,8 +14027,12 @@
       "itempool_list": "ItemPoolList_FirstCorrupt_TrueBoss",
       "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE",
       "actor_file": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE",
+      "balance_row": "PlotMount2b_Boss_FirstCorruptTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Psycho_FirstCorruptTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -12385,7 +14050,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12420,7 +14085,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12455,7 +14120,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12480,7 +14145,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12506,7 +14171,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12518,7 +14183,13 @@
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)",
           "comp_nexus": "DAD_PS.comp_05_legendary_rangefinder"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Prototype",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Prototype"
+      ],
+      "spawn_label": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE"
     },
     {
       "row_name": "CorruptTED_TrueBoss",
@@ -12526,8 +14197,12 @@
       "itempool_list": "ItemPoolList_SideCity_Psycho_TrueBoss",
       "character_def": "Char_SideCity_Psycho_CorruptTED_TRUE",
       "actor_file": "Char_SideCity_Psycho_CorruptTED_TRUE",
+      "balance_row": "SideCity_CorruptTED_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_PsychoCorrupt-TED_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -12545,7 +14220,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12580,7 +14255,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12615,7 +14290,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -12640,7 +14315,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -12651,7 +14326,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Big Encore Vile Ted",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Vile Ted"
+      ],
+      "spawn_label": "Char_SideCity_Psycho_CorruptTED_TRUE"
     },
     {
       "row_name": "Surprise_Attack_TrueBoss",
@@ -12659,8 +14340,12 @@
       "itempool_list": "ItemPoolList_SurpriseAttack_TrueBoss",
       "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE",
       "actor_file": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE",
+      "balance_row": "Thresher_SupriseAttack_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Thresher_SurpriseAttack_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -12678,7 +14363,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12713,7 +14398,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -12748,7 +14433,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12773,7 +14458,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12798,7 +14483,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -12809,140 +14494,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
-    },
-    {
-      "row_name": "BioArmorThresher",
-      "display_name": "Bio Armor Thresher",
-      "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
-      "character_def": "Char_Thresher_BioArmoredBig_Runnable",
-      "actor_file": "Char_Thresher_BioArmoredBig_Runnable",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 4,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_tor_ar_05_legendary_Bugbear_shiny",
-          "comp": "tor_ar.comp_05_legendary_Bugbear",
-          "slug": "bugbear",
-          "label": "Bugbear",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Bugbear",
-          "display_name": "Bugbear",
-          "serial_hint": "{17:1} + \"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
-          "skin_code": "{17:1}",
-          "skin_part": "{17:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Bugbear",
-          "yaml_key": "shiny_bugbear",
-          "itempool_shiny": "itempool_tor_ar_05_legendary_Bugbear_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_jak_sr_05_legendary_Truck_shiny",
-          "comp": "jak_sr.comp_05_legendary_Truck",
-          "slug": "truck",
-          "label": "Truck",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Truck",
-          "display_name": "Truck",
-          "serial_hint": "{24:76} + \"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
-          "skin_code": "{24:76}",
-          "skin_part": "{24:76}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Truck",
-          "yaml_key": "shiny_truck",
-          "itempool_shiny": "itempool_jak_sr_05_legendary_Truck_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "tor_ar.comp_05_legendary_Bugbear",
-          "slug": "bugbear",
-          "rarity": "legendary",
-          "label": "Bugbear",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "primary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.09,
-          "slot_scalar": null,
-          "prob_slot_label": "Primary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.09,
-          "drop_prob_base": 0.09,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.09,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Primary legendary slot"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "jak_sr.comp_05_legendary_Truck",
-          "slug": "truck",
-          "rarity": "legendary",
-          "label": "Truck",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.06,
-          "drop_prob_base": 0.06,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot"
-        }
-      ]
+      ],
+      "in_game_name": "Big Encore Voraxis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Big Encore Voraxis"
+      ],
+      "spawn_label": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE"
     },
     {
       "row_name": "KOTO_Motherbase_Brute",
@@ -12950,8 +14508,12 @@
       "itempool_list": "ItemPoolList_KOTOMotherbaseBrute",
       "character_def": "Char_Brute_PlotGrass2b_Boss_Motherbase",
       "actor_file": "Char_Brute_PlotGrass2b_Boss_Motherbase",
+      "balance_row": "PlotGrass2b_Boss_Motherbase",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Brute_Motherbase",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -12969,7 +14531,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -13054,7 +14616,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -13065,7 +14627,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Bio-Bulkhead",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bio-Bulkhead"
+      ],
+      "spawn_label": "Char_Brute_PlotGrass2b_Boss_Motherbase"
     },
     {
       "row_name": "Bloomreaper",
@@ -13073,6 +14641,7 @@
       "itempool_list": "ItemPoolList_Bloomreaper",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 6,
@@ -13092,7 +14661,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.0075,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0075,
@@ -13127,7 +14696,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.1,
-          "slot_scalar": null,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.020000000000000004,
@@ -13152,7 +14721,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.1,
-          "slot_scalar": null,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.020000000000000004,
@@ -13177,7 +14746,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.1,
-          "slot_scalar": null,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.020000000000000004,
@@ -13202,7 +14771,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.1,
-          "slot_scalar": null,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.020000000000000004,
@@ -13225,7 +14794,7 @@
           "prob_datatable": "Table_DedicatedDropProbability_Raid1",
           "prob_row": "Raid1_Dedicated_Drops",
           "slot_prob": 0.1,
-          "slot_scalar": null,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.020000000000000004,
@@ -13236,7 +14805,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 10% · 5 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Bloomreaper"
     },
     {
       "row_name": "Bloomreaper_TRUE",
@@ -13244,6 +14814,7 @@
       "itempool_list": "ItemPoolList_Bloomreaper_TRUE",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 6,
@@ -13263,7 +14834,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.01,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.01,
@@ -13298,7 +14869,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.05,
@@ -13323,7 +14894,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.05,
@@ -13348,7 +14919,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.05,
@@ -13373,7 +14944,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.05,
@@ -13396,7 +14967,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.05,
@@ -13407,7 +14978,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 5 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Bloomreaper_TRUE"
     },
     {
       "row_name": "Destroyer",
@@ -13415,8 +14987,12 @@
       "itempool_list": "ItemPoolList_Destroyer",
       "character_def": "Char_Bat_Mine_Boss_Destroyer",
       "actor_file": "Char_Bat_Mine_Boss_Destroyer",
+      "balance_row": "Mine_Boss_Destroyer",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_BatDestroyer",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -13434,7 +15010,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13469,7 +15045,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13554,7 +15130,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -13565,7 +15141,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Bramblesong",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Bramblesong"
+      ],
+      "spawn_label": "Char_Bat_Mine_Boss_Destroyer"
     },
     {
       "row_name": "Blaster_Brute",
@@ -13573,8 +15155,12 @@
       "itempool_list": "ItemPoolList_BlasterBrute",
       "character_def": "Char_Brute_Bunker_Boss_Mountains",
       "actor_file": "Char_Brute_Bunker_Boss_Mountains",
+      "balance_row": "Bunker_Mountains",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Brute_Mountains",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -13592,7 +15178,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13627,7 +15213,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13662,7 +15248,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -13723,7 +15309,188 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Callous Harbinger of Annihilating Death",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Callous Harbinger of Annihilating Death"
+      ],
+      "spawn_label": "Char_Brute_Bunker_Boss_Mountains"
+    },
+    {
+      "row_name": "Tuba_Terra",
+      "display_name": "Child of Terramorphous",
+      "itempool_list": "ItemPoolList_Tuba_Terra",
+      "character_def": "Char_TubaBoss",
+      "actor_file": "Char_TubaBoss",
+      "balance_row": "TubaBoss",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "drop_count": 5,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_ord_sr_05_legendary_Ishmael_shiny",
+          "comp": "ord_sr.comp_05_legendary_Ishmael",
+          "slug": "ishmael",
+          "label": "Ishmael",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar_Tuba",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0045,
+          "drop_prob_base": 0.0045,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.9% · 2 items (equal split)",
+          "gun_name": "Ishmael",
+          "display_name": "Ishmael",
+          "serial_hint": "{26:82} + \"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
+          "skin_code": "{26:82}",
+          "skin_part": "{26:82}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
+          "yaml_key": "shiny_ishmael",
+          "itempool_shiny": "itempool_ord_sr_05_legendary_Ishmael_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_jak_ps_05_legendary_shoals_shiny",
+          "comp": "jak_ps.comp_05_legendary_shoals",
+          "slug": "shoals",
+          "label": "Shoals",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar_Tuba",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0045,
+          "drop_prob_base": 0.0045,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.9% · 2 items (equal split)",
+          "gun_name": "Shoals",
+          "display_name": "Shoals",
+          "serial_hint": "{3:85} + \"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
+          "skin_code": "{3:85}",
+          "skin_part": "{3:85}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_shoals",
+          "yaml_key": "shiny_shoals",
+          "itempool_shiny": "itempool_jak_ps_05_legendary_shoals_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "ord_sr.comp_05_legendary_ishmael",
+          "slug": "ishmael",
+          "rarity": "legendary",
+          "label": "Ishmael",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_PrimaryScalar_Tuba",
+          "prob_source": "attribute",
+          "prob_slot": "primary",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
+          "prob_slot_label": "Primary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.075,
+          "drop_prob_base": 0.075,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 2 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "jak_ps.comp_05_legendary_Shoals",
+          "slug": "shoals",
+          "rarity": "legendary",
+          "label": "Shoals",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_PrimaryScalar_Tuba",
+          "prob_source": "attribute",
+          "prob_slot": "primary",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
+          "prob_slot_label": "Primary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.075,
+          "drop_prob_base": 0.075,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 2 items (equal split)"
+        },
+        {
+          "kind": "pearl",
+          "category": "gun",
+          "comp": "ted_sg.comp_06_pearl_sharkbait",
+          "slug": "sharkbait",
+          "rarity": "pearl",
+          "label": "sharkbait",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_TertiaryScalar_Tuba",
+          "prob_source": "attribute",
+          "prob_slot": "tertiary",
+          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
+          "prob_row": "Tuba_Dedicated_Drops",
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
+          "prob_slot_label": "Tertiary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
+        }
+      ],
+      "in_game_name": "Child of Terramorphous",
+      "is_named_boss": true,
+      "search_aliases": [
+        "child of terramorphous",
+        "child of teramorpheus",
+        "terramorphous",
+        "teramorpheus",
+        "son of terramorphous",
+        "tuba boss",
+        "tuba terra",
+        "tubaboss",
+        "takedown terramorphous",
+        "cot",
+        "Child of Terramorphous"
+      ],
+      "spawn_label": "Char_TubaBoss"
     },
     {
       "row_name": "Drone_Keeper",
@@ -13731,8 +15498,12 @@
       "itempool_list": "ItemPoolList_DroneKeeper",
       "character_def": "Char_Drone_Bunker_Boss_Keeper",
       "actor_file": "Char_Drone_Bunker_Boss_Keeper",
+      "balance_row": "Bunker_Boss_Keeper",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_DroneKeeper",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -13750,7 +15521,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13785,7 +15556,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -13820,7 +15591,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -13881,140 +15652,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
-    },
-    {
-      "row_name": "CorruptTED",
-      "display_name": "Corrupt TED",
-      "itempool_list": "ItemPoolList_SideCity_Psycho",
-      "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
-      "actor_file": "Char_SideCity_Psycho_CorruptTED_Runnable",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 4,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_ord_ar_05_legendary_Goalkeeper_shiny",
-          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
-          "slug": "goalkeeper",
-          "label": "Goalkeeper",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Goalkeeper",
-          "display_name": "Goalkeeper",
-          "serial_hint": "{15:76} + \"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
-          "skin_code": "{15:76}",
-          "skin_part": "{15:76}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Goalkeeper",
-          "yaml_key": "shiny_goalkeeper",
-          "itempool_shiny": "itempool_ord_ar_05_legendary_Goalkeeper_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_jak_ps_05_legendary_seventh_sense_shiny",
-          "comp": "jak_ps.comp_05_legendary_seventh_sense",
-          "slug": "seventh_sense",
-          "label": "Seventh Sense",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Seventh Sense",
-          "display_name": "Seventh Sense",
-          "serial_hint": "{3:81} + \"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
-          "skin_code": "{3:81}",
-          "skin_part": "{3:81}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_seventh_sense",
-          "yaml_key": "shiny_seventh_sense",
-          "itempool_shiny": "itempool_jak_ps_05_legendary_seventh_sense_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
-          "slug": "goalkeeper",
-          "rarity": "legendary",
-          "label": "Goalkeeper",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "primary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.09,
-          "slot_scalar": null,
-          "prob_slot_label": "Primary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.09,
-          "drop_prob_base": 0.09,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.09,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Primary legendary slot"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "jak_ps.comp_05_legendary_seventh_sense",
-          "slug": "seventh_sense",
-          "rarity": "legendary",
-          "label": "Seventh Sense",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.06,
-          "drop_prob_base": 0.06,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot"
-        }
-      ]
+      ],
+      "in_game_name": "Core Observer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Core Observer"
+      ],
+      "spawn_label": "Char_Drone_Bunker_Boss_Keeper"
     },
     {
       "row_name": "Crash",
@@ -14022,6 +15666,7 @@
       "itempool_list": "ItemPoolList_Crash",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -14041,7 +15686,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -14077,7 +15722,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14102,7 +15747,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14113,7 +15758,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Crash"
     },
     {
       "row_name": "Crash_True",
@@ -14121,6 +15767,7 @@
       "itempool_list": "ItemPoolList_Crash_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -14140,7 +15787,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -14176,7 +15823,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14201,7 +15848,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14212,7 +15859,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Crash_True"
     },
     {
       "row_name": "CrazyEarl",
@@ -14220,6 +15868,7 @@
       "itempool_list": "ItemPoolList_CrazyEarl",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 4,
@@ -14239,7 +15888,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -14275,7 +15924,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14299,11 +15948,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -14319,7 +15974,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14330,7 +15985,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "CrazyEarl"
     },
     {
       "row_name": "CrazyEarl_True",
@@ -14338,6 +15994,7 @@
       "itempool_list": "ItemPoolList_CrazyEarl_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -14357,7 +16014,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -14393,7 +16050,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14418,7 +16075,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14429,7 +16086,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "CrazyEarl_True"
     },
     {
       "row_name": "dAHLfATHER",
@@ -14437,6 +16095,7 @@
       "itempool_list": "ItemPoolList_dAHLfATHER",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 4,
@@ -14456,7 +16115,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -14491,11 +16150,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -14511,7 +16176,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14536,7 +16201,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14547,7 +16212,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "dAHLfATHER"
     },
     {
       "row_name": "DahlFather_True",
@@ -14555,6 +16221,7 @@
       "itempool_list": "ItemPoolList_DahlFather_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 4,
@@ -14574,7 +16241,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -14610,7 +16277,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -14635,7 +16302,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -14660,7 +16327,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -14671,7 +16338,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "DahlFather_True"
     },
     {
       "row_name": "DahlMech",
@@ -14679,6 +16347,7 @@
       "itempool_list": "ItemPoolList_DahlMech",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -14698,7 +16367,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -14733,7 +16402,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14758,7 +16427,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -14769,7 +16438,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "DahlMech"
     },
     {
       "row_name": "DahlMech_True",
@@ -14777,6 +16447,7 @@
       "itempool_list": "ItemPoolList_DahlMech_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -14796,7 +16467,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -14831,7 +16502,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14856,7 +16527,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -14867,7 +16538,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "DahlMech_True"
     },
     {
       "row_name": "Red_Guard",
@@ -14875,8 +16547,12 @@
       "itempool_list": "ItemPoolList_Redguard",
       "character_def": "Char_Soldier_Bunker_Boss_RedGuard",
       "actor_file": "Char_Soldier_Bunker_Boss_RedGuard",
+      "balance_row": "BunkerBoss_RedGuard",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Soldier_Bunker_Boss_RedGuard",
+      "table": "Table_DedicatedDrops",
       "drop_count": 6,
       "shiny_drop_count": 3,
       "drops": [
@@ -14894,7 +16570,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -14929,7 +16605,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -14964,7 +16640,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -14998,11 +16674,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -15017,11 +16699,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)",
           "comp_nexus": "JAK_AR.comp_05_legendary_rowan"
         },
         {
@@ -15049,7 +16737,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Directive-0",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Directive-0"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_RedGuard"
     },
     {
       "row_name": "Cloning_Leader",
@@ -15057,8 +16751,12 @@
       "itempool_list": "ItemPoolList_CloningLeader",
       "character_def": "Char_Leader_Bunker_Boss_Cloning",
       "actor_file": "Char_Leader_Bunker_Boss_Cloning",
+      "balance_row": "Bunker_Boss_Cloning",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_LeaderCloning",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -15076,7 +16774,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -15136,7 +16834,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -15172,7 +16870,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Divisioner",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Divisioner"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_Cloning"
     },
     {
       "row_name": "Drillerhole",
@@ -15180,8 +16884,12 @@
       "itempool_list": "ItemPoolList_Drillerhole",
       "character_def": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
       "actor_file": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
+      "balance_row": "PlotShat2a_Boss_Drillerhole",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_MeatheadDrillerhole",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -15199,7 +16907,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -15234,7 +16942,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -15269,7 +16977,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -15319,7 +17027,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -15330,7 +17038,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Driller Hole",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Driller Hole"
+      ],
+      "spawn_label": "Char_Meathead_PlotShat2a_Boss_Drillerhole"
     },
     {
       "row_name": "DroneCaptain",
@@ -15338,6 +17052,7 @@
       "itempool_list": "ItemPoolList_DroneCaptain",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 5,
@@ -15357,7 +17072,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -15392,7 +17107,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -15427,7 +17142,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -15452,7 +17167,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -15476,13 +17191,20 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         }
-      ]
+      ],
+      "spawn_label": "DroneCaptain"
     },
     {
       "row_name": "Enemy_BaseLoot_Badass",
@@ -15490,6 +17212,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Badass",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -15660,7 +17383,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Badass"
     },
     {
       "row_name": "Enemy_BaseLoot_BadassCorrupt",
@@ -15668,6 +17392,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_BadassCorrupt",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -15832,7 +17557,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_BadassCorrupt"
     },
     {
       "row_name": "Enemy_BaseLoot_BadassSuper",
@@ -15840,6 +17566,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_BadassSuper",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16010,7 +17737,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_BadassSuper"
     },
     {
       "row_name": "Enemy_BaseLoot_Boss",
@@ -16018,6 +17746,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Boss",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16188,7 +17917,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Boss"
     },
     {
       "row_name": "Enemy_BaseLoot_BossMini",
@@ -16196,6 +17926,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_BossMini",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16366,7 +18097,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_BossMini"
     },
     {
       "row_name": "Enemy_BaseLoot_BossRaid",
@@ -16374,6 +18106,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_BossRaid",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16544,7 +18277,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_BossRaid"
     },
     {
       "row_name": "Enemy_BaseLoot_BossVault",
@@ -16552,6 +18286,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_BossVault",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16722,7 +18457,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_BossVault"
     },
     {
       "row_name": "Enemy_BaseLoot_Chump",
@@ -16730,6 +18466,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Chump",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -16901,7 +18638,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Chump"
     },
     {
       "row_name": "Enemy_BaseLoot_Elite",
@@ -16909,6 +18647,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Elite",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -17079,7 +18818,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Elite"
     },
     {
       "row_name": "Enemy_BaseLoot_Loot",
@@ -17087,6 +18827,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Loot",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -17257,7 +18998,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Loot"
     },
     {
       "row_name": "Enemy_BaseLoot_Normal",
@@ -17265,6 +19007,7 @@
       "itempool_list": "ItemPoolList_Enemy_BaseLoot_Normal",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -17435,7 +19178,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Shield drop tier slot"
         }
-      ]
+      ],
+      "spawn_label": "Enemy_BaseLoot_Normal"
     },
     {
       "row_name": "Leader_Hologram",
@@ -17443,8 +19187,12 @@
       "itempool_list": "ItemPoolList_LeaderHologram",
       "character_def": "Char_Leader_Bunker_Boss_Hologram",
       "actor_file": "Char_Leader_Bunker_Boss_Hologram",
+      "balance_row": "Bunker_Boss_Hologram",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_LeaderHologram",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -17462,7 +19210,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -17496,11 +19244,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -17540,13 +19294,25 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Fractis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Fractis"
+      ],
+      "spawn_label": "Char_Leader_Bunker_Boss_Hologram"
     },
     {
       "row_name": "Foundry_Freaks_Meathead",
@@ -17554,8 +19320,12 @@
       "itempool_list": "ItemPoolList_FoundryFreak_MeatheadFrackingBoss",
       "character_def": "Char_MeatHeadFrackingBoss",
       "actor_file": "Char_MeatHeadFrackingBoss",
+      "balance_row": "FrackingMeathead",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_MeatheadFrackingBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 1,
       "shiny_drop_count": 0,
       "drops": [
@@ -17584,7 +19354,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Frank the Furnace",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Frank the Furnace"
+      ],
+      "spawn_label": "Char_MeatHeadFrackingBoss"
     },
     {
       "row_name": "Soldier_Ancient",
@@ -17592,8 +19368,12 @@
       "itempool_list": "ItemPoolList_SoldierAncient",
       "character_def": "Char_Soldier_Bunker_Boss_Ancient",
       "actor_file": "Char_Soldier_Bunker_Boss_Ancient",
+      "balance_row": "BunkerBoss_Ancient",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_SoldierAncient",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -17611,7 +19391,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -17671,13 +19451,25 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Genone",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Genone"
+      ],
+      "spawn_label": "Char_Soldier_Bunker_Boss_Ancient"
     },
     {
       "row_name": "GlitchCleaner",
@@ -17685,6 +19477,7 @@
       "itempool_list": "ItemPoolList_GlitchCleaner",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -17704,7 +19497,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -17736,7 +19529,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -17761,7 +19554,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -17772,7 +19565,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "GlitchCleaner"
     },
     {
       "row_name": "GlitchCleaner_TRUE",
@@ -17780,6 +19574,7 @@
       "itempool_list": "ItemPoolList_GlitchCleaner_TRUE",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -17799,7 +19594,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -17831,7 +19626,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -17856,7 +19651,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -17867,7 +19662,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "GlitchCleaner_TRUE"
     },
     {
       "row_name": "GlitchFixer",
@@ -17875,6 +19671,7 @@
       "itempool_list": "ItemPoolList_GlitchFixer",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -17886,7 +19683,7 @@
           "itempool": "itempool_dad_ar_05_legendary_DiscyBusiness_shiny",
           "comp": "dad_ar.comp_05_legendary_DiscyBusiness",
           "slug": "discybusiness",
-          "label": "Discy Business",
+          "label": "Discybusiness",
           "is_shiny": true,
           "prob_attribute": "Att_Loot_UVH_ShinyScalar",
           "prob_source": "attribute",
@@ -17894,7 +19691,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -17904,8 +19701,8 @@
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Phosphene slot",
-          "gun_name": "Discy Business",
-          "display_name": "Discy Business",
+          "gun_name": "Discybusiness",
+          "display_name": "Discybusiness",
           "serial_hint": "{10:81} + |\"c\",1|",
           "skin_code": "{10:81}",
           "skin_part": "{10:81}",
@@ -17928,7 +19725,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -17953,7 +19750,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -17964,7 +19761,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "GlitchFixer"
     },
     {
       "row_name": "GlitchFixer_TRUE",
@@ -17972,6 +19770,7 @@
       "itempool_list": "ItemPoolList_GlitchFixer_TRUE",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -17983,7 +19782,7 @@
           "itempool": "itempool_dad_ar_05_legendary_DiscyBusiness_shiny",
           "comp": "dad_ar.comp_05_legendary_DiscyBusiness",
           "slug": "discybusiness",
-          "label": "Discy Business",
+          "label": "Discybusiness",
           "is_shiny": true,
           "prob_source": "datatable",
           "prob_datatable": "Table_DedicatedDropProbability",
@@ -17991,7 +19790,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -18001,8 +19800,8 @@
           "drop_prob_status": "calculated",
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss phosphene slot",
-          "gun_name": "Discy Business",
-          "display_name": "Discy Business",
+          "gun_name": "Discybusiness",
+          "display_name": "Discybusiness",
           "serial_hint": "{10:81} + |\"c\",1|",
           "skin_code": "{10:81}",
           "skin_part": "{10:81}",
@@ -18025,7 +19824,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -18050,7 +19849,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -18061,16 +19860,436 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "GlitchFixer_TRUE"
+    },
+    {
+      "row_name": "Hovercart",
+      "display_name": "Gruntabulous Vork",
+      "itempool_list": "ItemPoolList_Hovercart",
+      "character_def": "Char_Psycho_HovercartRider",
+      "actor_file": "Char_Psycho_HovercartRider",
+      "balance_row": "HovercartRider",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_PsychoCartRider",
+      "table": "Table_DedicatedDrops",
+      "drop_count": 5,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_tor_ar_05_legendary_PotatoThrower_shiny",
+          "comp": "tor_ar.comp_05_legendary_PotatoThrower",
+          "slug": "potatothrower",
+          "label": "Potato Thrower IV",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Potato Thrower IV",
+          "display_name": "Potato Thrower IV",
+          "serial_hint": "{17:78} + \"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
+          "skin_code": "{17:78}",
+          "skin_part": "{17:78}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_PotatoThrower",
+          "yaml_key": "shiny_potatothrower",
+          "itempool_shiny": "itempool_tor_ar_05_legendary_PotatoThrower_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_vla_ar_05_legendary_WomboCombo_shiny",
+          "comp": "vla_ar.comp_05_legendary_WomboCombo",
+          "slug": "wombocombo",
+          "label": "Wombo Combo",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Wombo Combo",
+          "display_name": "Wombo Combo",
+          "serial_hint": "{18:65} + \"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
+          "skin_code": "{18:65}",
+          "skin_part": "{18:65}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_WomboCombo",
+          "yaml_key": "shiny_wombocombo",
+          "itempool_shiny": "itempool_vla_ar_05_legendary_WomboCombo_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "tor_ar.comp_05_legendary_PotatoThrower",
+          "slug": "potatothrower",
+          "rarity": "legendary",
+          "label": "Potato Thrower IV",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "tertiary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
+          "prob_slot_label": "Tertiary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "vla_ar.comp_05_legendary_WomboCombo",
+          "slug": "wombocombo",
+          "rarity": "legendary",
+          "label": "Wombo Combo",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
+        },
+        {
+          "kind": "inv",
+          "category": "grenade",
+          "comp": "jak_grenade_gadget.comp_05_spinning_blade",
+          "label": "jak_grenade_gadget.comp_05_spinning_blade",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "tertiary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
+          "prob_slot_label": "Tertiary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
+        }
+      ],
+      "in_game_name": "Gruntabulous Vork",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Gruntabulous Vork"
+      ],
+      "spawn_label": "Char_Psycho_HovercartRider"
+    },
+    {
+      "row_name": "Foundry_Freaks_Psycho",
+      "display_name": "Hank the Welder",
+      "itempool_list": "ItemPoolList_FoundryFreak_Psycho",
+      "character_def": "Char_PsychoFrackingLieutenant",
+      "actor_file": "Char_PsychoFrackingLieutenant",
+      "balance_row": "FrackingLieutenant",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_PsychoFrackingLieutenant",
+      "table": "Table_DedicatedDrops",
+      "drop_count": 2,
+      "shiny_drop_count": 1,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_ted_ar_05_legendary_Chuck_shiny",
+          "comp": "ted_ar.comp_05_legendary_Chuck",
+          "slug": "chuck",
+          "label": "Chuck",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.003,
+          "drop_prob_base": 0.003,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
+          "gun_name": "Chuck",
+          "display_name": "Chuck",
+          "serial_hint": "{14:35} + \"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
+          "skin_code": "{14:35}",
+          "skin_part": "{14:35}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Chuck",
+          "yaml_key": "shiny_chuck",
+          "itempool_shiny": "itempool_ted_ar_05_legendary_Chuck_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "ted_ar.comp_05_legendary_Chuck",
+          "slug": "chuck",
+          "rarity": "legendary",
+          "label": "Chuck",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
+        }
+      ],
+      "in_game_name": "Hank the Welder",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Hank the Welder"
+      ],
+      "spawn_label": "Char_PsychoFrackingLieutenant"
+    },
+    {
+      "row_name": "KOTO_Lieutenant",
+      "display_name": "Horace",
+      "itempool_list": "ItemPoolList_KotoLieutenant",
+      "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
+      "actor_file": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
+      "balance_row": "PlotGrass1_Boss_KOTOLieutenant",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_LeaderKOTOLieutenant",
+      "table": "Table_DedicatedDrops",
+      "drop_count": 5,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_vla_ar_05_legendary_DualDamage_shiny",
+          "comp": "vla_ar.comp_05_legendary_DualDamage",
+          "slug": "dualdamage",
+          "label": "Aegon's Dream",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Aegon's Dream",
+          "display_name": "Aegon's Dream",
+          "serial_hint": "{18:88} + \"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
+          "skin_code": "{18:88}",
+          "skin_part": "{18:88}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_DualDamage",
+          "yaml_key": "shiny_dualdamage",
+          "itempool_shiny": "itempool_vla_ar_05_legendary_DualDamage_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_ord_ps_05_legendary_RocketReload_shiny",
+          "comp": "ord_ps.comp_05_legendary_RocketReload",
+          "slug": "rocketreload",
+          "label": "Lucky Clover",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Lucky Clover",
+          "display_name": "Lucky Clover",
+          "serial_hint": "{4:53} + \"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
+          "skin_code": "{4:53}",
+          "skin_part": "{4:53}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_RocketReload",
+          "yaml_key": "shiny_rocketreload",
+          "itempool_shiny": "itempool_ord_ps_05_legendary_RocketReload_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "vla_ar.comp_05_legendary_DualDamage",
+          "slug": "dualdamage",
+          "rarity": "legendary",
+          "label": "Aegon's Dream",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03,
+          "drop_prob_base": 0.03,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "ord_ps.comp_05_legendary_RocketReload",
+          "slug": "rocketreload",
+          "rarity": "legendary",
+          "label": "Lucky Clover",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "primary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.09,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "Primary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.09,
+          "drop_prob_base": 0.09,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.09,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot"
+        },
+        {
+          "kind": "legendary",
+          "category": "repkit",
+          "comp": "dad_repair_kit.comp_05_legendary_Pacemaker",
+          "slug": "pacemaker",
+          "rarity": "legendary",
+          "label": "Pacemaker",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.03,
+          "drop_prob_base": 0.03,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
+        }
+      ],
+      "in_game_name": "Horace",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Horace"
+      ],
+      "spawn_label": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant"
     },
     {
       "row_name": "Grasslands_Commander",
-      "display_name": "Grasslands Commander",
+      "display_name": "Idolator Sol",
       "itempool_list": "ItemPoolList_Grasslands_Commander",
       "character_def": "Char_GrassBoss",
       "actor_file": "Char_GrassBoss",
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": true,
+      "table": "Table_DedicatedDrops",
       "drop_count": 7,
       "shiny_drop_count": 3,
       "drops": [
@@ -18088,7 +20307,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -18123,7 +20342,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -18158,7 +20377,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -18193,7 +20412,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -18277,675 +20496,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 3 items (equal split)"
         }
-      ]
-    },
-    {
-      "row_name": "Grasslands_Commander_TrueBoss",
-      "display_name": "Grasslands Commander True Boss",
-      "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
-      "character_def": "Char_GrassBoss_TrueBoss",
-      "actor_file": "Char_GrassBoss_TrueBoss",
-      "is_true_boss": true,
-      "has_boss_row": true,
-      "drop_count": 10,
-      "shiny_drop_count": 3,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_bor_sg_05_legendary_GoldenGod_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoldenGod",
-          "slug": "goldengod",
-          "label": "Golden God",
-          "is_shiny": true,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
-          "prob_slot": "truebossshiny",
-          "slot_prob": 0.007,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "gun_name": "Golden God",
-          "display_name": "Golden God",
-          "serial_hint": "{7:19} + \"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
-          "skin_code": "{7:19}",
-          "skin_part": "{7:19}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod",
-          "yaml_key": "shiny_goldengod",
-          "itempool_shiny": "itempool_bor_sg_05_legendary_GoldenGod_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_bor_sg_05_legendary_GoreMaster_shiny",
-          "comp": "bor_sg.comp_05_legendary_GoreMaster",
-          "slug": "goremaster",
-          "label": "Goremaster",
-          "is_shiny": true,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
-          "prob_slot": "truebossshiny",
-          "slot_prob": 0.007,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "gun_name": "Goremaster",
-          "display_name": "Goremaster",
-          "serial_hint": "{7:20} + \"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
-          "skin_code": "{7:20}",
-          "skin_part": "{7:20}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
-          "yaml_key": "shiny_goremaster",
-          "itempool_shiny": "itempool_bor_sg_05_legendary_GoreMaster_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_vla_sm_05_legendary_Onslaught_shiny",
-          "comp": "vla_sm.comp_05_legendary_Onslaught",
-          "slug": "onslaught",
-          "label": "Onslaught",
-          "is_shiny": true,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
-          "prob_slot": "truebossshiny",
-          "slot_prob": 0.007,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.002333333333333333,
-          "drop_prob_base": 0.002333333333333333,
-          "drop_prob_share": 0.3333333333333333,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss phosphene slot 0.7% · 3 items (equal split)",
-          "gun_name": "Onslaught",
-          "display_name": "Onslaught",
-          "serial_hint": "{22:1} + \"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
-          "skin_code": "{22:1}",
-          "skin_part": "{22:1}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Onslaught",
-          "yaml_key": "shiny_onslaught",
-          "itempool_shiny": "itempool_vla_sm_05_legendary_Onslaught_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "classmod_gravitar.comp_05_legendary_01",
-          "slug": "01",
-          "rarity": "legendary",
-          "label": "Bio-Robot",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "class_mod",
-          "comp": "classmod_exo_soldier.comp_05_legendary_01",
-          "slug": "01",
-          "rarity": "legendary",
-          "label": "Dancer",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "class_mod",
-          "comp": "classmod_paladin.comp_05_legendary_01",
-          "slug": "01",
-          "rarity": "legendary",
-          "label": "Furnace",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "bor_sg.comp_05_legendary_GoldenGod",
-          "slug": "goldengod",
-          "rarity": "legendary",
-          "label": "Golden God",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "bor_sg.comp_05_legendary_GoreMaster",
-          "slug": "goremaster",
-          "rarity": "legendary",
-          "label": "Goremaster",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "vla_sm.comp_05_legendary_Onslaught",
-          "slug": "onslaught",
-          "rarity": "legendary",
-          "label": "Onslaught",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "class_mod",
-          "comp": "classmod_dark_siren.comp_05_legendary_01",
-          "slug": "01",
-          "rarity": "legendary",
-          "label": "Technomancer",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03571428571428571,
-          "drop_prob_base": 0.03571428571428571,
-          "drop_prob_share": 0.14285714285714285,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 7 items (equal split)"
-        }
-      ]
-    },
-    {
-      "row_name": "Hovercart",
-      "display_name": "Gruntabulous Vork",
-      "itempool_list": "ItemPoolList_Hovercart",
-      "character_def": "Char_Psycho_HovercartRider",
-      "actor_file": "Char_Psycho_HovercartRider",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 5,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_tor_ar_05_legendary_PotatoThrower_shiny",
-          "comp": "tor_ar.comp_05_legendary_PotatoThrower",
-          "slug": "potatothrower",
-          "label": "Potato Thrower IV",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Potato Thrower IV",
-          "display_name": "Potato Thrower IV",
-          "serial_hint": "{17:78} + \"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
-          "skin_code": "{17:78}",
-          "skin_part": "{17:78}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_PotatoThrower",
-          "yaml_key": "shiny_potatothrower",
-          "itempool_shiny": "itempool_tor_ar_05_legendary_PotatoThrower_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_vla_ar_05_legendary_WomboCombo_shiny",
-          "comp": "vla_ar.comp_05_legendary_WomboCombo",
-          "slug": "wombocombo",
-          "label": "Wombo Combo",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Wombo Combo",
-          "display_name": "Wombo Combo",
-          "serial_hint": "{18:65} + \"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
-          "skin_code": "{18:65}",
-          "skin_part": "{18:65}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_WomboCombo",
-          "yaml_key": "shiny_wombocombo",
-          "itempool_shiny": "itempool_vla_ar_05_legendary_WomboCombo_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "tor_ar.comp_05_legendary_PotatoThrower",
-          "slug": "potatothrower",
-          "rarity": "legendary",
-          "label": "Potato Thrower IV",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "tertiary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Tertiary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "vla_ar.comp_05_legendary_WomboCombo",
-          "slug": "wombocombo",
-          "rarity": "legendary",
-          "label": "Wombo Combo",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.06,
-          "drop_prob_base": 0.06,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot"
-        },
-        {
-          "kind": "inv",
-          "category": "grenade",
-          "comp": "jak_grenade_gadget.comp_05_spinning_blade",
-          "label": "jak_grenade_gadget.comp_05_spinning_blade",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "tertiary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Tertiary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        }
-      ]
-    },
-    {
-      "row_name": "Foundry_Freaks_Psycho",
-      "display_name": "Hank the Welder",
-      "itempool_list": "ItemPoolList_FoundryFreak_Psycho",
-      "character_def": "Char_PsychoFrackingLieutenant",
-      "actor_file": "Char_PsychoFrackingLieutenant",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 2,
-      "shiny_drop_count": 1,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_ted_ar_05_legendary_Chuck_shiny",
-          "comp": "ted_ar.comp_05_legendary_Chuck",
-          "slug": "chuck",
-          "label": "Chuck",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.003,
-          "drop_prob_base": 0.003,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot",
-          "gun_name": "Chuck",
-          "display_name": "Chuck",
-          "serial_hint": "{14:35} + \"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
-          "skin_code": "{14:35}",
-          "skin_part": "{14:35}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Chuck\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Chuck",
-          "yaml_key": "shiny_chuck",
-          "itempool_shiny": "itempool_ted_ar_05_legendary_Chuck_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "ted_ar.comp_05_legendary_Chuck",
-          "slug": "chuck",
-          "rarity": "legendary",
-          "label": "Chuck",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.06,
-          "drop_prob_base": 0.06,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot"
-        }
-      ]
-    },
-    {
-      "row_name": "KOTO_Lieutenant",
-      "display_name": "Horace",
-      "itempool_list": "ItemPoolList_KotoLieutenant",
-      "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
-      "actor_file": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
-      "is_true_boss": false,
-      "has_boss_row": true,
-      "drop_count": 5,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_vla_ar_05_legendary_DualDamage_shiny",
-          "comp": "vla_ar.comp_05_legendary_DualDamage",
-          "slug": "dualdamage",
-          "label": "Aegon's Dream",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Aegon's Dream",
-          "display_name": "Aegon's Dream",
-          "serial_hint": "{18:88} + \"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
-          "skin_code": "{18:88}",
-          "skin_part": "{18:88}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_DualDamage",
-          "yaml_key": "shiny_dualdamage",
-          "itempool_shiny": "itempool_vla_ar_05_legendary_DualDamage_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_ord_ps_05_legendary_RocketReload_shiny",
-          "comp": "ord_ps.comp_05_legendary_RocketReload",
-          "slug": "rocketreload",
-          "label": "Lucky Clover",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.003,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.0015,
-          "drop_prob_base": 0.0015,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.003,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
-          "gun_name": "Lucky Clover",
-          "display_name": "Lucky Clover",
-          "serial_hint": "{4:53} + \"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
-          "skin_code": "{4:53}",
-          "skin_part": "{4:53}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_RocketReload",
-          "yaml_key": "shiny_rocketreload",
-          "itempool_shiny": "itempool_ord_ps_05_legendary_RocketReload_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "vla_ar.comp_05_legendary_DualDamage",
-          "slug": "dualdamage",
-          "rarity": "legendary",
-          "label": "Aegon's Dream",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03,
-          "drop_prob_base": 0.03,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "ord_ps.comp_05_legendary_RocketReload",
-          "slug": "rocketreload",
-          "rarity": "legendary",
-          "label": "Lucky Clover",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "primary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.09,
-          "slot_scalar": null,
-          "prob_slot_label": "Primary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.09,
-          "drop_prob_base": 0.09,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.09,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Primary legendary slot"
-        },
-        {
-          "kind": "legendary",
-          "category": "repkit",
-          "comp": "dad_repair_kit.comp_05_legendary_Pacemaker",
-          "slug": "pacemaker",
-          "rarity": "legendary",
-          "label": "Pacemaker",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
-          "prob_source": "attribute",
-          "prob_slot": "secondary",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": 0.06,
-          "slot_scalar": null,
-          "prob_slot_label": "Secondary legendary",
-          "item_weight": 1,
-          "drop_prob": 0.03,
-          "drop_prob_base": 0.03,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.06,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
-        }
-      ]
+      ],
+      "in_game_name": "Idolator Sol",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Idolator Sol"
+      ],
+      "spawn_label": "Char_GrassBoss"
     },
     {
       "row_name": "itempoollist_cheat_devperk",
@@ -18953,6 +20510,7 @@
       "itempool_list": "itempoollist_cheat_devperk",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 1,
@@ -18977,7 +20535,8 @@
           "drop_prob_method": "constant",
           "drop_prob_note": "Drop slot (400%)"
         }
-      ]
+      ],
+      "spawn_label": "itempoollist_cheat_devperk"
     },
     {
       "row_name": "Upgraded_Electi_Mole",
@@ -18985,8 +20544,12 @@
       "itempool_list": "ItemPoolList_UpgradedElectiMole",
       "character_def": "Char_Soldier_SideShatterlands_ElectiMole",
       "actor_file": "Char_Soldier_SideShatterlands_ElectiMole",
+      "balance_row": "SideShatter_ElectiMole",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_NPC_ElectiMole",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -19004,7 +20567,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -19039,7 +20602,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -19099,7 +20662,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -19135,7 +20698,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Leader Willem",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Leader Willem"
+      ],
+      "spawn_label": "Char_Soldier_SideShatterlands_ElectiMole"
     },
     {
       "row_name": "LootableDrop_Lootsplosion",
@@ -19143,6 +20712,7 @@
       "itempool_list": "ItemPoolList_LootableDrop_Lootsplosion",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 2,
@@ -19164,7 +20734,8 @@
           "is_shiny": false,
           "drop_prob_status": "unknown"
         }
-      ]
+      ],
+      "spawn_label": "LootableDrop_Lootsplosion"
     },
     {
       "row_name": "Striker_Splitter",
@@ -19172,8 +20743,12 @@
       "itempool_list": "ItemPoolList_StrikerSplitter",
       "character_def": "Char_Striker_Bunker_Boss_Splitter",
       "actor_file": "Char_Striker_Bunker_Boss_Splitter",
+      "balance_row": "Bunker_Boss_Splitter",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_StrikerSplitter",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -19191,7 +20766,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -19226,7 +20801,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -19261,7 +20836,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -19322,7 +20897,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Mimicron",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Mimicron"
+      ],
+      "spawn_label": "Char_Striker_Bunker_Boss_Splitter"
     },
     {
       "row_name": "Shatterlands_Commander_Elpis",
@@ -19330,8 +20911,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis",
       "character_def": "Char_ShatterBoss_Elpis",
       "actor_file": "Char_ShatterBoss_Elpis",
+      "balance_row": "ShatterBoss_Elpis",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_ShatterBoss_Elpis",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -19349,7 +20934,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -19384,7 +20969,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -19409,7 +20994,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -19420,7 +21005,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Moon-Maddened Callis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Moon-Maddened Callis"
+      ],
+      "spawn_label": "Char_ShatterBoss_Elpis"
     },
     {
       "row_name": "Murderer",
@@ -19428,6 +21019,7 @@
       "itempool_list": "ItemPoolList_Murderer",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 4,
@@ -19447,7 +21039,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -19481,7 +21073,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -19506,7 +21098,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -19530,13 +21122,20 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         }
-      ]
+      ],
+      "spawn_label": "Murderer"
     },
     {
       "row_name": "Murderer_TRUE",
@@ -19544,6 +21143,7 @@
       "itempool_list": "ItemPoolList_Murderer_TRUE",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 4,
@@ -19563,7 +21163,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -19597,7 +21197,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -19622,7 +21222,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -19647,7 +21247,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -19658,7 +21258,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Murderer_TRUE"
     },
     {
       "row_name": "Nightmare_AllBosses",
@@ -19666,6 +21267,7 @@
       "itempool_list": "ItemPoolList_Nightmare_AllBosses",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 8,
@@ -19685,7 +21287,7 @@
           "prob_column": "Shiny_9_14484F0840F49898A4F8AE93BA1179AE",
           "prob_slot": "shiny",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -19720,7 +21322,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -19755,7 +21357,7 @@
           "prob_column": "Shiny_9_14484F0840F49898A4F8AE93BA1179AE",
           "prob_slot": "shiny",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.001,
@@ -19790,7 +21392,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.018,
@@ -19815,7 +21417,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.018,
@@ -19840,7 +21442,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.018,
@@ -19865,7 +21467,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.018,
@@ -19888,7 +21490,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.018,
@@ -19899,7 +21501,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 5 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Nightmare_AllBosses"
     },
     {
       "row_name": "Pango",
@@ -19907,8 +21510,12 @@
       "itempool_list": "ItemPoolList_Pango",
       "character_def": "Char_Pangolin_Drill_Boss_Pango",
       "actor_file": "Char_Pangolin_Drill_Boss_Pango",
+      "balance_row": "Drill_Boss_Pango",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Pangolin_Pango",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -19926,7 +21533,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -19961,7 +21568,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -20034,7 +21641,13 @@
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)",
           "comp_nexus": "bor_sr.comp_05_legendary_stray"
         }
-      ]
+      ],
+      "in_game_name": "Pango",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Pango"
+      ],
+      "spawn_label": "Char_Pangolin_Drill_Boss_Pango"
     },
     {
       "row_name": "Grasslands_Guardian",
@@ -20042,8 +21655,12 @@
       "itempool_list": "ItemPoolList_Grasslands_Guardian",
       "character_def": "Char_GrassGuard",
       "actor_file": "Char_GrassGuard",
+      "balance_row": "GrassGuard",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_GrassGuard",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 1,
       "drops": [
@@ -20061,7 +21678,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -20096,7 +21713,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -20178,7 +21795,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Inceptus",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Inceptus"
+      ],
+      "spawn_label": "Char_GrassGuard"
     },
     {
       "row_name": "Mountain_Guardian",
@@ -20186,8 +21809,12 @@
       "itempool_list": "ItemPoolList_MountainGuardian",
       "character_def": "Char_MountGuard_V02",
       "actor_file": "Char_MountGuard_V02",
+      "balance_row": "MountGuard",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_MountGuard_V02",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 1,
       "drops": [
@@ -20205,7 +21832,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -20265,7 +21892,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -20324,7 +21951,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Origo",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Origo"
+      ],
+      "spawn_label": "Char_MountGuard_V02"
     },
     {
       "row_name": "Shatterlands_Guardian",
@@ -20332,8 +21965,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsGuardian",
       "character_def": "Char_ShatterGuard",
       "actor_file": "Char_ShatterGuard",
+      "balance_row": "ShatterGuard_Normal",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_ShatterGuard",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -20351,7 +21988,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -20411,7 +22048,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -20445,7 +22082,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Radix",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Radix"
+      ],
+      "spawn_label": "Char_ShatterGuard"
     },
     {
       "row_name": "City_Time_Keeper_Guardian",
@@ -20453,8 +22096,12 @@
       "itempool_list": "ItemPoolList_Timekeeper_Guardian",
       "character_def": "Char_TkGuard",
       "actor_file": "Char_TkGuard",
+      "balance_row": "TKGuard_health",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_TkGuard",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -20472,7 +22119,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -20507,7 +22154,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -20566,11 +22213,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -20585,13 +22238,193 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Primordial Guardian Timekeeper",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Primordial Guardian Timekeeper"
+      ],
+      "spawn_label": "Char_TkGuard"
+    },
+    {
+      "row_name": "Arjay_Mission",
+      "display_name": "Prison Buddy Boss",
+      "itempool_list": "ItemPoolList_Arjay",
+      "character_def": "Char_PrisonBuddyBoss",
+      "actor_file": "Char_PrisonBuddyBoss",
+      "balance_row": null,
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": false,
+      "table": "Table_DedicatedDrops",
+      "drop_count": 5,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_dad_sg_05_legendary_HeartGun_shiny",
+          "comp": "dad_sg.comp_05_legendary_HeartGun",
+          "slug": "heartgun",
+          "label": "Acey May",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Acey May",
+          "display_name": "Acey May",
+          "serial_hint": "{8:55} + \"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
+          "skin_code": "{8:55}",
+          "skin_part": "{8:55}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_HeartGun",
+          "yaml_key": "shiny_heartgun",
+          "itempool_shiny": "itempool_dad_sg_05_legendary_HeartGun_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_ord_sr_05_legendary_Fisheye_shiny",
+          "comp": "ord_sr.comp_05_legendary_Fisheye",
+          "slug": "fisheye",
+          "label": "Fisheye",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Fisheye",
+          "display_name": "Fisheye",
+          "serial_hint": "{26:1} + \"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
+          "skin_code": "{26:1}",
+          "skin_part": "{26:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Fisheye",
+          "yaml_key": "shiny_fisheye",
+          "itempool_shiny": "itempool_ord_sr_05_legendary_Fisheye_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "dad_sg.comp_05_legendary_HeartGun",
+          "slug": "heartgun",
+          "rarity": "legendary",
+          "label": "Acey May",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "tertiary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
+          "prob_slot_label": "Tertiary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)",
+          "comp_nexus": "DAD_SG.comp_05_legendary_HeartGUn"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "ord_sr.comp_05_legendary_Fisheye",
+          "slug": "fisheye",
+          "rarity": "legendary",
+          "label": "Fisheye",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
+        },
+        {
+          "kind": "legendary",
+          "category": "shield",
+          "comp": "dad_shield.comp_05_legendary_angel",
+          "slug": "angel",
+          "rarity": "legendary",
+          "label": "Guardian Angel",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_TertiaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "tertiary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
+          "prob_slot_label": "Tertiary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
+        }
+      ],
+      "in_game_name": "Prison Buddy Boss",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Prison Buddy Boss"
+      ],
+      "spawn_label": "Char_PrisonBuddyBoss"
     },
     {
       "row_name": "Raid2_Subjugator",
@@ -20599,6 +22432,7 @@
       "itempool_list": "ItemPoolList_Raid2_Subjugator",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 5,
@@ -20617,11 +22451,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Shammy Kablammy",
           "display_name": "Shammy Kablammy",
           "serial_hint": "{5:89} + \"c\" \"Cosmetics_Weapon_Shiny_Shammy\"",
@@ -20646,11 +22486,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -20665,11 +22511,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -20684,11 +22536,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "itempool",
@@ -20701,13 +22559,20 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Raid2_Subjugator"
     },
     {
       "row_name": "Raid2_Subjugator_True",
@@ -20715,6 +22580,7 @@
       "itempool_list": "ItemPoolList_Raid2_Subjugator_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 5,
@@ -20733,11 +22599,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Shammy Kablammy",
           "display_name": "Shammy Kablammy",
           "serial_hint": "{5:89} + \"c\" \"Cosmetics_Weapon_Shiny_Shammy\"",
@@ -20762,11 +22634,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -20781,11 +22659,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -20800,11 +22684,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "itempool",
@@ -20817,13 +22707,20 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Raid2_Subjugator_True"
     },
     {
       "row_name": "Raid2_Thol",
@@ -20831,6 +22728,7 @@
       "itempool_list": "ItemPoolList_Raid2_Thol",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 5,
@@ -20849,11 +22747,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Lockjaw",
           "display_name": "Lockjaw",
           "serial_hint": "{17:85} + \"c\" \"Cosmetics_Weapon_Shiny_lockjaw\"",
@@ -20878,11 +22782,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -20897,11 +22807,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -20916,11 +22832,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "itempool",
@@ -20933,13 +22855,20 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Raid2_Thol"
     },
     {
       "row_name": "Raid2_Thol_True",
@@ -20947,6 +22876,7 @@
       "itempool_list": "ItemPoolList_Raid2_Thol_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 5,
@@ -20965,11 +22895,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Lockjaw",
           "display_name": "Lockjaw",
           "serial_hint": "{17:85} + \"c\" \"Cosmetics_Weapon_Shiny_lockjaw\"",
@@ -20994,11 +22930,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "legendary",
@@ -21013,11 +22955,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.0025,
+          "drop_prob_base": 0.0025,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot"
         },
         {
           "kind": "legendary",
@@ -21032,11 +22980,17 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         },
         {
           "kind": "itempool",
@@ -21049,13 +23003,20 @@
           "prob_slot": "primary",
           "prob_datatable": "Table_DedicatedDropProbability_Raid2",
           "prob_row": "Raid2_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.15,
+          "slot_scalar": 0.01,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.049999999999999996,
+          "drop_prob_base": 0.049999999999999996,
+          "drop_prob_share": 0.3333333333333333,
+          "slot_prob_base": 0.15,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot 15% · 3 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "Raid2_Thol_True"
     },
     {
       "row_name": "Rock_and_Roll",
@@ -21063,8 +23024,12 @@
       "itempool_list": "ItemPoolList_RockAndRoll",
       "character_def": "Char_Pangolin_Mine_Boss_RockAndRoll",
       "actor_file": "Char_Pangolin_Mine_Boss_RockAndRoll",
+      "balance_row": "Mine_Boss_RockAndRoll",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Pangolin_RockAndRoll",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -21082,7 +23047,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -21117,7 +23082,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -21152,7 +23117,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -21213,7 +23178,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Rocken Roller",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Rocken Roller"
+      ],
+      "spawn_label": "Char_Pangolin_Mine_Boss_RockAndRoll"
     },
     {
       "row_name": "Meathead_Riders",
@@ -21221,8 +23192,12 @@
       "itempool_list": "ItemPoolList_MeatheadRider",
       "character_def": "Char_MeatHeadRider",
       "actor_file": "Char_MeatHeadRider",
+      "balance_row": "MeatheadRiderBoss",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_MeatheadRider",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 1,
       "drops": [
@@ -21240,7 +23215,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21300,7 +23275,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -21311,7 +23286,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Saddleback",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Saddleback"
+      ],
+      "spawn_label": "Char_MeatHeadRider"
     },
     {
       "row_name": "Foundry_Freaks_Splice",
@@ -21319,8 +23300,12 @@
       "itempool_list": "ItemPoolList_FoundryFreak_Splice",
       "character_def": "Char_SpliceFrackingEngineer",
       "actor_file": "Char_SpliceFrackingEngineer",
+      "balance_row": "FrackingSplice",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_SpliceFracking",
+      "table": "Table_DedicatedDrops",
       "drop_count": 2,
       "shiny_drop_count": 1,
       "drops": [
@@ -21338,7 +23323,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21384,7 +23369,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Sal the Engineer",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sal the Engineer"
+      ],
+      "spawn_label": "Char_SpliceFrackingEngineer"
     },
     {
       "row_name": "Stealth_Predator",
@@ -21392,8 +23383,12 @@
       "itempool_list": "ItemPoolList_StealthPredator",
       "character_def": "Char_Cat_Mine_Boss_StealthPredator",
       "actor_file": "Char_Cat_Mine_Boss_StealthPredator",
+      "balance_row": "Mine_Boss_StealthPredator",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_CatStealthPredator",
+      "table": "Table_DedicatedDrops",
       "drop_count": 3,
       "shiny_drop_count": 0,
       "drops": [
@@ -21411,7 +23406,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21461,7 +23456,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21472,7 +23467,155 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Shadowpelt",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Shadowpelt"
+      ],
+      "spawn_label": "Char_Cat_Mine_Boss_StealthPredator"
+    },
+    {
+      "row_name": "CorruptTED",
+      "display_name": "Side City Psycho Corrupt TED Runnable",
+      "itempool_list": "ItemPoolList_SideCity_Psycho",
+      "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
+      "actor_file": "Char_SideCity_Psycho_CorruptTED_Runnable",
+      "balance_row": "SideCity_CorruptTED_Runnable",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": true,
+      "table": "Table_DedicatedDrops",
+      "drop_count": 4,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_ord_ar_05_legendary_Goalkeeper_shiny",
+          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
+          "slug": "goalkeeper",
+          "label": "Goalkeeper",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Goalkeeper",
+          "display_name": "Goalkeeper",
+          "serial_hint": "{15:76} + \"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
+          "skin_code": "{15:76}",
+          "skin_part": "{15:76}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Goalkeeper",
+          "yaml_key": "shiny_goalkeeper",
+          "itempool_shiny": "itempool_ord_ar_05_legendary_Goalkeeper_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_jak_ps_05_legendary_seventh_sense_shiny",
+          "comp": "jak_ps.comp_05_legendary_seventh_sense",
+          "slug": "seventh_sense",
+          "label": "Seventh Sense",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Seventh Sense",
+          "display_name": "Seventh Sense",
+          "serial_hint": "{3:81} + \"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
+          "skin_code": "{3:81}",
+          "skin_part": "{3:81}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_seventh_sense",
+          "yaml_key": "shiny_seventh_sense",
+          "itempool_shiny": "itempool_jak_ps_05_legendary_seventh_sense_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "ord_ar.comp_05_legendary_Goalkeeper",
+          "slug": "goalkeeper",
+          "rarity": "legendary",
+          "label": "Goalkeeper",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "primary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.09,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "Primary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.09,
+          "drop_prob_base": 0.09,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.09,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "jak_ps.comp_05_legendary_seventh_sense",
+          "slug": "seventh_sense",
+          "rarity": "legendary",
+          "label": "Seventh Sense",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
+        }
+      ],
+      "in_game_name": "Side City Psycho Corrupt TED Runnable",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Side City Psycho Corrupt TED Runnable"
+      ],
+      "spawn_label": "Char_SideCity_Psycho_CorruptTED_Runnable"
     },
     {
       "row_name": "Spider_Jumbo",
@@ -21480,8 +23623,12 @@
       "itempool_list": "ItemPoolList_SpiderJumbo",
       "character_def": "Char_Splice_Drill_Boss_SpiderJumbo",
       "actor_file": "Char_Splice_Drill_Boss_SpiderJumbo",
+      "balance_row": "Drill_Boss_SpiderJumbo",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_SpliceSpiderJumbo",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -21499,7 +23646,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21584,7 +23731,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -21595,7 +23742,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Sidney Pointylegs",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sidney Pointylegs"
+      ],
+      "spawn_label": "Char_Splice_Drill_Boss_SpiderJumbo"
     },
     {
       "row_name": "SiphonScavOne",
@@ -21603,6 +23756,7 @@
       "itempool_list": "ItemPoolList_SiphonScavOne",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -21622,7 +23776,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21657,7 +23811,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21680,7 +23834,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21691,7 +23845,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "SiphonScavOne"
     },
     {
       "row_name": "SiphonScavTwo",
@@ -21699,6 +23854,7 @@
       "itempool_list": "ItemPoolList_SiphonScavTwo",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -21718,7 +23874,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21753,7 +23909,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21778,7 +23934,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.045,
@@ -21789,7 +23945,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot 9% · 2 items (equal split)"
         }
-      ]
+      ],
+      "spawn_label": "SiphonScavTwo"
     },
     {
       "row_name": "Skull_Orchid",
@@ -21797,8 +23954,12 @@
       "itempool_list": "ItemPoolList_SkullOrchid",
       "character_def": "Char_Creep_Mine_Boss_SkullOrchid",
       "actor_file": "Char_Creep_Mine_Boss_SkullOrchid",
+      "balance_row": "Mine_Boss_SkullOrchid",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Creep_SkullOrchid",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -21816,7 +23977,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -21901,7 +24062,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -21912,7 +24073,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Skull Orchid",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Skull Orchid"
+      ],
+      "spawn_label": "Char_Creep_Mine_Boss_SkullOrchid"
     },
     {
       "row_name": "Bat_Matriarch",
@@ -21920,8 +24087,12 @@
       "itempool_list": "ItemPoolList_BatMatriarch",
       "character_def": "Char_Bat_PlotMount1_Boss_Matriarch",
       "actor_file": "Char_Bat_PlotMount1_Boss_Matriarch",
+      "balance_row": "PlotMount1_Boss_Matriarch",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_BatMatriarch",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -21939,7 +24110,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -21974,7 +24145,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -22059,7 +24230,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -22070,7 +24241,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Skyspanner Kratch",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Skyspanner Kratch"
+      ],
+      "spawn_label": "Char_Bat_PlotMount1_Boss_Matriarch"
     },
     {
       "row_name": "Trash_Thresher",
@@ -22078,8 +24255,12 @@
       "itempool_list": "ItemPoolList_TrashThresher",
       "character_def": "Char_Thresher_SideGrass_Trash",
       "actor_file": "Char_Thresher_SideGrass_Trash",
+      "balance_row": "Trash_Thresher",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_ThresherTrash",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -22097,7 +24278,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -22132,7 +24313,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -22218,7 +24399,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -22229,7 +24410,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Sludgemaw",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Sludgemaw"
+      ],
+      "spawn_label": "Char_Thresher_SideGrass_Trash"
     },
     {
       "row_name": "Glide_Pack_Psycho",
@@ -22237,8 +24424,12 @@
       "itempool_list": "ItemPoolList_GlidePackPsycho",
       "character_def": "Char_Psycho_PlotGrass1_Boss_GlidePack",
       "actor_file": "Char_Psycho_PlotGrass1_Boss_GlidePack",
+      "balance_row": "PlotGrass1_Boss_SplashZone",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Psycho_GlidePack",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -22256,7 +24447,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -22341,7 +24532,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -22352,7 +24543,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "Splashzone",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Splashzone"
+      ],
+      "spawn_label": "Char_Psycho_PlotGrass1_Boss_GlidePack"
     },
     {
       "row_name": "Backhive",
@@ -22360,8 +24557,12 @@
       "itempool_list": "ItemPoolList_Backhive",
       "character_def": "Char_Beast_Mine_Boss_Backhive",
       "actor_file": "Char_Beast_Mine_Boss_Backhive",
+      "balance_row": "Mine_Boss_Backhive",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Beast_Backhive",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -22379,7 +24580,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -22464,7 +24665,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -22475,7 +24676,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "The Backhive",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Backhive"
+      ],
+      "spawn_label": "Char_Beast_Mine_Boss_Backhive"
     },
     {
       "row_name": "Battle_Wagon",
@@ -22483,8 +24690,12 @@
       "itempool_list": "ItemPoolList_BattleWagon",
       "character_def": "Char_Beast_Drill_Boss_Battlewagon",
       "actor_file": "Char_Beast_Drill_Boss_Battlewagon",
+      "balance_row": "Drill_Boss_Battlewagon",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Beast_Battlewagon",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -22502,7 +24713,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -22537,7 +24748,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -22622,7 +24833,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -22633,7 +24844,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "The Battle Wagon",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Battle Wagon"
+      ],
+      "spawn_label": "Char_Beast_Drill_Boss_Battlewagon"
     },
     {
       "row_name": "Backhive_TrueBoss",
@@ -22641,8 +24858,12 @@
       "itempool_list": "ItemPoolList_Backhive_TrueBoss",
       "character_def": "Char_Beast_Mine_Boss_Backhive_TRUE",
       "actor_file": "Char_Beast_Mine_Boss_Backhive_TRUE",
+      "balance_row": "Mine_Boss_Backhive_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Beast_Backhive_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -22660,7 +24881,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -22695,7 +24916,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22720,7 +24941,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22745,7 +24966,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22756,7 +24977,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Backhive",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Backhive"
+      ],
+      "spawn_label": "Char_Beast_Mine_Boss_Backhive_TRUE"
     },
     {
       "row_name": "Battle_Wagon_TrueBoss",
@@ -22764,8 +24991,12 @@
       "itempool_list": "ItemPoolList_BattleWagon_TrueBoss",
       "character_def": "Char_Beast_Drill_Boss_Battlewagon_TRUE",
       "actor_file": "Char_Beast_Drill_Boss_Battlewagon_TRUE",
+      "balance_row": "Drill_Boss_Battlewagon_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Beast_Battlewagon_TRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -22783,7 +25014,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -22818,7 +25049,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -22853,7 +25084,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22878,7 +25109,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22903,7 +25134,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -22914,7 +25145,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Battle Wagon",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Battle Wagon"
+      ],
+      "spawn_label": "Char_Beast_Drill_Boss_Battlewagon_TRUE"
     },
     {
       "row_name": "Blaster_Brute_TrueBoss",
@@ -22922,8 +25159,12 @@
       "itempool_list": "ItemPoolList_BlasterBrute_TrueBoss",
       "character_def": "Char_Brute_Bunker_Boss_MountainsTRUE",
       "actor_file": "Char_Brute_Bunker_Boss_MountainsTRUE",
+      "balance_row": "Bunker_MountainsTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_Brute_MountainsTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -22941,7 +25182,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -22976,7 +25217,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -23011,7 +25252,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23036,7 +25277,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23061,7 +25302,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23072,7 +25313,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Callous Harbinger of Annihilating Death",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Callous Harbinger of Annihilating Death"
+      ],
+      "spawn_label": "Char_Brute_Bunker_Boss_MountainsTRUE"
     },
     {
       "row_name": "Meathead_Riders_Jockey_TrueBoss",
@@ -23080,8 +25327,12 @@
       "itempool_list": "ItemPoolList_MeatheadRider_Jockey_TrueBoss",
       "character_def": "Char_Guntoter_MeatheadJockeyBossTRUE",
       "actor_file": "Char_Guntoter_MeatheadJockeyBossTRUE",
+      "balance_row": "MeatheadRiderBossTRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_GuntoterMeatheadJockeyBossTRUE",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -23099,7 +25350,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -23134,7 +25385,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -23169,7 +25420,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -23194,7 +25445,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -23205,7 +25456,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Immortal Boneface",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Immortal Boneface"
+      ],
+      "spawn_label": "Char_Guntoter_MeatheadJockeyBossTRUE"
     },
     {
       "row_name": "City_Time_Keeper_TrueBoss",
@@ -23213,8 +25470,12 @@
       "itempool_list": "ItemPoolList_Timekeeper_TKBoss_TrueBoss",
       "character_def": "Char_TkBoss_TrueBoss",
       "actor_file": "Char_TkBoss_TrueBoss",
+      "balance_row": "TKBoss_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_TKBoss_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -23232,7 +25493,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -23267,7 +25528,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.0035,
@@ -23302,7 +25563,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23328,7 +25589,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23354,7 +25615,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.08333333333333333,
@@ -23365,7 +25626,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Big Encore Timekeeper",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Big Encore Timekeeper"
+      ],
+      "spawn_label": "Char_TkBoss_TrueBoss"
     },
     {
       "row_name": "Meathead_Riders_Jockey",
@@ -23373,8 +25640,12 @@
       "itempool_list": "ItemPoolList_MeatheadRider_Jockey",
       "character_def": "Char_Guntoter_MeatheadJockeyBoss",
       "actor_file": "Char_Guntoter_MeatheadJockeyBoss",
+      "balance_row": "MeatheadRiderBoss",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_GuntoterMeatheadJockeyBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 2,
       "drops": [
@@ -23392,7 +25663,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -23427,7 +25698,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -23462,7 +25733,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -23498,7 +25769,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "The Immortal Boneface",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Immortal Boneface"
+      ],
+      "spawn_label": "Char_Guntoter_MeatheadJockeyBoss"
     },
     {
       "row_name": "Meat_Plant_Gunship",
@@ -23506,8 +25783,12 @@
       "itempool_list": "ItemPoolList_MeatPlantGunship",
       "character_def": "Char_GunShip_PlotGrass2a_Boss_MeatPlant",
       "actor_file": "Char_GunShip_PlotGrass2a_Boss_MeatPlant",
+      "balance_row": "PlotGrass2a_Boss_MeatPlant",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_GunShip_MeatPlant",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -23525,7 +25806,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -23611,7 +25892,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -23622,7 +25903,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Primary legendary slot"
         }
-      ]
+      ],
+      "in_game_name": "The Oppressor",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Oppressor"
+      ],
+      "spawn_label": "Char_GunShip_PlotGrass2a_Boss_MeatPlant"
     },
     {
       "row_name": "Shatterlands_Commander_Fortress",
@@ -23630,8 +25917,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsCommanderFortress",
       "character_def": "Char_ShatterBoss_Shared",
       "actor_file": "Char_ShatterBoss_Shared",
+      "balance_row": "ShatterBoss_Fortress",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_ShatterBoss_Fortress",
+      "table": "Table_DedicatedDrops",
       "drop_count": 4,
       "shiny_drop_count": 1,
       "drops": [
@@ -23649,7 +25940,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -23684,7 +25975,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -23741,7 +26032,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "the Ripper Queen",
+      "is_named_boss": true,
+      "search_aliases": [
+        "the Ripper Queen"
+      ],
+      "spawn_label": "Char_ShatterBoss_Shared"
     },
     {
       "row_name": "Shatterlands_Commander_Fortress_TrueBoss",
@@ -23749,8 +26046,12 @@
       "itempool_list": "ItemPoolList_ShatterlandsCommanderFortress_TrueBoss",
       "character_def": "Char_ShatterBoss_Shared_TrueBoss",
       "actor_file": "Char_ShatterBoss_Shared_TrueBoss",
+      "balance_row": "ShatterBoss_Fortress_TRUE",
       "is_true_boss": true,
       "has_boss_row": true,
+      "is_boss": false,
+      "display_key": "Name_ShatterBoss_Fortress_TrueBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 7,
       "shiny_drop_count": 1,
       "drops": [
@@ -23768,7 +26069,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -23803,7 +26104,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23828,7 +26129,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23853,7 +26154,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23878,7 +26179,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23903,7 +26204,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23926,7 +26227,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.041666666666666664,
@@ -23937,7 +26238,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 6 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "the Ripper Queen",
+      "is_named_boss": true,
+      "search_aliases": [
+        "the Ripper Queen"
+      ],
+      "spawn_label": "Char_ShatterBoss_Shared_TrueBoss"
     },
     {
       "row_name": "City_Time_Keeper",
@@ -23945,8 +26252,12 @@
       "itempool_list": "ItemPoolList_Timekeeper_TKBoss",
       "character_def": "Char_TKBoss",
       "actor_file": "Char_TKBoss",
+      "balance_row": "TKBoss_Normal",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_TKBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -23964,7 +26275,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -23999,7 +26310,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -24033,11 +26344,17 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)",
           "comp_nexus": "JAK_SR.comp_05_legendary_ballista"
         },
         {
@@ -24079,13 +26396,167 @@
           "prob_slot": "tertiary",
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.0025,
+          "slot_scalar": 0.0025,
           "prob_slot_label": "Tertiary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.00125,
+          "drop_prob_base": 0.00125,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.0025,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Tertiary legendary slot 0.3% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "The Timekeeper",
+      "is_named_boss": true,
+      "search_aliases": [
+        "The Timekeeper"
+      ],
+      "spawn_label": "Char_TKBoss"
+    },
+    {
+      "row_name": "BioArmorThresher",
+      "display_name": "Thresher Bio Armored Big Runnable",
+      "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
+      "character_def": "Char_Thresher_BioArmoredBig_Runnable",
+      "actor_file": "Char_Thresher_BioArmoredBig_Runnable",
+      "balance_row": "Thresher_BioArmorBig_Runnable",
+      "is_true_boss": false,
+      "has_boss_row": true,
+      "is_boss": true,
+      "table": "Table_DedicatedDrops",
+      "drop_count": 4,
+      "shiny_drop_count": 2,
+      "drops": [
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_tor_ar_05_legendary_Bugbear_shiny",
+          "comp": "tor_ar.comp_05_legendary_Bugbear",
+          "slug": "bugbear",
+          "label": "Bugbear",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Bugbear",
+          "display_name": "Bugbear",
+          "serial_hint": "{17:1} + \"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
+          "skin_code": "{17:1}",
+          "skin_part": "{17:1}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Bugbear",
+          "yaml_key": "shiny_bugbear",
+          "itempool_shiny": "itempool_tor_ar_05_legendary_Bugbear_shiny"
+        },
+        {
+          "kind": "shiny",
+          "category": "gun",
+          "itempool": "itempool_jak_sr_05_legendary_Truck_shiny",
+          "comp": "jak_sr.comp_05_legendary_Truck",
+          "slug": "truck",
+          "label": "Truck",
+          "is_shiny": true,
+          "prob_attribute": "Att_Loot_UVH_ShinyScalar",
+          "prob_source": "attribute",
+          "prob_slot": "shiny",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.003,
+          "slot_scalar": 0.001,
+          "prob_slot_label": "Phosphene",
+          "item_weight": 1,
+          "drop_prob": 0.0015,
+          "drop_prob_base": 0.0015,
+          "drop_prob_share": 0.5,
+          "slot_prob_base": 0.003,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot 0.3% · 2 items (equal split)",
+          "gun_name": "Truck",
+          "display_name": "Truck",
+          "serial_hint": "{24:76} + \"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
+          "skin_code": "{24:76}",
+          "skin_part": "{24:76}",
+          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
+          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_Truck\"",
+          "camo_cosmetic": "Cosmetics_Weapon_Shiny_Truck",
+          "yaml_key": "shiny_truck",
+          "itempool_shiny": "itempool_jak_sr_05_legendary_Truck_shiny"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "tor_ar.comp_05_legendary_Bugbear",
+          "slug": "bugbear",
+          "rarity": "legendary",
+          "label": "Bugbear",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_PrimaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "primary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.09,
+          "slot_scalar": 0.02,
+          "prob_slot_label": "Primary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.09,
+          "drop_prob_base": 0.09,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.09,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Primary legendary slot"
+        },
+        {
+          "kind": "legendary",
+          "category": "gun",
+          "comp": "jak_sr.comp_05_legendary_Truck",
+          "slug": "truck",
+          "rarity": "legendary",
+          "label": "Truck",
+          "is_shiny": false,
+          "prob_attribute": "Att_Loot_UVH_SecondaryScalar",
+          "prob_source": "attribute",
+          "prob_slot": "secondary",
+          "prob_datatable": "Table_DedicatedDropProbability",
+          "prob_row": "Launch_Dedicated_Drops",
+          "slot_prob": 0.06,
+          "slot_scalar": null,
+          "prob_slot_label": "Secondary legendary",
+          "item_weight": 1,
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
+        }
+      ],
+      "in_game_name": "Thresher Bio Armored Big Runnable",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Thresher Bio Armored Big Runnable"
+      ],
+      "spawn_label": "Char_Thresher_BioArmoredBig_Runnable"
     },
     {
       "row_name": "Tuba_hybrids_Crab",
@@ -24093,6 +26564,7 @@
       "itempool_list": "ItemPoolList_Tuba_hybrids_Crab",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 2,
@@ -24111,11 +26583,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Marshall's Claw",
           "display_name": "Marshall's Claw",
           "serial_hint": "{25:87} + |\"c\",1|",
@@ -24139,13 +26617,20 @@
           "prob_slot": "secondary",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.06,
+          "slot_scalar": 0.005,
           "prob_slot_label": "Secondary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "spawn_label": "Tuba_hybrids_Crab"
     },
     {
       "row_name": "Tuba_hybrids_Fish",
@@ -24153,6 +26638,7 @@
       "itempool_list": "ItemPoolList_Tuba_hybrids_Fish",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 2,
@@ -24171,11 +26657,17 @@
           "prob_slot": "shiny",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.009,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
-          "drop_prob_status": "tier_only",
+          "drop_prob": 0.009,
+          "drop_prob_base": 0.009,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.009,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Phosphene slot",
           "gun_name": "Swan Song",
           "display_name": "Swan Song",
           "serial_hint": "{8:82} + \"c\" \"Cosmetics_Weapon_Shiny_cannonbrawl\"",
@@ -24200,13 +26692,20 @@
           "prob_slot": "secondary",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.06,
+          "slot_scalar": 0.005,
           "prob_slot_label": "Secondary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "spawn_label": "Tuba_hybrids_Fish"
     },
     {
       "row_name": "Tuba_hybrids_Thresher",
@@ -24214,6 +26713,7 @@
       "itempool_list": "ItemPoolList_Tuba_hybrids_Thresher",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 1,
@@ -24232,13 +26732,20 @@
           "prob_slot": "secondary",
           "prob_datatable": "Table_DedicatedDropProbability_Tuba",
           "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
+          "slot_prob": 0.06,
+          "slot_scalar": 0.005,
           "prob_slot_label": "Secondary legendary",
           "item_weight": 1,
-          "drop_prob_status": "tier_only"
+          "drop_prob": 0.06,
+          "drop_prob_base": 0.06,
+          "drop_prob_share": 1,
+          "slot_prob_base": 0.06,
+          "drop_prob_status": "calculated",
+          "drop_prob_method": "equal_split",
+          "drop_prob_note": "Secondary legendary slot"
         }
-      ]
+      ],
+      "spawn_label": "Tuba_hybrids_Thresher"
     },
     {
       "row_name": "Tuba_hybrids_True",
@@ -24246,6 +26753,7 @@
       "itempool_list": "ItemPoolList_Tuba_hybrids_True",
       "character_def": null,
       "actor_file": null,
+      "balance_row": null,
       "is_true_boss": false,
       "has_boss_row": false,
       "drop_count": 3,
@@ -24265,7 +26773,7 @@
           "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
           "prob_slot": "truebossshiny",
           "slot_prob": 0.007,
-          "slot_scalar": null,
+          "slot_scalar": 0.0015,
           "prob_slot_label": "True boss phosphene",
           "item_weight": 1,
           "drop_prob": 0.007,
@@ -24301,7 +26809,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -24326,7 +26834,7 @@
           "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
           "prob_slot": "trueboss",
           "slot_prob": 0.25,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "True boss legendary",
           "item_weight": 1,
           "drop_prob": 0.125,
@@ -24337,234 +26845,8 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
         }
-      ]
-    },
-    {
-      "row_name": "Tuba_Terra",
-      "display_name": "Tuba Terra",
-      "itempool_list": "ItemPoolList_Tuba_Terra",
-      "character_def": null,
-      "actor_file": null,
-      "is_true_boss": false,
-      "has_boss_row": false,
-      "drop_count": 5,
-      "shiny_drop_count": 2,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_ord_sr_05_legendary_Ishmael_shiny",
-          "comp": "ord_sr.comp_05_legendary_Ishmael",
-          "slug": "ishmael",
-          "label": "Ishmael",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar_Tuba",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only",
-          "gun_name": "Ishmael",
-          "display_name": "Ishmael",
-          "serial_hint": "{26:82} + \"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
-          "skin_code": "{26:82}",
-          "skin_part": "{26:82}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_ishmael\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
-          "yaml_key": "shiny_ishmael",
-          "itempool_shiny": "itempool_ord_sr_05_legendary_Ishmael_shiny"
-        },
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_jak_ps_05_legendary_shoals_shiny",
-          "comp": "jak_ps.comp_05_legendary_shoals",
-          "slug": "shoals",
-          "label": "Shoals",
-          "is_shiny": true,
-          "prob_attribute": "Att_Loot_UVH_ShinyScalar_Tuba",
-          "prob_source": "attribute",
-          "prob_slot": "shiny",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Phosphene",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only",
-          "gun_name": "Shoals",
-          "display_name": "Shoals",
-          "serial_hint": "{3:85} + \"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
-          "skin_code": "{3:85}",
-          "skin_part": "{3:85}",
-          "camo_paste": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
-          "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_shoals\"",
-          "camo_cosmetic": "Cosmetics_Weapon_Shiny_shoals",
-          "yaml_key": "shiny_shoals",
-          "itempool_shiny": "itempool_jak_ps_05_legendary_shoals_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "ord_sr.comp_05_legendary_ishmael",
-          "slug": "ishmael",
-          "rarity": "legendary",
-          "label": "Ishmael",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_PrimaryScalar_Tuba",
-          "prob_source": "attribute",
-          "prob_slot": "primary",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Primary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "jak_ps.comp_05_legendary_Shoals",
-          "slug": "shoals",
-          "rarity": "legendary",
-          "label": "Shoals",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_PrimaryScalar_Tuba",
-          "prob_source": "attribute",
-          "prob_slot": "primary",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Primary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        },
-        {
-          "kind": "pearl",
-          "category": "gun",
-          "comp": "ted_sg.comp_06_pearl_sharkbait",
-          "slug": "sharkbait",
-          "rarity": "pearl",
-          "label": "sharkbait",
-          "is_shiny": false,
-          "prob_attribute": "Att_Loot_UVH_TertiaryScalar_Tuba",
-          "prob_source": "attribute",
-          "prob_slot": "tertiary",
-          "prob_datatable": "Table_DedicatedDropProbability_Tuba",
-          "prob_row": "Tuba_Dedicated_Drops",
-          "slot_prob": null,
-          "slot_scalar": null,
-          "prob_slot_label": "Tertiary legendary",
-          "item_weight": 1,
-          "drop_prob_status": "tier_only"
-        }
-      ]
-    },
-    {
-      "row_name": "Tuba_Terra_True",
-      "display_name": "Tuba Terra True",
-      "itempool_list": "ItemPoolList_Tuba_Terra_True",
-      "character_def": null,
-      "actor_file": null,
-      "is_true_boss": false,
-      "has_boss_row": false,
-      "drop_count": 3,
-      "shiny_drop_count": 1,
-      "drops": [
-        {
-          "kind": "shiny",
-          "category": "gun",
-          "itempool": "itempool_mal_sg_05_legendary_hemorrhage_shiny",
-          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
-          "slug": "hemorrhage",
-          "label": "Hemorrhage",
-          "is_shiny": true,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBossShiny_14_EA1D0D2F4F68BA38D6105D9025645769",
-          "prob_slot": "truebossshiny",
-          "slot_prob": 0.007,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss phosphene",
-          "item_weight": 1,
-          "drop_prob": 0.007,
-          "drop_prob_base": 0.007,
-          "drop_prob_share": 1,
-          "slot_prob_base": 0.007,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss phosphene slot",
-          "comp_nexus": "mal_sg.comp_05_legendary_hemorrhage",
-          "gun_name": "Hemorrhage",
-          "display_name": "Hemorrhage",
-          "serial_hint": "{16:88} + \"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
-          "skin_code": "{16:88}",
-          "skin_part": "{16:88}",
-          "camo_paste": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
-          "camo_c_code": "\"c\" \"cosmetics_weapon_shiny_hemorrhage\"",
-          "camo_cosmetic": "cosmetics_weapon_shiny_hemorrhage",
-          "yaml_key": "shiny_hemorrhage",
-          "itempool_shiny": "itempool_mal_sg_05_legendary_hemorrhage_shiny"
-        },
-        {
-          "kind": "legendary",
-          "category": "gun",
-          "comp": "vla_sr.comp_05_legendary_Hemorrhage",
-          "slug": "hemorrhage",
-          "rarity": "legendary",
-          "label": "Hemorrhage",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.125,
-          "drop_prob_base": 0.125,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
-        },
-        {
-          "kind": "legendary",
-          "category": "repkit",
-          "comp": "ord_repair_kit.comp_05_legendary_paleblood",
-          "slug": "paleblood",
-          "rarity": "legendary",
-          "label": "paleblood",
-          "is_shiny": false,
-          "prob_source": "datatable",
-          "prob_datatable": "Table_DedicatedDropProbability",
-          "prob_row": "Launch_Dedicated_Drops",
-          "prob_column": "TrueBoss_12_47D1E0FA435EA53697F51F829004964B",
-          "prob_slot": "trueboss",
-          "slot_prob": 0.25,
-          "slot_scalar": null,
-          "prob_slot_label": "True boss legendary",
-          "item_weight": 1,
-          "drop_prob": 0.125,
-          "drop_prob_base": 0.125,
-          "drop_prob_share": 0.5,
-          "slot_prob_base": 0.25,
-          "drop_prob_status": "calculated",
-          "drop_prob_method": "equal_split",
-          "drop_prob_note": "True boss legendary slot 25% · 2 items (equal split)"
-        }
-      ]
+      ],
+      "spawn_label": "Tuba_hybrids_True"
     },
     {
       "row_name": "Mountain_Commander",
@@ -24572,8 +26854,12 @@
       "itempool_list": "ItemPoolList_MountainCommander",
       "character_def": "Char_MountBoss",
       "actor_file": "Char_MountBoss",
+      "balance_row": "MountBoss",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_MountBoss",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 1,
       "drops": [
@@ -24591,7 +26877,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.003,
@@ -24651,7 +26937,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -24710,7 +26996,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 3 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Vile Lictor",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Vile Lictor"
+      ],
+      "spawn_label": "Char_MountBoss"
     },
     {
       "row_name": "First_Corrupt",
@@ -24718,8 +27010,12 @@
       "itempool_list": "ItemPoolList_FirstCorrupt",
       "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt",
       "actor_file": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt",
+      "balance_row": "PlotMount2b_Boss_FirstCorrupt",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Psycho_FirstCorrupt",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -24737,7 +27033,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -24772,7 +27068,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -24807,7 +27103,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -24870,7 +27166,13 @@
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)",
           "comp_nexus": "DAD_PS.comp_05_legendary_rangefinder"
         }
-      ]
+      ],
+      "in_game_name": "Vile Prototype",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Vile Prototype"
+      ],
+      "spawn_label": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt"
     },
     {
       "row_name": "Surprise_Attack",
@@ -24878,8 +27180,12 @@
       "itempool_list": "ItemPoolList_SurpriseAttack",
       "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack",
       "actor_file": "Char_Thresher_Mine_Boss_SurpriseAttack",
+      "balance_row": "Thresher_SupriseAttack",
       "is_true_boss": false,
       "has_boss_row": true,
+      "is_boss": true,
+      "display_key": "Name_Thresher_SurpriseAttack",
+      "table": "Table_DedicatedDrops",
       "drop_count": 5,
       "shiny_drop_count": 2,
       "drops": [
@@ -24897,7 +27203,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -24932,7 +27238,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.003,
-          "slot_scalar": null,
+          "slot_scalar": 0.001,
           "prob_slot_label": "Phosphene",
           "item_weight": 1,
           "drop_prob": 0.0015,
@@ -24992,7 +27298,7 @@
           "prob_datatable": "Table_DedicatedDropProbability",
           "prob_row": "Launch_Dedicated_Drops",
           "slot_prob": 0.09,
-          "slot_scalar": null,
+          "slot_scalar": 0.02,
           "prob_slot_label": "Primary legendary",
           "item_weight": 1,
           "drop_prob": 0.09,
@@ -25028,7 +27334,13 @@
           "drop_prob_method": "equal_split",
           "drop_prob_note": "Secondary legendary slot 6% · 2 items (equal split)"
         }
-      ]
+      ],
+      "in_game_name": "Voraxis",
+      "is_named_boss": true,
+      "search_aliases": [
+        "Voraxis"
+      ],
+      "spawn_label": "Char_Thresher_Mine_Boss_SurpriseAttack"
     }
   ],
   "drop_prob_modifiers": {
@@ -25155,18 +27467,20 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
-          "itempool_list": "ItemPoolList_Arjay",
-          "enemy_name": "Arjay Mission",
-          "row_name": "Arjay_Mission",
-          "character_def": "Char_PrisonBuddyBoss",
-          "is_true_boss": false
-        },
-        {
           "itempool_list": "ItemPoolList_Arjay_TrueBoss",
           "enemy_name": "Big Encore Arjay",
+          "in_game_name": "Big Encore Arjay",
           "row_name": "Arjay_TrueBoss",
           "character_def": "Char_PrisonBuddyBoss_RunnableTRUE",
           "is_true_boss": true
+        },
+        {
+          "itempool_list": "ItemPoolList_Arjay",
+          "enemy_name": "Prison Buddy Boss",
+          "in_game_name": "Prison Buddy Boss",
+          "row_name": "Arjay_Mission",
+          "character_def": "Char_PrisonBuddyBoss",
+          "is_true_boss": false
         }
       ],
       "slug": "heartgun",
@@ -25206,6 +27520,7 @@
         {
           "itempool_list": "ItemPoolList_KotoLieutenant_TrueBoss",
           "enemy_name": "Big Encore Horace",
+          "in_game_name": "Big Encore Horace",
           "row_name": "KOTO_Lieutenant_TrueBoss",
           "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE",
           "is_true_boss": true
@@ -25213,6 +27528,7 @@
         {
           "itempool_list": "ItemPoolList_KotoLieutenant",
           "enemy_name": "Horace",
+          "in_game_name": "Horace",
           "row_name": "KOTO_Lieutenant",
           "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
           "is_true_boss": false
@@ -25255,6 +27571,7 @@
         {
           "itempool_list": "ItemPoolList_ShatterlandsGuardian_TrueBoss",
           "enemy_name": "Big Encore Primordial Guardian Radix",
+          "in_game_name": "Big Encore Primordial Guardian Radix",
           "row_name": "Shatterlands_Guardian_TrueBoss",
           "character_def": "Char_ShatterGuard_TrueBoss",
           "is_true_boss": true
@@ -25262,6 +27579,7 @@
         {
           "itempool_list": "ItemPoolList_ShatterlandsGuardian",
           "enemy_name": "Primordial Guardian Radix",
+          "in_game_name": "Primordial Guardian Radix",
           "row_name": "Shatterlands_Guardian",
           "character_def": "Char_ShatterGuard",
           "is_true_boss": false
@@ -25344,6 +27662,7 @@
         {
           "itempool_list": "ItemPoolList_MeatPlantGunship_TrueBoss",
           "enemy_name": "Big Encore Oppressor",
+          "in_game_name": "Big Encore Oppressor",
           "row_name": "Meat_Plant_Gunship_TrueBoss",
           "character_def": "Char_GunShip_PlotGrass2a_Boss_MeatPlantTRUE",
           "is_true_boss": true
@@ -25351,6 +27670,7 @@
         {
           "itempool_list": "ItemPoolList_MeatPlantGunship",
           "enemy_name": "The Oppressor",
+          "in_game_name": "The Oppressor",
           "row_name": "Meat_Plant_Gunship",
           "character_def": "Char_GunShip_PlotGrass2a_Boss_MeatPlant",
           "is_true_boss": false
@@ -25393,6 +27713,7 @@
         {
           "itempool_list": "ItemPoolList_TrashThresher_TrueBoss",
           "enemy_name": "Big Encore Sludgemaw",
+          "in_game_name": "Big Encore Sludgemaw",
           "row_name": "Trash_Thresher_TrueBoss",
           "character_def": "Char_Thresher_SideGrass_Trash_True",
           "is_true_boss": true
@@ -25400,6 +27721,7 @@
         {
           "itempool_list": "ItemPoolList_TrashThresher",
           "enemy_name": "Sludgemaw",
+          "in_game_name": "Sludgemaw",
           "row_name": "Trash_Thresher",
           "character_def": "Char_Thresher_SideGrass_Trash",
           "is_true_boss": false
@@ -25439,6 +27761,7 @@
         {
           "itempool_list": "ItemPoolList_FoundryFreak_Splice_TrueBoss",
           "enemy_name": "Big Encore Sal the Engineer",
+          "in_game_name": "Big Encore Sal the Engineer",
           "row_name": "Foundry_Freaks_Splice_TrueBoss",
           "character_def": "Char_SpliceFrackingEngineerTRUE",
           "is_true_boss": true
@@ -25446,6 +27769,7 @@
         {
           "itempool_list": "ItemPoolList_FoundryFreak_Splice",
           "enemy_name": "Sal the Engineer",
+          "in_game_name": "Sal the Engineer",
           "row_name": "Foundry_Freaks_Splice",
           "character_def": "Char_SpliceFrackingEngineer",
           "is_true_boss": false
@@ -25488,6 +27812,7 @@
         {
           "itempool_list": "ItemPoolList_CityCat",
           "enemy_name": "Axemaul",
+          "in_game_name": "Axemaul",
           "row_name": "City_Cat",
           "character_def": "Char_Cat_Mine_Boss_CityCat",
           "is_true_boss": false
@@ -25495,6 +27820,7 @@
         {
           "itempool_list": "ItemPoolList_CityCat_TrueBoss",
           "enemy_name": "Big Encore Axemaul",
+          "in_game_name": "Big Encore Axemaul",
           "row_name": "City_Cat_TrueBoss",
           "character_def": "Char_Cat_Mine_Boss_CityCat_TRUE",
           "is_true_boss": true
@@ -25534,6 +27860,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard_TrueBoss",
           "enemy_name": "Big Encore Directive-0",
+          "in_game_name": "Big Encore Directive-0",
           "row_name": "Red_Guard_TrueBoss",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
           "is_true_boss": true
@@ -25541,6 +27868,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard",
           "enemy_name": "Directive-0",
+          "in_game_name": "Directive-0",
           "row_name": "Red_Guard",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuard",
           "is_true_boss": false
@@ -25583,6 +27911,7 @@
         {
           "itempool_list": "ItemPoolList_Destroyer_TrueBoss",
           "enemy_name": "Big Encore Bramblesong",
+          "in_game_name": "Big Encore Bramblesong",
           "row_name": "Destroyer_TrueBoss",
           "character_def": "Char_Bat_Mine_Boss_DestroyerTRUE",
           "is_true_boss": true
@@ -25590,6 +27919,7 @@
         {
           "itempool_list": "ItemPoolList_Destroyer",
           "enemy_name": "Bramblesong",
+          "in_game_name": "Bramblesong",
           "row_name": "Destroyer",
           "character_def": "Char_Bat_Mine_Boss_Destroyer",
           "is_true_boss": false
@@ -25629,6 +27959,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_TKBoss_TrueBoss",
           "enemy_name": "The Big Encore Timekeeper",
+          "in_game_name": "The Big Encore Timekeeper",
           "row_name": "City_Time_Keeper_TrueBoss",
           "character_def": "Char_TkBoss_TrueBoss",
           "is_true_boss": true
@@ -25636,6 +27967,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_TKBoss",
           "enemy_name": "The Timekeeper",
+          "in_game_name": "The Timekeeper",
           "row_name": "City_Time_Keeper",
           "character_def": "Char_TKBoss",
           "is_true_boss": false
@@ -25675,14 +28007,16 @@
         {
           "itempool_list": "ItemPoolList_Murderer",
           "enemy_name": "Murderer",
-          "row_name": null,
+          "in_game_name": "Murderer",
+          "row_name": "Murderer",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Murderer_TRUE",
           "enemy_name": "Murderer TRUE",
-          "row_name": null,
+          "in_game_name": "Murderer TRUE",
+          "row_name": "Murderer_TRUE",
           "character_def": null,
           "is_true_boss": false
         }
@@ -25755,6 +28089,7 @@
         {
           "itempool_list": "ItemPoolList_KOTOMotherbaseBrute_TrueBoss",
           "enemy_name": "Big Encore Bio-Bulkhead",
+          "in_game_name": "Big Encore Bio-Bulkhead",
           "row_name": "KOTO_Motherbase_Brute_TrueBoss",
           "character_def": "Char_Brute_PlotGrass2b_Boss_MotherbaseTRUE",
           "is_true_boss": true
@@ -25762,6 +28097,7 @@
         {
           "itempool_list": "ItemPoolList_KOTOMotherbaseBrute",
           "enemy_name": "Bio-Bulkhead",
+          "in_game_name": "Bio-Bulkhead",
           "row_name": "KOTO_Motherbase_Brute",
           "character_def": "Char_Brute_PlotGrass2b_Boss_Motherbase",
           "is_true_boss": false
@@ -25804,20 +28140,15 @@
         {
           "itempool_list": "ItemPoolList_Thresher_BioArmoredBig_TrueBoss",
           "enemy_name": "Big Encore Bio-Thresher Omega",
+          "in_game_name": "Big Encore Bio-Thresher Omega",
           "row_name": "BioArmorThresher_TrueBoss",
           "character_def": "Char_Thresher_BioArmoredBig_RunnableTRUE",
           "is_true_boss": true
         },
         {
-          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
-          "enemy_name": "Bio Armor Thresher",
-          "row_name": "BioArmorThresher",
-          "character_def": "Char_Thresher_BioArmoredBig_Runnable",
-          "is_true_boss": false
-        },
-        {
           "itempool_list": "ItemPoolList_BattleWagon",
           "enemy_name": "The Battle Wagon",
+          "in_game_name": "The Battle Wagon",
           "row_name": "Battle_Wagon",
           "character_def": "Char_Beast_Drill_Boss_Battlewagon",
           "is_true_boss": false
@@ -25825,9 +28156,18 @@
         {
           "itempool_list": "ItemPoolList_BattleWagon_TrueBoss",
           "enemy_name": "The Big Encore Battle Wagon",
+          "in_game_name": "The Big Encore Battle Wagon",
           "row_name": "Battle_Wagon_TrueBoss",
           "character_def": "Char_Beast_Drill_Boss_Battlewagon_TRUE",
           "is_true_boss": true
+        },
+        {
+          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
+          "enemy_name": "Thresher Bio Armored Big Runnable",
+          "in_game_name": "Thresher Bio Armored Big Runnable",
+          "row_name": "BioArmorThresher",
+          "character_def": "Char_Thresher_BioArmoredBig_Runnable",
+          "is_true_boss": false
         }
       ],
       "slug": "bugbear",
@@ -25864,6 +28204,7 @@
         {
           "itempool_list": "ItemPoolList_DroneKeeper_TrueBoss",
           "enemy_name": "Big Encore Core Observer",
+          "in_game_name": "Big Encore Core Observer",
           "row_name": "Drone_Keeper_TrueBoss",
           "character_def": "Char_Drone_Bunker_Boss_KeeperTRUE",
           "is_true_boss": true
@@ -25871,6 +28212,7 @@
         {
           "itempool_list": "ItemPoolList_DroneKeeper",
           "enemy_name": "Core Observer",
+          "in_game_name": "Core Observer",
           "row_name": "Drone_Keeper",
           "character_def": "Char_Drone_Bunker_Boss_Keeper",
           "is_true_boss": false
@@ -25910,6 +28252,7 @@
         {
           "itempool_list": "ItemPoolList_LeaderHologram_TrueBoss",
           "enemy_name": "Big Encore Fractis",
+          "in_game_name": "Big Encore Fractis",
           "row_name": "Leader_Hologram_TrueBoss",
           "character_def": "Char_Leader_Bunker_Boss_HologramTRUE",
           "is_true_boss": true
@@ -25917,6 +28260,7 @@
         {
           "itempool_list": "ItemPoolList_LeaderHologram",
           "enemy_name": "Fractis",
+          "in_game_name": "Fractis",
           "row_name": "Leader_Hologram",
           "character_def": "Char_Leader_Bunker_Boss_Hologram",
           "is_true_boss": false
@@ -25924,6 +28268,7 @@
         {
           "itempool_list": "ItemPoolList_FoundryFreak_Psycho",
           "enemy_name": "Hank the Welder",
+          "in_game_name": "Hank the Welder",
           "row_name": "Foundry_Freaks_Psycho",
           "character_def": "Char_PsychoFrackingLieutenant",
           "is_true_boss": false
@@ -26006,6 +28351,7 @@
         {
           "itempool_list": "ItemPoolList_StrikerSplitter_TrueBoss",
           "enemy_name": "Big Encore Mimicron",
+          "in_game_name": "Big Encore Mimicron",
           "row_name": "Striker_Splitter_TrueBoss",
           "character_def": "Char_Striker_Bunker_Boss_SplitterTRUE",
           "is_true_boss": true
@@ -26013,6 +28359,7 @@
         {
           "itempool_list": "ItemPoolList_StrikerSplitter",
           "enemy_name": "Mimicron",
+          "in_game_name": "Mimicron",
           "row_name": "Striker_Splitter",
           "character_def": "Char_Striker_Bunker_Boss_Splitter",
           "is_true_boss": false
@@ -26166,6 +28513,7 @@
         {
           "itempool_list": "ItemPoolList_Destroyer_TrueBoss",
           "enemy_name": "Big Encore Bramblesong",
+          "in_game_name": "Big Encore Bramblesong",
           "row_name": "Destroyer_TrueBoss",
           "character_def": "Char_Bat_Mine_Boss_DestroyerTRUE",
           "is_true_boss": true
@@ -26173,6 +28521,7 @@
         {
           "itempool_list": "ItemPoolList_Destroyer",
           "enemy_name": "Bramblesong",
+          "in_game_name": "Bramblesong",
           "row_name": "Destroyer",
           "character_def": "Char_Bat_Mine_Boss_Destroyer",
           "is_true_boss": false
@@ -26573,6 +28922,7 @@
         {
           "itempool_list": "ItemPoolList_SurpriseAttack_TrueBoss",
           "enemy_name": "Big Encore Voraxis",
+          "in_game_name": "Big Encore Voraxis",
           "row_name": "Surprise_Attack_TrueBoss",
           "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE",
           "is_true_boss": true
@@ -26580,6 +28930,7 @@
         {
           "itempool_list": "ItemPoolList_SurpriseAttack",
           "enemy_name": "Voraxis",
+          "in_game_name": "Voraxis",
           "row_name": "Surprise_Attack",
           "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack",
           "is_true_boss": false
@@ -26622,14 +28973,16 @@
         {
           "itempool_list": "ItemPoolList_GlitchCleaner",
           "enemy_name": "Glitch Cleaner",
-          "row_name": null,
+          "in_game_name": "Glitch Cleaner",
+          "row_name": "GlitchCleaner",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_GlitchCleaner_TRUE",
           "enemy_name": "Glitch Cleaner TRUE",
-          "row_name": null,
+          "in_game_name": "Glitch Cleaner TRUE",
+          "row_name": "GlitchCleaner_TRUE",
           "character_def": null,
           "is_true_boss": false
         }
@@ -26668,23 +29021,25 @@
         {
           "itempool_list": "ItemPoolList_GlitchFixer",
           "enemy_name": "Glitch Fixer",
-          "row_name": null,
+          "in_game_name": "Glitch Fixer",
+          "row_name": "GlitchFixer",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_GlitchFixer_TRUE",
           "enemy_name": "Glitch Fixer TRUE",
-          "row_name": null,
+          "in_game_name": "Glitch Fixer TRUE",
+          "row_name": "GlitchFixer_TRUE",
           "character_def": null,
           "is_true_boss": false
         }
       ],
       "slug": "discybusiness",
-      "display_name": "Discy Business",
+      "display_name": "Discybusiness",
       "yaml_key": "shiny_discybusiness",
       "cosmetic_spawn": "Cosmetics_Weapon_Shiny_discybusiness",
-      "numeric_skin_name": "Discy Business",
+      "numeric_skin_name": "Discybusiness",
       "drop_note": null,
       "skin_code": "{10:81}",
       "numeric_skin_code": "{10:81}",
@@ -26714,6 +29069,7 @@
         {
           "itempool_list": "ItemPoolList_DroneKeeper_TrueBoss",
           "enemy_name": "Big Encore Core Observer",
+          "in_game_name": "Big Encore Core Observer",
           "row_name": "Drone_Keeper_TrueBoss",
           "character_def": "Char_Drone_Bunker_Boss_KeeperTRUE",
           "is_true_boss": true
@@ -26721,6 +29077,7 @@
         {
           "itempool_list": "ItemPoolList_DroneKeeper",
           "enemy_name": "Core Observer",
+          "in_game_name": "Core Observer",
           "row_name": "Drone_Keeper",
           "character_def": "Char_Drone_Bunker_Boss_Keeper",
           "is_true_boss": false
@@ -26942,7 +29299,8 @@
         {
           "itempool_list": "ItemPoolList_Nightmare_AllBosses",
           "enemy_name": "Nightmare All Bosses",
-          "row_name": null,
+          "in_game_name": "Nightmare All Bosses",
+          "row_name": "Nightmare_AllBosses",
           "character_def": null,
           "is_true_boss": false
         }
@@ -26981,7 +29339,8 @@
         {
           "itempool_list": "ItemPoolList_Nightmare_AllBosses",
           "enemy_name": "Nightmare All Bosses",
-          "row_name": null,
+          "in_game_name": "Nightmare All Bosses",
+          "row_name": "Nightmare_AllBosses",
           "character_def": null,
           "is_true_boss": false
         }
@@ -27124,18 +29483,20 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
-          "itempool_list": "ItemPoolList_Arjay",
-          "enemy_name": "Arjay Mission",
-          "row_name": "Arjay_Mission",
-          "character_def": "Char_PrisonBuddyBoss",
-          "is_true_boss": false
-        },
-        {
           "itempool_list": "ItemPoolList_Arjay_TrueBoss",
           "enemy_name": "Big Encore Arjay",
+          "in_game_name": "Big Encore Arjay",
           "row_name": "Arjay_TrueBoss",
           "character_def": "Char_PrisonBuddyBoss_RunnableTRUE",
           "is_true_boss": true
+        },
+        {
+          "itempool_list": "ItemPoolList_Arjay",
+          "enemy_name": "Prison Buddy Boss",
+          "in_game_name": "Prison Buddy Boss",
+          "row_name": "Arjay_Mission",
+          "character_def": "Char_PrisonBuddyBoss",
+          "is_true_boss": false
         }
       ],
       "slug": "fisheye",
@@ -27252,7 +29613,8 @@
         {
           "itempool_list": "ItemPoolList_DroneCaptain",
           "enemy_name": "Drone Captain",
-          "row_name": null,
+          "in_game_name": "Drone Captain",
+          "row_name": "DroneCaptain",
           "character_def": null,
           "is_true_boss": false
         }
@@ -27389,7 +29751,8 @@
         {
           "itempool_list": "ItemPoolList_SiphonScavOne",
           "enemy_name": "Siphon Scav One",
-          "row_name": null,
+          "in_game_name": "Siphon Scav One",
+          "row_name": "SiphonScavOne",
           "character_def": null,
           "is_true_boss": false
         }
@@ -27474,6 +29837,7 @@
         {
           "itempool_list": "ItemPoolList_Drillerhole_TrueBoss",
           "enemy_name": "Big Encore Drillerhole",
+          "in_game_name": "Big Encore Drillerhole",
           "row_name": "Drillerhole_TrueBoss",
           "character_def": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
           "is_true_boss": true
@@ -27481,6 +29845,7 @@
         {
           "itempool_list": "ItemPoolList_Drillerhole",
           "enemy_name": "Driller Hole",
+          "in_game_name": "Driller Hole",
           "row_name": "Drillerhole",
           "character_def": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
           "is_true_boss": false
@@ -27520,13 +29885,15 @@
         {
           "itempool_list": "ItemPoolList_SideCity_Psycho_TrueBoss",
           "enemy_name": "Big Encore Vile Ted",
+          "in_game_name": "Big Encore Vile Ted",
           "row_name": "CorruptTED_TrueBoss",
           "character_def": "Char_SideCity_Psycho_CorruptTED_TRUE",
           "is_true_boss": true
         },
         {
           "itempool_list": "ItemPoolList_SideCity_Psycho",
-          "enemy_name": "Corrupt TED",
+          "enemy_name": "Side City Psycho Corrupt TED Runnable",
+          "in_game_name": "Side City Psycho Corrupt TED Runnable",
           "row_name": "CorruptTED",
           "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
           "is_true_boss": false
@@ -27564,11 +29931,20 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
+          "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+          "enemy_name": "Big Encore Idolator Sol",
+          "in_game_name": "Big Encore Idolator Sol",
+          "row_name": "Grasslands_Commander_TrueBoss",
+          "character_def": "Char_GrassBoss_TrueBoss",
+          "is_true_boss": true
+        },
+        {
           "itempool_list": "ItemPoolList_Grasslands_Commander",
-          "enemy_name": "Grasslands Commander",
+          "enemy_name": "Idolator Sol",
+          "in_game_name": "Idolator Sol",
           "row_name": "Grasslands_Commander",
           "character_def": "Char_GrassBoss",
-          "is_true_boss": true
+          "is_true_boss": false
         }
       ],
       "slug": "goldengod",
@@ -27709,11 +30085,20 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
+          "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+          "enemy_name": "Big Encore Idolator Sol",
+          "in_game_name": "Big Encore Idolator Sol",
+          "row_name": "Grasslands_Commander_TrueBoss",
+          "character_def": "Char_GrassBoss_TrueBoss",
+          "is_true_boss": true
+        },
+        {
           "itempool_list": "ItemPoolList_Grasslands_Commander",
-          "enemy_name": "Grasslands Commander",
+          "enemy_name": "Idolator Sol",
+          "in_game_name": "Idolator Sol",
           "row_name": "Grasslands_Commander",
           "character_def": "Char_GrassBoss",
-          "is_true_boss": true
+          "is_true_boss": false
         }
       ],
       "slug": "goremaster",
@@ -28071,6 +30456,7 @@
         {
           "itempool_list": "ItemPoolList_BatMatriarch_TrueBoss",
           "enemy_name": "Big Encore Skyspanner Kratch",
+          "in_game_name": "Big Encore Skyspanner Kratch",
           "row_name": "Bat_Matriarch_TrueBoss",
           "character_def": "Char_Bat_PlotMount1_Boss_MatriarchTRUE",
           "is_true_boss": true
@@ -28078,6 +30464,7 @@
         {
           "itempool_list": "ItemPoolList_BatMatriarch",
           "enemy_name": "Skyspanner Kratch",
+          "in_game_name": "Skyspanner Kratch",
           "row_name": "Bat_Matriarch",
           "character_def": "Char_Bat_PlotMount1_Boss_Matriarch",
           "is_true_boss": false
@@ -28117,6 +30504,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider_Jockey_TrueBoss",
           "enemy_name": "The Big Encore Immortal Boneface",
+          "in_game_name": "The Big Encore Immortal Boneface",
           "row_name": "Meathead_Riders_Jockey_TrueBoss",
           "character_def": "Char_Guntoter_MeatheadJockeyBossTRUE",
           "is_true_boss": true
@@ -28124,6 +30512,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider_Jockey",
           "enemy_name": "The Immortal Boneface",
+          "in_game_name": "The Immortal Boneface",
           "row_name": "Meathead_Riders_Jockey",
           "character_def": "Char_Guntoter_MeatheadJockeyBoss",
           "is_true_boss": false
@@ -28161,23 +30550,26 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
+          "itempool_list": "ItemPoolList_Tuba_Terra_True",
+          "enemy_name": "Big Encore Child of Terramorphous",
+          "in_game_name": "Big Encore Child of Terramorphous",
+          "row_name": "Tuba_Terra_True",
+          "character_def": "Char_TubaBoss",
+          "is_true_boss": true
+        },
+        {
           "itempool_list": "ItemPoolList_Crash",
           "enemy_name": "Crash",
-          "row_name": null,
+          "in_game_name": "Crash",
+          "row_name": "Crash",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Crash_True",
           "enemy_name": "Crash True",
-          "row_name": null,
-          "character_def": null,
-          "is_true_boss": false
-        },
-        {
-          "itempool_list": "ItemPoolList_Tuba_Terra_True",
-          "enemy_name": "Tuba Terra True",
-          "row_name": null,
+          "in_game_name": "Crash True",
+          "row_name": "Crash_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -28324,6 +30716,7 @@
         {
           "itempool_list": "ItemPoolList_BlasterBrute",
           "enemy_name": "Callous Harbinger of Annihilating Death",
+          "in_game_name": "Callous Harbinger of Annihilating Death",
           "row_name": "Blaster_Brute",
           "character_def": "Char_Brute_Bunker_Boss_Mountains",
           "is_true_boss": false
@@ -28331,6 +30724,7 @@
         {
           "itempool_list": "ItemPoolList_BlasterBrute_TrueBoss",
           "enemy_name": "The Big Encore Callous Harbinger of Annihilating Death",
+          "in_game_name": "The Big Encore Callous Harbinger of Annihilating Death",
           "row_name": "Blaster_Brute_TrueBoss",
           "character_def": "Char_Brute_Bunker_Boss_MountainsTRUE",
           "is_true_boss": true
@@ -28373,6 +30767,7 @@
         {
           "itempool_list": "ItemPoolList_Grasslands_Guardian_TrueBoss",
           "enemy_name": "Big Encore Primordial Guardian Inceptus",
+          "in_game_name": "Big Encore Primordial Guardian Inceptus",
           "row_name": "Grasslands_Guardian_TrueBoss",
           "character_def": "Char_GrassGuard_TrueBoss",
           "is_true_boss": true
@@ -28380,6 +30775,7 @@
         {
           "itempool_list": "ItemPoolList_Grasslands_Guardian",
           "enemy_name": "Primordial Guardian Inceptus",
+          "in_game_name": "Primordial Guardian Inceptus",
           "row_name": "Grasslands_Guardian",
           "character_def": "Char_GrassGuard",
           "is_true_boss": false
@@ -28495,9 +30891,10 @@
       "drop_sources": [
         {
           "itempool_list": "ItemPoolList_Tuba_Terra",
-          "enemy_name": "Tuba Terra",
-          "row_name": null,
-          "character_def": null,
+          "enemy_name": "Child of Terramorphous",
+          "in_game_name": "Child of Terramorphous",
+          "row_name": "Tuba_Terra",
+          "character_def": "Char_TubaBoss",
           "is_true_boss": false
         }
       ],
@@ -28646,6 +31043,7 @@
         {
           "itempool_list": "ItemPoolList_BlasterBrute",
           "enemy_name": "Callous Harbinger of Annihilating Death",
+          "in_game_name": "Callous Harbinger of Annihilating Death",
           "row_name": "Blaster_Brute",
           "character_def": "Char_Brute_Bunker_Boss_Mountains",
           "is_true_boss": false
@@ -28653,6 +31051,7 @@
         {
           "itempool_list": "ItemPoolList_BlasterBrute_TrueBoss",
           "enemy_name": "The Big Encore Callous Harbinger of Annihilating Death",
+          "in_game_name": "The Big Encore Callous Harbinger of Annihilating Death",
           "row_name": "Blaster_Brute_TrueBoss",
           "character_def": "Char_Brute_Bunker_Boss_MountainsTRUE",
           "is_true_boss": true
@@ -28692,6 +31091,7 @@
         {
           "itempool_list": "ItemPoolList_MountainGuardian_TrueBoss",
           "enemy_name": "Big Encore Primordial Guardian Origo",
+          "in_game_name": "Big Encore Primordial Guardian Origo",
           "row_name": "Mountain_Guardian_TrueBoss",
           "character_def": "Char_MountGuard_V02_TrueBoss",
           "is_true_boss": true
@@ -28699,6 +31099,7 @@
         {
           "itempool_list": "ItemPoolList_MountainGuardian",
           "enemy_name": "Primordial Guardian Origo",
+          "in_game_name": "Primordial Guardian Origo",
           "row_name": "Mountain_Guardian",
           "character_def": "Char_MountGuard_V02",
           "is_true_boss": false
@@ -28738,6 +31139,7 @@
         {
           "itempool_list": "ItemPoolList_Drillerhole_TrueBoss",
           "enemy_name": "Big Encore Drillerhole",
+          "in_game_name": "Big Encore Drillerhole",
           "row_name": "Drillerhole_TrueBoss",
           "character_def": "Char_Meathead_PlotShat2a_Boss_DrillerholeTRUE",
           "is_true_boss": true
@@ -28745,6 +31147,7 @@
         {
           "itempool_list": "ItemPoolList_Drillerhole",
           "enemy_name": "Driller Hole",
+          "in_game_name": "Driller Hole",
           "row_name": "Drillerhole",
           "character_def": "Char_Meathead_PlotShat2a_Boss_Drillerhole",
           "is_true_boss": false
@@ -28787,6 +31190,7 @@
         {
           "itempool_list": "ItemPoolList_TrashThresher_TrueBoss",
           "enemy_name": "Big Encore Sludgemaw",
+          "in_game_name": "Big Encore Sludgemaw",
           "row_name": "Trash_Thresher_TrueBoss",
           "character_def": "Char_Thresher_SideGrass_Trash_True",
           "is_true_boss": true
@@ -28794,6 +31198,7 @@
         {
           "itempool_list": "ItemPoolList_TrashThresher",
           "enemy_name": "Sludgemaw",
+          "in_game_name": "Sludgemaw",
           "row_name": "Trash_Thresher",
           "character_def": "Char_Thresher_SideGrass_Trash",
           "is_true_boss": false
@@ -28833,6 +31238,7 @@
         {
           "itempool_list": "ItemPoolList_FirstCorrupt_TrueBoss",
           "enemy_name": "Big Encore Vile Prototype",
+          "in_game_name": "Big Encore Vile Prototype",
           "row_name": "First_Corrupt_TrueBoss",
           "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE",
           "is_true_boss": true
@@ -28840,6 +31246,7 @@
         {
           "itempool_list": "ItemPoolList_FirstCorrupt",
           "enemy_name": "Vile Prototype",
+          "in_game_name": "Vile Prototype",
           "row_name": "First_Corrupt",
           "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt",
           "is_true_boss": false
@@ -28879,14 +31286,16 @@
         {
           "itempool_list": "ItemPoolList_DahlMech",
           "enemy_name": "Dahl Mech",
-          "row_name": null,
+          "in_game_name": "Dahl Mech",
+          "row_name": "DahlMech",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_DahlMech_True",
           "enemy_name": "Dahl Mech True",
-          "row_name": null,
+          "in_game_name": "Dahl Mech True",
+          "row_name": "DahlMech_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -28959,6 +31368,7 @@
         {
           "itempool_list": "ItemPoolList_GlidePackPsycho_TrueBoss",
           "enemy_name": "Big Encore Splashzone",
+          "in_game_name": "Big Encore Splashzone",
           "row_name": "Glide_Pack_Psycho_TrueBoss",
           "character_def": "Char_Psycho_PlotGrass1_Boss_GlidePackTRUE",
           "is_true_boss": true
@@ -28966,6 +31376,7 @@
         {
           "itempool_list": "ItemPoolList_GlidePackPsycho",
           "enemy_name": "Splashzone",
+          "in_game_name": "Splashzone",
           "row_name": "Glide_Pack_Psycho",
           "character_def": "Char_Psycho_PlotGrass1_Boss_GlidePack",
           "is_true_boss": false
@@ -29009,7 +31420,7 @@
       "spawn_serial": "VLA_SR.COMP_05_LEGENDARY_LIGHTGUN",
       "itempool_shiny": null,
       "yaml_key": "shiny_lightgun",
-      "numeric_skin_name": "Light Gun",
+      "numeric_skin_name": "Lightgun",
       "skin_code": "{16:91}",
       "numeric_skin_code": "{16:91}",
       "camo_c_code": "\"c\" \"Cosmetics_Weapon_Shiny_lightgun\"",
@@ -29045,6 +31456,7 @@
         {
           "itempool_list": "ItemPoolList_BatMatriarch_TrueBoss",
           "enemy_name": "Big Encore Skyspanner Kratch",
+          "in_game_name": "Big Encore Skyspanner Kratch",
           "row_name": "Bat_Matriarch_TrueBoss",
           "character_def": "Char_Bat_PlotMount1_Boss_MatriarchTRUE",
           "is_true_boss": true
@@ -29052,6 +31464,7 @@
         {
           "itempool_list": "ItemPoolList_BatMatriarch",
           "enemy_name": "Skyspanner Kratch",
+          "in_game_name": "Skyspanner Kratch",
           "row_name": "Bat_Matriarch",
           "character_def": "Char_Bat_PlotMount1_Boss_Matriarch",
           "is_true_boss": false
@@ -29091,14 +31504,16 @@
         {
           "itempool_list": "ItemPoolList_Raid2_Thol",
           "enemy_name": "Raid2 Thol",
-          "row_name": null,
+          "in_game_name": "Raid2 Thol",
+          "row_name": "Raid2_Thol",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Raid2_Thol_True",
           "enemy_name": "Raid2 Thol True",
-          "row_name": null,
+          "in_game_name": "Raid2 Thol True",
+          "row_name": "Raid2_Thol_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -29247,6 +31662,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider_TrueBoss",
           "enemy_name": "Big Encore Saddleback",
+          "in_game_name": "Big Encore Saddleback",
           "row_name": "Meathead_Riders_TrueBoss",
           "character_def": "Char_MeatHeadRiderTRUE",
           "is_true_boss": true
@@ -29254,6 +31670,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider",
           "enemy_name": "Saddleback",
+          "in_game_name": "Saddleback",
           "row_name": "Meathead_Riders",
           "character_def": "Char_MeatHeadRider",
           "is_true_boss": false
@@ -29261,6 +31678,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider_Jockey_TrueBoss",
           "enemy_name": "The Big Encore Immortal Boneface",
+          "in_game_name": "The Big Encore Immortal Boneface",
           "row_name": "Meathead_Riders_Jockey_TrueBoss",
           "character_def": "Char_Guntoter_MeatheadJockeyBossTRUE",
           "is_true_boss": true
@@ -29268,6 +31686,7 @@
         {
           "itempool_list": "ItemPoolList_MeatheadRider_Jockey",
           "enemy_name": "The Immortal Boneface",
+          "in_game_name": "The Immortal Boneface",
           "row_name": "Meathead_Riders_Jockey",
           "character_def": "Char_Guntoter_MeatheadJockeyBoss",
           "is_true_boss": false
@@ -29310,6 +31729,7 @@
         {
           "itempool_list": "ItemPoolList_KotoLieutenant_TrueBoss",
           "enemy_name": "Big Encore Horace",
+          "in_game_name": "Big Encore Horace",
           "row_name": "KOTO_Lieutenant_TrueBoss",
           "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE",
           "is_true_boss": true
@@ -29317,6 +31737,7 @@
         {
           "itempool_list": "ItemPoolList_KotoLieutenant",
           "enemy_name": "Horace",
+          "in_game_name": "Horace",
           "row_name": "KOTO_Lieutenant",
           "character_def": "Char_Leader_PlotGrass1_Boss_KOTOLieutenant",
           "is_true_boss": false
@@ -29359,6 +31780,7 @@
         {
           "itempool_list": "ItemPoolList_StrikerSplitter_TrueBoss",
           "enemy_name": "Big Encore Mimicron",
+          "in_game_name": "Big Encore Mimicron",
           "row_name": "Striker_Splitter_TrueBoss",
           "character_def": "Char_Striker_Bunker_Boss_SplitterTRUE",
           "is_true_boss": true
@@ -29366,6 +31788,7 @@
         {
           "itempool_list": "ItemPoolList_StrikerSplitter",
           "enemy_name": "Mimicron",
+          "in_game_name": "Mimicron",
           "row_name": "Striker_Splitter",
           "character_def": "Char_Striker_Bunker_Boss_Splitter",
           "is_true_boss": false
@@ -29408,14 +31831,16 @@
         {
           "itempool_list": "ItemPoolList_Bloomreaper",
           "enemy_name": "Bloomreaper",
-          "row_name": null,
+          "in_game_name": "Bloomreaper",
+          "row_name": "Bloomreaper",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Bloomreaper_TRUE",
           "enemy_name": "Bloomreaper TRUE",
-          "row_name": null,
+          "in_game_name": "Bloomreaper TRUE",
+          "row_name": "Bloomreaper_TRUE",
           "character_def": null,
           "is_true_boss": false
         }
@@ -29454,7 +31879,8 @@
         {
           "itempool_list": "ItemPoolList_Tuba_hybrids_Crab",
           "enemy_name": "Tuba hybrids Crab",
-          "row_name": null,
+          "in_game_name": "Tuba hybrids Crab",
+          "row_name": "Tuba_hybrids_Crab",
           "character_def": null,
           "is_true_boss": false
         }
@@ -29790,6 +32216,7 @@
         {
           "itempool_list": "ItemPoolList_SpiderJumbo_TrueBoss",
           "enemy_name": "Big Encore Sidney Pointylegs",
+          "in_game_name": "Big Encore Sidney Pointylegs",
           "row_name": "Spider_Jumbo_TrueBoss",
           "character_def": "Char_Splice_Drill_Boss_SpiderJumboTRUE",
           "is_true_boss": true
@@ -29797,6 +32224,7 @@
         {
           "itempool_list": "ItemPoolList_SpiderJumbo",
           "enemy_name": "Sidney Pointylegs",
+          "in_game_name": "Sidney Pointylegs",
           "row_name": "Spider_Jumbo",
           "character_def": "Char_Splice_Drill_Boss_SpiderJumbo",
           "is_true_boss": false
@@ -29836,6 +32264,7 @@
         {
           "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis_TrueBoss",
           "enemy_name": "Big Encore Moon-Maddened Callis",
+          "in_game_name": "Big Encore Moon-Maddened Callis",
           "row_name": "Shatterlands_Commander_Elpis_TrueBoss",
           "character_def": "Char_ShatterBoss_Elpis_TrueBoss",
           "is_true_boss": true
@@ -29843,6 +32272,7 @@
         {
           "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis",
           "enemy_name": "Moon-Maddened Callis",
+          "in_game_name": "Moon-Maddened Callis",
           "row_name": "Shatterlands_Commander_Elpis",
           "character_def": "Char_ShatterBoss_Elpis",
           "is_true_boss": false
@@ -29880,11 +32310,20 @@
       "pool_status": "boss_drop",
       "drop_sources": [
         {
+          "itempool_list": "ItemPoolList_Grasslands_Commander_TrueBoss",
+          "enemy_name": "Big Encore Idolator Sol",
+          "in_game_name": "Big Encore Idolator Sol",
+          "row_name": "Grasslands_Commander_TrueBoss",
+          "character_def": "Char_GrassBoss_TrueBoss",
+          "is_true_boss": true
+        },
+        {
           "itempool_list": "ItemPoolList_Grasslands_Commander",
-          "enemy_name": "Grasslands Commander",
+          "enemy_name": "Idolator Sol",
+          "in_game_name": "Idolator Sol",
           "row_name": "Grasslands_Commander",
           "character_def": "Char_GrassBoss",
-          "is_true_boss": true
+          "is_true_boss": false
         }
       ],
       "slug": "onslaught",
@@ -29921,6 +32360,7 @@
         {
           "itempool_list": "ItemPoolList_SoldierAncient_TrueBoss",
           "enemy_name": "Big Encore Genone",
+          "in_game_name": "Big Encore Genone",
           "row_name": "Soldier_Ancient_TrueBoss",
           "character_def": "Char_Soldier_Bunker_Boss_AncientTRUE",
           "is_true_boss": true
@@ -29928,6 +32368,7 @@
         {
           "itempool_list": "ItemPoolList_SoldierAncient",
           "enemy_name": "Genone",
+          "in_game_name": "Genone",
           "row_name": "Soldier_Ancient",
           "character_def": "Char_Soldier_Bunker_Boss_Ancient",
           "is_true_boss": false
@@ -30075,6 +32516,7 @@
         {
           "itempool_list": "ItemPoolList_Bango",
           "enemy_name": "Bango",
+          "in_game_name": "Bango",
           "row_name": "Bango",
           "character_def": "Char_Pangolin_Drill_Boss_Bango",
           "is_true_boss": false
@@ -30082,6 +32524,7 @@
         {
           "itempool_list": "ItemPoolList_Bango_TrueBoss",
           "enemy_name": "Big Encore Bango",
+          "in_game_name": "Big Encore Bango",
           "row_name": "Bango_TrueBoss",
           "character_def": "Char_Pangolin_Drill_Boss_BangoTRUE",
           "is_true_boss": true
@@ -30089,6 +32532,7 @@
         {
           "itempool_list": "ItemPoolList_Pango_TrueBoss",
           "enemy_name": "Big Encore Pango",
+          "in_game_name": "Big Encore Pango",
           "row_name": "Pango_TrueBoss",
           "character_def": "Char_Pangolin_Drill_Boss_PangoTRUE",
           "is_true_boss": true
@@ -30096,6 +32540,7 @@
         {
           "itempool_list": "ItemPoolList_Pango",
           "enemy_name": "Pango",
+          "in_game_name": "Pango",
           "row_name": "Pango",
           "character_def": "Char_Pangolin_Drill_Boss_Pango",
           "is_true_boss": false
@@ -30138,6 +32583,7 @@
         {
           "itempool_list": "ItemPoolList_BattleWagon",
           "enemy_name": "The Battle Wagon",
+          "in_game_name": "The Battle Wagon",
           "row_name": "Battle_Wagon",
           "character_def": "Char_Beast_Drill_Boss_Battlewagon",
           "is_true_boss": false
@@ -30145,6 +32591,7 @@
         {
           "itempool_list": "ItemPoolList_BattleWagon_TrueBoss",
           "enemy_name": "The Big Encore Battle Wagon",
+          "in_game_name": "The Big Encore Battle Wagon",
           "row_name": "Battle_Wagon_TrueBoss",
           "character_def": "Char_Beast_Drill_Boss_Battlewagon_TRUE",
           "is_true_boss": true
@@ -30184,6 +32631,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_Guardian_TrueBoss",
           "enemy_name": "Big Encore Primordial Guardian Timekeeper",
+          "in_game_name": "Big Encore Primordial Guardian Timekeeper",
           "row_name": "City_Time_Keeper_Guardian_TrueBoss",
           "character_def": "Char_TkGuard_TrueBoss",
           "is_true_boss": true
@@ -30191,6 +32639,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_Guardian",
           "enemy_name": "Primordial Guardian Timekeeper",
+          "in_game_name": "Primordial Guardian Timekeeper",
           "row_name": "City_Time_Keeper_Guardian",
           "character_def": "Char_TkGuard",
           "is_true_boss": false
@@ -30230,6 +32679,7 @@
         {
           "itempool_list": "ItemPoolList_Hovercart_TrueBoss",
           "enemy_name": "Big Encore Gruntabulous Vork",
+          "in_game_name": "Big Encore Gruntabulous Vork",
           "row_name": "Hovercart_TrueBoss",
           "character_def": "Char_Psycho_HovercartRiderTRUE",
           "is_true_boss": true
@@ -30237,6 +32687,7 @@
         {
           "itempool_list": "ItemPoolList_SurpriseAttack_TrueBoss",
           "enemy_name": "Big Encore Voraxis",
+          "in_game_name": "Big Encore Voraxis",
           "row_name": "Surprise_Attack_TrueBoss",
           "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack_TRUE",
           "is_true_boss": true
@@ -30244,6 +32695,7 @@
         {
           "itempool_list": "ItemPoolList_Hovercart",
           "enemy_name": "Gruntabulous Vork",
+          "in_game_name": "Gruntabulous Vork",
           "row_name": "Hovercart",
           "character_def": "Char_Psycho_HovercartRider",
           "is_true_boss": false
@@ -30251,6 +32703,7 @@
         {
           "itempool_list": "ItemPoolList_SurpriseAttack",
           "enemy_name": "Voraxis",
+          "in_game_name": "Voraxis",
           "row_name": "Surprise_Attack",
           "character_def": "Char_Thresher_Mine_Boss_SurpriseAttack",
           "is_true_boss": false
@@ -30293,6 +32746,7 @@
         {
           "itempool_list": "ItemPoolList_Bango",
           "enemy_name": "Bango",
+          "in_game_name": "Bango",
           "row_name": "Bango",
           "character_def": "Char_Pangolin_Drill_Boss_Bango",
           "is_true_boss": false
@@ -30300,6 +32754,7 @@
         {
           "itempool_list": "ItemPoolList_Bango_TrueBoss",
           "enemy_name": "Big Encore Bango",
+          "in_game_name": "Big Encore Bango",
           "row_name": "Bango_TrueBoss",
           "character_def": "Char_Pangolin_Drill_Boss_BangoTRUE",
           "is_true_boss": true
@@ -30342,6 +32797,7 @@
         {
           "itempool_list": "ItemPoolList_ShatterlandsCommanderFortress",
           "enemy_name": "the Ripper Queen",
+          "in_game_name": "the Ripper Queen",
           "row_name": "Shatterlands_Commander_Fortress",
           "character_def": "Char_ShatterBoss_Shared",
           "is_true_boss": true
@@ -30421,6 +32877,7 @@
         {
           "itempool_list": "ItemPoolList_UpgradedElectiMole_TrueBoss",
           "enemy_name": "Big Encore Leader Willem",
+          "in_game_name": "Big Encore Leader Willem",
           "row_name": "Upgraded_Electi_Mole_TrueBoss",
           "character_def": "Char_Soldier_SideShatterlands_ElectiMoleTRUE",
           "is_true_boss": true
@@ -30428,6 +32885,7 @@
         {
           "itempool_list": "ItemPoolList_UpgradedElectiMole",
           "enemy_name": "Leader Willem",
+          "in_game_name": "Leader Willem",
           "row_name": "Upgraded_Electi_Mole",
           "character_def": "Char_Soldier_SideShatterlands_ElectiMole",
           "is_true_boss": false
@@ -30511,6 +32969,7 @@
         {
           "itempool_list": "ItemPoolList_FirstCorrupt_TrueBoss",
           "enemy_name": "Big Encore Vile Prototype",
+          "in_game_name": "Big Encore Vile Prototype",
           "row_name": "First_Corrupt_TrueBoss",
           "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorruptTRUE",
           "is_true_boss": true
@@ -30518,6 +32977,7 @@
         {
           "itempool_list": "ItemPoolList_FirstCorrupt",
           "enemy_name": "Vile Prototype",
+          "in_game_name": "Vile Prototype",
           "row_name": "First_Corrupt",
           "character_def": "Char_Psycho_PlotMount2b_Boss_FirstCorrupt",
           "is_true_boss": false
@@ -30557,14 +33017,16 @@
         {
           "itempool_list": "ItemPoolList_dAHLfATHER",
           "enemy_name": "d AHLf ATHER",
-          "row_name": null,
+          "in_game_name": "d AHLf ATHER",
+          "row_name": "dAHLfATHER",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_DahlFather_True",
           "enemy_name": "Dahl Father True",
-          "row_name": null,
+          "in_game_name": "Dahl Father True",
+          "row_name": "DahlFather_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -30643,6 +33105,7 @@
         {
           "itempool_list": "ItemPoolList_SkullOrchid_TrueBoss",
           "enemy_name": "Big Encore Skull Orchid",
+          "in_game_name": "Big Encore Skull Orchid",
           "row_name": "Skull_Orchid_TrueBoss",
           "character_def": "Char_Creep_Mine_Boss_SkullOrchid_TRUE",
           "is_true_boss": true
@@ -30650,6 +33113,7 @@
         {
           "itempool_list": "ItemPoolList_SkullOrchid",
           "enemy_name": "Skull Orchid",
+          "in_game_name": "Skull Orchid",
           "row_name": "Skull_Orchid",
           "character_def": "Char_Creep_Mine_Boss_SkullOrchid",
           "is_true_boss": false
@@ -30849,6 +33313,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard_TrueBoss",
           "enemy_name": "Big Encore Directive-0",
+          "in_game_name": "Big Encore Directive-0",
           "row_name": "Red_Guard_TrueBoss",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
           "is_true_boss": true
@@ -30856,6 +33321,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard",
           "enemy_name": "Directive-0",
+          "in_game_name": "Directive-0",
           "row_name": "Red_Guard",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuard",
           "is_true_boss": false
@@ -30932,6 +33398,7 @@
         {
           "itempool_list": "ItemPoolList_MountainCommander_TrueBoss",
           "enemy_name": "Big Encore Vile Lictor",
+          "in_game_name": "Big Encore Vile Lictor",
           "row_name": "Mountain_Commander_TrueBoss",
           "character_def": "Char_MountBoss_TrueBoss",
           "is_true_boss": true
@@ -30939,6 +33406,7 @@
         {
           "itempool_list": "ItemPoolList_MountainCommander",
           "enemy_name": "Vile Lictor",
+          "in_game_name": "Vile Lictor",
           "row_name": "Mountain_Commander",
           "character_def": "Char_MountBoss",
           "is_true_boss": false
@@ -30978,6 +33446,7 @@
         {
           "itempool_list": "ItemPoolList_RockAndRoll_TrueBoss",
           "enemy_name": "Big Encore Rocken Roller",
+          "in_game_name": "Big Encore Rocken Roller",
           "row_name": "Rock_and_Roll_TrueBoss",
           "character_def": "Char_Pangolin_Mine_Boss_RockAndROllTRUE",
           "is_true_boss": true
@@ -30985,6 +33454,7 @@
         {
           "itempool_list": "ItemPoolList_RockAndRoll",
           "enemy_name": "Rocken Roller",
+          "in_game_name": "Rocken Roller",
           "row_name": "Rock_and_Roll",
           "character_def": "Char_Pangolin_Mine_Boss_RockAndRoll",
           "is_true_boss": false
@@ -31027,21 +33497,24 @@
         {
           "itempool_list": "ItemPoolList_CrazyEarl",
           "enemy_name": "Crazy Earl",
-          "row_name": null,
+          "in_game_name": "Crazy Earl",
+          "row_name": "CrazyEarl",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_CrazyEarl_True",
           "enemy_name": "Crazy Earl True",
-          "row_name": null,
+          "in_game_name": "Crazy Earl True",
+          "row_name": "CrazyEarl_True",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Tuba_hybrids_True",
           "enemy_name": "Tuba hybrids True",
-          "row_name": null,
+          "in_game_name": "Tuba hybrids True",
+          "row_name": "Tuba_hybrids_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -31185,13 +33658,15 @@
         {
           "itempool_list": "ItemPoolList_SideCity_Psycho_TrueBoss",
           "enemy_name": "Big Encore Vile Ted",
+          "in_game_name": "Big Encore Vile Ted",
           "row_name": "CorruptTED_TrueBoss",
           "character_def": "Char_SideCity_Psycho_CorruptTED_TRUE",
           "is_true_boss": true
         },
         {
           "itempool_list": "ItemPoolList_SideCity_Psycho",
-          "enemy_name": "Corrupt TED",
+          "enemy_name": "Side City Psycho Corrupt TED Runnable",
+          "in_game_name": "Side City Psycho Corrupt TED Runnable",
           "row_name": "CorruptTED",
           "character_def": "Char_SideCity_Psycho_CorruptTED_Runnable",
           "is_true_boss": false
@@ -31332,14 +33807,16 @@
         {
           "itempool_list": "ItemPoolList_Raid2_Subjugator",
           "enemy_name": "Raid2 Subjugator",
-          "row_name": null,
+          "in_game_name": "Raid2 Subjugator",
+          "row_name": "Raid2_Subjugator",
           "character_def": null,
           "is_true_boss": false
         },
         {
           "itempool_list": "ItemPoolList_Raid2_Subjugator_True",
           "enemy_name": "Raid2 Subjugator True",
-          "row_name": null,
+          "in_game_name": "Raid2 Subjugator True",
+          "row_name": "Raid2_Subjugator_True",
           "character_def": null,
           "is_true_boss": false
         }
@@ -31477,9 +33954,10 @@
       "drop_sources": [
         {
           "itempool_list": "ItemPoolList_Tuba_Terra",
-          "enemy_name": "Tuba Terra",
-          "row_name": null,
-          "character_def": null,
+          "enemy_name": "Child of Terramorphous",
+          "in_game_name": "Child of Terramorphous",
+          "row_name": "Tuba_Terra",
+          "character_def": "Char_TubaBoss",
           "is_true_boss": false
         }
       ],
@@ -31517,6 +33995,7 @@
         {
           "itempool_list": "ItemPoolList_CloningLeader_TrueBoss",
           "enemy_name": "Big Encore Divisioner",
+          "in_game_name": "Big Encore Divisioner",
           "row_name": "Cloning_Leader_TrueBoss",
           "character_def": "Char_Leader_Bunker_Boss_CloningTRUE",
           "is_true_boss": true
@@ -31524,6 +34003,7 @@
         {
           "itempool_list": "ItemPoolList_CloningLeader",
           "enemy_name": "Divisioner",
+          "in_game_name": "Divisioner",
           "row_name": "Cloning_Leader",
           "character_def": "Char_Leader_Bunker_Boss_Cloning",
           "is_true_boss": false
@@ -31805,6 +34285,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_Guardian_TrueBoss",
           "enemy_name": "Big Encore Primordial Guardian Timekeeper",
+          "in_game_name": "Big Encore Primordial Guardian Timekeeper",
           "row_name": "City_Time_Keeper_Guardian_TrueBoss",
           "character_def": "Char_TkGuard_TrueBoss",
           "is_true_boss": true
@@ -31812,6 +34293,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_Guardian",
           "enemy_name": "Primordial Guardian Timekeeper",
+          "in_game_name": "Primordial Guardian Timekeeper",
           "row_name": "City_Time_Keeper_Guardian",
           "character_def": "Char_TkGuard",
           "is_true_boss": false
@@ -31854,6 +34336,7 @@
         {
           "itempool_list": "ItemPoolList_Backhive",
           "enemy_name": "The Backhive",
+          "in_game_name": "The Backhive",
           "row_name": "Backhive",
           "character_def": "Char_Beast_Mine_Boss_Backhive",
           "is_true_boss": false
@@ -31861,6 +34344,7 @@
         {
           "itempool_list": "ItemPoolList_Backhive_TrueBoss",
           "enemy_name": "The Big Encore Backhive",
+          "in_game_name": "The Big Encore Backhive",
           "row_name": "Backhive_TrueBoss",
           "character_def": "Char_Beast_Mine_Boss_Backhive_TRUE",
           "is_true_boss": true
@@ -31900,6 +34384,7 @@
         {
           "itempool_list": "ItemPoolList_Pango_TrueBoss",
           "enemy_name": "Big Encore Pango",
+          "in_game_name": "Big Encore Pango",
           "row_name": "Pango_TrueBoss",
           "character_def": "Char_Pangolin_Drill_Boss_PangoTRUE",
           "is_true_boss": true
@@ -31907,6 +34392,7 @@
         {
           "itempool_list": "ItemPoolList_Pango",
           "enemy_name": "Pango",
+          "in_game_name": "Pango",
           "row_name": "Pango",
           "character_def": "Char_Pangolin_Drill_Boss_Pango",
           "is_true_boss": false
@@ -31946,7 +34432,8 @@
         {
           "itempool_list": "ItemPoolList_SiphonScavTwo",
           "enemy_name": "Siphon Scav Two",
-          "row_name": null,
+          "in_game_name": "Siphon Scav Two",
+          "row_name": "SiphonScavTwo",
           "character_def": null,
           "is_true_boss": false
         }
@@ -31985,7 +34472,8 @@
         {
           "itempool_list": "ItemPoolList_Tuba_hybrids_Fish",
           "enemy_name": "Tuba hybrids Fish",
-          "row_name": null,
+          "in_game_name": "Tuba hybrids Fish",
+          "row_name": "Tuba_hybrids_Fish",
           "character_def": null,
           "is_true_boss": false
         }
@@ -32070,6 +34558,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_TKBoss_TrueBoss",
           "enemy_name": "The Big Encore Timekeeper",
+          "in_game_name": "The Big Encore Timekeeper",
           "row_name": "City_Time_Keeper_TrueBoss",
           "character_def": "Char_TkBoss_TrueBoss",
           "is_true_boss": true
@@ -32077,6 +34566,7 @@
         {
           "itempool_list": "ItemPoolList_Timekeeper_TKBoss",
           "enemy_name": "The Timekeeper",
+          "in_game_name": "The Timekeeper",
           "row_name": "City_Time_Keeper",
           "character_def": "Char_TKBoss",
           "is_true_boss": false
@@ -32116,6 +34606,7 @@
         {
           "itempool_list": "ItemPoolList_RockAndRoll_TrueBoss",
           "enemy_name": "Big Encore Rocken Roller",
+          "in_game_name": "Big Encore Rocken Roller",
           "row_name": "Rock_and_Roll_TrueBoss",
           "character_def": "Char_Pangolin_Mine_Boss_RockAndROllTRUE",
           "is_true_boss": true
@@ -32123,6 +34614,7 @@
         {
           "itempool_list": "ItemPoolList_RockAndRoll",
           "enemy_name": "Rocken Roller",
+          "in_game_name": "Rocken Roller",
           "row_name": "Rock_and_Roll",
           "character_def": "Char_Pangolin_Mine_Boss_RockAndRoll",
           "is_true_boss": false
@@ -32205,13 +34697,15 @@
         {
           "itempool_list": "ItemPoolList_Thresher_BioArmoredBig_TrueBoss",
           "enemy_name": "Big Encore Bio-Thresher Omega",
+          "in_game_name": "Big Encore Bio-Thresher Omega",
           "row_name": "BioArmorThresher_TrueBoss",
           "character_def": "Char_Thresher_BioArmoredBig_RunnableTRUE",
           "is_true_boss": true
         },
         {
           "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
-          "enemy_name": "Bio Armor Thresher",
+          "enemy_name": "Thresher Bio Armored Big Runnable",
+          "in_game_name": "Thresher Bio Armored Big Runnable",
           "row_name": "BioArmorThresher",
           "character_def": "Char_Thresher_BioArmoredBig_Runnable",
           "is_true_boss": false
@@ -32290,7 +34784,8 @@
         {
           "itempool_list": "ItemPoolList_Nightmare_AllBosses",
           "enemy_name": "Nightmare All Bosses",
-          "row_name": null,
+          "in_game_name": "Nightmare All Bosses",
+          "row_name": "Nightmare_AllBosses",
           "character_def": null,
           "is_true_boss": false
         }
@@ -32369,6 +34864,7 @@
         {
           "itempool_list": "ItemPoolList_StealthPredator_TrueBoss",
           "enemy_name": "Big Encore Shadowpelt",
+          "in_game_name": "Big Encore Shadowpelt",
           "row_name": "Stealth_Predator_TrueBoss",
           "character_def": "Char_Cat_Mine_Boss_StealthPredator_TRUE",
           "is_true_boss": true
@@ -32376,6 +34872,7 @@
         {
           "itempool_list": "ItemPoolList_StealthPredator",
           "enemy_name": "Shadowpelt",
+          "in_game_name": "Shadowpelt",
           "row_name": "Stealth_Predator",
           "character_def": "Char_Cat_Mine_Boss_StealthPredator",
           "is_true_boss": false
@@ -32415,6 +34912,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard_TrueBoss",
           "enemy_name": "Big Encore Directive-0",
+          "in_game_name": "Big Encore Directive-0",
           "row_name": "Red_Guard_TrueBoss",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuardTRUE",
           "is_true_boss": true
@@ -32422,6 +34920,7 @@
         {
           "itempool_list": "ItemPoolList_Redguard",
           "enemy_name": "Directive-0",
+          "in_game_name": "Directive-0",
           "row_name": "Red_Guard",
           "character_def": "Char_Soldier_Bunker_Boss_RedGuard",
           "is_true_boss": false
@@ -32464,6 +34963,7 @@
         {
           "itempool_list": "ItemPoolList_Hovercart_TrueBoss",
           "enemy_name": "Big Encore Gruntabulous Vork",
+          "in_game_name": "Big Encore Gruntabulous Vork",
           "row_name": "Hovercart_TrueBoss",
           "character_def": "Char_Psycho_HovercartRiderTRUE",
           "is_true_boss": true
@@ -32471,6 +34971,7 @@
         {
           "itempool_list": "ItemPoolList_Hovercart",
           "enemy_name": "Gruntabulous Vork",
+          "in_game_name": "Gruntabulous Vork",
           "row_name": "Hovercart",
           "character_def": "Char_Psycho_HovercartRider",
           "is_true_boss": false
@@ -32510,6 +35011,7 @@
         {
           "itempool_list": "ItemPoolList_UpgradedElectiMole_TrueBoss",
           "enemy_name": "Big Encore Leader Willem",
+          "in_game_name": "Big Encore Leader Willem",
           "row_name": "Upgraded_Electi_Mole_TrueBoss",
           "character_def": "Char_Soldier_SideShatterlands_ElectiMoleTRUE",
           "is_true_boss": true
@@ -32517,6 +35019,7 @@
         {
           "itempool_list": "ItemPoolList_UpgradedElectiMole",
           "enemy_name": "Leader Willem",
+          "in_game_name": "Leader Willem",
           "row_name": "Upgraded_Electi_Mole",
           "character_def": "Char_Soldier_SideShatterlands_ElectiMole",
           "is_true_boss": false
@@ -33499,7 +36002,7 @@
     "echo4_serial_only": 0
   },
   "community_pearlescent": {
-    "generated_at": "2026-07-09T22:39:43.601Z",
+    "generated_at": "2026-07-09T22:51:10.982Z",
     "stats": {
       "total": 20,
       "with_pearl_comp": 20,

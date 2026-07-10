@@ -1,14 +1,14 @@
 BORDERLANDS 4 — ACTOR NAME CATALOG
 Actor file (gbxactor code) ↔ in-game display name
-Generated: 2026-07-09T22:39:50.622Z
+Generated: 2026-07-10T03:55:07.481Z
 Source: references/bl4_toolbox_export/ncs/json
-Total actors: 1202
+Total actors: 1376
 
 Format:
   Char_* code                                   In-game name  (notes)
 
 ==============================================================================
-DEDICATED DROP BOSSES (89)
+DEDICATED DROP BOSSES (92)
 Named bosses with dedicated ItemPoolList loot (Table_DedicatedDrops).
 ==============================================================================
 
@@ -30,6 +30,7 @@ Named bosses with dedicated ItemPoolList loot (Table_DedicatedDrops).
   Char_Psycho_HovercartRiderTRUE                Big Encore Gruntabulous Vork  (row Hovercart_TrueBoss · ItemPoolList_Hovercart_TrueBoss · True Boss)
   Char_PsychoFrackingLieutenantTRUE             Big Encore Hank the Welder  (row Foundry_Freaks_Psycho_TrueBoss · ItemPoolList_FoundryFreak_Psycho_TrueBoss · True Boss)
   Char_Leader_PlotGrass1_Boss_KOTOLieutenantTRUE  Big Encore Horace  (row KOTO_Lieutenant_TrueBoss · ItemPoolList_KotoLieutenant_TrueBoss · True Boss)
+  Char_GrassBoss_TrueBoss                       Big Encore Idolator Sol  (row Grasslands_Commander_TrueBoss · ItemPoolList_Grasslands_Commander_TrueBoss · True Boss)
   Char_Soldier_SideShatterlands_ElectiMoleTRUE  Big Encore Leader Willem  (row Upgraded_Electi_Mole_TrueBoss · ItemPoolList_UpgradedElectiMole_TrueBoss · True Boss)
   Char_Striker_Bunker_Boss_SplitterTRUE         Big Encore Mimicron  (row Striker_Splitter_TrueBoss · ItemPoolList_StrikerSplitter_TrueBoss · True Boss)
   Char_ShatterBoss_Elpis_TrueBoss               Big Encore Moon-Maddened Callis  (row Shatterlands_Commander_Elpis_TrueBoss · ItemPoolList_ShatterlandsCommanderElpis_TrueBoss · True Boss)
@@ -55,6 +56,7 @@ Named bosses with dedicated ItemPoolList loot (Table_DedicatedDrops).
   Char_Brute_PlotGrass2b_Boss_Motherbase        Bio-Bulkhead  (row KOTO_Motherbase_Brute · ItemPoolList_KOTOMotherbaseBrute)
   Char_Bat_Mine_Boss_Destroyer                  Bramblesong  (row Destroyer · ItemPoolList_Destroyer)
   Char_Brute_Bunker_Boss_Mountains              Callous Harbinger of Annihilating Death  (row Blaster_Brute · ItemPoolList_BlasterBrute)
+  Char_TubaBoss                                 Child of Terramorphous  (row Tuba_Terra · ItemPoolList_Tuba_Terra)
   Char_Drone_Bunker_Boss_Keeper                 Core Observer  (row Drone_Keeper · ItemPoolList_DroneKeeper)
   Char_Soldier_Bunker_Boss_RedGuard             Directive-0  (row Red_Guard · ItemPoolList_Redguard)
   Char_Leader_Bunker_Boss_Cloning               Divisioner  (row Cloning_Leader · ItemPoolList_CloningLeader)
@@ -65,6 +67,7 @@ Named bosses with dedicated ItemPoolList loot (Table_DedicatedDrops).
   Char_Psycho_HovercartRider                    Gruntabulous Vork  (row Hovercart · ItemPoolList_Hovercart)
   Char_PsychoFrackingLieutenant                 Hank the Welder  (row Foundry_Freaks_Psycho · ItemPoolList_FoundryFreak_Psycho)
   Char_Leader_PlotGrass1_Boss_KOTOLieutenant    Horace  (row KOTO_Lieutenant · ItemPoolList_KotoLieutenant)
+  Char_GrassBoss                                Idolator Sol  (row Grasslands_Commander · ItemPoolList_Grasslands_Commander)
   Char_Soldier_SideShatterlands_ElectiMole      Leader Willem  (row Upgraded_Electi_Mole · ItemPoolList_UpgradedElectiMole)
   Char_Striker_Bunker_Boss_Splitter             Mimicron  (row Striker_Splitter · ItemPoolList_StrikerSplitter)
   Char_ShatterBoss_Elpis                        Moon-Maddened Callis  (row Shatterlands_Commander_Elpis · ItemPoolList_ShatterlandsCommanderElpis)
@@ -156,46 +159,217 @@ Big Encore / TRUE boss actors without a dedicated-drop table row in this export.
   Char_MeatHead_TurretPlatformTRUE              The Big Encore Exterminator  (balance TurretPlatformTRUE)
 
 ==============================================================================
-BOSS-RANK ENEMIES (36)
+BOSS-RANK ENEMIES (207)
 GbxActor.Character.Rank.Boss — generic boss tier, not a named dedicated drop.
 ==============================================================================
 
   Char_BatWithSplice                            Aerial Spidananggal  (balance SpiderManaTorso)
+  Char_Scav_AirRaiderSteve_BossMini             Air Raider Scremulous  (balance AirRaider)
+  Char_Robo_Totem_Arcane                        Arcane Totem
   Char_PrisonBuddyBoss_Shared                   Arjay  (balance PrisonBuddy_S1)
+  Char_ArmyDahl_SHARED                          Army Dahl SHARED
+  Char_Robo_Totem_Angry_Badass                  Badass Angry Totem
+  Char_GunToterHeavy_Male                       Badass Cannoner  (balance Heavy)
+  Char_Robo_Totem_Chaos                         Badass Chaos Totem
+  Char_Robo_Totem_Draining_Badass               Badass Draining Totem
+  Char_Robo_Totem_Flame_Badass                  Badass Flame Totem
+  Char_Robo_Totem_Frozen_Badass                 Badass Frozen Totem
+  Char_ScavPsychoBadass                         Badass Lunatic
+  Char_Robo_Totem_Mortar_Badass                 Badass Mortar Totem
+  Char_ScavSplice_Badass                        Badass Plug  (balance SpiderBadass)
+  Char_GunToterBadass_Male                      Badass Rat-a-tat  (balance Badass)
+  Char_ScavGunToterBadass                       Badass Scav  (balance Badass)
+  Char_ThresherFlyingBadass                     Badass Skydrift Thresher  (balance FlyingBadass)
+  Char_SpliceSpider                             Badass Splider  (balance SpiderBadass)
+  Char_BanditTurret_Rocket                      Bandit Turret Rocket  (balance RocketTurret)
+  Char_BigBoss_TRUE                             Big Boss TRUE  (balance BigBoss_TRUE)
+  Char_Scav_AirRaiderSteve_BossMini_TRUE        Big Encore Air Raider Scremulous  (balance AirRaiderTRUE)
+  Char_Scav_HeavySplice_BossMini_TRUE           Big Encore Big Oil  (balance HeavySpliceTRUE)
+  Char_Scav_HeavySplice_Upper_Boss_TRUE         Big Encore Big Oil  (balance HeavySpliceTRUE)
+  Char_CreepRaid1_TRUE                          Big Encore Bloomreaper the Invincible  (balance Raid1Boss_TRUE)
+  Char_Phalanx_OrdiniteInfused_MiniBossTRUE     Big Encore Bore-Tex  (balance Phalanx_OrdiniteInfused_MiniBossTRUE)
+  Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachmentTRUE  Big Encore Brain Zane  (balance Boss_DigiZane_Phase2TRUE)
+  Char_DahlFather_Boss_Replay_True              Big Encore Captain Willis  (balance DahlFather_Replay_True)
+  Char_Cat_OrdiniteInfused_MiniBossTRUE         Big Encore Chiselbella  (balance Cat_OrdiniteInfused_MiniBossTRUE)
+  Char_DNMGrunt_Mission04_BossMini_Replay_True  Big Encore Colonel Crash  (balance Mission04_Replay_True)
+  Char_DahlMech_Mission02_BossMini_Replay_True  Big Encore Corporal Brennan  (balance Mission02_Replay_True)
+  Char_CrazyEarl_Boss_Replay_True               Big Encore Crazed Earl  (balance CrazyEarl_Replay_True)
+  Char_Splice_OrdiniteInfused_MiniBossTRUE      Big Encore Drang  (balance Splice_OrdiniteInfused_MiniBossTRUE)
+  Char_Pangolin_BountyPack2_Boss_OrdiniteInfusedtrue  Big Encore Stone Demon  (balance PangolinBossTRUE)
+  Char_Meathead_OrdiniteInfused_MiniBossTRUE    Big Encore Sturm  (balance Meathead_OrdiniteInfused_MiniBossTRUE)
+  Char_DahlGrunt_DroneCaptainBase_TRUE          Big Encore The Penitent Steel  (balance Bunker_DroneCaptain_True)
+  Char_Mech_DroneCaptain_BossMini_TRUE          Big Encore The Penitent Steel  (balance Bunker_DroneCaptain_True)
+  Char_Scav_HeavySplice_BossMini                Big Oil  (balance HeavySplice)
+  Char_Scav_HeavySplice_Upper_Boss              Big Oil  (balance HeavySplice)
+  Char_Creep_Bitterblight_BossRift              Bitterblight  (balance Bitterblight)
+  Char_CreepRaid1                               Bloomreaper the Invincible  (balance Raid1Boss)
+  Char_Scav_BoneBoogy_BossRift                  Bone Boogie  (balance BoneBoogy)
+  Char_Phalanx_OrdiniteInfused_MiniBoss         Bore-Tex  (balance Phalanx_OrdiniteInfused_MiniBoss)
+  Char_Scav_Botpopper_BossRift                  Botpopper  (balance Botpopper)
+  Char_Botpopper_RocketAttachable               Botpopper Rocket Attachable  (balance BotPopperRockets)
+  Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachment  Brain Zane  (balance Boss_DigiZane_Phase2)
+  Char_DigiZaneKiller_Boss_FloatingHead_ZaneAttachment_CloneA  Brain Zane  (balance Boss_DigiZane_CloneAdd_Phase2)
   Char_Brute_BountyPack1_Boss_MercenaryDay      Brute Bounty Pack1 Boss Mercenary Day  (balance BountyPack1_Boss_MercenaryDay)
   Char_BruteTitan                               Brute Titan
+  Char_DahlFather_Boss                          Captain Willis  (balance DahlFather)
   Char_Creep_Boss_Castilleia                    Castilleia  (balance Boss_Castilleia)
+  Char_Cat_OrdiniteInfused_MiniBoss             Chiselbella  (balance Cat_OrdiniteInfused_MiniBoss)
+  Char_Striker_Cleaner_BossMini                 CL34n.R  (balance Striker_Cleaner_MiniBoss)
+  Char_DNMGrunt_Mission04_BossMini              Colonel Crash  (balance Mission04)
+  Char_ScavSpliceHelo                           Copter Plug
+  Char_DahlMech_Mission02_BossMini              Corporal Brennan  (balance Mission02)
+  Char_MutantCrab                               Crackclaw  (balance MutantCrab)
+  Char_CrazyEarl_Boss                           Crazed Earl  (balance CrazyEarl)
+  Char_CrazyEarl_Boss_Replay                    Crazy Earl Boss Replay  (balance CrazyEarl_Replay)
+  Char_CreepRaid1_Crystal01                     Creep Raid1 Crystal01  (balance BossCrystal)
   Char_Creep_SideCity_ExperimentA_Runnable      Creep Side City Experiment A Runnable  (balance SideCity_ExperimentA_Runnable)
   Char_Creep_SideCity_ExperimentB_Runnable      Creep Side City Experiment B Runnable  (balance SideCity_ExperimentB_Runnable)
+  Char_Phalanx_OrdiniteInfused                  Crystallized Phalanx  (balance Phalanx_OrdiniteInfused)
+  Char_DahlFather_Boss_Replay                   Dahl Father Boss Replay  (balance DahlFather_Replay)
+  Char_DahlGruntBadass_Flying                   Dahl Grunt Badass Flying  (balance FlyingBadass)
+  Char_DahlGrunt_DroneCaptainBase               Dahl Grunt Drone Captain Base  (balance Bunker_DroneCaptain)
+  Char_DahlGruntSMG_Flying                      Dahl Grunt SMG Flying  (balance Aerialist)
+  Char_DahlMech_Mission02_BossMini_Replay       Dahl Mech Mission02 Boss Mini Replay  (balance Mission02_Replay)
+  Char_DahlMech_SHARED                          Dahl Mech SHARED
+  Char_DahlNMTorso                              Dahl NMTorso  (balance NightmareTorso)
+  Char_DahlNMTorso_BadassFlier                  Dahl NMTorso Badass Flier
+  Char_DahlNMTorso_BadassFlier_Helo             Dahl NMTorso Badass Flier Helo
+  Char_DahlNMTorso_Flier                        Dahl NMTorso Flier
+  Char_DahlNMTorso_Flier_Helo                   Dahl NMTorso Flier Helo
+  Char_DahlNMTorso_Helo                         Dahl NMTorso Helo  (balance NightmareTorso)
+  Char_DahlGrunt_SHARED                         DahlGrunt (spawn Char_DahlGruntSMG instead)
+  Char_Kraggon_EldritchSpawn                    Dark Spawn  (balance EldritchSpawn)
+  Char_FixerTower_BossMini                      Data Tower  (balance Striker_Fixer_MiniBoss_Tower)
   Char_DigiZaneKiller_Boss                      Digi Zane Killer Boss  (balance Boss_DigiZane_Phase1)
   Char_DigiZaneKiller_Boss_DroneBuddy           Digi Zane Killer Boss Drone Buddy  (balance Boss_DigiZane_DroneDefensive)
   Char_DigiZaneKiller_Boss_FloatingHead_DroneParent  Digi Zane Killer Boss Floating Head Drone Parent  (balance None)
   Char_DigiZaneKiller_Boss_FloatingHead_PROTOTYPE  Digi Zane Killer Boss Floating Head PROTOTYPE  (balance Boss_DigiZane_Phase2)
   Char_DigiZaneKiller_Boss_Glitched_PROTOTYPE   Digi Zane Killer Boss Glitched PROTOTYPE  (balance Boss_DigiZane_Phase3)
   Char_DigiZaneKiller_Boss_SpliceBuddy          Digi Zane Killer Boss Splice Buddy  (balance Boss_DigiZane_SpliceBuddy)
+  Char_DNMGrunt_Mission04_BossMini_Replay       DNMGrunt Mission04 Boss Mini Replay  (balance Mission04_Replay)
+  Char_Robo_Totem_Base                          Draining Totem
+  Char_Splice_OrdiniteInfused_MiniBoss          Drang  (balance Splice_OrdiniteInfused_MiniBoss)
   Char_Meathead_Drill_Boss_DumpsterDiver        Dumpster Diver MeatHead  (balance Drill_Boss_DumpsterDiver)
   Char_SpliceHelo_Drill_Boss_DumpsterDiver      Dumpster Diver Splice  (balance Drill_Boss_DumpsterDiver)
   Char_Psycho_TwoHeadMain                       Eddy 'Four-Eyes' Swoszowski  (balance 2HeadPsychoBody)
+  Char_Robo_Totem_Effigy                        Effigy Totem
+  Char_PhalanxMeleeAlwaysFrenzied               Elite Zeker  (balance MeleeAlwaysFrenzied)
   Char_MeatheadCannon                           Evan Horizon  (balance SingularityMeathead)
+  Char_Striker_Fixer_BossMini                   F1x.R  (balance Striker_Fixer_MiniBoss)
+  Char_ScavPsychoFirebrand                      Firebrand Lunatic
+  Char_Robo_Totem_Flame                         Flame Totem
+  Char_Creep_BitterblightAdd                    Frostblight  (balance BitterblightAdd)
+  Char_Robo_Totem_Frozen                        Frozen Totem
+  Char_Kraggon_Fulgur_BossRift                  Fulgur  (balance Fulgur)
+  Char_BanditTurret_Flamethrower                Fwoosh Turret  (balance FlamethrowerTurret)
+  Char_MutantThresher                           Gilgathresh  (balance MutantThresher)
   Char_Guardian_SHARED                          Guardian (spawn Char_GuardianBasic instead)
   Char_SpliceArm                                Handy Howard  (balance SpliceArm)
+  Char_Meathead_OrdiniteInfused_MiniBoss_Clone  Healthy Shard Meatball  (balance Meathead_OrdiniteInfused_MiniBoss_Clone)
+  Char_Thresher_Icemaw_Named                    Ice Maw  (balance Icemaw_Named)
   Char_MeatheadFreeze                           Icebox  (balance FreezeRay)
+  Char_ScavOutlaw_SHARED                        INVALID (spawn Char_ScavOutlawBasic instead)
+  Char_Phalanx_OrdiniteInfused_PearlGearGen     King Crosis  (balance Phalanx_OrdiniteInfused_PearlGearGen)
+  Char_Phalanx_OrdiniteInfused_PearlGearGenTutorial  King Crosis  (balance Phalanx_OrdiniteInfused_PearlGearGen)
+  Char_Kraggon_Eldritch_BossRift                Krag'thulu  (balance Eldritch)
+  Char_Kraggon_Fuse                             Kraggon Fuse
+  Char_Kraggon_SHARED                           Kraggon SHARED
+  Char_Bat_Kraggula_BossRift                    Kraggula  (balance Vampire)
+  Char_Kraggon_Kraggula                         Kraggula  (balance Vampire)
   Char_BattleWagon_RocketTurret                 Launcher  (balance Drill_Boss_RocketTurret)
   Char_Leader_BountyPack1_Boss_MercenaryDay     Leader Bounty Pack1 Boss Mercenary Day  (balance BountyPack1_Boss_Leader_MercenaryDay)
   Char_PsychoGeiger                             Leadhead  (balance GeigerPsycho)
+  Char_Robo_Totem_LightningRod                  Lightning Rod Totem
   Char_MeatHead_MeatSplice                      Lucky Lou  (balance MeatSplice)
   Char_Mandolin_BruteSlaughterBoss              Mandolin Brute Slaughter Boss  (balance Boss_BruteSlaughter)
+  Char_Mech_DroneCaptain_BossMini               Mech Drone Captain Boss Mini  (balance Bunker_DroneCaptain)
+  Char_Mech_DroneCaptain_Hologram               Mech Drone Captain Hologram  (balance Bunker_DroneCaptain)
+  Char_Robo_Totem_Draining_Mini                 Mini Draining Totem
+  Char_Robo_Totem_Flame_Mini                    Mini Flame Totem
+  Char_Robo_Totem_Frozen_Mini                   Mini Frozen Totem
+  Char_Kraggon_Mini                             Minister Screw  (balance Mini)
+  Char_Scav_Turret_Chaingun                     Moon Blaster  (balance ScavChaingun)
+  Char_Robo_Totem_Mortar                        Mortar Totem
+  Char_OldThrash_Named                          Ol' Thrash  (balance OldThrash)
+  Char_OldThrash_BossRift                       Old Thrash Boss Rift
+  Char_Scav_ScrapFusRo_BossRift                 Oldbeard Worldthroat  (balance ScrapFusRo)
+  Char_Thresher_EldritchTentacle                Outer Breach
+  Char_PangolinBasic                            Pangolin  (balance Basic)
+  Char_DahlGrunt_DroneCaptainBase_Holo          Penitent Steel Drone  (balance Bunker_DroneCaptainHolo)
+  Char_PhalanxBasic                             Phalanx  (balance Basic1)
+  Char_PhalanxMeleeBadass                       Phalanx Melee Badass
+  Char_PhalanxRangedBadass                      Phalanx Ranged Badass
+  Char_PhalanxWreck                             Phalanx Wreck  (balance Wreck)
+  Char_GunToterPistol_Male                      Plinker  (balance Pistol)
   Char_PhalanxCreepy                            Poison Ivan  (balance Creepy)
+  Char_Robo_Totem_Protector                     Protector Totem
   Char_PsychoRobot                              Psych0-Bot  (balance RoboPsycho)
+  Char_Scav_Bot_BossAdd                         Psych0-Bot  (balance Bot)
+  Char_PsychoBasic                              Psycho Basic
+  Char_Scav_BomberHelo                          Raid Boomer  (balance BomberHelo)
+  Char_Scav_GunnerHelo                          Raid PewPew  (balance GunnerHelo)
+  Char_Scav_ShieldHelo                          Raid Shielder  (balance ShieldHelo)
+  Char_GunToterSmall_Male                       Ripper  (balance Small)
   Char_Splice_Ripsaw                            Ripsaw  (balance Ripsaw)
+  Char_RoboDealer                               Robo Dealer
+  Char_Robo_Totem_Angry                         Robo Totem Angry
+  Char_Robo_Totem_Buff                          Robo Totem Buff
+  Char_Robo_Totem_Debuff                        Robo Totem Debuff
+  Char_Robo_Totem_Draining                      Robo Totem Draining
+  Char_Robo_Totem_Stationary                    Robo Totem Stationary
+  Char_DigiZaneKiller_Boss_FloatingHead_DroneParent_Clone  Scartini  (balance None)
+  Char_ScavGunToter_SHARED                      Scav Gun Toter SHARED
+  Char_Scav_GunnerAttachment                    Scav Gunner Attachment  (balance GunnerHelo)
+  Char_Scav_Plugginator_Upper_BOSS              Scav Plugginator Upper BOSS
+  Char_Cat_OrdiniteInfused_MiniBoss_Clone       Shard Mangler  (balance Cat_OrdiniteInfused_MiniBoss_Clone)
+  Char_MeatHead_OrdiniteInfused_Clone           Shard Meatball  (balance Meathead_Clone)
+  Char_Phalanx_OrdiniteInfused_Clone            Shard Phalanx  (balance Phalanx_Clone)
+  Char_Psycho_OrdiniteInfused_Clone             Shard Psycho  (balance Psycho_Clone)
+  Char_GunToterMale_OrdiniteInfused_Clone       Shard Rat-a-tat  (balance GunToter_Clone)
+  Char_Splice_OrdiniteInfused_MiniBoss_Clone    Shard Splider  (balance Splice_OrdiniteInfused_MiniBoss_Clone)
+  Char_PhalanxSinger                            Sketch Calhoun  (balance Singer)
+  Char_Thresher_Fireskull_BossRift              Skullfire  (balance Fireskull)
+  Char_Psycho_OrdiniteInfused_PearlGearGen      Slayowulf  (balance Psycho_OrdiniteInfused_PearlGearGen)
+  Char_Grunt_Slithertongue_BossRift             Slithertongue  (balance Slithertongue)
   Char_SpliceSpiderMana                         Spidananggal  (balance SpiderMana)
   Char_Splice_Hovercart                         Splice Hovercart  (balance SpliceHovercart)
+  Char_CreepLeaper_SpinSpawm                    Spring Creep  (balance Basic)
+  Char_Pangolin_BountyPack2_Boss_OrdiniteInfused  Stone Demon  (balance PangolinBoss)
+  Char_Pangolin_OrdiniteInfused_Clone           Stone Demon Shard  (balance Pangolin_Clone)
   Char_Striker_Cleaner_BossMini_Replay          Striker Cleaner Boss Mini Replay  (balance Striker_Cleaner_MiniBoss)
+  Char_Striker_Cleaner_BossMini_Replay_True     Striker Cleaner Boss Mini Replay True  (balance Striker_Cleaner_MiniBossTRUE)
   Char_Striker_Fixer_BossMini_Replay            Striker Fixer Boss Mini Replay  (balance Striker_Fixer_MiniBoss)
+  Char_Striker_Fixer_BossMini_Replay_True       Striker Fixer Boss Mini Replay True  (balance Striker_Fixer_MiniBossTRUE)
   Char_StrikerKael                              Striker Kael  (balance Kael)
   Char_DigitalPsycho                            sTruCT Gh0sT  (balance DigiPsycho)
+  Char_Meathead_OrdiniteInfused_MiniBoss        Sturm  (balance Meathead_OrdiniteInfused_MiniBoss)
+  Char_UberLeaderP                              Subjugator  the Invincible  (balance LeaderBossUberRaid2)
+  Char_PsychoSuicide_Male                       Suicide Psycho  (balance Suicide)
+  Char_ThresherYoung                            Tadpole Thresher  (balance Young)
+  Char_GunToterMale_OrdiniteInfused_PearlGearGen  Ten-Toes  (balance GunToter_OrdiniteInfused_PearlGearGen)
   Char_MeatHead_TurretPlatform                  The Exterminator  (balance TurretPlatform)
   Char_GunShipBasic                             The Oppressor  (balance Basic)
+  Char_DahlGruntSMG                             The Penitent Steel  (balance SMG)
+  Char_Scav_Plugginator_BOSS                    The Plugginator  (balance Plugginator)
+  Char_Splice_OrdiniteInfused_PearlGearGen      Theylob  (balance Splice_OrdiniteInfused_PearlGearGen)
+  Char_BigBoss                                  Thol  (balance BigBoss)
+  Char_UberBigBoss                              Thol  the Invincible  (balance UberBigBoss)
+  Char_ThreshOWar_Named                         Thresh O' War  (balance ThreshOWar_Named)
+  Char_ThreshOWar_BossRift                      Thresh OWar Boss Rift  (balance ThreshOWar_BossRift)
+  Char_ThreshOWar_ChaingunAttachable            Thresh OWar Chaingun Attachable  (balance ThreshOWarChaingun)
+  Char_ThreshOWar_ChaingunAttachable_Sides      Thresh OWar Chaingun Attachable Sides  (balance ThreshOWarChaingun)
+  Char_Thresher_Icemaw_BossRift                 Thresher Icemaw Boss Rift  (balance Icemaw_BossRift)
+  Char_ThresherNightmare_SlithertongueHead      Thresher Nightmare Slithertongue Head
+  Char_ThresherTremor                           Thumper Thresher  (balance Tremor)
+  Char_MutantFish                               Tidebreaker  (balance MutantFish)
+  Char_Meathead_OrdiniteInfused_PearlGearGen    Tiny Bigs  (balance Meathead_OrdiniteInfused_PearlGearGen)
+  Char_Robo_Totem_Tough                         Tough Totem
+  Char_UberLeaderP_TRUE                         Uber Leader P TRUE  (balance LeaderBossUberRaid2_TRUE)
+  Char_PsychoCorrupt                            Vile Psycho  (balance Corrupt)
+  Char_GunToterCorrupt_Male                     Vile Ripper  (balance Corrupt)
+  Char_ThreshOWar_RocketAttachable              War Pods  (balance ThreshOWarRockets)
+  Char_WaterThresher                            Water Thresher
+  Char_PhalanxMelee                             Zerker  (balance Melee1)
 
 ==============================================================================
 NPCs (287)
@@ -220,11 +394,13 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_Claptrap                             Claptrap  (parent Char_NPC)
   Char_NPC_GrassScout                           Conway  (parent Char_NPC_Gestalt)
   Char_NPC_NudgeCouncil09                       Damian  (parent Char_NPC_Gestalt)
+  Char_NPC_Botanist                             Daphne  (parent Char_NPC_Gestalt)
   Char_NPC_BuddyScrap                           Defiant Calder  (parent Char_NPC)
   Char_NPC_CrashSurvivor                        Derek  (parent Char_NPC_Gestalt)
   Char_NPC_IslandGuide_CarnivalBarker           Dick  (parent Char_NPC_IslandGuide)
   Char_NPC_DigiZane                             Digi-Zane  (parent Char_NPC)
   Char_NPC_Dunks                                Dunks Watson  (parent Char_NPC_Gestalt)
+  Char_NPC_Ellie                                Ellie  (parent Char_NPC)
   Char_NPC_LavadulaSurvivor                     Emile  (parent Char_NPC_Gestalt)
   Char_NPC_EscapedPrisoners_F                   Escaped Prisoners  (parent Char_NPC_EscapedPrisoners_M)
   Char_NPC_VaultGatherers_F                     Escaped Prisoners  (parent Char_NPC_VaultGatherers_M)
@@ -236,6 +412,7 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_FriendlyGeologist                    Gennifer  (parent Char_NPC_Gestalt)
   Char_NPC_NudgeCouncil05                       Gideon  (parent Char_NPC_Gestalt)
   Char_NPC_TechDylan                            Glitch  (parent Char_NPC_Gestalt)
+  Char_NPC_Greg                                 Greg  (parent Char_NPC_Gestalt)
   Char_NPC_IslandGuide                          Harold  (parent Char_NPC)
   Char_NPC_Hermes                               Hermes  (parent Char_NPC_Cat_SHARED)
   Char_NPC_LeaderKotoLietenantHolo              Horace  (parent Char_NPC)
@@ -259,6 +436,8 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_Lilith                               Lilith  (parent Char_NPC)
   Char_NPC_BandManager                          Lisa FullFolja  (parent Char_NPC_Gestalt)
   Char_NPC_CityLysett                           Lysett  (parent Char_NPC_Gestalt)
+  Char_NPC_Mancubus                             Mancubus  (parent Char_NPC)
+  Char_NPC_Marina                               Marina  (parent Char_NPC_Gestalt)
   Char_NPC_NudgeCouncil03                       Mateo  (parent Char_NPC_Gestalt)
   Char_NPC_VillageLeader                        Mayor Payne  (parent Char_NPC_Gestalt)
   Char_NPC_MeatheadBasic                        Meathead  (balance Basic)
@@ -279,7 +458,6 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_Bandit_SHARED                        NPC Bandit SHARED  (parent Char_NPC)
   Char_NPC_BeastTubeTurret                      NPC Beast Tube Turret  (parent Char_BanditTurret_Chaingun)
   Char_NPC_BoltInventor_Hologram                NPC Bolt Inventor Hologram  (parent Char_NPC_BoltInventor)
-  Char_NPC_Botanist                             NPC Botanist  (parent Char_NPC_Gestalt)
   Char_NPC_BrainWashedAugers                    NPC Brain Washed Augers
   Char_NPC_BrainWashedAugers_Female             NPC Brain Washed Augers Female  (parent Char_NPC_BrainWashedAugers_Male)
   Char_NPC_BuddyNudge_Hologram                  NPC Buddy Nudge Hologram  (parent Char_NPC_BuddyNudge)
@@ -345,7 +523,6 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_Electi_PPPP                          NPC Electi PPPP
   Char_NPC_Electi_PPPP_F                        NPC Electi PPPP F  (parent Char_NPC_Electi_Possessed_M)
   Char_NPC_Electi_PPPP_M                        NPC Electi PPPP M  (parent Char_NPC_Electi)
-  Char_NPC_Ellie                                NPC Ellie  (parent Char_NPC)
   Char_NPC_EscapedPrisoners                     NPC Escaped Prisoners
   Char_NPC_EscapedPrisoners_M                   NPC Escaped Prisoners M  (balance Assault)
   Char_NPC_Farmer                               NPC Farmer  (balance Assault)
@@ -367,7 +544,6 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_GrazerBuilder_M                      NPC Grazer Builder M  (parent Char_NPC_Grazer)
   Char_NPC_GrazerMountain_F                     NPC Grazer Mountain F  (parent Char_NPC_GrazerMountain_M)
   Char_NPC_GrazerMountain_M                     NPC Grazer Mountain M  (parent Char_NPC_GrazerBasic_M)
-  Char_NPC_Greg                                 NPC Greg  (parent Char_NPC_Gestalt)
   Char_NPC_GruntBasic                           NPC Grunt Basic  (parent Char_NPC_Grunt_SHARED)
   Char_NPC_GruntHIK00                           NPC Grunt HIK00  (parent Char_NPC_GruntBasic)
   Char_NPC_GruntHIK01                           NPC Grunt HIK01  (parent Char_NPC_GruntBasic)
@@ -387,9 +563,7 @@ Char_NPC_* — story, vendor, and ambient characters.
   Char_NPC_LabTech01                            NPC Lab Tech01  (parent Char_NPC_Gestalt)
   Char_NPC_LabTech02                            NPC Lab Tech02  (parent Char_NPC_Gestalt)
   Char_NPC_LabTech03                            NPC Lab Tech03  (parent Char_NPC_Gestalt)
-  Char_NPC_Mancubus                             NPC Mancubus  (parent Char_NPC)
   Char_NPC_Mandolin_ArcadeDrunk                 NPC Mandolin Arcade Drunk  (parent Char_NPC_Gestalt)
-  Char_NPC_Marina                               NPC Marina  (parent Char_NPC_Gestalt)
   Char_NPC_Moxxi_Cowbell                        NPC Moxxi Cowbell  (parent Char_NPC_Moxxi)
   Char_NPC_Payload                              NPC Payload  (parent Char_NPC_PayloadTruck)
   Char_NPC_PayloadTruck                         NPC Payload Truck  (parent Char_NPC)
@@ -507,6 +681,8 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_BatRanged_Guardian                       Acrid Kratch  (balance Ranged)
   Char_AI                                       AI
   Char_BatBomber                                Airstrike Kratch  (balance Bomber)
+  Char_Kraggon_Alpha_Named                      Alpha Kraggon  (balance Alpha)
+  Char_Thresher_Alpha_Named                     Alpha Thresher  (balance Alpha)
   Char_ArmyBandit_SHARED                        Army Bandit SHARED
   Char_ArmyOrder_SHARED                         Army Order SHARED
   Char_OrderTurret_Rocket                       Artillery Turret  (balance RocketTurret)
@@ -566,6 +742,7 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_Brute_SideCity_Gassy                     Bio-Armored Defender  (balance SideCity_Gassy)
   Char_Thresher_BioArmoredBig                   Bio-Thresher Omega  (balance Thresher_BioArmorBig)
   Char_CatBloated                               Bloated Mangler  (balance Bloated)
+  Char_Kraggon_Nightmare                        Bloodstone Kraggon  (balance Eridium)
   Char_CreepSuicide                             Bloom Creep  (balance Basic)
   Char_Psycho_SideMount_TMJake                  Bomb Squad Jake  (balance TeamMissile)
   Char_Psycho_SideMount_TMJose                  Bomb Squad Josey
@@ -578,6 +755,8 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_GunToter_ScrapyardLeaders                Brenda  (balance ScrapyardLeaders)
   Char_BeastGlob                                Bronkhorn  (balance Glob)
   Char_Drone_SideShatterlands_Broomba           Broomba  (balance Broomba)
+  Char_Kraggon_Bruley_A_Named                   Bru
+  Char_Kraggon_Bruley_B_Named                   Bruley
   Char_Brute_SHARED                             Brute (spawn Char_BruteBasic instead)
   Char_BruteBadass_Raid2                        Brute Badass Raid2  (balance BruteBadass)
   Char_Brute_SideShatter_Boss_Electi            Brute Electi  (balance SideShatterlands_Electi)
@@ -640,6 +819,7 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_CreepThorn_Raid1                         Creep Thorn Raid1  (balance Thorn)
   Char_CreepThornShield_Raid1                   Creep Thorn Shield Raid1  (balance ThornShield)
   Char_CreepTim_Flamethrower                    Creep Tim Flamethrower  (balance Tim_Flamethrower)
+  Char_Kraggon_Bruley_C_Named                   Creme Bru-lée
   Char_Psycho_PsychoSinger                      Crunch Tongue  (balance PsychoSinger)
   Char_Brute_Vault_Shatt_Badass                 Crushing Depth
   Char_Psycho_Zanzibart                         Cursed Myrmidon of the Cruel Dawn  (balance Zanzibart)
@@ -728,7 +908,6 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_ExoSoldier                               Exo-Soldier
   Char_Creep_SideCity_ExperimentB               Experiment 1709  (balance SideCity_ExperimentB)
   Char_Creep_SideCity_ExperimentA               Experiment 42  (balance SideCity_ExperimentA)
-  Char_Eyeball                                  Eyeball  (balance Eyeball)
   Char_DroneConstructor                         Fabricating Witness  (balance Constructor)
   Char_BanditTurret_ShoulderChaingun            Facebreaker  (balance ShoulderChaingun)
   Char_Leader_SideCity_Irradiator               Facility Director  (balance SideCity_Irradiator)
@@ -817,7 +996,6 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_Grunt_SHARED                             INVALID CHARACTER DEF
   Char_ThresherRancher_Male                     Ivan  (balance Rancher_Male)
   Char_CatYoung                                 Juvenile Mangler  (balance Young)
-  Char_Keeper_Raid2                             Keeper Raid2  (balance Keeper)
   Char_Cat_CattieCrew_Kiki                      Kiki
   Char_BatDiver                                 Kisselwing Kratch  (balance Diver)
   Char_BatDiver_Guardian                        Kisselwing Kratch  (balance Diver)
@@ -825,20 +1003,13 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_KOTO_PsychoBasic4Arm_GrassBoss           KOTO Psycho Basic4Arm Grass Boss  (balance KOTO_PsychoBasic4Arm)
   Char_KOTO_SoldierAR_GrassBoss                 KOTO Soldier AR Grass Boss  (balance None)
   Char_KOTO_StrikerBasic_GrassBoss              KOTO Striker Basic Grass Boss  (balance KOTO_StrikerBasic)
-  Char_Kraggon_Alpha_Named                      Kraggon Alpha Named  (balance Alpha)
-  Char_Kraggon_Badass                           Kraggon Badass  (balance Badass)
   Char_KraggonBasic                             Kraggon Basic  (balance Basic)
   Char_KraggonBasic_BossAdd                     Kraggon Basic Boss Add  (balance KraggonBossAdd)
   Char_Kraggon_Blaster                          Kraggon Blaster  (balance Blaster)
   Char_Kraggon_Blaster_BossAdd                  Kraggon Blaster Boss Add  (balance KraggonBossAdd)
-  Char_Kraggon_Bruley_A_Named                   Kraggon Bruley A Named
-  Char_Kraggon_Bruley_B_Named                   Kraggon Bruley B Named
-  Char_Kraggon_Bruley_C_Named                   Kraggon Bruley C Named
   Char_Kraggon_Loot                             Kraggon Loot  (balance Loot)
   Char_Kraggon_Mini_BossAdd                     Kraggon Mini Boss Add  (balance KraggonMiniBossAdd)
-  Char_Kraggon_Nightmare                        Kraggon Nightmare  (balance Eridium)
   Char_Kraggon_PureEridium_Named                Kraggon Pure Eridium Named  (balance Eridium)
-  Char_Kraggon_Roller                           Kraggon Roller  (balance Roller)
   Char_Kraggon_Slammer                          Kraggon Slammer  (balance Slammer)
   Char_KraggonWallChump                         Kraggon Wall Chump
   Char_BatBasic                                 Kratch  (balance Basic)
@@ -862,6 +1033,7 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_CatLogan                                 Logan
   Char_MeatheadLoot                             Loot 'Head  (balance Loot)
   Char_CreepLoot                                Loot Creep  (balance Loot)
+  Char_Kraggon_Badass                           Loot Kraggon  (balance Badass)
   Char_BatLoot                                  Loot Kratch  (balance Loot)
   Char_CatLoot                                  Loot Mangler  (balance Loot)
   Char_PsychoLoot                               Loot Psycho  (balance Loot)
@@ -924,8 +1096,10 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_MeatHead_Numba1                          Numba One  (balance Numba1)
   Char_StrikerWard                              Oppression Engine  (balance Ward)
   Char_GruntMount3                              Orbulus  (balance Mount3)
+  Char_Eyeball                                  Order Ocular Observer  (balance Eyeball)
   Char_CreepOre                                 Ore Creep  (balance Ore)
   Char_OverKeeper                               Over Keeper  (balance None)
+  Char_Keeper_Raid2                             OverKeeper  (balance Keeper)
   Char_GruntAssault                             Overwartchman  (balance Assault)
   Char_PangolinMount                            Pango Mount  (balance Mount)
   Char_PangolinBaby                             Pangolin Baby  (balance PangoPup_Scared)
@@ -939,6 +1113,7 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_GunToter_Cure_SMG                        Party Ripper
   Char_CreepShooter                             Peashooter Creep  (balance Basic)
   Char_GunShipBadass                            Persecutor  (balance Badass)
+  Char_Kraggon_Roller                           Perturbalon  (balance Roller)
   Char_Leader_Vault_Grass_Corrupt               Perturbalon
   Char_TED_SideMount_PEW                        Pew  (balance SideMount_PEW)
   Char_TED_SideMount_PEW2                       PEWPEW  (balance SideMount_PEW2)
@@ -952,6 +1127,7 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_PLD_ForgeWeapon_Axe_Frost                PLD Forge Weapon Axe Frost
   Char_PLD_ForgeWeapon_Hammer_Ordained          PLD Forge Weapon Hammer Ordained
   Char_Exo_AutoTurret_Base                      Portable Supply Depot Turret
+  Char_Thresher_Prime_Named                     Prime
   Char_PrisonBuddyBoss_Runnable                 Prison Buddy Boss Runnable  (balance PrisonBuddy_Runnable)
   Char_Cat_CattieCrew_Professeur                Professeur
   Char_StrikerGuard                             Protection Engine  (balance Guard)
@@ -1176,12 +1352,10 @@ Standard enemies, elites, and combat Char_* without boss rank.
   Char_Thresher_SHARED                          Thresher (spawn Char_ThresherBasic instead)
   Char_ThresherAdult_BossAdd                    Thresher Adult Boss Add  (balance BossAdd)
   Char_Thresher_AlphaFriendly_Named             Thresher Alpha Friendly Named
-  Char_Thresher_Alpha_Named                     Thresher Alpha Named  (balance Alpha)
   Char_ThresherNightmare                        Thresher Nightmare
   Char_ThresherNightmareBadass                  Thresher Nightmare Badass
   Char_ThresherNightmare_DahlFather             Thresher Nightmare Dahl Father  (balance NightmareThresher)
   Char_Thresher_Mount                           Thresher Outrider  (balance Worm)
-  Char_Thresher_Prime_Named                     Thresher Prime Named
   Char_ThresherSwimingOnly                      Thresher Swiming Only
   Char_ThresherWorm_BossAdd                     Thresher Worm Boss Add  (balance BossAdd)
   Char_ThresherYoung_BossAdd                    Thresher Young Boss Add

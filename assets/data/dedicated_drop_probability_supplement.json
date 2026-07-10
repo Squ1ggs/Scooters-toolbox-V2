@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-07-10T05:10:00.000Z",
+  "source": "Verified from prior full Nexus export (stbxnew loot_reference_data) — fills gaps when DLC/UVH scalar rows are absent from current ncs/json.",
+  "note": "Nexus export values take precedence; supplement only adds missing lookup keys.",
+  "entries": {
+    "Table_DedicatedDropProbability.Launch_Dedicated_Drops.tertiary": 0.0025,
+    "Table_DedicatedDropProbability.UVH_Scalar.primary": 0.02,
+    "Table_DedicatedDropProbability.UVH_Scalar.shiny": 0.001,
+    "Table_DedicatedDropProbability.UVH_Scalar.tertiary": 0.0025,
+    "Table_DedicatedDropProbability.UVH_Scalar.trueboss": 0.02,
+    "Table_DedicatedDropProbability.UVH_Scalar.truebossshiny": 0.0015,
+    "Table_DedicatedDropProbability_Raid1.Mayhem_Scalar.primary": 0.01,
+    "Table_DedicatedDropProbability_Raid1.Mayhem_Scalar.shiny": 0.001,
+    "Table_DedicatedDropProbability_Raid1.Mayhem_Scalar.trueboss": 0.02,
+    "Table_DedicatedDropProbability_Raid1.Mayhem_Scalar.truebossshiny": 0.0015,
+    "Table_DedicatedDropProbability_Raid2.Raid2_Dedicated_Drops.primary": 0.15,
+    "Table_DedicatedDropProbability_Raid2.Raid2_Dedicated_Drops.shiny": 0.009,
+    "Table_DedicatedDropProbability_Raid2.Raid2_Dedicated_Drops.tertiary": 0.0025,
+    "Table_DedicatedDropProbability_Raid2.Mayhem_Scalar.primary": 0.01,
+    "Table_DedicatedDropProbability_Raid2.Mayhem_Scalar.shiny": 0.001,
+    "Table_DedicatedDropProbability_Raid2.Mayhem_Scalar.tertiary": 0.0025,
+    "Table_DedicatedDropProbability_Tuba.Tuba_Dedicated_Drops.primary": 0.15,
+    "Table_DedicatedDropProbability_Tuba.Tuba_Dedicated_Drops.secondary": 0.06,
+    "Table_DedicatedDropProbability_Tuba.Tuba_Dedicated_Drops.shiny": 0.009,
+    "Table_DedicatedDropProbability_Tuba.Tuba_Dedicated_Drops.tertiary": 0.0025,
+    "Table_DedicatedDropProbability_Tuba.Mayhem_Scalar.primary": 0.01,
+    "Table_DedicatedDropProbability_Tuba.Mayhem_Scalar.secondary": 0.005,
+    "Table_DedicatedDropProbability_Tuba.Mayhem_Scalar.shiny": 0.001,
+    "Table_DedicatedDropProbability_Tuba.Mayhem_Scalar.tertiary": 0.0025
+  }
+}
