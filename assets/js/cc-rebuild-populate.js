@@ -146,7 +146,15 @@
         }
         appendGroup(skinSel, 'Spawn-ID Skins', spawnGroup);
         appendGroup(skinSel, 'Phosphene / Shiny', phosGroup);
-        appendGroup(skinSel, 'Numeric ID Skins', numericGroup);
+        var mixGroup = [];
+        var otherNumeric = [];
+        for (var ni = 0; ni < numericGroup.length; ni++) {
+          var nrow = numericGroup[ni];
+          if (nrow && /^\{\s*\d+\s*:\s*\[/.test(String(nrow.value || ''))) mixGroup.push(nrow);
+          else otherNumeric.push(nrow);
+        }
+        appendGroup(skinSel, 'Custom Mixes', mixGroup);
+        appendGroup(skinSel, 'Numeric ID Skins', otherNumeric);
         attachSelectFullTitle(skinSel);
       } catch (_) {}
     }

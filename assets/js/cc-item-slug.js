@@ -201,15 +201,21 @@
   }
 
   /**
-   * Lowercased part code — belongs in NCS `magazine_acc` (Torgue/Borg specialty mags, etc.).
-   * Not main magazine bodies; excludes `mag_ted_thrown` (separate slot).
+   * Lowercased part code — belongs in NCS `magazine_acc` only.
+   * NCS pool: `part_mag_torgue_*`, `part_mag_(05_)borg_barrel_*`, and explicit `*_acc*` mag accessories.
+   * Not main magazine bodies, not plain `mag_05_borg` (separate slot), not `mag_ted_thrown`.
    */
   function magazineAccessoryCodeMatchLo(codeLc) {
     var x = String(codeLc || '').toLowerCase();
+    if (!x) return false;
     if (x.indexOf('mag_ted_thrown') !== -1) return false;
+    // Plain Borg specialty mags belong in `magazine_borg`, not this slot.
+    if (/part_mag_(?:05_)?borg(?!_barrel|_acc)/.test(x)) return false;
     if (/mag_acc|magazine_acc/i.test(x)) return true;
-    if (x.indexOf('part_mag') !== -1 && x.indexOf('acc') !== -1) return true;
     if (/part_mag_torgue/i.test(x)) return true;
+    if (/part_mag_(?:05_)?borg_barrel/i.test(x)) return true;
+    // Explicit accessory stem only (avoid matching "accuracy" substrings).
+    if (/part_mag[^.\s]*_acc(?:_|$|\.)/.test(x) || /part_mag_acc/.test(x)) return true;
     return false;
   }
 

@@ -3,8 +3,8 @@
 
   var SPAWN_SKINS = [
     { value: "Cosmetics_Weapon_Mat01_Synthwave", label: "Solar Flair - Synthwave" },
-    { value: "Cosmetics_Weapon_Mat02_LavaRock", label: "The Gun is Lava - Lava Rock" },
-    { value: "Cosmetics_Weapon_Mat03_BioGoo", label: "Coast to Coast - Bio Goo" },
+    { value: "Cosmetics_Weapon_Mat02_LavaRock", label: "The Gun is Lava - LavaRock" },
+    { value: "Cosmetics_Weapon_Mat03_BioGoo", label: "Coast to Coast - BioGoo" },
     { value: "Cosmetics_Weapon_Mat04_Doodles", label: "Drawn This Way - Doodles" },
     { value: "Cosmetics_Weapon_Mat05_FransFroyo", label: "Fran's Frogurt - FransFroyo" },
     { value: "Cosmetics_Weapon_Mat06_ElectiSamurai", label: "Carcade Shooter - ElectiSamurai" },
@@ -47,15 +47,15 @@
     { value: "Cosmetics_Weapon_Mat43_Snowfall", label: "Baby You're Cold Inside - Snowfall" },
     { value: "Cosmetics_Weapon_Mat44_GiftWrap", label: "So Much More Than A Bag - GiftWrap" },
     { value: "Cosmetics_Weapon_Mat45_Gingerbread", label: "Eat Me - Gingerbread" },
-    { value: "Cosmetics_Weapon_Mat46_MechYeah", label: "MechYeah - MechYeah" },
-    { value: "Cosmetics_Weapon_Mat47_Assault", label: "Assault - Assault" },
-    { value: "Cosmetics_Weapon_Mat48_Boltron", label: "Boltron - Boltron" },
-    { value: "Cosmetics_Weapon_Mat49_Furboy", label: "Furboy - Furboy" },
-    { value: "Cosmetics_Weapon_Mat50_SpicyIguana", label: "SpicyIguana - SpicyIguana" },
-    { value: "Cosmetics_Weapon_Mat51_Gore", label: "Gore - Gore" },
-    { value: "Cosmetics_Weapon_Mat52_Ghostly", label: "Ghostly - Ghostly" },
-    { value: "Cosmetics_Weapon_Mat53_Occult", label: "Occult - Occult" },
-    { value: "Cosmetics_Weapon_Mat54_Shipwreck", label: "Shipwreck - Shipwreck" },
+    { value: "Cosmetics_Weapon_Mat46_MechYeah", label: "Congratulations! - MechYeah" },
+    { value: "Cosmetics_Weapon_Mat47_Assault", label: "...Gear?! - Assault" },
+    { value: "Cosmetics_Weapon_Mat48_Boltron", label: "Volt Hunter - Boltron" },
+    { value: "Cosmetics_Weapon_Mat49_Furboy", label: "Beast Mode - Furboy" },
+    { value: "Cosmetics_Weapon_Mat50_SpicyIguana", label: "Kaiju Killa - SpicyIguana" },
+    { value: "Cosmetics_Weapon_Mat51_Gore", label: "Hand that Feeds - Gore" },
+    { value: "Cosmetics_Weapon_Mat52_Ghostly", label: "Discontent - Ghostly" },
+    { value: "Cosmetics_Weapon_Mat53_Occult", label: "Shoot What Thou Wilt - Occult" },
+    { value: "Cosmetics_Weapon_Mat54_Shipwreck", label: "Stock and Stone - Shipwreck" },
     { value: "Cosmetics_Weapon_Mat55_TrappedExperiment", label: "TrappedExperiment - TrappedExperiment" },
     { value: "Cosmetics_Weapon_Mat56_DeepOcean", label: "DeepOcean - DeepOcean" },
     { value: "Cosmetics_Weapon_Mat57_UnstableReactor", label: "UnstableReactor - UnstableReactor" },
@@ -103,9 +103,9 @@
     { value: "Cosmetics_Weapon_Shiny_cormano", label: "Phosphene — Cormano" },
     { value: "Cosmetics_Weapon_Shiny_Cormano", label: "Phosphene — Cormano" },
     { value: "Cosmetics_Weapon_Shiny_crazedEarl", label: "Phosphene — Crazed Earl" },
-    { value: "Cosmetics_Weapon_Shiny_crowdsourced", label: "Phosphene — Crow-Sourced" },
-    { value: "Cosmetics_Weapon_Shiny_CrowdSourced", label: "Phosphene — Crow-Sourced" },
-    { value: "Cosmetics_Weapon_Shiny_crowsourced", label: "Phosphene — Rig" },
+    { value: "Cosmetics_Weapon_Shiny_crowsourced", label: "Pearlescent — Crow-Sourced" },
+    { value: "Cosmetics_Weapon_Shiny_CrowdSourced", label: "Phosphene — Midnight Defiance" },
+    { value: "Cosmetics_Weapon_Shiny_crowdsourced", label: "Phosphene — Midnight Defiance" },
     { value: "Cosmetics_Weapon_Shiny_dahlfather", label: "Phosphene — Dahlfather" },
     { value: "Cosmetics_Weapon_Shiny_Demo", label: "Phosphene — Hair Trigger" },
     { value: "Cosmetics_Weapon_Shiny_discybusiness", label: "Phosphene — Doer" },
@@ -168,7 +168,7 @@
     { value: "Cosmetics_Weapon_Shiny_LightGun", label: "Phosphene — Round the Horn" },
     { value: "Cosmetics_Weapon_Shiny_linebacker", label: "Phosphene — Linebacker" },
     { value: "Cosmetics_Weapon_Shiny_Linebacker", label: "Phosphene — Linebacker" },
-    { value: "Cosmetics_Weapon_Shiny_Loarmaster", label: "Phosphene — Rogue" },
+    { value: "Cosmetics_Weapon_Shiny_Loarmaster", label: "C4SH the Rogue (not a weapon phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_lockjaw", label: "Phosphene — Lockjaw" },
     { value: "Cosmetics_Weapon_Shiny_Locust", label: "Pearlescent — Parasite" },
     { value: "Cosmetics_Weapon_Shiny_lucian", label: "Phosphene — Lucian" },
@@ -203,7 +203,7 @@
     { value: "Cosmetics_Weapon_Shiny_QueensRest", label: "Phosphene — Queen's Rest" },
     { value: "Cosmetics_Weapon_Shiny_quickdraw", label: "Phosphene — Quickdraw" },
     { value: "Cosmetics_Weapon_Shiny_QuickDraw", label: "Phosphene — San Saba Songbird" },
-    { value: "Cosmetics_Weapon_Shiny_raiden", label: "Phosphene — Irrigation" },
+    { value: "Cosmetics_Weapon_Shiny_raiden", label: "Pearlescent — Raiden" },
     { value: "Cosmetics_Weapon_Shiny_rainbowvomit", label: "Phosphene — Rainbowvomit" },
     { value: "Cosmetics_Weapon_Shiny_RainbowVomit", label: "Phosphene — Rainbow Vomit" },
     { value: "Cosmetics_Weapon_Shiny_rainmaker", label: "Phosphene — Rainmaker" },
@@ -251,7 +251,7 @@
     { value: "Cosmetics_Weapon_Shiny_TKsWave", label: "Phosphene — T.K's Wave" },
     { value: "Cosmetics_Weapon_Shiny_truck", label: "Phosphene — Truck" },
     { value: "Cosmetics_Weapon_Shiny_Truck", label: "Phosphene — Truck" },
-    { value: "Cosmetics_Weapon_Shiny_Ultimate", label: "Phosphene — Ultimate" },
+    { value: "Cosmetics_Weapon_Shiny_Ultimate", label: "UVH / Ultimate Vault Hunter (not a weapon phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_Unstable", label: "Phosphene — Unstable" },
     { value: "Cosmetics_Weapon_Shiny_unstable_kor", label: "Phosphene — Snaboopie-pop" },
     { value: "Cosmetics_Weapon_Shiny_vamoose", label: "Phosphene — Vamoose" },
@@ -395,7 +395,6 @@ var EXTRA_SKINS = [
     { name: "Noisy Cricket", code: "{4:80}" },
     { name: "Prince Harming", code: "{19:1}" },
     { name: "Rainmaker", code: "{23:57}" },
-    { name: "Rogue", code: "{20:68}" },
     { name: "Roil", code: "{19:56}" },
     { name: "Rooker", code: "{26:79}" },
     { name: "Ruby's Grasp", code: "{5:66}" },
@@ -519,6 +518,23 @@ var EXTRA_SKINS = [
     try {
       var seen = new Set();
       var list = [];
+      // Keep any custom mixes already registered (mixer may run before/after this file).
+      var prev = Array.isArray(window.__CC_EXTRA_NUMERIC_SKINS) ? window.__CC_EXTRA_NUMERIC_SKINS : [];
+      for (var pi = 0; pi < prev.length; pi++) {
+        var pex = prev[pi];
+        var pcode = Array.isArray(pex) ? pex[0] : (pex && pex.code);
+        var pname = Array.isArray(pex) ? pex[1] : (pex && (pex.name || pex.label));
+        var pTrim = String(pcode || '').trim().replace(/\s+/g, ' ');
+        if (!NUMERIC_BRACE_RE.test(pTrim)) continue;
+        var pk = pTrim.toLowerCase();
+        if (seen.has(pk)) continue;
+        seen.add(pk);
+        list.push({
+          name: String(pname || '').trim() || 'Numeric Skin',
+          code: pTrim,
+          isCustomMix: !!(pex && pex.isCustomMix)
+        });
+      }
       (EXTRA_SKINS || []).forEach(function (item) {
         var name = String(item.name || '').trim();
         var code = String(item.code || '').trim().replace(/\s+/g, ' ');
@@ -536,12 +552,33 @@ var EXTRA_SKINS = [
     }
   }
 
+  function mergePreservedCustomMixes(intoSkins) {
+    var out = intoSkins && typeof intoSkins === 'object' ? intoSkins : {};
+    try {
+      var prev = window.SKINS;
+      if (!prev || typeof prev !== 'object') return out;
+      for (var cat in prev) {
+        if (!Object.prototype.hasOwnProperty.call(prev, cat)) continue;
+        var arr = prev[cat];
+        if (!Array.isArray(arr)) continue;
+        for (var i = 0; i < arr.length; i++) {
+          var sk = arr[i];
+          if (!sk || !sk.isCustomMix || !sk.code) continue;
+          if (!out[cat]) out[cat] = [];
+          out[cat].push(sk);
+        }
+      }
+    } catch (_) {}
+    return out;
+  }
+
   window.SPAWN_SKINS = SPAWN_SKINS;
   window.CAMO_TOKENS = CAMO_TOKENS;
   try { window.__CC_NUMERIC_SKIN_BRACE_RE = NUMERIC_BRACE_RE; } catch (_e) {}
-  window.SKINS = {
+  window.SKINS = mergePreservedCustomMixes({
     "Legendary Skins": EXTRA_SKINS.slice(),
-    "Legendary Camos": CAMO_TOKENS.slice()
-  };
+    "Legendary Camos": CAMO_TOKENS.slice(),
+    "Custom Mixes": []
+  });
   publishExtraNumericSkins();
 })();

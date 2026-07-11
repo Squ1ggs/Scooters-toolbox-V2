@@ -1,16 +1,62 @@
 /**
  * cc-itempool-drop-check.js
- * Resolves drop sources for decoded items by matching against SOURCE_PATHS_DATA.by_itempool.
- * Only shows "Drops from: …" when a full serial matches a known droppable itempool;
- * otherwise returns "Modded" or "Not in loot pool".
+ * Resolves drop sources for decoded items by matching against SOURCE_PATHS_DATA.by_itempool
+ * and LOOT_REFERENCE_DATA (challenge / campaign / boss notes when the shiny pool is absent
+ * from the hub-only source graph).
  *
  * Requires: window.SOURCE_PATHS_DATA (from source_paths_data.js)
+ * Optional: window.LOOT_REFERENCE_DATA (from loot_reference_data.js)
  */
 (function () {
   "use strict";
 
   const GUN_WEAPONS = new Set(["ar", "ps", "sg", "sr", "sm"]);
   const MFR_PREFIX = /^([A-Z]{3})_([A-Z]{2})$/i;
+
+  function normComp(comp) {
+    return String(comp || "")
+      .trim()
+      .toLowerCase()
+      .replace(/^inv'/i, "")
+      .replace(/'$/, "");
+  }
+
+  function findLootGun(prefix, slug) {
+    const lootRef = typeof window !== "undefined" && window.LOOT_REFERENCE_DATA;
+    const guns = lootRef && Array.isArray(lootRef.shiny_guns) ? lootRef.shiny_guns : null;
+    if (!guns || !slug) return null;
+    const wantComp = prefix ? normComp(prefix + ".comp_05_legendary_" + slug) : null;
+    const slugKey = String(slug).toLowerCase().replace(/[^a-z0-9]+/g, "");
+
+    let best = null;
+    for (const g of guns) {
+      if (g.pearl || g.variant === "pearl" || g.community_pearl) continue;
+      const gComp = normComp(g.comp);
+      if (wantComp && gComp === wantComp) return g;
+      const gSlug = String(g.slug || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "");
+      if (gSlug && gSlug === slugKey) best = best || g;
+      if (gComp && gComp.endsWith("comp_05_legendary_" + String(slug).toLowerCase())) best = best || g;
+    }
+    return best;
+  }
+
+  function lootGunDropText(gun) {
+    if (!gun) return null;
+    const bosses = (gun.drop_sources || []).map((d) => d.enemy_name).filter(Boolean);
+    if (bosses.length) return "Drops from: " + bosses.join(", ");
+    const hints = (gun.source_hints || []).map((h) => h.label).filter(Boolean);
+    if (hints.length) return hints.join(" · ");
+    if (gun.drop_note) return String(gun.drop_note);
+    if (gun.acquisition_kind === "challenge" || gun.acquisition_kind === "collection_challenge") {
+      return "Challenge / collection unlock (see loot reference)";
+    }
+    if (gun.acquisition_kind === "campaign_unlock") return "Campaign shiny unlock";
+    if (gun.acquisition_kind === "takedown") return "Takedown reward (see loot reference)";
+    if (gun.acquisition_kind === "event") return "Playlist or event drop";
+    return null;
+  }
 
   /**
    * @param {Object} result - Decoded result { manufacturer, itemType, itemTypeId, parts }
@@ -47,21 +93,26 @@
 
     const key = "itempool_" + mfr + "_" + weapon + "_05_legendary_" + slug + "_shiny";
     const entry = data.by_itempool[key] || data.by_itempool[key.toLowerCase()];
-    if (!entry) return "Modded";
+    const lootGun = findLootGun(prefix, slug);
+    const lootText = lootGunDropText(lootGun);
+
+    if (!entry) {
+      // Known phosphene acquisition without a source_paths itempool row (DLC merge gap,
+      // challenge unlock, event, etc.) — not the same as a fabricated Modded serial.
+      if (lootText) return lootText;
+      if (lootGun) return "In loot reference (no boss pool row)";
+      return "Modded";
+    }
 
     const sources = [];
     if (Array.isArray(entry.from_itempoollist) && entry.from_itempoollist.length) {
       const names = entry.from_itempoollist.map((n) => String(n).replace(/^ItemPoolList_/, ""));
       sources.push("Boss/enemy pools: " + names.join(", "));
     }
-    const lootRef = typeof window !== "undefined" && window.LOOT_REFERENCE_DATA;
-    if (lootRef && Array.isArray(lootRef.shiny_guns)) {
-      const gun = lootRef.shiny_guns.find(
-        (g) => g.itempool_shiny === key || String(g.itempool_shiny).toLowerCase() === key.toLowerCase()
-      );
-      if (gun && gun.drop_sources && gun.drop_sources.length) {
-        sources.push("Drops from: " + gun.drop_sources.map((d) => d.enemy_name).join(", "));
-      }
+    if (lootGun && lootGun.drop_sources && lootGun.drop_sources.length) {
+      sources.push("Drops from: " + lootGun.drop_sources.map((d) => d.enemy_name).join(", "));
+    } else if (lootText && !sources.length) {
+      sources.push(lootText);
     }
     if (Array.isArray(entry.loot_configs) && entry.loot_configs.length) {
       sources.push("Loot: " + entry.loot_configs.length + " config(s)");

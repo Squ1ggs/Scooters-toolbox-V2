@@ -351,7 +351,7 @@
     {key:'barrel', label:'Barrel', partType:'Barrel'},
     {key:'barrelAcc', label:'Barrel Accessory', partType:'Barrel Accessory'},
     {key:'mag', label:'Magazine', partType:'Magazine', ncsSlot:'magazine'},
-    {key:'magAcc', label:'Magazine Accessory', partType:'Magazine', ncsSlot:'magazine_acc'},
+    {key:'magazineAcc', label:'Magazine Accessory', partType:'Magazine', ncsSlot:'magazine_acc'},
     {key:'magazineBorg', label:'Borg Magazine', partType:'Magazine', ncsSlot:'magazine_borg'},
     {key:'pearlElem', label:'Pearl Element', partType:'', ncsSlot:'pearl_elem'},
     {key:'pearlStat', label:'Pearl Stat', partType:'', ncsSlot:'pearl_stat'},
@@ -366,7 +366,7 @@
     {key:'secondaryAmmo', label:'Secondary Ammo Type', partType:'Manufacturer Part', ncsSlot:'secondary_ammo'},
     {key:'hyperionSecondaryAcc', label:'Hyperion Amp Shield', partType:'Manufacturer Part', ncsSlot:'hyperion_secondary_acc'},
     {key:'statMod', label:'Stat Modifier', partType:'Stat Modifier'},
-    {key:'secondaryEle', label:'Secondary Element (Maliwan)', partType:'Element Switch', ncsSlot:'secondary_ele'},
+    {key:'secondaryEle', label:'Secondary Element (Maliwan Switch)', partType:'Element Switch', ncsSlot:'secondary_ele'},
     {key:'legendary', label:'Legendary Perks', partType:'Legendary Perks', multi:true},
     {key:'firmware', label:'Firmware', partType:'Firmware'},
     {key:'additionalParts', label:'Additional (other parts)', partType:'', multi:true, customType:'weaponAdditionalParts'},
@@ -377,28 +377,28 @@
       const slug = typeof window.computeSimpleBuilderItemSlug === 'function' ? window.computeSimpleBuilderItemSlug(state) : '';
       const built = typeof window.buildWeaponSlotSchemaFromNcs === 'function' ? window.buildWeaponSlotSchemaFromNcs(slug) : null;
       if (built && built.length){
-        if (stxSimpleBuilderItemTypeIsHeavyUi(state.itemType)){
-          return built.filter(s => {
-            if (!s) return false;
-            const k = String(s.key || '');
-            const ns = String(s.ncsSlot || '');
-            if (k === 'secondaryEle' || ns === 'secondary_ele') return false;
-            return true;
-          });
-        }
-        return built;
+        return filterSimpleWeaponSchemaSlots(built);
       }
     }catch(_e){}
-    if (stxSimpleBuilderItemTypeIsHeavyUi(state.itemType)){
-      return WEAPON_SLOT_SCHEMA.filter(s => {
-        if (!s) return false;
-        const k = String(s.key || '');
-        const ns = String(s.ncsSlot || '');
-        if (k === 'secondaryEle' || ns === 'secondary_ele') return false;
-        return true;
-      });
-    }
-    return WEAPON_SLOT_SCHEMA;
+    return filterSimpleWeaponSchemaSlots(WEAPON_SLOT_SCHEMA);
+  }
+
+  /**
+   * Simple Builder already picks rarity via left-panel #mainPart ("Rarity ID Part").
+   * NCS maps still list a leading `rarity` slot — drop it so Body is first in the grid.
+   * Guided Builder keeps its own rarity dropdown and is unaffected.
+   */
+  function filterSimpleWeaponSchemaSlots(schema){
+    const isHeavy = stxSimpleBuilderItemTypeIsHeavyUi(state.itemType);
+    return (schema || []).filter(s => {
+      if (!s) return false;
+      const k = String(s.key || '');
+      const ns = String(s.ncsSlot || '');
+      const pt = String(s.partType || '').trim().toLowerCase();
+      if (k === 'rarity' || ns === 'rarity' || pt === 'rarity') return false;
+      if (isHeavy && (k === 'secondaryEle' || ns === 'secondary_ele')) return false;
+      return true;
+    });
   }
 
   function weaponPearlElemPartMatch(p){
@@ -437,6 +437,95 @@
     return out;
   }
 
+  /** Shared firmware chips — same idea as guidedCollectFirmwareParts (prefer 247/234/246). */
+  function stxSimpleCollectFirmwareParts(){
+    const byStem = Object.create(null);
+    const all = getAllParts();
+    for (let i = 0; i < all.length; i++){
+      const p = all[i];
+      if (!p) continue;
+      const code = String(normCode(p.code || p.spawnCode || '') || '').toLowerCase();
+      const pt = String(p.partType || '').trim().toLowerCase();
+      if (!(pt === 'firmware' || /part_firmware|\.part_firmware/.test(code))) continue;
+      const stemM = code.match(/part_firmware_([a-z0-9_]+)/);
+      const stem = stemM ? stemM[1] : code;
+      if (!stem) continue;
+      const fam = p.family != null ? Number(p.family) : (p.familyId != null ? Number(p.familyId) : NaN);
+      let score = 0;
+      if (fam === 247) score = 100;
+      else if (fam === 234) score = 90;
+      else if (fam === 246) score = 80;
+      else if (pt === 'firmware') score += 5;
+      const idRaw = String(p.idRaw || p.idraw || '').trim();
+      if (/^\d+\s*:\s*\d+$/.test(idRaw.replace(/\s+/g, ' '))) score += 3;
+      const prev = byStem[stem];
+      if (!prev || score > prev.score) byStem[stem] = { p: p, score: score };
+    }
+    const out = [];
+    for (const k in byStem){
+      if (Object.prototype.hasOwnProperty.call(byStem, k) && byStem[k]) out.push(byStem[k].p);
+    }
+    return out;
+  }
+
+  /** Stat Modifier options = Tools preset boost tokens (damage/accuracy/…), resolved from ALL_PARTS. */
+  function stxSimpleCollectPresetBoostPartsForStatMod(){
+    const pools = (typeof getSimplePresetBoostPools === 'function')
+      ? getSimplePresetBoostPools()
+      : (window.PRESET_BOOST_POOLS || {});
+    const weaponCats = ['damage', 'accuracy', 'reload', 'firerate', 'ammo', 'splash', 'crit'];
+    const idRawSet = Object.create(null);
+    for (let ci = 0; ci < weaponCats.length; ci++){
+      const pool = pools[weaponCats[ci]];
+      if (!Array.isArray(pool)) continue;
+      for (let i = 0; i < pool.length; i++){
+        const e = pool[i];
+        if (!e) continue;
+        const k = e.key != null ? e.key : e.k;
+        const v = e.value != null ? e.value : e.v;
+        if (k == null || v == null) continue;
+        idRawSet[String(k) + ':' + String(v)] = true;
+      }
+    }
+    const parts = getAllParts();
+    const out = [];
+    const seen = new Set();
+    for (let j = 0; j < parts.length; j++){
+      const p = parts[j];
+      if (!p) continue;
+      const idRaw = String(p.idRaw || p.idraw || '').trim();
+      if (!idRaw || !idRawSet[idRaw]) continue;
+      const dk = stxStableDropdownDedupeKey(p);
+      if (!dk || seen.has(dk)) continue;
+      seen.add(dk);
+      out.push(p);
+    }
+    // Synthetic rows when dataset has no matching idRaw (still selectable as `{fam:id}`).
+    for (const idRaw of Object.keys(idRawSet)){
+      if (seen.has('synth:' + idRaw)) continue;
+      const already = out.some(p => String(p.idRaw || p.idraw || '').trim() === idRaw);
+      if (already) continue;
+      const bits = idRaw.split(':');
+      const fam = Number(bits[0]);
+      const id = Number(bits[1]);
+      if (!Number.isFinite(fam) || !Number.isFinite(id)) continue;
+      seen.add('synth:' + idRaw);
+      out.push({
+        category: 'Weapon',
+        manufacturer: '',
+        itemType: 'Weapon',
+        partType: 'Stat Modifier',
+        name: `{${fam}:${id}}`,
+        code: `{${fam}:${id}}`,
+        idRaw: idRaw,
+        family: fam,
+        id: id,
+        itemId: id
+      });
+    }
+    return out;
+  }
+
   function applyWeaponNcsSlotOptionFilter(ncsSlot, rawOpts){
     if (!ncsSlot || !Array.isArray(rawOpts)) return rawOpts;
     const lower = (p)=> String(normCode(p && p.code)||'').toLowerCase();
@@ -463,12 +552,21 @@
       case 'magazine_ted_thrown': return filt(p => lower(p).includes('mag_ted_thrown'));
       case 'magazine_borg': return filt(p => /mag_05_borg|mag_.*_borg/i.test(lower(p)));
       case 'magazine_acc': {
-        const o = rawOpts.filter(p => {
+        const isMagAcc = (p) => {
           const lo = lower(p);
           if (typeof window.magazineAccessoryCodeMatchLo === 'function') return window.magazineAccessoryCodeMatchLo(lo);
-          return /mag_acc|magazine_acc/i.test(lo) || (lo.includes('part_mag') && lo.includes('acc'));
-        });
-        return o.length ? o : rawOpts;
+          return /part_mag_torgue|part_mag_(?:05_)?borg_barrel|mag_acc|magazine_acc/i.test(lo)
+            || /part_mag[^.\s]*_acc(?:_|$|\.)/.test(lo);
+        };
+        let o = rawOpts.filter(isMagAcc);
+        // Never fall back to the full Magazine pool — that dumps normal mags into this slot.
+        if (!o.length) {
+          o = getAllParts().filter((p) => {
+            if (!p || String(p.category || '').trim() !== 'Weapon') return false;
+            return isMagAcc(p);
+          });
+        }
+        return o;
       }
       case 'secondary_ammo': return filt(p => lower(p).includes('part_secondary_ammo'));
       case 'barrel_licensed': return filt(p => lower(p).includes('barrel_licensed'));
@@ -495,7 +593,8 @@
       case 'magazine_borg': return /mag_05_borg|mag_.*_borg/i.test(lo);
       case 'magazine_acc':
         if (typeof window.magazineAccessoryCodeMatchLo === 'function') return window.magazineAccessoryCodeMatchLo(lo);
-        return /mag_acc|magazine_acc/i.test(lo) || (lo.includes('part_mag') && lo.includes('acc'));
+        return /part_mag_torgue|part_mag_(?:05_)?borg_barrel|mag_acc|magazine_acc/i.test(lo)
+          || /part_mag[^.\s]*_acc(?:_|$|\.)/.test(lo);
       case 'secondary_ammo': return lo.includes('part_secondary_ammo');
       case 'barrel_licensed': return lo.includes('barrel_licensed');
       case 'body_mag': return lo.includes('part_body_mag');
@@ -1134,12 +1233,39 @@
     if (!p) return false;
     const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
     const its = String(p.itemTypeString || '').toLowerCase();
-    if (/(?:^|[._])comp_06_pearlescent/.test(code) || /\bpearlescent\b/.test(its)) return true;
-    const item = Number((p.itemId != null) ? p.itemId : p.id);
-    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
+    const pt = String(p.partType || '').trim().toLowerCase();
+    if (/(?:^|[._])comp_06_pearlescent|comp_06_pearl_/.test(code) || /\bpearlescent\b/.test(its)) return true;
     if (/\bpearl_(?:damage|reload|firerate|handling|normal|shock|radiation|corrosive|cryo|fire|sonic)\b/.test(its)) return true;
+    // Pearl rarity numeric ids 51–60 only on rarity/comp rows (not classmod Name+Skin like Windrider).
+    const item = Number((p.itemId != null) ? p.itemId : p.id);
+    if (Number.isFinite(item) && item >= 51 && item <= 60) {
+      if (pt === 'rarity' || /comp_0[1-6]_/.test(code) || /part_pearl/.test(code) || /\bpearl_/.test(its)) return true;
+    }
     return false;
   }
+
+  /** True for pearl element parts (`part_pearl_elem_*`). */
+  function stxPartIsPearlElementPart(p){
+    if (!p) return false;
+    if (typeof weaponPearlElemPartMatch === 'function' && weaponPearlElemPartMatch(p)) return true;
+    const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    return /part_pearl_elem/i.test(code);
+  }
+  try { window.stxPartIsPearlElementPart = stxPartIsPearlElementPart; } catch (_e) {}
+
+  /** Pearl rarity-ID picker rows only (not barrels, mags, classmod names, etc.). */
+  function stxPartIsPearlRarityIdPart(p){
+    if (!p) return false;
+    if (stxPartIsPearlElementPart(p)) return false;
+    if (stxPartIsExplicitPearlescentComp(p)) return true;
+    if (!isStxRarityIdCompIconPart(p)) return false;
+    const code = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    if (/part_pearl/i.test(code) && !/comp_/.test(code)) return false;
+    if (/comp_06_pearlescent|comp_06_pearl_/.test(code)) return true;
+    if (/comp_05_legendary/.test(code) && typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(p)) return true;
+    return false;
+  }
+  try { window.stxPartIsPearlRarityIdPart = stxPartIsPearlRarityIdPart; } catch (_e) {}
 
   /** Barrel/body code suffix token (e.g. `part_barrel_02_eigenburst` → `eigenburst`). */
   function stxBarrelPearlLegendTokenFromPart(p){
@@ -1194,42 +1320,20 @@
     return STX_CC_PEARL_ITEMTYPE_BASE + 'ico_misc_pearl.png';
   }
 
-  /** Pearl pip (`ico_pearl_aug_*`) only on curated pearl guns — rarity ID row and barrel row, not mag/grip/body/etc. */
+  /** Pearl pip only on pearl rarity-ID rows and pearl element parts — never barrels/mags/classmod names. */
   function stxPartUsesPearlRarityBarrelIcon(p, schemaItem){
     if (!p) return false;
-    const allow = window.STX_PEARL_RARITY_ID_ALLOWLIST_NORM;
-    if (!allow) return false;
-    const lo = String(normCode(p.code) || '').toLowerCase();
-    if (/part_pearl/i.test(lo)) return false;
-    const ncs = schemaItem && String(schemaItem.ncsSlot || '').toLowerCase();
-    const sk = schemaItem && String(schemaItem.key || '').toLowerCase();
-    const ptl = String(p.partType || '').toLowerCase();
-    if (ncs === 'pearl_elem' || ncs === 'pearl_stat') return false;
-    if (sk === 'pearlelem' || sk === 'pearlstat') return false;
-
-    if (isStxRarityIdCompIconPart(p)) return stxPartMatchesPearlRarityIdAllowlist(p);
-
-    const barrelTok = stxBarrelPearlLegendTokenFromPart(p);
-    const onBarrelSlot = sk === 'barrel' || sk === 'barrelacc' || sk === 'barrel2' || sk === 'mainpart' || ptl === 'barrel' || /\.part_barrel/.test(lo);
-    if (onBarrelSlot && barrelTok && allow[barrelTok]) return true;
-    if (typeof isPearlWeaponMainPart === 'function' && isPearlWeaponMainPart(p) && barrelTok && allow[barrelTok] && /part_barrel|\.barrel/.test(lo)) return true;
-
+    if (stxPartIsPearlElementPart(p)) return true;
+    if (stxPartIsPearlRarityIdPart(p)) return true;
     return false;
   }
   try { window.stxPartUsesPearlRarityBarrelIcon = stxPartUsesPearlRarityBarrelIcon; } catch (_e) {}
 
-  /** `(Pearl)` suffix only on rarity-ID comp rows — that selection sets pearlescent rarity, not barrels/mags/etc. */
+  /** `(Pearl)` suffix only on pearl rarity-ID parts and pearl element parts. */
   function stxPartQualifiesForPearlUiLabel(p){
     if (!p) return false;
-    if (!isStxRarityIdCompIconPart(p)) return false;
-    const code = String(normCode(p.code || '') || '').toLowerCase();
-    if (/part_pearl/i.test(code)) return false;
-    const item = Number((p.itemId != null) ? p.itemId : p.id);
-    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
-    if (/(?:^|[._])comp_06_pearlescent/.test(code)) return true;
-    if (typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(p) && /comp_05_legendary/.test(code)) return true;
-    const blob = String(p.itemTypeString || '') + ' ' + code;
-    if (rarityTierFromItemTypeString(blob, p) === 5) return true;
+    if (stxPartIsPearlElementPart(p)) return true;
+    if (stxPartIsPearlRarityIdPart(p)) return true;
     return false;
   }
   try { window.stxPartQualifiesForPearlUiLabel = stxPartQualifiesForPearlUiLabel; } catch (_e) {}
@@ -2068,9 +2172,20 @@ function getAllParts(){
     if (t.includes('comp_05_legendary') && row && typeof stxPartMatchesPearlRarityIdAllowlist === 'function' && stxPartMatchesPearlRarityIdAllowlist(row)) return 5;
     if (t.includes('comp_05_legendary')) return 4;
     if (t.includes('part_pearl')) return 5;
-    if (/\bpearl_(?:normal|shock|radiation|corrosive|cryo|fire|sonic)\b/.test(t)) return 5;
+    if (/\bpearl_(?:normal|shock|radiation|corrosive|cryo|fire|sonic|damage|reload|firerate|handling)\b/.test(t)) return 5;
 
-    if (Number.isFinite(item) && item >= 51 && item <= 60) return 5;
+    // Pearl rarity IDs 51–60 only — never treat classmod Name+Skin rows (e.g. Windrider id 51) as pearl.
+    if (Number.isFinite(item) && item >= 51 && item <= 60) {
+      const pt = String((row && row.partType) || '').trim().toLowerCase();
+      const code = String((row && (row.code || row.spawnCode)) || '').toLowerCase();
+      const rarityLike =
+        pt === 'rarity' ||
+        /comp_0[1-6]_/.test(t) ||
+        /comp_0[1-6]_/.test(code) ||
+        /\bpearl_/.test(t) ||
+        /part_pearl/.test(code);
+      if (rarityLike) return 5;
+    }
     return null;
   }
 
@@ -2760,13 +2875,14 @@ function getAllParts(){
     const wtFallback = ctx.weaponType || 'Assault Rifle';
 
     if (tier === 5){
-      if (stxPartMatchesPearlRarityIdAllowlist(p)) {
+      if ((typeof stxPartIsPearlRarityIdPart === 'function' && stxPartIsPearlRarityIdPart(p)) ||
+          (typeof stxPartIsPearlElementPart === 'function' && stxPartIsPearlElementPart(p))) {
         opt.setAttribute('data-cc-icon', stxPearlSlotIconUrlForPart(p, { key: 'rarity', partType: 'Rarity' }));
         return;
       }
       const catLow = stxResolveGearCategoryForCompIcons(ctx);
       const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
-      if (legFn) opt.setAttribute('data-cc-icon', stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + legFn));
+      if (legFn) opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
       else {
         const u = stxResolvePartIconUrl(p, { partType: 'Rarity', key: 'rarity' }, state.itemType || '');
         if (u) stxSetOptionDataCcIconFromUrl(opt, u);
@@ -2775,14 +2891,14 @@ function getAllParts(){
     }
 
     if (tier === 4){
-      if (stxPartMatchesPearlRarityIdAllowlist(p)) {
+      if (typeof stxPartIsPearlRarityIdPart === 'function' && stxPartIsPearlRarityIdPart(p)) {
         opt.setAttribute('data-cc-icon', stxPearlSlotIconUrlForPart(p, { key: 'rarity', partType: 'Rarity' }));
         return;
       }
       const catLow = stxResolveGearCategoryForCompIcons(ctx);
       const legFn = stxLegendaryAugFilenameFromCategoryWeapon(catLow, ctx.weaponType || wtFallback, stxNormalizedWeaponTypeKeyFromPart(p), p);
       if (legFn){
-        opt.setAttribute('data-cc-icon', stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + legFn));
+        opt.setAttribute('data-cc-icon', STX_CC_LEGENDARY_AUG_BASE + legFn);
         return;
       }
       const u = stxResolvePartIconUrl(p, { partType: 'Rarity', key: 'rarity' }, state.itemType || '');
@@ -4483,10 +4599,12 @@ function getAllParts(){
             if (String(p.partType||'') !== String(partType||'')) return false;
           }
         } else if (String(partType||'').trim().toLowerCase() === 'element switch'){
-          const codeL = String(code||'').toLowerCase();
-          const pm = String(p.manufacturer||'').trim().toLowerCase();
-          if (pm !== 'maliwan') return false;
-          if (!codeL.includes('part_secondary_elem') || !codeL.includes('_mal')) return false;
+          // Shared Maliwan dual-element switch chips — usable on any manufacturer gun.
+          const codeL = String(normCode(code) || code || '').toLowerCase();
+          const ptL = String(pt||'').trim().toLowerCase();
+          if (codeL.includes('part_secondary_elem') && codeL.includes('_mal')) return true;
+          if (ptL === 'element switch' && /secondary_elem/.test(codeL)) return true;
+          return false;
         } else if (String(category||'') === 'Repkit' && (String(partType||'').trim().toLowerCase() === 'body' || String(partType||'').trim().toLowerCase() === 'base')) {
           // Repkit body/base parts are manufacturer identity parts like `bor_repair_kit.part_borg`.
           const codeL = String(normCode(code)||'').toLowerCase();
@@ -4537,8 +4655,9 @@ function getAllParts(){
         } else if (String(category||'') === 'Weapon' && String(partType||'').trim().toLowerCase() === 'firmware') {
           const codeL = String(normCode(code) || '').toLowerCase();
           const ptL = String(pt||'').trim().toLowerCase();
-          if (ptL === 'firmware' && /part_firmware|\.part_firmware/i.test(codeL)) return true;
-          if (/classmod\.part_firmware|enhancement\.part_firmware|grenade_gadget\.part_firmware|heavy_weapon_gadget\.part_firmware/i.test(codeL)) return true;
+          // Guided-style: any `part_firmware_*` row (partType often blank on shared chips).
+          if (/part_firmware|\.part_firmware/i.test(codeL)) return true;
+          if (ptL === 'firmware') return true;
           return false;
         } else if (String(category||'') === 'Weapon' && String(partType||'').trim().toLowerCase() === 'body element') {
           const codeL = String(normCode(code) || '').toLowerCase();
@@ -5106,10 +5225,7 @@ function getAllParts(){
       stxSyncCustomSelectIfWrapped($('weaponType'));
     }catch(_e){}
     try{
-      const m = String(state.manufacturer || '').trim().toLowerCase();
-      if (m !== 'maliwan' && state.slots && state.slots.secondaryEle && !state.slots.secondaryEle.__autoDualElement){
-        delete state.slots.secondaryEle;
-      }
+      // Keep a manually picked Maliwan switch when changing manufacturer — dual-element works on any gun.
       if (stxSimpleBuilderItemTypeIsHeavyUi(catUi) && state.slots && state.slots.secondaryEle && !state.slots.secondaryEle.__autoDualElement){
         delete state.slots.secondaryEle;
       }
@@ -6096,8 +6212,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         (category === 'Repkit' && ['perkResist', 'perkImmunity', 'perkNova', 'perkSplat'].includes(slotKeySimple)) ||
         ((category === 'Grenade' || category === 'Gadget' || category === 'Enhancement' || category === 'Character') && slotKeySimple === 'special');
       // Heavy Weapon pools frequently live under generic manufacturers ("gadgets") even when the user selects Maliwan/Ripper/etc.
-      // Keep shared pools visible for the slots that behave universally (licensed/stat) and for loose/multi pools.
-      const isSharedWeaponSlot = (category === 'Weapon' && (slotKeySimple === 'licensed' || slotKeySimple === 'statMod' || slotKeySimple === 'endgame'));
+      // Keep shared pools visible for the slots that behave universally (licensed/stat/firmware/secondary ele) and for loose/multi pools.
+      const isSharedWeaponSlot = (category === 'Weapon' && (slotKeySimple === 'licensed' || slotKeySimple === 'statMod' || slotKeySimple === 'endgame' || slotKeySimple === 'firmware' || slotKeySimple === 'secondaryEle'));
       const relaxShieldGadgetMfr = (category === 'Shield' && ['armor237', 'energy248', 'primary246', 'secondary246', 'pearlElem246', 'pearlStat246', 'resistance', 'firmware246', 'elementType1'].includes(slotKeySimple));
       const isItemBodyFamilySlot = stxSlotRequiresItemManufacturer(schemaItem, category);
       /* Body element parts (e.g. Jakobs `part_body_ele_*`) are filed under normal Weapon rows; Heavy UI must still list them
@@ -6115,17 +6231,17 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const filterParams = {
         category,
         manufacturer: manufacturerForSlot,
-        // Licensed / Stat / Endgame pools are often tagged with non–Heavy-Weapon itemType; keep them visible for Heavy.
+        // Licensed / Stat / Endgame / Firmware / Secondary Element pools are often tagged with non–Heavy-Weapon itemType; keep them visible for Heavy.
         weaponType: (() => {
           if (isLooseFilter && category === 'Weapon') return state.weaponType || '';
           if (isLooseFilter && category === 'Gadget') return 'Heavy Weapon';
-          if (category==='Weapon' && !isLooseFilter && slotKeySimple !== 'statMod' && slotKeySimple !== 'endgame' && slotKeySimple !== 'licensed' && slotKeySimple !== 'bodyEle') return state.weaponType;
+          if (category==='Weapon' && !isLooseFilter && slotKeySimple !== 'statMod' && slotKeySimple !== 'endgame' && slotKeySimple !== 'licensed' && slotKeySimple !== 'bodyEle' && slotKeySimple !== 'firmware' && slotKeySimple !== 'secondaryEle') return state.weaponType;
           return '';
         })(),
         partType: partTypeForSlot,
         relaxShieldGadgetMfr: !!relaxShieldGadgetMfr,
         forceItemManufacturer: !!isItemBodyFamilySlot,
-        ignoreWeaponType: !!(schemaItem.customType === 'otherParts' || schemaItem.customType === 'weaponAdditionalParts')
+        ignoreWeaponType: !!(schemaItem.customType === 'otherParts' || schemaItem.customType === 'weaponAdditionalParts' || slotKeySimple === 'secondaryEle')
       };
 
       rawOpts = filterParts(filterParams).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
@@ -6332,6 +6448,25 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           if (/part_stat|\.endgame\b|part_endgame|stat_augment/.test(c)) return true;
           return pt === 'stat modifier';
         }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+        // Same boost tokens as Tools → Preset Parts (damage/accuracy/etc.).
+        const boostParts = stxSimpleCollectPresetBoostPartsForStatMod();
+        if (boostParts.length){
+          rawOpts = mergeUniquePartOpts(boostParts, rawOpts)
+            .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+        }
+      }
+      if (category === 'Weapon' && schemaItem && schemaItem.key === 'firmware'){
+        const fwParts = stxSimpleCollectFirmwareParts();
+        if (fwParts.length){
+          rawOpts = fwParts.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+        } else if (!rawOpts.length){
+          rawOpts = filterParts({
+            category:'Weapon',
+            manufacturer:'',
+            weaponType:'',
+            partType:'Firmware'
+          }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+        }
       }
       if (isShieldMainBodySlot && !rawOpts.length){
         rawOpts = filterParts({
@@ -6377,8 +6512,21 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
       }
       if (category === 'Weapon' && schemaItem && String(schemaItem.key || '') === 'secondaryEle'){
-        const m = String(state.manufacturer || '').trim().toLowerCase();
-        if (m !== 'maliwan') rawOpts = [];
+        // Always keep Maliwan dual-element switches available (works on non-Maliwan guns too).
+        const isSecEle = (p)=>{
+          const c = String(normCode(p && p.code || '') || '').toLowerCase();
+          return c.includes('part_secondary_elem') && c.includes('_mal');
+        };
+        let sec = (rawOpts || []).filter(isSecEle);
+        if (!sec.length){
+          sec = getAllParts().filter((p)=>{
+            if (!p) return false;
+            const cat = String(p.category || '').trim();
+            if (cat && cat !== 'Weapon' && cat !== 'Prefix' && cat !== 'Rarity') return false;
+            return isSecEle(p);
+          });
+        }
+        rawOpts = sec.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
       }
     }
 
@@ -7805,6 +7953,14 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } else {
         state.mainPart = main;
       }
+      // Keep slots.rarity mirrored for serializers that still read it, without rendering a second Rarity UI.
+      try {
+        if (!state.slots) state.slots = {};
+        if (String((main && main.partType) || '').trim().toLowerCase() === 'rarity' ||
+            /(?:^|[._])comp_0[1-6]_/i.test(String((main && main.code) || ''))) {
+          state.slots.rarity = main;
+        }
+      } catch (_e) {}
       state.detectedCategory = detectCategoryFromMainPart(main) || state.itemType;
       $('detectedCat').textContent = state.detectedCategory || '-';
       $('builderEmpty').style.display = 'none';
@@ -8989,6 +9145,27 @@ function randSeed(){
     return null;
   }
 
+  /** `{fam:id}` or stacked `{fam:[id1 id2 …]}` skin braces — keep opaque through serialize. */
+  function isStackedOrFamilySkinBrace(raw){
+    const s = String(raw || '').trim().replace(/\s+/g, ' ');
+    return /^\{\s*\d+\s*:\s*(?:\[\s*\d+(?:\s+\d+)*\s*\]|\d+)\s*\}$/.test(s);
+  }
+
+  function canonicalizeSkinBraceToken(raw){
+    const s = String(raw || '').trim();
+    if (!s) return '';
+    const parsed = parseIdToken(s);
+    if (parsed && parsed.kind === 'family' && parsed.rawIds != null){
+      const ids = String(parsed.rawIds).trim().replace(/\s+/g, ' ');
+      return `{${parsed.family}:[${ids}]}`;
+    }
+    if (parsed && parsed.kind === 'family' && Array.isArray(parsed.ids) && parsed.ids.length === 1){
+      return `{${parsed.family}:${parsed.ids[0]}}`;
+    }
+    if (isStackedOrFamilySkinBrace(s)) return s.replace(/\s+/g, ' ');
+    return '';
+  }
+
   function tokenFromPair(pair, fallbackFamily){
     const p = pair || null;
     if (!p || !Number.isFinite(Number(p.itemId))) return '';
@@ -9098,6 +9275,10 @@ function randSeed(){
       return `"${String(spawnRaw).replace(/"/g, '\\"')}"`;
     }
 
+    // Mixer / numeric skins: keep `{fam:id}` and stacked `{fam:[id1 id2]}` intact.
+    const opaque = canonicalizeSkinBraceToken(raw);
+    if (opaque) return opaque;
+
     let pair = parseFamilyItemPair(raw);
     if (pair){
       return tokenFromPair(pair, null);
@@ -9106,6 +9287,8 @@ function randSeed(){
     try{
       const ds = optionEl && optionEl.dataset ? optionEl.dataset : null;
       const idRaw = String((ds && (ds.idRaw || ds.idraw || ds.skinIdRaw || ds.skinidraw)) || '').trim();
+      const opaqueDs = canonicalizeSkinBraceToken(idRaw.indexOf('{') === 0 ? idRaw : (idRaw ? `{${idRaw}}` : ''));
+      if (opaqueDs) return opaqueDs;
       pair = parseFamilyItemPair(idRaw);
       if (pair) return tokenFromPair(pair, null);
 
@@ -9119,7 +9302,13 @@ function randSeed(){
     try{
       const text = String(optionEl && (optionEl.textContent || optionEl.label) || '').trim();
       const base = String(optionEl && optionEl.getAttribute && optionEl.getAttribute('data-base-label') || '').trim();
-      let m = text.match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/) || text.match(/\(\s*(\d+)\s*:\s*(\d+)\s*\)/);
+      let m = text.match(/\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}/);
+      if (!m) m = base.match(/\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}/);
+      if (m){
+        const ids = String(m[2] || '').match(/\d+/g) || [];
+        if (ids.length) return `{${Number(m[1])}:[${ids.join(' ')}]}`;
+      }
+      m = text.match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/) || text.match(/\(\s*(\d+)\s*:\s*(\d+)\s*\)/);
       if (!m) m = base.match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/) || base.match(/\(\s*(\d+)\s*:\s*(\d+)\s*\)/);
       if (m) return `{${Number(m[1])}:${Number(m[2])}}`;
     }catch(_){}
@@ -9132,6 +9321,9 @@ function randSeed(){
   function forceFamilyOnRarityToken(tokenRaw, fallbackFamily){
     const s = String(tokenRaw || '').trim();
     if (!s) return '';
+    // Never rewrite stacked mixes or explicit fam:id skin braces.
+    const opaque = canonicalizeSkinBraceToken(s);
+    if (opaque) return opaque;
     const pair = parseFamilyItemPair(s);
     if (!pair) return s;
     return tokenFromPair(pair, fallbackFamily);
@@ -9406,6 +9598,7 @@ function randSeed(){
     const seen = new Set();
     const grouped = {
       spawn: [],
+      mixes: [],
       numeric: [],
       phosphene: []
     };
@@ -9435,6 +9628,7 @@ function randSeed(){
       const label = String(labelRaw || '').trim();
       if (isPhospheneLabel(label) || isPhospheneLabel(value)) return 'phosphene';
       if (hasSpawnCode(label, value) || /^Cosmetics_Weapon_/i.test(value)) return 'spawn';
+      if (/^\{\s*\d+\s*:\s*\[/.test(value) || /custom\s*mix|auto\s+\d+-way\s+mix/i.test(label)) return 'mixes';
       return 'numeric';
     };
     const pushEntry = (value, label, groupKey)=>{
@@ -9513,6 +9707,7 @@ function randSeed(){
       sel.innerHTML = '<option value="">-- None --</option>';
       const sortRows = (rows)=>rows.sort((a,b)=>String(a.label || '').localeCompare(String(b.label || ''), undefined, { numeric:true, sensitivity:'base' }));
       sortRows(grouped.spawn);
+      sortRows(grouped.mixes);
       sortRows(grouped.numeric);
       sortRows(grouped.phosphene);
       const appendGroup = (title, rows, done)=>{
@@ -9559,8 +9754,10 @@ function randSeed(){
         if (opts && typeof opts.onDone === 'function') opts.onDone();
       };
       appendGroup('Spawn-ID Skins', grouped.spawn, ()=>{
-        appendGroup('Numeric ID Skins', grouped.numeric, ()=>{
-          appendGroup('Phosphene / Shiny', grouped.phosphene, finishSkinDom);
+        appendGroup('Custom Mixes', grouped.mixes, ()=>{
+          appendGroup('Numeric ID Skins', grouped.numeric, ()=>{
+            appendGroup('Phosphene / Shiny', grouped.phosphene, finishSkinDom);
+          });
         });
       });
     }
@@ -9699,7 +9896,8 @@ function computeFullDeserializedCode(){
   let skinRarityToken = (weaponSkinSelection && weaponSkinSelection.rarityToken)
     ? forceFamilyOnRarityToken(weaponSkinSelection.rarityToken, baseFamilyId)
     : '';
-  if (weaponSkinSelection && Number.isFinite(weaponSkinSelection.rarityId)){
+  const skinIsStackedMix = !!(skinRarityToken && /^\{\s*\d+\s*:\s*\[/.test(skinRarityToken));
+  if (weaponSkinSelection && Number.isFinite(weaponSkinSelection.rarityId) && !skinIsStackedMix){
     const skinRid = Number(weaponSkinSelection.rarityId);
     rarityItemId = skinRid;
     if (!String(skinRarityToken || '').trim()){
@@ -9721,14 +9919,29 @@ function computeFullDeserializedCode(){
   const orderedHasRarity = !!(rarityItemIdStr && outputTokens.some(t => tokenIdOnlyForRarity(t) === rarityItemIdStr));
   const rarityTokRaw = String(skinRarityToken || '').trim()
     || (Number.isFinite(rarityItemId) ? `{${rarityItemId}}` : '');
-  const rarityTokNorm = rarityTokRaw ? normalizeIdTokensForBaseFamilyWithPrefs([rarityTokRaw], baseFamilyId) : [];
-  const rarityTok = Array.isArray(rarityTokNorm) && rarityTokNorm.length
-    ? String(rarityTokNorm[0] || '').trim()
-    : rarityTokRaw;
+  // Skin braces (incl. mixer stacks) must not compact to bare `{id}` — same TypeID as the gun
+  // would turn `{3:79}` / `{3:[78 76]}` into `{79}` and break stacked mixes.
+  let rarityTok = rarityTokRaw;
+  if (rarityTokRaw && !canonicalizeSkinBraceToken(rarityTokRaw) && !/^\{\s*\d+\s*:\s*\[/.test(rarityTokRaw)){
+    const rarityTokNorm = normalizeIdTokensForBaseFamilyWithPrefs([rarityTokRaw], baseFamilyId);
+    rarityTok = Array.isArray(rarityTokNorm) && rarityTokNorm.length
+      ? String(rarityTokNorm[0] || '').trim()
+      : rarityTokRaw;
+  } else if (canonicalizeSkinBraceToken(rarityTokRaw)){
+    rarityTok = canonicalizeSkinBraceToken(rarityTokRaw);
+  }
   const __rarityTokN = String(rarityTok || '').replace(/\s+/g,'').trim();
   const isSameAsSelectedRarityToken = (tok)=>{
     if (!__rarityTokN) return false;
-    const one = normalizeIdTokensForBaseFamilyWithPrefs([String(tok || '').trim()], baseFamilyId);
+    const t = String(tok || '').trim();
+    if (!t) return false;
+    if (t.replace(/\s+/g, '').trim() === __rarityTokN) return true;
+    // Stacked mixes only match exact brace form.
+    if (skinIsStackedMix) return false;
+    const skinId = tokenIdOnlyForRarity(rarityTok) || rarityItemIdStr;
+    const tokId = tokenIdOnlyForRarity(t);
+    if (skinId && tokId && skinId === tokId) return true;
+    const one = normalizeIdTokensForBaseFamilyWithPrefs([t], baseFamilyId);
     if (!Array.isArray(one) || !one.length) return false;
     return String(one[0] || '').replace(/\s+/g,'').trim() === __rarityTokN;
   };
@@ -10158,7 +10371,7 @@ function computeFullDeserializedCode(){
             } catch (_e3) {
               try { if ($('outCodeB85')) $('outCodeB85').value = ''; } catch (_e4) {}
             }
-          }, force ? 0 : 450);
+          }, force ? 0 : 80);
         }
       }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
       if (!force) window.__CC_LAST_CODE_TARGET = 'simple';

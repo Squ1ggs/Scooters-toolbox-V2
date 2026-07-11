@@ -902,8 +902,12 @@
       window.extractedSerials = [];
       window.__yamlInventorySource = '';
       window.__yamlSerialsPageIndex = 0;
-      refreshBackpackUI();
-      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+      function clearUi() {
+        if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
+        if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+      }
+      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(clearUi);
+      else clearUi();
       return;
     }
     window.__yamlSerialsPageIndex = 0;
@@ -1085,16 +1089,8 @@
     }
     if (s.charAt(0) === '@') {
       var u = normalizeAtU(s);
+      /* Never re-decode/re-pack a valid @U — local deserialize truncates and shortens serials. */
       if (validStoredB85(u)) return u;
-      if (typeof window.deserializeBase85 === 'function') {
-        try {
-          var dec = String(window.deserializeBase85(u) || '').trim();
-          if (dec && (dec.indexOf('||') >= 0 || /\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+/.test(dec))) {
-            var again = packDeserializedToB85(dec);
-            if (again) return again;
-          }
-        } catch (_) {}
-      }
       return '';
     }
     if (!looksDeserializedOrPipe(s) && validStoredB85(normalizeAtU(s)) && s.length >= 10) {
@@ -1837,6 +1833,10 @@
     }
 
     function openSaveYamlDrawer() {
+      if (typeof window.stxOpenSaveYamlDrawer === 'function') {
+        window.stxOpenSaveYamlDrawer({ skipParse: true });
+        return;
+      }
       var drawer = byId('rp-saveyaml-drawer');
       if (drawer) {
         drawer.classList.add('rp-open');

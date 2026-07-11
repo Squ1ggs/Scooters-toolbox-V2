@@ -888,6 +888,10 @@
   }
 
   function openSaveYamlDrawer() {
+    if (typeof window.stxOpenSaveYamlDrawer === 'function') {
+      window.stxOpenSaveYamlDrawer({ skipParse: true });
+      return;
+    }
     var drawer = byId('rp-saveyaml-drawer');
     if (drawer) {
       drawer.classList.add('rp-open');

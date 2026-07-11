@@ -48,6 +48,8 @@
 
   function normalizeIdTokenForBaseFamily(token, baseFamilyId) {
     var t = normalizeBracedIdToken(token);
+    // Preserve stacked skin mixes `{fam:[id1 id2]}` — never collapse to bare `{id}`.
+    if (/^\{\s*\d+\s*:\s*\[/.test(t)) return t;
     var m = t.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
     if (!m) return t; // already singular like "{95}" or non-matching
     var fam = Number(m[1]);

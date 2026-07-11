@@ -211,14 +211,13 @@
       }
     },
     {
-      "slug": "crowdsourced",
-      "gear_slug": "crowdsourced",
+      "slug": "crowsourced",
+      "gear_slug": "crowsourced",
       "display_name": "Crow-Sourced",
       "spawn_tokens": [
-        "crowdsourced",
         "crowsourced"
       ],
-      "yaml_key": "shiny_crowdsourced",
+      "yaml_key": "shiny_crowsourced",
       "expected_inv": "ord_ar",
       "weapon_type": "Assault Rifle",
       "manufacturer": "Order",
@@ -235,20 +234,16 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Community DB: Order AR; parsed Nexus may still expose VLA_SR CrowdSourced until inv tables update",
+      "notes": "Order AR pearlescent (legendary_pearl). Not Vladof CrowdSourced / Midnight Defiance.",
       "comp_pearl": "ORD_AR.comp_05_legendary_crowsourced",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
       "comp_pearl_slug": "crowsourced",
       "itempool_pearl": "itempool_ord_ar_05_legendary_crowsourced_pearl",
       "comp_legendary_candidates": [
-        "ord_ar.comp_05_legendary_crowdsourced",
         "ord_ar.comp_05_legendary_crowsourced"
       ],
       "comp_candidates": [
-        "ord_ar.comp_05_legendary_crowdsourced",
-        "ord_ar.comp_06_pearl_crowdsourced",
-        "ord_ar.comp_06_pearlescent_crowdsourced",
         "ord_ar.comp_05_legendary_crowsourced",
         "ord_ar.comp_06_pearl_crowsourced",
         "ord_ar.comp_06_pearlescent_crowsourced"
@@ -261,7 +256,7 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "ORD_AR.comp_05_legendary_crowsourced",
       "internal_name": "crowsourced",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -272,6 +267,66 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
+        "pearl_comp_style": "legendary_pearl"
+      }
+    },
+    {
+      "slug": "raiden",
+      "gear_slug": "raiden",
+      "display_name": "Raiden",
+      "spawn_tokens": [
+        "raiden"
+      ],
+      "yaml_key": "shiny_raiden",
+      "expected_inv": "dad_sm",
+      "weapon_type": "SMG",
+      "manufacturer": "Daedalus",
+      "rarity": "Pearlescent",
+      "red_text": null,
+      "unique_effect": null,
+      "drop_source": "Biff Fistful",
+      "dedicated_drop": true,
+      "raid_drop": false,
+      "world_drop": false,
+      "mission_reward": false,
+      "vendor": false,
+      "dlc": "Bounty Pack 3",
+      "patch_introduced": null,
+      "patch_removed": null,
+      "status": "verified",
+      "notes": "Bounty Pack 3 pearlescent (legendary_pearl). Dedicated drop: Biff Fistful (ItemPoolList_Murderer).",
+      "comp_pearl": "DAD_SM.comp_05_legendary_Raiden",
+      "comp_pearl_expected": null,
+      "pearl_comp_style": "legendary_pearl",
+      "comp_pearl_slug": "raiden",
+      "itempool_pearl": null,
+      "comp_legendary_candidates": [
+        "dad_sm.comp_05_legendary_raiden"
+      ],
+      "comp_candidates": [
+        "dad_sm.comp_05_legendary_raiden",
+        "dad_sm.comp_06_pearl_raiden",
+        "dad_sm.comp_06_pearlescent_raiden"
+      ],
+      "alternate_editor_comps": [],
+      "id_raw": "20:70",
+      "skin_code": "{20:70}",
+      "serial_u": null,
+      "serial_hint": "{20:70} + |\"c\",1|",
+      "camo_token": "|\"c\",1|",
+      "internal_balance_name": "DAD_SM.comp_05_legendary_Raiden",
+      "internal_name": "raiden",
+      "can_be_phosphene": false,
+      "can_be_pearlescent": true,
+      "wiki_url": null,
+      "verification": {
+        "in_gear_database": false,
+        "in_supplement": true,
+        "in_nexus_export": true,
+        "in_pearl_itempool": false,
+        "in_echo4": false,
+        "in_yaml_catalog": true,
+        "comp_match_via": "manual_community",
         "pearl_comp_style": "legendary_pearl"
       }
     },

@@ -78,6 +78,70 @@
     }
   };
 
+  /**
+   * Open Save/YAML drawer with paint-first timing (mobile INP).
+   * Shows the shell immediately, keeps the heavy body skipped for 1–2 frames,
+   * then unlocks content and optionally schedules backpack parse.
+   */
+  window.stxOpenSaveYamlDrawer = function (opts) {
+    opts = opts || {};
+    var drawer = document.getElementById('rp-saveyaml-drawer');
+    if (!drawer) return;
+    var alreadyOpen = drawer.classList.contains('rp-open');
+    drawer.classList.add('rp-open');
+    if (!alreadyOpen) drawer.classList.add('rp-opening');
+
+    function afterPaint() {
+      try { drawer.classList.remove('rp-opening'); } catch (_) {}
+      try { document.body.classList.add('rp-saveyaml-drawer-open'); } catch (_) {}
+      if (opts.skipParse) return;
+      function runParse() {
+        var ta = document.getElementById('yamlInput');
+        var hasYaml = !!(ta && String(ta.value || '').trim());
+        if (!hasYaml) {
+          if (typeof window.updateYamlInjectButtons === 'function') {
+            try { window.updateYamlInjectButtons(); } catch (_) {}
+          }
+          return;
+        }
+        if (typeof window.scheduleParseYAMLBackpack === 'function') {
+          var delay = opts.parseDelay;
+          if (delay == null) delay = liteUi ? 220 : 120;
+          window.scheduleParseYAMLBackpack(delay);
+        }
+      }
+      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runParse);
+      else window.setTimeout(runParse, 0);
+    }
+
+    if (alreadyOpen) {
+      afterPaint();
+      return;
+    }
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(afterPaint);
+      });
+    } else {
+      window.setTimeout(afterPaint, liteUi ? 48 : 32);
+    }
+  };
+
+  window.stxCloseSaveYamlDrawer = function () {
+    var drawer = document.getElementById('rp-saveyaml-drawer');
+    if (drawer) {
+      drawer.classList.remove('rp-open');
+      drawer.classList.remove('rp-opening');
+    }
+    try { document.body.classList.remove('rp-saveyaml-drawer-open'); } catch (_) {}
+  };
+
+  window.stxToggleSaveYamlDrawer = function () {
+    var drawer = document.getElementById('rp-saveyaml-drawer');
+    if (drawer && drawer.classList.contains('rp-open')) window.stxCloseSaveYamlDrawer();
+    else window.stxOpenSaveYamlDrawer();
+  };
+
   /** Queue idle work so splash-dismiss handlers don't pile up on one frame. */
   window.stxQueueIdleWork = function (fn, delayMs) {
     if (typeof fn !== 'function') return;
@@ -138,7 +202,6 @@
       'rebuildBuildStatsSection',
       'ccAdvancedPartsSearch',
       'rebuildImportedInspectorDetails',
-      'saveYamlDetails',
       'rebuildPrefixItemSearchSection',
       'rebuildGodrollSection'
     ];

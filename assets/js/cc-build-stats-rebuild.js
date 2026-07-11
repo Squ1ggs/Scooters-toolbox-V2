@@ -15,14 +15,38 @@
   function byId(id) { try { return document.getElementById(id); } catch (_) { return null; } }
   function q(s) { return String(s == null ? '' : s).trim(); }
 
-  /** Text fields scanned for part refs + slug hints (standalone builders + main toolbox). */
-  var BUILD_STATS_TEXT_SOURCE_IDS = [
-    /* Omit outCodeB85: Base85 strings falsely match `\\d+:\\d+` and inflate part lists / damage aggregates. */
-    'guidedOutputDeserialized', 'guidedOutputSerial', 'outCode', 'deserialized-code-output',
-    'deserialized-code-output-yaml', 'deserialized-result', 'deserialized-result-yaml',
-    'output-code-live', 'output-code-yaml', 'output-code', 'importBox', 'code-output',
-    'yamlInput', 'bv-input', 'yamlAddSerialsInput', 'serialLibraryPasteArea'
+  /**
+   * Text fields for slug hints only (never yaml/library paste — those inflate Core Snapshot).
+   * Omit outCodeB85 / raw Base85: false `\\d+:\\d+` matches inflate part lists.
+   */
+  var BUILD_STATS_SLUG_SOURCE_IDS = [
+    'guidedOutputDeserialized', 'outCode', 'deserialized-code-output',
+    'deserialized-code-output-yaml', 'deserialized-result', 'output-code-live', 'output-code', 'importBox'
   ];
+
+  function resolveStatsSourceMode() {
+    try {
+      var last = String(window.__CC_LAST_CODE_TARGET || '').trim().toLowerCase();
+      if (last === 'guided' || last === 'simple') return last;
+    } catch (_) {}
+    try {
+      if (document.documentElement.classList.contains('stx-builder-mode-guided')) return 'guided';
+    } catch (_) {}
+    return 'simple';
+  }
+
+  function fieldText(el) {
+    if (!el) return '';
+    return String(el.value != null ? el.value : el.textContent || '');
+  }
+
+  /** Prefer deserialized / toolbox codes; skip pure @U Base85 blobs. */
+  function looksLikeDeserializedBuildText(text) {
+    var s = String(text || '').trim();
+    if (!s) return false;
+    if (/^@U/i.test(s) && s.indexOf('||') < 0 && !/\b\d+:\d+\b/.test(s)) return false;
+    return /\b\d+:\d+\b/.test(s) || /\|\|/.test(s) || /^\d+\s*,/.test(s) || /\{/.test(s);
+  }
 
   function inferBaseFamilyFromSerialText(text) {
     var s = String(text || '').trim();
@@ -452,10 +476,10 @@
         if (sd.item && sd.item.slug) return String(sd.item.slug);
       }
     } catch (_) {}
-    for (var si = 0; si < BUILD_STATS_TEXT_SOURCE_IDS.length; si++) {
-      var el = byId(BUILD_STATS_TEXT_SOURCE_IDS[si]);
+    for (var si = 0; si < BUILD_STATS_SLUG_SOURCE_IDS.length; si++) {
+      var el = byId(BUILD_STATS_SLUG_SOURCE_IDS[si]);
       if (!el) continue;
-      var t = String(el.value != null ? el.value : el.textContent || '').slice(0, 120000);
+      var t = fieldText(el).slice(0, 120000);
       var m = t.match(/\b([a-z]+_(?:pistol|shotgun|ar|smg|sniper|heavy_weapon)(?:_[a-z0-9]+)*)\b/i);
       if (m) return m[1].toLowerCase();
       var m2 = t.match(/(?:^|[\s"'{,])(slug|itemtype|item_type)\s*[:=]\s*['\"]?([a-z][a-z0-9_]*(?:_(?:pistol|shotgun|ar|smg|sniper|heavy_weapon)|_[a-z0-9_]+)*)/i);
@@ -569,38 +593,62 @@
   }
 
   /**
-   * Collect part refs for stat accumulation — keeps duplicate/stacked tokens (presets, qty, repeated tail parts).
+   * Collect part refs for stat accumulation — one active builder source only.
+   * Keeps duplicate/stacked tokens within that serial; does not scan YAML/library paste.
    */
   function collectRefsListForStats() {
     var refList = [];
+    var mode = resolveStatsSourceMode();
     var outEl = byId('outCode');
-    var useSimplePrimary = false;
-    try {
-      useSimplePrimary = !!(outEl && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader());
-    } catch (_) {}
+    var usedPrimaryText = false;
 
-    if (useSimplePrimary) {
-      var txtOut = String(outEl.value != null ? outEl.value : outEl.textContent || '').slice(0, 200000);
-      var baseFam = inferBaseFamilyFromSerialText(txtOut);
-      addRefsFromText(txtOut, refList, { baseFamilyId: baseFam });
-      appendSimpleExtrasRefs(refList, baseFam);
-    } else {
-      for (var ci = 0; ci < BUILD_STATS_TEXT_SOURCE_IDS.length; ci++) {
-        var elC = byId(BUILD_STATS_TEXT_SOURCE_IDS[ci]);
-        if (!elC) continue;
-        var txtC = String(elC.value != null ? elC.value : elC.textContent || '').slice(0, 200000);
-        addRefsFromText(txtC, refList, { baseFamilyId: inferBaseFamilyFromSerialText(txtC) });
+    if (mode === 'guided') {
+      var guidedDeser = byId('guidedOutputDeserialized');
+      var gTxt = fieldText(guidedDeser).slice(0, 200000);
+      if (looksLikeDeserializedBuildText(gTxt)) {
+        addRefsFromText(gTxt, refList, { baseFamilyId: inferBaseFamilyFromSerialText(gTxt) });
+        usedPrimaryText = true;
+      } else {
+        var guidedSer = byId('guidedOutputSerial');
+        var gSer = fieldText(guidedSer).slice(0, 200000);
+        if (looksLikeDeserializedBuildText(gSer)) {
+          addRefsFromText(gSer, refList, { baseFamilyId: inferBaseFamilyFromSerialText(gSer) });
+          usedPrimaryText = true;
+        }
       }
-      appendSimpleExtrasRefs(refList, null);
     }
 
-    try {
-      var sd = window.selectedData || null;
-      if (sd && typeof sd === 'object') {
-        var bfSd = useSimplePrimary && outEl ? inferBaseFamilyFromSerialText(String(outEl.value || '')) : null;
-        walkSelectedDataRefs(sd, refList, bfSd);
+    if (!usedPrimaryText) {
+      var txtOut = fieldText(outEl).slice(0, 200000);
+      if (looksLikeDeserializedBuildText(txtOut) || (txtOut && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader())) {
+        var baseFam = inferBaseFamilyFromSerialText(txtOut);
+        addRefsFromText(txtOut, refList, { baseFamilyId: baseFam });
+        appendSimpleExtrasRefs(refList, baseFam);
+        usedPrimaryText = true;
+      } else {
+        var deserOut = byId('deserialized-code-output');
+        var dTxt = fieldText(deserOut).slice(0, 200000);
+        if (looksLikeDeserializedBuildText(dTxt)) {
+          addRefsFromText(dTxt, refList, { baseFamilyId: inferBaseFamilyFromSerialText(dTxt) });
+          appendSimpleExtrasRefs(refList, inferBaseFamilyFromSerialText(dTxt));
+          usedPrimaryText = true;
+        }
       }
-    } catch (_) {}
+    }
+
+    /* Only walk selectedData when primary text did not already supply the build (avoids double-count). */
+    if (!usedPrimaryText || !refList.length) {
+      try {
+        var sd = window.selectedData || null;
+        if (sd && typeof sd === 'object') {
+          var bfSd = outEl ? inferBaseFamilyFromSerialText(fieldText(outEl)) : null;
+          walkSelectedDataRefs(sd, refList, bfSd);
+        }
+      } catch (_) {}
+      if (!refList.length && mode === 'simple') {
+        appendSimpleExtrasRefs(refList, null);
+      }
+    }
 
     if (!refList.length) return null;
     var resolved = [];
@@ -1166,8 +1214,9 @@
           window.refreshGuidedOutput.__buildStatsWrapped = true;
         }
       }
-      for (var bi = 0; bi < BUILD_STATS_TEXT_SOURCE_IDS.length; bi++) {
-        var elB = byId(BUILD_STATS_TEXT_SOURCE_IDS[bi]);
+      var bindIds = BUILD_STATS_SLUG_SOURCE_IDS;
+      for (var bi = 0; bi < bindIds.length; bi++) {
+        var elB = byId(bindIds[bi]);
         if (elB && !elB.__buildStatsInputBound) {
           elB.addEventListener('input', function () { setTimeout(triggerRefresh, 80); });
           elB.addEventListener('change', function () { setTimeout(triggerRefresh, 80); });

@@ -18,6 +18,12 @@
     'ccGrenadeRaritySelect', 'ccRepkitRaritySelect', 'ccEnhancementRaritySelect',
     'ccGadgetRaritySelect', 'ccHeavyRaritySelect', 'cmRaritySelect'
   ];
+  var LARGE_SKIN_SELECT_IDS = [
+    'mixSkin1', 'mixSkin2', 'mixSkin3',
+    'toolsSkinSelect', 'toolsCamoSelect',
+    'ccGuidedSkinSelect', 'ccGuidedCamoSelect',
+    'skinSelect', 'camoSelect'
+  ];
   var iconWarmCache = Object.create(null);
 
   function isGuidedSlotGridSelect(sel) {
@@ -36,6 +42,9 @@
     }
     for (var j = 0; j < GUIDED_SLOT_SELECT_IDS.length; j++) {
       if (GUIDED_SLOT_SELECT_IDS[j] === id) return true;
+    }
+    for (var k = 0; k < LARGE_SKIN_SELECT_IDS.length; k++) {
+      if (LARGE_SKIN_SELECT_IDS[k] === id) return true;
     }
     return false;
   }
@@ -206,7 +215,18 @@
       var list = document.createElement('div');
       list.className = 'custom-select-list';
       list.style.cssText = 'display:none; position:absolute; left:0; right:0; top:100%; margin-top:2px; max-height:220px; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; z-index:9999; border-radius:6px; border:1px solid rgba(255, 120, 220, 0.45); box-shadow:0 8px 24px rgba(0,0,0,1); background:' + DROPDOWN_BG + ';';
-      list.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
+      list.addEventListener('wheel', function (e) {
+        e.stopPropagation();
+        // Keep page from scrolling while the user scrolls a long option list.
+        var el = list;
+        var delta = e.deltaY;
+        if (!delta) return;
+        var atTop = el.scrollTop <= 0;
+        var atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+        if ((delta < 0 && atTop) || (delta > 0 && atBottom)) {
+          e.preventDefault();
+        }
+      }, { passive: false });
       list.addEventListener('touchstart', function (e) { e.stopPropagation(); }, { passive: true });
       list.addEventListener('touchmove', function (e) { e.stopPropagation(); }, { passive: true });
       list.addEventListener('pointerdown', function (e) { e.stopPropagation(); }, { passive: true });
@@ -403,7 +423,7 @@
       w.__ccLiftNodes = lift;
     }
 
-    function restoreMobileListHost() {
+    function restoreFloatedListHost() {
       if (!wrapper.__ccListFloated) return;
       wrapper.__ccListFloated = false;
       list.classList.remove('custom-select-list--floating');
@@ -414,26 +434,39 @@
       list.style.width = '';
       list.style.right = '';
       list.style.maxHeight = '';
+      list.style.zIndex = '';
+      list.style.pointerEvents = '';
+      list.style.overflowY = '';
       if (list.parentNode !== wrapper) wrapper.appendChild(list);
     }
+    // Back-compat alias for any external callers.
+    function restoreMobileListHost() { restoreFloatedListHost(); }
 
-    function floatMobileList() {
-      if (!touchSelectUi()) return;
+    /**
+     * Always float the open list onto document.body.
+     * Desktop used a full-screen backdrop at z-index 2147482000 while the list
+     * stayed position:absolute inside a low stacking context (details z-index
+     * ~100–220), so wheel/click never reached the options. Floating fixes that
+     * for skin mixer, tools skins, guided slots, etc.
+     */
+    function floatOpenList() {
       var r = display.getBoundingClientRect();
       wrapper.__ccListFloated = true;
       if (list.parentNode !== document.body) document.body.appendChild(list);
       list.classList.add('custom-select-list--floating');
       var pad = 8;
-      var width = Math.min(r.width, window.innerWidth - pad * 2);
+      var width = Math.min(Math.max(r.width, 160), window.innerWidth - pad * 2);
       var left = Math.max(pad, Math.min(r.left, window.innerWidth - width - pad));
       var spaceBelow = window.innerHeight - r.bottom - pad;
       var spaceAbove = r.top - pad;
-      var maxH = Math.min(320, Math.max(140, Math.max(spaceBelow, spaceAbove) - 6));
+      var preferred = touchSelectUi() ? 320 : 360;
+      var maxH = Math.min(preferred, Math.max(160, Math.max(spaceBelow, spaceAbove) - 6));
       list.style.position = 'fixed';
       list.style.left = left + 'px';
       list.style.width = width + 'px';
       list.style.right = 'auto';
       list.style.maxHeight = maxH + 'px';
+      list.style.overflowY = 'auto';
       list.style.zIndex = '2147483001';
       list.style.pointerEvents = 'auto';
       if (spaceBelow >= 120 || spaceBelow >= spaceAbove) {
@@ -444,6 +477,7 @@
         list.style.bottom = (window.innerHeight - r.top + 2) + 'px';
       }
     }
+    function floatMobileList() { floatOpenList(); }
 
     var openGuardUntil = 0;
     var closeHandlerTimer = 0;
@@ -478,14 +512,21 @@
         closeHandlerTimer = 0;
       }
       list.style.display = 'none';
-      restoreMobileListHost();
+      restoreFloatedListHost();
       wrapper.classList.remove('is-open');
       wrapper.style.zIndex = '';
       clearSelectLift(wrapper);
       openGuardUntil = 0;
       try { window.__stxCustomSelectOpenGuardUntil = 0; } catch (_) {}
       document.removeEventListener('click', closeHandler, false);
+      document.removeEventListener('scroll', onViewportChange, true);
+      window.removeEventListener('resize', onViewportChange, false);
       hideSelectBackdrop(0);
+    }
+
+    function onViewportChange() {
+      if (!wrapper.classList.contains('is-open')) return;
+      floatOpenList();
     }
     wrapper.__ccFinishClose = finishCloseDropdown;
 
@@ -726,17 +767,22 @@
             }
           } catch (_) {}
         });
+      } else if (sid === 'mixSkin1' || sid === 'mixSkin2' || sid === 'mixSkin3') {
+        lazyOpen(function () {
+          try {
+            if (typeof window.populateMixDropdowns === 'function') window.populateMixDropdowns();
+          } catch (_) {}
+        });
       }
-      if (!touchSelectUi()) {
-        var bd = ensureSelectBackdrop();
-        bd.style.pointerEvents = 'auto';
-        bd.onclick = function (ev) {
-          if (ev) {
-            try { ev.preventDefault(); ev.stopPropagation(); } catch (_) {}
-          }
-          backdropClosesDropdown(ev, finishCloseDropdown);
-        };
-      }
+      var bd = ensureSelectBackdrop();
+      bd.style.pointerEvents = 'auto';
+      bd.style.zIndex = '2147482000';
+      bd.onclick = function (ev) {
+        if (ev) {
+          try { ev.preventDefault(); ev.stopPropagation(); } catch (_) {}
+        }
+        backdropClosesDropdown(ev, finishCloseDropdown);
+      };
       wrapper.classList.add('is-open');
       wrapper.style.zIndex = '2147483000';
       list.style.display = 'block';
@@ -744,7 +790,9 @@
         list.innerHTML = '<div class="cc-custom-select-loading" style="padding:10px;color:var(--text-muted);font-size:11px;">Loading options…</div>';
       }
       applySelectLift(wrapper);
-      if (touchSelectUi()) floatMobileList();
+      floatOpenList();
+      document.addEventListener('scroll', onViewportChange, true);
+      window.addEventListener('resize', onViewportChange, false);
       var guardMs = touchSelectUi() ? 520 : 120;
       openGuardUntil = Date.now() + guardMs;
       try { window.__stxCustomSelectOpenGuardUntil = openGuardUntil; } catch (_) {}
@@ -754,9 +802,7 @@
         if (openPolicy.sync) buildList();
         else requestAnimationFrame(function () { buildList(); });
       }
-      if (touchSelectUi()) {
-        requestAnimationFrame(function () { floatMobileList(); });
-      }
+      requestAnimationFrame(function () { floatOpenList(); });
     }
 
     function closeHandler(e) {

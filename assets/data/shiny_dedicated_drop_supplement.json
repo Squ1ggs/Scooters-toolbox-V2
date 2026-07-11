@@ -1,0 +1,2476 @@
+{
+  "generated_at": "2026-07-11T00:22:46.805Z",
+  "note": "Dedicated shiny boss links for DLC rows missing from the hub Nexus ItemPoolList export. Prefer live Nexus when present.",
+  "sources": [
+    "references/bl4_toolbox_export/ncs/json/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/ncs/json/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/ncs/json/Nexus-Data-ItemPoolList6.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output/json/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output/json/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output/json/Nexus-Data-ItemPoolList6.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json/Nexus-Data-ItemPoolList6.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json2/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json2/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json2/Nexus-Data-ItemPoolList6.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json3/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json3/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/tools/Borderlands-4.NcsParser/output1/json3/Nexus-Data-ItemPoolList6.json",
+    "references/bl4_toolbox_export/ncs/json-monokrome/Nexus-Data-ItemPoolList0.json",
+    "references/bl4_toolbox_export/ncs/json-monokrome/Nexus-Data-ItemPoolList4.json",
+    "references/bl4_toolbox_export/ncs/json-monokrome/Nexus-Data-ItemPoolList6.json"
+  ],
+  "entries": [
+    {
+      "slug": "anarchy",
+      "itempool_shiny": "itempool_ted_sg_05_legendary_anarchy_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "ShatterlandsGuardian",
+          "itempool_list": "ItemPoolList_ShatterlandsGuardian",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "asher",
+      "itempool_shiny": "itempool_mal_sr_05_legendary_asher_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "MeatPlantGunship",
+          "itempool_list": "ItemPoolList_MeatPlantGunship",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore MeatPlantGunship",
+          "itempool_list": "ItemPoolList_MeatPlantGunship_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "atlien",
+      "itempool_shiny": "itempool_ted_ps_05_legendary_atlien_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "KOTOMotherbaseBrute",
+          "itempool_list": "ItemPoolList_KOTOMotherbaseBrute",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore KOTOMotherbaseBrute",
+          "itempool_list": "ItemPoolList_KOTOMotherbaseBrute_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "ballista",
+      "itempool_shiny": "itempool_jak_sr_05_legendary_ballista_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Timekeeper TKBoss",
+          "itempool_list": "ItemPoolList_Timekeeper_TKBoss",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "beegun",
+      "itempool_shiny": "itempool_vla_sm_05_legendary_beegun_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "TrashThresher",
+          "itempool_list": "ItemPoolList_TrashThresher",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "bloodstarved",
+      "itempool_shiny": "itempool_dad_sm_05_legendary_bloodstarved_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SurpriseAttack",
+          "itempool_list": "ItemPoolList_SurpriseAttack",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SurpriseAttack",
+          "itempool_list": "ItemPoolList_SurpriseAttack_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "bod",
+      "itempool_shiny": "itempool_dad_sg_05_legendary_bod_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "CityCat",
+          "itempool_list": "ItemPoolList_CityCat",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore CityCat",
+          "itempool_list": "ItemPoolList_CityCat_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "bonnieclyde",
+      "itempool_shiny": "itempool_jak_ar_05_legendary_bonnieclyde_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Redguard",
+          "itempool_list": "ItemPoolList_Redguard",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "boomslang",
+      "itempool_shiny": "itempool_jak_sr_05_legendary_boomslang_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Destroyer",
+          "itempool_list": "ItemPoolList_Destroyer",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Destroyer",
+          "itempool_list": "ItemPoolList_Destroyer_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "brickhouse",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_brickhouse_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Biff Fistful",
+          "itempool_list": "ItemPoolList_Murderer",
+          "character_def": "Char_DigiZaneKiller_Boss",
+          "is_true_boss": false,
+          "region": null,
+          "dlc": "Mandolin"
+        },
+        {
+          "enemy_name": "Big Encore Biff Fistful",
+          "itempool_list": "ItemPoolList_Murderer_TRUE",
+          "character_def": "Char_DigiZaneKiller_BossTRUE",
+          "is_true_boss": true,
+          "region": null,
+          "dlc": "Mandolin"
+        }
+      ],
+      "dlc": "Mandolin",
+      "dlc_label": "Bounty Pack 3 — A Zane to Kill For",
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "bubbles",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_bubbles_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite Cat",
+          "itempool_list": "ItemPoolList_Ordonite_Cat",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Cat",
+          "itempool_list": "ItemPoolList_Ordonite_Cat_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "bugbear",
+      "itempool_shiny": "itempool_tor_ar_05_legendary_bugbear_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BattleWagon",
+          "itempool_list": "ItemPoolList_BattleWagon",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Thresher BioArmoredBig",
+          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Thresher BioArmoredBig",
+          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "bully",
+      "itempool_shiny": "itempool_ord_ps_05_legendary_bully_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "DroneKeeper",
+          "itempool_list": "ItemPoolList_DroneKeeper",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore DroneKeeper",
+          "itempool_list": "ItemPoolList_DroneKeeper_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "cannonbrawl",
+      "itempool_shiny": "itempool_dad_sg_05_legendary_cannonbrawl_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Tuba hybrids Crab",
+          "itempool_list": "ItemPoolList_Tuba_hybrids_Crab",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Tuba hybrids Fish",
+          "itempool_list": "ItemPoolList_Tuba_hybrids_Fish",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "chuck",
+      "itempool_shiny": "itempool_ted_ar_05_legendary_chuck_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "FoundryFreak MeatheadFrackingBoss",
+          "itempool_list": "ItemPoolList_FoundryFreak_MeatheadFrackingBoss",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore FoundryFreak MeatheadFrackingBoss",
+          "itempool_list": "ItemPoolList_FoundryFreak_MeatheadFrackingBoss_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "FoundryFreak Psycho",
+          "itempool_list": "ItemPoolList_FoundryFreak_Psycho",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "LeaderHologram",
+          "itempool_list": "ItemPoolList_LeaderHologram",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore LeaderHologram",
+          "itempool_list": "ItemPoolList_LeaderHologram_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "complex_root",
+      "itempool_shiny": "itempool_mal_sr_05_legendary_complex_root_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "StrikerSplitter",
+          "itempool_list": "ItemPoolList_StrikerSplitter",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore StrikerSplitter",
+          "itempool_list": "ItemPoolList_StrikerSplitter_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "convergence",
+      "itempool_shiny": "itempool_bor_sg_05_legendary_convergence_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Destroyer",
+          "itempool_list": "ItemPoolList_Destroyer",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "demo",
+      "itempool_shiny": "itempool_tor_sg_05_legendary_demo_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite Meathead",
+          "itempool_list": "ItemPoolList_Ordonite_Meathead",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Meathead",
+          "itempool_list": "ItemPoolList_Ordonite_Meathead_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Ordonite Splice",
+          "itempool_list": "ItemPoolList_Ordonite_Splice",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Splice",
+          "itempool_list": "ItemPoolList_Ordonite_Splice_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "discybusiness",
+      "itempool_shiny": "itempool_dad_ar_05_legendary_discybusiness_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "GlitchFixer",
+          "itempool_list": "ItemPoolList_GlitchFixer",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore GlitchFixer",
+          "itempool_list": "ItemPoolList_GlitchFixer_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "dividedfocus",
+      "itempool_shiny": "itempool_ted_ar_05_legendary_dividedfocus_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "DroneKeeper",
+          "itempool_list": "ItemPoolList_DroneKeeper",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "doeshot",
+      "itempool_shiny": "itempool_tor_sg_05_legendary_doeshot_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite PGG Mission",
+          "itempool_list": "ItemPoolList_Ordonite_PGG_Mission",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Bore-Tex",
+          "itempool_list": "ItemPoolList_Ordonite_Phalanx",
+          "character_def": "Char_Phalanx_OrdiniteInfused_MiniBoss",
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Bore-Tex",
+          "itempool_list": "ItemPoolList_Ordonite_Phalanx_TRUE",
+          "character_def": "Char_Phalanx_OrdiniteInfused_MiniBossTRUE",
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "dualdamage",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_dualdamage_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "KotoLieutenant",
+          "itempool_list": "ItemPoolList_KotoLieutenant",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "finnty",
+      "itempool_shiny": "itempool_vla_sr_05_legendary_finnty_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BattleWagon",
+          "itempool_list": "ItemPoolList_BattleWagon",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore BattleWagon",
+          "itempool_list": "ItemPoolList_BattleWagon_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "fisheye",
+      "itempool_shiny": "itempool_ord_sr_05_legendary_fisheye_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Arjay",
+          "itempool_list": "ItemPoolList_Arjay",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Arjay",
+          "itempool_list": "ItemPoolList_Arjay_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "flashcyclone",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_flashcyclone_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "DroneCaptain",
+          "itempool_list": "ItemPoolList_DroneCaptain",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "follower",
+      "itempool_shiny": "itempool_dad_sm_05_legendary_follower_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SiphonScavOne",
+          "itempool_list": "ItemPoolList_SiphonScavOne",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "gmr",
+      "itempool_shiny": "itempool_ord_ar_05_legendary_gmr_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Drillerhole",
+          "itempool_list": "ItemPoolList_Drillerhole",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Drillerhole",
+          "itempool_list": "ItemPoolList_Drillerhole_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "goalkeeper",
+      "itempool_shiny": "itempool_ord_ar_05_legendary_goalkeeper_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SideCity Psycho",
+          "itempool_list": "ItemPoolList_SideCity_Psycho",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SideCity Psycho",
+          "itempool_list": "ItemPoolList_SideCity_Psycho_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "goldengod",
+      "itempool_shiny": "itempool_bor_sg_05_legendary_goldengod_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Grasslands Commander",
+          "itempool_list": "ItemPoolList_Grasslands_Commander",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "goremaster",
+      "itempool_shiny": "itempool_bor_sg_05_legendary_goremaster_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Grasslands Commander",
+          "itempool_list": "ItemPoolList_Grasslands_Commander",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "harddark",
+      "itempool_shiny": "itempool_dad_ar_05_legendary_darkhard_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "CL34n.R",
+          "itempool_list": "ItemPoolList_GlitchCleaner",
+          "character_def": "Char_Striker_Cleaner_BossMini",
+          "is_true_boss": false,
+          "region": null,
+          "dlc": "Mandolin"
+        },
+        {
+          "enemy_name": "Big Encore CL34n.R",
+          "itempool_list": "ItemPoolList_GlitchCleaner_TRUE",
+          "character_def": "Char_Striker_Cleaner_BossMini_Replay_True",
+          "is_true_boss": true,
+          "region": null,
+          "dlc": "Mandolin"
+        }
+      ],
+      "dlc": "Mandolin",
+      "dlc_label": "Bounty Pack 3 — A Zane to Kill For",
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "heartgun",
+      "itempool_shiny": "itempool_dad_sg_05_legendary_heartgun_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Arjay",
+          "itempool_list": "ItemPoolList_Arjay",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "heavyturret",
+      "itempool_shiny": "itempool_ted_sg_05_legendary_heavyturret_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Grasslands Guardian",
+          "itempool_list": "ItemPoolList_Grasslands_Guardian",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "hellfire",
+      "itempool_shiny": "itempool_bor_sm_05_legendary_hellfire_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BatMatriarch",
+          "itempool_list": "ItemPoolList_BatMatriarch",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "hellwalker",
+      "itempool_shiny": "itempool_jak_sg_05_legendary_hellwalker_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "MeatheadRider Jockey",
+          "itempool_list": "ItemPoolList_MeatheadRider_Jockey",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore MeatheadRider Jockey",
+          "itempool_list": "ItemPoolList_MeatheadRider_Jockey_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "hemorrhage",
+      "itempool_shiny": "itempool_mal_sg_05_legendary_hemorrhage_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Crash",
+          "itempool_list": "ItemPoolList_Crash",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Crash",
+          "itempool_list": "ItemPoolList_Crash_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Tuba Terra",
+          "itempool_list": "ItemPoolList_Tuba_Terra_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json",
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "inscriber",
+      "itempool_shiny": "itempool_ted_ps_05_legendary_inscriber_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Donk",
+          "itempool_list": "ItemPoolList_Donk",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "MinisterScrew",
+          "itempool_list": "ItemPoolList_MinisterScrew",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "ishmael",
+      "itempool_shiny": "itempool_ord_sr_05_legendary_ishmael_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Tuba Terra",
+          "itempool_list": "ItemPoolList_Tuba_Terra",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "kaleidosplode",
+      "itempool_shiny": "itempool_mal_sg_05_legendary_kaleidosplode_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BlasterBrute",
+          "itempool_list": "ItemPoolList_BlasterBrute",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "kaoson",
+      "itempool_shiny": "itempool_vla_sm_05_legendary_kaoson_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "MountainGuardian",
+          "itempool_list": "ItemPoolList_MountainGuardian",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "katagawa",
+      "itempool_shiny": "itempool_mal_sr_05_legendary_katagawa_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Drillerhole",
+          "itempool_list": "ItemPoolList_Drillerhole",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "kickballer",
+      "itempool_shiny": "itempool_mal_sg_05_legendary_kickballer_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "TrashThresher",
+          "itempool_list": "ItemPoolList_TrashThresher",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore TrashThresher",
+          "itempool_list": "ItemPoolList_TrashThresher_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "kingsgambit",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_kingsgambit_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "FirstCorrupt",
+          "itempool_list": "ItemPoolList_FirstCorrupt",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore FirstCorrupt",
+          "itempool_list": "ItemPoolList_FirstCorrupt_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "lasercutter",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_lasercutter_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "DahlMech",
+          "itempool_list": "ItemPoolList_DahlMech",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore DahlMech",
+          "itempool_list": "ItemPoolList_DahlMech_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "laserdisc",
+      "itempool_shiny": "itempool_ted_ar_05_legendary_laserdisc_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite Meathead",
+          "itempool_list": "ItemPoolList_Ordonite_Meathead",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Meathead",
+          "itempool_list": "ItemPoolList_Ordonite_Meathead_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Ordonite Splice",
+          "itempool_list": "ItemPoolList_Ordonite_Splice",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Splice",
+          "itempool_list": "ItemPoolList_Ordonite_Splice_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "leadballoon",
+      "itempool_shiny": "itempool_tor_sg_05_legendary_leadballoon_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "GlidePackPsycho",
+          "itempool_list": "ItemPoolList_GlidePackPsycho",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore GlidePackPsycho",
+          "itempool_list": "ItemPoolList_GlidePackPsycho_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "linebacker",
+      "itempool_shiny": "itempool_tor_sg_05_legendary_linebacker_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BatMatriarch",
+          "itempool_list": "ItemPoolList_BatMatriarch",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore BatMatriarch",
+          "itempool_list": "ItemPoolList_BatMatriarch_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "lockjaw",
+      "itempool_shiny": "itempool_tor_ar_05_legendary_lockjaw_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Raid2 Thol",
+          "itempool_list": "ItemPoolList_Raid2_Thol",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Raid2 Thol",
+          "itempool_list": "ItemPoolList_Raid2_Thol_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "lucian",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_lucian_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "MeatheadRider",
+          "itempool_list": "ItemPoolList_MeatheadRider",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "MeatheadRider Jockey",
+          "itempool_list": "ItemPoolList_MeatheadRider_Jockey",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore MeatheadRider Jockey",
+          "itempool_list": "ItemPoolList_MeatheadRider_Jockey_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore MeatheadRider",
+          "itempool_list": "ItemPoolList_MeatheadRider_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "lumberjack",
+      "itempool_shiny": "itempool_dad_ar_05_legendary_lumberjack_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Big Encore FoundryFreak Psycho",
+          "itempool_list": "ItemPoolList_FoundryFreak_Psycho_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "FoundryFreak Splice",
+          "itempool_list": "ItemPoolList_FoundryFreak_Splice",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore FoundryFreak Splice",
+          "itempool_list": "ItemPoolList_FoundryFreak_Splice_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "luty",
+      "itempool_shiny": "itempool_dad_sm_05_legendary_luty_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "StrikerSplitter",
+          "itempool_list": "ItemPoolList_StrikerSplitter",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "manifest",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_manifest_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Tuba hybrids Crab",
+          "itempool_list": "ItemPoolList_Tuba_hybrids_Crab",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "mercury",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_mercury_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite Cat",
+          "itempool_list": "ItemPoolList_Ordonite_Cat",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Ordonite Cat",
+          "itempool_list": "ItemPoolList_Ordonite_Cat_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "noisycricket",
+      "itempool_shiny": "itempool_ord_ps_05_legendary_noisycricket_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SpiderJumbo",
+          "itempool_list": "ItemPoolList_SpiderJumbo",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SpiderJumbo",
+          "itempool_list": "ItemPoolList_SpiderJumbo_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "ohmigot",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_ohmigot_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "ShatterlandsCommanderElpis",
+          "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore ShatterlandsCommanderElpis",
+          "itempool_list": "ItemPoolList_ShatterlandsCommanderElpis_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "om",
+      "itempool_shiny": "itempool_dad_ar_05_legendary_om_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SoldierAncient",
+          "itempool_list": "ItemPoolList_SoldierAncient",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SoldierAncient",
+          "itempool_list": "ItemPoolList_SoldierAncient_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "phantom_flame",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_phantom_flame_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Bango",
+          "itempool_list": "ItemPoolList_Bango",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Bango",
+          "itempool_list": "ItemPoolList_Bango_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Pango",
+          "itempool_list": "ItemPoolList_Pango",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Pango",
+          "itempool_list": "ItemPoolList_Pango_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "plasmacoil",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_plasmacoil_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Timekeeper Guardian",
+          "itempool_list": "ItemPoolList_Timekeeper_Guardian",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Timekeeper Guardian",
+          "itempool_list": "ItemPoolList_Timekeeper_Guardian_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "potatothrower",
+      "itempool_shiny": "itempool_tor_ar_05_legendary_potatothrower_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Hovercart",
+          "itempool_list": "ItemPoolList_Hovercart",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "SurpriseAttack",
+          "itempool_list": "ItemPoolList_SurpriseAttack",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "prince",
+      "itempool_shiny": "itempool_bor_sm_05_legendary_prince_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Bango",
+          "itempool_list": "ItemPoolList_Bango",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Bango",
+          "itempool_list": "ItemPoolList_Bango_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "queensrest",
+      "itempool_shiny": "itempool_tor_ps_05_legendary_queensrest_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "ShatterlandsCommanderFortress",
+          "itempool_list": "ItemPoolList_ShatterlandsCommanderFortress",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "quickdraw",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_quickdraw_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "RockAndRoll",
+          "itempool_list": "ItemPoolList_RockAndRoll",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore RockAndRoll",
+          "itempool_list": "ItemPoolList_RockAndRoll_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "rainbowvomit",
+      "itempool_shiny": "itempool_jak_sg_05_legendary_rainbowvomit_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "UpgradedElectiMole",
+          "itempool_list": "ItemPoolList_UpgradedElectiMole",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "rangefinder",
+      "itempool_shiny": "itempool_dad_ps_05_legendary_rangefinder_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "FirstCorrupt",
+          "itempool_list": "ItemPoolList_FirstCorrupt",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "reminisce",
+      "itempool_shiny": "itempool_mal_sg_05_legendary_reminisce_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Dahlfather",
+          "itempool_list": "ItemPoolList_dAHLfATHER",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore DahlFather",
+          "itempool_list": "ItemPoolList_DahlFather_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "roach",
+      "itempool_shiny": "itempool_tor_ps_05_legendary_roach_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SkullOrchid",
+          "itempool_list": "ItemPoolList_SkullOrchid",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SkullOrchid",
+          "itempool_list": "ItemPoolList_SkullOrchid_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "rocketreload",
+      "itempool_shiny": "itempool_ord_ps_05_legendary_rocketreload_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "KotoLieutenant",
+          "itempool_list": "ItemPoolList_KotoLieutenant",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore KotoLieutenant",
+          "itempool_list": "ItemPoolList_KotoLieutenant_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "StrikerSplitter",
+          "itempool_list": "ItemPoolList_StrikerSplitter",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore StrikerSplitter",
+          "itempool_list": "ItemPoolList_StrikerSplitter_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "roulette",
+      "itempool_shiny": "itempool_ord_ps_05_legendary_roulette_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite PGG Mission",
+          "itempool_list": "ItemPoolList_Ordonite_PGG_Mission",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Bore-Tex",
+          "itempool_list": "ItemPoolList_Ordonite_Phalanx",
+          "character_def": "Char_Phalanx_OrdiniteInfused_MiniBoss",
+          "is_true_boss": false,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        },
+        {
+          "enemy_name": "Big Encore Bore-Tex",
+          "itempool_list": "ItemPoolList_Ordonite_Phalanx_TRUE",
+          "character_def": "Char_Phalanx_OrdiniteInfused_MiniBossTRUE",
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "rowan",
+      "itempool_shiny": "itempool_jak_ar_05_legendary_rowan_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Redguard",
+          "itempool_list": "ItemPoolList_Redguard",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "rowdy",
+      "itempool_shiny": "itempool_jak_ar_05_legendary_rowdy_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Donk",
+          "itempool_list": "ItemPoolList_Donk",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Donk",
+          "itempool_list": "ItemPoolList_Donk_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "MinisterScrew",
+          "itempool_list": "ItemPoolList_MinisterScrew",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore MinisterScrew",
+          "itempool_list": "ItemPoolList_MinisterScrew_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "rubysgrasp",
+      "itempool_shiny": "itempool_ted_ps_05_legendary_rubysgrasp_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "MountainCommander",
+          "itempool_list": "ItemPoolList_MountainCommander",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "scootshoot",
+      "itempool_shiny": "itempool_mal_sg_05_legendary_scootshoot_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "CrazyEarl",
+          "itempool_list": "ItemPoolList_CrazyEarl",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore CrazyEarl",
+          "itempool_list": "ItemPoolList_CrazyEarl_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Tuba hybrids Thresher",
+          "itempool_list": "ItemPoolList_Tuba_hybrids_Thresher",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Tuba hybrids",
+          "itempool_list": "ItemPoolList_Tuba_hybrids_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json",
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "seventh_sense",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_seventh_sense_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SideCity Psycho",
+          "itempool_list": "ItemPoolList_SideCity_Psycho",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore SideCity Psycho",
+          "itempool_list": "ItemPoolList_SideCity_Psycho_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "shalashaska",
+      "itempool_shiny": "itempool_jak_ps_05_legendary_shalashaska_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Ordonite PGG Activity",
+          "itempool_list": "ItemPoolList_Ordonite_PGG_Activity",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "shammy",
+      "itempool_shiny": "itempool_ted_ps_05_legendary_shammy_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Raid2 Subjugator",
+          "itempool_list": "ItemPoolList_Raid2_Subjugator",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Raid2 Subjugator",
+          "itempool_list": "ItemPoolList_Raid2_Subjugator_True",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "sideshow",
+      "itempool_shiny": "itempool_ted_ps_05_legendary_sideshow_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "CloningLeader",
+          "itempool_list": "ItemPoolList_CloningLeader",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore CloningLeader",
+          "itempool_list": "ItemPoolList_CloningLeader_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "slugger",
+      "itempool_shiny": "itempool_jak_sg_05_legendary_slugger_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "BlasterBrute",
+          "itempool_list": "ItemPoolList_BlasterBrute",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore BlasterBrute",
+          "itempool_list": "ItemPoolList_BlasterBrute_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "songbird",
+      "itempool_shiny": "itempool_mal_sm_05_legendary_songbird_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Big Encore Ordonite Pangolin",
+          "itempool_list": "ItemPoolList_Ordonite_Pangolin_TRUE",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": "The Demon's Domain",
+          "dlc": "Cello"
+        }
+      ],
+      "dlc": "Cello",
+      "dlc_label": "Bounty Pack 2 — Legend of the Stone Demon",
+      "region": "The Demon's Domain",
+      "source_files": [
+        "Nexus-Data-ItemPoolList4.json"
+      ]
+    },
+    {
+      "slug": "soulsurvivor",
+      "itempool_shiny": "itempool_dad_ps_05_legendary_soulsurvivor_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "DroneCaptain",
+          "itempool_list": "ItemPoolList_DroneCaptain",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "star_helix",
+      "itempool_shiny": "itempool_dad_ar_05_legendary_star_helix_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Timekeeper Guardian",
+          "itempool_list": "ItemPoolList_Timekeeper_Guardian",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "stopgap",
+      "itempool_shiny": "itempool_vla_sr_05_legendary_stopgap_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Backhive",
+          "itempool_list": "ItemPoolList_Backhive",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Backhive",
+          "itempool_list": "ItemPoolList_Backhive_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "stray",
+      "itempool_shiny": "itempool_bor_sr_05_legendary_stray_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Pango",
+          "itempool_list": "ItemPoolList_Pango",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Pango",
+          "itempool_list": "ItemPoolList_Pango_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "sunspot",
+      "itempool_shiny": "itempool_ord_ps_05_legendary_sunspot_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "SiphonScavTwo",
+          "itempool_list": "ItemPoolList_SiphonScavTwo",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "symmetry",
+      "itempool_shiny": "itempool_ord_sr_05_legendary_symmetry_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Timekeeper TKBoss",
+          "itempool_list": "ItemPoolList_Timekeeper_TKBoss",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Timekeeper TKBoss",
+          "itempool_list": "ItemPoolList_Timekeeper_TKBoss_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "tkswave",
+      "itempool_shiny": "itempool_jak_sg_05_legendary_tkswave_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "RockAndRoll",
+          "itempool_list": "ItemPoolList_RockAndRoll",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "truck",
+      "itempool_shiny": "itempool_jak_sr_05_legendary_truck_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Thresher BioArmoredBig",
+          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Thresher BioArmoredBig",
+          "itempool_list": "ItemPoolList_Thresher_BioArmoredBig_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "vamoose",
+      "itempool_shiny": "itempool_bor_sr_05_legendary_vamoose_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "StealthPredator",
+          "itempool_list": "ItemPoolList_StealthPredator",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore StealthPredator",
+          "itempool_list": "ItemPoolList_StealthPredator_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "wf",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_wf_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Redguard",
+          "itempool_list": "ItemPoolList_Redguard",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Redguard",
+          "itempool_list": "ItemPoolList_Redguard_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "wombocombo",
+      "itempool_shiny": "itempool_vla_ar_05_legendary_wombocombo_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "Hovercart",
+          "itempool_list": "ItemPoolList_Hovercart",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore Hovercart",
+          "itempool_list": "ItemPoolList_Hovercart_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    },
+    {
+      "slug": "zipgun",
+      "itempool_shiny": "itempool_dad_ps_05_legendary_zipgun_shiny",
+      "drop_sources": [
+        {
+          "enemy_name": "UpgradedElectiMole",
+          "itempool_list": "ItemPoolList_UpgradedElectiMole",
+          "character_def": null,
+          "is_true_boss": false,
+          "region": null,
+          "dlc": null
+        },
+        {
+          "enemy_name": "Big Encore UpgradedElectiMole",
+          "itempool_list": "ItemPoolList_UpgradedElectiMole_TrueBoss",
+          "character_def": null,
+          "is_true_boss": true,
+          "region": null,
+          "dlc": null
+        }
+      ],
+      "dlc": null,
+      "dlc_label": null,
+      "region": null,
+      "source_files": [
+        "Nexus-Data-ItemPoolList0.json"
+      ]
+    }
+  ]
+}

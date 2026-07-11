@@ -127,29 +127,45 @@
       if (typeof callback === 'function') callback([]);
       return Promise.resolve([]);
     }
-    var id = 'stx-' + (++nextId);
-    return new Promise(function (resolve) {
-      pending[id] = function (results) {
-        resolve(results);
-        if (typeof callback === 'function') callback(results);
-      };
-      try {
-        f.contentWindow.postMessage({
-          type: 'stx-decode-request',
-          id: id,
-          serials: serials,
-          enrichResolved: !!options.enrichResolved
-        }, '*');
-      } catch (e) {
-        delete pending[id];
-        resolve([]);
-      }
-      setTimeout(function () {
-        if (pending[id]) {
+    function postWhenReady() {
+      var id = 'stx-' + (++nextId);
+      return new Promise(function (resolve) {
+        pending[id] = function (results) {
+          resolve(results);
+          if (typeof callback === 'function') callback(results);
+        };
+        try {
+          f.contentWindow.postMessage({
+            type: 'stx-decode-request',
+            id: id,
+            serials: serials,
+            enrichResolved: !!options.enrichResolved
+          }, '*');
+        } catch (e) {
           delete pending[id];
           resolve([]);
         }
-      }, 15000);
+        setTimeout(function () {
+          if (pending[id]) {
+            delete pending[id];
+            resolve([]);
+          }
+        }, 15000);
+      });
+    }
+    if (ready) return postWhenReady();
+    /* Wait for stx-decoder-ready before the first postMessage. */
+    return new Promise(function (resolve) {
+      var tries = 0;
+      function tick() {
+        if (ready || tries >= 60) {
+          postWhenReady().then(resolve);
+          return;
+        }
+        tries++;
+        setTimeout(tick, 50);
+      }
+      tick();
     });
   };
 
@@ -166,39 +182,89 @@
       }
       return;
     }
-    // Iframe is created lazily on first decodeSerialsViaBridge() call — do not preload here.
+    /* Warm the iframe early so Convert does not race the first decode. */
+    getIframe();
   };
 
-  // Decoder warms on first decode request (YAML import, backpack parse, etc.), not at page load.
-
   /**
-   * Decode one @U / game serial to desktop text using the same WASM path as the bulk decoder (canonical vs JS bitstream).
-   * Falls back to deserializeBase85 when the bridge is unavailable or decode fails.
+   * Decode one @U / game serial to desktop text via the WASM bridge (canonical).
+   * Local JS deserialize is only a last-resort fallback, and is rejected when it
+   * fails a pack round-trip (it silently truncates many real serials).
    * @param {string} serial
    * @returns {Promise<string>}
    */
   window.ccDecodeSerialToDesktop = function (serial) {
     var s = String(serial || '').trim();
     if (!s) return Promise.resolve('');
-    return new Promise(function (resolve) {
-      function fallback() {
-        if (typeof window.deserializeBase85 === 'function') {
-          try {
-            var d = window.deserializeBase85(s);
-            if (d && String(d).trim()) return resolve(String(d).trim());
-          } catch (_) {}
+
+    function localDecode() {
+      if (typeof window.deserializeBase85 !== 'function') return '';
+      try {
+        var d = window.deserializeBase85(s);
+        return (d && String(d).trim()) || '';
+      } catch (_) {
+        return '';
+      }
+    }
+
+    function packDeser(deser) {
+      var d = String(deser || '').trim();
+      if (!d) return '';
+      try {
+        if (typeof window.__stxNicnlPackDeserialized === 'function') {
+          var pk = String(window.__stxNicnlPackDeserialized(d) || '').trim();
+          if (pk) return pk.indexOf('@U') === 0 ? pk : ('@U' + pk.replace(/^@U/i, ''));
         }
-        resolve('');
-      }
-      if (typeof window.decodeSerialsViaBridge !== 'function') {
-        fallback();
-        return;
-      }
+      } catch (_) {}
+      try {
+        if (typeof window.serializeToBase85 === 'function') {
+          var b = String(window.serializeToBase85(d, undefined, false) || '').trim();
+          if (b) return b.indexOf('@U') === 0 ? b : ('@U' + b.replace(/^@U/i, ''));
+        }
+      } catch (_) {}
+      return '';
+    }
+
+    function normalizeU(u) {
+      u = String(u || '').trim();
+      if (!u) return '';
+      return u.indexOf('@U') === 0 ? u : ('@U' + u.replace(/^@U/i, ''));
+    }
+
+    /** Local bitstream decode often drops trailing parts — refuse those results. */
+    function localDecodeIfFaithful() {
+      var d = localDecode();
+      if (!d) return '';
+      if (!/^@U/i.test(s)) return d;
+      var packed = packDeser(d);
+      if (!packed) return '';
+      var orig = normalizeU(s);
+      var got = normalizeU(packed);
+      if (got === orig) return d;
+      /* Encoding can differ slightly; large shrink means truncated decode. */
+      if (got.length + 4 < orig.length) return '';
+      if (Math.abs(got.length - orig.length) > 8) return '';
+      return d;
+    }
+
+    function fallbackLocal() {
+      return localDecodeIfFaithful() || '';
+    }
+
+    try { window.initStxDecoderBridge(); } catch (_) {}
+
+    if (typeof window.decodeSerialsViaBridge !== 'function') {
+      return Promise.resolve(fallbackLocal());
+    }
+
+    return new Promise(function (resolve) {
       var attempts = 0;
+      var maxAttempts = 40; /* ~2s at 50ms — accuracy over instant local */
       function run() {
-        if (typeof window.stxDecoderBridgeReady === 'function' && !window.stxDecoderBridgeReady() && attempts < 50) {
+        var ready = typeof window.stxDecoderBridgeReady !== 'function' || window.stxDecoderBridgeReady();
+        if (!ready && attempts < maxAttempts) {
           attempts++;
-          setTimeout(run, 120);
+          setTimeout(run, 50);
           return;
         }
         window.decodeSerialsViaBridge([s], null, { enrichResolved: false }).then(function (results) {
@@ -207,10 +273,25 @@
             resolve(String(r.deserialized).trim());
             return;
           }
-          fallback();
-        }).catch(function () { fallback(); });
+          resolve(fallbackLocal());
+        }).catch(function () {
+          resolve(fallbackLocal());
+        });
       }
       run();
     });
   };
+
+  /* Prefetch decoder so the first Convert is less likely to hit the wait loop. */
+  try {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        try { window.initStxDecoderBridge(); } catch (_) {}
+      });
+    } else {
+      setTimeout(function () {
+        try { window.initStxDecoderBridge(); } catch (_) {}
+      }, 0);
+    }
+  } catch (_) {}
 })();

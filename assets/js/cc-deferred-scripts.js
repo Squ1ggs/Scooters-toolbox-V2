@@ -25,6 +25,7 @@
     './assets/js/tag-comp-validation.js',
     './assets/data/part_ref_meta.js',
     './assets/data/source_paths_data.js',
+    './assets/data/loot_reference_data.js',
     './assets/js/cc-itempool-drop-check.js',
     './assets/data/skin_data.js',
     './assets/data/modded_preset_catalog.js',

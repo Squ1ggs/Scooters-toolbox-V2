@@ -12,7 +12,7 @@
    * @param {string} deserialized
    * @returns {Promise<string>} @U serial or ''
    */
-  function ccSerializeDeserializedRemote(deserialized) {
+  function ccSerializeDeserializedRemote(deserialized, opts) {
     var d = String(deserialized || '').trim();
     if (!d) return Promise.resolve('');
     if (/^@U/i.test(d)) {
@@ -22,11 +22,22 @@
     if (window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteSerialization) {
       return Promise.resolve('');
     }
-    return fetch(SERIALIZE_URL, {
+    var timeoutMs = (opts && opts.timeoutMs != null) ? Number(opts.timeoutMs) : 900;
+    if (!(timeoutMs > 0)) timeoutMs = 900;
+    var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = 0;
+    if (ctrl) {
+      timer = setTimeout(function () {
+        try { ctrl.abort(); } catch (_) {}
+      }, timeoutMs);
+    }
+    var fetchOpts = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ deserialized: d }),
-    })
+    };
+    if (ctrl) fetchOpts.signal = ctrl.signal;
+    return fetch(SERIALIZE_URL, fetchOpts)
       .then(function (r) {
         if (!r.ok) throw new Error('serialize HTTP ' + r.status);
         return r.json();
@@ -35,6 +46,9 @@
         var s = j && (j.serial_b85 != null ? j.serial_b85 : j.serial);
         s = s && String(s).trim();
         return s || '';
+      })
+      .finally(function () {
+        if (timer) clearTimeout(timer);
       });
   }
 

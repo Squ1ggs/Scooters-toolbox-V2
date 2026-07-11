@@ -369,6 +369,13 @@
   }
 
   function isGuidedContext() {
+    try {
+      if (typeof window.__ccGetBuilderUiMode === 'function') {
+        return window.__ccGetBuilderUiMode() === 'guided';
+      }
+      if (document.documentElement.classList.contains('stx-builder-mode-guided')) return true;
+      if (document.documentElement.classList.contains('stx-builder-mode-simple')) return false;
+    } catch (_) {}
     var g = byId('ccGuidedItemType');
     return !!(g && String(g.value || '').trim());
   }

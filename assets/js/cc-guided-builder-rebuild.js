@@ -190,7 +190,7 @@
     underbarrel: { selectId: 'ccUnderbarrelSelect', btnId: 'ccAddUnderbarrel' },
     foregrip: { selectId: 'ccForegripSelect', btnId: 'ccAddForegrip' },
     secondaryAmmo: { selectId: 'ccWeaponSecondaryAmmoSelect', btnId: 'ccAddWeaponSecondaryAmmo' },
-    secondaryEle: { selectId: 'ccElementSwitchSelect', btnId: 'ccAddElementSwitch', maliwanOnly: true },
+    secondaryEle: { selectId: 'ccElementSwitchSelect', btnId: 'ccAddElementSwitch' },
     pearlElem: { selectId: 'ccWeaponPearlElemSelect', btnId: 'ccAddWeaponPearlElem', pearlElemPick: true },
     pearlStat: { selectId: 'ccWeaponPearlStatSelect', btnId: 'ccAddWeaponPearlStat', pearlStatPick: true },
     licensed: { selectId: 'ccLicensedSelect', btnId: 'ccAddLicensed' },
@@ -218,7 +218,7 @@
     { key: 'underbarrel', label: 'Underbarrel', partType: 'Underbarrel' },
     { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip' },
     { key: 'secondaryAmmo', label: 'Secondary Ammo', partType: 'Manufacturer Part' },
-    { key: 'secondaryEle', label: 'Secondary Element (Maliwan)', partType: 'Element Switch', maliwanOnly: true },
+    { key: 'secondaryEle', label: 'Secondary Element (Maliwan Switch)', partType: 'Element Switch' },
     { key: 'pearlElem', label: 'Pearl Element', partType: '' },
     { key: 'pearlStat', label: 'Pearl Stat', partType: '' },
     { key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part' },
@@ -292,9 +292,8 @@
     if (!seen.secondaryEle && !isHeavy) {
       var secEleRow = attachWeaponSlotUi({
         key: 'secondaryEle',
-        label: 'Secondary Element (Maliwan)',
-        partType: 'Element Switch',
-        maliwanOnly: true
+        label: 'Secondary Element (Maliwan Switch)',
+        partType: 'Element Switch'
       });
       if (secEleRow) {
         insertBeforeBarrel(secEleRow);
@@ -369,7 +368,7 @@
 
   /** Shown as a disabled option when a pool is empty so users know to widen filters. */
   var GUIDED_HINT_EMPTY_BODY_ELEMENT = '(Empty) No body element parts match the current filters — try "All manufacturers\' parts" if the dataset is still wide.';
-  var GUIDED_HINT_EMPTY_MALIWAN_SWITCH = '(Empty) No Maliwan element-switch parts loaded — enable "All manufacturers\' parts in dropdowns" above for modded cross-manufacturer picks.';
+  var GUIDED_HINT_EMPTY_MALIWAN_SWITCH = '(Empty) No Maliwan element-switch parts in the dataset yet — wait for parts to finish loading, then re-open this dropdown.';
 
   var ELEMENTS = [
     { key: 'None', code: '' },
@@ -1272,9 +1271,12 @@
         return pt === 'element' || pt === 'status' || grenadeElem || repkitElem || /^\{1:(10|11|12|13|14)\}$/.test(getPartToken(p));
       }
       if (want === 'element switch') {
-        var code = String(p.code || '').toLowerCase();
-        var pm = String(p.manufacturer || '').toLowerCase();
-        return pm === 'maliwan' && code.indexOf('part_secondary_elem') !== -1 && code.indexOf('_mal') !== -1;
+        var code = String(normCodeForRepkitGuidedSlot(p && p.code) || p.code || '').toLowerCase();
+        var ptSwitch = String(p.partType || '').trim().toLowerCase();
+        // Shared Maliwan switch chips — do not require part.manufacturer === maliwan.
+        if (code.indexOf('part_secondary_elem') !== -1 && code.indexOf('_mal') !== -1) return true;
+        if (ptSwitch === 'element switch' && /secondary_elem/.test(code)) return true;
+        return false;
       }
       if (want === '') return true;
       return pt === want || (want === 'manufacturer part' && pt.indexOf('manufacturer') !== -1);
@@ -1363,15 +1365,18 @@
       }
     }
 
-    // `(Pearl)` only on rarity-ID comp rows (main rarity picker), not barrels or other slots.
+    // `(Pearl)` only on pearl rarity-ID / pearl element rows — never classmod Name+Skin (e.g. Windrider id 51).
     (function () {
-      if (/part_pearl/i.test(codeL) || /part_barrel/.test(codeL) || pt === 'barrel') return;
-      if (!isRarityComp) return;
+      if (/part_barrel/.test(codeL) || pt === 'barrel') return;
+      var isPearlElem = /part_pearl_elem/i.test(codeL);
       var isPearl =
-        (/(?:^|[._])comp_06_pearlescent/.test(codeL)) ||
-        (typeof ccPartMatchesPearlRarityAllowlist === 'function' && ccPartMatchesPearlRarityAllowlist(p) && /comp_05_legendary/.test(codeL));
+        isPearlElem ||
+        (/(?:^|[._])comp_06_pearlescent|comp_06_pearl_/.test(codeL)) ||
+        (typeof ccPartMatchesPearlRarityAllowlist === 'function' && ccPartMatchesPearlRarityAllowlist(p) && /comp_05_legendary/.test(codeL) && isRarityComp);
       var item = Number(p.itemId != null ? p.itemId : p.id);
-      if (Number.isFinite(item) && item >= 51 && item <= 60) isPearl = true;
+      if (!isPearl && Number.isFinite(item) && item >= 51 && item <= 60 && isRarityComp) {
+        if (/\bpearl_/.test(String(p.itemTypeString || '').toLowerCase()) || /comp_0[1-6]_/.test(codeL) || pt === 'rarity') isPearl = true;
+      }
       if (!isPearl) return;
       var lineSoFar = bits.join(' · ');
       if (lineSoFar.indexOf('(Pearl)') === -1) bits.push('(Pearl)');
@@ -2076,14 +2081,33 @@
       var p = all[i];
       if (!p) continue;
       var cat = String(p.category || '').trim();
-      if (cat !== 'Weapon' && cat !== 'Gadget' && cat !== 'Heavy Weapon') continue;
+      if (cat !== 'Weapon' && cat !== 'Gadget' && cat !== 'Heavy Weapon' && cat !== 'Prefix' && cat !== 'Rarity') continue;
       var pt = String(p.partType || '').trim().toLowerCase();
       var c = String(p.code || '').toLowerCase();
       var ok = false;
       if (pt === 'element switch') ok = true;
+      else if (c.indexOf('part_secondary_elem') !== -1 && c.indexOf('_mal') !== -1) ok = true;
       else if (pt === 'body' && c.indexOf('rainbowvomit') !== -1) ok = true;
       else if (pt === 'body' && c.indexOf('part_body_ele') !== -1 && countElementTokensInCodeLower(c) >= 2) ok = true;
       if (!ok) continue;
+      var tok = getPartToken(p);
+      if (!tok || seen[tok]) continue;
+      seen[tok] = true;
+      out.push(p);
+    }
+    return sortGuidedPartsByCode(out);
+  }
+
+  /** Maliwan `part_secondary_elem_*_*_mal` switches only (for Secondary Element dropdown). */
+  function guidedCollectMaliwanSecondarySwitchParts() {
+    var all = getAllParts();
+    var out = [];
+    var seen = Object.create(null);
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
+      var c = String(normCodeForRepkitGuidedSlot(p.code) || p.code || '').toLowerCase();
+      if (c.indexOf('part_secondary_elem') === -1 || c.indexOf('_mal') === -1) continue;
       var tok = getPartToken(p);
       if (!tok || seen[tok]) continue;
       seen[tok] = true;
@@ -2745,8 +2769,14 @@
   function guidedRowLooksPearl(row) {
     var item = Number(row && (row.itemId != null ? row.itemId : row.id));
     var code = String((row && (row.itemTypeString || row.code)) || '').toLowerCase();
-    if (Number.isFinite(item) && item >= 51 && item <= 60) return true;
-    return code.indexOf('pearl_') !== -1 || /(?:^|[._])comp_06_pearlescent/.test(code);
+    var pt = String((row && row.partType) || '').trim().toLowerCase();
+    if (code.indexOf('part_pearl_elem') !== -1) return true;
+    if (code.indexOf('pearl_') !== -1 || /(?:^|[._])comp_06_pearlescent|comp_06_pearl_/.test(code)) return true;
+    // Pearl rarity ids 51–60 only on rarity/comp rows (not classmod Name+Skin like Windrider).
+    if (Number.isFinite(item) && item >= 51 && item <= 60) {
+      if (pt === 'rarity' || /comp_0[1-6]_/.test(code) || /part_pearl/.test(code) || /\bpearl_/.test(code)) return true;
+    }
+    return false;
   }
 
   function computeGuidedPrefixFallback() {
@@ -4019,7 +4049,8 @@
         return filtered.filter(function (p) {
           var x = c(p);
           if (matchLo) return matchLo(x);
-          return /mag_acc|magazine_acc/.test(x) || (x.indexOf('part_mag') !== -1 && x.indexOf('acc') !== -1);
+          return /part_mag_torgue|part_mag_(?:05_)?borg_barrel|mag_acc|magazine_acc/.test(x)
+            || /part_mag[^.\s]*_acc(?:_|$|\.)/.test(x);
         });
       }
       if (slot.key === 'pearlElem') {
@@ -4136,7 +4167,7 @@
       var isFwSlot = (slot.partType === 'Firmware' || slot.key === 'firmware');
       if (useSimpleFilter) {
         var wtForFilter = (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || '');
-        if (slot.key === 'bodyEle' || isLegSlot || isFwSlot) wtForFilter = '';
+        if (slot.key === 'bodyEle' || slot.key === 'secondaryEle' || isLegSlot || isFwSlot) wtForFilter = '';
         var isAddSlot = (slot.key === 'additionalParts' || slot.customType === 'weaponAdditionalParts');
         filtered = window.filterPartsForGuided({
           category: 'Weapon',
@@ -4144,7 +4175,7 @@
           weaponType: wtForFilter,
           partType: isAddSlot ? undefined : slot.partType,
           forceItemManufacturer: isBodyFamily,
-          ignoreWeaponType: isAddSlot || isLegSlot || isFwSlot
+          ignoreWeaponType: isAddSlot || isLegSlot || isFwSlot || slot.key === 'secondaryEle' || slot.key === 'bodyEle'
         });
         if (isLegSlot) {
           var legPool = guidedCollectAllLegendaryPerkParts(true);
@@ -4152,6 +4183,9 @@
         } else if (isFwSlot) {
           var fwPool = guidedCollectFirmwareParts();
           if (fwPool && fwPool.length) filtered = fwPool;
+        } else if (slot.key === 'secondaryEle') {
+          var secEarly = guidedCollectMaliwanSecondarySwitchParts();
+          if (secEarly && secEarly.length) filtered = secEarly;
         }
         if (!isLegSlot) filtered = filterGuidedWeaponSlotParts(slot, filtered, bodyMan, wt);
       } else {
@@ -4172,8 +4206,18 @@
       var emptyHintWeapon = '';
       if (slot.key === 'bodyEle') emptyHintWeapon = GUIDED_HINT_EMPTY_BODY_ELEMENT;
       else if (slot.key === 'secondaryEle') emptyHintWeapon = GUIDED_HINT_EMPTY_MALIWAN_SWITCH;
+      if (slot.key === 'secondaryEle') {
+        var secPool = guidedCollectMaliwanSecondarySwitchParts();
+        if (secPool && secPool.length) filtered = secPool;
+        else if (!filtered || !filtered.length) {
+          filtered = (collectStandaloneDualElementParts() || []).filter(function (p) {
+            var x = guidedSpawnCodeLo(p);
+            return x.indexOf('part_secondary_elem') !== -1 && x.indexOf('_mal') !== -1;
+          });
+        }
+      }
       if (slot.key === 'secondaryEle' && (!filtered || !filtered.length)) {
-        fillElementPresetFallbackSelect(sel, '-- Secondary element --');
+        fillSelect(sel, [], maxItems, emptyHintWeapon, null);
       } else if (isLegSlot && filtered && filtered.length) {
         fillSelectWithLegendaryGroups(sel, filtered);
       } else if (isFwSlot && filtered && filtered.length) {
@@ -4291,7 +4335,7 @@
       { key: 'payload', label: 'Payload', partType: 'Payload', selectId: 'ccHeavyPayloadSelect', btnId: 'ccHeavyPayloadAdd' },
       { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccHeavyAugmentSelect', btnId: 'ccHeavyAugmentAdd' },
       { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccHeavyElementSelect', btnId: 'ccHeavyElementAdd' },
-      { key: 'elementSwitch', label: 'Maliwan Switch (2nd element)', partType: 'Element Switch', selectId: 'ccHeavyElementSwitchSelect', btnId: 'ccHeavyElementSwitchAdd', maliwanOnly: true },
+      { key: 'elementSwitch', label: 'Maliwan Switch (2nd element)', partType: 'Element Switch', selectId: 'ccHeavyElementSwitchSelect', btnId: 'ccHeavyElementSwitchAdd' },
       { key: 'legendary', label: 'Legendary Perks', partType: 'Legendary Perks', selectId: 'ccHeavyLegendarySelect', btnId: 'ccHeavyLegendaryAdd' },
       { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccHeavyFirmwareSelect', btnId: 'ccHeavyFirmwareAdd' }
     ]
@@ -4412,8 +4456,14 @@
       }
       var maxItems = (slot.partType === 'Rarity') ? 600 : 1200;
       var emptyHintGear = (slot.key === 'elementSwitch') ? GUIDED_HINT_EMPTY_MALIWAN_SWITCH : '';
-      if ((slot.key === 'elementSwitch' || slot.partType === 'Element' || slot.partType === 'TypeID1Element') && (!filtered || !filtered.length)) {
-        fillElementPresetFallbackSelect(sel, slot.key === 'elementSwitch' ? '-- Secondary element --' : '-- Element --');
+      if (slot.key === 'elementSwitch') {
+        var hwSec = guidedCollectMaliwanSecondarySwitchParts();
+        if (hwSec && hwSec.length) filtered = hwSec;
+      }
+      if (slot.key === 'elementSwitch' && (!filtered || !filtered.length)) {
+        fillSelect(sel, [], maxItems, emptyHintGear, null);
+      } else if ((slot.partType === 'Element' || slot.partType === 'TypeID1Element') && (!filtered || !filtered.length)) {
+        fillElementPresetFallbackSelect(sel, '-- Element --');
       } else if (isGearLegSlot && filtered && filtered.length) {
         fillSelectWithLegendaryGroups(sel, filtered);
       } else if (category === 'Heavy Weapon' && slot.partType === 'Legendary Perks' && filtered && filtered.length) {

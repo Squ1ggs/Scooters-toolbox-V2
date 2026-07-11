@@ -1,10 +1,11 @@
 /**
- * rebuild-credits-eggs.js - Credits, easter eggs, theme, full anim toggle
+ * rebuild-credits-eggs.js - Credits, easter eggs, theme, full/no anim toggles
  */
 (function(){
   var EGGS_KEY = 'stx_rebuild_eggs';
   var THEME_KEY = 'stx_rebuild_theme';
   var FULLANIM_KEY = 'stx_rebuild_fullanim';
+  var NOANIM_KEY = 'stx_rebuild_noanim';
   var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin' };
 
   function byId(id){ return document.getElementById(id); }
@@ -19,6 +20,12 @@
   function fullAnimEnabled(){
     try {
       var v = String(localStorage.getItem(FULLANIM_KEY) || '').toLowerCase();
+      return v === '1' || v === 'true' || v === 'yes' || v === 'on';
+    } catch(_){ return false; }
+  }
+  function noAnimEnabled(){
+    try {
+      var v = String(localStorage.getItem(NOANIM_KEY) || '').toLowerCase();
       return v === '1' || v === 'true' || v === 'yes' || v === 'on';
     } catch(_){ return false; }
   }
@@ -43,9 +50,28 @@
   }
 
   function updateEggOffBtnVisibility(){
-    var btn = byId('eggOffBtn');
-    if(!btn) return;
-    btn.style.display = isEggThemeActive() ? 'inline-flex' : 'none';
+    var active = isEggThemeActive();
+    var btns = [byId('eggOffBtn'), byId('eggOffBtnHeader')];
+    for (var i = 0; i < btns.length; i++) {
+      if (!btns[i]) continue;
+      btns[i].style.display = active ? 'inline-flex' : 'none';
+      btns[i].hidden = !active;
+    }
+  }
+
+  function disableEggTheme(){
+    setEggsEnabled(false);
+    setTheme('default');
+  }
+
+  /** Enable theme, or turn it off if that egg is already active. */
+  function toggleEggTheme(theme){
+    setEggsEnabled(true);
+    if (currentTheme() === theme && isEggThemeActive()) {
+      disableEggTheme();
+      return;
+    }
+    setTheme(theme);
   }
 
   function toggleWithThanks(){
@@ -54,8 +80,25 @@
     var btn = byId('withThanksToggle');
     if(!list || !icon) return;
     list.classList.toggle('hidden');
-    icon.textContent = list.classList.contains('hidden') ? '+' : '-';
-    if(btn) btn.setAttribute('aria-expanded', list.classList.contains('hidden') ? 'false' : 'true');
+    var open = !list.classList.contains('hidden');
+    icon.textContent = open ? '-' : '+';
+    if(btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    /* Expand first without sheen work; warm animations after paint/idle (mobile INP). */
+    if (open) {
+      list.classList.add('stx-thanks-cold');
+      var warm = function () {
+        try { list.classList.remove('stx-thanks-cold'); } catch (_) {}
+      };
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(warm, 900);
+      } else if (typeof window.stxYieldToMain === 'function') {
+        window.requestAnimationFrame(function () { window.stxYieldToMain(warm); });
+      } else {
+        window.setTimeout(warm, 120);
+      }
+    } else {
+      list.classList.add('stx-thanks-cold');
+    }
   }
   window.toggleWithThanks = toggleWithThanks;
 
@@ -78,8 +121,7 @@
     // Keep contributor order stable across reloads.
 
     byId('mattmabName') && byId('mattmabName').addEventListener('dblclick', function(){
-      setEggsEnabled(true);
-      setTheme('mattmab');
+      toggleEggTheme('mattmab');
     });
 
     (function(){
@@ -92,69 +134,84 @@
         timer = setTimeout(function(){ clicks = 0; }, 550);
         if(clicks < 2) return;
         clicks = 0;
-        setEggsEnabled(true);
-        setTheme(currentTheme() === 'scooter' ? 'default' : 'scooter');
+        toggleEggTheme('scooter');
       });
     })();
 
     byId('mac10Name') && byId('mac10Name').addEventListener('click', function(){
-      setEggsEnabled(true);
-      setTheme('mac10');
+      toggleEggTheme('mac10');
     });
     byId('badleyName') && byId('badleyName').addEventListener('click', function(){
-      setEggsEnabled(true);
-      setTheme('badley');
+      toggleEggTheme('badley');
     });
     byId('ynotName') && byId('ynotName').addEventListener('click', function(){
-      setEggsEnabled(true);
-      setTheme('ynot');
+      toggleEggTheme('ynot');
     });
     byId('keepinItGrimeeyName') && byId('keepinItGrimeeyName').addEventListener('click', function(){
-      setEggsEnabled(true);
-      setTheme('grimeey');
+      toggleEggTheme('grimeey');
     });
 
-    var eggOffBtn = byId('eggOffBtn');
-    if(eggOffBtn){
-      eggOffBtn.addEventListener('click', function(){
-        setEggsEnabled(false);
-        setTheme('default');
-      });
+    function bindEggOff(btn){
+      if (!btn) return;
+      btn.addEventListener('click', function(){ disableEggTheme(); });
     }
+    bindEggOff(byId('eggOffBtn'));
+    bindEggOff(byId('eggOffBtnHeader'));
 
     if(eggsEnabled()) setTheme(currentTheme());
     else setTheme('default');
 
     var fullAnimToggle = byId('fullAnimToggle');
-    if(fullAnimToggle) {
-      if (liteUiBlocksFullAnim()) {
-        fullAnimToggle.checked = false;
-        fullAnimToggle.disabled = true;
-        fullAnimToggle.title = 'Full anim is off on mobile / lite mode for smoother loading';
-      } else {
-        fullAnimToggle.checked = fullAnimEnabled();
+    var noAnimToggle = byId('noAnimToggle');
+    if (noAnimToggle) {
+      noAnimToggle.checked = noAnimEnabled();
+      noAnimToggle.title = 'Stop all animations and motion completely';
+      function onNoAnimChange(){
+        try { localStorage.setItem(NOANIM_KEY, noAnimToggle.checked ? '1' : '0'); } catch(_){}
+        syncFullAnim();
       }
-      syncFullAnim();
+      noAnimToggle.addEventListener('change', onNoAnimChange);
+      noAnimToggle.addEventListener('input', onNoAnimChange);
+    }
+    if(fullAnimToggle) {
+      fullAnimToggle.checked = fullAnimEnabled();
+      if (document.documentElement.classList.contains('stx-lite-ui')) {
+        fullAnimToggle.title = 'Full anim (off by default on mobile/lite — turn on if you want button sweeps)';
+      } else {
+        fullAnimToggle.title = 'Enable slow colour sweeps on buttons';
+      }
       function onAnimToggleChange(){
-        if (liteUiBlocksFullAnim()) return;
+        if (noAnimEnabled() || (noAnimToggle && noAnimToggle.checked)) return;
         try { localStorage.setItem(FULLANIM_KEY, fullAnimToggle.checked ? '1' : '0'); } catch(_){}
         syncFullAnim();
       }
       fullAnimToggle.addEventListener('change', onAnimToggleChange);
       fullAnimToggle.addEventListener('input', onAnimToggleChange);
     }
-  }
-  function liteUiBlocksFullAnim() {
-    try {
-      return document.documentElement.classList.contains('stx-lite-ui');
-    } catch (_) {
-      return false;
-    }
+    syncFullAnim();
   }
   function syncFullAnim(){
+    var noCb = byId('noAnimToggle');
+    var noAnim = noCb ? !!noCb.checked : noAnimEnabled();
+    document.documentElement.classList.toggle('stx-no-anim', noAnim);
+
     var cb = byId('fullAnimToggle');
-    var enabled = cb ? !!cb.checked : fullAnimEnabled();
-    if (liteUiBlocksFullAnim()) enabled = false;
+    if (cb) {
+      cb.disabled = noAnim;
+      if (noAnim) {
+        cb.checked = false;
+        cb.title = 'Turn off No anim to enable Full anim';
+      } else {
+        cb.checked = fullAnimEnabled();
+        if (document.documentElement.classList.contains('stx-lite-ui')) {
+          cb.title = 'Full anim (off by default on mobile/lite — turn on if you want button sweeps)';
+        } else {
+          cb.title = 'Enable slow colour sweeps on buttons';
+        }
+      }
+    }
+
+    var enabled = !noAnim && (cb ? !!cb.checked : fullAnimEnabled());
     document.documentElement.classList.toggle('fullAnimButtons', enabled);
     document.documentElement.classList.toggle('stxEggFullAnim', enabled && isEggThemeActive());
   }

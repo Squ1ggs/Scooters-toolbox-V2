@@ -5,6 +5,22 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <script src="./assets/js/cc-browser-compat.js"></script>
+<script>
+(function () {
+  var m = 'simple';
+  try {
+    var s = String(localStorage.getItem('stxBuilderMode') || '').trim().toLowerCase();
+    if (s === 'guided' || s === 'simple') m = s;
+  } catch (_) {}
+  document.documentElement.classList.add(m === 'guided' ? 'stx-builder-mode-guided' : 'stx-builder-mode-simple');
+  try {
+    var na = String(localStorage.getItem('stx_rebuild_noanim') || '').toLowerCase();
+    if (na === '1' || na === 'true' || na === 'yes' || na === 'on') {
+      document.documentElement.classList.add('stx-no-anim');
+    }
+  } catch (_) {}
+})();
+</script>
 <meta content="dark" name="color-scheme"/>
 
 <meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
@@ -14,23 +30,23 @@
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
-<title>Scooter's Toolbox — BL4 save editor, YAML &amp; item serial tools</title>
-<meta content="Free browser BL4 tools: .sav ? YAML save editing, item serial decode/build, bulk checks, guided builder. No install — runs locally in your browser." name="description"/>
-<meta content="index,follow" name="robots"/>
+<title>Scooter's Toolbox — Borderlands 4 save editor, YAML &amp; item serial tools</title>
+<meta content="Free Borderlands 4 (BL4) save editor in your browser: .sav and YAML editing, item serial decode/build, bulk checks, loot reference, cosmetics unlocks, guided builder. No install — runs locally." name="description"/>
+<meta content="index,follow,max-image-preview:large" name="robots"/>
 <meta content="Scooter's Toolbox" name="application-name"/>
 <meta content="#060a12" name="theme-color"/>
-<meta content="BL4 save editor, BL4 YAML editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder" name="keywords"/>
+<meta content="Borderlands 4 save editor, BL4 save editor, Borderlands 4 YAML editor, BL4 item editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder, Borderlands 4 mods" name="keywords"/>
 <link href="https://save-editor.be/Scooters_TBX/" rel="canonical"/>
 <meta content="website" property="og:type"/>
 <meta content="https://save-editor.be/Scooters_TBX/" property="og:url"/>
-<meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" property="og:title"/>
-<meta content="Browser BL4 save editor: decrypt and edit .sav as YAML, tweak inventory serials, bulk-decode items, guided builder — offline-friendly." property="og:description"/>
+<meta content="Scooter's Toolbox — Borderlands 4 save editor &amp; serial tools" property="og:title"/>
+<meta content="Borderlands 4 save editor: decrypt and edit .sav as YAML, tweak inventory serials, bulk-decode items, loot reference, guided builder — offline-friendly in your browser." property="og:description"/>
 <meta content="en_US" property="og:locale"/>
 <meta content="summary" name="twitter:card"/>
-<meta content="Scooter's Toolbox — BL4 save editor &amp; serial tools" name="twitter:title"/>
-<meta content="Browser BL4 save editor: .sav ? YAML, item serial tools, bulk decode, guided builder." name="twitter:description"/>
+<meta content="Scooter's Toolbox — Borderlands 4 save editor &amp; serial tools" name="twitter:title"/>
+<meta content="Borderlands 4 save editor: .sav / YAML, item serial tools, bulk decode, loot reference, guided builder." name="twitter:description"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","url":"https://save-editor.be/Scooters_TBX/","applicationCategory":"GameApplication","operatingSystem":"Web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based BL4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools."}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","alternateName":"Borderlands 4 Save Editor","url":"https://save-editor.be/Scooters_TBX/","applicationCategory":"GameApplication","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based Borderlands 4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools, loot reference."}
 </script>
 <link href="./assets/favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./assets/favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -93,18 +109,21 @@
     @media (prefers-reduced-motion: reduce) {
       :root { --transition-fast: 0ms; --transition-mid: 0ms; }
       .splash { transition: opacity 0.08s ease, visibility 0.08s ease; }
-      *, *::before, *::after {
+      /* Respect OS reduce-motion unless the user explicitly enables Full anim */
+      html:not(.fullAnimButtons) *,
+      html:not(.fullAnimButtons) *::before,
+      html:not(.fullAnimButtons) *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      html.fullAnimButtons .btn:not(.egg-off-btn),
-      html.fullAnimButtons .btn--brand:not(.egg-off-btn),
-      html.fullAnimButtons .rebuild-floating-btn,
-      html.fullAnimButtons #rp-saveyaml-tab,
-      html.fullAnimButtons .with-thanks-toggle,
-      html.fullAnimButtons .credits-discord-btns .btn:not(.egg-off-btn),
-      html.fullAnimButtons .with-thanks-list .contributor-name {
+      html:not(.fullAnimButtons) .btn:not(.egg-off-btn),
+      html:not(.fullAnimButtons) .btn--brand:not(.egg-off-btn),
+      html:not(.fullAnimButtons) .rebuild-floating-btn,
+      html:not(.fullAnimButtons) #rp-saveyaml-tab,
+      html:not(.fullAnimButtons) .with-thanks-toggle,
+      html:not(.fullAnimButtons) .credits-discord-btns .btn:not(.egg-off-btn),
+      html:not(.fullAnimButtons) .with-thanks-list .contributor-name {
         animation: none !important;
         background-size: 100% 100% !important;
       }
@@ -137,20 +156,6 @@
       filter: none !important;
       -webkit-filter: none !important;
     }
-    html.stx-lite-ui.fullAnimButtons .btn:not(.egg-off-btn),
-    html.stx-lite-ui.fullAnimButtons .btn--brand:not(.egg-off-btn),
-    html.stx-lite-ui.fullAnimButtons .btn-primary:not(.egg-off-btn),
-    html.stx-lite-ui.fullAnimButtons a.btn:not(.egg-off-btn),
-    html.stx-lite-ui.fullAnimButtons .rebuild-floating-btn,
-    html.stx-lite-ui.fullAnimButtons #rp-saveyaml-tab,
-    html.stx-lite-ui.fullAnimButtons .with-thanks-toggle,
-    html.stx-lite-ui.fullAnimButtons .credits-discord-btns .btn:not(.egg-off-btn),
-    html.stx-lite-ui.fullAnimButtons button[id*="Add"],
-    html.stx-lite-ui.fullAnimButtons .with-thanks-list .contributor-name {
-      animation: none !important;
-      will-change: auto !important;
-      background-size: 100% 100% !important;
-    }
 
     /* Touch / narrow: safe areas, tap targets, prevent iOS input zoom. */
     html.stx-touch-ui {
@@ -174,10 +179,37 @@
       width: 100%;
       margin-left: 0;
     }
-    html.stx-touch-ui .header-top-ctas .anim-toggle {
+    html.stx-touch-ui .header-top-ctas .anim-toggle-group {
       grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      width: 100%;
+    }
+    html.stx-touch-ui .header-top-ctas .anim-toggle-group .anim-toggle {
+      grid-column: auto;
+      flex: 1 1 140px;
       width: auto;
-      flex: unset;
+      min-height: 44px;
+      padding: 8px 12px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 243, 255, 0.28);
+      background: rgba(0, 20, 40, 0.45);
+      position: relative;
+      z-index: 2;
+      -webkit-tap-highlight-color: rgba(0, 243, 255, 0.25);
+    }
+    html.stx-touch-ui .header-top-ctas .anim-toggle-group .anim-toggle--no {
+      border-color: rgba(255, 120, 120, 0.35);
+      background: rgba(40, 10, 14, 0.45);
+    }
+    html.stx-touch-ui .header-top-ctas .egg-off-btn--header {
+      grid-column: 1 / -1;
+      width: 100%;
+      min-height: 44px;
+      justify-content: center;
+      margin-top: 0;
     }
     html.stx-touch-ui .header-top-ctas #scrollToPasteCodeBtn,
     html.stx-touch-ui .header-top-ctas #scrollToSavBtn {
@@ -253,12 +285,25 @@
       max-height: min(50vh, 320px);
       -webkit-overflow-scrolling: touch;
     }
-    html.stx-touch-ui .custom-select-list.custom-select-list--floating {
+    .custom-select-list.custom-select-list--floating {
       position: fixed !important;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(0, 243, 255, 0.22);
       border-radius: 8px;
-      overflow-y: auto;
+      overflow-y: auto !important;
       overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      pointer-events: auto !important;
+      z-index: 2147483001 !important;
+    }
+    html.stx-touch-ui .custom-select-list.custom-select-list--floating {
+      max-height: min(50vh, 320px);
+    }
+    #skinMixerDetails .custom-select-wrapper.is-open,
+    #rebuildToolsPanel .custom-select-wrapper.is-open {
+      z-index: 2147483000;
+    }
+    #stxSelectBackdrop {
+      z-index: 2147482000;
     }
     html.stx-touch-ui .custom-select-option {
       min-height: 44px;
@@ -691,22 +736,32 @@
       user-select: none;
       font-size: 12px;
       color: var(--text-secondary);
+      position: relative;
+      z-index: 2;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
     .anim-toggle__label { font-weight: 500; }
     .anim-toggle__input {
       position: absolute;
       opacity: 0;
-      width: 0;
-      height: 0;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+      margin: 0;
+      cursor: pointer;
+      z-index: 3;
     }
     .anim-toggle__slider {
       position: relative;
       width: 36px;
       height: 18px;
+      flex-shrink: 0;
       background: rgba(255,255,255,0.08);
       border-radius: 10px;
       border: 1px solid rgba(0,243,255,0.3);
       transition: background 0.2s ease, border-color 0.2s ease;
+      pointer-events: none;
     }
     .anim-toggle__slider::before {
       content: "";
@@ -729,6 +784,51 @@
       background: var(--accent-cyan);
     }
     .anim-toggle__input:focus-visible + .anim-toggle__slider { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+    .anim-toggle--no .anim-toggle__input:checked + .anim-toggle__slider {
+      background: linear-gradient(90deg, rgba(255, 90, 90, 0.35), rgba(40, 20, 24, 0.85));
+      border-color: rgba(255, 120, 120, 0.65);
+    }
+    .anim-toggle--no .anim-toggle__input:checked + .anim-toggle__slider::before {
+      background: #ff8a8a;
+      box-shadow: 0 0 6px rgba(255, 100, 100, 0.45);
+    }
+    .anim-toggle-group {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+    }
+
+    /* Hard stop: No anim switch kills every motion (overrides Full anim + hover shifts) */
+    html.stx-no-anim *,
+    html.stx-no-anim *::before,
+    html.stx-no-anim *::after {
+      animation: none !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition: none !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    html.stx-no-anim .btn:not(.egg-off-btn),
+    html.stx-no-anim .btn--brand:not(.egg-off-btn),
+    html.stx-no-anim .btn-primary:not(.egg-off-btn),
+    html.stx-no-anim .btn-Firmware:not(.egg-off-btn),
+    html.stx-no-anim a.btn:not(.egg-off-btn),
+    html.stx-no-anim .rebuild-floating-btn,
+    html.stx-no-anim #rp-saveyaml-tab,
+    html.stx-no-anim .with-thanks-toggle,
+    html.stx-no-anim .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stx-no-anim .btn--discord-community,
+    html.stx-no-anim .with-thanks-list .contributor-name,
+    html.stx-no-anim .with-thanks-list .contributor-name::before,
+    html.stx-no-anim button[id*="Add"] {
+      animation: none !important;
+      will-change: auto !important;
+      background-size: 100% 100% !important;
+      background-position: 50% 50% !important;
+      transform: none !important;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .anim-toggle__slider, .anim-toggle__slider::before { transition: none; }
@@ -746,6 +846,7 @@
       to { transform: translateX(-66.666%); }
     }
     
+    /* Softer sweep colors — full #00f3ff reads too harsh when animating */
     html.fullAnimButtons .btn:not(.egg-off-btn),
     html.fullAnimButtons .btn--brand:not(.egg-off-btn),
     html.fullAnimButtons .btn-primary:not(.egg-off-btn),
@@ -755,14 +856,14 @@
     html.fullAnimButtons #rp-saveyaml-tab,
     html.fullAnimButtons .with-thanks-toggle,
     html.fullAnimButtons .credits-discord-btns .btn:not(.egg-off-btn) {
-      background-image: linear-gradient(90deg, #00f3ff 0%, #00f3ff 20%, #ff00c8 50%, #00f3ff 80%, #00f3ff 100%) !important;
+      background-image: linear-gradient(90deg, #2aa8c4 0%, #3ebfd6 22%, #d94db0 50%, #3ebfd6 78%, #2aa8c4 100%) !important;
       background-size: 300% 100% !important;
       background-repeat: no-repeat !important;
       background-position: 0% 50%;
       animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       color: #08151c !important;
       text-shadow: none !important;
-      border-color: rgba(255,0,200,0.5) !important;
+      border-color: rgba(220, 70, 170, 0.45) !important;
       will-change: background-position;
     }
     html.stx-anim-paused.fullAnimButtons .btn:not(.egg-off-btn),
@@ -774,21 +875,164 @@
     html.stx-anim-paused.fullAnimButtons #rp-saveyaml-tab,
     html.stx-anim-paused.fullAnimButtons .with-thanks-toggle,
     html.stx-anim-paused.fullAnimButtons .credits-discord-btns .btn:not(.egg-off-btn),
-    html.stx-anim-paused.fullAnimButtons .with-thanks-list .contributor-name {
+    html.stx-anim-paused.fullAnimButtons .with-thanks-list .contributor-name,
+    html.stx-anim-paused.fullAnimButtons .with-thanks-list .contributor-name::before {
       animation-play-state: paused !important;
       will-change: auto;
     }
-    
-    html.fullAnimButtons body:not(.mattmab-reskin):not(.mac10-reskin):not(.badley-reskin):not(.scooter-reskin):not(.ynot-reskin):not(.grimeey-reskin) .with-thanks-list .contributor-name {
-      background: none !important;
-      background-image: linear-gradient(90deg, rgba(0,243,255,0.55) 0%, rgba(0,243,255,0.65) 20%, rgba(255,0,200,0.65) 50%, rgba(0,243,255,0.65) 80%, rgba(0,243,255,0.55) 100%) !important;
-      background-size: 300% 100% !important;
+
+    /*
+     * Full anim OFF: shift each button’s own colours on hover (no palette swap = no instant jump).
+     * Idle uses a wide same-hue gradient; hover only moves background-position.
+     * Fine-pointer only so touch devices stay cheap.
+     */
+    html:not(.fullAnimButtons) .btn:not(.egg-off-btn):not(.btn--discord-community):not(.btn--brand):not(.btn-primary):not(.btn-Firmware):not(.btn-clear):not(.danger),
+    html:not(.fullAnimButtons) .with-thanks-toggle {
+      background-image: linear-gradient(90deg,
+        rgba(0, 200, 160, 0.14) 0%,
+        rgba(0, 170, 130, 0.12) 28%,
+        rgba(0, 245, 190, 0.22) 50%,
+        rgba(0, 170, 130, 0.12) 72%,
+        rgba(0, 200, 160, 0.14) 100%) !important;
+      background-size: 240% 100% !important;
       background-repeat: no-repeat !important;
-      background-position: 0% 50%;
-      animation: stxFullAnimSweepPosFluid var(--stx-fluid-speed) ease-in-out infinite alternate !important;
-      color: #08151c !important;
-      border-color: rgba(255,0,200,0.45) !important;
-      text-shadow: none !important;
+      background-position: 8% 50%;
+      transition: background-position 1.45s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease !important;
+    }
+    html:not(.fullAnimButtons) .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) .btn-primary:not(.egg-off-btn),
+    html:not(.fullAnimButtons) .btn-Firmware:not(.egg-off-btn),
+    html:not(.fullAnimButtons) .btn-clear:not(.egg-off-btn),
+    html:not(.fullAnimButtons) .danger:not(.egg-off-btn),
+    html:not(.fullAnimButtons) .credits-discord-btns .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand:not(.egg-off-btn) {
+      background-image: linear-gradient(90deg,
+        rgba(0, 243, 255, 0.4) 0%,
+        rgba(0, 150, 220, 0.34) 22%,
+        rgba(255, 0, 200, 0.36) 50%,
+        rgba(0, 150, 220, 0.34) 78%,
+        rgba(0, 243, 255, 0.4) 100%) !important;
+      background-size: 240% 100% !important;
+      background-repeat: no-repeat !important;
+      background-position: 8% 50%;
+      transition: background-position 1.45s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease !important;
+    }
+    html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn:not(.egg-off-btn):not(.btn--brand) {
+      background-image: linear-gradient(90deg,
+        rgba(0, 90, 140, 0.55) 0%,
+        rgba(0, 45, 85, 0.62) 28%,
+        rgba(0, 160, 210, 0.5) 50%,
+        rgba(0, 45, 85, 0.62) 72%,
+        rgba(0, 90, 140, 0.55) 100%) !important;
+      background-size: 240% 100% !important;
+      background-repeat: no-repeat !important;
+      background-position: 8% 50%;
+      transition: background-position 1.45s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease !important;
+    }
+    html:not(.fullAnimButtons) .btn--discord-community {
+      background-image: linear-gradient(90deg,
+        rgba(88, 101, 242, 0.62) 0%,
+        rgba(0, 243, 255, 0.3) 28%,
+        rgba(255, 0, 200, 0.26) 50%,
+        rgba(0, 243, 255, 0.3) 72%,
+        rgba(88, 101, 242, 0.62) 100%) !important;
+      background-size: 240% 100% !important;
+      background-repeat: no-repeat !important;
+      background-position: 10% 50%;
+      transition: background-position 1.6s ease, border-color 0.2s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+    }
+    html:not(.fullAnimButtons) body.mattmab-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.mattmab-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(255,215,0,0.5) 0%, rgba(70,140,255,0.42) 35%, rgba(255,215,0,0.48) 50%, rgba(70,140,255,0.42) 65%, rgba(255,215,0,0.5) 100%) !important;
+    }
+    html:not(.fullAnimButtons) body.mac10-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.mac10-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(255,80,80,0.55) 0%, rgba(20,10,10,0.9) 35%, rgba(255,90,90,0.5) 50%, rgba(20,10,10,0.9) 65%, rgba(255,80,80,0.55) 100%) !important;
+    }
+    html:not(.fullAnimButtons) body.badley-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.badley-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(155,110,255,0.48) 0%, rgba(255,185,230,0.4) 35%, rgba(155,110,255,0.48) 50%, rgba(255,185,230,0.4) 65%, rgba(155,110,255,0.48) 100%) !important;
+    }
+    html:not(.fullAnimButtons) body.scooter-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.scooter-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(0,255,120,0.45) 0%, rgba(255,40,40,0.38) 35%, rgba(0,255,120,0.45) 50%, rgba(255,40,40,0.38) 65%, rgba(0,255,120,0.45) 100%) !important;
+      color: #f5fffb !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+    }
+    html:not(.fullAnimButtons) body.ynot-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.ynot-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(0,212,232,0.48) 0%, rgba(10,10,14,0.92) 35%, rgba(0,212,232,0.42) 50%, rgba(10,10,14,0.92) 65%, rgba(0,212,232,0.48) 100%) !important;
+    }
+    html:not(.fullAnimButtons) body.grimeey-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.grimeey-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(68,143,54,0.5) 0%, rgba(248,250,252,0.16) 35%, rgba(68,143,54,0.48) 50%, rgba(248,250,252,0.16) 65%, rgba(68,143,54,0.5) 100%) !important;
+      color: #f5fffb !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      html:not(.fullAnimButtons) .btn:not(.egg-off-btn):not(.btn--discord-community):hover,
+      html:not(.fullAnimButtons) .btn--brand:not(.egg-off-btn):not(.btn--discord-community):hover,
+      html:not(.fullAnimButtons) .btn-primary:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) .btn-Firmware:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) .btn-clear:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) .danger:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) a.btn:not(.egg-off-btn):not(.btn--discord-community):hover,
+      html:not(.fullAnimButtons) .with-thanks-toggle:hover,
+      html:not(.fullAnimButtons) .credits-discord-btns .btn:not(.egg-off-btn):not(.btn--discord-community):hover,
+      html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand:not(.egg-off-btn):hover,
+      html:not(.fullAnimButtons) .btn--discord-community:hover {
+        background-position: 92% 50%;
+      }
+    }
+    
+    /* Contributor pills: same sheen approach as egg themes (background-position was easy to override) */
+    html.fullAnimButtons .with-thanks-list .contributor-name {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      z-index: 0;
+      background: rgba(8, 18, 28, 0.92) !important;
+      background-image: none !important;
+      animation: none !important;
+      color: #f2fbff !important;
+      border-color: rgba(180, 90, 160, 0.5) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+      box-shadow: 0 0 10px rgba(40, 140, 160, 0.14);
+    }
+    html.fullAnimButtons .with-thanks-list .contributor-name::before {
+      content: "" !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100% !important;
+      width: 300% !important;
+      z-index: -1 !important;
+      pointer-events: none !important;
+      background-image: linear-gradient(90deg,
+        #142838 0%,
+        #2aa8c4 22%,
+        #d94db0 50%,
+        #2aa8c4 78%,
+        #142838 100%) !important;
+      background-size: 100% 100% !important;
+      animation: stxEggSheenSlide 7s ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.fullAnimButtons .with-thanks-list .contributor-name:nth-child(3n+1)::before {
+      animation-delay: 0s;
+    }
+    html.fullAnimButtons .with-thanks-list .contributor-name:nth-child(3n+2)::before {
+      animation-delay: -2.3s;
+    }
+    html.fullAnimButtons .with-thanks-list .contributor-name:nth-child(3n+3)::before {
+      animation-delay: -4.6s;
+    }
+    html.fullAnimButtons .with-thanks-list .contributor-name[data-egg="1"]:hover {
+      filter: brightness(1.12);
+      border-color: rgba(230, 120, 200, 0.7) !important;
+      box-shadow: 0 4px 14px rgba(200, 80, 170, 0.28);
     }
     
     html.fullAnimButtons a.btn[href="./legacy/bl4-bulk-decoder.html"]:not(.egg-off-btn),
@@ -858,6 +1102,8 @@
     .with-thanks-list.hidden { display: none !important; }
     .contributor-name {
       display: inline-flex; align-items: center;
+      position: relative;
+      overflow: hidden;
       padding: 6px 12px; border-radius: 999px;
       border: 2px solid rgba(0, 243, 255, 0.5);
       background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(0, 140, 255, 0.12));
@@ -893,6 +1139,12 @@
     body.grimeey-reskin .contributor-name { border-color: rgba(255,140,0,0.5); background: linear-gradient(135deg, rgba(255,140,0,0.2), rgba(40,20,0,0.6)); color: #fff; }
     .credits-msg, .credits-check, .credits-discord {
       margin: 0; font-size: 12px; color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .with-thanks-list.stx-thanks-cold .contributor-name::before {
+      animation: none !important;
+      transform: none !important;
+      will-change: auto !important;
     }
     .credits-check { margin-top: 4px; }
     .credits-discord { margin-top: 8px; }
@@ -971,23 +1223,18 @@
     body.mattmab-reskin { --accent-cyan: #ffd700; --accent-pink: #468cff; background: linear-gradient(135deg,#0a1628,#1a0a0a,#060a15,#2a1a0a,#0a2a1a,#1a2a3a,#0a1628) !important; }
     body.mattmab-reskin .header-bar, body.mattmab-reskin .panel { border-color: rgba(255,215,0,0.4) !important; }
     
-    html:not(.fullAnimButtons) body.mattmab-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,215,0,0.45), rgba(70,140,255,0.42)) !important; }
     body.mac10-reskin { --accent-cyan: #ff5050; --accent-pink: #1a1a1a; background: linear-gradient(135deg,#1a0505,#0a0505,#150808) !important; }
     body.mac10-reskin .header-bar, body.mac10-reskin .panel { border-color: rgba(255,80,80,0.4) !important; }
-    html:not(.fullAnimButtons) body.mac10-reskin .btn--brand { background: linear-gradient(135deg, rgba(255,80,80,0.5), rgba(12,12,12,0.9)) !important; }
     body.badley-reskin { --accent-cyan: #9b6eff; --accent-pink: #ffb9e6; background: linear-gradient(135deg,#1a0a1a,#0f0515,#150a18) !important; }
     body.badley-reskin .header-bar, body.badley-reskin .panel { border-color: rgba(155,110,255,0.4) !important; }
-    html:not(.fullAnimButtons) body.badley-reskin .btn--brand { background: linear-gradient(135deg, rgba(155,110,255,0.4), rgba(255,185,230,0.35)) !important; }
     body.scooter-reskin { --accent-cyan: #00ff78; --accent-pink: #ff2828; background: linear-gradient(135deg,#051a0a,#0a1505,#0a1a08) !important; }
     body.scooter-reskin .header-bar, body.scooter-reskin .panel { border-color: rgba(0,255,120,0.4) !important; }
-    html:not(.fullAnimButtons) body.scooter-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,255,120,0.4), rgba(255,40,40,0.35)) !important; }
     body.ynot-reskin { --accent-cyan: #00d4e8; --accent-pink: #0a0a0c; background: linear-gradient(135deg,#030508,#050a10,#020406,#080c12) !important; }
     body.ynot-reskin .header-bar, body.ynot-reskin .panel { border-color: rgba(0,212,232,0.42) !important; }
-    html:not(.fullAnimButtons) body.ynot-reskin .btn--brand { background: linear-gradient(135deg, rgba(0,212,232,0.42), rgba(10,10,14,0.92)) !important; }
 
     
     .egg-off-btn {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: none; align-items: center; gap: 8px;
       padding: 8px 14px; border-radius: var(--radius-btn);
       border: 1px solid #ff00c8;
       background: rgba(255, 0, 200, 0.15);
@@ -996,6 +1243,13 @@
       cursor: pointer;
       transition: all var(--transition-fast);
       margin-top: 10px;
+    }
+    .egg-off-btn--header {
+      margin-top: 0;
+      margin-left: 4px;
+      padding: 6px 12px;
+      font-size: 12px;
+      white-space: nowrap;
     }
     .egg-off-btn:hover {
       background: rgba(255, 0, 200, 0.25);
@@ -1226,7 +1480,6 @@
     
     body.grimeey-reskin { --accent-cyan: #448f36; --accent-pink: #f8fafc; background: linear-gradient(135deg,#0a1810,#0f2218,#07120c,#0d1a12) !important; }
     body.grimeey-reskin .header-bar, body.grimeey-reskin .panel { border-color: rgba(68,143,54,0.45) !important; }
-    html:not(.fullAnimButtons) body.grimeey-reskin .btn--brand { background: linear-gradient(135deg, rgba(68,143,54,0.48), rgba(248,250,252,0.14)) !important; }
     body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn, body.grimeey-reskin .egg-off-btn { display: inline-flex !important; }
     body.grimeey-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(68,143,54,.92), rgba(248,250,252,.12)); border-color: rgba(68,143,54,.65); box-shadow: 0 0 22px rgba(68,143,54,.35); }
     body.grimeey-reskin #rp-saveyaml-drawer { border-left-color: rgba(68,143,54,.42); }
@@ -1277,7 +1530,6 @@
       transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast), filter var(--transition-fast);
     }
     .btn:hover {
-      background: linear-gradient(135deg, rgba(0, 245, 190, 0.18) 0%, rgba(0, 180, 140, 0.14) 100%);
       border-color: rgba(0, 245, 190, 0.5);
       box-shadow: 0 0 14px rgba(0, 230, 175, 0.24);
       transform: translateY(-1px);
@@ -1297,14 +1549,18 @@
     
     .panel .btn:not(.btn--brand):not(.btn-Firmware):not(.btn-primary):not(.egg-off-btn) {
       border-color: rgba(0, 235, 175, 0.55);
-      background: linear-gradient(135deg, rgba(0, 190, 145, 0.2) 0%, rgba(0, 120, 95, 0.15) 100%);
       color: #e7fff8;
+    }
+    html.fullAnimButtons .panel .btn:not(.btn--brand):not(.btn-Firmware):not(.btn-primary):not(.egg-off-btn) {
+      background: linear-gradient(135deg, rgba(0, 190, 145, 0.2) 0%, rgba(0, 120, 95, 0.15) 100%);
     }
     .panel .btn:not(.btn--brand):not(.btn-Firmware):not(.btn-primary):not(.egg-off-btn):hover {
       border-color: rgba(120, 255, 205, 0.75);
-      background: linear-gradient(135deg, rgba(0, 220, 170, 0.25) 0%, rgba(0, 145, 110, 0.2) 100%);
       box-shadow: 0 0 16px rgba(0, 230, 175, 0.28);
       color: #ffffff;
+    }
+    html.fullAnimButtons .panel .btn:not(.btn--brand):not(.btn-Firmware):not(.btn-primary):not(.egg-off-btn):hover {
+      background: linear-gradient(135deg, rgba(0, 220, 170, 0.25) 0%, rgba(0, 145, 110, 0.2) 100%);
     }
     
     #legendaryPerkSelect,
@@ -1356,16 +1612,15 @@
       text-shadow: 0 0 10px rgba(255, 200, 0, 0.35);
     }
 
-    /* Brighter static theme when button animations are off */
-    html:not(.fullAnimButtons) .btn--brand {
+    /* Brighter static theme when button animations are off (position shift handled above) */
+    html:not(.fullAnimButtons) .btn--brand:not(.btn--discord-community) {
       border-color: rgba(255, 120, 220, 0.72) !important;
-      background: linear-gradient(135deg, rgba(0, 243, 255, 0.38) 0%, rgba(0, 140, 220, 0.32) 48%, rgba(255, 0, 200, 0.34) 100%) !important;
       color: #fff !important;
       box-shadow: 0 0 16px rgba(0, 243, 255, 0.22), 0 0 12px rgba(255, 0, 200, 0.16);
     }
-    html:not(.fullAnimButtons) .btn--brand:hover {
+    html:not(.fullAnimButtons) .btn--brand:not(.btn--discord-community):hover {
       box-shadow: 0 0 22px rgba(0, 243, 255, 0.38), 0 0 18px rgba(255, 0, 200, 0.28);
-      filter: brightness(1.06);
+      filter: brightness(1.04);
     }
     html:not(.fullAnimButtons) .custom-select-display,
     html:not(.fullAnimButtons) .custom-select-list {
@@ -1568,14 +1823,28 @@
       background-size: 100% 100% !important;
       background-repeat: no-repeat !important;
       animation: none !important;
-      color: #062018 !important;
-      text-shadow: none !important;
+      color: #f5fffb !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
       box-shadow: 0 0 14px rgba(0, 235, 175, 0.3);
     }
     html.fullAnimButtons button[id*="Add"],
     html.fullAnimButtons button[id*="Add"].btn--brand {
       background-size: 240% 100% !important;
       animation: stxAddAquaSweep 2.2s ease-in-out infinite alternate !important;
+      color: #f5fffb !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+    }
+    html:not(.fullAnimButtons) button[id*="Add"],
+    html:not(.fullAnimButtons) button[id*="Add"].btn--brand {
+      background-size: 230% 100% !important;
+      background-position: 8% 50%;
+      transition: background-position 1.45s ease, border-color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease !important;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      html:not(.fullAnimButtons) button[id*="Add"]:hover,
+      html:not(.fullAnimButtons) button[id*="Add"].btn--brand:hover {
+        background-position: 92% 50%;
+      }
     }
     button[id*="Add"]:hover,
     button[id*="Add"].btn--brand:hover {
@@ -1851,6 +2120,14 @@
       resize: vertical;
       box-sizing: border-box;
     }
+    /* Keep floating panel compact so Convert buttons stay visible on PC */
+    #floating-output-code {
+      min-height: 52px;
+      max-height: 120px;
+      overflow-y: auto;
+      background: #020810;
+      border-color: rgba(0, 243, 255, 0.35);
+    }
     #floating-output-code:focus,
     .editor-output-code:focus {
       outline: none;
@@ -2125,6 +2402,16 @@
       background: linear-gradient(135deg, rgba(0, 243, 255, 0.18) 0%, rgba(255, 0, 200, 0.12) 100%);
       box-shadow: var(--glow-mix);
     }
+    /* Only one of Simple / Guided builder visible at a time */
+    html.stx-builder-mode-guided #stxDockDetails {
+      display: none;
+    }
+    html.stx-builder-mode-simple #rebuildGuidedBuilderSection {
+      display: none;
+    }
+    html.stx-builder-mode-guided #stxDockBlock {
+      margin-bottom: 0;
+    }
     .stxDockDetails {
       margin: 12px 0 18px;
       border: 1px solid var(--bg-panel-border);
@@ -2270,19 +2557,16 @@
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn {
       min-height: 32px;
       border: 1px solid rgba(0, 220, 255, 0.45);
-      background: linear-gradient(145deg, rgba(0, 90, 140, 0.55) 0%, rgba(0, 45, 85, 0.65) 100%);
       color: #b9f6ff;
       box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
     }
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn:hover {
-      background: linear-gradient(145deg, rgba(0, 140, 190, 0.55) 0%, rgba(0, 70, 120, 0.7) 100%);
       border-color: rgba(0, 243, 255, 0.75);
       color: #e8fcff;
       box-shadow: 0 0 14px rgba(0, 200, 255, 0.22);
     }
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand {
       border-color: rgba(0, 243, 255, 0.55);
-      background: linear-gradient(145deg, rgba(0, 160, 210, 0.5) 0%, rgba(0, 80, 160, 0.65) 50%, rgba(0, 40, 100, 0.55) 100%);
       color: #e8fcff;
     }
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn--brand:hover {
@@ -2291,7 +2575,6 @@
     }
     html:not(.fullAnimButtons) #stxSimpleBuilderPanel .btn-clear {
       border-color: rgba(0, 200, 255, 0.4);
-      background: linear-gradient(145deg, rgba(0, 70, 110, 0.5) 0%, rgba(0, 40, 75, 0.6) 100%);
       color: #9ee8ff;
     }
     
@@ -2775,7 +3058,8 @@
     .gradient-panel { background: linear-gradient(135deg, rgba(0,150,255,0.18) 0%, rgba(255,0,200,0.1) 100%); border-radius: 10px; padding: 14px; border: 1px solid rgba(255,0,200,0.35); }
     .aqua-blue-panel { background: linear-gradient(135deg, rgba(0,107,255,0.2), rgba(0,200,255,0.1)); }
     .btn-Firmware { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%); border: 1px solid rgba(255,0,200,0.45); color: #00f3ff; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
-    .btn-Firmware:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); box-shadow: var(--glow-mix); }
+    .btn-Firmware:hover { box-shadow: var(--glow-mix); }
+    html.fullAnimButtons .btn-Firmware:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); }
     #presetButtonsExtra button.btn[data-requires]:disabled {
       opacity: 0.42;
       cursor: not-allowed;
@@ -2793,9 +3077,11 @@
       color: rgba(255, 255, 255, 0.82);
     }
     .btn-clear { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%); border: 1px solid rgba(255,0,200,0.45); color: #00f3ff; }
-    .btn-clear:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); box-shadow: var(--glow-mix); }
+    .btn-clear:hover { box-shadow: var(--glow-mix); }
+    html.fullAnimButtons .btn-clear:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%); }
     .danger { background: linear-gradient(135deg, rgba(0,243,255,0.18) 0%, rgba(255,0,200,0.12) 100%) !important; border: 1px solid rgba(255,0,200,0.45) !important; color: #00f3ff !important; }
-    .danger:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%) !important; box-shadow: var(--glow-mix); }
+    .danger:hover { box-shadow: var(--glow-mix); }
+    html.fullAnimButtons .danger:hover { background: linear-gradient(135deg, rgba(0,243,255,0.28) 0%, rgba(255,0,200,0.18) 100%) !important; }
     .btn-primary { background: linear-gradient(135deg, rgba(0,150,255,0.35) 0%, rgba(255,0,200,0.2) 100%); border: 1px solid rgba(255,0,200,0.5); color: #fff; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-weight: 600; }
     .btn-primary:hover { box-shadow: var(--glow-mix); }
     .primary-save-gradient { background: linear-gradient(135deg, rgba(0,243,255,0.25) 0%, rgba(255,0,200,0.2) 100%); border-color: rgba(255,0,200,0.5); }
@@ -2901,6 +3187,9 @@
       font-size: .9rem;
       text-transform: uppercase;
       user-select: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(0, 243, 255, 0.25);
+      contain: layout style;
     }
     #rp-saveyaml-drawer {
       position: fixed;
@@ -2916,8 +3205,41 @@
       box-shadow: -16px 0 40px rgba(0,0,0,.35);
       display: flex;
       flex-direction: column;
+      contain: layout paint style;
     }
     #rp-saveyaml-drawer.rp-open { transform: translateX(0); }
+    /* Skip layout/paint of the huge YAML body while closed or during the open paint frames */
+    #rp-saveyaml-drawer:not(.rp-open) #rp-saveyaml-drawer-body,
+    #rp-saveyaml-drawer.rp-opening #rp-saveyaml-drawer-body {
+      content-visibility: hidden;
+      pointer-events: none;
+      contain-intrinsic-size: auto 70vh;
+    }
+    #rp-saveyaml-drawer-body details:not([open]) {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 44px;
+    }
+    html.stx-lite-ui #rp-saveyaml-drawer,
+    html.stx-touch-ui #rp-saveyaml-drawer {
+      transition: transform .12s ease-out;
+    }
+    /* Tab is always on-screen — never keep a continuous sweep on mobile/lite (INP + battery) */
+    html.stx-lite-ui #rp-saveyaml-tab,
+    html.stx-touch-ui #rp-saveyaml-tab,
+    html.stx-lite-ui.fullAnimButtons #rp-saveyaml-tab,
+    html.stx-touch-ui.fullAnimButtons #rp-saveyaml-tab {
+      animation: none !important;
+      will-change: auto !important;
+      background-size: 100% 100% !important;
+    }
+    html.stx-lite-ui.fullAnimButtons #rp-saveyaml-tab::before,
+    html.stx-touch-ui.fullAnimButtons #rp-saveyaml-tab::before,
+    html.stx-lite-ui.stxEggFullAnim #rp-saveyaml-tab::before,
+    html.stx-touch-ui.stxEggFullAnim #rp-saveyaml-tab::before {
+      content: none !important;
+      animation: none !important;
+      display: none !important;
+    }
     #rp-saveyaml-drawer-header {
       display: flex;
       align-items: center;
@@ -3573,11 +3895,19 @@
 <img alt="" class="header-icon" height="48" src="./assets/favicon.ico" width="48"/>
 <span class="header-title" id="stxToolboxHeaderTitle">Scooter's Toolbox</span>
 <div class="header-top-ctas" id="stxTopControls">
+<div class="anim-toggle-group" role="group" aria-label="Animation controls">
 <label class="anim-toggle" title="Enable slow colour sweeps on buttons">
 <span class="anim-toggle__label">Full anim</span>
 <input class="anim-toggle__input" id="fullAnimToggle" name="fullAnimToggle" type="checkbox"/>
 <span class="anim-toggle__slider"></span>
 </label>
+<label class="anim-toggle anim-toggle--no" title="Stop all animations and motion completely">
+<span class="anim-toggle__label">No anim</span>
+<input class="anim-toggle__input" id="noAnimToggle" name="noAnimToggle" type="checkbox"/>
+<span class="anim-toggle__slider"></span>
+</label>
+</div>
+<button class="egg-off-btn egg-off-btn--header" hidden="" id="eggOffBtnHeader" style="display:none;" type="button" title="Turn off the contributor easter-egg theme">Reset theme</button>
 <button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button">Have a code to import/edit? Click here</button>
 <a class="btn btn--discord-community btn--discord-community--compact" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Join Scooters Garage — Vault Hunters Discord">
 <svg class="btn--discord-community__icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
@@ -3774,12 +4104,23 @@
 <a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
 <button class="btn btn--brand stx-touch-tool-nav-link js-stx-show-history" title="View a history of items you have crafted in this browser" type="button">📄 Items Made</button>
 </div>
-<button class="egg-off-btn" id="eggOffBtn" style="display:none;" type="button">Disable Easter Eggs & Reset Theme</button>
+<button class="egg-off-btn" hidden="" id="eggOffBtn" style="display:none;" type="button">Disable Easter Eggs &amp; Reset Theme</button>
 </div>
 
 <div id="stxDockBlock">
 <div class="stxDockTopRow">
-<button aria-controls="stxDockDetails" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button">Simple Builder</button>
+<button aria-controls="stxDockDetails rebuildGuidedBuilderSection" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button" title="Switch to Guided Builder">Guided Builder</button>
+<script>
+(function () {
+  var btn = document.getElementById('stxDockToggleBtn');
+  if (!btn) return;
+  if (document.documentElement.classList.contains('stx-builder-mode-guided')) {
+    btn.textContent = 'Simple Builder';
+    btn.title = 'Switch to Simple Builder';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+})();
+</script>
 <details class="stxDockMoreTools" id="stxDockMoreTools">
 <summary class="btn btn--brand stxDockMoreToolsSummary" title="Open bulk decoder, prefix lookup, loot reference, and other standalone tools">More toolbox tools</summary>
 <div class="stxDockMoreToolsLinks">
@@ -4024,7 +4365,7 @@
 <div class="cc-slot-panel__title">Elements <span class="cc-slot-panel__hint">— body element, Maliwan secondary, and element parts</span></div>
 <div class="cc-guided-slots-grid" style="margin-top:8px;">
 <div><label for="ccWeaponBodyEleSelect" style="display:block;color:#9de8ff;font-size:0.95em;margin-bottom:6px;">Body Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccWeaponBodyEleSelect" name="ccWeaponBodyEleSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddWeaponBodyEle" type="button">Add</button></div></div>
-<div><label for="ccElementSwitchSelect" style="display:block;color:#9de8ff;font-size:0.95em;margin-bottom:6px;">Secondary Element (Maliwan)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
+<div><label for="ccElementSwitchSelect" style="display:block;color:#9de8ff;font-size:0.95em;margin-bottom:6px;">Secondary Element (Maliwan Switch)</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccElementSwitchSelect" name="ccElementSwitchSelect" style="flex:1;min-width:180px;"><option value="">-- None --</option></select><button class="btn" id="ccAddElementSwitch" type="button">Add</button></div></div>
 <div><label for="ccElementPartSelect" style="display:block;color:#9de8ff;font-size:0.95em;margin-bottom:6px;">Element</label><div style="display:flex;gap:10px;flex-wrap:wrap;"><select class="editor-select" id="ccElementPartSelect" name="ccElementPartSelect" style="flex:1;min-width:180px;"><option value="" data-cc-icon="./assets/img/elements/ico_elemental_all.png">-- Element --</option></select><button class="btn" id="ccAddElementStack" type="button">Add</button></div></div>
 </div>
 </div>
@@ -4714,9 +5055,7 @@
 </div>
 <div id="rp-saveyaml-drawer-body">
 <p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">⚠️</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
-<details id="saveYamlDetails" open="" style="margin-top:10px;">
-<summary style="color:#00f3ff;font-weight:700;">Save and YAML section</summary>
-<div style="margin-top:10px;">
+<div id="saveYamlDetails" style="margin-top:10px;">
 <div class="paste-section" style="margin-bottom: 20px;">
 <div id="paste-section-content" style="margin-top: 15px; display: block; overflow: hidden; transition: max-height 0.3s ease-in-out;">
 <div id="deserializer-status" style="margin-top: 10px; color: #00c8ff; font-size: 0.9em; display: none;"></div>
@@ -5171,7 +5510,6 @@
 <button class="btn btn-Firmware" id="goBackFromYAMLBtn" type="button">Back to Editor</button>
 </div>
 </div>
-</details>
 </div>
 </aside>
 
@@ -5192,7 +5530,7 @@
 <button class="btn btn--brand" id="floatingAddItemToYaml" type="button">💾 Add Item to YAML</button>
 <button class="btn btn--brand" disabled="" id="floatingAddItemToBank" title="Load profile .sav or YAML first." type="button">🏦 Add Item to Bank</button>
 </div>
-<textarea class="editor-output-code" id="floating-output-code" name="floating-output-code" placeholder="Paste Base85 or deserialized code, or select parts to generate" rows="6" style="width:100%;resize:vertical;" title="Editable — paste code and use Convert buttons to switch formats" spellcheck="false"></textarea>
+<textarea class="editor-output-code" id="floating-output-code" name="floating-output-code" placeholder="Paste Base85 or deserialized code, or select parts to generate" rows="3" style="width:100%;resize:vertical;" title="Editable — paste code and use Convert buttons to switch formats" spellcheck="false"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="floatingOutputCodeCharCount">0</span> characters</div>
 <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;">
 <button class="btn" id="floatingConvertBase85" type="button">Convert to BL-base85</button>
@@ -5243,8 +5581,11 @@
         } catch (_) {}
         var drawer = byId('rp-saveyaml-drawer');
         if (drawer) {
-          drawer.classList.add('rp-open');
-          document.body.classList.add('rp-saveyaml-drawer-open');
+          if (typeof window.stxOpenSaveYamlDrawer === 'function') window.stxOpenSaveYamlDrawer({ skipParse: true });
+          else {
+            drawer.classList.add('rp-open');
+            document.body.classList.add('rp-saveyaml-drawer-open');
+          }
         }
         var yaml = typeof window.getYamlText === 'function' ? window.getYamlText() : { text: (byId('yamlInput') && byId('yamlInput').value) || '' };
         var yt = yaml && yaml.text ? String(yaml.text).trim() : '';
@@ -5289,6 +5630,10 @@
         if (!code) return Promise.resolve('');
         if (/^@U/i.test(code)) {
           var asU = code.indexOf('@U') === 0 ? code : ('@U' + code.replace(/^@U/i, ''));
+          /* Pass through valid @U unchanged — never re-decode/re-pack (that shortens serials). */
+          if (asU.length >= 10 && asU.indexOf(',') < 0 && asU.indexOf('||') < 0) {
+            return Promise.resolve(asU);
+          }
           var ok = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(asU) : asU;
           return Promise.resolve(ok || '');
         }
@@ -5318,14 +5663,16 @@
         if (localHit && /^@U/i.test(localHit)) {
           return Promise.resolve(localHit);
         }
+        /* Local pack failed — try remote with a short timeout so Convert never hangs. */
         if (typeof window.ccSerializeDeserializedRemote !== 'function') {
           return Promise.resolve(localHit || '');
         }
-        return window.ccSerializeDeserializedRemote(code).then(function (remote) {
+        var remoteOpts = { timeoutMs: 900 };
+        return window.ccSerializeDeserializedRemote(code, remoteOpts).then(function (remote) {
           var s = String(remote || '').trim();
           if (s) return s;
           if (normCode && normCode !== code) {
-            return window.ccSerializeDeserializedRemote(normCode).then(function (remoteNorm) {
+            return window.ccSerializeDeserializedRemote(normCode, remoteOpts).then(function (remoteNorm) {
               var sn = String(remoteNorm || '').trim();
               return sn || localHit || localBest();
             }).catch(function () { return localHit || localBest(); });
@@ -5333,7 +5680,7 @@
           return localHit || localBest();
         }).catch(function () {
           if (normCode && normCode !== code && typeof window.ccSerializeDeserializedRemote === 'function') {
-            return window.ccSerializeDeserializedRemote(normCode).then(function (remoteNorm) {
+            return window.ccSerializeDeserializedRemote(normCode, remoteOpts).then(function (remoteNorm) {
               var sn = String(remoteNorm || '').trim();
               return sn || localBest();
             }).catch(function () { return localBest(); });
@@ -5382,17 +5729,55 @@
       function initDockToggle() {
         var btn = byId('stxDockToggleBtn');
         var details = byId('stxDockDetails');
+        var guided = byId('rebuildGuidedBuilderSection');
         if (!btn || !details) return;
-        function sync() {
-          btn.setAttribute('aria-expanded', details.open ? 'true' : 'false');
+        var STORAGE_KEY = 'stxBuilderMode';
+        function readStoredMode() {
+          try {
+            var m = String(localStorage.getItem(STORAGE_KEY) || '').trim().toLowerCase();
+            if (m === 'guided' || m === 'simple') return m;
+          } catch (_) {}
+          return 'simple';
         }
+        function applyMode(mode, opts) {
+          mode = (mode === 'guided') ? 'guided' : 'simple';
+          var root = document.documentElement;
+          root.classList.remove('stx-builder-mode-simple', 'stx-builder-mode-guided');
+          root.classList.add(mode === 'guided' ? 'stx-builder-mode-guided' : 'stx-builder-mode-simple');
+          if (mode === 'simple') {
+            details.open = true;
+            btn.textContent = 'Guided Builder';
+            btn.title = 'Switch to Guided Builder';
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('data-stx-builder-mode', 'simple');
+          } else {
+            details.open = false;
+            btn.textContent = 'Simple Builder';
+            btn.title = 'Switch to Simple Builder';
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('data-stx-builder-mode', 'guided');
+          }
+          try { localStorage.setItem(STORAGE_KEY, mode); } catch (_) {}
+          try { window.__CC_BUILDER_UI_MODE = mode; } catch (_) {}
+          if (opts && opts.scroll && guided && mode === 'guided') {
+            try { guided.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+          }
+          if (opts && opts.scroll && mode === 'simple') {
+            try { details.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+          }
+        }
+        window.__ccSetBuilderUiMode = function (mode, opts) {
+          applyMode(mode, opts || {});
+        };
+        window.__ccGetBuilderUiMode = function () {
+          return document.documentElement.classList.contains('stx-builder-mode-guided') ? 'guided' : 'simple';
+        };
         btn.addEventListener('click', function (ev) {
           ev.preventDefault();
-          details.open = !details.open;
-          sync();
+          var next = (window.__ccGetBuilderUiMode() === 'guided') ? 'simple' : 'guided';
+          applyMode(next, { scroll: true });
         });
-        details.addEventListener('toggle', sync);
-        sync();
+        applyMode(readStoredMode(), { scroll: false });
       }
 
       function initScrollToSections() {
@@ -5409,8 +5794,11 @@
         }
         if (savBtn && drawer && tab) {
           savBtn.addEventListener('click', function () {
-            drawer.classList.add('rp-open');
-            document.body.classList.add('rp-saveyaml-drawer-open');
+            if (typeof window.stxOpenSaveYamlDrawer === 'function') window.stxOpenSaveYamlDrawer();
+            else {
+              drawer.classList.add('rp-open');
+              document.body.classList.add('rp-saveyaml-drawer-open');
+            }
           });
         }
       }
@@ -5424,22 +5812,31 @@
         var btnLoadYaml = byId('btnLoadYaml');
         var btnLoadSav = byId('btnLoadSav');
         function openDrawer() {
-          if (drawer) drawer.classList.add('rp-open');
-          document.body.classList.add('rp-saveyaml-drawer-open');
-          if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
+          if (typeof window.stxOpenSaveYamlDrawer === 'function') window.stxOpenSaveYamlDrawer();
+          else {
+            if (drawer) drawer.classList.add('rp-open');
+            document.body.classList.add('rp-saveyaml-drawer-open');
+          }
         }
         function closeDrawer() {
-          if (drawer) drawer.classList.remove('rp-open');
-          document.body.classList.remove('rp-saveyaml-drawer-open');
+          if (typeof window.stxCloseSaveYamlDrawer === 'function') window.stxCloseSaveYamlDrawer();
+          else {
+            if (drawer) drawer.classList.remove('rp-open');
+            document.body.classList.remove('rp-saveyaml-drawer-open');
+          }
         }
         if (tab) {
           tab.addEventListener('click', function () {
-            if (drawer && drawer.classList.contains('rp-open')) closeDrawer(); else openDrawer();
+            if (typeof window.stxToggleSaveYamlDrawer === 'function') window.stxToggleSaveYamlDrawer();
+            else if (drawer && drawer.classList.contains('rp-open')) closeDrawer();
+            else openDrawer();
           });
           tab.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              if (drawer && drawer.classList.contains('rp-open')) closeDrawer(); else openDrawer();
+              if (typeof window.stxToggleSaveYamlDrawer === 'function') window.stxToggleSaveYamlDrawer();
+              else if (drawer && drawer.classList.contains('rp-open')) closeDrawer();
+              else openDrawer();
             }
           });
         }
@@ -5475,8 +5872,11 @@
         }
         var goBackBtn = byId('goBackFromYAMLBtn');
         if (goBackBtn) goBackBtn.addEventListener('click', function () {
-          drawer.classList.remove('rp-open');
-          document.body.classList.remove('rp-saveyaml-drawer-open');
+          if (typeof window.stxCloseSaveYamlDrawer === 'function') window.stxCloseSaveYamlDrawer();
+          else {
+            drawer.classList.remove('rp-open');
+            document.body.classList.remove('rp-saveyaml-drawer-open');
+          }
         });
       }
 
@@ -5592,7 +5992,7 @@
           guidedPreviewTimer = setTimeout(function () {
             guidedPreviewTimer = 0;
             update();
-          }, 400);
+          }, 120);
         }
         window.refreshGuidedOutputPreview = function (immediate) {
           if (immediate) {

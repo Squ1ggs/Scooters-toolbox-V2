@@ -37,23 +37,70 @@
 
   function getMixCategoryKey() {
     try {
-      var SKINS = window.SKINS || {};
+      if (!window.SKINS || typeof window.SKINS !== 'object') window.SKINS = {};
+      var SKINS = window.SKINS;
+      if (SKINS['Custom Mixes']) return 'Custom Mixes';
       if (SKINS.Special) return 'Special';
       var keys = Object.keys(SKINS);
       for (var i = 0; i < keys.length; i++) {
-        if (/special/i.test(keys[i])) return keys[i];
+        if (/special|custom\s*mix/i.test(keys[i])) return keys[i];
       }
-      return keys.length ? keys[0] : null;
-    } catch (_) { return null; }
+      // Always have a stable bucket even before skin_data.js finishes loading.
+      if (!SKINS['Custom Mixes']) SKINS['Custom Mixes'] = [];
+      return 'Custom Mixes';
+    } catch (_) {
+      try {
+        if (!window.SKINS) window.SKINS = {};
+        if (!window.SKINS['Custom Mixes']) window.SKINS['Custom Mixes'] = [];
+      } catch (_e) {}
+      return 'Custom Mixes';
+    }
+  }
+
+  function pushExtraNumericSkin(code, name) {
+    var codeTrim = norm(code).replace(/\s+/g, ' ');
+    if (!isMixableNumericSkinBrace(codeTrim)) return;
+    if (!Array.isArray(window.__CC_EXTRA_NUMERIC_SKINS)) window.__CC_EXTRA_NUMERIC_SKINS = [];
+    var list = window.__CC_EXTRA_NUMERIC_SKINS;
+    var key = codeTrim.toLowerCase();
+    for (var i = 0; i < list.length; i++) {
+      var ex = list[i];
+      var c = Array.isArray(ex) ? ex[0] : (ex && ex.code);
+      if (norm(c).replace(/\s+/g, ' ').toLowerCase() === key) return;
+    }
+    list.push({ name: name || 'Custom Mix', code: codeTrim, isCustomMix: true });
   }
 
   function addCustomMixSkin(name, fam, valueString) {
     var catKey = getMixCategoryKey();
-    if (!catKey) return;
     var code = '{' + fam + ':[' + valueString + ']}';
     if (!window.SKINS) window.SKINS = {};
     if (!window.SKINS[catKey]) window.SKINS[catKey] = [];
     window.SKINS[catKey].push({ name: name, code: code, isCustomMix: true });
+    // Also register in extras so Simple Builder sync + Tools/Guided populate pick it up.
+    pushExtraNumericSkin(code, name);
+    return code;
+  }
+
+  /** Refresh every skin/camo dropdown after a mix is created or imported. */
+  function refreshAllSkinLists() {
+    try {
+      if (typeof window.populateSkinCamo === 'function') {
+        window.populateSkinCamo(byId('skinSelect'), byId('camoSelect'));
+        window.populateSkinCamo(byId('toolsSkinSelect'), byId('toolsCamoSelect'));
+        window.populateSkinCamo(byId('ccGuidedSkinSelect'), byId('ccGuidedCamoSelect'));
+      }
+    } catch (_) {}
+    try { if (typeof window.loadToolsSkinCamo === 'function') window.loadToolsSkinCamo(); } catch (_) {}
+    try { if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo(); } catch (_) {}
+    try {
+      if (typeof window.__stxArmSkinCamoSync === 'function') {
+        window.__stxArmSkinCamoSync({ immediate: true, withTooltips: false });
+      }
+    } catch (_) {}
+    ['skinSelect', 'camoSelect', 'toolsSkinSelect', 'toolsCamoSelect', 'ccGuidedSkinSelect', 'ccGuidedCamoSelect'].forEach(function (id) {
+      syncCustomSelect(byId(id));
+    });
   }
 
   function buildMixOptions(familyFilter) {
@@ -94,6 +141,19 @@
     return out;
   }
 
+  function syncCustomSelect(sel) {
+    if (!sel) return;
+    if (typeof sel.__customSelectForceRebuild === 'function') {
+      try { sel.__customSelectForceRebuild(); return; } catch (_) {}
+    }
+    if (typeof sel.__customSelectPrebuild === 'function') {
+      try { sel.__customSelectPrebuild(); } catch (_) {}
+    }
+    if (typeof sel.__customSelectSync === 'function') {
+      try { sel.__customSelectSync(); } catch (_) {}
+    }
+  }
+
   function populateOptionsInSelect(sel, options, placeholder) {
     if (!sel) return;
     var cur = sel.value;
@@ -111,6 +171,7 @@
       sel.appendChild(o);
     }
     if (cur && Array.from(sel.options).some(function (opt) { return opt.value === cur; })) sel.value = cur;
+    syncCustomSelect(sel);
   }
 
   function populateMixDropdowns() {
@@ -141,6 +202,7 @@
       s1.appendChild(o);
     }
     if (prev1 && Array.from(s1.options).some(function (opt) { return opt.value === prev1; })) s1.value = prev1;
+    syncCustomSelect(s1);
 
     var fam = null;
     var s1Val = s1.value;
@@ -156,6 +218,8 @@
     populateOptionsInSelect(s3, optionsFor2and3, '-- Skin 3 (optional) --');
     if (prev2 && Array.from(s2.options).some(function (opt) { return opt.value === prev2; })) s2.value = prev2;
     if (prev3 && Array.from(s3.options).some(function (opt) { return opt.value === prev3; })) s3.value = prev3;
+    syncCustomSelect(s2);
+    syncCustomSelect(s3);
   }
 
   function updateSkin2AndSkin3Options() {
@@ -178,6 +242,8 @@
     populateOptionsInSelect(s3, options, '-- Skin 3 (optional) --');
     if (prev2 && Array.from(s2.options).some(function (opt) { return opt.value === prev2; })) s2.value = prev2;
     if (prev3 && Array.from(s3.options).some(function (opt) { return opt.value === prev3; })) s3.value = prev3;
+    syncCustomSelect(s2);
+    syncCustomSelect(s3);
   }
 
   function generateSkinMix() {
@@ -212,12 +278,14 @@
       return;
     }
     var name = n || (fv3 ? 'Auto 3-Way Mix Skin' : 'Auto 2-Way Mix Skin');
-    addCustomMixSkin(name, fam, combinedVals);
-    if (status) status.textContent = 'Mix added!';
+    var mixCode = addCustomMixSkin(name, fam, combinedVals);
+    if (!mixCode) {
+      if (status) status.textContent = 'Could not store mix (skin registry unavailable).';
+      return;
+    }
+    if (status) status.textContent = 'Mix added: ' + mixCode;
     populateMixDropdowns();
-    if (typeof window.loadSkinOptions === 'function') window.loadSkinOptions();
-    if (typeof window.loadToolsSkinCamo === 'function') window.loadToolsSkinCamo();
-    if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo();
+    refreshAllSkinLists();
   }
 
   function exportCustomMixes() {
@@ -254,14 +322,14 @@
         data.forEach(function (entry) {
           if (!entry || !entry.code) return;
           var cat = (entry.category && SKINS[entry.category]) ? entry.category : getMixCategoryKey();
-          if (!cat) return;
+          if (!cat) cat = 'Custom Mixes';
           if (!SKINS[cat]) SKINS[cat] = [];
-          SKINS[cat].push({ name: entry.name || 'Imported Mix', code: entry.code, isCustomMix: true });
+          var code = String(entry.code).trim().replace(/\s+/g, ' ');
+          SKINS[cat].push({ name: entry.name || 'Imported Mix', code: code, isCustomMix: true });
+          pushExtraNumericSkin(code, entry.name || 'Imported Mix');
         });
         populateMixDropdowns();
-        if (typeof window.loadSkinOptions === 'function') window.loadSkinOptions();
-        if (typeof window.loadToolsSkinCamo === 'function') window.loadToolsSkinCamo();
-        if (typeof window.loadGuidedSkinCamo === 'function') window.loadGuidedSkinCamo();
+        refreshAllSkinLists();
         if (status) status.textContent = 'Mixes imported!';
       } catch (err) {
         console.error('Import mixes failed:', err);
@@ -286,12 +354,23 @@
         this.value = '';
       });
     }
+    var mixerDetails = byId('skinMixerDetails');
+    if (mixerDetails && !mixerDetails.__ccMixToggleBound) {
+      mixerDetails.__ccMixToggleBound = true;
+      mixerDetails.addEventListener('toggle', function () {
+        if (!mixerDetails.open) return;
+        populateMixDropdowns();
+      });
+    }
   }
 
   window.populateMixDropdowns = populateMixDropdowns;
   window.generateSkinMix = generateSkinMix;
   window.exportCustomMixes = exportCustomMixes;
   window.importCustomMixes = importCustomMixes;
+  window.refreshAllSkinLists = refreshAllSkinLists;
+  // Legacy alias used by Simple Builder skin-sync hooks.
+  window.loadSkinOptions = refreshAllSkinLists;
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () { setTimeout(init, 100); });
