@@ -6,10 +6,25 @@
   'use strict';
 
   var initStarted = false;
+  var missingDecoderWarned = false;
 
   async function ensureDecoderForBridge() {
     if (window.stxDecodeBulk && window.stxDecoderReady) return;
+    // Wait briefly for deferred/lazy bulk-decoder boot on file:// (avoid spam-failing every chunk).
     if (typeof window.initDecoder !== 'function') {
+      for (var wait = 0; wait < 40; wait++) {
+        await new Promise(function (r) { setTimeout(r, 100); });
+        if (typeof window.initDecoder === 'function') break;
+        if (window.stxDecodeBulk && window.stxDecoderReady) return;
+      }
+    }
+    if (typeof window.initDecoder !== 'function') {
+      if (!missingDecoderWarned) {
+        missingDecoderWarned = true;
+        console.warn(
+          'STX inline decode unavailable (initDecoder missing). Use http://localhost or Open serials in bulk decoder for names. Serial list still works.',
+        );
+      }
       throw new Error('initDecoder not available (load bulk decoder scripts first)');
     }
     if (!initStarted) {

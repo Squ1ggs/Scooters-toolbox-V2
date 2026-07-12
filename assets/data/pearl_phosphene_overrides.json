@@ -1,0 +1,13 @@
+{
+  "notes": [
+    "Manual export-adjacent overrides applied after Nexus derivation.",
+    "Crow-Sourced Order AR must never inherit Vladof CrowdSourced / Midnight Defiance challenge proof."
+  ],
+  "by_slug": {
+    "crowsourced": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced)."
+    }
+  }
+}

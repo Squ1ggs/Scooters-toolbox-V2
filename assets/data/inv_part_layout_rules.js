@@ -355,7 +355,8 @@ const PART_SELECTION_DATA = {
         "leg_body_raid2",
         "leg_body_raid1",
         "leg_body_raid3",
-        "leg_body_raid4"
+        "leg_body_raid4",
+        "leg_body_cowbell"
       ],
       "min": 0,
       "max": 1
@@ -390,7 +391,8 @@ const PART_SELECTION_DATA = {
         "leg_body_raid2",
         "leg_body_raid1",
         "leg_body_raid3",
-        "leg_body_raid4"
+        "leg_body_raid4",
+        "leg_body_cowbell"
       ],
       "min": 0,
       "max": 1
@@ -420,7 +422,8 @@ const PART_SELECTION_DATA = {
         "leg_body_raid2",
         "leg_body_raid1",
         "leg_body_raid3",
-        "leg_body_raid4"
+        "leg_body_raid4",
+        "leg_body_cowbell"
       ],
       "min": 0,
       "max": 1
@@ -450,7 +453,8 @@ const PART_SELECTION_DATA = {
         "leg_body_raid2",
         "leg_body_raid1",
         "leg_body_raid3",
-        "leg_body_raid4"
+        "leg_body_raid4",
+        "leg_body_cowbell"
       ],
       "min": 0,
       "max": 1
@@ -478,7 +482,8 @@ const PART_SELECTION_DATA = {
         "leg_body_05",
         "leg_body_06",
         "leg_body_raid2",
-        "leg_body_raid1"
+        "leg_body_raid1",
+        "leg_body_dlc1"
       ],
       "min": 0,
       "max": 1

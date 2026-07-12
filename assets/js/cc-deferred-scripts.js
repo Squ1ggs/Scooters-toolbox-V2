@@ -10,6 +10,7 @@
     './assets/data/stx_rarities.js',
     './assets/data/stx_rarities_raid2_patch.js',
     './assets/data/stx_rarities_community_pearl_patch.js',
+    './assets/data/stx_rarities_supplement_patch.js',
     './assets/data/legacy_classmod_names.js',
     './assets/js/stx-simple-builder-core.js',
     './assets/js/cc-custom-select-rebuild.js'

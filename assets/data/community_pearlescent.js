@@ -1,13 +1,15 @@
 (function () {
   'use strict';
   window.COMMUNITY_PEARLESCENT_DATA = {
-  "generated_at": "2026-07-09T22:51:10.982Z",
+  "generated_at": "2026-07-11T13:48:25.324Z",
   "game_version": "Raid 2 (May 2026)",
-  "gear_database_source": "Borderlands 4 Gear Database (PDF/DOCX)",
+  "gear_database_source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "nexus_dir": "references/bl4_toolbox_export/ncs/json",
-  "refresh_command": "node scripts/build-community-pearlescent.mjs",
+  "refresh_command": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs",
   "sources": [
     "assets/data/borderlands4_gear_database_raid2.json",
+    "assets/data/pearl_phosphene_flags.json",
+    "assets/data/pearl_phosphene_overrides.json",
     "assets/data/stx_dataset_supplement.js",
     "assets/data/stx_raid2_supplement.js",
     "assets/data/echo4_shiny_codes.js",
@@ -15,16 +17,19 @@
     "references/bl4_toolbox_export/ncs/json"
   ],
   "stats": {
-    "total": 20,
-    "with_pearl_comp": 20,
+    "total": 17,
+    "with_pearl_comp": 17,
     "with_pearl_comp_expected": 0,
-    "with_id_raw": 20,
-    "with_serial_u": 8,
-    "in_nexus_export": 11,
-    "in_supplement": 13,
-    "verified_status": 20,
+    "with_id_raw": 17,
+    "with_serial_u": 4,
+    "in_nexus_export": 7,
+    "in_supplement": 14,
+    "verified_status": 17,
     "needs_verification": 0,
-    "export_pending": 0
+    "export_pending": 0,
+    "phosphene_yes": 2,
+    "phosphene_no": 15,
+    "phosphene_ambiguous": 0
   },
   "items": [
     {
@@ -51,7 +56,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent).",
       "comp_pearl": "BOR_SR.comp_05_legendary_abyss",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -73,7 +78,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "BOR_SR.comp_05_legendary_abyss",
       "internal_name": "abyss",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "abyss",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -112,7 +125,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "MAL_SR.comp_05_legendary_conflux",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -130,7 +143,9 @@
         "mal_sr.comp_06_pearl_vestigialconflux",
         "mal_sr.comp_06_pearlescent_vestigialconflux"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "mal_sr.comp_05_legendary_conflux"
+      ],
       "id_raw": "25:82",
       "skin_code": "{25:82}",
       "serial_u": null,
@@ -138,7 +153,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "MAL_SR.comp_05_legendary_conflux",
       "internal_name": "conflux",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "conflux",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -176,7 +199,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "BOR_SG.comp_05_legendary_CrazedEarl",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -190,7 +213,9 @@
         "bor_sg.comp_06_pearl_crazedearl",
         "bor_sg.comp_06_pearlescent_crazedearl"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "bor_sg.comp_05_legendary_crazedearl"
+      ],
       "id_raw": "7:54",
       "skin_code": "{7:54}",
       "serial_u": "@Ugd77*FnkbUJa$k!RG}J`s9{5EP&H90Q72LJP<v2+P@zz@P~}j=J<xCt@G$mKjNkKinVufczxQ$&{&s)o=(Ick9m~V/GPxX<vjG",
@@ -199,6 +224,22 @@
       "internal_balance_name": "BOR_SG.comp_05_legendary_crazedearl",
       "internal_name": "crazedearl",
       "can_be_phosphene": true,
+      "phosphene_status": "verified_yes",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "crazedearl",
+        "status": "verified_yes",
+        "notes": "Export: shiny pool itempool_mal_sg_05_legendary_crazedearl_shiny + Cosmetics_Weapon_Shiny_crazedEarl",
+        "evidence": [
+          {
+            "kind": "itempool_shiny",
+            "itempool_shiny": "itempool_mal_sg_05_legendary_crazedearl_shiny",
+            "comp": "BOR_SG.comp_05_legendary_CrazedEarl",
+            "cosmetic": "Cosmetics_Weapon_Shiny_crazedEarl",
+            "matched_key": "crazedearl"
+          }
+        ]
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -213,14 +254,13 @@
       }
     },
     {
-      "slug": "crowdsourced",
-      "gear_slug": "crowdsourced",
+      "slug": "crowsourced",
+      "gear_slug": "crowsourced",
       "display_name": "Crow-Sourced",
       "spawn_tokens": [
-        "crowdsourced",
         "crowsourced"
       ],
-      "yaml_key": "shiny_crowdsourced",
+      "yaml_key": "shiny_crowsourced",
       "expected_inv": "ord_ar",
       "weapon_type": "Assault Rifle",
       "manufacturer": "Order",
@@ -237,25 +277,23 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Community DB: Order AR; parsed Nexus may still expose VLA_SR CrowdSourced until inv tables update",
+      "notes": "Order AR pearlescent. Do not use crowdsourced/CrowdSourced (that is Vladof Midnight Defiance sniper). Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "ORD_AR.comp_05_legendary_crowsourced",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
       "comp_pearl_slug": "crowsourced",
       "itempool_pearl": "itempool_ord_ar_05_legendary_crowsourced_pearl",
       "comp_legendary_candidates": [
-        "ord_ar.comp_05_legendary_crowdsourced",
         "ord_ar.comp_05_legendary_crowsourced"
       ],
       "comp_candidates": [
-        "ord_ar.comp_05_legendary_crowdsourced",
-        "ord_ar.comp_06_pearl_crowdsourced",
-        "ord_ar.comp_06_pearlescent_crowdsourced",
         "ord_ar.comp_05_legendary_crowsourced",
         "ord_ar.comp_06_pearl_crowsourced",
         "ord_ar.comp_06_pearlescent_crowsourced"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "ord_ar.comp_05_legendary_crowsourced"
+      ],
       "id_raw": "15:77",
       "skin_code": "{15:77}",
       "serial_u": null,
@@ -263,7 +301,21 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "ORD_AR.comp_05_legendary_crowsourced",
       "internal_name": "crowsourced",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "crowsourced",
+        "status": "verified_no",
+        "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced).",
+        "evidence": [
+          {
+            "kind": "override",
+            "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced).",
+            "source_file": "pearl_phosphene_overrides.json"
+          }
+        ]
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -303,7 +355,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "TED_SG.comp_05_legendary_Eigenburst",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -325,7 +377,9 @@
         "ted_sg.comp_06_pearl_eagenburst",
         "ted_sg.comp_06_pearlescent_eagenburst"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "ted_sg.comp_05_legendary_eigenburst"
+      ],
       "id_raw": "11:82",
       "skin_code": "{11:82}",
       "serial_u": null,
@@ -333,7 +387,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "TED_SG.comp_05_legendary_Eigenburst",
       "internal_name": "eigenburst",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "eigenburst",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -353,7 +415,8 @@
       "display_name": "Firestorm",
       "spawn_tokens": [
         "firestorm",
-        "firework"
+        "firework",
+        "juliet"
       ],
       "yaml_key": "shiny_juliet",
       "expected_inv": "mal_sm",
@@ -372,7 +435,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "partial",
-      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "comp_pearl": "MAL_SM.comp_06_pearl_juliet",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -380,7 +443,8 @@
       "itempool_pearl": null,
       "comp_legendary_candidates": [
         "mal_sm.comp_05_legendary_firestorm",
-        "mal_sm.comp_05_legendary_firework"
+        "mal_sm.comp_05_legendary_firework",
+        "mal_sm.comp_05_legendary_juliet"
       ],
       "comp_candidates": [
         "mal_sm.comp_05_legendary_firestorm",
@@ -389,7 +453,9 @@
         "mal_sm.comp_05_legendary_firework",
         "mal_sm.comp_06_pearl_firework",
         "mal_sm.comp_06_pearlescent_firework",
-        "mal_sm.comp_06_pearl_juliet"
+        "mal_sm.comp_05_legendary_juliet",
+        "mal_sm.comp_06_pearl_juliet",
+        "mal_sm.comp_06_pearlescent_juliet"
       ],
       "alternate_editor_comps": [
         "mal_sm.comp_06_pearl_juliet"
@@ -401,7 +467,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "MAL_SM.comp_06_pearl_juliet",
       "internal_name": "juliet",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "juliet",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -413,66 +487,6 @@
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
         "pearl_comp_style": "comp_06_pearl"
-      }
-    },
-    {
-      "slug": "fleabag",
-      "gear_slug": "fleabag",
-      "display_name": "Fleabag",
-      "spawn_tokens": [
-        "fleabag"
-      ],
-      "yaml_key": "shiny_fleabag",
-      "expected_inv": "tor_ar",
-      "weapon_type": "Assault Rifle",
-      "manufacturer": "Torgue",
-      "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
-      "mission_reward": false,
-      "vendor": false,
-      "dlc": "Raid 2",
-      "patch_introduced": "1.8",
-      "patch_removed": null,
-      "status": "verified",
-      "notes": null,
-      "comp_pearl": "TOR_AR.comp_05_legendary_fleabag",
-      "comp_pearl_expected": null,
-      "pearl_comp_style": "legendary_pearl",
-      "comp_pearl_slug": "fleabag",
-      "itempool_pearl": null,
-      "comp_legendary_candidates": [
-        "tor_ar.comp_05_legendary_fleabag"
-      ],
-      "comp_candidates": [
-        "tor_ar.comp_05_legendary_fleabag",
-        "tor_ar.comp_06_pearl_fleabag",
-        "tor_ar.comp_06_pearlescent_fleabag"
-      ],
-      "alternate_editor_comps": [],
-      "id_raw": "17:83",
-      "skin_code": "{17:83}",
-      "serial_u": "@Ugv4Ng35E/MjK>Z-i%N$/RHKFtl//J<l/<b`b*c@j4(bkS6>1maVeEYvzvt~TJw2X(@8vN3?f%ZuX?Ol>W/za_@EH",
-      "serial_hint": "{17:83} + |\"c\",1|",
-      "camo_token": "|\"c\",1|",
-      "internal_balance_name": "TOR_AR.comp_05_legendary_fleabag",
-      "internal_name": "fleabag",
-      "can_be_phosphene": true,
-      "can_be_pearlescent": true,
-      "wiki_url": null,
-      "verification": {
-        "in_gear_database": true,
-        "in_supplement": false,
-        "in_nexus_export": true,
-        "in_pearl_itempool": false,
-        "in_echo4": true,
-        "in_yaml_catalog": false,
-        "comp_match_via": "nexus_legendary_inv",
-        "pearl_comp_style": "legendary_pearl"
       }
     },
     {
@@ -499,7 +513,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
       "comp_pearl": "JAK_AR.comp_05_legendary_gomie",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -521,7 +535,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "JAK_AR.comp_05_legendary_gomie",
       "internal_name": "gomie",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "gomie",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -532,69 +554,6 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
-    },
-    {
-      "slug": "hairtrigger",
-      "gear_slug": "hairtrigger",
-      "display_name": "Hair Trigger",
-      "spawn_tokens": [
-        "hairtrigger"
-      ],
-      "yaml_key": "shiny_hairtrigger",
-      "expected_inv": "bor_sg",
-      "weapon_type": "Shotgun",
-      "manufacturer": "Ripper",
-      "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
-      "mission_reward": false,
-      "vendor": false,
-      "dlc": "Raid 2",
-      "patch_introduced": "1.8",
-      "patch_removed": null,
-      "status": "verified",
-      "notes": "Inv comp is comp_05_legendary_demo (internal codename demo, idRaw 7:56); Cello audio uses BOR_SG_HairTrigger. No separate comp_05_legendary_hairtrigger row.",
-      "comp_pearl": "BOR_SG.comp_05_legendary_demo",
-      "comp_pearl_expected": null,
-      "pearl_comp_style": "legendary_pearl",
-      "comp_pearl_slug": "demo",
-      "itempool_pearl": null,
-      "comp_legendary_candidates": [
-        "bor_sg.comp_05_legendary_hairtrigger"
-      ],
-      "comp_candidates": [
-        "bor_sg.comp_05_legendary_hairtrigger",
-        "bor_sg.comp_06_pearl_hairtrigger",
-        "bor_sg.comp_06_pearlescent_hairtrigger",
-        "bor_sg.comp_05_legendary_demo"
-      ],
-      "alternate_editor_comps": [
-        "bor_sg.comp_05_legendary_demo"
-      ],
-      "id_raw": "7:56",
-      "skin_code": "{7:56}",
-      "serial_u": "@Ugd77*FnkbUJa$k#RG}J`s6#Dk*w8!FPE<?OOH>%t8`K`uA5<t*EL1rJ4`aW>_&slz>FM$OdoPFKZ})eOPP_A8a=HBm",
-      "serial_hint": "{7:56} + |\"c\",1|",
-      "camo_token": "|\"c\",1|",
-      "internal_balance_name": "BOR_SG.comp_05_legendary_demo",
-      "internal_name": "demo",
-      "can_be_phosphene": true,
-      "can_be_pearlescent": true,
-      "wiki_url": null,
-      "verification": {
-        "in_gear_database": true,
-        "in_supplement": false,
-        "in_nexus_export": true,
-        "in_pearl_itempool": false,
-        "in_echo4": true,
-        "in_yaml_catalog": false,
-        "comp_match_via": "nexus_legendary_inv",
         "pearl_comp_style": "legendary_pearl"
       }
     },
@@ -623,7 +582,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "TOR_PS.comp_05_legendary_handcannon",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -641,7 +600,9 @@
         "tor_ps.comp_06_pearl_handconnon",
         "tor_ps.comp_06_pearlescent_handconnon"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "tor_ps.comp_05_legendary_handcannon"
+      ],
       "id_raw": "6:78",
       "skin_code": "{6:78}",
       "serial_u": null,
@@ -649,7 +610,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "TOR_PS.comp_05_legendary_handcannon",
       "internal_name": "handcannon",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "handcannon",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -687,7 +656,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "partial",
-      "notes": "Dataset may use comp_06_pearl_herald instead of comp_05_legendary",
+      "notes": "Dataset may use comp_06_pearl_herald instead of comp_05_legendary Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "comp_pearl": "TOR_PS.comp_06_pearl_herald",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -711,7 +680,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "TOR_PS.comp_06_pearl_herald",
       "internal_name": "herald",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "herald",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -750,7 +727,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent).",
       "comp_pearl": "BOR_SM.comp_05_legendary_jailbroken",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -768,7 +745,9 @@
         "bor_sm.comp_06_pearl_jailbrokengatling",
         "bor_sm.comp_06_pearlescent_jailbrokengatling"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "bor_sm.comp_05_legendary_jailbroken"
+      ],
       "id_raw": "19:61",
       "skin_code": "{19:61}",
       "serial_u": "@Ugv?-o35E/Mj1AB}RG}J`s9{6-P&H8{Q72KIx`X<I3WchLYKQ8F8ffsy9PlvqQ4HVncA1_Y&%f7l82)yDr/7gh/5b+5Y_a^kF1rB",
@@ -776,7 +755,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "BOR_SM.comp_05_legendary_jailbroken",
       "internal_name": "jailbroken",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "jailbroken",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -816,7 +803,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "partial",
-      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "comp_pearl": "JAK_SG.comp_06_pearl_constable",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -848,7 +835,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "JAK_SG.comp_06_pearl_constable",
       "internal_name": "constable",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "constable",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -860,71 +855,6 @@
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
         "pearl_comp_style": "comp_06_pearl"
-      }
-    },
-    {
-      "slug": "mercurious",
-      "gear_slug": "mercurious",
-      "display_name": "Mercurious",
-      "spawn_tokens": [
-        "mercurious",
-        "mercury"
-      ],
-      "yaml_key": "shiny_mercurious",
-      "expected_inv": "vla_sm",
-      "weapon_type": "SMG",
-      "manufacturer": "Vladof",
-      "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
-      "mission_reward": false,
-      "vendor": false,
-      "dlc": "Raid 2",
-      "patch_introduced": "1.8",
-      "patch_removed": null,
-      "status": "verified",
-      "notes": null,
-      "comp_pearl": "VLA_SM.comp_05_legendary_mercury",
-      "comp_pearl_expected": null,
-      "pearl_comp_style": "legendary_pearl",
-      "comp_pearl_slug": "mercury",
-      "itempool_pearl": null,
-      "comp_legendary_candidates": [
-        "vla_sm.comp_05_legendary_mercurious",
-        "vla_sm.comp_05_legendary_mercury"
-      ],
-      "comp_candidates": [
-        "vla_sm.comp_05_legendary_mercurious",
-        "vla_sm.comp_06_pearl_mercurious",
-        "vla_sm.comp_06_pearlescent_mercurious",
-        "vla_sm.comp_05_legendary_mercury",
-        "vla_sm.comp_06_pearl_mercury",
-        "vla_sm.comp_06_pearlescent_mercury"
-      ],
-      "alternate_editor_comps": [],
-      "id_raw": "22:92",
-      "skin_code": "{22:92}",
-      "serial_u": "@UgxFw!35E/MjK>bjiz-y28Z}htE-EZ4Cu%3EC+bskQFBmtP=8RNP`Oa&Q1MXr5D#PT!}vXKm+9&8{Ch8l;cxeMj!wJt-*#C(uFLZP",
-      "serial_hint": "{22:92} + |\"c\",1|",
-      "camo_token": "|\"c\",1|",
-      "internal_balance_name": "VLA_SM.comp_05_legendary_mercury",
-      "internal_name": "mercury",
-      "can_be_phosphene": true,
-      "can_be_pearlescent": true,
-      "wiki_url": null,
-      "verification": {
-        "in_gear_database": true,
-        "in_supplement": false,
-        "in_nexus_export": true,
-        "in_pearl_itempool": false,
-        "in_echo4": true,
-        "in_yaml_catalog": false,
-        "comp_match_via": "nexus_legendary_inv",
-        "pearl_comp_style": "legendary_pearl"
       }
     },
     {
@@ -952,7 +882,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Nexus inv_name_part Uni_VLA_SM_Locust; editor uses comp_06_pearl_locust with display name Parasite",
+      "notes": "Nexus inv_name_part Uni_VLA_SM_Locust; editor uses comp_06_pearl_locust with display name Parasite Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "comp_pearl": "VLA_SM.comp_06_pearl_locust",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -980,7 +910,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "VLA_SM.comp_06_pearl_locust",
       "internal_name": "locust",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "locust",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -992,6 +930,76 @@
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
         "pearl_comp_style": "comp_06_pearl"
+      }
+    },
+    {
+      "slug": "raiden",
+      "gear_slug": "raiden",
+      "display_name": "Raiden",
+      "spawn_tokens": [
+        "raiden"
+      ],
+      "yaml_key": "shiny_raiden",
+      "expected_inv": "dad_sm",
+      "weapon_type": "SMG",
+      "manufacturer": "Daedalus",
+      "rarity": "Pearlescent",
+      "red_text": null,
+      "unique_effect": null,
+      "drop_source": "Biff Fistful",
+      "dedicated_drop": false,
+      "raid_drop": false,
+      "world_drop": false,
+      "mission_reward": false,
+      "vendor": false,
+      "dlc": "Bounty Pack 3",
+      "patch_introduced": "1.8",
+      "patch_removed": null,
+      "status": "verified",
+      "notes": "Bounty Pack 3 pearlescent. Export-synced pearl (rarity_06_pearlescent).",
+      "comp_pearl": "DAD_SM.comp_05_legendary_raiden",
+      "comp_pearl_expected": null,
+      "pearl_comp_style": "legendary_pearl",
+      "comp_pearl_slug": "raiden",
+      "itempool_pearl": null,
+      "comp_legendary_candidates": [
+        "dad_sm.comp_05_legendary_raiden"
+      ],
+      "comp_candidates": [
+        "dad_sm.comp_05_legendary_raiden",
+        "dad_sm.comp_06_pearl_raiden",
+        "dad_sm.comp_06_pearlescent_raiden"
+      ],
+      "alternate_editor_comps": [
+        "dad_sm.comp_05_legendary_raiden"
+      ],
+      "id_raw": "20:70",
+      "skin_code": "{20:70}",
+      "serial_u": null,
+      "serial_hint": "{20:70} + |\"c\",1|",
+      "camo_token": "|\"c\",1|",
+      "internal_balance_name": "DAD_SM.comp_05_legendary_raiden",
+      "internal_name": "raiden",
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "raiden",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
+      "can_be_pearlescent": true,
+      "wiki_url": null,
+      "verification": {
+        "in_gear_database": true,
+        "in_supplement": true,
+        "in_nexus_export": false,
+        "in_pearl_itempool": false,
+        "in_echo4": false,
+        "in_yaml_catalog": false,
+        "comp_match_via": "legendary_supplement",
+        "pearl_comp_style": "legendary_pearl"
       }
     },
     {
@@ -1019,7 +1027,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "partial",
-      "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary",
+      "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "comp_pearl": "DAD_SM.comp_06_pearl_screwed",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -1047,7 +1055,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "DAD_SM.comp_06_pearl_screwed",
       "internal_name": "screwed",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "screwed",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -1059,66 +1075,6 @@
         "in_yaml_catalog": false,
         "comp_match_via": "supplement_slug",
         "pearl_comp_style": "comp_06_pearl"
-      }
-    },
-    {
-      "slug": "shalashaska",
-      "gear_slug": "shalashaska",
-      "display_name": "Shalashaska",
-      "spawn_tokens": [
-        "shalashaska"
-      ],
-      "yaml_key": "shiny_shalashaska",
-      "expected_inv": "jak_ps",
-      "weapon_type": "Pistol",
-      "manufacturer": "Jakobs",
-      "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
-      "mission_reward": false,
-      "vendor": false,
-      "dlc": "Raid 2",
-      "patch_introduced": "1.8",
-      "patch_removed": null,
-      "status": "verified",
-      "notes": null,
-      "comp_pearl": "JAK_PS.comp_05_legendary_Shalashaska",
-      "comp_pearl_expected": null,
-      "pearl_comp_style": "legendary_pearl",
-      "comp_pearl_slug": "shalashaska",
-      "itempool_pearl": null,
-      "comp_legendary_candidates": [
-        "jak_ps.comp_05_legendary_shalashaska"
-      ],
-      "comp_candidates": [
-        "jak_ps.comp_05_legendary_shalashaska",
-        "jak_ps.comp_06_pearl_shalashaska",
-        "jak_ps.comp_06_pearlescent_shalashaska"
-      ],
-      "alternate_editor_comps": [],
-      "id_raw": "3:83",
-      "skin_code": "{3:83}",
-      "serial_u": "@UgbV{rFnkbUJa*7oRG}KRsIsVZsCB4zs85/i)j{<^{Xxw_r9?c8y%gj3yj`ZJ$Mf&K9EQK$-#I$%&VT3VFgrX)hv(}s",
-      "serial_hint": "{3:83} + |\"c\",1|",
-      "camo_token": "|\"c\",1|",
-      "internal_balance_name": "JAK_PS.comp_05_legendary_Shalashaska",
-      "internal_name": "shalashaska",
-      "can_be_phosphene": true,
-      "can_be_pearlescent": true,
-      "wiki_url": null,
-      "verification": {
-        "in_gear_database": true,
-        "in_supplement": false,
-        "in_nexus_export": true,
-        "in_pearl_itempool": false,
-        "in_echo4": true,
-        "in_yaml_catalog": false,
-        "comp_match_via": "nexus_legendary_inv",
-        "pearl_comp_style": "legendary_pearl"
       }
     },
     {
@@ -1145,7 +1101,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "supplement_only",
-      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB",
+      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "comp_pearl": "TED_SG.comp_06_pearl_sharkbait",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -1169,7 +1125,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "TED_SG.comp_06_pearl_sharkbait",
       "internal_name": "sharkbait",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "sharkbait",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -1209,7 +1173,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper",
+      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper Export-synced pearl (rarity_06_pearlescent).",
       "comp_pearl": "ORD_SR.comp_05_legendary_temper",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -1241,7 +1205,15 @@
       "camo_token": "|\"c\",1|",
       "internal_balance_name": "ORD_SR.comp_05_legendary_temper",
       "internal_name": "temper",
-      "can_be_phosphene": true,
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "temper",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {
@@ -1279,7 +1251,7 @@
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": null,
+      "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "comp_pearl": "DAD_PS.comp_05_legendary_soulsurvivor",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -1293,7 +1265,9 @@
         "dad_ps.comp_06_pearl_soulsurvivor",
         "dad_ps.comp_06_pearlescent_soulsurvivor"
       ],
-      "alternate_editor_comps": [],
+      "alternate_editor_comps": [
+        "dad_ps.comp_05_legendary_soulsurvivor"
+      ],
       "id_raw": "2:80",
       "skin_code": "{2:80}",
       "serial_u": "@Uga`vnFnkbUJa$l6RG}J`sG&nYQ6W(yQ72JhP<2p!P=8RhP`gmWEzmFzG@JuGjQtej_q<)Er^oZ}y&Q(W-QPJn?aqJa?>c*4m)q0!w;T",
@@ -1302,6 +1276,22 @@
       "internal_balance_name": "DAD_PS.comp_05_legendary_soulsurvivor",
       "internal_name": "soulsurvivor",
       "can_be_phosphene": true,
+      "phosphene_status": "verified_yes",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "soulsurvivor",
+        "status": "verified_yes",
+        "notes": "Export: shiny pool itempool_dad_ps_05_legendary_soulsurvivor_shiny + Cosmetics_Weapon_Shiny_soulsurvivor",
+        "evidence": [
+          {
+            "kind": "itempool_shiny",
+            "itempool_shiny": "itempool_dad_ps_05_legendary_soulsurvivor_shiny",
+            "comp": "DAD_PS.comp_05_legendary_soulsurvivor",
+            "cosmetic": "Cosmetics_Weapon_Shiny_soulsurvivor",
+            "matched_key": "soulsurvivor"
+          }
+        ]
+      },
       "can_be_pearlescent": true,
       "wiki_url": null,
       "verification": {

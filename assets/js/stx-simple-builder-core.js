@@ -287,7 +287,7 @@
   const PEARL_WEAPON_MAINPART_HINTS = [
     'eigenburst','laserdisc','mercredi','bubbles','tankbuster','handcannon','roulette',
     'arctic','conflux','songbird','doeshot','fleabag','mercury','mercurious','shalashaska','demo',
-    'crowdsourced','midnightdefiance','soulsurvivor','crazedearl','jailbroken','jailbrokengatling',
+    'crowsourced','soulsurvivor','crazedearl','jailbroken','jailbrokengatling',
     'hairtrigger','herald','gomie','abyss','loomingconstable','looming','constable',
     'firestorm','firework','screwstonian','screwed','parasite','solartemper'
   ];
@@ -1040,8 +1040,7 @@
     soulsurvivor: true,
     crazedearl: true,
     crowsourced: true,
-    crowdsourced: true,
-    midnightdefiance: true,
+    // Do NOT treat Vladof CrowdSourced / Midnight Defiance as pearlescent (that is a phosphene sniper).
     doeshot: true,
     doshot: true,
     shalashaska: true,
@@ -1080,8 +1079,10 @@
   window.STX_PEARL_RARITY_DISPLAY_BY_NORM = {
     soulsurvivor: 'Soul Survivor',
     conflux: 'Conflux',
-    crowdsourced: 'Crow-Sourced',
     crowsourced: 'Crow-Sourced',
+    // Midnight Defiance is phosphene-only (not in pearl allowlist); keep display for rarity-id lookups.
+    midnightdefiance: 'Midnight Defiance',
+    crowdsourced: 'Midnight Defiance',
     crazedearl: 'Crazed Earl',
     eigenburst: 'Eigenburst',
     iigenburst: 'Eigenburst',
@@ -1103,7 +1104,6 @@
     firestorm: 'Firestorm',
     firework: 'Firestorm',
     vestigialconflux: 'Conflux',
-    midnightdefiance: 'Midnight Defiance',
     doeshot: 'Doeshot',
     doshot: 'Doeshot',
     laserdisc: 'Laserdisc',

@@ -113,22 +113,6 @@
         "soulsurvivor"
       ]
     },
-    "crowdsourced": {
-      "name": "Crow-Sourced",
-      "isPearlescent": true,
-      "weaponType": "Assault Rifle",
-      "manufacturer": "Order",
-      "redText": "",
-      "ability": "",
-      "source": "",
-      "status": "needs_verification",
-      "notes": "Community DB: Order AR; parsed Nexus may still expose VLA_SR CrowdSourced until inv tables update",
-      "expectedInv": "ord_ar",
-      "spawnTokens": [
-        "crowdsourced",
-        "crowsourced"
-      ]
-    },
     "crowsourced": {
       "name": "Crow-Sourced",
       "isPearlescent": true,
@@ -138,10 +122,9 @@
       "ability": "",
       "source": "",
       "status": "needs_verification",
-      "notes": "Community DB: Order AR; parsed Nexus may still expose VLA_SR CrowdSourced until inv tables update",
+      "notes": "Order AR pearlescent. Not Vladof CrowdSourced / Midnight Defiance sniper phosphene.",
       "expectedInv": "ord_ar",
       "spawnTokens": [
-        "crowdsourced",
         "crowsourced"
       ]
     },

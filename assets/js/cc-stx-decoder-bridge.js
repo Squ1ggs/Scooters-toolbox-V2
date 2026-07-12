@@ -29,7 +29,11 @@
   }
 
   function useInlineDecode() {
-    return preferInlineDecoder() && typeof window.__stxDecodeSerialsBatch === 'function';
+    return (
+      preferInlineDecoder() &&
+      typeof window.__stxDecodeSerialsBatch === 'function' &&
+      (typeof window.initDecoder === 'function' || (window.stxDecodeBulk && window.stxDecoderReady))
+    );
   }
 
   function shouldAvoidDecoderIframe() {
@@ -61,7 +65,10 @@
             if (typeof callback === 'function') callback(results);
             resolve(results);
           }).catch(function (err) {
-            console.warn('STX inline decode failed:', err);
+            if (!window.__stxInlineDecodeWarned) {
+              window.__stxInlineDecodeWarned = true;
+              console.warn('STX inline decode failed:', err && err.message ? err.message : err);
+            }
             if (typeof callback === 'function') callback([]);
             resolve([]);
           });
@@ -114,7 +121,10 @@
         if (typeof callback === 'function') callback(results);
         return results;
       }).catch(function (err) {
-        console.warn('STX inline decode failed:', err);
+        if (!window.__stxInlineDecodeWarned) {
+          window.__stxInlineDecodeWarned = true;
+          console.warn('STX inline decode failed:', err && err.message ? err.message : err);
+        }
         if (typeof callback === 'function') callback([]);
         return [];
       });

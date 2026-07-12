@@ -573,8 +573,10 @@
 
   function getNextStbxFilename(ext, yamlStr) {
     ext = (ext || 'yaml').toLowerCase().replace(/^\./, '');
+    var isProfile = isProfileYamlStructure(yamlStr || '');
     var charName = getCharNameFromYaml(yamlStr || '');
-    var base = isProfileYamlStructure(yamlStr || '') ? 'STBX-profile' : (charName ? 'STBX-' + charName : 'STBX');
+    // Profile downloads use a clear game-facing name so they are not mistaken for character saves.
+    var base = isProfile ? 'profile' : (charName ? 'STBX-' + charName : 'STBX');
     var storageKey = 'stbx_dl_' + base;
     var count = 0;
     try {
@@ -584,6 +586,10 @@
     try {
       localStorage.setItem(storageKey, String(count));
     } catch (e) {}
+    if (isProfile) {
+      // profile.sav / profile.yaml first, then profile-2.sav, …
+      return count === 1 ? base + '.' + ext : base + '-' + count + '.' + ext;
+    }
     return base + '-' + count + '.' + ext;
   }
 
@@ -649,7 +655,12 @@
       var downloadName = getNextStbxFilename('yaml', rawYaml);
       var ta = document.getElementById('yamlInput') || document.getElementById('fullYamlInput');
       if (ta) ta.value = rawYaml;
-      if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
+      // Paint YAML first; serial name-decode runs in the background (can be slow on file://).
+      if (statusDiv) {
+        statusDiv.textContent = 'YAML ready — loading inventory list (names decode in background)…';
+        statusDiv.style.color = '#4caf50';
+      }
+      if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(350);
       if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
       if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
       if (typeof window.__ccRenderRuntimeStatus === 'function') window.__ccRenderRuntimeStatus();
@@ -665,7 +676,8 @@
         URL.revokeObjectURL(url);
       } catch (e) { console.warn('YAML download failed:', e); }
       if (statusDiv) {
-        statusDiv.textContent = 'Save file converted to YAML! YAML loaded and downloaded.';
+        var kindHint = isProfileYamlStructure(rawYaml) ? ' (profile → profile.yaml / profile.sav)' : '';
+        statusDiv.textContent = 'Save converted to YAML' + kindHint + '. Loaded in editor and downloaded as ' + downloadName + '.';
         statusDiv.style.color = '#4caf50';
       }
       var infoSav = document.getElementById('sav-file-info');

@@ -372,7 +372,7 @@
       <img alt="" aria-hidden="true" class="header-icon" height="48" src="./favicon.ico" width="48"/>
       <div class="header-main">
         <h1>Loot Reference</h1>
-        <div class="sub" id="meta">Shinies: phosphenes (base-game) and pearlescents (Raid 2 pearl-tier) — bosses, challenges, unlocks, and more.</div>
+        <div class="sub" id="meta">Phosphenes (legendary shiny skins) and pearlescents (Raid 2 pearl-tier) are separate — not every pearl has a phosphene skin.</div>
       </div>
       <div class="header-actions">
         <a class="btn" href="../index.html"><img alt="" src="./img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png" width="16" height="16"/> Scooter's Toolbox</a>
@@ -603,7 +603,7 @@
         <h2>Pearlescent <span class="subtle" style="font-size:0.72em;font-weight:600;opacity:0.9;">(Raid 2 DLC)</span></h2>
         <span class="section-stat" id="pearlSectionStat"></span>
       </div>
-      <p class="note" id="pearlSectionNote">Pearlescents are Raid 2 shinies (pearl-tier). Dedicated boss/world sources are listed when known; otherwise they still drop as Raid 2 pearlescent shinies — not a missing phosphene pool.</p>
+      <p class="note" id="pearlSectionNote">Pearlescents are a rarity tier, not Shine The Brightest phosphenes. Flags are export-backed (<code>node scripts/build-pearl-phosphene-flags.mjs</code> from Nexus challenge / shiny pools). Rebuild: <code>npm run pearls:build</code> (also runs inside <code>refresh-toolbox-editor-data.bat</code>). Without challenge or shiny-pool+cosmetic proof we mark No — we do not invent Yes from <code>Cosmetics_Weapon_Shiny_*</code> alone.</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -742,7 +742,7 @@
 
   <script src="data/skin_list_data.js"></script>
   <script src="data/loot_reference_data.js"></script>
-  <script src="data/loot_rarity_pools_data.js"></script>
+  <script src="data/loot_rarity_pools_data.js?v=20260711r2"></script>
   <script src="data/loot_config_data.js"></script>
   <script src="data/rewards_data.js"></script>
   <script src="data/enemy_drops_data.js"></script>
@@ -865,7 +865,7 @@
       var uPhos = stats.with_base85_phosphene || 0;
       var uPearl = stats.with_base85_pearlescent || 0;
       meta.textContent = 'Last updated ' + formatDate(data.generated_at) + ' · ' +
-        phos + ' phosphenes · ' + pearls + ' pearlescents (also shiny) · ' + poolCount + ' bosses with loot tables' +
+        phos + ' phosphenes · ' + pearls + ' pearlescents · ' + poolCount + ' bosses with loot tables' +
         (skinData && skinData.stats ? ' · ' + skinData.stats.total + ' cosmetics' : '');
 
       function countBossDropProbStats() {
@@ -1035,15 +1035,15 @@
           if (cp.mission_reward) return cp.dlc ? 'Mission reward · ' + cp.dlc : 'Mission reward';
           if (cp.vendor) return cp.dlc ? 'Vendor · ' + cp.dlc : 'Vendor';
           if (cp.raid_drop && cp.dlc) return cp.dlc + ' raid drop';
-          if (cp.itempool_pearl) return cp.dlc === 'Raid 2' ? 'Raid 2 pearlescent shiny pool' : 'Pearlescent shiny pool';
-          if (cp.dlc === 'Raid 2') return 'Raid 2 pearlescent shiny';
-          if (cp.dlc && cp.dlc !== 'Base') return cp.dlc + ' pearlescent shiny';
+          if (cp.itempool_pearl) return cp.dlc === 'Raid 2' ? 'Raid 2 pearlescent pool' : 'Pearlescent pool';
+          if (cp.dlc === 'Raid 2') return 'Raid 2 pearlescent';
+          if (cp.dlc && cp.dlc !== 'Base') return cp.dlc + ' pearlescent';
         }
         if (g.drop_sources && g.drop_sources.length) {
           return formatDropSources(g);
         }
         if (g.drop_note && !isDevDropNote(g.drop_note)) return friendlyNote(g.drop_note);
-        if (isPearl(g)) return 'Raid 2 pearlescent shiny';
+        if (isPearl(g)) return 'Raid 2 pearlescent';
         return '';
       }
 
@@ -1075,6 +1075,9 @@
 
       function parseCompMeta(comp) {
         var c = String(comp || '');
+        if (/^classmod_/i.test(c)) {
+          return { manufacturer: '', weapon_type: 'Class mod', weapon_label: 'Class mod' };
+        }
         var m = c.match(/^([a-z]{2,4})_([a-z]{2})(?:_|\.)/i);
         var mfgMap = {
           tor: 'Torgue', ted: 'Tediore', dad: 'Daedalus', vla: 'Vladof', bor: 'Ripper',
@@ -1096,6 +1099,71 @@
         };
       }
 
+      function isGenericGearLabel(label) {
+        var n = String(label || '').trim();
+        if (!n) return true;
+        if (/^\d+$/.test(n)) return true;
+        if (/^0\d+$/.test(n)) return true;
+        if (/^(cowbell|dlc\d+|raid\d+|tuba)$/i.test(n)) return true;
+        if (/^legendary(\s|$)/i.test(n)) return true;
+        if (/^leg\s*body(\s|$)/i.test(n)) return true;
+        if (/^comp_05_legendary/i.test(n)) return true;
+        return false;
+      }
+
+      /** Classmod rarity comps share names with leg_body_* uniques. */
+      var CLASSMOD_COMP_DISPLAY = {
+        'classmod_dark_siren.comp_05_legendary_01': 'Technomancer',
+        'classmod_dark_siren.comp_05_legendary_02': 'Avatar',
+        'classmod_dark_siren.comp_05_legendary_03': 'Undead Eye',
+        'classmod_dark_siren.comp_05_legendary_04': 'Kindred Spirits',
+        'classmod_dark_siren.comp_05_legendary_05': 'Illusionist',
+        'classmod_dark_siren.comp_05_legendary_06': 'Teen Witch',
+        'classmod_dark_siren.comp_05_legendary_cowbell': 'Configuration',
+        'classmod_exo_soldier.comp_05_legendary_01': 'Dancer',
+        'classmod_exo_soldier.comp_05_legendary_02': 'Filántropo',
+        'classmod_exo_soldier.comp_05_legendary_03': 'Instigator',
+        'classmod_exo_soldier.comp_05_legendary_04': 'Buster',
+        'classmod_exo_soldier.comp_05_legendary_05': 'Esgrimidor',
+        'classmod_exo_soldier.comp_05_legendary_06': 'Grenazerker',
+        'classmod_exo_soldier.comp_05_legendary_cowbell': 'Reaparición',
+        'classmod_gravitar.comp_05_legendary_01': 'Bio-Robot',
+        'classmod_gravitar.comp_05_legendary_02': 'Reactor',
+        'classmod_gravitar.comp_05_legendary_03': 'Generator',
+        'classmod_gravitar.comp_05_legendary_04': 'Driver',
+        'classmod_gravitar.comp_05_legendary_05': 'Skeptic',
+        'classmod_gravitar.comp_05_legendary_06': 'Scientist',
+        'classmod_gravitar.comp_05_legendary_cowbell': 'Phlebotomist',
+        'classmod_paladin.comp_05_legendary_01': 'Furnace',
+        'classmod_paladin.comp_05_legendary_02': 'Elementalist',
+        'classmod_paladin.comp_05_legendary_03': 'Blacksmith',
+        'classmod_paladin.comp_05_legendary_04': 'Shatterwight',
+        'classmod_paladin.comp_05_legendary_05': 'Viking',
+        'classmod_paladin.comp_05_legendary_06': 'Forge Master',
+        'classmod_paladin.comp_05_legendary_cowbell': 'Tempest',
+        'classmod_robodealer.comp_05_legendary_01': 'Rounder',
+        'classmod_robodealer.comp_05_legendary_02': 'Ludopath',
+        'classmod_robodealer.comp_05_legendary_03': 'Hotshot',
+        'classmod_robodealer.comp_05_legendary_04': 'Cooler',
+        'classmod_robodealer.comp_05_legendary_05': 'Whale',
+        'classmod_robodealer.comp_05_legendary_06': 'Windrider',
+        'classmod_robodealer.comp_05_legendary_dlc1': 'Gamer'
+      };
+
+      function resolveGearLabel(comp, label) {
+        var key = String(comp || '').toLowerCase();
+        var mapped = CLASSMOD_COMP_DISPLAY[key];
+        if (mapped) return mapped;
+        if (!isGenericGearLabel(label)) return label;
+        var m = key.match(/^(classmod_[a-z0-9_]+)\.comp_05_legendary_(.+)$/);
+        if (m) {
+          var vh = m[1].replace(/^classmod_/, '').replace(/_/g, ' ');
+          vh = vh.replace(/\b\w/g, function (ch) { return ch.toUpperCase(); });
+          return 'Legendary Comp ' + vh;
+        }
+        return label;
+      }
+
       var gearCatalogRows = (function () {
         if (!rarityData || !rarityData.pools) return [];
         var seen = Object.create(null);
@@ -1104,13 +1172,21 @@
           (p.inv_comps || []).forEach(function (c) {
             if (!c.comp || !c.label) return;
             var key = String(c.comp).toLowerCase();
-            if (seen[key]) return;
-            seen[key] = true;
+            var label = resolveGearLabel(c.comp, c.label);
+            if (seen[key] != null) {
+              var prev = rows[seen[key]];
+              if (prev && isGenericGearLabel(prev.label) && !isGenericGearLabel(label)) {
+                prev.label = label;
+                if (p.itempool) prev.itempool = p.itempool;
+              }
+              return;
+            }
+            seen[key] = rows.length;
             var shiny = shinyGunByLegendaryComp[key] || null;
             var meta = parseCompMeta(c.comp);
             var weaponLabel = (shiny && shiny.weapon_label) || meta.weapon_label || '';
             rows.push({
-              label: c.label,
+              label: label,
               comp: c.comp,
               tier: c.tier || p.tier,
               category: c.category || p.category,
@@ -1166,7 +1242,20 @@
       }
 
       function variantPill(g) {
-        if (isPearl(g)) return '<span class="pill pill--pearl">Pearlescent</span>';
+        if (isPearl(g)) {
+          var cp = g.community_pearl || {};
+          var st = cp.phosphene_status;
+          var ph = cp.can_be_phosphene;
+          var extra = '';
+          if (st === 'verified_yes' || ph === true) {
+            extra = ' <span class="pill pill--phos" title="Export: challenge and/or shiny pool + Cosmetics_Weapon_Shiny_*">+ phosphene</span>';
+          } else if (st === 'verified_no' || ph === false) {
+            extra = ' <span class="subtle" title="Export: no challenge / shiny-pool+cosmetic proof">(no phosphene)</span>';
+          } else {
+            extra = ' <span class="subtle" title="Phosphene status ambiguous — do not claim Yes">(phosphene ?)</span>';
+          }
+          return '<span class="pill pill--pearl">Pearlescent</span>' + extra;
+        }
         return '<span class="pill pill--phos">Phosphene</span>';
       }
 
@@ -1307,7 +1396,7 @@
         if (!playerSrc && sources && sources !== 'Pearlescent' && sources !== 'Pearlescent comp' && !isDevDropNote(sources)) {
           bits.push(esc(sources));
         }
-        return bits.length ? bits.join('<br>') : '<span class="subtle">Raid 2 pearlescent shiny</span>';
+        return bits.length ? bits.join('<br>') : '<span class="subtle">Raid 2 pearlescent</span>';
       }
 
       function isPoolDefPhos(g) {

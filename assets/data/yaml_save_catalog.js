@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.YAML_SAVE_CATALOG = {
-  "generated": "2026-07-09T22:39:25.558Z",
+  "generated": "2026-07-11T18:51:06.246Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "shiny_gear": [
     {
@@ -18,7 +18,7 @@
       "key": "shiny_anarchy",
       "cosmetic": "Cosmetics_Weapon_Shiny_anarchy",
       "unlockable": "Unlockable_Weapons.Shiny_anarchy",
-      "label": "Phosphene — Anarchy"
+      "label": "Phosphene — Shalashaska (legendary; not pearl)"
     },
     {
       "key": "shiny_arctic",
@@ -48,7 +48,7 @@
       "key": "shiny_barrel",
       "cosmetic": "Cosmetics_Weapon_Shiny_barrel",
       "unlockable": "Unlockable_Weapons.Shiny_barrel",
-      "label": "Phosphene — ARC-TAN",
+      "label": "Phosphene — Cooper Duper",
       "idRaw": "289:29",
       "comp": "MAL_HW.comp_05_legendary_barrel",
       "inferred": true,
@@ -189,7 +189,7 @@
       "key": "shiny_crowdsourced",
       "cosmetic": "Cosmetics_Weapon_Shiny_CrowdSourced",
       "unlockable": "Unlockable_Weapons.Shiny_CrowdSourced",
-      "label": "Phosphene — Crow-Sourced"
+      "label": "Phosphene — Midnight Defiance (Vladof SR; not Crow-Sourced AR)"
     },
     {
       "key": "shiny_crowsourced",
@@ -205,7 +205,7 @@
       "key": "shiny_dahlfather",
       "cosmetic": "Cosmetics_Weapon_Shiny_dahlfather",
       "unlockable": "Unlockable_Weapons.Shiny_dahlfather",
-      "label": "Phosphene — Heimdahl",
+      "label": "Phosphene — Dahlfather",
       "idRaw": "273:43",
       "comp": "TOR_HW.comp_05_legendary_dahlfather",
       "inferred": true,
@@ -215,13 +215,13 @@
       "key": "shiny_demo",
       "cosmetic": "Cosmetics_Weapon_Shiny_Demo",
       "unlockable": "Unlockable_Weapons.Shiny_Demo",
-      "label": "Phosphene — Hair Trigger"
+      "label": "Phosphene — Hair Trigger (legendary; not pearl)"
     },
     {
       "key": "shiny_discybusiness",
       "cosmetic": "Cosmetics_Weapon_Shiny_discybusiness",
       "unlockable": "Unlockable_Weapons.Shiny_discybusiness",
-      "label": "Phosphene — Discy Business",
+      "label": "Phosphene — Doer",
       "idRaw": "10:81",
       "comp": "MAL_SG.comp_05_legendary_discybusiness",
       "inferred": true,
@@ -243,7 +243,7 @@
       "key": "shiny_draupner",
       "cosmetic": "Cosmetics_Weapon_Shiny_draupner",
       "unlockable": "Unlockable_Weapons.Shiny_draupner",
-      "label": "Phosphene — Draupner",
+      "label": "Phosphene — Return Wave",
       "idRaw": "275:38",
       "comp": "BOR_HW.comp_05_legendary_draupner",
       "inferred": true,
@@ -283,7 +283,7 @@
       "key": "shiny_fishward",
       "cosmetic": "Cosmetics_Weapon_Shiny_fishward",
       "unlockable": "Unlockable_Weapons.Shiny_fishward",
-      "label": "Phosphene — Fishward",
+      "label": "Phosphene — Adoration",
       "idRaw": "27:83",
       "comp": "JAK_AR.comp_05_legendary_fishward",
       "inferred": true,
@@ -293,7 +293,7 @@
       "key": "shiny_flak",
       "cosmetic": "Cosmetics_Weapon_Shiny_flak",
       "unlockable": "Unlockable_Weapons.Shiny_flak",
-      "label": "Phosphene — Flak Cannon",
+      "label": "Phosphene — Decoy",
       "idRaw": "282:31",
       "comp": "VLA_HW.comp_05_legendary_flak",
       "inferred": true,
@@ -309,7 +309,7 @@
       "key": "shiny_fleabag",
       "cosmetic": "Cosmetics_Weapon_Shiny_Fleabag",
       "unlockable": "Unlockable_Weapons.Shiny_Fleabag",
-      "label": "Phosphene — Fleabag"
+      "label": "Phosphene — Fleabag (legendary; not pearl)"
     },
     {
       "key": "shiny_follower",
@@ -355,7 +355,7 @@
       "key": "shiny_harddark",
       "cosmetic": "Cosmetics_Weapon_Shiny_harddark",
       "unlockable": "Unlockable_Weapons.Shiny_harddark",
-      "label": "Phosphene — Solidified",
+      "label": "Phosphene — Hard Dark",
       "idRaw": "13:87",
       "comp": "DAD_AR.comp_05_legendary_harddark",
       "inferred": true,
@@ -422,7 +422,7 @@
       "key": "shiny_ishmael",
       "cosmetic": "Cosmetics_Weapon_Shiny_ishmael",
       "unlockable": "Unlockable_Weapons.Shiny_ishmael",
-      "label": "Phosphene — Ishmael",
+      "label": "Phosphene — Harpoon",
       "idRaw": "26:82",
       "comp": "ORD_SR.comp_05_legendary_ishmael",
       "inferred": true,
@@ -501,7 +501,7 @@
       "key": "shiny_lightgun",
       "cosmetic": "Cosmetics_Weapon_Shiny_lightgun",
       "unlockable": "Unlockable_Weapons.Shiny_lightgun",
-      "label": "Phosphene — Light Gun",
+      "label": "Phosphene — Round the Horn",
       "idRaw": "16:91",
       "comp": "VLA_SR.comp_05_legendary_lightgun",
       "inferred": true,
@@ -517,7 +517,7 @@
       "key": "shiny_loarmaster",
       "cosmetic": "Cosmetics_Weapon_Shiny_Loarmaster",
       "unlockable": "Unlockable_Weapons.Shiny_Loarmaster",
-      "label": "Phosphene — Rogue"
+      "label": "Phosphene — Loarmaster"
     },
     {
       "key": "shiny_lockjaw",
@@ -584,7 +584,7 @@
       "key": "shiny_mercury",
       "cosmetic": "Cosmetics_Weapon_Shiny_mercury",
       "unlockable": "Unlockable_Weapons.Shiny_mercury",
-      "label": "Phosphene — Mercurious"
+      "label": "Phosphene — Mercurious (legendary; not pearl)"
     },
     {
       "key": "shiny_misslaser",
@@ -766,7 +766,7 @@
       "key": "shiny_shalashaska",
       "cosmetic": "Cosmetics_Weapon_Shiny_Shalashaska",
       "unlockable": "Unlockable_Weapons.Shiny_Shalashaska",
-      "label": "Phosphene — Shalashaska"
+      "label": "Phosphene — Shalashaska (legendary; not pearl)"
     },
     {
       "key": "shiny_shammy",
@@ -793,7 +793,7 @@
       "key": "shiny_shoals",
       "cosmetic": "Cosmetics_Weapon_Shiny_shoals",
       "unlockable": "Unlockable_Weapons.Shiny_shoals",
-      "label": "Phosphene — Shoals",
+      "label": "Phosphene — Habitual",
       "idRaw": "3:85",
       "comp": "JAK_PS.comp_05_legendary_shoals",
       "inferred": true,
@@ -903,7 +903,7 @@
       "key": "shiny_unstable_kor",
       "cosmetic": "Cosmetics_Weapon_Shiny_unstable_kor",
       "unlockable": "Unlockable_Weapons.Shiny_unstable_kor",
-      "label": "Phosphene — Unstable Kor",
+      "label": "Phosphene — Snaboopie-pop",
       "idRaw": "12:77",
       "comp": "TOR_SG.comp_05_legendary_unstable_kor",
       "inferred": true,
@@ -1077,313 +1077,475 @@
       "code": "|\"c\",1|"
     },
     {
+      "c": 72,
+      "name": "Sugar Coated",
+      "code": "|\"c\",72|",
+      "cosmetic": "Cosmetics_Weapon_Mat39_Premium",
+      "matNum": 39,
+      "inferred": false
+    },
+    {
+      "c": 73,
+      "name": "Firehawk's Fury",
+      "code": "|\"c\",73|",
+      "cosmetic": "Cosmetics_Weapon_Mat38_HeadHunter",
+      "matNum": 38,
+      "inferred": false
+    },
+    {
+      "c": 74,
+      "name": "Hazard Pay",
+      "code": "|\"c\",74|",
+      "cosmetic": "Cosmetics_Weapon_Mat37_SHiFT",
+      "matNum": 37,
+      "inferred": false
+    },
+    {
+      "c": 75,
+      "name": "Broken Order",
+      "code": "|\"c\",75|",
+      "cosmetic": "Cosmetics_Weapon_Mat36_PreOrder",
+      "matNum": 36,
+      "inferred": false
+    },
+    {
+      "c": 76,
+      "name": "Gearbox Gear",
+      "code": "|\"c\",76|",
+      "cosmetic": "Cosmetics_Weapon_Mat35_GearboxDev",
+      "matNum": 35,
+      "inferred": false
+    },
+    {
       "c": 77,
       "name": "Smiley",
-      "code": "|\"c\",77|"
+      "code": "|\"c\",77|",
+      "cosmetic": "Cosmetics_Weapon_Mat34_MoneyCamo",
+      "matNum": 34,
+      "inferred": false
     },
     {
       "c": 78,
-      "name": "Werido",
-      "code": "|\"c\",78|"
+      "name": "Weirdo",
+      "code": "|\"c\",78|",
+      "cosmetic": "Cosmetics_Weapon_Mat33_Creepy",
+      "matNum": 33,
+      "inferred": false
     },
     {
       "c": 79,
       "name": "Eternal Defender",
-      "code": "|\"c\",79|"
+      "code": "|\"c\",79|",
+      "cosmetic": "Cosmetics_Weapon_Mat32_ImperialGuard",
+      "matNum": 32,
+      "inferred": false
     },
     {
       "c": 80,
       "name": "Splash Damage",
-      "code": "|\"c\",80|"
+      "code": "|\"c\",80|",
+      "cosmetic": "Cosmetics_Weapon_Mat31_Splash",
+      "matNum": 31,
+      "inferred": false
     },
     {
       "c": 81,
       "name": "Bird of Prey",
-      "code": "|\"c\",81|"
+      "code": "|\"c\",81|",
+      "cosmetic": "Cosmetics_Weapon_Mat30_CrimsonRaiders",
+      "matNum": 30,
+      "inferred": false
     },
     {
       "c": 82,
       "name": "Soused",
-      "code": "|\"c\",82|"
+      "code": "|\"c\",82|",
+      "cosmetic": "Cosmetics_Weapon_Mat29_Cheers",
+      "matNum": 29,
+      "inferred": false
     },
     {
       "c": 83,
       "name": "Self Excision",
-      "code": "|\"c\",83|"
+      "code": "|\"c\",83|",
+      "cosmetic": "Cosmetics_Weapon_Mat28_Ripper",
+      "matNum": 28,
+      "inferred": false
     },
     {
       "c": 84,
       "name": "Highrise",
-      "code": "|\"c\",84|"
+      "code": "|\"c\",84|",
+      "cosmetic": "Cosmetics_Weapon_Mat27_GoldenPower",
+      "matNum": 27,
+      "inferred": false
     },
     {
       "c": 85,
       "name": "Wellspring-Loaded",
-      "code": "|\"c\",85|"
+      "code": "|\"c\",85|",
+      "cosmetic": "Cosmetics_Weapon_Mat26_AugerSight",
+      "matNum": 26,
+      "inferred": false
     },
     {
       "c": 86,
       "name": "Devourer",
-      "code": "|\"c\",86|"
+      "code": "|\"c\",86|",
+      "cosmetic": "Cosmetics_Weapon_Mat25_LocustGas",
+      "matNum": 25,
+      "inferred": false
     },
     {
       "c": 87,
       "name": "The System",
-      "code": "|\"c\",87|"
+      "code": "|\"c\",87|",
+      "cosmetic": "Cosmetics_Weapon_Mat24_Propaganda",
+      "matNum": 24,
+      "inferred": false
     },
     {
       "c": 88,
       "name": "Future Proof",
-      "code": "|\"c\",88|"
+      "code": "|\"c\",88|",
+      "cosmetic": "Cosmetics_Weapon_Mat23_FutureProof",
+      "matNum": 23,
+      "inferred": false
     },
     {
       "c": 89,
       "name": "Frenzy Forever",
-      "code": "|\"c\",89|"
+      "code": "|\"c\",89|",
+      "cosmetic": "Cosmetics_Weapon_Mat22_Overload",
+      "matNum": 22,
+      "inferred": false
     },
     {
       "c": 90,
       "name": "Afterparty",
-      "code": "|\"c\",90|"
+      "code": "|\"c\",90|",
+      "cosmetic": "Cosmetics_Weapon_Mat21_Afterburn",
+      "matNum": 21,
+      "inferred": false
     },
     {
       "c": 91,
       "name": "Halt, Citizen",
-      "code": "|\"c\",91|"
+      "code": "|\"c\",91|",
+      "cosmetic": "Cosmetics_Weapon_Mat20_Cyberspace",
+      "matNum": 20,
+      "inferred": false
     },
     {
       "c": 92,
       "name": "Meltdown",
-      "code": "|\"c\",92|"
+      "code": "|\"c\",92|",
+      "cosmetic": "Cosmetics_Weapon_Mat19_Meltdown",
+      "matNum": 19,
+      "inferred": false
     },
     {
       "c": 93,
       "name": "High Impact",
-      "code": "|\"c\",93|"
+      "code": "|\"c\",93|",
+      "cosmetic": "Cosmetics_Weapon_Mat18_CrashTest",
+      "matNum": 18,
+      "inferred": false
     },
     {
       "c": 94,
       "name": "With the Grain",
-      "code": "|\"c\",94|"
+      "code": "|\"c\",94|",
+      "cosmetic": "Cosmetics_Weapon_Mat17_DeadWood",
+      "matNum": 17,
+      "inferred": false
     },
     {
       "c": 95,
       "name": "Bestia Rossa",
-      "code": "|\"c\",95|"
+      "code": "|\"c\",95|",
+      "cosmetic": "Cosmetics_Weapon_Mat16_PolePosition",
+      "matNum": 16,
+      "inferred": false
     },
     {
       "c": 96,
       "name": "Pixel Perfect",
-      "code": "|\"c\",96|"
+      "code": "|\"c\",96|",
+      "cosmetic": "Cosmetics_Weapon_Mat15_Retro",
+      "matNum": 15,
+      "inferred": false
     },
     {
       "c": 97,
       "name": "Chain of Command",
-      "code": "|\"c\",97|"
+      "code": "|\"c\",97|",
+      "cosmetic": "Cosmetics_Weapon_Mat14_Grunt",
+      "matNum": 14,
+      "inferred": false
     },
     {
       "c": 98,
       "name": "Gloss",
-      "code": "|\"c\",98|"
+      "code": "|\"c\",98|",
+      "cosmetic": "Cosmetics_Weapon_Mat13_Whiteout",
+      "matNum": 13,
+      "inferred": false
     },
     {
       "c": 99,
       "name": "Awoooooo!",
-      "code": "|\"c\",99|"
+      "code": "|\"c\",99|",
+      "cosmetic": "Cosmetics_Weapon_Mat12_AnimalPrint",
+      "matNum": 12,
+      "inferred": false
     },
     {
       "c": 100,
       "name": "Sprinked",
-      "code": "|\"c\",100|"
+      "code": "|\"c\",100|",
+      "cosmetic": "Cosmetics_Weapon_Mat11_Cupcake",
+      "matNum": 11,
+      "inferred": false
     },
     {
       "c": 101,
       "name": "Prison Buddy",
-      "code": "|\"c\",101|"
+      "code": "|\"c\",101|",
+      "cosmetic": "Cosmetics_Weapon_Mat10_Graffiti",
+      "matNum": 10,
+      "inferred": false
     },
     {
       "c": 102,
       "name": "Never Say DIY",
-      "code": "|\"c\",102|"
+      "code": "|\"c\",102|",
+      "cosmetic": "Cosmetics_Weapon_Mat09_FolkHero",
+      "matNum": 9,
+      "inferred": false
     },
     {
       "c": 103,
       "name": "Game Bot",
-      "code": "|\"c\",103|"
+      "code": "|\"c\",103|",
+      "cosmetic": "Cosmetics_Weapon_Mat08_EchoBot",
+      "matNum": 8,
+      "inferred": false
     },
     {
       "c": 104,
       "name": "Itty Bitty Kitty Committee",
-      "code": "|\"c\",104|"
+      "code": "|\"c\",104|",
+      "cosmetic": "Cosmetics_Weapon_Mat07_CuteCat",
+      "matNum": 7,
+      "inferred": false
     },
     {
       "c": 105,
       "name": "Carcade Shooter",
-      "code": "|\"c\",105|"
+      "code": "|\"c\",105|",
+      "cosmetic": "Cosmetics_Weapon_Mat06_ElectiSamurai",
+      "matNum": 6,
+      "inferred": false
     },
     {
       "c": 106,
       "name": "Fran's Frogurt",
-      "code": "|\"c\",106|"
+      "code": "|\"c\",106|",
+      "cosmetic": "Cosmetics_Weapon_Mat05_FransFroyo",
+      "matNum": 5,
+      "inferred": false
     },
     {
       "c": 107,
       "name": "Drawn This Way",
-      "code": "|\"c\",107|"
+      "code": "|\"c\",107|",
+      "cosmetic": "Cosmetics_Weapon_Mat04_Doodles",
+      "matNum": 4,
+      "inferred": false
     },
     {
       "c": 108,
       "name": "Coast to Coast",
-      "code": "|\"c\",108|"
+      "code": "|\"c\",108|",
+      "cosmetic": "Cosmetics_Weapon_Mat03_BioGoo",
+      "matNum": 3,
+      "inferred": false
     },
     {
       "c": 109,
       "name": "The Gun is Lava",
-      "code": "|\"c\",109|"
+      "code": "|\"c\",109|",
+      "cosmetic": "Cosmetics_Weapon_Mat02_LavaRock",
+      "matNum": 2,
+      "inferred": false
     },
     {
       "c": 110,
       "name": "Solar Flair",
-      "code": "|\"c\",110|"
-    },
-    {
-      "c": 111,
-      "name": "Gearbox Gear",
-      "code": "|\"c\",111|"
-    },
-    {
-      "c": 112,
-      "name": "Broken Order",
-      "code": "|\"c\",112|"
-    },
-    {
-      "c": 113,
-      "name": "Hazard Pay",
-      "code": "|\"c\",113|"
-    },
-    {
-      "c": 114,
-      "name": "Firehawk's Fury",
-      "code": "|\"c\",114|"
-    },
-    {
-      "c": 115,
-      "name": "Sugar Coated",
-      "code": "|\"c\",115|"
+      "code": "|\"c\",110|",
+      "cosmetic": "Cosmetics_Weapon_Mat01_Synthwave",
+      "matNum": 1,
+      "inferred": false
     },
     {
       "c": 116,
       "name": "Hex Appeal",
-      "code": "|\"c\",116|"
+      "code": "|\"c\",116|",
+      "cosmetic": "Cosmetics_Weapon_Mat40_Halloween",
+      "matNum": 40,
+      "inferred": false
     },
     {
       "c": 117,
       "name": "Silent Fight, Holy Fight",
-      "code": "|\"c\",117|"
+      "code": "|\"c\",117|",
+      "cosmetic": "Cosmetics_Weapon_Mat41_StarryNight",
+      "matNum": 41,
+      "inferred": false
     },
     {
       "c": 118,
       "name": "It's The Thought That Counts",
-      "code": "|\"c\",118|"
+      "code": "|\"c\",118|",
+      "cosmetic": "Cosmetics_Weapon_Mat42_UglyXmasSweater",
+      "matNum": 42,
+      "inferred": false
     },
     {
       "c": 119,
       "name": "Baby You're Cold Inside",
-      "code": "|\"c\",119|"
+      "code": "|\"c\",119|",
+      "cosmetic": "Cosmetics_Weapon_Mat43_Snowfall",
+      "matNum": 43,
+      "inferred": false
     },
     {
       "c": 120,
       "name": "So Much More Than A Bag",
-      "code": "|\"c\",120|"
+      "code": "|\"c\",120|",
+      "cosmetic": "Cosmetics_Weapon_Mat44_GiftWrap",
+      "matNum": 44,
+      "inferred": false
     },
     {
       "c": 121,
       "name": "Eat Me",
-      "code": "|\"c\",121|"
+      "code": "|\"c\",121|",
+      "cosmetic": "Cosmetics_Weapon_Mat45_Gingerbread",
+      "matNum": 45,
+      "inferred": false
     },
     {
       "c": 122,
-      "name": "MechYeah",
-      "code": "|\"c\",122|"
+      "name": "Congratulations!",
+      "code": "|\"c\",122|",
+      "cosmetic": "Cosmetics_Weapon_Mat46_MechYeah",
+      "matNum": 46,
+      "inferred": false
     },
     {
       "c": 123,
-      "name": "Assault",
-      "code": "|\"c\",123|"
+      "name": "...Gear?!",
+      "code": "|\"c\",123|",
+      "cosmetic": "Cosmetics_Weapon_Mat47_Assault",
+      "matNum": 47,
+      "inferred": false
     },
     {
       "c": 124,
-      "name": "Boltron",
-      "code": "|\"c\",124|"
+      "name": "Volt Hunter",
+      "code": "|\"c\",124|",
+      "cosmetic": "Cosmetics_Weapon_Mat48_Boltron",
+      "matNum": 48,
+      "inferred": false
     },
     {
       "c": 125,
-      "name": "Furboy",
-      "code": "|\"c\",125|"
+      "name": "Beast Mode",
+      "code": "|\"c\",125|",
+      "cosmetic": "Cosmetics_Weapon_Mat49_Furboy",
+      "matNum": 49,
+      "inferred": false
     },
     {
       "c": 126,
-      "name": "SpicyIguana",
-      "code": "|\"c\",126|"
+      "name": "Kaiju Killa",
+      "code": "|\"c\",126|",
+      "cosmetic": "Cosmetics_Weapon_Mat50_SpicyIguana",
+      "matNum": 50,
+      "inferred": false
     },
     {
       "c": 127,
-      "name": "Gore",
-      "code": "|\"c\",127|"
+      "name": "Hand that Feeds",
+      "code": "|\"c\",127|",
+      "cosmetic": "Cosmetics_Weapon_Mat51_Gore",
+      "matNum": 51,
+      "inferred": false
     },
     {
       "c": 128,
-      "name": "Ghostly",
-      "code": "|\"c\",128|"
+      "name": "Discontent",
+      "code": "|\"c\",128|",
+      "cosmetic": "Cosmetics_Weapon_Mat52_Ghostly",
+      "matNum": 52,
+      "inferred": false
     },
     {
       "c": 129,
-      "name": "Occult",
-      "code": "|\"c\",129|"
+      "name": "Shoot What Thou Wilt",
+      "code": "|\"c\",129|",
+      "cosmetic": "Cosmetics_Weapon_Mat53_Occult",
+      "matNum": 53,
+      "inferred": false
     },
     {
       "c": 130,
-      "name": "Shipwreck",
-      "code": "|\"c\",130|"
+      "name": "Stock and Stone",
+      "code": "|\"c\",130|",
+      "cosmetic": "Cosmetics_Weapon_Mat54_Shipwreck",
+      "matNum": 54,
+      "inferred": false
     },
     {
       "c": 131,
-      "name": "TrappedExperiment",
+      "name": "Rapturous",
       "code": "|\"c\",131|"
     },
     {
       "c": 132,
-      "name": "DeepOcean",
+      "name": "Waveform",
       "code": "|\"c\",132|"
     },
     {
       "c": 133,
-      "name": "UnstableReactor",
+      "name": "Martian Law",
       "code": "|\"c\",133|"
     },
     {
       "c": 134,
-      "name": "KairosVice",
+      "name": "Dot Wav",
       "code": "|\"c\",134|"
     },
     {
       "c": 135,
-      "name": "RollerRink",
+      "name": "Roller Rink",
       "code": "|\"c\",135|"
     },
     {
       "c": 136,
-      "name": "NightCall",
+      "name": "Night Call",
       "code": "|\"c\",136|"
     },
     {
       "c": 137,
-      "name": "ArcVector",
+      "name": "Sunset Vector",
       "code": "|\"c\",137|"
     },
     {
       "c": 138,
-      "name": "TracerBullet",
+      "name": "Tracer Bullet",
       "code": "|\"c\",138|"
     }
   ],

@@ -39,7 +39,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 10,
+        "option_count": 11,
         "options": [
           {
             "index": 1,
@@ -89,6 +89,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 10,
             "name": "leg_body_raid4",
+            "in_pool": true
+          },
+          {
+            "index": 11,
+            "name": "leg_body_cowbell",
             "in_pool": true
           }
         ]
@@ -172,7 +177,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 10,
+        "option_count": 11,
         "options": [
           {
             "index": 1,
@@ -222,6 +227,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 10,
             "name": "leg_body_raid4",
+            "in_pool": true
+          },
+          {
+            "index": 11,
+            "name": "leg_body_cowbell",
             "in_pool": true
           }
         ]
@@ -305,7 +315,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 10,
+        "option_count": 11,
         "options": [
           {
             "index": 1,
@@ -355,6 +365,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 10,
             "name": "leg_body_raid4",
+            "in_pool": true
+          },
+          {
+            "index": 11,
+            "name": "leg_body_cowbell",
             "in_pool": true
           }
         ]
@@ -438,7 +453,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 10,
+        "option_count": 11,
         "options": [
           {
             "index": 1,
@@ -488,6 +503,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 10,
             "name": "leg_body_raid4",
+            "in_pool": true
+          },
+          {
+            "index": 11,
+            "name": "leg_body_cowbell",
             "in_pool": true
           }
         ]
@@ -571,7 +591,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 8,
+        "option_count": 9,
         "options": [
           {
             "index": 1,
@@ -611,6 +631,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 8,
             "name": "leg_body_raid1",
+            "in_pool": true
+          },
+          {
+            "index": 9,
+            "name": "leg_body_dlc1",
             "in_pool": true
           }
         ]

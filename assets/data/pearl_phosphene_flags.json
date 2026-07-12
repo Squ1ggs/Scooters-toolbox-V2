@@ -1,0 +1,183 @@
+{
+  "generated_at": "2026-07-11T13:48:11.785Z",
+  "source": "Nexus NCS export (challenge shiny + itempool_*_shiny + Cosmetics_Weapon_Shiny_*)",
+  "proof_rule": "Challenge_Shiny_* / challengereward_*_shiny_* for slug, OR itempool_*_shiny with legendary/pearl-legendary comp + Cosmetics_Weapon_Shiny_*",
+  "nexus_dir": "references/bl4_toolbox_export/ncs/json",
+  "refresh_command": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs && node scripts/build-loot-reference-data.mjs && node scripts/sync-skin-labels-from-pearl-flags.mjs",
+  "notes": [
+    "Pearlescent rarity is NOT automatically a Shine The Brightest phosphene.",
+    "can_be_phosphene=true requires export challenge and/or shiny itempool+cosmetic proof.",
+    "|\"c\",1| pearl camo and bare Cosmetics_Weapon_Shiny_* names are not proof.",
+    "Crow-Sourced (Order AR, crowsourced) is not Midnight Defiance (Vladof CrowdSourced).",
+    "Manual export-adjacent overrides applied after Nexus derivation.",
+    "Crow-Sourced Order AR must never inherit Vladof CrowdSourced / Midnight Defiance challenge proof."
+  ],
+  "stats": {
+    "total": 17,
+    "verified_yes": 2,
+    "verified_no": 15,
+    "ambiguous": 0,
+    "challenge_hits": 0,
+    "pool_hits": 2
+  },
+  "flags": {
+    "jailbroken": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Jail-Broken Gatling",
+      "gear_slug": "jailbroken",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "gomie": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Gomie",
+      "gear_slug": "gomie",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "herald": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Herald",
+      "gear_slug": "herald",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "conflux": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Conflux",
+      "gear_slug": "conflux",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "soulsurvivor": {
+      "can_be_phosphene": true,
+      "status": "verified_yes",
+      "display_name": "Soul Survivor",
+      "gear_slug": "soulsurvivor",
+      "evidence": [
+        {
+          "kind": "itempool_shiny",
+          "itempool_shiny": "itempool_dad_ps_05_legendary_soulsurvivor_shiny",
+          "comp": "DAD_PS.comp_05_legendary_soulsurvivor",
+          "cosmetic": "Cosmetics_Weapon_Shiny_soulsurvivor",
+          "matched_key": "soulsurvivor"
+        }
+      ],
+      "notes": "Export: shiny pool itempool_dad_ps_05_legendary_soulsurvivor_shiny + Cosmetics_Weapon_Shiny_soulsurvivor"
+    },
+    "crowsourced": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Crow-Sourced",
+      "gear_slug": "crowsourced",
+      "evidence": [
+        {
+          "kind": "override",
+          "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced).",
+          "source_file": "pearl_phosphene_overrides.json"
+        }
+      ],
+      "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced)."
+    },
+    "crazedearl": {
+      "can_be_phosphene": true,
+      "status": "verified_yes",
+      "display_name": "Crazed Earl",
+      "gear_slug": "crazedearl",
+      "evidence": [
+        {
+          "kind": "itempool_shiny",
+          "itempool_shiny": "itempool_mal_sg_05_legendary_crazedearl_shiny",
+          "comp": "BOR_SG.comp_05_legendary_CrazedEarl",
+          "cosmetic": "Cosmetics_Weapon_Shiny_crazedEarl",
+          "matched_key": "crazedearl"
+        }
+      ],
+      "notes": "Export: shiny pool itempool_mal_sg_05_legendary_crazedearl_shiny + Cosmetics_Weapon_Shiny_crazedEarl"
+    },
+    "eigenburst": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Eigenburst",
+      "gear_slug": "eigenburst",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "handcannon": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Handcannon",
+      "gear_slug": "handcannon",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "abyss": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Abyss",
+      "gear_slug": "abyss",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "constable": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Looming Constable",
+      "gear_slug": "loomingconstable",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "juliet": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Firestorm",
+      "gear_slug": "firestorm",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "screwed": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Screwstonian",
+      "gear_slug": "screwstonian",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "locust": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Parasite",
+      "gear_slug": "parasite",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "temper": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "SolarTemper",
+      "gear_slug": "temper",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "raiden": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Raiden",
+      "gear_slug": "raiden",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "sharkbait": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Sharkbait",
+      "gear_slug": "sharkbait",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    }
+  }
+}

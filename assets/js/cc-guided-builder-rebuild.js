@@ -761,7 +761,6 @@
     conflux: 'sniper rifle',
     eigenburst: 'shotgun',
     handcannon: 'pistol',
-    crowdsourced: 'assault rifle',
     crowsourced: 'assault rifle',
     soulsurvivor: 'pistol',
     crazedearl: 'shotgun',
