@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T13:48:11.785Z",
+  "generated_at": "2026-07-13T23:06:43.365Z",
   "source": "Nexus NCS export (challenge shiny + itempool_*_shiny + Cosmetics_Weapon_Shiny_*)",
   "proof_rule": "Challenge_Shiny_* / challengereward_*_shiny_* for slug, OR itempool_*_shiny with legendary/pearl-legendary comp + Cosmetics_Weapon_Shiny_*",
   "nexus_dir": "references/bl4_toolbox_export/ncs/json",
@@ -123,22 +123,6 @@
       "evidence": [],
       "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
     },
-    "constable": {
-      "can_be_phosphene": false,
-      "status": "verified_no",
-      "display_name": "Looming Constable",
-      "gear_slug": "loomingconstable",
-      "evidence": [],
-      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
-    },
-    "juliet": {
-      "can_be_phosphene": false,
-      "status": "verified_no",
-      "display_name": "Firestorm",
-      "gear_slug": "firestorm",
-      "evidence": [],
-      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
-    },
     "screwed": {
       "can_be_phosphene": false,
       "status": "verified_no",
@@ -158,7 +142,7 @@
     "temper": {
       "can_be_phosphene": false,
       "status": "verified_no",
-      "display_name": "SolarTemper",
+      "display_name": "Solar Temper",
       "gear_slug": "temper",
       "evidence": [],
       "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
@@ -176,6 +160,22 @@
       "status": "verified_no",
       "display_name": "Sharkbait",
       "gear_slug": "sharkbait",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "constable": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Constable",
+      "gear_slug": "loomingconstable",
+      "evidence": [],
+      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+    },
+    "juliet": {
+      "can_be_phosphene": false,
+      "status": "verified_no",
+      "display_name": "Juliet's Sparkle",
+      "gear_slug": "firestorm",
       "evidence": [],
       "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
     }

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.YAML_SAVE_CATALOG = {
-  "generated": "2026-07-13T16:04:22.326Z",
+  "generated": "2026-07-13T22:30:13.223Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "shiny_gear": [
     {
@@ -18,13 +18,13 @@
       "key": "shiny_anarchy",
       "cosmetic": "Cosmetics_Weapon_Shiny_anarchy",
       "unlockable": "Unlockable_Weapons.Shiny_anarchy",
-      "label": "Phosphene — Shalashaska (legendary; not pearl)"
+      "label": "Phosphene — Anarchy"
     },
     {
       "key": "shiny_arctic",
       "cosmetic": "Cosmetics_Weapon_Shiny_arctic",
       "unlockable": "Unlockable_Weapons.Shiny_arctic",
-      "label": "Phosphene — ARC-TAN"
+      "label": "Phosphene — Arctic"
     },
     {
       "key": "shiny_asher",
@@ -156,7 +156,7 @@
       "key": "shiny_constable",
       "cosmetic": null,
       "unlockable": null,
-      "label": "Pearlescent — Looming Constable",
+      "label": "Pearlescent — Constable",
       "idRaw": "9:101",
       "comp": "JAK_SG.comp_06_pearl_constable",
       "pearl": true,
@@ -215,7 +215,7 @@
       "key": "shiny_demo",
       "cosmetic": "Cosmetics_Weapon_Shiny_Demo",
       "unlockable": "Unlockable_Weapons.Shiny_Demo",
-      "label": "Phosphene — Hair Trigger (legendary; not pearl)"
+      "label": "Phosphene — Demo"
     },
     {
       "key": "shiny_discybusiness",
@@ -259,7 +259,7 @@
       "key": "shiny_falke",
       "cosmetic": "Cosmetics_Weapon_Shiny_falke",
       "unlockable": "Unlockable_Weapons.Shiny_falke",
-      "label": "Phosphene — Improbable"
+      "label": "Phosphene — Falke"
     },
     {
       "key": "shiny_fearstalker",
@@ -271,7 +271,7 @@
       "key": "shiny_finnty",
       "cosmetic": "Cosmetics_Weapon_Shiny_Finnty",
       "unlockable": "Unlockable_Weapons.Shiny_Finnty",
-      "label": "Phosphene — Spicy"
+      "label": "Phosphene — Finnity XXX-L"
     },
     {
       "key": "shiny_fisheye",
@@ -303,13 +303,13 @@
       "key": "shiny_flashcyclone",
       "cosmetic": "Cosmetics_Weapon_Shiny_FlashCyclone",
       "unlockable": "Unlockable_Weapons.Shiny_flashcyclone",
-      "label": "Phosphene — Ringleader"
+      "label": "Phosphene — Flashcyclone"
     },
     {
       "key": "shiny_fleabag",
       "cosmetic": "Cosmetics_Weapon_Shiny_Fleabag",
       "unlockable": "Unlockable_Weapons.Shiny_Fleabag",
-      "label": "Phosphene — Fleabag (legendary; not pearl)"
+      "label": "Phosphene — Fleabag"
     },
     {
       "key": "shiny_follower",
@@ -355,7 +355,7 @@
       "key": "shiny_harddark",
       "cosmetic": "Cosmetics_Weapon_Shiny_harddark",
       "unlockable": "Unlockable_Weapons.Shiny_harddark",
-      "label": "Phosphene — Harddark",
+      "label": "Phosphene — Hard Dark",
       "idRaw": "13:87",
       "comp": "DAD_AR.comp_05_legendary_harddark",
       "inferred": true,
@@ -389,7 +389,7 @@
       "key": "shiny_hemorrhage",
       "cosmetic": "Cosmetics_Weapon_Shiny_hemorrhage",
       "unlockable": "Unlockable_Weapons.Shiny_hemorrhage",
-      "label": "Phosphene — Black Death"
+      "label": "Phosphene — Hemorrhage"
     },
     {
       "key": "shiny_herald",
@@ -442,7 +442,7 @@
       "key": "shiny_juliet",
       "cosmetic": null,
       "unlockable": null,
-      "label": "Pearlescent — Firestorm",
+      "label": "Pearlescent — Juliet's Sparkle",
       "idRaw": "21:90",
       "comp": "MAL_SM.comp_06_pearl_juliet",
       "pearl": true,
@@ -483,13 +483,13 @@
       "key": "shiny_lasercutter",
       "cosmetic": "Cosmetics_Weapon_Shiny_lasercutter",
       "unlockable": "Unlockable_Weapons.Shiny_lasercutter",
-      "label": "Phosphene — Shazbot"
+      "label": "Phosphene — Lasercutter"
     },
     {
       "key": "shiny_laserdisc",
       "cosmetic": "Cosmetics_Weapon_Shiny_LaserDisc",
       "unlockable": "Unlockable_Weapons.Shiny_laserdisc",
-      "label": "Phosphene — Laser Disker"
+      "label": "Phosphene — LaserDisc"
     },
     {
       "key": "shiny_leadballoon",
@@ -578,13 +578,13 @@
       "key": "shiny_mercredi",
       "cosmetic": "Cosmetics_Weapon_Shiny_mercredi",
       "unlockable": "Unlockable_Weapons.Shiny_mercredi",
-      "label": "Phosphene — Mercredi"
+      "label": "Phosphene — Hard Dark"
     },
     {
       "key": "shiny_mercury",
       "cosmetic": "Cosmetics_Weapon_Shiny_mercury",
       "unlockable": "Unlockable_Weapons.Shiny_mercury",
-      "label": "Phosphene — Mercurious (legendary; not pearl)"
+      "label": "Phosphene — Mercury"
     },
     {
       "key": "shiny_misslaser",
@@ -690,7 +690,7 @@
       "key": "shiny_reminisce",
       "cosmetic": "Cosmetics_Weapon_Shiny_reminisce",
       "unlockable": "Unlockable_Weapons.Shiny_reminisce",
-      "label": "Phosphene — Roid Rage"
+      "label": "Phosphene — Reminisce"
     },
     {
       "key": "shiny_rhythm",
@@ -748,7 +748,7 @@
       "key": "shiny_scootshoot",
       "cosmetic": "Cosmetics_Weapon_Shiny_scootshoot",
       "unlockable": "Unlockable_Weapons.Shiny_scootshoot",
-      "label": "Phosphene — Rollin' Deep"
+      "label": "Phosphene — Scootshoot"
     },
     {
       "key": "shiny_seamstress",
@@ -766,7 +766,7 @@
       "key": "shiny_shalashaska",
       "cosmetic": "Cosmetics_Weapon_Shiny_Shalashaska",
       "unlockable": "Unlockable_Weapons.Shiny_Shalashaska",
-      "label": "Phosphene — Shalashaska (legendary; not pearl)"
+      "label": "Phosphene — Shalashaska"
     },
     {
       "key": "shiny_shammy",
@@ -815,7 +815,7 @@
       "key": "shiny_songbird",
       "cosmetic": "Cosmetics_Weapon_Shiny_songbird",
       "unlockable": "Unlockable_Weapons.Shiny_songbird",
-      "label": "Phosphene — Broken Wings"
+      "label": "Phosphene — Songbird"
     },
     {
       "key": "shiny_soulsurvivor",
@@ -845,7 +845,7 @@
       "key": "shiny_sunspot",
       "cosmetic": "Cosmetics_Weapon_Shiny_sunspot",
       "unlockable": "Unlockable_Weapons.Shiny_sunspot",
-      "label": "Phosphene — Funnel"
+      "label": "Phosphene — Sunspot"
     },
     {
       "key": "shiny_sweet_embrace",
@@ -869,7 +869,7 @@
       "key": "shiny_temper",
       "cosmetic": "Cosmetics_Weapon_Shiny_temper",
       "unlockable": "Unlockable_Weapons.Shiny_temper",
-      "label": "Phosphene — SolarTemper",
+      "label": "Phosphene — Solar Temper",
       "idRaw": "26:84",
       "comp": "ORD_SR.comp_05_legendary_temper",
       "inferred": true,
@@ -897,7 +897,7 @@
       "key": "shiny_unstable",
       "cosmetic": "Cosmetics_Weapon_Shiny_Unstable",
       "unlockable": "Unlockable_Weapons.Shiny_Unstable",
-      "label": "Phosphene — Unstable"
+      "label": "Phosphene — Unstable Kor"
     },
     {
       "key": "shiny_unstable_kor",

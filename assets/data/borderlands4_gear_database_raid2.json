@@ -1,6 +1,6 @@
 {
   "version": "Raid 2 (May 2026)",
-  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "pearlescent_weapons": [
     {
       "name": "Jail-Broken Gatling",
@@ -13,7 +13,7 @@
       ],
       "status": "verified",
       "redText": "Get busy shooting or get busy dying.",
-      "ability": "Jailbroken — On hit, gain a stack of Backfire. Each Backfire stack increases Fire Rate and increases the chance to fire additional projectiles.",
+      "ability": "Jailbroken — On hit, gain a stack of Backfire. For each Backfire stack, gain increased Fire Rate and an increased chance to fire additional projectiles.",
       "source": "Subjugator & Thol the Invincible (Raid 2)",
       "notes": "Export-synced pearl (rarity_06_pearlescent).",
       "alternateEditorComps": [
@@ -29,7 +29,8 @@
         "gomie"
       ],
       "status": "verified",
-      "ability": "Ascending Storm — On hit, gain Firestorm stacks. Each stack increases weapon damage by 5%. Reloading releases accumulated Firestorm damage to nearby enemies.",
+      "redText": "Still Got It.",
+      "ability": "Ascending Storm — On hit, gain a stack of Firestorm. Each stack increases Weapon Damage. Reloading unleashes Firestorm on nearby enemies.",
       "source": "World Drop (Raid 2)",
       "notes": "Export-synced pearl (base_comp_06_pearlescent)."
     },
@@ -43,7 +44,7 @@
       ],
       "status": "partial",
       "redText": "Out of 87 bazillion, ONE of them had to be the best.",
-      "ability": "Unkempt — Spiritual successor to the Unkempt Harold.",
+      "ability": "Unkempt",
       "source": "World Drop (Raid 2)",
       "notes": "Dataset may use comp_06_pearl_herald instead of comp_05_legendary Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "alternateEditorComps": [
@@ -60,8 +61,8 @@
         "vestigialconflux"
       ],
       "status": "verified",
-      "redText": "It's self indulgent, I admit it.",
-      "ability": "Sinew — Deals +100% damage for each status effect currently affecting the target.",
+      "redText": "It's self-indulgent, I admit.",
+      "ability": "Sinew — Deals damage per Status Effect on the target.",
       "source": "World Drop",
       "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
@@ -77,6 +78,8 @@
         "soulsurvivor"
       ],
       "status": "needs_verification",
+      "redText": "At first I was afraid...",
+      "ability": "Adrenaline — Deals increased Damage for each ally in Fight For Your Life.",
       "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
         "dad_ps.comp_05_legendary_soulsurvivor"
@@ -91,6 +94,8 @@
         "crowsourced"
       ],
       "status": "needs_verification",
+      "redText": "And we had to share the rock!",
+      "ability": "Left of the Murder — Fires random objects.",
       "notes": "Order AR pearlescent. Do not use crowdsourced/CrowdSourced (that is Vladof Midnight Defiance sniper). Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
         "ord_ar.comp_05_legendary_crowsourced"
@@ -105,6 +110,8 @@
         "crazedearl"
       ],
       "status": "needs_verification",
+      "redText": "Earlescent.",
+      "ability": "BOGO — Fires Shards that stick into enemies. Meleeing enemies with Shards explodes the Shards and sends them toward nearby enemies.",
       "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
         "bor_sg.comp_05_legendary_crazedearl"
@@ -121,6 +128,8 @@
         "eagenburst"
       ],
       "status": "needs_verification",
+      "redText": "An affinity for disobedience.",
+      "ability": "Determined — Damage increases as loaded ammo decreases.",
       "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
         "ted_sg.comp_05_legendary_eigenburst"
@@ -136,6 +145,8 @@
         "handconnon"
       ],
       "status": "needs_verification",
+      "redText": "Dangerous toys are fun, but you could get hurt.",
+      "ability": "Click Boom Boom — Sticky Projectiles deal Damage while attached to targets.",
       "notes": "Export-synced pearl (rarity_06_pearlescent+itempool_legendary_pearl).",
       "alternateEditorComps": [
         "tor_ps.comp_05_legendary_handcannon"
@@ -150,39 +161,9 @@
         "abyss"
       ],
       "status": "needs_verification",
+      "redText": "It stares back.",
+      "ability": "Abyss — Increases damage the higher it is charged. If full charge is held too long, triggers a self-damaging explosion.",
       "notes": "Export-synced pearl (rarity_06_pearlescent)."
-    },
-    {
-      "name": "Looming Constable",
-      "weaponType": "Shotgun",
-      "manufacturer": "Jakobs",
-      "expectedInv": "jak_sg",
-      "spawnTokens": [
-        "loomingconstable",
-        "looming",
-        "constable"
-      ],
-      "status": "partial",
-      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
-      "alternateEditorComps": [
-        "jak_sg.comp_06_pearl_constable"
-      ]
-    },
-    {
-      "name": "Firestorm",
-      "weaponType": "SMG",
-      "manufacturer": "Maliwan",
-      "expectedInv": "mal_sm",
-      "spawnTokens": [
-        "firestorm",
-        "firework",
-        "juliet"
-      ],
-      "status": "partial",
-      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
-      "alternateEditorComps": [
-        "mal_sm.comp_06_pearl_juliet"
-      ]
     },
     {
       "name": "Screwstonian",
@@ -194,6 +175,8 @@
         "screwed"
       ],
       "status": "partial",
+      "redText": "This reference was chopped.",
+      "ability": "Screwed Up — After consecutive bursts, Fire Rate is reduced and Damage is increased for following bursts.",
       "notes": "Nexus may expose comp_06_pearl_screwed before comp_05_legendary Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "alternateEditorComps": [
         "dad_sm.comp_06_pearl_screwed"
@@ -209,13 +192,15 @@
         "locust"
       ],
       "status": "verified",
+      "redText": "The obligation of the weak is to nourish the strong.",
+      "ability": "Devour — Hitting enemies with Locust Rockets increases Damage taken from Parasite's primary fire. Killing affected enemies with primary fire grants Overshield and refills magazine ammo.",
       "notes": "Nexus inv_name_part Uni_VLA_SM_Locust; editor uses comp_06_pearl_locust with display name Parasite Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "alternateEditorComps": [
         "vla_sm.comp_06_pearl_locust"
       ]
     },
     {
-      "name": "SolarTemper",
+      "name": "Solar Temper",
       "weaponType": "Sniper Rifle",
       "manufacturer": "Order",
       "expectedInv": "ord_sr",
@@ -225,7 +210,9 @@
         "solar_temper"
       ],
       "status": "verified",
-      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper Export-synced pearl (rarity_06_pearlescent).",
+      "redText": "Carrington's Omen.",
+      "ability": "Temper — On Hit explodes. The explosion radius increases with each charge.",
+      "notes": "Slug temper (ORD_SR). Export-synced pearl (rarity_06_pearlescent).",
       "alternateEditorComps": [
         "ord_sr.comp_05_legendary_temper"
       ]
@@ -239,9 +226,11 @@
         "raiden"
       ],
       "status": "verified",
+      "redText": "Our frothing demand for this gun increases.",
+      "ability": "Raiden — On Kill, spawn a Projectile Count Booster that increases projectiles per shot for a duration. Pickup effect stacks.",
       "source": "Biff Fistful",
-      "dlc": "Bounty Pack 3",
-      "notes": "Bounty Pack 3 pearlescent. Export-synced pearl (rarity_06_pearlescent).",
+      "dlc": "Mandolin",
+      "notes": "Mandolin (Bounty Pack 3) pearlescent. Dedicated ItemPoolList_Murderer. Export-synced pearl (rarity_06_pearlescent).",
       "alternateEditorComps": [
         "dad_sm.comp_05_legendary_raiden"
       ]
@@ -255,9 +244,49 @@
         "sharkbait"
       ],
       "status": "supplement_only",
-      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+      "redText": "Now, look fellas, let's be reasonable.",
+      "ability": "Chum the Water — Every bullet that hits enemies applies 1 stack of Chum. At enough Chum stacks, the enemy explodes for bonus Damage.",
+      "dlc": "Tuba",
+      "notes": "Tuba DLC pearlescent (FModel DLC/Tuba + ItemPoolList_Tuba_Terra). Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "alternateEditorComps": [
         "ted_sg.comp_06_pearl_sharkbait"
+      ]
+    },
+    {
+      "name": "Constable",
+      "weaponType": "Shotgun",
+      "manufacturer": "Jakobs",
+      "expectedInv": "jak_sg",
+      "spawnTokens": [
+        "loomingconstable",
+        "looming",
+        "constable"
+      ],
+      "status": "partial",
+      "redText": "We see nothing truly till we understand it.",
+      "ability": "Lethal Deterrent",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+      "alternateEditorComps": [
+        "jak_sg.comp_06_pearl_constable"
+      ]
+    },
+    {
+      "name": "Juliet's Sparkle",
+      "weaponType": "SMG",
+      "manufacturer": "Maliwan",
+      "expectedInv": "mal_sm",
+      "spawnTokens": [
+        "firestorm",
+        "firework",
+        "juliet",
+        "julietssparkle"
+      ],
+      "status": "partial",
+      "redText": "Dazzle the world.",
+      "ability": "Starfall — Chance for Stars to fall for bonus damage.",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
+      "alternateEditorComps": [
+        "mal_sm.comp_06_pearl_juliet"
       ]
     }
   ],
@@ -384,7 +413,7 @@
     }
   ],
   "export_pearl_sync": {
-    "synced_at": "2026-07-11T13:48:11.470Z",
+    "synced_at": "2026-07-13T23:06:42.965Z",
     "nexus_dir": "references/bl4_toolbox_export/ncs/json",
     "pearl_count": 17,
     "added": [],

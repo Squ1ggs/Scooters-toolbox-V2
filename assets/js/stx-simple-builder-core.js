@@ -1099,10 +1099,11 @@
     shalashaska: 'Shalashaska',
     gomie: 'Gomie',
     herald: 'Herald',
-    loomingconstable: 'Looming Constable',
-    looming: 'Looming Constable',
-    firestorm: 'Firestorm',
-    firework: 'Firestorm',
+    loomingconstable: 'Constable',
+    looming: 'Constable',
+    firestorm: "Juliet's Sparkle",
+    firework: "Juliet's Sparkle",
+    juliet: "Juliet's Sparkle",
     vestigialconflux: 'Conflux',
     doeshot: 'Doeshot',
     doshot: 'Doeshot',
@@ -1116,11 +1117,12 @@
     demo: 'Demo',
     ohmigot: 'Ohm I Got',
     abyss: 'Abyss',
-    constable: 'Looming Constable',
+    constable: 'Constable',
     screwstonian: 'Screwstonian',
     screwed: 'Screwstonian',
     parasite: 'Parasite',
-    solartemper: 'SolarTemper'
+    solartemper: 'Solar Temper',
+    temper: 'Solar Temper'
   };
 
   function stxNormPearlAllowKey(s){

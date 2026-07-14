@@ -11,6 +11,15 @@
     "source": "Community Pearl"
   },
   {
+    "manufacturer": "Jakobs",
+    "itemType": "Shotgun",
+    "itemTypeString": "JAK_SG.comp_06_pearl_constable",
+    "familyId": 9,
+    "itemId": 101,
+    "legendaryName": "Constable",
+    "source": "Community Pearl"
+  },
+  {
     "manufacturer": "Ripper",
     "itemType": "Shotgun",
     "itemTypeString": "BOR_SG.comp_05_legendary_crazedearl",
@@ -26,15 +35,6 @@
     "familyId": 15,
     "itemId": 77,
     "legendaryName": "Crow-Sourced",
-    "source": "Community Pearl"
-  },
-  {
-    "manufacturer": "Maliwan",
-    "itemType": "SMG",
-    "itemTypeString": "MAL_SM.comp_06_pearl_juliet",
-    "familyId": 21,
-    "itemId": 90,
-    "legendaryName": "Firestorm",
     "source": "Community Pearl"
   },
   {
@@ -56,12 +56,12 @@
     "source": "Community Pearl"
   },
   {
-    "manufacturer": "Jakobs",
-    "itemType": "Shotgun",
-    "itemTypeString": "JAK_SG.comp_06_pearl_constable",
-    "familyId": 9,
-    "itemId": 101,
-    "legendaryName": "Looming Constable",
+    "manufacturer": "Maliwan",
+    "itemType": "SMG",
+    "itemTypeString": "MAL_SM.comp_06_pearl_juliet",
+    "familyId": 21,
+    "itemId": 90,
+    "legendaryName": "Juliet's Sparkle",
     "source": "Community Pearl"
   },
   {
@@ -71,6 +71,15 @@
     "familyId": 22,
     "itemId": 101,
     "legendaryName": "Parasite",
+    "source": "Community Pearl"
+  },
+  {
+    "manufacturer": "Daedalus",
+    "itemType": "SMG",
+    "itemTypeString": "DAD_SM.comp_05_legendary_raiden",
+    "familyId": 20,
+    "itemId": 70,
+    "legendaryName": "Raiden",
     "source": "Community Pearl"
   },
   {
@@ -97,7 +106,7 @@
     "itemTypeString": "ORD_SR.comp_05_legendary_temper",
     "familyId": 26,
     "itemId": 84,
-    "legendaryName": "SolarTemper",
+    "legendaryName": "Solar Temper",
     "source": "Community Pearl"
   },
   {

@@ -1,11 +1,11 @@
 (function () {
   'use strict';
   window.COMMUNITY_PEARLESCENT_DATA = {
-  "generated_at": "2026-07-11T13:48:25.324Z",
+  "generated_at": "2026-07-13T23:07:03.566Z",
   "game_version": "Raid 2 (May 2026)",
-  "gear_database_source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "gear_database_source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "nexus_dir": "references/bl4_toolbox_export/ncs/json",
-  "refresh_command": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs",
+  "refresh_command": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs && node scripts/build-loot-reference-data.mjs",
   "sources": [
     "assets/data/borderlands4_gear_database_raid2.json",
     "assets/data/pearl_phosphene_flags.json",
@@ -14,8 +14,25 @@
     "assets/data/stx_raid2_supplement.js",
     "assets/data/echo4_shiny_codes.js",
     "assets/data/yaml_save_catalog.js",
+    "scripts/lib/pearl-acquisition-export.mjs (ItemPoolList dedicated + itempool_*_06_pearl world path)",
     "references/bl4_toolbox_export/ncs/json"
   ],
+  "acquisition_export": {
+    "proof_rule": "Dedicated = inv handle on ItemPoolList_*; world = no dedicated list + matching itempool_{sm|ar|ps|sg|sr}_06_pearl criteria pool present",
+    "generic_pools": {
+      "sm": "itempool_sm_06_pearl",
+      "ar": "itempool_ar_06_pearl",
+      "ps": "itempool_ps_06_pearl",
+      "sg": "itempool_sg_06_pearl",
+      "sr": "itempool_sr_06_pearl"
+    },
+    "stats": {
+      "dedicated": 6,
+      "world_criteria": 11,
+      "named_pearl_pool": 0,
+      "unknown": 0
+    }
+  },
   "stats": {
     "total": 17,
     "with_pearl_comp": 17,
@@ -29,7 +46,11 @@
     "export_pending": 0,
     "phosphene_yes": 2,
     "phosphene_no": 15,
-    "phosphene_ambiguous": 0
+    "phosphene_ambiguous": 0,
+    "acquisition_dedicated": 6,
+    "acquisition_world_criteria": 11,
+    "acquisition_named_pearl_pool": 0,
+    "acquisition_unknown": 0
   },
   "items": [
     {
@@ -44,12 +65,12 @@
       "weapon_type": "Sniper Rifle",
       "manufacturer": "Ripper",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "It stares back.",
+      "unique_effect": "Abyss — Increases damage the higher it is charged. If full charge is held too long, triggers a self-damaging explosion.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
@@ -97,8 +118,22 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sr_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sr_06_pearl",
+          "weapon_type_code": "sr",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "conflux",
@@ -113,11 +148,11 @@
       "weapon_type": "Sniper Rifle",
       "manufacturer": "Maliwan",
       "rarity": "Pearlescent",
-      "red_text": "It's self indulgent, I admit it.",
-      "unique_effect": "Sinew — Deals +100% damage for each status effect currently affecting the target.",
-      "drop_source": "World Drop",
+      "red_text": "It's self-indulgent, I admit.",
+      "unique_effect": "Sinew — Deals damage per Status Effect on the target.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
+      "raid_drop": true,
       "world_drop": true,
       "mission_reward": false,
       "vendor": false,
@@ -172,8 +207,121 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sr_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sr_06_pearl",
+          "weapon_type_code": "sr",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        },
+        {
+          "kind": "named_pearl_itempool",
+          "itempool": "itempool_mal_sr_05_legendary_conflux_pearl",
+          "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
+    },
+    {
+      "slug": "constable",
+      "gear_slug": "loomingconstable",
+      "display_name": "Constable",
+      "spawn_tokens": [
+        "loomingconstable",
+        "looming",
+        "constable"
+      ],
+      "yaml_key": "shiny_constable",
+      "expected_inv": "jak_sg",
+      "weapon_type": "Shotgun",
+      "manufacturer": "Jakobs",
+      "rarity": "Pearlescent",
+      "red_text": "We see nothing truly till we understand it.",
+      "unique_effect": "Lethal Deterrent",
+      "drop_source": "World Drop (Raid 2)",
+      "dedicated_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
+      "mission_reward": false,
+      "vendor": false,
+      "dlc": "Raid 2",
+      "patch_introduced": "1.8",
+      "patch_removed": null,
+      "status": "partial",
+      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+      "comp_pearl": "JAK_SG.comp_06_pearl_constable",
+      "comp_pearl_expected": null,
+      "pearl_comp_style": "comp_06_pearl",
+      "comp_pearl_slug": "constable",
+      "itempool_pearl": null,
+      "comp_legendary_candidates": [
+        "jak_sg.comp_05_legendary_loomingconstable",
+        "jak_sg.comp_05_legendary_looming",
+        "jak_sg.comp_05_legendary_constable"
+      ],
+      "comp_candidates": [
+        "jak_sg.comp_05_legendary_loomingconstable",
+        "jak_sg.comp_06_pearl_loomingconstable",
+        "jak_sg.comp_06_pearlescent_loomingconstable",
+        "jak_sg.comp_05_legendary_looming",
+        "jak_sg.comp_06_pearl_looming",
+        "jak_sg.comp_06_pearlescent_looming",
+        "jak_sg.comp_05_legendary_constable",
+        "jak_sg.comp_06_pearl_constable",
+        "jak_sg.comp_06_pearlescent_constable"
+      ],
+      "alternate_editor_comps": [
+        "jak_sg.comp_06_pearl_constable"
+      ],
+      "id_raw": "9:101",
+      "skin_code": "{9:101}",
+      "serial_u": null,
+      "serial_hint": "{9:101} + |\"c\",1|",
+      "camo_token": "|\"c\",1|",
+      "internal_balance_name": "JAK_SG.comp_06_pearl_constable",
+      "internal_name": "constable",
+      "can_be_phosphene": false,
+      "phosphene_status": "verified_no",
+      "phosphene_evidence": {
+        "source": "assets/data/pearl_phosphene_flags.json",
+        "flag_key": "constable",
+        "status": "verified_no",
+        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+        "evidence": []
+      },
+      "can_be_pearlescent": true,
+      "wiki_url": null,
+      "verification": {
+        "in_gear_database": true,
+        "in_supplement": true,
+        "in_nexus_export": false,
+        "in_pearl_itempool": false,
+        "in_echo4": false,
+        "in_yaml_catalog": true,
+        "comp_match_via": "supplement_slug",
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sg_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sg_06_pearl",
+          "weapon_type_code": "sg",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sg_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "crazedearl",
@@ -187,10 +335,10 @@
       "weapon_type": "Shotgun",
       "manufacturer": "Ripper",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
+      "red_text": "Earlescent.",
+      "unique_effect": "BOGO — Fires Shards that stick into enemies. Meleeing enemies with Shards explodes the Shards and sends them toward nearby enemies.",
+      "drop_source": "Crazy Earl",
+      "dedicated_drop": true,
       "raid_drop": false,
       "world_drop": false,
       "mission_reward": false,
@@ -250,8 +398,33 @@
         "in_echo4": true,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_CrazyEarl",
+        "ItemPoolList_CrazyEarl_True"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_CrazyEarl",
+            "ItemPoolList_CrazyEarl_True"
+          ],
+          "comps": [
+            "BOR_SG.comp_05_legendary_CrazedEarl"
+          ],
+          "label": "Crazy Earl",
+          "dropped_hybrid_lists": [
+            "ItemPoolList_Tuba_hybrids_True"
+          ]
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     },
     {
       "slug": "crowsourced",
@@ -265,10 +438,10 @@
       "weapon_type": "Assault Rifle",
       "manufacturer": "Order",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
+      "red_text": "And we had to share the rock!",
+      "unique_effect": "Left of the Murder — Fires random objects.",
+      "drop_source": "Dahlfather",
+      "dedicated_drop": true,
       "raid_drop": false,
       "world_drop": false,
       "mission_reward": false,
@@ -326,8 +499,31 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_DahlFather_True",
+        "ItemPoolList_dAHLfATHER"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_DahlFather_True",
+            "ItemPoolList_dAHLfATHER"
+          ],
+          "comps": [
+            "ORD_AR.comp_05_legendary_crowsourced"
+          ],
+          "label": "Dahlfather",
+          "dropped_hybrid_lists": []
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     },
     {
       "slug": "eigenburst",
@@ -343,12 +539,12 @@
       "weapon_type": "Shotgun",
       "manufacturer": "Tediore",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "An affinity for disobedience.",
+      "unique_effect": "Determined — Damage increases as loaded ammo decreases.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
@@ -406,88 +602,27 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
-    },
-    {
-      "slug": "juliet",
-      "gear_slug": "firestorm",
-      "display_name": "Firestorm",
-      "spawn_tokens": [
-        "firestorm",
-        "firework",
-        "juliet"
-      ],
-      "yaml_key": "shiny_juliet",
-      "expected_inv": "mal_sm",
-      "weapon_type": "SMG",
-      "manufacturer": "Maliwan",
-      "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
-      "mission_reward": false,
-      "vendor": false,
-      "dlc": "Raid 2",
-      "patch_introduced": "1.8",
-      "patch_removed": null,
-      "status": "partial",
-      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
-      "comp_pearl": "MAL_SM.comp_06_pearl_juliet",
-      "comp_pearl_expected": null,
-      "pearl_comp_style": "comp_06_pearl",
-      "comp_pearl_slug": "juliet",
-      "itempool_pearl": null,
-      "comp_legendary_candidates": [
-        "mal_sm.comp_05_legendary_firestorm",
-        "mal_sm.comp_05_legendary_firework",
-        "mal_sm.comp_05_legendary_juliet"
-      ],
-      "comp_candidates": [
-        "mal_sm.comp_05_legendary_firestorm",
-        "mal_sm.comp_06_pearl_firestorm",
-        "mal_sm.comp_06_pearlescent_firestorm",
-        "mal_sm.comp_05_legendary_firework",
-        "mal_sm.comp_06_pearl_firework",
-        "mal_sm.comp_06_pearlescent_firework",
-        "mal_sm.comp_05_legendary_juliet",
-        "mal_sm.comp_06_pearl_juliet",
-        "mal_sm.comp_06_pearlescent_juliet"
-      ],
-      "alternate_editor_comps": [
-        "mal_sm.comp_06_pearl_juliet"
-      ],
-      "id_raw": "21:90",
-      "skin_code": "{21:90}",
-      "serial_u": null,
-      "serial_hint": "{21:90} + |\"c\",1|",
-      "camo_token": "|\"c\",1|",
-      "internal_balance_name": "MAL_SM.comp_06_pearl_juliet",
-      "internal_name": "juliet",
-      "can_be_phosphene": false,
-      "phosphene_status": "verified_no",
-      "phosphene_evidence": {
-        "source": "assets/data/pearl_phosphene_flags.json",
-        "flag_key": "juliet",
-        "status": "verified_no",
-        "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
-        "evidence": []
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
       },
-      "can_be_pearlescent": true,
-      "wiki_url": null,
-      "verification": {
-        "in_gear_database": true,
-        "in_supplement": true,
-        "in_nexus_export": false,
-        "in_pearl_itempool": false,
-        "in_echo4": false,
-        "in_yaml_catalog": true,
-        "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sg_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sg_06_pearl",
+          "weapon_type_code": "sg",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        },
+        {
+          "kind": "named_pearl_itempool",
+          "itempool": "itempool_ted_sg_05_legendary_eigenburst_pearl",
+          "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sg_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "gomie",
@@ -501,8 +636,8 @@
       "weapon_type": "Assault Rifle",
       "manufacturer": "Jakobs",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": "Ascending Storm — On hit, gain Firestorm stacks. Each stack increases weapon damage by 5%. Reloading releases accumulated Firestorm damage to nearby enemies.",
+      "red_text": "Still Got It.",
+      "unique_effect": "Ascending Storm — On hit, gain a stack of Firestorm. Each stack increases Weapon Damage. Reloading unleashes Firestorm on nearby enemies.",
       "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
       "raid_drop": true,
@@ -554,8 +689,22 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_ar_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_ar_06_pearl",
+          "weapon_type_code": "ar",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ar_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "handcannon",
@@ -570,12 +719,12 @@
       "weapon_type": "Pistol",
       "manufacturer": "Torgue",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "Dangerous toys are fun, but you could get hurt.",
+      "unique_effect": "Click Boom Boom — Sticky Projectiles deal Damage while attached to targets.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
@@ -629,8 +778,27 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_ps_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_ps_06_pearl",
+          "weapon_type_code": "ps",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        },
+        {
+          "kind": "named_pearl_itempool",
+          "itempool": "itempool_tor_ps_05_legendary_handcannon_pearl",
+          "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ps_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "herald",
@@ -645,7 +813,7 @@
       "manufacturer": "Torgue",
       "rarity": "Pearlescent",
       "red_text": "Out of 87 bazillion, ONE of them had to be the best.",
-      "unique_effect": "Unkempt — Spiritual successor to the Unkempt Harold.",
+      "unique_effect": "Unkempt",
       "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
       "raid_drop": true,
@@ -699,8 +867,22 @@
         "in_echo4": false,
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_ps_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_ps_06_pearl",
+          "weapon_type_code": "ps",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ps_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "jailbroken",
@@ -716,8 +898,8 @@
       "manufacturer": "Ripper",
       "rarity": "Pearlescent",
       "red_text": "Get busy shooting or get busy dying.",
-      "unique_effect": "Jailbroken — On hit, gain a stack of Backfire. Each Backfire stack increases Fire Rate and increases the chance to fire additional projectiles.",
-      "drop_source": "Subjugator & Thol the Invincible (Raid 2)",
+      "unique_effect": "Jailbroken — On hit, gain a stack of Backfire. For each Backfire stack, gain increased Fire Rate and an increased chance to fire additional projectiles.",
+      "drop_source": "Subjugator (Raid 2) & Thol the Invincible (Raid 2)",
       "dedicated_drop": true,
       "raid_drop": true,
       "world_drop": false,
@@ -774,72 +956,104 @@
         "in_echo4": true,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_Raid2_Subjugator",
+        "ItemPoolList_Raid2_Subjugator_True",
+        "ItemPoolList_Raid2_Thol",
+        "ItemPoolList_Raid2_Thol_True"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_Raid2_Subjugator",
+            "ItemPoolList_Raid2_Subjugator_True",
+            "ItemPoolList_Raid2_Thol",
+            "ItemPoolList_Raid2_Thol_True"
+          ],
+          "comps": [
+            "BOR_SM.comp_05_legendary_Jailbroken"
+          ],
+          "label": "Subjugator (Raid 2) & Thol the Invincible (Raid 2)",
+          "dropped_hybrid_lists": []
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     },
     {
-      "slug": "constable",
-      "gear_slug": "loomingconstable",
-      "display_name": "Looming Constable",
+      "slug": "juliet",
+      "gear_slug": "firestorm",
+      "display_name": "Juliet's Sparkle",
       "spawn_tokens": [
-        "loomingconstable",
-        "looming",
-        "constable"
+        "firestorm",
+        "firework",
+        "juliet",
+        "julietssparkle"
       ],
-      "yaml_key": "shiny_constable",
-      "expected_inv": "jak_sg",
-      "weapon_type": "Shotgun",
-      "manufacturer": "Jakobs",
+      "yaml_key": "shiny_juliet",
+      "expected_inv": "mal_sm",
+      "weapon_type": "SMG",
+      "manufacturer": "Maliwan",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "Dazzle the world.",
+      "unique_effect": "Starfall — Chance for Stars to fall for bonus damage.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "partial",
-      "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
-      "comp_pearl": "JAK_SG.comp_06_pearl_constable",
+      "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
+      "comp_pearl": "MAL_SM.comp_06_pearl_juliet",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
-      "comp_pearl_slug": "constable",
+      "comp_pearl_slug": "juliet",
       "itempool_pearl": null,
       "comp_legendary_candidates": [
-        "jak_sg.comp_05_legendary_loomingconstable",
-        "jak_sg.comp_05_legendary_looming",
-        "jak_sg.comp_05_legendary_constable"
+        "mal_sm.comp_05_legendary_firestorm",
+        "mal_sm.comp_05_legendary_firework",
+        "mal_sm.comp_05_legendary_juliet",
+        "mal_sm.comp_05_legendary_julietssparkle"
       ],
       "comp_candidates": [
-        "jak_sg.comp_05_legendary_loomingconstable",
-        "jak_sg.comp_06_pearl_loomingconstable",
-        "jak_sg.comp_06_pearlescent_loomingconstable",
-        "jak_sg.comp_05_legendary_looming",
-        "jak_sg.comp_06_pearl_looming",
-        "jak_sg.comp_06_pearlescent_looming",
-        "jak_sg.comp_05_legendary_constable",
-        "jak_sg.comp_06_pearl_constable",
-        "jak_sg.comp_06_pearlescent_constable"
+        "mal_sm.comp_05_legendary_firestorm",
+        "mal_sm.comp_06_pearl_firestorm",
+        "mal_sm.comp_06_pearlescent_firestorm",
+        "mal_sm.comp_05_legendary_firework",
+        "mal_sm.comp_06_pearl_firework",
+        "mal_sm.comp_06_pearlescent_firework",
+        "mal_sm.comp_05_legendary_juliet",
+        "mal_sm.comp_06_pearl_juliet",
+        "mal_sm.comp_06_pearlescent_juliet",
+        "mal_sm.comp_05_legendary_julietssparkle",
+        "mal_sm.comp_06_pearl_julietssparkle",
+        "mal_sm.comp_06_pearlescent_julietssparkle"
       ],
       "alternate_editor_comps": [
-        "jak_sg.comp_06_pearl_constable"
+        "mal_sm.comp_06_pearl_juliet"
       ],
-      "id_raw": "9:101",
-      "skin_code": "{9:101}",
+      "id_raw": "21:90",
+      "skin_code": "{21:90}",
       "serial_u": null,
-      "serial_hint": "{9:101} + |\"c\",1|",
+      "serial_hint": "{21:90} + |\"c\",1|",
       "camo_token": "|\"c\",1|",
-      "internal_balance_name": "JAK_SG.comp_06_pearl_constable",
-      "internal_name": "constable",
+      "internal_balance_name": "MAL_SM.comp_06_pearl_juliet",
+      "internal_name": "juliet",
       "can_be_phosphene": false,
       "phosphene_status": "verified_no",
       "phosphene_evidence": {
         "source": "assets/data/pearl_phosphene_flags.json",
-        "flag_key": "constable",
+        "flag_key": "juliet",
         "status": "verified_no",
         "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
         "evidence": []
@@ -854,8 +1068,22 @@
         "in_echo4": false,
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sm_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sm_06_pearl",
+          "weapon_type_code": "sm",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "locust",
@@ -870,12 +1098,12 @@
       "weapon_type": "SMG",
       "manufacturer": "Vladof",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "The obligation of the weak is to nourish the strong.",
+      "unique_effect": "Devour — Hitting enemies with Locust Rockets increases Damage taken from Parasite's primary fire. Killing affected enemies with primary fire grants Overshield and refills magazine ammo.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
@@ -929,8 +1157,22 @@
         "in_echo4": true,
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sm_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sm_06_pearl",
+          "weapon_type_code": "sm",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "raiden",
@@ -944,19 +1186,19 @@
       "weapon_type": "SMG",
       "manufacturer": "Daedalus",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": "Biff Fistful",
-      "dedicated_drop": false,
+      "red_text": "Our frothing demand for this gun increases.",
+      "unique_effect": "Raiden — On Kill, spawn a Projectile Count Booster that increases projectiles per shot for a duration. Pickup effect stacks.",
+      "drop_source": "Biff Fistful (Mandolin / Bounty Pack 3)",
+      "dedicated_drop": true,
       "raid_drop": false,
       "world_drop": false,
       "mission_reward": false,
       "vendor": false,
-      "dlc": "Bounty Pack 3",
+      "dlc": "Mandolin",
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Bounty Pack 3 pearlescent. Export-synced pearl (rarity_06_pearlescent).",
+      "notes": "Mandolin (Bounty Pack 3) pearlescent. Dedicated ItemPoolList_Murderer. Export-synced pearl (rarity_06_pearlescent).",
       "comp_pearl": "DAD_SM.comp_05_legendary_raiden",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -999,8 +1241,31 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_Murderer",
+        "ItemPoolList_Murderer_TRUE"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_Murderer",
+            "ItemPoolList_Murderer_TRUE"
+          ],
+          "comps": [
+            "DAD_SM.comp_05_legendary_Raiden"
+          ],
+          "label": "Biff Fistful (Mandolin / Bounty Pack 3)",
+          "dropped_hybrid_lists": []
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     },
     {
       "slug": "screwed",
@@ -1015,12 +1280,12 @@
       "weapon_type": "SMG",
       "manufacturer": "Daedalus",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "This reference was chopped.",
+      "unique_effect": "Screwed Up — After consecutive bursts, Fire Rate is reduced and Damage is increased for following bursts.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
@@ -1074,8 +1339,22 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sm_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sm_06_pearl",
+          "weapon_type_code": "sm",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "sharkbait",
@@ -1089,19 +1368,19 @@
       "weapon_type": "Shotgun",
       "manufacturer": "Tediore",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
-      "raid_drop": false,
+      "red_text": "Now, look fellas, let's be reasonable.",
+      "unique_effect": "Chum the Water — Every bullet that hits enemies applies 1 stack of Chum. At enough Chum stacks, the enemy explodes for bonus Damage.",
+      "drop_source": "Child of Terramorphous (Tuba takedown)",
+      "dedicated_drop": true,
+      "raid_drop": true,
       "world_drop": false,
       "mission_reward": false,
       "vendor": false,
-      "dlc": "Raid 2",
+      "dlc": "Tuba",
       "patch_introduced": "1.8",
       "patch_removed": null,
-      "status": "supplement_only",
-      "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+      "status": "verified",
+      "notes": "Tuba DLC pearlescent (FModel DLC/Tuba + ItemPoolList_Tuba_Terra). Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
       "comp_pearl": "TED_SG.comp_06_pearl_sharkbait",
       "comp_pearl_expected": null,
       "pearl_comp_style": "comp_06_pearl",
@@ -1144,13 +1423,34 @@
         "in_echo4": false,
         "in_yaml_catalog": true,
         "comp_match_via": "supplement_slug",
-        "pearl_comp_style": "comp_06_pearl"
-      }
+        "pearl_comp_style": "comp_06_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_Tuba_Terra"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_Tuba_Terra"
+          ],
+          "comps": [
+            "TED_SG.comp_06_pearl_sharkbait"
+          ],
+          "label": "Child of Terramorphous (Tuba takedown)",
+          "dropped_hybrid_lists": []
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     },
     {
       "slug": "temper",
       "gear_slug": "temper",
-      "display_name": "SolarTemper",
+      "display_name": "Solar Temper",
       "spawn_tokens": [
         "temper",
         "solartemper",
@@ -1161,19 +1461,19 @@
       "weapon_type": "Sniper Rifle",
       "manufacturer": "Order",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
+      "red_text": "Carrington's Omen.",
+      "unique_effect": "Temper — On Hit explodes. The explosion radius increases with each charge.",
+      "drop_source": "World Drop (Raid 2)",
       "dedicated_drop": false,
-      "raid_drop": false,
-      "world_drop": false,
+      "raid_drop": true,
+      "world_drop": true,
       "mission_reward": false,
       "vendor": false,
       "dlc": "Raid 2",
       "patch_introduced": "1.8",
       "patch_removed": null,
       "status": "verified",
-      "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper Export-synced pearl (rarity_06_pearlescent).",
+      "notes": "Slug temper (ORD_SR). Export-synced pearl (rarity_06_pearlescent).",
       "comp_pearl": "ORD_SR.comp_05_legendary_temper",
       "comp_pearl_expected": null,
       "pearl_comp_style": "legendary_pearl",
@@ -1224,8 +1524,22 @@
         "in_echo4": false,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_supplement",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": false,
+        "in_world_criteria_pool": true
+      },
+      "itempool_lists": [],
+      "world_criteria_pool": "itempool_sr_06_pearl",
+      "acquisition_kind": "world_criteria",
+      "acquisition_evidence": [
+        {
+          "kind": "world_criteria_pool",
+          "itempool": "itempool_sr_06_pearl",
+          "weapon_type_code": "sr",
+          "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+        }
+      ],
+      "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
     },
     {
       "slug": "soulsurvivor",
@@ -1239,10 +1553,10 @@
       "weapon_type": "Pistol",
       "manufacturer": "Daedalus",
       "rarity": "Pearlescent",
-      "red_text": null,
-      "unique_effect": null,
-      "drop_source": null,
-      "dedicated_drop": false,
+      "red_text": "At first I was afraid...",
+      "unique_effect": "Adrenaline — Deals increased Damage for each ally in Fight For Your Life.",
+      "drop_source": "Drone Captain",
+      "dedicated_drop": true,
       "raid_drop": false,
       "world_drop": false,
       "mission_reward": false,
@@ -1302,8 +1616,29 @@
         "in_echo4": true,
         "in_yaml_catalog": false,
         "comp_match_via": "legendary_pearl_pool",
-        "pearl_comp_style": "legendary_pearl"
-      }
+        "pearl_comp_style": "legendary_pearl",
+        "in_dedicated_itempoollist": true,
+        "in_world_criteria_pool": false
+      },
+      "itempool_lists": [
+        "ItemPoolList_DroneCaptain"
+      ],
+      "world_criteria_pool": null,
+      "acquisition_kind": "dedicated",
+      "acquisition_evidence": [
+        {
+          "kind": "itempoollist_dedicated",
+          "itempool_lists": [
+            "ItemPoolList_DroneCaptain"
+          ],
+          "comps": [
+            "DAD_PS.comp_05_legendary_soulsurvivor"
+          ],
+          "label": "Drone Captain",
+          "dropped_hybrid_lists": []
+        }
+      ],
+      "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
     }
   ]
 };

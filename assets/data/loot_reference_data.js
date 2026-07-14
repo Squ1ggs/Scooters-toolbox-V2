@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.LOOT_REFERENCE_DATA = {
-  "generated_at": "2026-07-13T16:05:27.957Z",
+  "generated_at": "2026-07-13T23:19:16.465Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "nexus_export_dirs": [
     "references/bl4_toolbox_export/ncs/json",
@@ -31601,8 +31601,16 @@
       "comp": "bor_sr.comp_05_legendary_abyss",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
+      "drop_note": "World Drop (Raid 2)",
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sr_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "display_name": "Abyss",
       "pearl": true,
       "variant": "pearl",
@@ -31634,12 +31642,12 @@
         "weapon_type": "Sniper Rifle",
         "manufacturer": "Ripper",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "It stares back.",
+        "unique_effect": "Abyss — Increases damage the higher it is charged. If full charge is held too long, triggers a self-damaging explosion.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
@@ -31687,8 +31695,22 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_supplement",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sr_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sr_06_pearl",
+            "weapon_type_code": "sr",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -31697,12 +31719,14 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "weapon_label": "Ripper Sniper",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{23:61}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "It stares back.",
+      "unique_effect": "Abyss — Increases damage the higher it is charged. If full charge is held too long, triggers a self-damaging explosion."
     },
     {
       "comp": "dad_sg.comp_05_legendary_HeartGun",
@@ -31754,7 +31778,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{8:55}",
       "base85_serial": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=co_R1hVOa1Oiz#J-)lJxf4jd^blRQ&BFkYp{aAMc",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Kill 'em with kindness, baby.",
+      "unique_effect": "LUV",
+      "flavor_key": "heartgun"
     },
     {
       "comp": "vla_ar.comp_05_legendary_DualDamage",
@@ -31806,7 +31833,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{18:88}",
       "base85_serial": "@Ugvelk35E/MjK>a&iz-y27ImnWsIaJ+sF<ivok7h(%/fk2twXg#okTp0eH6p@yj`ZJ$Mf&C9EQK$-zhrn&VPyZFq;@/htFjI",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Finish the song!",
+      "unique_effect": "Prophetic",
+      "flavor_key": "dualdamage"
     },
     {
       "comp": "ted_sg.comp_05_legendary_anarchy",
@@ -31855,7 +31885,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{11:76}",
       "base85_serial": "@Uge(J0FnkbUJa$k{RG/*ls6;JlxX?{hKh!_eNK~cfpzfglpi-eup?0C>As)uwhv9qPF4NQF`S)55!{6@j6rFbGzhQS+K1SyO",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Cause I WANNA be!",
+      "unique_effect": "Mutualism — On Auto-Reload or kill, grants {dmg} Damage and {acc} Accuracy for a Maximum {stack} Stacks, which reset on manual Reload",
+      "flavor_key": "anarchy"
     },
     {
       "comp": "tor_sg.comp_05_legendary_arctic",
@@ -31899,7 +31932,9 @@
         }
       ],
       "acquisition_kind": "campaign_unlock",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_arctic"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_arctic",
+      "red_text": "Not to go off on a tangent...",
+      "flavor_key": "arctic"
     },
     {
       "comp": "mal_sr.comp_05_legendary_Asher",
@@ -31951,7 +31986,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{25:80}",
       "base85_serial": "@Ugydj=35E/MjK>ZNiz-y37L}+&4ITQ4nu!{TI*BTY3WKVHx`j%I8W!*{_B;&V^LCk@9?!qmav1)0f2ZiQJO2&N(PcR",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "How can we possibly have the slightest idea what to expect?",
+      "unique_effect": "Slow Burn — Critical Hits apply Status Effects instead of increased impact Damage",
+      "flavor_key": "asher"
     },
     {
       "comp": "vla_sm.comp_05_legendary_BeeGun",
@@ -32000,7 +32038,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{22:88}",
       "base85_serial": "@UgxFw!35E/MjK>a&iz-y35;aulEh;SPQ!i0-P<K#&P@zz{Q0GwbQ1=iIW8cH@J#Uxk>GAw~Er;Q6_jig;yYpXRxqPg<0R",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Fill your life with laughter and bees.",
+      "unique_effect": "Hivemind",
+      "flavor_key": "beegun"
     },
     {
       "comp": "dad_ar.comp_05_legendary_Lumberjack",
@@ -32052,7 +32093,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{13:72}",
       "base85_serial": "@Ugfs(8FnkbUJa$k_)Swo1s6-WN*w8%Grox~)^{F/iRH#^}Tc}#7cBp=chp~@h_@1}R^z?ZCy_Uo9xBELqr``E4v)&e$<?8Tw4F",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "You're more lost than you realize.",
+      "unique_effect": "Timber",
+      "flavor_key": "lumberjack"
     },
     {
       "comp": "dad_sg.comp_05_legendary_Bod",
@@ -32101,7 +32145,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{8:53}",
       "base85_serial": "@UgdhV<FnkbUJa*7JRG/{psG&pYP&HAR`czI-98@0E9@Hz;FH}#&!`SOEe9zludU`znUdv(l+x?xQ)9(CN_$C7",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Do you believe in this thing, or not?",
+      "unique_effect": "All-Arounder — Counts as a Shotgun, an Assault Rifle, a Sniper Rifle, a Pistol, and an SMG",
+      "flavor_key": "bod"
     },
     {
       "comp": "jak_ar.comp_05_legendary_BonnieClyde",
@@ -32153,7 +32200,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{27:1}",
       "base85_serial": "@UgzR8/35E/MjK>ZdRG}JmsF/oqRjLkZ6)GL#VeF+CzUS>SJw2X(ujMfO?fy>DX?OlBe7oK0@{pY;mjM",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "From a schoolboy to a rattlesnake.",
+      "unique_effect": "Pair of Thieves — On kill, grants {mod} Damage for the Gun's other Mode and refills its Magazine",
+      "flavor_key": "bonnieclyde"
     },
     {
       "comp": "jak_sr.comp_05_legendary_Boomslang",
@@ -32202,7 +32252,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{24:1}",
       "base85_serial": "@Ugy3L+35E/MjK>ZdRG}J`sG6vKsF0/BsDG$Wl/jux)k5_`Jd8aQ!}q*hrl-gA@3kC;zun&{I_=JXh3/KJ&JMfJ00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Everything is blooming most recklessly.",
+      "unique_effect": "Bullet Pollinator — After Reloading, the first Critical Hit Ricochets a Sticky Projectile to up to {mod} nearby enemies",
+      "flavor_key": "boomslang"
     },
     {
       "comp": "jak_sr.comp_05_legendary_Ballista",
@@ -32251,7 +32304,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{24:73}",
       "base85_serial": "@Ugy3L+35E/MjK>a/i7Hg15)~5_5)}rO2Q>;63Y81B3-K`aKMddVcA1_Y&%f7l82)yDr/7gh{}qPW?DU)-1^",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Go now and speed well!",
+      "unique_effect": "Propagation",
+      "flavor_key": "ballista"
     },
     {
       "comp": "mal_sm.comp_05_legendary_brickhouse",
@@ -32304,7 +32360,9 @@
       "base85_serial": "@UgxFw!35E/MjO+*Miz?Ki615kV6SWi76BQOU26YGZ2NepH3snyF4s{RlF!oUl-}82vo*vJ?*K!#Cc7Lbnv^)P5%hTgE`dy!w0R",
       "content_pack": "Mandolin",
       "rarity_source": "Bounty Pack 3 — A Zane to Kill For",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "unique_effect": "Squeaky Clean",
+      "flavor_key": "brickhouse"
     },
     {
       "comp": "vla_ar.comp_05_legendary_bubbles",
@@ -32405,7 +32463,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{5:60}",
       "base85_serial": "@UgcJizFnkbUJa$k%RG/*lsG&mlP(4xaQ1wu8P<c>&P^D0(P`yy=5D#PD!/*+Cm+9&8{Ch2j;cxeMicY)p-yoHlF1rB",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Store brand is just as god.",
+      "unique_effect": "D.O.P.E. Buoys — Throws 2 Combo Orbs, which place the Atlas Target Lock on enemies damaged by the Combo Orbs",
+      "flavor_key": "atlien"
     },
     {
       "comp": "tor_ar.comp_05_legendary_Bugbear",
@@ -32470,7 +32531,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{17:1}",
       "base85_serial": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+J$%+dmo1HdAm$ckLTZOIShZhzf*MDo&O5!XK^_!2L",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "So, in conclusion... *large explosion*",
+      "unique_effect": "Rotary Gun — Scales up to {mod} Damage and {mod2} Damage Radius based on the emptiness of the Magazine",
+      "flavor_key": "bugbear"
     },
     {
       "comp": "ord_ps.comp_05_legendary_Bully",
@@ -32519,7 +32583,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{4:76}",
       "base85_serial": "@Ugb)KvFnkbUJa$k{RG/{psGF#hs7k#--9hC+wL+ytJd8aL!}q*hrl-gA@3kC;zun&{I_=JXg>^PN4*",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Keep Summer safe.",
+      "unique_effect": "Defense Protocol — When Gun Shields are activated, launches an Attack Drone every {mod}s",
+      "flavor_key": "bully"
     },
     {
       "comp": "ted_ar.comp_05_legendary_Chuck",
@@ -32576,7 +32643,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{14:35}",
       "base85_serial": "@Ugg66CFnkbUJa*72RG/)43RS5=%/V4jl/(#@JrBe8yj`ZJ$Mf&C9EQK$-zhrn&VPsK`gjc",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "What a tosser.",
+      "unique_effect": "Pitcher",
+      "flavor_key": "chuck"
     },
     {
       "comp": "tor_ar.comp_05_legendary_ColdShoulder",
@@ -32620,7 +32690,10 @@
         }
       ],
       "acquisition_kind": "challenge",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_ColdShoulder"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_ColdShoulder",
+      "red_text": "You've been smooching with everybody",
+      "unique_effect": "Iced Out",
+      "flavor_key": "coldshoulder"
     },
     {
       "comp": "mal_sr.comp_05_legendary_complex_root",
@@ -32672,7 +32745,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{25:59}",
       "base85_serial": "@Ugydj=35E/MjK>bThbmN~61Av94HZg*8i_iInu#ij3WKVHs)Y)Nco_RBhVOa1Oiz#J-)lJxf4jd^blRQ&j^AxKyNv(J-)}k",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "It's the nucleus of every man-made invention of today.",
+      "unique_effect": "Sierpinski — Spawns additional diverging Projectiles along its path",
+      "flavor_key": "complexroot"
     },
     {
       "display_name": "Conflux",
@@ -32704,11 +32780,11 @@
         "weapon_type": "Sniper Rifle",
         "manufacturer": "Maliwan",
         "rarity": "Pearlescent",
-        "red_text": "It's self indulgent, I admit it.",
-        "unique_effect": "Sinew — Deals +100% damage for each status effect currently affecting the target.",
-        "drop_source": "World Drop",
+        "red_text": "It's self-indulgent, I admit.",
+        "unique_effect": "Sinew — Deals damage per Status Effect on the target.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
+        "raid_drop": true,
         "world_drop": true,
         "mission_reward": false,
         "vendor": false,
@@ -32763,8 +32839,27 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sr_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sr_06_pearl",
+            "weapon_type_code": "sr",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          },
+          {
+            "kind": "named_pearl_itempool",
+            "itempool": "itempool_mal_sr_05_legendary_conflux_pearl",
+            "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -32774,7 +32869,7 @@
       "comp_verified_supplement": false,
       "drop_sources": [
         {
-          "enemy_name": "World Drop",
+          "enemy_name": "World Drop (Raid 2)",
           "itempool_list": "itempool_mal_sr_05_legendary_conflux_pearl",
           "row_name": null,
           "character_def": null,
@@ -32782,6 +32877,7 @@
         }
       ],
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "slug": "conflux",
       "spawn_serial": "MAL_SR.COMP_05_LEGENDARY_CONFLUX",
       "itempool_shiny": null,
@@ -32794,7 +32890,151 @@
       "variant_label": "Pearlescent",
       "skin_part": "{25:82}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "It's self-indulgent, I admit.",
+      "unique_effect": "Sinew — Deals damage per Status Effect on the target."
+    },
+    {
+      "comp": "jak_sg.comp_06_pearl_constable",
+      "cosmetic_spawn": null,
+      "pool_status": "pearl_catalog",
+      "drop_note": "World Drop (Raid 2)",
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sg_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
+      "display_name": "Constable",
+      "pearl": true,
+      "variant": "pearl",
+      "camo_c_code": null,
+      "camo_paste": null,
+      "slug": "constable",
+      "spawn_serial": "JAK_SG.COMP_06_PEARL_CONSTABLE",
+      "itempool_shiny": null,
+      "yaml_key": "shiny_constable",
+      "numeric_skin_name": "Constable",
+      "skin_code": "{9:101}",
+      "numeric_skin_code": "{9:101}",
+      "phosphene_c_code": null,
+      "serial_hint": "{9:101}",
+      "echo4_serial_u": null,
+      "echo4_tail": null,
+      "camo_cosmetic": null,
+      "code_source": "stx_rarities",
+      "community_pearl": {
+        "slug": "constable",
+        "gear_slug": "loomingconstable",
+        "display_name": "Constable",
+        "spawn_tokens": [
+          "loomingconstable",
+          "looming",
+          "constable"
+        ],
+        "yaml_key": "shiny_constable",
+        "expected_inv": "jak_sg",
+        "weapon_type": "Shotgun",
+        "manufacturer": "Jakobs",
+        "rarity": "Pearlescent",
+        "red_text": "We see nothing truly till we understand it.",
+        "unique_effect": "Lethal Deterrent",
+        "drop_source": "World Drop (Raid 2)",
+        "dedicated_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
+        "mission_reward": false,
+        "vendor": false,
+        "dlc": "Raid 2",
+        "patch_introduced": "1.8",
+        "patch_removed": null,
+        "status": "partial",
+        "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+        "comp_pearl": "JAK_SG.comp_06_pearl_constable",
+        "comp_pearl_expected": null,
+        "pearl_comp_style": "comp_06_pearl",
+        "comp_pearl_slug": "constable",
+        "itempool_pearl": null,
+        "comp_legendary_candidates": [
+          "jak_sg.comp_05_legendary_loomingconstable",
+          "jak_sg.comp_05_legendary_looming",
+          "jak_sg.comp_05_legendary_constable"
+        ],
+        "comp_candidates": [
+          "jak_sg.comp_05_legendary_loomingconstable",
+          "jak_sg.comp_06_pearl_loomingconstable",
+          "jak_sg.comp_06_pearlescent_loomingconstable",
+          "jak_sg.comp_05_legendary_looming",
+          "jak_sg.comp_06_pearl_looming",
+          "jak_sg.comp_06_pearlescent_looming",
+          "jak_sg.comp_05_legendary_constable",
+          "jak_sg.comp_06_pearl_constable",
+          "jak_sg.comp_06_pearlescent_constable"
+        ],
+        "alternate_editor_comps": [
+          "jak_sg.comp_06_pearl_constable"
+        ],
+        "id_raw": "9:101",
+        "skin_code": "{9:101}",
+        "serial_u": null,
+        "serial_hint": "{9:101} + |\"c\",1|",
+        "camo_token": "|\"c\",1|",
+        "internal_balance_name": "JAK_SG.comp_06_pearl_constable",
+        "internal_name": "constable",
+        "can_be_phosphene": false,
+        "phosphene_status": "verified_no",
+        "phosphene_evidence": {
+          "source": "assets/data/pearl_phosphene_flags.json",
+          "flag_key": "constable",
+          "status": "verified_no",
+          "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+          "evidence": []
+        },
+        "can_be_pearlescent": true,
+        "wiki_url": null,
+        "verification": {
+          "in_gear_database": true,
+          "in_supplement": true,
+          "in_nexus_export": false,
+          "in_pearl_itempool": false,
+          "in_echo4": false,
+          "in_yaml_catalog": true,
+          "comp_match_via": "supplement_slug",
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sg_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sg_06_pearl",
+            "weapon_type_code": "sg",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sg_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
+      },
+      "pearl_comp_style": "comp_06_pearl",
+      "content_pack": "Raid 2",
+      "rarity_source": "Raid 2",
+      "raid2_pearl": true,
+      "comp_verified_nexus": false,
+      "comp_verified_supplement": true,
+      "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
+      "weapon_label": "Jakobs Shotgun",
+      "comp_status": "confirmed",
+      "variant_label": "Pearlescent",
+      "camo_slot": null,
+      "skin_part": "{9:101}",
+      "base85_serial": null,
+      "red_text": "We see nothing truly till we understand it.",
+      "unique_effect": "Lethal Deterrent"
     },
     {
       "comp": "bor_sg.comp_05_legendary_convergence",
@@ -32843,7 +33083,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{7:100}",
       "base85_serial": "@Ugd77*FnkbUJa$lORG/{ps6#Dk$WTbsPE<=&Ow^/4p!T5tphBT$p~fK/#$Jlyd)_Y7)8qN~S`NeC?(Y<xcIUt2x7%KppUduX82",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Steel chambers, late the pyres; Of her salamandrine fires",
+      "unique_effect": "Asymptotic",
+      "flavor_key": "convergence"
     },
     {
       "comp": "bor_sg.comp_05_legendary_CrazedEarl",
@@ -32851,8 +33094,23 @@
       "itempool_shiny": "itempool_mal_sg_05_legendary_crazedearl_shiny",
       "cosmetic_spawn": "Cosmetics_Weapon_Shiny_crazedEarl",
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent pool",
-      "drop_sources": [],
+      "drop_note": "Crazy Earl",
+      "drop_sources": [
+        {
+          "enemy_name": "Big Encore Crazy Earl",
+          "itempool_list": "ItemPoolList_CrazyEarl_True",
+          "row_name": "CrazyEarl_True",
+          "character_def": null,
+          "is_true_boss": true
+        },
+        {
+          "enemy_name": "Crazy Earl",
+          "itempool_list": "ItemPoolList_CrazyEarl",
+          "row_name": "CrazyEarl",
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "slug": "crazedearl",
       "display_name": "Crazed Earl",
       "yaml_key": "shiny_crazedearl",
@@ -32882,10 +33140,10 @@
         "weapon_type": "Shotgun",
         "manufacturer": "Ripper",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
+        "red_text": "Earlescent.",
+        "unique_effect": "BOGO — Fires Shards that stick into enemies. Meleeing enemies with Shards explodes the Shards and sends them toward nearby enemies.",
+        "drop_source": "Crazy Earl",
+        "dedicated_drop": true,
         "raid_drop": false,
         "world_drop": false,
         "mission_reward": false,
@@ -32945,8 +33203,33 @@
           "in_echo4": true,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_CrazyEarl",
+          "ItemPoolList_CrazyEarl_True"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_CrazyEarl",
+              "ItemPoolList_CrazyEarl_True"
+            ],
+            "comps": [
+              "BOR_SG.comp_05_legendary_CrazedEarl"
+            ],
+            "label": "Crazy Earl",
+            "dropped_hybrid_lists": [
+              "ItemPoolList_Tuba_hybrids_True"
+            ]
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -32955,19 +33238,36 @@
       "comp_verified_nexus": true,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Ripper Shotgun",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{7:54}",
       "base85_serial": "@Ugd77*FnkbUJa$k!RG}J`s9{5EP&H90Q72LJP<v2+P@zz@P~}j=J<xCt@G$mKjNkKinVufczxQ$&{&s)o=(Ick9m~V/GPxX<vjG",
-      "acquisition_kind": "pearlescent"
+      "red_text": "Earlescent.",
+      "unique_effect": "BOGO — Fires Shards that stick into enemies. Meleeing enemies with Shards explodes the Shards and sends them toward nearby enemies."
     },
     {
       "comp": "ord_ar.comp_05_legendary_crowsourced",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent pool",
-      "drop_sources": [],
+      "drop_note": "Dahlfather",
+      "drop_sources": [
+        {
+          "enemy_name": "Big Encore Dahlfather",
+          "itempool_list": "ItemPoolList_DahlFather_True",
+          "row_name": "DahlFather_True",
+          "character_def": null,
+          "is_true_boss": true
+        },
+        {
+          "enemy_name": "Dahlfather",
+          "itempool_list": "ItemPoolList_dAHLfATHER",
+          "row_name": "dAHLfATHER",
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "display_name": "Crow-Sourced",
       "pearl": true,
       "variant": "pearl",
@@ -32999,10 +33299,10 @@
         "weapon_type": "Assault Rifle",
         "manufacturer": "Order",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
+        "red_text": "And we had to share the rock!",
+        "unique_effect": "Left of the Murder — Fires random objects.",
+        "drop_source": "Dahlfather",
+        "dedicated_drop": true,
         "raid_drop": false,
         "world_drop": false,
         "mission_reward": false,
@@ -33060,8 +33360,31 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_DahlFather_True",
+          "ItemPoolList_dAHLfATHER"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_DahlFather_True",
+              "ItemPoolList_dAHLfATHER"
+            ],
+            "comps": [
+              "ORD_AR.comp_05_legendary_crowsourced"
+            ],
+            "label": "Dahlfather",
+            "dropped_hybrid_lists": []
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -33070,12 +33393,14 @@
       "comp_verified_nexus": true,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Order AR",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{15:77}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "And we had to share the rock!",
+      "unique_effect": "Left of the Murder — Fires random objects."
     },
     {
       "comp": "dad_sm.comp_05_legendary_bloodstarved",
@@ -33127,7 +33452,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{20:63}",
       "base85_serial": "@UgwSAs35E/MjK>c8hw6uF)S?bGR461WE@~_)EGi5t4=NOD6e<_$C*oo3rx?EH?J_+*o`0/9F#PTQPSI(1{wrp`-{d(xEVq}*00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "K, awesome!",
+      "unique_effect": "Parley — Bullets pierce enemies, and have a {chn} Chance when hitting an enemy to cause an explosion that deals {dmg} Damage",
+      "flavor_key": "bloodstarved"
     },
     {
       "comp": "tor_sg.comp_05_legendary_Demo",
@@ -33192,7 +33520,9 @@
       "variant_label": "Phosphene",
       "skin_part": "{7:56}",
       "base85_serial": "@Ugd77*FnkbUJa$k#RG}J`s6#Dk*w8!FPE<?OOH>%t8`K`uA5<t*EL1rJ4`aW>_&slz>FM$OdoPFKZ})eOPP_A8a=HBm",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "You're going to regret this the rest of your life...",
+      "flavor_key": "demo"
     },
     {
       "comp": "dad_ar.comp_05_legendary_DiscyBusiness",
@@ -33241,7 +33571,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{10:81}",
       "base85_serial": "@UgeU_{FnkbUWIxbYRG/))sNq6oQU6dOQ7=)Qii667+JlOPI)@tG03ODkis5_SF4NQF`S)55!{6@j6rFbGzr^%>oEO&TX?J-(2L",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "A real crowd pleaser!",
+      "unique_effect": "Bouncing Biscuits — Energy disc Projectiles bounce up to {mod} times, and gain {mod2} Damage per bounce",
+      "flavor_key": "discjockey"
     },
     {
       "comp": "ted_ar.comp_05_legendary_DividedFocus",
@@ -33290,7 +33623,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{14:36}",
       "base85_serial": "@Ugg66CFnkbUJa$kjRG/*_3Uv>44z&)IskW#%s5+=Ss9C6zh=;MCV)&l7%k=bk{=JsN@VEOrMW@~QFEMRTlgnh/dt9Fb",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "That's whatever you were talking about for ya.",
+      "unique_effect": "Conquerer — Fires bouncing Projectiles that pierce enemies",
+      "flavor_key": "dividedfocus"
     },
     {
       "comp": "tor_sg.comp_05_legendary_Doeshot",
@@ -33348,7 +33684,7 @@
       "variant": "pearl",
       "yaml_key": "shiny_eigenburst",
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent pool",
+      "drop_note": "World Drop (Raid 2)",
       "echo4_serial_u": null,
       "skin_code": "{11:82}",
       "numeric_skin_code": "{11:82}",
@@ -33372,12 +33708,12 @@
         "weapon_type": "Shotgun",
         "manufacturer": "Tediore",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "An affinity for disobedience.",
+        "unique_effect": "Determined — Damage increases as loaded ammo decreases.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
@@ -33435,8 +33771,27 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sg_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sg_06_pearl",
+            "weapon_type_code": "sg",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          },
+          {
+            "kind": "named_pearl_itempool",
+            "itempool": "itempool_ted_sg_05_legendary_eigenburst_pearl",
+            "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sg_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -33444,8 +33799,17 @@
       "raid2_pearl": true,
       "comp_verified_nexus": true,
       "comp_verified_supplement": false,
-      "drop_sources": [],
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_ted_sg_05_legendary_eigenburst_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "slug": "eigenburst",
       "spawn_serial": "TED_SG.COMP_05_LEGENDARY_EIGENBURST",
       "itempool_shiny": null,
@@ -33458,7 +33822,8 @@
       "variant_label": "Pearlescent",
       "skin_part": "{11:82}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "An affinity for disobedience.",
+      "unique_effect": "Determined — Damage increases as loaded ammo decreases."
     },
     {
       "comp": "bor_sm.comp_05_legendary_falke",
@@ -33499,7 +33864,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{19:59}",
       "base85_serial": "@Ugv?-o35E/MjK>bThbmN}8Z~679;zm)Bq}8;4C)T*4=NO@7U~z`VeEMrzvt~TJw2X(@8vN3?f%ZuX?Ol>4zt%~00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Let us become whole again.",
+      "unique_effect": "Resonance",
+      "flavor_key": "falke"
     },
     {
       "comp": "jak_sr.comp_05_legendary_fearstalker",
@@ -33589,126 +33957,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{16:66}",
       "base85_serial": "@Uguq~c35E/MjK>Zti7M2h5;bIKP&-j!Q9n^VQDIPZP%lyU5D#PD!/*+Cm+9&8{Ch2j;cxeMicY)pUt`+srsn/",
-      "acquisition_kind": "boss"
-    },
-    {
-      "comp": "mal_sm.comp_06_pearl_juliet",
-      "cosmetic_spawn": null,
-      "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
-      "display_name": "Firestorm",
-      "pearl": true,
-      "variant": "pearl",
-      "camo_c_code": null,
-      "camo_paste": null,
-      "slug": "juliet",
-      "spawn_serial": "MAL_SM.COMP_06_PEARL_JULIET",
-      "itempool_shiny": null,
-      "yaml_key": "shiny_juliet",
-      "numeric_skin_name": "Firestorm",
-      "skin_code": "{21:90}",
-      "numeric_skin_code": "{21:90}",
-      "phosphene_c_code": null,
-      "serial_hint": "{21:90}",
-      "echo4_serial_u": null,
-      "echo4_tail": null,
-      "camo_cosmetic": null,
-      "code_source": "stx_rarities",
-      "community_pearl": {
-        "slug": "juliet",
-        "gear_slug": "firestorm",
-        "display_name": "Firestorm",
-        "spawn_tokens": [
-          "firestorm",
-          "firework",
-          "juliet"
-        ],
-        "yaml_key": "shiny_juliet",
-        "expected_inv": "mal_sm",
-        "weapon_type": "SMG",
-        "manufacturer": "Maliwan",
-        "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
-        "mission_reward": false,
-        "vendor": false,
-        "dlc": "Raid 2",
-        "patch_introduced": "1.8",
-        "patch_removed": null,
-        "status": "partial",
-        "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) — community name Firestorm until export aligns Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
-        "comp_pearl": "MAL_SM.comp_06_pearl_juliet",
-        "comp_pearl_expected": null,
-        "pearl_comp_style": "comp_06_pearl",
-        "comp_pearl_slug": "juliet",
-        "itempool_pearl": null,
-        "comp_legendary_candidates": [
-          "mal_sm.comp_05_legendary_firestorm",
-          "mal_sm.comp_05_legendary_firework",
-          "mal_sm.comp_05_legendary_juliet"
-        ],
-        "comp_candidates": [
-          "mal_sm.comp_05_legendary_firestorm",
-          "mal_sm.comp_06_pearl_firestorm",
-          "mal_sm.comp_06_pearlescent_firestorm",
-          "mal_sm.comp_05_legendary_firework",
-          "mal_sm.comp_06_pearl_firework",
-          "mal_sm.comp_06_pearlescent_firework",
-          "mal_sm.comp_05_legendary_juliet",
-          "mal_sm.comp_06_pearl_juliet",
-          "mal_sm.comp_06_pearlescent_juliet"
-        ],
-        "alternate_editor_comps": [
-          "mal_sm.comp_06_pearl_juliet"
-        ],
-        "id_raw": "21:90",
-        "skin_code": "{21:90}",
-        "serial_u": null,
-        "serial_hint": "{21:90} + |\"c\",1|",
-        "camo_token": "|\"c\",1|",
-        "internal_balance_name": "MAL_SM.comp_06_pearl_juliet",
-        "internal_name": "juliet",
-        "can_be_phosphene": false,
-        "phosphene_status": "verified_no",
-        "phosphene_evidence": {
-          "source": "assets/data/pearl_phosphene_flags.json",
-          "flag_key": "juliet",
-          "status": "verified_no",
-          "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
-          "evidence": []
-        },
-        "can_be_pearlescent": true,
-        "wiki_url": null,
-        "verification": {
-          "in_gear_database": true,
-          "in_supplement": true,
-          "in_nexus_export": false,
-          "in_pearl_itempool": false,
-          "in_echo4": false,
-          "in_yaml_catalog": true,
-          "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
-      },
-      "pearl_comp_style": "comp_06_pearl",
-      "content_pack": "Raid 2",
-      "rarity_source": "Raid 2",
-      "raid2_pearl": true,
-      "comp_verified_nexus": false,
-      "comp_verified_supplement": true,
-      "replace_drop_sources": true,
-      "weapon_label": "Maliwan SMG",
-      "comp_status": "confirmed",
-      "variant_label": "Pearlescent",
-      "camo_slot": null,
-      "skin_part": "{21:90}",
-      "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "acquisition_kind": "boss",
+      "red_text": "As seen on Monday Night Rehabilitation.",
+      "unique_effect": "Pipin' Hot Barrels — Does not consume Ammo while Overheating",
+      "flavor_key": "finnty"
     },
     {
       "comp": "ord_sr.comp_05_legendary_Fisheye",
@@ -33757,7 +34009,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{26:1}",
       "base85_serial": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfYJdC{$!}q*hrl-gA@3kC;zun&{I_=JXjp;eMoG$/",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "See, I told you they'd listen to Reason.",
+      "unique_effect": "Ultima Ratio Regum — Fires wide, penetrating triple Railgun shots with {mod} Critical Damage",
+      "flavor_key": "fisheye"
     },
     {
       "comp": "jak_ar.comp_05_legendary_fishward",
@@ -33798,7 +34053,10 @@
         }
       ],
       "acquisition_kind": "takedown",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_fishward"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_fishward",
+      "red_text": "Like shooting fish from a barrel.",
+      "unique_effect": "Fish Fry — On Kill, increase the Damage Dealt of the next Mag by +20% for a Maximum 5 stacks",
+      "flavor_key": "fishward"
     },
     {
       "comp": "mal_sm.comp_05_legendary_flashcyclone",
@@ -33888,7 +34146,9 @@
       "variant_label": "Phosphene",
       "skin_part": "{17:83}",
       "base85_serial": "@Ugv4Ng35E/MjK>Z-i%N$/RHKFtl//J<l/<b`b*c@j4(bkS6>1maVeEYvzvt~TJw2X(@8vN3?f%ZuX?Ol>W/za_@EH",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Can't you see the fleas?",
+      "flavor_key": "fleabag"
     },
     {
       "comp": "dad_sm.comp_05_legendary_follower",
@@ -33976,7 +34236,10 @@
         }
       ],
       "acquisition_kind": "challenge",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_CommBD"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_CommBD",
+      "red_text": "The people have spoken.",
+      "unique_effect": "Wide Net",
+      "flavor_key": "commbd"
     },
     {
       "comp": "ord_ar.comp_05_legendary_GMR",
@@ -34025,7 +34288,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{15:75}",
       "base85_serial": "@UgggUGFnkbUJa*7cR83T(8da!#sCcM(sCuYQ4XPAs6zUbK7vf>;br`<q?J_+*o`0/9F#PTQPSI(1{(Edn0R",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "O, inheritor of grace!",
+      "unique_effect": "Big Name Hunter — When Zoomed In, Damage increases by {mod1}, Shot Cost increases by {mod2}, and Fire Rate decreases by {mod3}",
+      "flavor_key": "gmr"
     },
     {
       "comp": "ord_ar.comp_05_legendary_Goalkeeper",
@@ -34074,7 +34340,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{15:76}",
       "base85_serial": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFa9@v5#W-p0~^N^mzWgmc#J3`#VLa-TCkF9cHh~Wq4T*",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I'm not camping! I'm guarding the flag.",
+      "unique_effect": "Amper Camper — When Gun Shield is depleted, grants {mod} Damage for {duration}s",
+      "flavor_key": "goalkeeper"
     },
     {
       "comp": "bor_sg.comp_05_legendary_GoldenGod",
@@ -34123,7 +34392,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{7:19}",
       "base85_serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~i{{V-LmfJ#Uxk>GAw~Er;Q6_jig;yYt`Un@ujek8d&",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I am untethered, and my rage knows no bounds!",
+      "unique_effect": "Rage — When Overheating, the Bulletforge does not break, but instead continually consumes greater amounts of Ammo",
+      "flavor_key": "goldengod"
     },
     {
       "comp": "jak_ar.comp_05_legendary_gomie",
@@ -34133,7 +34405,7 @@
       "drop_sources": [
         {
           "enemy_name": "World Drop (Raid 2)",
-          "itempool_list": null,
+          "itempool_list": "itempool_ar_06_pearl",
           "row_name": null,
           "character_def": null,
           "is_true_boss": false
@@ -34170,8 +34442,8 @@
         "weapon_type": "Assault Rifle",
         "manufacturer": "Jakobs",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": "Ascending Storm — On hit, gain Firestorm stacks. Each stack increases weapon damage by 5%. Reloading releases accumulated Firestorm damage to nearby enemies.",
+        "red_text": "Still Got It.",
+        "unique_effect": "Ascending Storm — On hit, gain a stack of Firestorm. Each stack increases Weapon Damage. Reloading unleashes Firestorm on nearby enemies.",
         "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
         "raid_drop": true,
@@ -34223,8 +34495,22 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_supplement",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_ar_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_ar_06_pearl",
+            "weapon_type_code": "ar",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ar_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -34233,12 +34519,14 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "weapon_label": "Jakobs AR",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{27:81}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Still Got It.",
+      "unique_effect": "Ascending Storm — On hit, gain a stack of Firestorm. Each stack increases Weapon Damage. Reloading unleashes Firestorm on nearby enemies."
     },
     {
       "comp": "bor_sg.comp_05_legendary_GoreMaster",
@@ -34287,7 +34575,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{7:20}",
       "base85_serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZAs)s)is5_SF4NQF`S)55!{6@j6rFbGzsI+{+zij@WjO",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "“The fact we get to do this for a living is pretty @#%ing cool.”",
+      "unique_effect": "Chief Execution Officer — Deals {DmgScalar} Damage to enemies below {LowHPThreshold} Health",
+      "flavor_key": "goremaster"
     },
     {
       "display_name": "Handcannon",
@@ -34296,7 +34587,7 @@
       "variant": "pearl",
       "yaml_key": "shiny_handcannon",
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent pool",
+      "drop_note": "World Drop (Raid 2)",
       "echo4_serial_u": null,
       "skin_code": "{6:78}",
       "numeric_skin_code": "{6:78}",
@@ -34319,12 +34610,12 @@
         "weapon_type": "Pistol",
         "manufacturer": "Torgue",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "Dangerous toys are fun, but you could get hurt.",
+        "unique_effect": "Click Boom Boom — Sticky Projectiles deal Damage while attached to targets.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
@@ -34378,8 +34669,27 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_ps_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_ps_06_pearl",
+            "weapon_type_code": "ps",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          },
+          {
+            "kind": "named_pearl_itempool",
+            "itempool": "itempool_tor_ps_05_legendary_handcannon_pearl",
+            "note": "Named legendary_*_pearl itempool exists; no ItemPoolList consumer found for dedicated boss wiring."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ps_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -34387,8 +34697,17 @@
       "raid2_pearl": true,
       "comp_verified_nexus": true,
       "comp_verified_supplement": false,
-      "drop_sources": [],
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_tor_ps_05_legendary_handcannon_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "slug": "handcannon",
       "spawn_serial": "TOR_PS.COMP_05_LEGENDARY_HANDCANNON",
       "itempool_shiny": null,
@@ -34401,7 +34720,8 @@
       "variant_label": "Pearlescent",
       "skin_part": "{6:78}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Dangerous toys are fun, but you could get hurt.",
+      "unique_effect": "Click Boom Boom — Sticky Projectiles deal Damage while attached to targets."
     },
     {
       "comp": "dad_ar.comp_05_legendary_HardDark",
@@ -34454,7 +34774,9 @@
       "base85_serial": "@Ugfs(8FnkbUWIxbb)SwD=sJ5t0eJTtp4=NQZ7OEEN7HS<TB&sFiVeEexzUS>SJw2X(ujMfO?fy>DX?OmM49m&HuzU>",
       "content_pack": "Mandolin",
       "rarity_source": "Bounty Pack 3 — A Zane to Kill For",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "You merely adopted the dark.",
+      "flavor_key": "harddark"
     },
     {
       "comp": "dad_ar.comp_05_legendary_Mercredi",
@@ -34498,7 +34820,9 @@
         }
       ],
       "acquisition_kind": "campaign_unlock",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_mercredi"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_mercredi",
+      "red_text": "You merely adopted the dark.",
+      "flavor_key": "mercredi"
     },
     {
       "comp": "tor_ps.comp_05_legendary_Breadth",
@@ -34591,7 +34915,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{19:19}",
       "base85_serial": "@Ugv?-o35E/MjK>Z-gDO;`61AuyLupVcQ7cg=QJ)%%x`X<I3WchL`h/EH`yYnydAm$ckLTZOIShZhzf*MDo&TcCY_>TqF9Q",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "All hell can't stop us now.",
+      "unique_effect": "Burning Desire",
+      "flavor_key": "hellfire"
     },
     {
       "comp": "jak_sg.comp_05_legendary_Hellwalker",
@@ -34640,7 +34967,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{9:83}",
       "base85_serial": "@Ugd_t@FnkbUJa*7oRG}J`s6`#BEUGW+4JsBYCE{W1qZq#D?J_+*o`0/9F#PTQPSI(1{);TL+4nGeU6um",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "A piece of the moon hung in the sky like a polished bone.",
+      "unique_effect": "Soothslayer",
+      "flavor_key": "hellwalker"
     },
     {
       "comp": "vla_sr.comp_05_legendary_Hemorrhage",
@@ -34707,7 +35037,7 @@
       "drop_sources": [
         {
           "enemy_name": "World Drop (Raid 2)",
-          "itempool_list": null,
+          "itempool_list": "itempool_ps_06_pearl",
           "row_name": null,
           "character_def": null,
           "is_true_boss": false
@@ -34744,7 +35074,7 @@
         "manufacturer": "Torgue",
         "rarity": "Pearlescent",
         "red_text": "Out of 87 bazillion, ONE of them had to be the best.",
-        "unique_effect": "Unkempt — Spiritual successor to the Unkempt Harold.",
+        "unique_effect": "Unkempt",
         "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
         "raid_drop": true,
@@ -34798,8 +35128,22 @@
           "in_echo4": false,
           "in_yaml_catalog": true,
           "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_ps_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_ps_06_pearl",
+            "weapon_type_code": "ps",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_ps_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "comp_06_pearl",
       "content_pack": "Raid 2",
@@ -34808,13 +35152,15 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "weapon_label": "Torgue Pistol",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "camo_slot": null,
       "skin_part": "{6:85}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Out of 87 bazillion, ONE of them had to be the best.",
+      "unique_effect": "Unkempt"
     },
     {
       "comp": "jak_sg.comp_05_legendary_Slugger",
@@ -34866,7 +35212,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{9:80}",
       "base85_serial": "@Ugd_t@FnkbUJa$l6RH1&NdZON-VxdwZ9>(5>;d/aL)6?Vm_gW6a-/p`eop$HHQ+EA)F3SM",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "The madder I am, the thicker my accent gets!",
+      "unique_effect": "Blazing Barrel — On kill, deal {mod} Damage for {duration}s for a Maximum 3 Stacks",
+      "flavor_key": "slugger"
     },
     {
       "comp": "ted_sg.comp_05_legendary_HeavyTurret",
@@ -34918,7 +35267,9 @@
       "variant_label": "Phosphene",
       "skin_part": "{11:80}",
       "base85_serial": "@Uge(J0FnkbUJa$l6RG}JmsG&lUYKba/I*FRp9Mm1u9#kpRDAX*}PsGF6OEG-U+huxsJpW$HVffqqoubq3{1;gc+w;`ATwbOF",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "We just prefer to use “Husky”.",
+      "flavor_key": "heavyturret"
     },
     {
       "comp": "ted_ps.comp_05_legendary_Inscriber",
@@ -35008,20 +35359,44 @@
       "variant_label": "Phosphene",
       "skin_part": "{26:82}",
       "base85_serial": "@Ugy>*^35E/MjO+(0iz?Ki61AwYs7!V0Q=968N`+d73X6Ccdmo1HdAm$ckLTZOIShZhzf*MDo&P51=ytfw1^",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "From hell's heart.",
+      "unique_effect": "Harpoon — Bleeds the target for {mod1} Damage over {mod2} seconds",
+      "flavor_key": "ishmael"
     },
     {
       "comp": "bor_sm.comp_05_legendary_jailbroken",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Subjugator & Thol the Invincible (Raid 2)",
+      "drop_note": "Subjugator (Raid 2) & Thol the Invincible (Raid 2)",
       "drop_sources": [
         {
-          "enemy_name": "Subjugator & Thol the Invincible (Raid 2)",
-          "itempool_list": null,
-          "row_name": null,
+          "enemy_name": "Big Encore Subjugator (Raid 2)",
+          "itempool_list": "ItemPoolList_Raid2_Subjugator_True",
+          "row_name": "Raid2_Subjugator_True",
           "character_def": null,
           "is_true_boss": true
+        },
+        {
+          "enemy_name": "Big Encore Thol the Invincible (Raid 2)",
+          "itempool_list": "ItemPoolList_Raid2_Thol_True",
+          "row_name": "Raid2_Thol_True",
+          "character_def": null,
+          "is_true_boss": true
+        },
+        {
+          "enemy_name": "Subjugator (Raid 2)",
+          "itempool_list": "ItemPoolList_Raid2_Subjugator",
+          "row_name": "Raid2_Subjugator",
+          "character_def": null,
+          "is_true_boss": false
+        },
+        {
+          "enemy_name": "Thol the Invincible (Raid 2)",
+          "itempool_list": "ItemPoolList_Raid2_Thol",
+          "row_name": "Raid2_Thol",
+          "character_def": null,
+          "is_true_boss": false
         }
       ],
       "display_name": "Jail-Broken Gatling",
@@ -35057,8 +35432,8 @@
         "manufacturer": "Ripper",
         "rarity": "Pearlescent",
         "red_text": "Get busy shooting or get busy dying.",
-        "unique_effect": "Jailbroken — On hit, gain a stack of Backfire. Each Backfire stack increases Fire Rate and increases the chance to fire additional projectiles.",
-        "drop_source": "Subjugator & Thol the Invincible (Raid 2)",
+        "unique_effect": "Jailbroken — On hit, gain a stack of Backfire. For each Backfire stack, gain increased Fire Rate and an increased chance to fire additional projectiles.",
+        "drop_source": "Subjugator (Raid 2) & Thol the Invincible (Raid 2)",
         "dedicated_drop": true,
         "raid_drop": true,
         "world_drop": false,
@@ -35115,8 +35490,35 @@
           "in_echo4": true,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_supplement",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_Raid2_Subjugator",
+          "ItemPoolList_Raid2_Subjugator_True",
+          "ItemPoolList_Raid2_Thol",
+          "ItemPoolList_Raid2_Thol_True"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_Raid2_Subjugator",
+              "ItemPoolList_Raid2_Subjugator_True",
+              "ItemPoolList_Raid2_Thol",
+              "ItemPoolList_Raid2_Thol_True"
+            ],
+            "comps": [
+              "BOR_SM.comp_05_legendary_Jailbroken"
+            ],
+            "label": "Subjugator (Raid 2) & Thol the Invincible (Raid 2)",
+            "dropped_hybrid_lists": []
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -35125,12 +35527,162 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Ripper SMG",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{19:61}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Get busy shooting or get busy dying.",
+      "unique_effect": "Jailbroken — On hit, gain a stack of Backfire. For each Backfire stack, gain increased Fire Rate and an increased chance to fire additional projectiles."
+    },
+    {
+      "comp": "mal_sm.comp_06_pearl_juliet",
+      "cosmetic_spawn": null,
+      "pool_status": "pearl_catalog",
+      "drop_note": "World Drop (Raid 2)",
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sm_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
+      "display_name": "Juliet's Sparkle",
+      "pearl": true,
+      "variant": "pearl",
+      "camo_c_code": null,
+      "camo_paste": null,
+      "slug": "juliet",
+      "spawn_serial": "MAL_SM.COMP_06_PEARL_JULIET",
+      "itempool_shiny": null,
+      "yaml_key": "shiny_juliet",
+      "numeric_skin_name": "Juliet's Sparkle",
+      "skin_code": "{21:90}",
+      "numeric_skin_code": "{21:90}",
+      "phosphene_c_code": null,
+      "serial_hint": "{21:90}",
+      "echo4_serial_u": null,
+      "echo4_tail": null,
+      "camo_cosmetic": null,
+      "code_source": "stx_rarities",
+      "community_pearl": {
+        "slug": "juliet",
+        "gear_slug": "firestorm",
+        "display_name": "Juliet's Sparkle",
+        "spawn_tokens": [
+          "firestorm",
+          "firework",
+          "juliet",
+          "julietssparkle"
+        ],
+        "yaml_key": "shiny_juliet",
+        "expected_inv": "mal_sm",
+        "weapon_type": "SMG",
+        "manufacturer": "Maliwan",
+        "rarity": "Pearlescent",
+        "red_text": "Dazzle the world.",
+        "unique_effect": "Starfall — Chance for Stars to fall for bonus damage.",
+        "drop_source": "World Drop (Raid 2)",
+        "dedicated_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
+        "mission_reward": false,
+        "vendor": false,
+        "dlc": "Raid 2",
+        "patch_introduced": "1.8",
+        "patch_removed": null,
+        "status": "partial",
+        "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
+        "comp_pearl": "MAL_SM.comp_06_pearl_juliet",
+        "comp_pearl_expected": null,
+        "pearl_comp_style": "comp_06_pearl",
+        "comp_pearl_slug": "juliet",
+        "itempool_pearl": null,
+        "comp_legendary_candidates": [
+          "mal_sm.comp_05_legendary_firestorm",
+          "mal_sm.comp_05_legendary_firework",
+          "mal_sm.comp_05_legendary_juliet",
+          "mal_sm.comp_05_legendary_julietssparkle"
+        ],
+        "comp_candidates": [
+          "mal_sm.comp_05_legendary_firestorm",
+          "mal_sm.comp_06_pearl_firestorm",
+          "mal_sm.comp_06_pearlescent_firestorm",
+          "mal_sm.comp_05_legendary_firework",
+          "mal_sm.comp_06_pearl_firework",
+          "mal_sm.comp_06_pearlescent_firework",
+          "mal_sm.comp_05_legendary_juliet",
+          "mal_sm.comp_06_pearl_juliet",
+          "mal_sm.comp_06_pearlescent_juliet",
+          "mal_sm.comp_05_legendary_julietssparkle",
+          "mal_sm.comp_06_pearl_julietssparkle",
+          "mal_sm.comp_06_pearlescent_julietssparkle"
+        ],
+        "alternate_editor_comps": [
+          "mal_sm.comp_06_pearl_juliet"
+        ],
+        "id_raw": "21:90",
+        "skin_code": "{21:90}",
+        "serial_u": null,
+        "serial_hint": "{21:90} + |\"c\",1|",
+        "camo_token": "|\"c\",1|",
+        "internal_balance_name": "MAL_SM.comp_06_pearl_juliet",
+        "internal_name": "juliet",
+        "can_be_phosphene": false,
+        "phosphene_status": "verified_no",
+        "phosphene_evidence": {
+          "source": "assets/data/pearl_phosphene_flags.json",
+          "flag_key": "juliet",
+          "status": "verified_no",
+          "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
+          "evidence": []
+        },
+        "can_be_pearlescent": true,
+        "wiki_url": null,
+        "verification": {
+          "in_gear_database": true,
+          "in_supplement": true,
+          "in_nexus_export": false,
+          "in_pearl_itempool": false,
+          "in_echo4": false,
+          "in_yaml_catalog": true,
+          "comp_match_via": "supplement_slug",
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sm_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sm_06_pearl",
+            "weapon_type_code": "sm",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
+      },
+      "pearl_comp_style": "comp_06_pearl",
+      "content_pack": "Raid 2",
+      "rarity_source": "Raid 2",
+      "raid2_pearl": true,
+      "comp_verified_nexus": false,
+      "comp_verified_supplement": true,
+      "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
+      "weapon_label": "Maliwan SMG",
+      "comp_status": "confirmed",
+      "variant_label": "Pearlescent",
+      "camo_slot": null,
+      "skin_part": "{21:90}",
+      "base85_serial": null,
+      "red_text": "Dazzle the world.",
+      "unique_effect": "Starfall — Chance for Stars to fall for bonus damage."
     },
     {
       "comp": "mal_sg.comp_05_legendary_Kaleidosplode",
@@ -35179,7 +35731,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{10:1}",
       "base85_serial": "@UgeU_{FnkbUJa*8a3e~7Y4Ht@s8j0#u9Mm3E9#kyUIn?k5@G$mN4Bzv1nVufczt?gY{&s(-=(IckU544^H2FP;v)/-0",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Trying to paint the prettiest picture I can with the colors I have.",
+      "unique_effect": "Colorful Mess",
+      "flavor_key": "kaleidosplode"
     },
     {
       "comp": "vla_sm.comp_05_legendary_KaoSon",
@@ -35228,7 +35783,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{22:67}",
       "base85_serial": "@UgxFw!35E/MjK>Z-i7Hg04pkBr6Ezcc6IB!SsWYfKs5+=zsBoxzh=;N7Vfdc6%k=bk{=JsN@VEOrMW@~Q?=t+JzTE%",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Twice the power!",
+      "unique_effect": "Granted",
+      "flavor_key": "kaoson"
     },
     {
       "comp": "mal_sr.comp_05_legendary_katagawa",
@@ -35280,7 +35838,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{25:61}",
       "base85_serial": "@Ugydj=35E/MjK>bzhbmN~61Av94H?RZYKdBjnu&Ue3WK_X`hyCEs)b628o~h{#{P%ld)_Y7)8qN~S`NeC?(Y<xcIUtAFg<(@-@^a",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "You might hurt someone, and that's MY @#%in' job.",
+      "unique_effect": "Stormcloud",
+      "flavor_key": "katagawa"
     },
     {
       "comp": "mal_sg.comp_05_legendary_Kickballer",
@@ -35329,7 +35890,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{10:100}",
       "base85_serial": "@UgeU_{FnkbUJa$lORG}J`s3Aj-8j1RcdWrhf8&oXRIn+=F@G$mK4Bzv1nVufczt?gY{&s(-=(IckU8cutahT06%K-",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Let's go, Diamond Ponies!",
+      "unique_effect": "Force Bunt",
+      "flavor_key": "kickballer"
     },
     {
       "comp": "jak_ps.comp_05_legendary_KingsGambit",
@@ -35378,7 +35942,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{3:76}",
       "base85_serial": "@UgbV{rFnkbUJa$k{RG}J`s6#F4CaNCl9V#9w45/*Q59$x97HS;gVeF+CzUS>SJw2X(ujMfO?fy>DX?Om+OuNtXW4J9&(*X",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "The refutation of any gambit begins with accepting it.",
+      "unique_effect": "Holy Hell — When shot, thrown Gun Ricochets Projectiles to nearby enemies",
+      "flavor_key": "kingsgambit"
     },
     {
       "comp": "vla_ar.comp_05_legendary_lasercutter",
@@ -35492,7 +36059,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{14:79}",
       "base85_serial": "@Ugg66CFnkbUJa*7eRG}Jms3Ai=QTI^qQ1MWgI*W>fs)M?N+J#Dqco=&q#_xH%Oiz#J-+MU>f4jePblRQ&vcvPToSdGI0R",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I don't even think the worms are awake yet...",
+      "unique_effect": "Groove",
+      "flavor_key": "discodisc"
     },
     {
       "comp": "tor_sg.comp_05_legendary_LeadBalloon",
@@ -35541,7 +36111,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{12:57}",
       "base85_serial": "@UgfIh4FnkbUJa*7LRG/{psNq8KP$N;BYJ;kSx`SGU`h/EHdntzRdAm$ckLTZOIShZhzf*MDo&Pe+VX`pHX20KV00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "For a brick, he flew pretty good.",
+      "unique_effect": "Lightweight — Projectiles float upward and spawn child Projectiles upon exploding",
+      "flavor_key": "leadballoon"
     },
     {
       "comp": "tor_sg.comp_05_legendary_Linebacker",
@@ -35590,7 +36163,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{12:1}",
       "base85_serial": "@UgfIh4FnkbUJa*8a3YDlv4Hv41`iJU=+J_2>3WI8cs)M?NT7`HR`zVI*dAm$ckLTZOIShZhzf*MDo&Pe^?y@*MUYF$n",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Put me in!",
+      "unique_effect": "Full Coverage — Bouncing Projectiles increase Damage by {mod} and Damage Radius by {mod2} per bounce",
+      "flavor_key": "linebacker"
     },
     {
       "comp": "tor_ar.comp_05_legendary_lockjaw",
@@ -35639,126 +36215,9 @@
       "variant_label": "Phosphene",
       "skin_part": "{17:85}",
       "base85_serial": "@Ugv4Ng35E/MOs))Ci%N%TRHB9orA4ho)kEDwb*c=i4XO_64yqKYCgNf2eHgyy?J_+*o`0/9F#PTQPSI(1{>y%k*Xr;c",
-      "acquisition_kind": "boss"
-    },
-    {
-      "comp": "jak_sg.comp_06_pearl_constable",
-      "cosmetic_spawn": null,
-      "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
-      "display_name": "Looming Constable",
-      "pearl": true,
-      "variant": "pearl",
-      "camo_c_code": null,
-      "camo_paste": null,
-      "slug": "constable",
-      "spawn_serial": "JAK_SG.COMP_06_PEARL_CONSTABLE",
-      "itempool_shiny": null,
-      "yaml_key": "shiny_constable",
-      "numeric_skin_name": "Looming Constable",
-      "skin_code": "{9:101}",
-      "numeric_skin_code": "{9:101}",
-      "phosphene_c_code": null,
-      "serial_hint": "{9:101}",
-      "echo4_serial_u": null,
-      "echo4_tail": null,
-      "camo_cosmetic": null,
-      "code_source": "stx_rarities",
-      "community_pearl": {
-        "slug": "constable",
-        "gear_slug": "loomingconstable",
-        "display_name": "Looming Constable",
-        "spawn_tokens": [
-          "loomingconstable",
-          "looming",
-          "constable"
-        ],
-        "yaml_key": "shiny_constable",
-        "expected_inv": "jak_sg",
-        "weapon_type": "Shotgun",
-        "manufacturer": "Jakobs",
-        "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
-        "mission_reward": false,
-        "vendor": false,
-        "dlc": "Raid 2",
-        "patch_introduced": "1.8",
-        "patch_removed": null,
-        "status": "partial",
-        "notes": "Nexus supplement uses comp_06_pearl_constable with display Pearl Constable Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
-        "comp_pearl": "JAK_SG.comp_06_pearl_constable",
-        "comp_pearl_expected": null,
-        "pearl_comp_style": "comp_06_pearl",
-        "comp_pearl_slug": "constable",
-        "itempool_pearl": null,
-        "comp_legendary_candidates": [
-          "jak_sg.comp_05_legendary_loomingconstable",
-          "jak_sg.comp_05_legendary_looming",
-          "jak_sg.comp_05_legendary_constable"
-        ],
-        "comp_candidates": [
-          "jak_sg.comp_05_legendary_loomingconstable",
-          "jak_sg.comp_06_pearl_loomingconstable",
-          "jak_sg.comp_06_pearlescent_loomingconstable",
-          "jak_sg.comp_05_legendary_looming",
-          "jak_sg.comp_06_pearl_looming",
-          "jak_sg.comp_06_pearlescent_looming",
-          "jak_sg.comp_05_legendary_constable",
-          "jak_sg.comp_06_pearl_constable",
-          "jak_sg.comp_06_pearlescent_constable"
-        ],
-        "alternate_editor_comps": [
-          "jak_sg.comp_06_pearl_constable"
-        ],
-        "id_raw": "9:101",
-        "skin_code": "{9:101}",
-        "serial_u": null,
-        "serial_hint": "{9:101} + |\"c\",1|",
-        "camo_token": "|\"c\",1|",
-        "internal_balance_name": "JAK_SG.comp_06_pearl_constable",
-        "internal_name": "constable",
-        "can_be_phosphene": false,
-        "phosphene_status": "verified_no",
-        "phosphene_evidence": {
-          "source": "assets/data/pearl_phosphene_flags.json",
-          "flag_key": "constable",
-          "status": "verified_no",
-          "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug.",
-          "evidence": []
-        },
-        "can_be_pearlescent": true,
-        "wiki_url": null,
-        "verification": {
-          "in_gear_database": true,
-          "in_supplement": true,
-          "in_nexus_export": false,
-          "in_pearl_itempool": false,
-          "in_echo4": false,
-          "in_yaml_catalog": true,
-          "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
-      },
-      "pearl_comp_style": "comp_06_pearl",
-      "content_pack": "Raid 2",
-      "rarity_source": "Raid 2",
-      "raid2_pearl": true,
-      "comp_verified_nexus": false,
-      "comp_verified_supplement": true,
-      "replace_drop_sources": true,
-      "weapon_label": "Jakobs Shotgun",
-      "comp_status": "confirmed",
-      "variant_label": "Pearlescent",
-      "camo_slot": null,
-      "skin_part": "{9:101}",
-      "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "acquisition_kind": "boss",
+      "red_text": "Round the horn.",
+      "flavor_key": "lockjaw"
     },
     {
       "comp": "vla_ar.comp_05_legendary_Lucian",
@@ -35826,7 +36285,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{18:63}",
       "base85_serial": "@Ugvelk35E/MjK>c8hbmN~5;bgSP+?IqQ8iJWs)Oo-`h&`aYKvNjDv5X)`yPhxdAm$ckLTZOIShZhzf*MDo&PfH<8;^!",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "How dare you!?",
+      "unique_effect": "Trample — Critical Hits refill up to {ammo} Ammo to the Gun's Magazine",
+      "flavor_key": "lucian"
     },
     {
       "comp": "ord_ps.comp_05_legendary_RocketReload",
@@ -35894,7 +36356,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{4:53}",
       "base85_serial": "@Ugb)KvFnkbUJa*7JRG/{psIjPesC%eEtwgm!wL<+uJdFJm!}q*hrl-gA@3kC;zun&{I_=JXrSI{&OqZ6~?=Tq",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Such devastation...This was my intention.",
+      "unique_effect": "Kismet — On Reload, fires 2 Homing Rockets that deal up to {dmg} Damage each",
+      "flavor_key": "rocketreload"
     },
     {
       "comp": "dad_sm.comp_05_legendary_Luty",
@@ -35946,7 +36411,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{20:65}",
       "base85_serial": "@UgwSAs35E/MjK>ZdiRy=HRH7DjsC=lgsIaKBsIsUqs6D7&sC1}$h=;M?Vfdc6%k=bk{=JsN@VEOrMW@~QFSAb10{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I've got a Luty.",
+      "unique_effect": "Homemade Ingenuity — Overheats quickly, but also Cools down quickly",
+      "flavor_key": "luty"
     },
     {
       "comp": "jak_ps.comp_05_legendary_manifest",
@@ -35987,7 +36455,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{25:87}",
       "base85_serial": "@Ugydj=35E/MjO+(`iz?Ki5;a_CEovmHBx)vV45}^a4(bmo6zUeL7b+g&VeEexzUS>SJw2X(ujMfO?fy>DX?OnH4!hIl@/+F",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Men, you have done your full duty.",
+      "unique_effect": "Commandeer",
+      "flavor_key": "manifest"
     },
     {
       "comp": "mal_sg.comp_05_legendary_mantra",
@@ -36130,7 +36601,10 @@
         }
       ],
       "acquisition_kind": "challenge",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_CrowdSourced"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_CrowdSourced",
+      "red_text": "The creators have spoken.",
+      "unique_effect": "Crowd Sourced — On hit, additional Projectiles spawn from nearby enemies",
+      "flavor_key": "crowdsourced"
     },
     {
       "comp": "dad_sg.comp_05_legendary_misslaser",
@@ -36267,7 +36741,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{4:80}",
       "base85_serial": "@Ugb)KvFnkbUJa$l6RG/{psGq2ls7&=ly+PeU<w3ndJdFJm!}q*hrl-gA@3kC;zun&{I_=JXo$vHKKa{7(>oOe",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Feel like I'm gonna break this damn thing!",
+      "unique_effect": "Silence",
+      "flavor_key": "noisycricket"
     },
     {
       "comp": "mal_sm.comp_05_legendary_OhmIGot",
@@ -36316,7 +36793,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{21:60}",
       "base85_serial": "@Ugw$Yw35E/MjK>bjhbmN~5_JzX22}^u2lWS43v~/hF!nwS-}82vo*vJ?*K!#Cc7Lbnv^)QOqT9*in+^",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Back off, man. I'm a scientist.",
+      "unique_effect": "Energy Transfer — When Energy Shield is active, grants {mod} Damage by consuming the Shield's energy instead of Ammo. When Overshield is also active, Energy Shield will not deplete.",
+      "flavor_key": "ohmigot"
     },
     {
       "comp": "vla_sm.comp_05_legendary_Onslaught",
@@ -36365,7 +36845,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{22:1}",
       "base85_serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1=iIV-LmfJ#Uxk>GAw~Er;Q6_jig;yYt_td(IBm&uBU",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Are ya spinning, son?",
+      "unique_effect": "Keep It Coming — There's a {mod} Chance for every bullet fired to deal extra Damage and not consume Ammo",
+      "flavor_key": "onslaught"
     },
     {
       "comp": "dad_ar.comp_05_legendary_OM",
@@ -36417,14 +36900,25 @@
       "variant_label": "Phosphene",
       "skin_part": "{13:100}",
       "base85_serial": "@Ugfs(8FnkbUJa$lO)Swo1sNq79npCC6pz5GPp;Dn@p=zOSq1K^pA/A#*hv9qPF4NQF`S)55!{6@j6rFbGzt1K",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Duty called, I answered, we hung out. Duty's awesome!",
+      "unique_effect": "Tactical Rounds — The first half of your Magazine deals +50% Bonus Damage",
+      "flavor_key": "om"
     },
     {
       "comp": "vla_sm.comp_06_pearl_locust",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
+      "drop_note": "World Drop (Raid 2)",
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sm_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "display_name": "Parasite",
       "pearl": true,
       "variant": "pearl",
@@ -36457,12 +36951,12 @@
         "weapon_type": "SMG",
         "manufacturer": "Vladof",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "The obligation of the weak is to nourish the strong.",
+        "unique_effect": "Devour — Hitting enemies with Locust Rockets increases Damage taken from Parasite's primary fire. Killing affected enemies with primary fire grants Overshield and refills magazine ammo.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
@@ -36516,8 +37010,22 @@
           "in_echo4": true,
           "in_yaml_catalog": true,
           "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sm_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sm_06_pearl",
+            "weapon_type_code": "sm",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "comp_06_pearl",
       "content_pack": "Raid 2",
@@ -36526,12 +37034,14 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "weapon_label": "Vladof SMG",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{22:101}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "The obligation of the weak is to nourish the strong.",
+      "unique_effect": "Devour — Hitting enemies with Locust Rockets increases Damage taken from Parasite's primary fire. Killing affected enemies with primary fire grants Overshield and refills magazine ammo."
     },
     {
       "comp": "jak_ps.comp_05_legendary_Phantom_Flame",
@@ -36599,7 +37109,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{3:78}",
       "base85_serial": "@UgbV{rFnkbUJa$k/RG}KRs6-uVC+Zw39jYB_9ja4vP_<Ak5f5We#qd3Em+9&8{Ch2j;cxeMicY)pUnn~4roY=?BRkwK0{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Fan the flames.",
+      "unique_effect": "Midday — Zooming In acquires Lock On targets over time, and firing while Zoomed In shoots the entire Magazine",
+      "flavor_key": "phantomflame"
     },
     {
       "comp": "mal_sm.comp_05_legendary_PlasmaCoil",
@@ -36648,7 +37161,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{21:63}",
       "base85_serial": "@Ugw$Yw35E/MjK>c8hbmN~4z;MEL;X-IQ7us~QJtEDs)ag-8W!*{_E8Mq^LCk@9?!qmav1)0f2ZiQJO72U!}E4{_)fC{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Harness the 4th state of matter.",
+      "unique_effect": "Superheated",
+      "flavor_key": "plasmacoil"
     },
     {
       "comp": "tor_ar.comp_05_legendary_PotatoThrower",
@@ -36716,7 +37232,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{17:78}",
       "base85_serial": "@Ugv4Ng35E/MjK>b@iAsk`RHKFp?L@sq-9yzwWvWwcP<2puP^(b85D#Nd#qd3Em+9&8{Ch2j;cxeMicY)pU+9}2roX9Z`TJg$0{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I'm a hot little potato right now.",
+      "unique_effect": "Spud Gun",
+      "flavor_key": "potatothrower"
     },
     {
       "comp": "bor_sm.comp_05_legendary_Prince",
@@ -36768,7 +37287,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{19:1}",
       "base85_serial": "@Ugv?-o35E/MjK>ZdRG}J`s6#Dk=+GEcO;k(NOVp>vqVk/lp;DoCp?)DA#=eK)d)_Y7)8qN~S`NeC?(Y<xcIUrPdD=ZL0{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Have you the wing?",
+      "unique_effect": "Pamplemousse — Hitting enemies deals {selfdmg} Damage to you, and grants a Stack of Cruelty - which, on kill, restores {over} Overshield per Stack of Cruelty - for a Maximum {max} Stacks",
+      "flavor_key": "prince"
     },
     {
       "comp": "tor_ps.comp_05_legendary_QueensRest",
@@ -36809,20 +37331,34 @@
       "variant_label": "Phosphene",
       "skin_part": "{6:53}",
       "base85_serial": "@Ugct)%FnkbUJa*7JRG}J`sG&pYP$^L%Q6o{EYJ;kSx`SGU%7u6s`zVI*dAm$ckLTZOIShZhzf*MDo&QGb<+6J&Ezjuy",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I could set this world on fire and call it rain.",
+      "unique_effect": "Royal Armory — Fires high-speed rounds, and damaging enemies has a {chn} Chance to spawn a Homing Sticky Projectile",
+      "flavor_key": "queensrest"
     },
     {
       "comp": "dad_sm.comp_05_legendary_raiden",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Biff Fistful · Bounty Pack 3",
+      "drop_note": "Biff Fistful (Mandolin / Bounty Pack 3)",
       "drop_sources": [
         {
           "enemy_name": "Biff Fistful",
-          "itempool_list": null,
-          "row_name": null,
-          "character_def": null,
-          "is_true_boss": false
+          "itempool_list": "ItemPoolList_Murderer",
+          "row_name": "Murderer",
+          "character_def": "Char_DigiZaneKiller_Boss",
+          "is_true_boss": false,
+          "in_game_name": "Biff Fistful",
+          "dlc": "Mandolin"
+        },
+        {
+          "enemy_name": "Big Encore Biff Fistful",
+          "itempool_list": "ItemPoolList_Murderer_TRUE",
+          "row_name": "Murderer_TRUE",
+          "character_def": "Char_DigiZaneKiller_BossTRUE",
+          "is_true_boss": true,
+          "in_game_name": "Big Encore Biff Fistful",
+          "dlc": "Mandolin"
         }
       ],
       "display_name": "Raiden",
@@ -36856,19 +37392,19 @@
         "weapon_type": "SMG",
         "manufacturer": "Daedalus",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": "Biff Fistful",
-        "dedicated_drop": false,
+        "red_text": "Our frothing demand for this gun increases.",
+        "unique_effect": "Raiden — On Kill, spawn a Projectile Count Booster that increases projectiles per shot for a duration. Pickup effect stacks.",
+        "drop_source": "Biff Fistful (Mandolin / Bounty Pack 3)",
+        "dedicated_drop": true,
         "raid_drop": false,
         "world_drop": false,
         "mission_reward": false,
         "vendor": false,
-        "dlc": "Bounty Pack 3",
+        "dlc": "Mandolin",
         "patch_introduced": "1.8",
         "patch_removed": null,
         "status": "verified",
-        "notes": "Bounty Pack 3 pearlescent. Export-synced pearl (rarity_06_pearlescent).",
+        "notes": "Mandolin (Bounty Pack 3) pearlescent. Dedicated ItemPoolList_Murderer. Export-synced pearl (rarity_06_pearlescent).",
         "comp_pearl": "DAD_SM.comp_05_legendary_raiden",
         "comp_pearl_expected": null,
         "pearl_comp_style": "legendary_pearl",
@@ -36911,22 +37447,47 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_supplement",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_Murderer",
+          "ItemPoolList_Murderer_TRUE"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_Murderer",
+              "ItemPoolList_Murderer_TRUE"
+            ],
+            "comps": [
+              "DAD_SM.comp_05_legendary_Raiden"
+            ],
+            "label": "Biff Fistful (Mandolin / Bounty Pack 3)",
+            "dropped_hybrid_lists": []
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "legendary_pearl",
-      "content_pack": "Bounty Pack 3",
-      "rarity_source": "Bounty Pack 3",
+      "content_pack": "Mandolin",
+      "rarity_source": "Mandolin",
       "raid2_pearl": false,
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
-      "replace_drop_sources": false,
+      "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Daedalus SMG",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{20:70}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Our frothing demand for this gun increases.",
+      "unique_effect": "Raiden — On Kill, spawn a Projectile Count Booster that increases projectiles per shot for a duration. Pickup effect stacks."
     },
     {
       "comp": "jak_sg.comp_05_legendary_RainbowVomit",
@@ -36975,7 +37536,9 @@
       "variant_label": "Phosphene",
       "skin_part": "{9:85}",
       "base85_serial": "@Ugd_t@FnkbUJa*7pRG}J`s6n+wy+g%A)kD2Sy+O4??Ls_^{S?FZyj`ZJ$Mf&C9EQK$-zhrn&VQxhv/IeXTi@+89R",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I think I'm gonna...",
+      "flavor_key": "rainbowvomit"
     },
     {
       "comp": "bor_sr.comp_05_legendary_rainmaker",
@@ -37069,7 +37632,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{2:59}",
       "base85_serial": "@Uga`vnFnkbUJa*7MRG}J`s6!1E>WLbOI*IDk9#ksSEYvR4@C)!T_EHSr^LCk@9?!qmav1)0f2ZiQJO7o2-RH77?IxGy00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Something's gotta hit.",
+      "unique_effect": "Precision",
+      "flavor_key": "rangefinder"
     },
     {
       "comp": "mal_sg.comp_05_legendary_Reminisce",
@@ -37167,7 +37733,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{6:1}",
       "base85_serial": "@Ugct)%FnkbUJa*8a3e~7Y4I65Q+K1}Y8dNOA!`SmMe9zludU`znUdv(l+x?xQ)9(CN`VNoL00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "He was the raddest roach.",
+      "unique_effect": "Flesh Eaters — Shoots eggs that hatch flying roaches when attached to flesh, living or dead",
+      "flavor_key": "roach"
     },
     {
       "comp": "bor_sm.comp_05_legendary_Roil",
@@ -37356,7 +37925,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{27:74}",
       "base85_serial": "@UgzR8/35E/MjK>bDi7Hg17IhP~sW7Nc-9i09wL;ZG-9n{9%/kqlJrBe8yj`ZJ$Mf&C9EQK$-zhrn&VQxvd)N&",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I dream of darkness.",
+      "unique_effect": "Stalker — Grants a {mod1} Chance for shots to be a Critical Hit, and refunds {mod2} Ammo on Critical Hit",
+      "flavor_key": "rowan"
     },
     {
       "comp": "jak_ar.comp_05_legendary_rowdy",
@@ -37454,7 +38026,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{5:66}",
       "base85_serial": "@UgcJizFnkbUJa$k?RG}JmsG&n6Q8`gDQ8Q7QdV}hNDup_Qx`ir-co_RAhVOa1Oiz#J-)lJxf4jd^blRQ&O6%hM{3s94;Q#",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Coming for all of us.",
+      "unique_effect": "Grasp — Reloading the Gun fires {quantify} Homing copies",
+      "flavor_key": "rubysgrasp"
     },
     {
       "comp": "jak_ps.comp_05_legendary_QuickDraw",
@@ -37506,7 +38081,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{3:79}",
       "base85_serial": "@UgbV{rFnkbUJa*7eRG}J`sF<jKsCcM(s7!UL4yq6852_X_CE{W1p%}jB?J_+*o`0/9F#PTQPSI(1{u`~Q$7`ZId<O",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Let me tell you, buddy - there's a faster gun...",
+      "unique_effect": "Dueling Pistol — Deals {mod1} Damage for {duration}s after swapping Guns",
+      "flavor_key": "quickdraw"
     },
     {
       "comp": "tor_ps.comp_05_legendary_ScootShoot",
@@ -37572,7 +38150,7 @@
       "variant": "pearl",
       "yaml_key": "shiny_screwstonian",
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
+      "drop_note": "World Drop (Raid 2)",
       "echo4_serial_u": null,
       "skin_code": "{245:249}",
       "numeric_skin_code": "{245:249}",
@@ -37595,12 +38173,12 @@
         "weapon_type": "SMG",
         "manufacturer": "Daedalus",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "This reference was chopped.",
+        "unique_effect": "Screwed Up — After consecutive bursts, Fire Rate is reduced and Damage is increased for following bursts.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
@@ -37654,8 +38232,22 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sm_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sm_06_pearl",
+            "weapon_type_code": "sm",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sm_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "comp_06_pearl",
       "content_pack": "Raid 2",
@@ -37663,8 +38255,17 @@
       "raid2_pearl": true,
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
-      "drop_sources": [],
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sm_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "slug": "screwed",
       "spawn_serial": "DAD_SM.COMP_06_PEARL_SCREWED",
       "itempool_shiny": null,
@@ -37677,7 +38278,8 @@
       "camo_slot": null,
       "skin_part": "{245:249}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "This reference was chopped.",
+      "unique_effect": "Screwed Up — After consecutive bursts, Fire Rate is reduced and Damage is increased for following bursts."
     },
     {
       "comp": "jak_ps.comp_05_legendary_seventh_sense",
@@ -37729,7 +38331,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{3:81}",
       "base85_serial": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7vf>;sTjWJ?J_+*o`0/9F#PTQPSI(1{yQ(*%WgXQJ1@KEWdH",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Pfft, I've got more than that.",
+      "unique_effect": "Proprioception — Hitting enemies spawns Orbs that float upward and home in on targets on Reload",
+      "flavor_key": "seventhsense"
     },
     {
       "comp": "jak_ps.comp_05_legendary_Shalashaska",
@@ -37825,8 +38430,16 @@
       "comp": "ted_sg.comp_06_pearl_sharkbait",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
+      "drop_note": "Child of Terramorphous (Tuba takedown)",
+      "drop_sources": [
+        {
+          "enemy_name": "Child of Terramorphous (Tuba takedown)",
+          "itempool_list": "ItemPoolList_Tuba_Terra",
+          "row_name": "Tuba_Terra",
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
       "display_name": "Sharkbait",
       "pearl": true,
       "variant": "pearl",
@@ -37857,19 +38470,19 @@
         "weapon_type": "Shotgun",
         "manufacturer": "Tediore",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
-        "raid_drop": false,
+        "red_text": "Now, look fellas, let's be reasonable.",
+        "unique_effect": "Chum the Water — Every bullet that hits enemies applies 1 stack of Chum. At enough Chum stacks, the enemy explodes for bonus Damage.",
+        "drop_source": "Child of Terramorphous (Tuba takedown)",
+        "dedicated_drop": true,
+        "raid_drop": true,
         "world_drop": false,
         "mission_reward": false,
         "vendor": false,
-        "dlc": "Raid 2",
+        "dlc": "Tuba",
         "patch_introduced": "1.8",
         "patch_removed": null,
-        "status": "supplement_only",
-        "notes": "Pearl comp in Nexus supplement; drop source not yet in community gear DB Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
+        "status": "verified",
+        "notes": "Tuba DLC pearlescent (FModel DLC/Tuba + ItemPoolList_Tuba_Terra). Export-synced pearl (comp_06_pearl_key+rarity_06_pearlescent).",
         "comp_pearl": "TED_SG.comp_06_pearl_sharkbait",
         "comp_pearl_expected": null,
         "pearl_comp_style": "comp_06_pearl",
@@ -37912,23 +38525,46 @@
           "in_echo4": false,
           "in_yaml_catalog": true,
           "comp_match_via": "supplement_slug",
-          "pearl_comp_style": "comp_06_pearl"
-        }
+          "pearl_comp_style": "comp_06_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_Tuba_Terra"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_Tuba_Terra"
+            ],
+            "comps": [
+              "TED_SG.comp_06_pearl_sharkbait"
+            ],
+            "label": "Child of Terramorphous (Tuba takedown)",
+            "dropped_hybrid_lists": []
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "comp_06_pearl",
-      "content_pack": "Raid 2",
-      "rarity_source": "Raid 2",
-      "raid2_pearl": true,
+      "content_pack": "Tuba",
+      "rarity_source": "Tuba",
+      "raid2_pearl": false,
       "comp_verified_nexus": true,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Tediore Shotgun",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "camo_slot": null,
       "skin_part": "{11:90}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Now, look fellas, let's be reasonable.",
+      "unique_effect": "Chum the Water — Every bullet that hits enemies applies 1 stack of Chum. At enough Chum stacks, the enemy explodes for bonus Damage."
     },
     {
       "comp": "jak_ps.comp_05_legendary_shoals",
@@ -37969,7 +38605,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{3:85}",
       "base85_serial": "@UgbV{rFnkbUWIxbaRG/))sI;hasC1}xs85wa)j{<^{Xxw_{X&gI00",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "The real voyage of discovery consists not in seeking new landscapes but in having new eyes.",
+      "unique_effect": "Habitual — Ricochets deal Splash Damage",
+      "flavor_key": "shoals"
     },
     {
       "comp": "ted_ps.comp_05_legendary_Sideshow",
@@ -38018,15 +38657,26 @@
       "variant_label": "Phosphene",
       "skin_part": "{5:1}",
       "base85_serial": "@UgcJizFnkbUJa*8a3Uw0I2Gs{u3UvzA3$+gMF!nzT-}82vo*vJ?*K!#Cc7Lbnv^)Qurpe_w`h5o",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "My record is 24.",
+      "unique_effect": "Juggler — Let's play a game. Shoot as many targets as possible before they hit the ground, and refill up to 2 Ammo per target hit",
+      "flavor_key": "sideshow"
     },
     {
       "comp": "ord_sr.comp_05_legendary_temper",
       "cosmetic_spawn": null,
       "pool_status": "pearl_catalog",
-      "drop_note": "Raid 2 pearlescent",
-      "drop_sources": [],
-      "display_name": "SolarTemper",
+      "drop_note": "World Drop (Raid 2)",
+      "drop_sources": [
+        {
+          "enemy_name": "World Drop (Raid 2)",
+          "itempool_list": "itempool_sr_06_pearl",
+          "row_name": null,
+          "character_def": null,
+          "is_true_boss": false
+        }
+      ],
+      "display_name": "Solar Temper",
       "pearl": true,
       "variant": "pearl",
       "camo_c_code": null,
@@ -38035,7 +38685,7 @@
       "spawn_serial": "ORD_SR.COMP_05_LEGENDARY_TEMPER",
       "itempool_shiny": null,
       "yaml_key": "shiny_temper",
-      "numeric_skin_name": "SolarTemper",
+      "numeric_skin_name": "Solar Temper",
       "skin_code": "{26:84}",
       "numeric_skin_code": "{26:84}",
       "camo_slot": null,
@@ -38048,7 +38698,7 @@
       "community_pearl": {
         "slug": "temper",
         "gear_slug": "temper",
-        "display_name": "SolarTemper",
+        "display_name": "Solar Temper",
         "spawn_tokens": [
           "temper",
           "solartemper",
@@ -38059,19 +38709,19 @@
         "weapon_type": "Sniper Rifle",
         "manufacturer": "Order",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
+        "red_text": "Carrington's Omen.",
+        "unique_effect": "Temper — On Hit explodes. The explosion radius increases with each charge.",
+        "drop_source": "World Drop (Raid 2)",
         "dedicated_drop": false,
-        "raid_drop": false,
-        "world_drop": false,
+        "raid_drop": true,
+        "world_drop": true,
         "mission_reward": false,
         "vendor": false,
         "dlc": "Raid 2",
         "patch_introduced": "1.8",
         "patch_removed": null,
         "status": "verified",
-        "notes": "Game slug is temper (ORD_SR); community gear DB name SolarTemper Export-synced pearl (rarity_06_pearlescent).",
+        "notes": "Slug temper (ORD_SR). Export-synced pearl (rarity_06_pearlescent).",
         "comp_pearl": "ORD_SR.comp_05_legendary_temper",
         "comp_pearl_expected": null,
         "pearl_comp_style": "legendary_pearl",
@@ -38122,8 +38772,22 @@
           "in_echo4": false,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_supplement",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": false,
+          "in_world_criteria_pool": true
+        },
+        "itempool_lists": [],
+        "world_criteria_pool": "itempool_sr_06_pearl",
+        "acquisition_kind": "world_criteria",
+        "acquisition_evidence": [
+          {
+            "kind": "world_criteria_pool",
+            "itempool": "itempool_sr_06_pearl",
+            "weapon_type_code": "sr",
+            "note": "Criteria pool selects rarity tag pearl + weapon type; membership inferred from pearlescent inv. NCS Rarity table lacks 06_pearlescent row in current dump."
+          }
+        ],
+        "acquisition_notes": "Export: no dedicated ItemPoolList hit; candidate world path itempool_sr_06_pearl (wired under type *_all parents e.g. itempool_smg_all / itempool_assaultrifle_all) via Att_RarityWeight_06_Pearl."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -38132,12 +38796,14 @@
       "comp_verified_nexus": false,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "world_criteria",
       "weapon_label": "Order Sniper",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
       "skin_part": "{26:84}",
       "base85_serial": null,
-      "acquisition_kind": "pearlescent"
+      "red_text": "Carrington's Omen.",
+      "unique_effect": "Temper — On Hit explodes. The explosion radius increases with each charge."
     },
     {
       "comp": "mal_sm.comp_05_legendary_songbird",
@@ -38235,10 +38901,10 @@
         "weapon_type": "Pistol",
         "manufacturer": "Daedalus",
         "rarity": "Pearlescent",
-        "red_text": null,
-        "unique_effect": null,
-        "drop_source": null,
-        "dedicated_drop": false,
+        "red_text": "At first I was afraid...",
+        "unique_effect": "Adrenaline — Deals increased Damage for each ally in Fight For Your Life.",
+        "drop_source": "Drone Captain",
+        "dedicated_drop": true,
         "raid_drop": false,
         "world_drop": false,
         "mission_reward": false,
@@ -38298,8 +38964,29 @@
           "in_echo4": true,
           "in_yaml_catalog": false,
           "comp_match_via": "legendary_pearl_pool",
-          "pearl_comp_style": "legendary_pearl"
-        }
+          "pearl_comp_style": "legendary_pearl",
+          "in_dedicated_itempoollist": true,
+          "in_world_criteria_pool": false
+        },
+        "itempool_lists": [
+          "ItemPoolList_DroneCaptain"
+        ],
+        "world_criteria_pool": null,
+        "acquisition_kind": "dedicated",
+        "acquisition_evidence": [
+          {
+            "kind": "itempoollist_dedicated",
+            "itempool_lists": [
+              "ItemPoolList_DroneCaptain"
+            ],
+            "comps": [
+              "DAD_PS.comp_05_legendary_soulsurvivor"
+            ],
+            "label": "Drone Captain",
+            "dropped_hybrid_lists": []
+          }
+        ],
+        "acquisition_notes": "Export: dedicated inv handle on ItemPoolList_* (Nexus). Hybrid cross-pools (e.g. Tuba_hybrids) excluded unless pearl pack is Tuba. Big Encore / _True omitted from label when base list present."
       },
       "pearl_comp_style": "legendary_pearl",
       "content_pack": "Raid 2",
@@ -38308,6 +38995,7 @@
       "comp_verified_nexus": true,
       "comp_verified_supplement": true,
       "replace_drop_sources": true,
+      "acquisition_kind": "dedicated",
       "weapon_label": "Daedalus Pistol",
       "comp_status": "confirmed",
       "variant_label": "Pearlescent",
@@ -38316,10 +39004,11 @@
       "source_hints": [
         {
           "kind": "boss_drop",
-          "label": "Drone Captain (boss drop)"
+          "label": "Drone Captain"
         }
       ],
-      "acquisition_kind": "pearlescent"
+      "red_text": "At first I was afraid...",
+      "unique_effect": "Adrenaline — Deals increased Damage for each ally in Fight For Your Life."
     },
     {
       "comp": "dad_ar.comp_05_legendary_star_helix",
@@ -38371,7 +39060,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{13:73}",
       "base85_serial": "@Ugfs(8FnkbUJa*7b)Swo1sNq68QEO0}>eL-nDO4;}Ez~VkIaE%>!`MeLe9zludU`znUdv(l+x?xQ)9(CtP7lk!=rTKv2L",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "They see the stars, and they think, “Mine.”",
+      "unique_effect": "Constellation — Projectiles can be fired vertically or horizontally",
+      "flavor_key": "starhelix"
     },
     {
       "comp": "vla_sr.comp_05_legendary_StopGap",
@@ -38420,7 +39112,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{16:67}",
       "base85_serial": "@Uguq~c35E/MjK>Z-i7M2g7ByTbCaNZC4(cW<C#q9-P=8RNP_t0!Q0q/l5D#PT!/*+Cm+9&8{Ch2j;cxeMicY)p-zohKKZfA/",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Do better. Try harder.",
+      "unique_effect": "Reconfigure — When firing, Fire Rate decreases down to {mod1}, but Damage increases up to {mod2}",
+      "flavor_key": "stopgap"
     },
     {
       "comp": "bor_sr.comp_05_legendary_Stray",
@@ -38469,7 +39164,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{23:19}",
       "base85_serial": "@Ugxp/&35E/MjK>Z-gDO;_8Z}fX4Jsw7B&sH=Q+H5*P@zz_P~i{{W6#6zJ#Uxk>GAw~Er;Q6_jig;yYt^ET^`N@",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Don't catch-a-straaaay!",
+      "unique_effect": "Stray — Fires 2 secondary bullets that home in on nearby target(s)",
+      "flavor_key": "stray"
     },
     {
       "comp": "ord_ps.comp_05_legendary_sunspot",
@@ -38554,7 +39252,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{8:82}",
       "base85_serial": "@UgdhV<FnkbUWIs?@RG/))sC=lAsFJ9as7=K/<w5O1y+VyeJdC{*!}q*hrl-gA@3kC;zun&{I_=JXhhew-?H0?!cQy",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "I'm a simple man.",
+      "unique_effect": "Brawlshot — On Kill adds additional projectiles fired from Cannon Burst up to a max of 5",
+      "flavor_key": "cannonbrawl"
     },
     {
       "comp": "mal_sg.comp_05_legendary_Sweet_Embrace",
@@ -38601,7 +39302,10 @@
         }
       ],
       "acquisition_kind": "challenge",
-      "yaml_unlockable": "Unlockable_Weapons.Shiny_Sweet_Embrace"
+      "yaml_unlockable": "Unlockable_Weapons.Shiny_Sweet_Embrace",
+      "red_text": "Absence makes the heart grow fonder.",
+      "unique_effect": "Adoration",
+      "flavor_key": "sweetembrace"
     },
     {
       "comp": "ord_sr.comp_05_legendary_Symmetry",
@@ -38650,7 +39354,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{26:76}",
       "base85_serial": "@Ugy>*^35E/MjK>bji7Hg15)~7bsZH%ctwPO0)k391<wHD-{SU+Uyj`ZJ$Mf&C9EQK$-zhrn&VQ%*cDqcM=K%",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "We all lined up to see the syzygy, but only the guy in front saw anything.",
+      "unique_effect": "Bilateral — Fires from reserve Ammo while charging",
+      "flavor_key": "symmetry"
     },
     {
       "comp": "jak_sg.comp_05_legendary_TKsWave",
@@ -38699,7 +39406,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{9:91}",
       "base85_serial": "@Ugd_t@FnkbUJa*7sRG}J`sJf_=sC%e<s7!q-E-DUc4=N8T7Ahs;VeEYvzUS>SJw2X(ujMfO?fy>DX?OlhUCyszdl>",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Ride the wave, dude!",
+      "unique_effect": "Heirloom",
+      "flavor_key": "tkswave"
     },
     {
       "comp": "bor_sr.comp_05_legendary_tankbuster",
@@ -38792,7 +39502,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{24:76}",
       "base85_serial": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9uPNvFBm<p0~^N^mzWgmc#J3`#VLa-T5z7ULUUk",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "To truly be old-school: build it yourself.",
+      "unique_effect": "Fixer-Upper",
+      "flavor_key": "truck"
     },
     {
       "comp": "tor_sg.comp_05_legendary_Unstable_Kor",
@@ -38882,7 +39595,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{23:1}",
       "base85_serial": "@Ugxp/&35E/MjK>ZdRG}KRs3AjZP&H94Q7=(3QJcDh`hyCEx`q0Mco=&hhVOa1Oiz#J-)lJxf4jd^blRQ&TEp%4dtL?",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Faster than a knife fight in a phone booth.",
+      "unique_effect": "Scarce",
+      "flavor_key": "vamoose"
     },
     {
       "comp": "vla_ar.comp_05_legendary_WF",
@@ -38934,7 +39650,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{18:93}",
       "base85_serial": "@Ugvelk35E/MjK>bziz-y35;bh7FDfi5Cu%3^Q)f_hP<>E;P_s~VQFBr85D#OY!/*+Cm+9&8{Ch2j;cxeMicY)p->VS",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Who's ready to get friggin' perforated?!",
+      "unique_effect": "Overdrive — Switches to a secondary Magazine that can be fired on Full Auto",
+      "flavor_key": "wf"
     },
     {
       "comp": "vla_ar.comp_05_legendary_WomboCombo",
@@ -38983,7 +39702,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{18:65}",
       "base85_serial": "@Ugvelk35E/MjK>Zdi7Hg15;b%vBq}B<45/*Q59$vp7pflOVeF$AzUS>SJw2X(ujMfO?fy>DX?Om6eYeH$;kzw<0{",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Where you at? Where you at? Where you at?",
+      "unique_effect": "Rip Rockets — Rockets automatically fire from the Underbarrel",
+      "flavor_key": "wombocombo"
     },
     {
       "comp": "dad_ps.comp_05_legendary_Zipgun",
@@ -39035,7 +39757,10 @@
       "variant_label": "Phosphene",
       "skin_part": "{2:54}",
       "base85_serial": "@Uga`vnFnkbUJa$k!RG}7?s6!3vAF3Z}Q*%(Y5D#PD!/*+Cm+9&8{Ch2j;cxeMicY)pUu_zGuDby",
-      "acquisition_kind": "boss"
+      "acquisition_kind": "boss",
+      "red_text": "Who's the shot caller now?",
+      "unique_effect": "Prison Rules — Grants {mod} Critical Damage and {mod2} Damage when hitting a target in the back",
+      "flavor_key": "zipgun"
     }
   ],
   "pool_def_only_guns": [
@@ -39483,7 +40208,7 @@
     "echo4_serial_only": 0
   },
   "community_pearlescent": {
-    "generated_at": "2026-07-11T13:48:25.324Z",
+    "generated_at": "2026-07-13T23:07:03.566Z",
     "stats": {
       "total": 17,
       "with_pearl_comp": 17,
@@ -39497,9 +40222,13 @@
       "export_pending": 0,
       "phosphene_yes": 2,
       "phosphene_no": 15,
-      "phosphene_ambiguous": 0
+      "phosphene_ambiguous": 0,
+      "acquisition_dedicated": 6,
+      "acquisition_world_criteria": 11,
+      "acquisition_named_pearl_pool": 0,
+      "acquisition_unknown": 0
     },
-    "refresh": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs"
+    "refresh": "node scripts/build-pearl-phosphene-flags.mjs && node scripts/build-community-pearlescent.mjs && node scripts/build-loot-reference-data.mjs"
   }
 };
 })();

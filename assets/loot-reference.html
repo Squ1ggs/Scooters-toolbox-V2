@@ -372,7 +372,7 @@
       <img alt="" aria-hidden="true" class="header-icon" height="48" src="./favicon.ico" width="48"/>
       <div class="header-main">
         <h1>Loot Reference</h1>
-        <div class="sub" id="meta">Phosphenes (legendary shiny skins) and pearlescents (Raid 2 pearl-tier) are separate — not every pearl has a phosphene skin.</div>
+        <div class="sub" id="meta">Phosphenes are Shine The Brightest skins on legendaries. Pearlescents are a separate rarity — only a few also have a phosphene.</div>
       </div>
       <div class="header-actions">
         <a class="btn" href="../index.html"><img alt="" src="./img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png" width="16" height="16"/> Scooter's Toolbox</a>
@@ -383,7 +383,8 @@
   </header>
   <main>
     <div class="tabs">
-      <button type="button" class="active" data-tab="guns">Phosphenes &amp; pearlescents</button>
+      <button type="button" class="active" data-tab="guns">Phosphenes</button>
+      <button type="button" data-tab="pearls">Pearlescents</button>
       <button type="button" data-tab="enemies">Phosphenes by boss</button>
       <button type="button" data-tab="all">Boss drop rates</button>
       <button type="button" data-tab="skins">Cosmetics</button>
@@ -401,7 +402,12 @@
     <div class="filters" id="gunFilters">
       <label><input type="checkbox" id="hasSerial"/> Has copy-paste serial</label>
       <label><input type="checkbox" id="bossDropOnly"/> Boss drops only</label>
+    </div>
+    <div class="filters hidden" id="pearlFilters">
+      <label><input type="checkbox" id="hasSerialPearl"/> Has copy-paste serial</label>
       <label><input type="checkbox" id="worldDropOnly"/> World-drop pearlescents only</label>
+      <label><input type="checkbox" id="pearlPhosOnly"/> Has phosphene only</label>
+      <label><input type="checkbox" id="pearlNoPhosOnly"/> No phosphene only</label>
     </div>
     <div class="filters hidden" id="allFilters">
       <label><input type="checkbox" id="bossOnly"/> Named bosses only</label>
@@ -598,12 +604,25 @@
           <tbody id="catalogPhosBody"></tbody>
         </table>
       </div>
+    </section>
 
-      <div class="section-head section-head--pearl">
-        <h2>Pearlescent <span class="subtle" style="font-size:0.72em;font-weight:600;opacity:0.9;">(Raid 2 DLC)</span></h2>
-        <span class="section-stat" id="pearlSectionStat"></span>
+    <section id="panel-pearls" class="hidden">
+      <div class="accuracy-note">
+        <strong>Pearlescent ≠ phosphene.</strong>
+        Pearlescent is a rarity tier. A phosphene is a Shine The Brightest skin.
+        Phosphene Yes requires a shiny itempool + <code>Cosmetics_Weapon_Shiny_*</code> (or challenge) —
+        currently <strong>Soul Survivor</strong> and <strong>Crazed Earl</strong>.
+        <br/><br/>
+        <strong>Where they drop (Nexus export):</strong>
+        <em>Dedicated</em> = inv handle on an <code>ItemPoolList_*</code> (e.g. Jailbroken → Subjugator &amp; Thol; Sharkbait → Child of Terramorphous).
+        <em>World drop</em> = no dedicated list; gun is eligible for the generic <code>itempool_*_06_pearl</code> criteria pool for its weapon type (e.g. Parasite → <code>itempool_sm_06_pearl</code>).
       </div>
-      <p class="note" id="pearlSectionNote">Pearlescents are a rarity tier, not Shine The Brightest phosphenes. Flags are export-backed (<code>node scripts/build-pearl-phosphene-flags.mjs</code> from Nexus challenge / shiny pools). Rebuild: <code>npm run pearls:build</code> (also runs inside <code>refresh-toolbox-editor-data.bat</code>). Without challenge or shiny-pool+cosmetic proof we mark No — we do not invent Yes from <code>Cosmetics_Weapon_Shiny_*</code> alone.</p>
+
+      <div class="section-head section-head--phos">
+        <h2>Pearlescents with phosphene</h2>
+        <span class="section-stat" id="pearlPhosSectionStat"></span>
+      </div>
+      <p class="note" id="pearlPhosSectionNote">Export-backed Shine The Brightest on a pearlescent-tier gun (shiny pool and/or challenge + cosmetic).</p>
       <div class="table-wrap">
         <table>
           <thead>
@@ -619,7 +638,31 @@
               <th>Source</th>
             </tr>
           </thead>
-          <tbody id="pearlBody"></tbody>
+          <tbody id="pearlPhosBody"></tbody>
+        </table>
+      </div>
+
+      <div class="section-head section-head--pearl">
+        <h2>Pearlescent-tier only <span class="subtle" style="font-size:0.72em;font-weight:600;opacity:0.9;">(no phosphene)</span></h2>
+        <span class="section-stat" id="pearlOnlySectionStat"></span>
+      </div>
+      <p class="note" id="pearlOnlySectionNote">These drop/roll as pearlescent rarity. They are not Shine The Brightest phosphenes in the Nexus export (no shiny challenge / shiny pool + cosmetic proof).</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Gun</th>
+              <th>Legendary ID</th>
+              <th>Pearl ID</th>
+              <th class="col-tech">Status</th>
+              <th class="col-tech">Catalog key</th>
+              <th>Skin code</th>
+              <th>Shiny token</th>
+              <th>Copy-paste serial</th>
+              <th>Source</th>
+            </tr>
+          </thead>
+          <tbody id="pearlOnlyBody"></tbody>
         </table>
       </div>
     </section>
@@ -741,7 +784,7 @@
   <div id="toast" aria-live="polite"></div>
 
   <script src="data/skin_list_data.js"></script>
-  <script src="data/loot_reference_data.js"></script>
+  <script src="data/loot_reference_data.js?v=20260714flavor"></script>
   <script src="data/loot_rarity_pools_data.js?v=20260711r2"></script>
   <script src="data/loot_config_data.js"></script>
   <script src="data/rewards_data.js"></script>
@@ -764,7 +807,8 @@
       var phosBody = document.getElementById('phosBody');
       var poolDefBody = document.getElementById('poolDefBody');
       var catalogPhosBody = document.getElementById('catalogPhosBody');
-      var pearlBody = document.getElementById('pearlBody');
+      var pearlPhosBody = document.getElementById('pearlPhosBody');
+      var pearlOnlyBody = document.getElementById('pearlOnlyBody');
       var skinBody = document.getElementById('skinBody');
       var skinSectionStat = document.getElementById('skinSectionStat');
       var skinFilters = document.getElementById('skinFilters');
@@ -774,7 +818,12 @@
       var phosSectionStat = document.getElementById('phosSectionStat');
       var poolDefSectionStat = document.getElementById('poolDefSectionStat');
       var catalogPhosSectionStat = document.getElementById('catalogPhosSectionStat');
-      var pearlSectionStat = document.getElementById('pearlSectionStat');
+      var pearlPhosSectionStat = document.getElementById('pearlPhosSectionStat');
+      var pearlOnlySectionStat = document.getElementById('pearlOnlySectionStat');
+      var pearlFilters = document.getElementById('pearlFilters');
+      var hasSerialPearl = document.getElementById('hasSerialPearl');
+      var pearlPhosOnly = document.getElementById('pearlPhosOnly');
+      var pearlNoPhosOnly = document.getElementById('pearlNoPhosOnly');
       var enemyCards = document.getElementById('enemyCards');
       var allEnemyCards = document.getElementById('allEnemyCards');
       var gunFilters = document.getElementById('gunFilters');
@@ -905,15 +954,39 @@
           /comp_06_pearl_/i.test(g.comp || '');
       }
 
+      function pearlHasPhosphene(g) {
+        var cp = g.community_pearl || {};
+        return cp.can_be_phosphene === true || cp.phosphene_status === 'verified_yes';
+      }
+
       function isRaid2Pearl(g) {
         return isPearl(g) && g.community_pearl && g.community_pearl.dlc === 'Raid 2';
       }
 
       function isWorldDropPearl(g) {
         if (!isPearl(g)) return false;
-        if (g.community_pearl && g.community_pearl.world_drop) return true;
-        var note = String(g.drop_note || '').toLowerCase();
+        var cp = g.community_pearl || {};
+        if (cp.world_drop || cp.acquisition_kind === 'world_criteria' || cp.acquisition_kind === 'named_pearl_pool') return true;
+        var note = String(g.drop_note || g.drop_source || '').toLowerCase();
         return note.indexOf('world drop') >= 0;
+      }
+
+      function pearlAcquisitionPill(g) {
+        var cp = g.community_pearl || {};
+        var kind = cp.acquisition_kind || '';
+        if (kind === 'dedicated' || (cp.dedicated_drop && !cp.world_drop)) {
+          return '<span class="pill pill--leg" title="Dedicated ItemPoolList inv handle in Nexus export">Dedicated</span> ';
+        }
+        if (kind === 'world_criteria' || cp.world_drop) {
+          var tip = cp.world_criteria_pool
+            ? ('Generic criteria pool ' + cp.world_criteria_pool)
+            : 'World drop (export criteria path)';
+          return '<span class="pill pill--pearl" title="' + esc(tip) + '">World drop</span> ';
+        }
+        if (kind === 'named_pearl_pool') {
+          return '<span class="pill pill--pearl" title="Named *_pearl itempool in export">Pearl pool</span> ';
+        }
+        return '<span class="pill" title="No ItemPoolList or criteria-pool proof in current dump">Source unknown</span> ';
       }
 
       function actorDisplayName(characterDef) {
@@ -1023,6 +1096,7 @@
       function playerDropSource(g) {
         var cp = g.community_pearl;
         if (cp) {
+          if (cp.acquisition_kind === 'dedicated' && cp.drop_source) return String(cp.drop_source).trim();
           if (cp.drop_source) {
             var ds = String(cp.drop_source).trim();
             if (cp.dlc === 'Raid 2' && !/raid\s*2/i.test(ds)) {
@@ -1031,7 +1105,9 @@
             }
             return ds;
           }
-          if (cp.world_drop) return cp.dlc === 'Raid 2' ? 'World Drop (Raid 2)' : 'World drop';
+          if (cp.world_drop || cp.acquisition_kind === 'world_criteria') {
+            return cp.dlc === 'Raid 2' ? 'World Drop (Raid 2)' : 'World drop';
+          }
           if (cp.mission_reward) return cp.dlc ? 'Mission reward · ' + cp.dlc : 'Mission reward';
           if (cp.vendor) return cp.dlc ? 'Vendor · ' + cp.dlc : 'Vendor';
           if (cp.raid_drop && cp.dlc) return cp.dlc + ' raid drop';
@@ -1043,7 +1119,7 @@
           return formatDropSources(g);
         }
         if (g.drop_note && !isDevDropNote(g.drop_note)) return friendlyNote(g.drop_note);
-        if (isPearl(g)) return 'Raid 2 pearlescent';
+        if (isPearl(g)) return 'Pearlescent';
         return '';
       }
 
@@ -1379,24 +1455,41 @@
       function formatPearlNotes(g, sources) {
         var cp = g.community_pearl;
         var bits = [];
+        bits.push(pearlAcquisitionPill(g));
         var playerSrc = playerDropSource(g);
         if (playerSrc) bits.push(esc(playerSrc));
         if (cp && isTechnical()) {
-          if (cp.red_text) bits.push('Red text: ' + esc(cp.red_text));
-          if (cp.unique_effect) bits.push(esc(cp.unique_effect));
+          if (cp.world_criteria_pool) {
+            bits.push('World pool <code class="copyable" data-copy-label="World pearl pool">' + esc(cp.world_criteria_pool) + '</code>');
+          }
+          if (cp.itempool_lists && cp.itempool_lists.length) {
+            bits.push('Lists <code class="copyable" data-copy-label="ItemPoolList">' + esc(cp.itempool_lists.join(', ')) + '</code>');
+          }
+          if (cp.red_text || g.red_text) bits.push('Red text: ' + esc(cp.red_text || g.red_text));
+          if (cp.unique_effect || g.unique_effect) bits.push(esc(cp.unique_effect || g.unique_effect));
           if (cp.itempool_pearl) {
             bits.push('Pool <code class="copyable" data-copy-label="Pearl itempool">' + esc(cp.itempool_pearl) + '</code>');
           }
+          if (cp.acquisition_notes) bits.push('<span class="subtle">' + esc(cp.acquisition_notes) + '</span>');
           if (!cp.comp_pearl && cp.comp_pearl_expected) {
             bits.push('Expected pearl: <code class="copyable" data-copy-label="Expected pearl comp">' + esc(cp.comp_pearl_expected) + '</code>');
           }
-        } else if (cp && cp.unique_effect && !playerSrc) {
-          bits.push(esc(cp.unique_effect));
+        } else if (((cp && cp.unique_effect) || g.unique_effect) && !playerSrc) {
+          if ((cp && cp.red_text) || g.red_text) bits.push('Red text: ' + esc((cp && cp.red_text) || g.red_text));
+          bits.push(esc((cp && cp.unique_effect) || g.unique_effect));
         }
         if (!playerSrc && sources && sources !== 'Pearlescent' && sources !== 'Pearlescent comp' && !isDevDropNote(sources)) {
           bits.push(esc(sources));
         }
-        return bits.length ? bits.join('<br>') : '<span class="subtle">Raid 2 pearlescent</span>';
+        return bits.length ? bits.join('<br>') : '<span class="subtle">Pearlescent</span>';
+      }
+
+      function formatPhospheneNotes(g, sources) {
+        var bits = [];
+        if (g.red_text) bits.push('Red text: ' + esc(g.red_text));
+        if (g.unique_effect) bits.push(esc(g.unique_effect));
+        if (sources && !isDevDropNote(sources)) bits.push(esc(sources));
+        return bits.length ? bits.join('<br>') : '<span class="subtle">—</span>';
       }
 
       function isPoolDefPhos(g) {
@@ -1838,7 +1931,8 @@
 
       function skinLootLink(s) {
         if (!s.loot_link) return '';
-        return ' <button type="button" class="serial-toggle skin-goto-loot" data-q="' + esc(s.loot_link) + '">View drops</button>';
+        var tabAttr = (s.kind === 'pearlescent') ? ' data-tab="pearls"' : '';
+        return ' <button type="button" class="serial-toggle skin-goto-loot" data-q="' + esc(s.loot_link) + '"' + tabAttr + '>View drops</button>';
       }
 
       function isOutfitKind(kind) {
@@ -1917,6 +2011,7 @@
           b.classList.toggle('active', b.getAttribute('data-tab') === tab);
         });
         document.getElementById('panel-guns').classList.toggle('hidden', tab !== 'guns');
+        document.getElementById('panel-pearls').classList.toggle('hidden', tab !== 'pearls');
         document.getElementById('panel-enemies').classList.toggle('hidden', tab !== 'enemies');
         document.getElementById('panel-all').classList.toggle('hidden', tab !== 'all');
         document.getElementById('panel-skins').classList.toggle('hidden', tab !== 'skins');
@@ -1926,6 +2021,7 @@
         document.getElementById('panel-tiers').classList.toggle('hidden', tab !== 'tiers');
         document.getElementById('panel-gear').classList.toggle('hidden', tab !== 'gear');
         gunFilters.classList.toggle('hidden', tab !== 'guns');
+        if (pearlFilters) pearlFilters.classList.toggle('hidden', tab !== 'pearls');
         allFilters.classList.toggle('hidden', tab !== 'all');
         if (dropScaleFilters) dropScaleFilters.classList.toggle('hidden', tab !== 'all' && tab !== 'enemies');
         if (skinFilters) skinFilters.classList.toggle('hidden', tab !== 'skins');
@@ -1955,10 +2051,12 @@
       }
 
       function gunPassesFilters(g, isPearlRow) {
+        var serialEl = isPearlRow ? (hasSerialPearl || hasSerial) : hasSerial;
+        if (serialEl && serialEl.checked && !base85Of(g)) return false;
         if (isPearlRow && worldDropOnly && worldDropOnly.checked && !isWorldDropPearl(g)) return false;
-        if (isPearlRow && bossDropOnly && bossDropOnly.checked) return false;
+        if (isPearlRow && pearlPhosOnly && pearlPhosOnly.checked && !pearlHasPhosphene(g)) return false;
+        if (isPearlRow && pearlNoPhosOnly && pearlNoPhosOnly.checked && pearlHasPhosphene(g)) return false;
         if (!isPearlRow && bossDropOnly && bossDropOnly.checked && g.pool_status !== 'boss_drop') return false;
-        if (hasSerial && hasSerial.checked && !base85Of(g)) return false;
         return true;
       }
 
@@ -2034,7 +2132,7 @@
           '<td>' + codeCell(skin, 'Skin part') + '</td>' +
           '<td>' + codeCell(camo, 'c token') + '</td>' +
           '<td>' + base85Cell(base85Of(g), { full: true }) + '</td>' +
-          '<td>' + (isPearlRow ? formatPearlNotes(g, sources) : esc(sources)) + '</td>';
+          '<td>' + (isPearlRow ? formatPearlNotes(g, sources) : formatPhospheneNotes(g, sources)) + '</td>';
         tbody.appendChild(tr);
       }
 
@@ -2043,7 +2141,8 @@
         phosBody.innerHTML = '';
         poolDefBody.innerHTML = '';
         catalogPhosBody.innerHTML = '';
-        pearlBody.innerHTML = '';
+        if (pearlPhosBody) pearlPhosBody.innerHTML = '';
+        if (pearlOnlyBody) pearlOnlyBody.innerHTML = '';
         if (skinBody) skinBody.innerHTML = '';
         if (gearCards) gearCards.innerHTML = '';
         enemyCards.innerHTML = '';
@@ -2055,25 +2154,34 @@
         if (tierCards) tierCards.innerHTML = '';
         if (actorCards) actorCards.innerHTML = '';
         var phosShown = 0;
-        var pearlShown = 0;
+        var pearlPhosShown = 0;
+        var pearlOnlyShown = 0;
         var poolDefShown = 0;
         var catalogPhosShown = 0;
         var phosTotal = 0;
-        var pearlTotal = 0;
+        var pearlPhosTotal = 0;
+        var pearlOnlyTotal = 0;
         var poolDefTotal = (data.pool_def_only_guns || []).length;
         var catalogPhosTotal = (data.catalog_only_phosphenes || []).length;
         var poolDefList = data.pool_def_only_guns || [];
         var catalogPhosList = data.catalog_only_phosphenes || [];
 
         (data.shiny_guns || []).forEach(function (g) {
-          var pearlRow = isRaid2Pearl(g);
+          var pearlRow = isPearl(g);
           if (pearlRow) {
-            pearlTotal++;
+            var withPhos = pearlHasPhosphene(g);
+            if (withPhos) pearlPhosTotal++;
+            else pearlOnlyTotal++;
             if (!gunPassesFilters(g, true)) return;
             var builtPearl = renderGunRow(g, true);
             if (term && !searchMatchesTerm(builtPearl.rowHay, term)) return;
-            pearlShown++;
-            appendGunRow(pearlBody, g, true, builtPearl.sources);
+            if (withPhos) {
+              pearlPhosShown++;
+              if (pearlPhosBody) appendGunRow(pearlPhosBody, g, true, builtPearl.sources);
+            } else {
+              pearlOnlyShown++;
+              if (pearlOnlyBody) appendGunRow(pearlOnlyBody, g, true, builtPearl.sources);
+            }
             return;
           }
           if (isPoolDefPhos(g) || isCatalogPhos(g)) return;
@@ -2108,13 +2216,18 @@
         bindCopy(phosBody);
         bindCopy(poolDefBody);
         bindCopy(catalogPhosBody);
-        bindCopy(pearlBody);
+        if (pearlPhosBody) bindCopy(pearlPhosBody);
+        if (pearlOnlyBody) bindCopy(pearlOnlyBody);
         phosSectionStat.textContent = phosShown + ' shown' + (phosShown !== phosTotal ? ' of ' + phosTotal : '') +
           (isTechnical() ? (' · ' + bossPhos + ' boss drops · ' + uPhos + ' with serial') : '');
         poolDefSectionStat.textContent = poolDefShown + ' shown' + (poolDefShown !== poolDefTotal ? ' of ' + poolDefTotal : '');
         catalogPhosSectionStat.textContent = catalogPhosShown + ' shown' + (catalogPhosShown !== catalogPhosTotal ? ' of ' + catalogPhosTotal : '');
-        pearlSectionStat.textContent = pearlShown + ' shown' + (pearlShown !== pearlTotal ? ' of ' + pearlTotal : '') +
-          (isTechnical() ? (' · ' + uPearl + ' with serial') : '');
+        if (pearlPhosSectionStat) {
+          pearlPhosSectionStat.textContent = pearlPhosShown + ' shown' + (pearlPhosShown !== pearlPhosTotal ? ' of ' + pearlPhosTotal : '');
+        }
+        if (pearlOnlySectionStat) {
+          pearlOnlySectionStat.textContent = pearlOnlyShown + ' shown' + (pearlOnlyShown !== pearlOnlyTotal ? ' of ' + pearlOnlyTotal : '');
+        }
 
         var enemyShown = 0;
         (data.enemies || []).forEach(function (e) {
@@ -2374,7 +2487,8 @@
           normalStats = renderNormalEnemies(term);
         }
 
-        if (activeTab === 'guns') resultCount.textContent = (phosShown + poolDefShown + catalogPhosShown + pearlShown) + ' guns shown';
+        if (activeTab === 'guns') resultCount.textContent = (phosShown + poolDefShown + catalogPhosShown) + ' phosphenes shown';
+        else if (activeTab === 'pearls') resultCount.textContent = (pearlPhosShown + pearlOnlyShown) + ' pearlescents shown';
         else if (activeTab === 'enemies') resultCount.textContent = enemyShown + ' bosses shown';
         else if (activeTab === 'all') resultCount.textContent = poolShown + ' bosses shown';
         else if (activeTab === 'skins') resultCount.textContent = skinShown + ' cosmetics shown';
@@ -2398,8 +2512,10 @@
         });
       });
 
-      [bossOnly, withDrops, hasSerial, bossDropOnly, worldDropOnly, dropKindFilter, rarityTierFilter, rarityCatFilter, rarityHasComp, combatOnly, hideBossRank, showTechnical, skinKindFilter, skinSortMode, skinHasSerial, gearTierFilter, gearCatFilter, gearPhospheneOnly, dropUvhLevel, dropShowCompare].forEach(function (el) {
+      [bossOnly, withDrops, hasSerial, hasSerialPearl, bossDropOnly, worldDropOnly, pearlPhosOnly, pearlNoPhosOnly, dropKindFilter, rarityTierFilter, rarityCatFilter, rarityHasComp, combatOnly, hideBossRank, showTechnical, skinKindFilter, skinSortMode, skinHasSerial, gearTierFilter, gearCatFilter, gearPhospheneOnly, dropUvhLevel, dropShowCompare].forEach(function (el) {
         if (el) el.addEventListener('change', function () {
+          if (el === pearlPhosOnly && pearlPhosOnly.checked && pearlNoPhosOnly) pearlNoPhosOnly.checked = false;
+          if (el === pearlNoPhosOnly && pearlNoPhosOnly.checked && pearlPhosOnly) pearlPhosOnly.checked = false;
           applyTechnicalMode();
           syncDropScaleCtx();
           render();
@@ -2415,15 +2531,27 @@
       q.addEventListener('input', render);
       applyTechnicalMode();
 
+      function gotoLootFromSkin(term, preferPearls) {
+        var t = String(term || '').trim();
+        var wantPearls = !!preferPearls;
+        if (!wantPearls && t) {
+          var needle = normalizeSearchHay(t);
+          wantPearls = (data.shiny_guns || []).some(function (g) {
+            if (!isPearl(g)) return false;
+            return searchMatchesTerm(rowHayForGun(g, true, ''), needle) ||
+              normalizeSearchHay([g.display_name, g.comp, g.slug, g.skin_part, g.skin_code].join(' ')).indexOf(needle) >= 0;
+          });
+        }
+        switchTab(wantPearls ? 'pearls' : 'guns');
+        q.value = t;
+        render();
+      }
       if (skinBody) {
         skinBody.addEventListener('click', function (ev) {
           var btn = ev.target.closest('.skin-goto-loot');
           if (!btn) return;
           ev.preventDefault();
-          var term = btn.getAttribute('data-q') || '';
-          switchTab('guns');
-          q.value = term;
-          render();
+          gotoLootFromSkin(btn.getAttribute('data-q') || '', btn.getAttribute('data-tab') === 'pearls');
         });
       }
       if (gearCards) {
@@ -2431,10 +2559,7 @@
           var btn = ev.target.closest('.skin-goto-loot');
           if (!btn) return;
           ev.preventDefault();
-          var term = btn.getAttribute('data-q') || '';
-          switchTab('guns');
-          q.value = term;
-          render();
+          gotoLootFromSkin(btn.getAttribute('data-q') || '', false);
         });
       }
 
