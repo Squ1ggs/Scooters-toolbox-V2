@@ -644,6 +644,24 @@
   })();
 
   var SESSION_HANDOFF_MAX = 4 * 1024 * 1024 - 65536;
+  var HANDOFF_PREFILL_KEY = 'stx_bulk_decoder_prefill';
+  var HANDOFF_YAML_KEY = 'stx_bulk_decoder_prefill_yaml';
+
+  function storeBulkHandoff(key, text) {
+    // localStorage survives noopener window.open (sessionStorage does not across tabs).
+    try {
+      localStorage.setItem(key, text);
+      try { sessionStorage.setItem(key, text); } catch (_) {}
+      return true;
+    } catch (e) {
+      try {
+        sessionStorage.setItem(key, text);
+        return true;
+      } catch (e2) {
+        throw e2 || e;
+      }
+    }
+  }
 
   function collectSerialLinesForBulkHandoff() {
     var list = window.extractedSerials || [];
@@ -681,28 +699,29 @@
   window.initYamlBulkDecoderHandoff = function () {
     var linesBtn = byId('yaml-serials-open-bulk-btn');
     var yamlBtn = byId('yaml-serials-open-bulk-yaml-btn');
-    if (!linesBtn || linesBtn._bulkHandoffBound) return;
-    linesBtn._bulkHandoffBound = true;
-    linesBtn.addEventListener('click', function () {
-      var out = collectSerialLinesForBulkHandoff();
-      if (!out.length) {
-        alert('No serials found in the loaded YAML. Paste a character or profile save first.');
-        return;
-      }
-      var text = out.join('\n');
-      if (text.length > SESSION_HANDOFF_MAX) {
-        alert('Serial list is too large for a browser handoff (~4MB cap). Save YAML to a file and open it in the bulk deserializer, or copy a section at a time.');
-        return;
-      }
-      try {
-        sessionStorage.setItem('stx_bulk_decoder_prefill', text);
-      } catch (e) {
-        alert('Could not store handoff: ' + (e && e.message ? e.message : String(e)));
-        return;
-      }
-      var bulkDec = (typeof window.STX_BULK_DECODER_PAGE === 'string' && window.STX_BULK_DECODER_PAGE) ? window.STX_BULK_DECODER_PAGE : './legacy/bl4-bulk-decoder.html';
-      window.open(bulkDec + (bulkDec.indexOf('?') >= 0 ? '&' : '?') + 'prefill=1', '_blank', 'noopener,noreferrer');
-    });
+    if (linesBtn && !linesBtn._bulkHandoffBound) {
+      linesBtn._bulkHandoffBound = true;
+      linesBtn.addEventListener('click', function () {
+        var out = collectSerialLinesForBulkHandoff();
+        if (!out.length) {
+          alert('No serials found in the loaded YAML. Paste a character or profile save first.');
+          return;
+        }
+        var text = out.join('\n');
+        if (text.length > SESSION_HANDOFF_MAX) {
+          alert('Serial list is too large for a browser handoff (~4MB cap). Save YAML to a file and open it in the bulk deserializer, or copy a section at a time.');
+          return;
+        }
+        try {
+          storeBulkHandoff(HANDOFF_PREFILL_KEY, text);
+        } catch (e) {
+          alert('Could not store handoff: ' + (e && e.message ? e.message : String(e)));
+          return;
+        }
+        var bulkDec = (typeof window.STX_BULK_DECODER_PAGE === 'string' && window.STX_BULK_DECODER_PAGE) ? window.STX_BULK_DECODER_PAGE : './legacy/bl4-bulk-decoder.html';
+        window.open(bulkDec + (bulkDec.indexOf('?') >= 0 ? '&' : '?') + 'prefill=1', '_blank');
+      });
+    }
     if (yamlBtn && !yamlBtn._bulkHandoffBound) {
       yamlBtn._bulkHandoffBound = true;
       yamlBtn.addEventListener('click', function () {
@@ -713,17 +732,17 @@
           return;
         }
         if (text.length > SESSION_HANDOFF_MAX) {
-          alert('YAML is larger than the ~4MB browser handoff limit. Save it as a file and use File → pick in the bulk deserializer instead.');
+          alert('YAML is larger than the ~4MB browser handoff limit. Save it as a file and open it in the bulk decoder instead.');
           return;
         }
         try {
-          sessionStorage.setItem('stx_bulk_decoder_prefill_yaml', text);
+          storeBulkHandoff(HANDOFF_YAML_KEY, text);
         } catch (e) {
           alert('Could not store handoff: ' + (e && e.message ? e.message : String(e)));
           return;
         }
         var bulkDecY = (typeof window.STX_BULK_DECODER_PAGE === 'string' && window.STX_BULK_DECODER_PAGE) ? window.STX_BULK_DECODER_PAGE : './legacy/bl4-bulk-decoder.html';
-        window.open(bulkDecY + (bulkDecY.indexOf('?') >= 0 ? '&' : '?') + 'prefill_yaml=1', '_blank', 'noopener,noreferrer');
+        window.open(bulkDecY + (bulkDecY.indexOf('?') >= 0 ? '&' : '?') + 'prefill_yaml=1', '_blank');
       });
     }
   };
@@ -1392,6 +1411,139 @@
     return o;
   }
 
+  function parseYamlTextToData(rawText) {
+    var text = rawText == null ? '' : String(rawText);
+    if (!text.trim()) return null;
+    if (typeof window.sanitizeYamlForParse === 'function') text = window.sanitizeYamlForParse(text);
+    var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
+    if (!y || typeof y.load !== 'function') return null;
+    var attempts = [];
+    attempts.push({});
+    if (y.CORE_SCHEMA) attempts.push({ schema: y.CORE_SCHEMA });
+    if (y.JSON_SCHEMA) attempts.push({ schema: y.JSON_SCHEMA });
+    if (y.FAILSAFE_SCHEMA) attempts.push({ schema: y.FAILSAFE_SCHEMA });
+    for (var i = 0; i < attempts.length; i++) {
+      try {
+        var data = y.load(text, attempts[i]);
+        if (data && typeof data === 'object') {
+          if (typeof window.normalizeYamlExperiencePointsInData === 'function') {
+            window.normalizeYamlExperiencePointsInData(data);
+          }
+          return data;
+        }
+      } catch (e) { /* try next schema */ }
+    }
+    return null;
+  }
+
+  function collectSlotObjectsFromYamlData(data) {
+    var out = [];
+    function collectFrom(which) {
+      var container = getYamlInventoryContainer(data, which);
+      if (!container) return;
+      var keyRows = [];
+      for (var sk in container) {
+        if (!Object.prototype.hasOwnProperty.call(container, sk)) continue;
+        var mm = /^slot_(\d+)$/.exec(sk);
+        if (mm) keyRows.push({ key: sk, n: parseInt(mm[1], 10) });
+      }
+      keyRows.sort(function (a, b) { return a.n - b.n; });
+      for (var i = 0; i < keyRows.length; i++) {
+        var entry = container[keyRows[i].key];
+        if (!entry || typeof entry !== 'object' || Array.isArray(entry)) continue;
+        var rawSerial = entry.serial;
+        if (rawSerial == null || !String(rawSerial).trim()) continue;
+        out.push(shallowCopySlotObject(entry));
+      }
+    }
+    collectFrom('backpack');
+    collectFrom('bank');
+    return out;
+  }
+
+  function appendSlotObjectsToYamlContainer(container, toAdd, targetLevel) {
+    var L = targetLevel == null || targetLevel === '' ? NaN : Math.floor(Number(targetLevel));
+    var useLevel = Number.isFinite(L);
+    var start = nextSlotIndexForYamlContainer(container);
+    var added = 0;
+    for (var j = 0; j < toAdd.length; j++) {
+      var slotObj = toAdd[j];
+      var s0 = String(slotObj.serial || '').trim().replace(/^['"]|['"]$/g, '');
+      var s = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(s0) : s0;
+      if (!s) continue;
+      if (useLevel && typeof window.updateSerialLevelFlexible === 'function') {
+        var leveled = window.updateSerialLevelFlexible(s, L);
+        if (leveled && String(leveled).trim()) {
+          s = typeof window.ensureBase85SerialForYamlSave === 'function' ? (window.ensureBase85SerialForYamlSave(leveled) || leveled) : leveled;
+        }
+      }
+      if (s.indexOf('@U') !== 0) s = '@U' + String(s).replace(/^@U/, '');
+      if (!s || s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0) continue;
+      slotObj.serial = s;
+      container['slot_' + (start + added)] = slotObj;
+      added++;
+    }
+    return added;
+  }
+
+  /**
+   * Append all backpack/bank items from another YAML into the currently loaded save.
+   * Source character → backpack slots; source profile → bank slots (both collected if present).
+   * Destination is backpack (character) or bank (profile) based on the loaded editor.
+   * @returns {{ added: number, dest: string }|false}
+   */
+  window.mergeInventoryFromYamlText = function (sourceText, targetLevel) {
+    var yaml = getYamlText();
+    if (!yaml.text || !String(yaml.text).trim()) {
+      alert('Load or paste YAML in the editor first.');
+      return false;
+    }
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yaml.text) : 'unknown';
+    if (kind !== 'character' && kind !== 'profile') {
+      alert('Merge needs a character save (root state:) or profile save loaded in the editor.');
+      return false;
+    }
+    if (typeof window.getYamlDataFromEditor !== 'function' || typeof window.commitYamlDataToEditor !== 'function') {
+      alert('YAML tools are not ready yet. Reload the page.');
+      return false;
+    }
+    if (!sourceText || !String(sourceText).trim()) {
+      alert('The selected YAML file is empty.');
+      return false;
+    }
+    var sourceData = parseYamlTextToData(sourceText);
+    if (!sourceData) {
+      alert('Could not parse the YAML file to merge. Fix syntax errors and try again.');
+      return false;
+    }
+    var toAdd = collectSlotObjectsFromYamlData(sourceData);
+    if (!toAdd.length) {
+      alert('No backpack or bank items with serials found in that YAML.');
+      return false;
+    }
+    var data = window.getYamlDataFromEditor();
+    if (!data) {
+      alert('Could not parse the loaded YAML. Fix syntax errors and try again.');
+      return false;
+    }
+    var destWhich = kind === 'profile' ? 'bank' : 'backpack';
+    var container = getYamlInventoryContainer(data, destWhich);
+    if (!container) {
+      alert(destWhich === 'backpack' ? 'No backpack object found in this save.' : 'No shared bank object found in this profile.');
+      return false;
+    }
+    var added = appendSlotObjectsToYamlContainer(container, toAdd, targetLevel);
+    if (!added) {
+      alert('No valid serials could be merged from that YAML.');
+      return false;
+    }
+    window.commitYamlDataToEditor(data);
+    if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
+    return { added: added, dest: destWhich };
+  };
+
   window.duplicateYamlInventorySection = function (which, targetLevel) {
     var w = String(which || '');
     if (w !== 'backpack' && w !== 'bank') return false;
@@ -1442,27 +1594,7 @@
       alert('No items with serials found to duplicate.');
       return false;
     }
-    var L = targetLevel == null || targetLevel === '' ? NaN : Math.floor(Number(targetLevel));
-    var useLevel = Number.isFinite(L);
-    var start = nextSlotIndexForYamlContainer(container);
-    var added = 0;
-    for (var j = 0; j < toAdd.length; j++) {
-      var slotObj = toAdd[j];
-      var s0 = String(slotObj.serial || '').trim().replace(/^['"]|['"]$/g, '');
-      var s = typeof window.ensureBase85SerialForYamlSave === 'function' ? window.ensureBase85SerialForYamlSave(s0) : s0;
-      if (!s) continue;
-      if (useLevel && typeof window.updateSerialLevelFlexible === 'function') {
-        var leveled = window.updateSerialLevelFlexible(s, L);
-        if (leveled && String(leveled).trim()) {
-          s = typeof window.ensureBase85SerialForYamlSave === 'function' ? (window.ensureBase85SerialForYamlSave(leveled) || leveled) : leveled;
-        }
-      }
-      if (s.indexOf('@U') !== 0) s = '@U' + String(s).replace(/^@U/, '');
-      if (!s || s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0) continue;
-      slotObj.serial = s;
-      container['slot_' + (start + added)] = slotObj;
-      added++;
-    }
+    var added = appendSlotObjectsToYamlContainer(container, toAdd, targetLevel);
     if (!added) {
       alert('No valid serials could be duplicated.');
       return false;
@@ -1482,10 +1614,13 @@
     var kind = !txt.trim() ? 'unknown' : (typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(txt) : 'unknown');
     var yamlIds = ['prefixItemAddToYamlBtn', 'godrollAddToYamlBtn', 'serialSearchAddToYamlBtn', 'yamlAddSerialsBtn', 'guidedAddItemToYaml', 'floatingAddItemToYaml', 'yamlDupBackpackBtn', 'yamlDupBackpackLevelBtn'];
     var bankIds = ['prefixItemAddToBankBtn', 'godrollAddToBankBtn', 'serialSearchAddToBankBtn', 'yamlAddSerialsBankBtn', 'guidedAddItemToBank', 'floatingAddItemToBank', 'yamlDupBankBtn', 'yamlDupBankLevelBtn'];
+    var mergeIds = ['yamlMergeAsIsBtn', 'yamlMergeLevelBtn'];
     var yTitleOk = 'Add to character backpack (root state: save)';
     var yTitleNo = 'Load a character save YAML (root state:) first.';
     var bTitleOk = 'Add to profile bank (shared inventory)';
     var bTitleNo = 'Load profile .sav or YAML first.';
+    var mTitleOk = 'Append all items from another YAML into this save';
+    var mTitleNo = 'Load a character or profile YAML in the editor first.';
     for (var a = 0; a < yamlIds.length; a++) {
       var ye = byId(yamlIds[a]);
       if (!ye) continue;
@@ -1499,6 +1634,13 @@
       var bOk = kind === 'profile';
       be.disabled = !bOk;
       be.title = bOk ? bTitleOk : bTitleNo;
+    }
+    var mergeOk = kind === 'character' || kind === 'profile';
+    for (var m = 0; m < mergeIds.length; m++) {
+      var me = byId(mergeIds[m]);
+      if (!me) continue;
+      me.disabled = !mergeOk;
+      me.title = mergeOk ? mTitleOk : mTitleNo;
     }
     var strip = byId('stx-yaml-kind-strip');
     if (strip) {
@@ -1651,6 +1793,78 @@
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   };
 
+  window.initYamlMergeSection = function () {
+    var root = byId('yaml-merge-section');
+    if (!root || root.dataset.yamlMergeWired === '1') return;
+    root.dataset.yamlMergeWired = '1';
+    var fileInput = byId('yamlMergeFileInput');
+    var lvl = byId('yamlMergeTargetLevel');
+    var asBtn = byId('yamlMergeAsIsBtn');
+    var lvBtn = byId('yamlMergeLevelBtn');
+    var status = byId('yaml-add-serials-status');
+    var pendingLevel = null;
+    function showStatus(msg, ok) {
+      if (!status) return;
+      status.style.display = 'block';
+      status.style.color = ok ? 'rgba(0,200,255,0.95)' : '#ff9090';
+      status.textContent = msg;
+    }
+    function readLevel() {
+      if (!lvl) return NaN;
+      var n = parseInt(String(lvl.value || '').trim(), 10);
+      return Number.isFinite(n) ? n : NaN;
+    }
+    function pickAndMerge(useLevel) {
+      if (!fileInput) {
+        showStatus('Merge file picker is missing. Reload the page.', false);
+        return;
+      }
+      if (useLevel) {
+        var L = readLevel();
+        if (!Number.isFinite(L)) {
+          showStatus('Enter a target level for the imported items.', false);
+          return;
+        }
+        pendingLevel = L;
+      } else {
+        pendingLevel = null;
+      }
+      fileInput.value = '';
+      fileInput.click();
+    }
+    if (fileInput) {
+      fileInput.addEventListener('change', function () {
+        var f = fileInput.files && fileInput.files[0];
+        if (!f) return;
+        var levelForMerge = pendingLevel;
+        pendingLevel = null;
+        var reader = new FileReader();
+        reader.onload = function () {
+          var text = reader.result == null ? '' : String(reader.result);
+          var result = window.mergeInventoryFromYamlText
+            ? window.mergeInventoryFromYamlText(text, levelForMerge)
+            : false;
+          if (result && result.added > 0) {
+            var where = result.dest === 'bank' ? 'profile bank' : 'backpack';
+            var lvlNote = Number.isFinite(levelForMerge) ? ' at level ' + levelForMerge : '';
+            showStatus('Merged ' + result.added + ' item(s) from "' + f.name + '" into ' + where + lvlNote + '.', true);
+          }
+        };
+        reader.onerror = function () {
+          showStatus('Could not read that YAML file.', false);
+        };
+        reader.readAsText(f);
+      });
+    }
+    if (asBtn) {
+      asBtn.addEventListener('click', function () { pickAndMerge(false); });
+    }
+    if (lvBtn) {
+      lvBtn.addEventListener('click', function () { pickAndMerge(true); });
+    }
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+  };
+
   window.initSerialSearchSection = function () {
     var fileInput = byId('serialLibraryFileInput');
     var searchInput = byId('serialSearchInput');
@@ -1662,7 +1876,12 @@
     var addToBankBtn = byId('serialSearchAddToBankBtn');
     var addToEditorBtn = byId('serialSearchAddToEditorBtn');
     if (!resultsEl) return;
-    if (resultsEl.dataset.stxSerialSearchWired === '1') return;
+    if (resultsEl.dataset.stxSerialSearchWired === '1') {
+      try {
+        if (typeof window.__stxRefreshSerialSearchCatalog === 'function') window.__stxRefreshSerialSearchCatalog();
+      } catch (_) {}
+      return;
+    }
     resultsEl.dataset.stxSerialSearchWired = '1';
     window.serialLibrarySerials = window.serialLibrarySerials || [];
     var library = window.serialLibrarySerials;
@@ -1682,9 +1901,23 @@
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    function loadCatalogSerials() {
-      if (catalogSerials && catalogSerials.length) return Promise.resolve(catalogSerials);
-      if (catalogLoadPromise) return catalogLoadPromise;
+    function paintCatalogStatus() {
+      if (!statusEl) return;
+      var libN0 = library.length;
+      var n = catalogSerials && catalogSerials.length ? catalogSerials.length : 0;
+      statusEl.textContent = n
+        ? (n + ' items in catalog' + (libN0 ? (' · ' + libN0 + ' in your list') : '') + '. Type to search.')
+        : ('Catalog not loaded yet' + (libN0 ? (' · ' + libN0 + ' in your list') : '') + '. Retrying…');
+    }
+
+    function loadCatalogSerials(force) {
+      if (!force && catalogSerials && catalogSerials.length) return Promise.resolve(catalogSerials);
+      if (!force && catalogLoadPromise) return catalogLoadPromise;
+      if (force) {
+        catalogLoadPromise = null;
+        catalogSerials = null;
+        catalogSearchIndexReady = false;
+      }
       var ensure = (typeof window.__ccEnsureSerialsCatalog === 'function')
         ? window.__ccEnsureSerialsCatalog()
         : null;
@@ -1693,33 +1926,56 @@
           catalogSerials = Array.isArray(arr) ? arr : [];
           return catalogSerials;
         }).catch(function () {
-          catalogSerials = [];
+          catalogSerials = (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
           return catalogSerials;
         });
         return catalogLoadPromise;
       }
-      if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) {
+      if (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials && window.STX_SERIALS_DATA.serials.length) {
         catalogSerials = window.STX_SERIALS_DATA.serials;
         return Promise.resolve(catalogSerials);
       }
       var proto = (typeof location !== 'undefined' && location.protocol) || '';
+      // file:// cannot fetch; wait for lazy serials_data.js instead of locking in an empty catalog.
       if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
         catalogSerials = [];
         catalogLoadPromise = Promise.resolve(catalogSerials);
         return catalogLoadPromise;
       }
-      catalogLoadPromise = fetch('./assets/data/serials.json')
+      catalogLoadPromise = fetch((function () {
+        try {
+          if (/\/assets(\/|$)/i.test(String(location.pathname || ''))) return './data/serials.json';
+        } catch (_) {}
+        return './assets/data/serials.json';
+      })())
         .then(function (r) { return r.json(); })
         .then(function (data) {
           catalogSerials = data && data.serials ? data.serials : [];
           return catalogSerials;
         })
         .catch(function () {
-          catalogSerials = [];
+          catalogSerials = (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
           return catalogSerials;
         });
       return catalogLoadPromise;
     }
+
+    window.__stxRefreshSerialSearchCatalog = function () {
+      var need = !(catalogSerials && catalogSerials.length);
+      var canEnsure = typeof window.__ccEnsureSerialsCatalog === 'function'
+        || (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials && window.STX_SERIALS_DATA.serials.length);
+      if (!need && !canEnsure) return;
+      if (!need) {
+        paintCatalogStatus();
+        renderResults(buildFilteredRows((searchInput && searchInput.value || '').trim().toLowerCase()));
+        return;
+      }
+      if (statusEl) statusEl.textContent = 'Loading item catalog…';
+      loadCatalogSerials(true).then(function () {
+        paintCatalogStatus();
+        renderResults(buildFilteredRows((searchInput && searchInput.value || '').trim().toLowerCase()));
+      });
+    };
 
     function buildCatalogSearchHay(item, allowDecode) {
       var parts = [
@@ -2013,9 +2269,9 @@
       loadPasteIntoLibraryIfEmpty();
       var q = (searchInput && searchInput.value || '').trim().toLowerCase();
       if (!q) serialSearchRenderLimit = 80;
-      if (!catalogSerials) {
+      if (!catalogSerials || !catalogSerials.length) {
         if (statusEl) statusEl.textContent = 'Loading item catalog…';
-        loadCatalogSerials().then(function () {
+        loadCatalogSerials(!(catalogSerials && catalogSerials.length)).then(function () {
           function paint() {
             var filtered = buildFilteredRows(q);
             if (statusEl) {
@@ -2229,13 +2485,14 @@
       if (statusEl) statusEl.textContent = 'Imported ' + codes.length + ' serial(s) into editor.';
     });
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (statusEl) statusEl.textContent = 'Loading item catalog…';
     loadCatalogSerials().then(function () {
-      if (statusEl) {
-        var libN0 = library.length;
-        statusEl.textContent = (catalogSerials ? catalogSerials.length : 0) + ' items in catalog'
-          + (libN0 ? (' · ' + libN0 + ' in your list') : '') + '. Type to search.';
-      }
+      paintCatalogStatus();
       renderResults(buildFilteredRows(''));
+      // If scripts loaded out of order (or file://), retry once ensure is available.
+      if (!(catalogSerials && catalogSerials.length) && typeof window.__ccEnsureSerialsCatalog === 'function') {
+        window.__stxRefreshSerialSearchCatalog();
+      }
     });
   };
 
@@ -2307,6 +2564,7 @@
         if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
         if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
         if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
+        if (typeof window.initYamlMergeSection === 'function') window.initYamlMergeSection();
         if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
         initYamlTextareaDragDrop();
       });
@@ -2319,6 +2577,7 @@
       if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
       if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
       if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
+      if (typeof window.initYamlMergeSection === 'function') window.initYamlMergeSection();
       if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
       initYamlTextareaDragDrop();
     });

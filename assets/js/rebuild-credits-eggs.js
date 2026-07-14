@@ -6,7 +6,7 @@
   var THEME_KEY = 'stx_rebuild_theme';
   var FULLANIM_KEY = 'stx_rebuild_fullanim';
   var NOANIM_KEY = 'stx_rebuild_noanim';
-  var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin' };
+  var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin', tobgun: 'tobgun-reskin' };
 
   function byId(id){ return document.getElementById(id); }
   function setEggsEnabled(on){
@@ -37,7 +37,8 @@
       b.classList.contains('badley-reskin') ||
       b.classList.contains('scooter-reskin') ||
       b.classList.contains('ynot-reskin') ||
-      b.classList.contains('grimeey-reskin');
+      b.classList.contains('grimeey-reskin') ||
+      b.classList.contains('tobgun-reskin');
   }
   function setTheme(theme){
     var body = document.body;
@@ -115,10 +116,38 @@
     items.forEach(function(el){ list.appendChild(el); });
   }
 
+  function ensureTobgunContributor(){
+    var list = byId('withThanksList');
+    if (!list) return;
+    var existing = byId('tobgunName');
+    if (existing) return existing;
+    var el = document.createElement('span');
+    el.className = 'contributor-name';
+    el.setAttribute('data-egg', '1');
+    el.setAttribute('data-tooltip', '\uD83D\uDC40');
+    el.id = 'tobgunName';
+    el.title = '\uD83D\uDC40';
+    el.textContent = 'Tobgun';
+    var kids = Array.prototype.slice.call(list.children || []);
+    var inserted = false;
+    for (var i = 0; i < kids.length; i++) {
+      var label = String(kids[i].textContent || '').trim();
+      if (label.localeCompare('Tobgun', undefined, { sensitivity: 'base' }) > 0) {
+        list.insertBefore(el, kids[i]);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) list.appendChild(el);
+    return el;
+  }
+
   function initCredits(){
     var toggle = byId('withThanksToggle');
     if(toggle) toggle.addEventListener('click', toggleWithThanks);
     // Keep contributor order stable across reloads.
+
+    ensureTobgunContributor();
 
     byId('mattmabName') && byId('mattmabName').addEventListener('dblclick', function(){
       toggleEggTheme('mattmab');
@@ -149,6 +178,9 @@
     });
     byId('keepinItGrimeeyName') && byId('keepinItGrimeeyName').addEventListener('click', function(){
       toggleEggTheme('grimeey');
+    });
+    byId('tobgunName') && byId('tobgunName').addEventListener('click', function(){
+      toggleEggTheme('tobgun');
     });
 
     function bindEggOff(btn){

@@ -125,6 +125,13 @@
     .gun-name strong { font-size: 0.95rem; color: var(--name); }
     .gun-name .subtle,
     .gun-name .txt-type { color: var(--type); font-size: 0.8rem; }
+    .drop-list .drop-gun-name {
+      display: inline-grid;
+      gap: 2px;
+      vertical-align: top;
+      max-width: min(100%, 420px);
+    }
+    .drop-list .drop-gun-name .boss-code-line { margin-top: 2px; }
     .subtle { color: var(--muted); font-size: 0.8rem; }
     .serial-block code.serial-full {
       max-width: 420px;
@@ -132,6 +139,22 @@
       color: var(--code-serial);
       background: rgba(159, 232, 208, 0.07);
       border-color: rgba(159, 232, 208, 0.16);
+    }
+    .serial-block .serial-pair {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .serial-block .serial-pair:last-child { margin-bottom: 0; }
+    .serial-block code.code--deser {
+      max-width: 460px;
+      display: inline-block;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--code-actor);
+      background: rgba(255, 190, 120, 0.07);
+      border-color: rgba(255, 190, 120, 0.18);
+      font-size: 0.78rem;
     }
     .card {
       background: var(--bg-panel);
@@ -456,6 +479,7 @@
           <option value="weapon_mat">Weapon camos (Mat)</option>
           <option value="weapon_skin_code">Legendary skin codes</option>
           <option value="phosphene">Phosphenes</option>
+          <option value="completion">Completion skins</option>
           <option value="pearlescent">Pearlescents</option>
           <option value="player_skin">Player outfits</option>
           <option value="player_skin_filter">Player outfit filters</option>
@@ -910,11 +934,14 @@
       var stats = data.shiny_stats || {};
       var phos = stats.phosphenes || 0;
       var pearls = stats.pearlescent || stats.pearls || 0;
+      var completion = stats.completion_skins || 0;
       var bossPhos = stats.boss_drops_phosphene || 0;
       var uPhos = stats.with_base85_phosphene || 0;
       var uPearl = stats.with_base85_pearlescent || 0;
       meta.textContent = 'Last updated ' + formatDate(data.generated_at) + ' · ' +
-        phos + ' phosphenes · ' + pearls + ' pearlescents · ' + poolCount + ' bosses with loot tables' +
+        phos + ' phosphenes · ' + pearls + ' pearlescents' +
+        (completion ? ' · ' + completion + ' completion skin' + (completion === 1 ? '' : 's') : '') +
+        ' · ' + poolCount + ' bosses with loot tables' +
         (skinData && skinData.stats ? ' · ' + skinData.stats.total + ' cosmetics' : '');
 
       function countBossDropProbStats() {
@@ -952,6 +979,22 @@
         return g.variant === 'pearl' || g.pearl || g.pool_status === 'pearl_catalog' ||
           g.pool_status === 'community_pearl' || g.pool_status === 'community_pearl_unverified' ||
           /comp_06_pearl_/i.test(g.comp || '');
+      }
+
+      function isCompletionSkin(g) {
+        return g.variant === 'completion' ||
+          String(g.slug || '').toLowerCase() === 'ultimate' ||
+          /ratatataclysm/i.test(String(g.display_name || '')) ||
+          /cosmetics_weapon_shiny_ultimate/i.test(String(g.cosmetic_spawn || g.camo_cosmetic || ''));
+      }
+
+      function camoTokenCell(g) {
+        var bits = [];
+        if (g.camo_c_code) bits.push(codeCell(g.camo_c_code, 'c token'));
+        var paste = g.camo_paste || (g.camo_cosmetic ? '"c" "' + g.camo_cosmetic + '"' : '');
+        if (paste && paste !== g.camo_c_code) bits.push(codeCell(paste, 'c token'));
+        if (!bits.length) return '<span class="subtle">—</span>';
+        return bits.join(' + ');
       }
 
       function pearlHasPhosphene(g) {
@@ -1063,6 +1106,8 @@
 
       function friendlyNote(note) {
         return String(note || '')
+          .replace(/\bd\s*AHLf?\s*ATHER\b/gi, 'Dahlfather')
+          .replace(/\bDahl\s+Father\s+True\b/gi, 'Big Encore Dahlfather')
           .replace(/\bSTX\s*·\s*/gi, '')
           .replace(/Echo4/gi, 'Base85')
           .replace(/echobot/gi, 'reference list')
@@ -1318,6 +1363,9 @@
       }
 
       function variantPill(g) {
+        if (isCompletionSkin(g)) {
+          return '<span class="pill" title="Weapon-wide reward for collecting all Shine The Brightest skins">Completion skin</span>';
+        }
         if (isPearl(g)) {
           var cp = g.community_pearl || {};
           var st = cp.phosphene_status;
@@ -1383,17 +1431,40 @@
 
       function base85Cell(serial, opts) {
         opts = opts || {};
-        if (!serial) return '<span class="subtle">—</span>';
+        if (!serial && !opts.deserialized) return '<span class="subtle">—</span>';
         var forceFull = !!opts.full;
-        var short = !forceFull && serial.length > 48;
-        var shown = short ? serial.slice(0, 45) + '…' : serial;
         var html = '<div class="serial-block">';
-        html += '<code class="copyable serial-full code--serial" data-copy-label="Base85 serial" data-full="' + esc(serial) + '">' + esc(shown) + '</code>';
-        if (short) {
-          html += '<button type="button" class="serial-toggle" data-full="' + esc(serial) + '">Show full serial</button>';
+        if (serial) {
+          var short = !forceFull && serial.length > 48;
+          var shown = short ? serial.slice(0, 45) + '…' : serial;
+          html += '<div class="serial-pair"><span class="subtle">Base85</span> ';
+          html += '<code class="copyable serial-full code--serial" data-copy-label="Base85 serial" data-full="' + esc(serial) + '">' + esc(shown) + '</code>';
+          if (short) {
+            html += ' <button type="button" class="serial-toggle" data-full="' + esc(serial) + '">Show full</button>';
+          }
+          html += '</div>';
+        }
+        if (opts.deserialized) {
+          var d = String(opts.deserialized);
+          var dShort = !forceFull && d.length > 72;
+          var dShown = dShort ? d.slice(0, 69) + '…' : d;
+          html += '<div class="serial-pair"><span class="subtle">Deserialized</span> ';
+          html += '<code class="copyable code--deser" data-copy-label="Deserialized serial" data-full="' + esc(d) + '">' + esc(dShown) + '</code>';
+          if (dShort) {
+            html += ' <button type="button" class="serial-toggle" data-full="' + esc(d) + '">Show full</button>';
+          }
+          html += '</div>';
         }
         html += '</div>';
         return html;
+      }
+
+      function serialCellForGun(g, opts) {
+        opts = opts || {};
+        return base85Cell(base85Of(g), {
+          full: opts.full !== false,
+          deserialized: g && (g.deserialized || g.echo4_tail) ? (g.deserialized || null) : null,
+        });
       }
 
       function bindCopy(root) {
@@ -1409,18 +1480,21 @@
           });
         });
         root.querySelectorAll('.serial-toggle').forEach(function (btn) {
+          if (btn.classList.contains('skin-goto-loot')) return;
           btn.addEventListener('click', function () {
             var full = btn.getAttribute('data-full') || '';
-            var code = btn.previousElementSibling;
+            var pair = btn.closest('.serial-pair') || btn.parentElement;
+            var code = pair ? pair.querySelector('code') : btn.previousElementSibling;
             if (!code || !full) return;
             var expanded = btn.getAttribute('data-expanded') === '1';
             if (expanded) {
-              code.textContent = full.slice(0, 45) + '…';
-              btn.textContent = 'Show full serial';
+              var shortLen = code.classList.contains('code--deser') ? 69 : 45;
+              code.textContent = full.length > shortLen + 3 ? full.slice(0, shortLen) + '…' : full;
+              btn.textContent = 'Show full';
               btn.setAttribute('data-expanded', '0');
             } else {
               code.textContent = full;
-              btn.textContent = 'Show less';
+              btn.textContent = 'Collapse';
               btn.setAttribute('data-expanded', '1');
             }
           });
@@ -1448,7 +1522,6 @@
         }
         var st = (cp && cp.status) || g.pool_status || '';
         if (st === 'export_pending' || st === 'not_in_export') return '<span class="pill">awaiting export</span>';
-        if (st === 'needs_verification' || st === 'community_pearl_unverified') return '<span class="pill">unverified</span>';
         return '<span class="pill">community</span>';
       }
 
@@ -1493,15 +1566,15 @@
       }
 
       function isPoolDefPhos(g) {
-        return !isPearl(g) && g.pool_status === 'pool_def_only';
+        return !isPearl(g) && !isCompletionSkin(g) && g.pool_status === 'pool_def_only';
       }
 
       function isCatalogPhos(g) {
-        return !isPearl(g) && g.pool_status === 'catalog_only';
+        return !isPearl(g) && !isCompletionSkin(g) && g.pool_status === 'catalog_only';
       }
 
       function isBossPhos(g) {
-        return !isPearl(g) && !isPoolDefPhos(g) && !isCatalogPhos(g);
+        return !isPearl(g) && !isCompletionSkin(g) && !isPoolDefPhos(g) && !isCatalogPhos(g);
       }
 
       function hintPillClass(kind) {
@@ -1591,8 +1664,8 @@
           bits.push('<div class="gear-card__row">' + acquisitionStatusPill({ acquisition_kind: row.acquisition_kind }) + '</div>');
         }
         bits.push('<div class="gear-card__row gear-card__phos"><strong>Phosphene</strong> ' + phosCell + '</div>');
-        if (row.base85_serial) {
-          bits.push('<div class="gear-card__row"><strong>Serial</strong> ' + base85Cell(row.base85_serial, { full: true }) + '</div>');
+        if (row.base85_serial || row.deserialized) {
+          bits.push('<div class="gear-card__row"><strong>Serial</strong> ' + base85Cell(row.base85_serial, { full: true, deserialized: row.deserialized || null }) + '</div>');
         }
         card.innerHTML = bits.join('');
         gearCards.appendChild(card);
@@ -1646,18 +1719,94 @@
         return '';
       }
 
+      function shinyCosmeticId(g) {
+        var cos = String(g.camo_cosmetic || g.cosmetic_spawn || g.cosmetic || '').trim();
+        if (cos) return cos;
+        var paste = String(g.camo_paste || g.camo_c_code || '').trim();
+        var m = paste.match(/Cosmetics_Weapon_Shiny_[A-Za-z0-9_]+/i);
+        return m ? m[0] : '';
+      }
+
+      function shinyCosmeticTail(cosmetic) {
+        var m = String(cosmetic || '').match(/Cosmetics_Weapon_Shiny_([A-Za-z0-9_]+)/i);
+        return m ? m[1] : '';
+      }
+
+      function normNameToken(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '');
+      }
+
+      /** Always-visible copyable internal ids under the in-game display name. */
+      function formatGunInternalBits(g) {
+        if (!g) return [];
+        var display = String(g.display_name || g.gun_name || g.label || '').trim();
+        var displayNorm = normNameToken(display);
+        var bits = [];
+        var seen = Object.create(null);
+        function pushCode(label, text) {
+          var t = String(text || '').trim();
+          if (!t) return;
+          var key = t.toLowerCase();
+          if (seen[key]) return;
+          seen[key] = true;
+          bits.push('<code class="copyable" data-copy-label="' + esc(label) + '">' + esc(t) + '</code>');
+        }
+        var cos = shinyCosmeticId(g);
+        var cosTail = shinyCosmeticTail(cos);
+        if (cosTail && normNameToken(cosTail) !== displayNorm) {
+          pushCode('Internal id', cosTail);
+        }
+        if (cos) {
+          pushCode('Cosmetic', cos);
+        } else if (g.yaml_key) {
+          pushCode('Catalog key', g.yaml_key);
+        } else if (g.slug && normNameToken(g.slug) !== displayNorm) {
+          pushCode('Slug', g.slug);
+        }
+        if (g.comp && normNameToken(g.comp) !== displayNorm) {
+          pushCode('Item ID', g.comp);
+        }
+        return bits;
+      }
+
+      function formatGunInternalLine(g) {
+        var bits = formatGunInternalBits(g);
+        return bits.length ? '<div class="boss-code-line">' + bits.join(' · ') + '</div>' : '';
+      }
+
+      /**
+       * In-game display name + always-on internal id line (cosmetic / slug / comp).
+       * opts.statusHtml — optional status span after the title.
+       * opts.includeWeapon — default true; append weapon_label when present.
+       */
+      function formatGunNameCell(g, opts) {
+        opts = opts || {};
+        var name = String((g && (g.display_name || g.gun_name || g.label)) || '—').trim() || '—';
+        var title = '<strong>' + esc(name) + '</strong>';
+        var includeWeapon = opts.includeWeapon !== false;
+        var weaponHint = includeWeapon && g && g.weapon_label
+          ? '<span class="txt-type">' + esc(g.weapon_label) + '</span>'
+          : '';
+        var statusHtml = opts.statusHtml || '';
+        return '<div class="gun-name">' + title + weaponHint + statusHtml + formatGunInternalLine(g) + '</div>';
+      }
+
       function formatShinyDropLine(d) {
         var type = isPearl(d)
           ? '<span class="pill pill--pearl">Pearlescent</span>'
           : '<span class="pill pill--phos">Phosphene</span>';
         var name = d.gun_name || d.display_name || d.label;
+        var nameBlock =
+          '<span class="gun-name drop-gun-name"><strong>' + esc(name) + '</strong>' + formatGunInternalLine(d) + '</span>';
         if (!isTechnical()) {
-          return '<li>' + [dropIcon(d), type, '<strong>' + esc(name) + '</strong>', formatDropProb(d)].join(' ') + '</li>';
+          return '<li>' + [dropIcon(d), type, nameBlock, formatDropProb(d)].join(' ') + '</li>';
         }
         var skin = d.skin_part || d.skin_code;
         var camo = d.camo_paste || d.camo_c_code;
         var serial = base85Of(d);
-        var bits = [dropIcon(d), type, '<strong>' + esc(name) + '</strong>', formatDropProb(d)];
+        var bits = [dropIcon(d), type, nameBlock, formatDropProb(d)];
         if (d.itempool || d.itempool_shiny) {
           bits.push('<span class="subtle">shiny pool</span> ' + codeCell(d.itempool || d.itempool_shiny, 'Shiny pool'));
         }
@@ -1818,32 +1967,24 @@
         var isShiny = d.kind === 'shiny' || d.is_shiny;
         var title = isShiny ? (d.gun_name || d.display_name || d.label) : d.label;
         var prob = formatDropProb(d);
+        if (isShiny) {
+          var shinyName =
+            '<span class="gun-name drop-gun-name"><strong>' + esc(title) + '</strong>' + formatGunInternalLine(d) + '</span>';
+          if (!isTechnical()) {
+            return '<li>' + kindPillWithIcon(d.kind, d.category, d) + shinyName + ' ' + prob + '</li>';
+          }
+          var shinyBits = [kindPillWithIcon(d.kind, d.category, d), shinyName, prob];
+          if (d.itempool || d.itempool_shiny) {
+            shinyBits.push('<span class="subtle">pool</span> ' + codeCell(d.itempool || d.itempool_shiny, 'Loot pool'));
+          }
+          if (d.comp) shinyBits.push(codeCell(d.comp, 'Item ID'));
+          return '<li>' + shinyBits.join(' ') + '</li>';
+        }
         if (!isTechnical()) {
           return '<li>' + kindPillWithIcon(d.kind, d.category, d) + '<strong>' + esc(title) + '</strong> ' + prob + '</li>';
         }
-        var code = '';
-        if (isShiny) {
-          if (d.itempool || d.itempool_shiny) {
-            code += '<span class="subtle">shiny pool</span> ' + codeCell(d.itempool || d.itempool_shiny, 'Shiny pool') + ' ';
-          }
-          if (d.comp) {
-            code += '<span class="subtle">base</span> ' + codeCell(d.comp, 'Item ID');
-          }
-        } else {
-          code = d.comp ? codeCell(d.comp, 'Item ID') : (d.itempool ? codeCell(d.itempool, 'Loot pool') : '');
-        }
-        var extra = '';
-        if (isShiny) {
-          var skin = d.skin_part || d.skin_code;
-          var camo = d.camo_paste || d.camo_c_code;
-          if (skin || camo) {
-            extra = ' <span class="subtle">';
-            if (skin) extra += 'skin ' + codeCell(skin, 'Skin part') + ' ';
-            if (camo) extra += 'c ' + codeCell(camo, 'c token');
-            extra += '</span>';
-          }
-        }
-        return '<li>' + kindPillWithIcon(d.kind, d.category, d) + '<strong class="txt-name">' + esc(title) + '</strong> ' + code + extra + ' ' + prob + '</li>';
+        var code = d.comp ? codeCell(d.comp, 'Item ID') : (d.itempool ? codeCell(d.itempool, 'Loot pool') : '');
+        return '<li>' + kindPillWithIcon(d.kind, d.category, d) + '<strong class="txt-name">' + esc(title) + '</strong> ' + code + ' ' + prob + '</li>';
       }
 
       function normalizeSearchHay(s) {
@@ -1917,6 +2058,7 @@
         if (kind === 'weapon_mat') return '<span class="pill">Weapon camo</span>';
         if (kind === 'weapon_skin_code') return '<span class="pill">Legendary skin code</span>';
         if (kind === 'phosphene') return '<span class="pill pill--phos">Phosphene</span>';
+        if (kind === 'completion') return '<span class="pill" title="Weapon-wide reward for collecting all Shine The Brightest skins">Completion skin</span>';
         if (kind === 'pearlescent') return '<span class="pill pill--pearl">Pearlescent</span>';
         if (kind === 'player_skin') return '<span class="pill pill--vault">Player outfit</span>';
         if (kind === 'player_skin_filter') return '<span class="pill pill--vault">Outfit filter</span>';
@@ -1942,7 +2084,6 @@
       /** Display name + copyable cosmetic / unlock IDs. */
       function formatSkinNameCell(s) {
         var title = '<strong>' + esc(s.display_name) + '</strong>';
-        if (s.inferred) title += ' <span class="subtle">(unverified)</span>';
         title += skinLootLink(s);
         var cosmeticInline = s.cosmetic
           ? ' <code class="copyable boss-spawn-actor" data-copy-label="Cosmetic">' + esc(s.cosmetic) + '</code>'
@@ -1993,7 +2134,7 @@
           '<td>' + formatSkinNameCell(s) + '</td>' +
           '<td>' + skinKindPill(s.kind) + '</td>' +
           '<td>' + skinSpawnCodes(s) + '</td>' +
-          '<td>' + base85Cell(s.base85_serial, { full: true }) + '</td>' +
+          '<td>' + base85Cell(s.base85_serial, { full: true, deserialized: s.deserialized || null }) + '</td>' +
           '<td>' + skinDropSource(s) + '</td>' +
           '<td class="col-tech">' + codeCell(s.cosmetic, 'Cosmetic') + '</td>' +
           '<td class="col-tech">' + codeCell(s.yaml_key, 'Catalog key') + '</td>' +
@@ -2083,16 +2224,14 @@
       function appendPoolDefRow(tbody, g) {
         var tr = document.createElement('tr');
         var skin = g.skin_part || g.skin_code;
-        var camo = g.camo_paste || (g.camo_cosmetic ? '"c" "' + g.camo_cosmetic + '"' : g.camo_c_code);
-        var weaponHint = g.weapon_label ? '<span class="txt-type">' + esc(g.weapon_label) + '</span>' : '';
         tr.innerHTML =
-          '<td><div class="gun-name"><strong>' + esc(g.display_name) + '</strong>' + weaponHint + '</div></td>' +
+          '<td>' + formatGunNameCell(g) + '</td>' +
           '<td>' + legendaryCompCell(g) + '</td>' +
           '<td class="col-tech">' + poolDefStatusPill(g) + '</td>' +
           '<td class="col-tech">' + codeCell(g.itempool_shiny, 'Shiny itempool') + '</td>' +
           '<td>' + codeCell(skin, 'Skin part') + '</td>' +
-          '<td>' + codeCell(camo, 'c token') + '</td>' +
-          '<td>' + base85Cell(base85Of(g), { full: true }) + '</td>' +
+          '<td>' + camoTokenCell(g) + '</td>' +
+          '<td>' + serialCellForGun(g) + '</td>' +
           '<td>' + formatSourceHints(g) + '</td>';
         tbody.appendChild(tr);
       }
@@ -2100,17 +2239,15 @@
       function appendCatalogPhosRow(tbody, g) {
         var tr = document.createElement('tr');
         var skin = g.skin_part || g.skin_code;
-        var camo = g.camo_paste || (g.camo_cosmetic ? '"c" "' + g.camo_cosmetic + '"' : g.camo_c_code);
-        var weaponHint = g.weapon_label ? '<span class="txt-type">' + esc(g.weapon_label) + '</span>' : '';
         var notes = formatSourceHints(g);
         tr.innerHTML =
-          '<td><div class="gun-name"><strong>' + esc(g.display_name) + '</strong>' + weaponHint + '</div></td>' +
+          '<td>' + formatGunNameCell(g) + '</td>' +
           '<td>' + legendaryCompCell(g) + '</td>' +
           '<td class="col-tech">' + catalogStatusPill(g) + '</td>' +
           '<td class="col-tech">' + codeCell(g.yaml_key, 'Catalog key') + '</td>' +
           '<td>' + codeCell(skin, 'Skin part') + '</td>' +
-          '<td>' + codeCell(camo, 'c token') + '</td>' +
-          '<td>' + base85Cell(base85Of(g), { full: true }) + '</td>' +
+          '<td>' + camoTokenCell(g) + '</td>' +
+          '<td>' + serialCellForGun(g) + '</td>' +
           '<td>' + notes + '</td>';
         tbody.appendChild(tr);
       }
@@ -2118,11 +2255,10 @@
       function appendGunRow(tbody, g, isPearlRow, sources, built) {
         var tr = document.createElement('tr');
         var skin = g.skin_part || g.skin_code;
-        var camo = g.camo_paste || (g.camo_cosmetic ? '"c" "' + g.camo_cosmetic + '"' : g.camo_c_code);
         var status = gunStatus(g);
-        var weaponHint = g.weapon_label ? '<span class="txt-type">' + esc(g.weapon_label) + '</span>' : '';
+        var statusHtml = status && !isPearlRow ? status : '';
         tr.innerHTML =
-          '<td><div class="gun-name"><strong>' + esc(g.display_name) + '</strong>' + weaponHint + (status && !isPearlRow ? '<span>' + status + '</span>' : '') + '</div></td>' +
+          '<td>' + formatGunNameCell(g, { statusHtml: statusHtml }) + '</td>' +
           '<td>' + legendaryCompCell(g) + '</td>' +
           (isPearlRow ? '<td>' + pearlCompCell(g) + '</td>' : '') +
           (isPearlRow
@@ -2130,8 +2266,8 @@
             : '<td class="col-tech">' + compStatusPill(g) + '</td>') +
           '<td class="col-tech">' + codeCell(g.yaml_key, 'Catalog key') + '</td>' +
           '<td>' + codeCell(skin, 'Skin part') + '</td>' +
-          '<td>' + codeCell(camo, 'c token') + '</td>' +
-          '<td>' + base85Cell(base85Of(g), { full: true }) + '</td>' +
+          '<td>' + camoTokenCell(g) + '</td>' +
+          '<td>' + serialCellForGun(g) + '</td>' +
           '<td>' + (isPearlRow ? formatPearlNotes(g, sources) : formatPhospheneNotes(g, sources)) + '</td>';
         tbody.appendChild(tr);
       }
@@ -2167,6 +2303,7 @@
         var catalogPhosList = data.catalog_only_phosphenes || [];
 
         (data.shiny_guns || []).forEach(function (g) {
+          if (isCompletionSkin(g)) return;
           var pearlRow = isPearl(g);
           if (pearlRow) {
             var withPhos = pearlHasPhosphene(g);

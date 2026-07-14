@@ -1764,7 +1764,7 @@
           "dlc": null
         },
         {
-          "enemy_name": "Big Encore DahlFather",
+          "enemy_name": "Big Encore Dahlfather",
           "itempool_list": "ItemPoolList_DahlFather_True",
           "character_def": null,
           "is_true_boss": true,

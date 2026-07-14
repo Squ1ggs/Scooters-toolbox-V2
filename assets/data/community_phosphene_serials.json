@@ -1,0 +1,834 @@
+{
+  "generated_at": "2026-07-14T18:52:13.705Z",
+  "notes": "Community phosphene/pearl @U serials from All actual Phosphene Legendarys + Pearls 14.07.26.txt (+ Loarmaster addendum). Seed/camo forms normalized for nicnl pack; Loarmaster is not released.",
+  "source_file": "references/bl4_toolbox_export/community_phosphene_list_14.07.26.txt",
+  "serials": [
+    {
+      "id": "anarchy",
+      "display_name": "Anarchy",
+      "serial": "@Uge(J0FnkbUJa$k{RG/*ls6;JlxX?{hKh!_eNK~cfpzfglpi-eup?0C>p@;E(7{2H2GCe(>f3M{*{O$fu(P?-78+M1~V{{$",
+      "deserialized": "11, 0, 1, 60| 2, 3726|| {76} {2} {3} {6} {4} {5} {1:11} {75} {62} {63} {65} {10} {25} {27} {31} {36} {35} {45} {57} \"c\" \"Cosmetics_Weapon_Shiny_anarchy\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_anarchy"
+    },
+    {
+      "id": "asher",
+      "display_name": "Asher's Rise",
+      "serial": "@Ugydj=35E/MjK>ZNiz-y37L}+&4ITQ4nu!{TI*BTY3WKVHx`j%I8Wuc^&%^LNZ<p!m@%(!&hv9GccZyEC^WWecU6um",
+      "deserialized": "25, 0, 1, 60| 2, 3726|| {80} {2} {6} {5} {4} {3} {1:14} {79} {73} {65} {67} {66} {16} {26} {43} {52} {1:5} \"c\" \"Cosmetics_Weapon_Shiny_Asher\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Asher"
+    },
+    {
+      "id": "atlien",
+      "display_name": "Budget Deity",
+      "serial": "@UgcJizFnkbUJa$k%RG/*lsG&mlP(4xaQ1wu8P<c>&P^D0(P`yy=(8KsW4Bzv1nVufczt?gY{&s(-=(Ick4N{ruvKs",
+      "deserialized": "5, 0, 1, 60| 2, 3726|| {60} {2} {3} {6} {1:10} {59} {78} {55} {58} {24} {28} {30} {34} {35} {46} {53} \"c\" \"Cosmetics_Weapon_Shiny_ATLien\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_ATLien"
+    },
+    {
+      "id": "ballista",
+      "display_name": "Borstel Ballista",
+      "serial": "@Ugy3L+35E/MjK>a/i7Hg15)~5_5)}rO2Q>;63Y81B3q6eg!/*+Cm+9&8{Ch2j;cxeMicY)pUtyTdPS5FK00",
+      "deserialized": "24, 0, 1, 60| 2, 3726|| {73} {2} {6} {4} {72} {64} {16} {28} {33} {32} {44} {45} \"c\" \"Cosmetics_Weapon_Shiny_Ballista\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Ballista"
+    },
+    {
+      "id": "beegun",
+      "display_name": "Birt's Bees",
+      "serial": "@UgxFw!35E/MjK>a&iz-y35;aulEh;SPQ!i0-P<K#&P@zz{Q0GwbQ1{To_&p5Y^LCk@9?!qmav1)0f2ZiQJO34y%g4GK",
+      "deserialized": "22, 0, 1, 60| 2, 3726|| {88} {2} {6} {4} {1:10} {87} {80} {15} {71} {25} {27} {31} {32} {44} {51} {56} {59} \"c\" \"Cosmetics_Weapon_Shiny_BeeGun\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_BeeGun"
+    },
+    {
+      "id": "bloodstarved",
+      "display_name": "Darkbeast",
+      "serial": "@UgwSAs35E/MjK>c8hw6uF)S?bGR461WE@~_)EGi5t4=NOD6e<_$Cwdrvis5_SF4NQF`S)55!{6@j6rFbGzhd_LO`g-ka(kH!",
+      "deserialized": "20, 0, 1, 60| 2, 3726|| {63} {62} {6} {5} {3} {1:10} {64} {88} {81} {80} {16} {28} {32} {33} {44} {79} \"c\" \"Cosmetics_Weapon_Shiny_bloodstarved\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_bloodstarved"
+    },
+    {
+      "id": "bod",
+      "display_name": "Bod",
+      "serial": "@UgdhV<FnkbUJa*7JRG/{psG&pYP&HAR`czI-98@0E9@Hz;FH}$TFuo4M_q<)Er^oZ}wH$`O-QOuX?aqINZ!!",
+      "deserialized": "8, 0, 1, 60| 2, 3726|| {53} {2} {4} {6} {1:14} {52} {74} {12} {15} {76} {24} {28} {29} {39} {47} {78} \"c\" \"Cosmetics_Weapon_Shiny_Bod\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Bod"
+    },
+    {
+      "id": "bonnieclyde",
+      "display_name": "Bonnie and Clyde",
+      "serial": "@UgzR8/35E/MjK>ZdRG}JmsF/oqRjLkZ6)GKi7+;Fvd)_Y7)8qN~S`NeC?(Y<xcIUssx7(dA57~Kg82",
+      "deserialized": "27, 0, 1, 60| 2, 3726|| {1} {2} {6} {3} {73} {9} {10} {26} {37} {52} \"c\" \"Cosmetics_Weapon_Shiny_BonnieClyde\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_BonnieClyde"
+    },
+    {
+      "id": "boomslang",
+      "display_name": "Boomslang",
+      "serial": "@Ugy3L+35E/MjK>ZdRG}J`sG6vKsF0/BsDG$Wl/jux)k5_`5932Ie9zludU`znUdv(l+x?xQ)9(CN_<pzN?6CU`",
+      "deserialized": "24, 0, 1, 60| 2, 3726|| {1} {2} {6} {4} {74} {61} {64} {62} {63} {15} {18} {25} {42} {46} \"c\" \"Cosmetics_Weapon_Shiny_Boomslang\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Boomslang"
+    },
+    {
+      "id": "bugbear",
+      "display_name": "Bugbear",
+      "serial": "@Ugv4Ng35E/MjK>ZdR610m8Z~679qJ{jAL<_}Bq~##T7!y(+Jzp*_hI;+x6AbOc>cYX!/=EJJ4L76`LD2k7MH_v00",
+      "deserialized": "17, 0, 1, 60| 2, 3726|| {1} {52} {4} {6} {1:12} {54} {71} {62} {63} {64} {12} {14} {21} {40} {45} \"c\" \"Cosmetics_Weapon_Shiny_Bugbear\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Bugbear"
+    },
+    {
+      "id": "bully",
+      "display_name": "Bully",
+      "serial": "@Ugb)KvFnkbUJa$k{RG/{psGF#hs7k#--9hC+wL+yt599MNe9zludU`znUdv(l+x?xQ)9(CNSZA~I00",
+      "deserialized": "4, 0, 1, 60| 2, 3726|| {76} {2} {4} {6} {75} {67} {10} {23} {27} {28} {38} {68} \"c\" \"Cosmetics_Weapon_Shiny_Bully\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Bully"
+    },
+    {
+      "id": "chuck",
+      "display_name": "Chuck",
+      "serial": "@Ugg66CFnkbUJa*72RG/)43RS5=%/V4jl/&EY^DunR+huxsJpW$HVffqqoubq3{C9}1kJkV",
+      "deserialized": "14, 0, 1, 60| 2, 3726|| {35} {2} {3} {34} {10} {1} {25} {48} {66} \"c\" \"Cosmetics_Weapon_Shiny_Chuck\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Chuck"
+    },
+    {
+      "id": "coldshoulder",
+      "display_name": "Cold Shoulder",
+      "serial": "@Ugv4Ng35E/MjK>a&hf0TP)S-q8y+hqY<wJd{4XO_64k{L^CVCiuis5_SF4NQF`S)55!{6@j6rFbGzvDNXJV(FlY;su+",
+      "deserialized": "17, 0, 1, 60| 2, 3726|| {56} {52} {6} {3} {1:11} {55} {59} {60} {15} {22} {26} {27} {40} {74} \"c\" \"Cosmetics_Weapon_Shiny_coldshoulder\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_coldshoulder"
+    },
+    {
+      "id": "commbd",
+      "display_name": "Forsaken Chaos",
+      "serial": "@Uge(J0FnkbUJa$k/RG/))sGX>gsDG$QtwHTUjY5?/-9oiP599YRe9zludU`znUdv(l+x?xQ)9(Ct_-?m_L;w",
+      "deserialized": "11, 0, 1, 60| 2, 3726|| {78} {2} {3} {4} {77} {64} {63} {9} {21} {29} {33} {34} {43} {54} \"c\" \"Cosmetics_Weapon_Shiny_CommBD\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_CommBD"
+    },
+    {
+      "id": "complexroot",
+      "display_name": "Complex Root",
+      "serial": "@Ugydj=35E/MjK>bThbmN~61Av94HZg*8i_iInu#ij3WKVHs)Y)N9>$+y_@1}R^z?ZCy_Uo9xBELqr``GQ_}zxH%lNPS{iXu",
+      "deserialized": "25, 0, 1, 60| 2, 3726|| {59} {2} {6} {4} {5} {3} {1:10} {20} {65} {67} {73} {66} {16} {26} {42} {48} \"c\" \"Cosmetics_Weapon_Shiny_complex_root\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_complex_root"
+    },
+    {
+      "id": "convergence",
+      "display_name": "Convergence",
+      "serial": "@Ugd77*FnkbUJa$lORG/{ps6#Dk$WTbsPE<=&Ow^/4p!T5tphBT$p~j(y@ue8P=j}2*J)VEB<uLs1{!Y<pcm6wmyX/H9x$GX70R",
+      "deserialized": "7, 0, 1, 60| 2, 3726|| {100} {2} {4} {6} {3} {5} {1:12} {64} {77} {70} {72} {13} {25} {29} {31} {32} {41} {49} \"c\" \"Cosmetics_Weapon_Shiny_convergence\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_convergence"
+    },
+    {
+      "id": "crowdsourced",
+      "display_name": "Midnight Defiance",
+      "serial": "@Uguq~c35E/MjK>aIi7M2g7By@rC8{QB4(cW<45/*Q7AhR79qJx>7=Mc4d)_Y7)8qN~S`NeC?(Y<xcIUrC`TI_uzU%UFnG6",
+      "deserialized": "16, 0, 1, 60| 2, 3726|| {69} {2} {3} {5} {1:13} {68} {74} {25} {75} {16} {26} {42} {48} {54} {59} \"c\" \"Cosmetics_Weapon_Shiny_CrowdSourced\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_CrowdSourced"
+    },
+    {
+      "id": "dividedfocus",
+      "display_name": "Divided Focus",
+      "serial": "@Ugg66CFnkbUJa$kjRG/*_3Uv>44z&)IskW#%s5+=Ss9C6z=wbXRhVOa1Oiz#J-)lJxf4jd^blRQ&64UlHxlA^`$Mrb",
+      "deserialized": "14, 0, 1, 60| 2, 3726|| {36} {2} {3} {39} {59} {51} {53} {12} {86} {24} {26} {27} {41} {66} \"c\" \"Cosmetics_Weapon_Shiny_DividedFocus\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_DividedFocus"
+    },
+    {
+      "id": "dualdamage",
+      "display_name": "Aegon's Dream",
+      "serial": "@Ugvelk35E/MjK>a&iz-y27ImnWsIaJ+sF<ivok7h(%/fk2twXg#okS1gM=^ZQ+huxsJpW$HVffqqoubq3{Fhh{vx(t$_*@1",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {88} {2} {4} {5} {3} {70} {80} {73} {72} {15} {19} {25} {41} {69} {53} {54} {67} \"c\" \"Cosmetics_Weapon_Shiny_DualDamage\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_DualDamage"
+    },
+    {
+      "id": "finnty",
+      "display_name": "Finnity XXX-L",
+      "serial": "@Uguq~c35E/MjK>Zti7M2h5;bIKP&-j!Q9n^VQDIPZP%lyU(8KsW4Bzv1nVufczt?gY{&s(-=(IckHKyHedL9",
+      "deserialized": "16, 0, 1, 60| 2, 3726|| {66} {2} {5} {4} {1:12} {1} {77} {80} {79} {78} {16} {26} {71} {59} \"c\" \"Cosmetics_Weapon_Shiny_Finnty\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Finnty"
+    },
+    {
+      "id": "fisheye",
+      "display_name": "Fisheye",
+      "serial": "@Ugy>*^35E/MjK>ZdRG/{psGF!Ts5Yoc)kLjA%/g{etwZfY599kVe9zludU`znUdv(l+x?xQ)9(D&n4Y7{`7!",
+      "deserialized": "26, 0, 1, 60| 2, 3726|| {1} {2} {4} {6} {75} {16} {22} {9} {74} {37} {41} {42} {53} {61} \"c\" \"Cosmetics_Weapon_Shiny_Fisheye\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Fisheye"
+    },
+    {
+      "id": "gmr",
+      "display_name": "G.M.R.",
+      "serial": "@UgggUGFnkbUJa*7cR83T(8da!#sCcM(sCuYQ4XPAs6zUbK7kU_9hv9qPF4NQF`S)55!{6@j6rFbGzsIH&",
+      "deserialized": "15, 0, 1, 60| 2, 3726|| {75} {74} {4} {6} {2} {60} {56} {57} {58} {14} {1} {34} {33} {39} {46} \"c\" \"Cosmetics_Weapon_Shiny_GMR\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_GMR"
+    },
+    {
+      "id": "goalkeeper",
+      "display_name": "Goalkeeper",
+      "serial": "@UgggUGFnkbUJa$k{R83T(8Wj^250wu!4^<D<sXC}vsFdho{3wR+dAm$ckLTZOIShZhzf*MDo&O%+VfMOQhL`04",
+      "deserialized": "15, 0, 1, 60| 2, 3726|| {76} {74} {4} {6} {72} {56} {60} {57} {58} {14} {26} {39} {68} \"c\" \"Cosmetics_Weapon_Shiny_Goalkeeper\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Goalkeeper"
+    },
+    {
+      "id": "goldengod",
+      "display_name": "Golden God",
+      "serial": "@Ugd77*FnkbUJa*6-RG}J`s9{58P$f/*Q72JjP<v2+P@zz@P~p(S_)rYr^LCk@9?!qmav1)0f2ZiQJO4et+2peO_$C7",
+      "deserialized": "7, 0, 1, 60| 2, 3726|| {19} {2} {6} {4} {1:13} {18} {66} {68} {67} {17} {29} {31} {32} {42} {48} \"c\" \"Cosmetics_Weapon_Shiny_GoldenGod\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_GoldenGod"
+    },
+    {
+      "id": "goremaster",
+      "display_name": "Goremaster",
+      "serial": "@Ugd77*FnkbUJa$kTRG}J`sG&oH`iW/ZdWp(Zr_Q4Gp#Gpjp=zPZp@;FK7{2H2GCe(>f3M{*{O$fu(P?-7dwk2w&G4LFmID",
+      "deserialized": "7, 0, 1, 60| 2, 3726|| {20} {2} {6} {4} {1:14} {1} {79} {70} {71} {12} {14} {83} {29} {31} {32} {42} {50} \"c\" \"Cosmetics_Weapon_Shiny_GoreMaster\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster"
+    },
+    {
+      "id": "heartgun",
+      "display_name": "Acey May",
+      "serial": "@UgdhV<FnkbUJa*7KRG}J`s9{6xP%BX*Q72KGii667+Jkz9`i1I=9>)J+_@1}R^z?ZCy_Uo9xBELqr``E4vK*Gvk99W",
+      "deserialized": "8, 0, 1, 60| 2, 3726|| {55} {2} {6} {4} {1:13} {54} {69} {65} {67} {13} {24} {28} {29} {39} {47} {78} \"c\" \"Cosmetics_Weapon_Shiny_HeartGun\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HeartGun"
+    },
+    {
+      "id": "heavyturret",
+      "display_name": "Husky Friend",
+      "serial": "@Uge(J0FnkbUJa$l6RG}JmsG&lUYKba/I*FRp9Mm1u9#kpRDAX*}PxLUp6vOwtU8bkU^Y67BhQHn4DLU=Wf05;/Jx{I6<z+e",
+      "deserialized": "11, 0, 1, 60| 2, 3726|| {80} {2} {6} {3} {1:10} {8} {70} {66} {67} {9} {25} {27} {29} {34} {33} {41} {79} \"c\" \"Cosmetics_Weapon_Shiny_HeavyTurret\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HeavyTurret"
+    },
+    {
+      "id": "hellfire",
+      "display_name": "Hellfire",
+      "serial": "@Ugv?-o35E/MjK>Z-gDO;`61AuyLupVcQ7cg=QJ)%%x`X<I3WchL`h_0G/6%x^x6AbOc>cYX!/=EJJ4L76`7gT6W}DOUG5",
+      "deserialized": "19, 0, 1, 60| 2, 3726|| {19} {2} {6} {4} {5} {1:12} {20} {68} {69} {67} {15} {81} {27} {31} {32} {42} {47} \"c\" \"Cosmetics_Weapon_Shiny_hellfire\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_hellfire"
+    },
+    {
+      "id": "hellwalker",
+      "display_name": "Hellwalker",
+      "serial": "@Ugd_t@FnkbUJa*7oRG}J`s6`#BEUGW+4JsBYC3+Y?is5_SF4NQF`S)55!{6@j6rFbGzsNG1eGjwOWjO",
+      "deserialized": "9, 0, 1, 60| 2, 3726|| {83} {2} {6} {4} {5} {3} {82} {94} {23} {40} {68} \"c\" \"Cosmetics_Weapon_Shiny_Hellwalker\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Hellwalker"
+    },
+    {
+      "id": "kaleidosplode",
+      "display_name": "Kaleidosplode",
+      "serial": "@UgeU_{FnkbUJa*8a3e~7Y4Ht@s8j0#u9Mm3E9#kyUIn?k5Jd97p@I7yr>FM$Odo73IZ})eKPP_BpWtd$~lizbV`%Nwb",
+      "deserialized": "10, 0, 1, 60| 2, 3726|| {1} {2} {6} {4} {1:11} {56} {65} {14} {24} {29} {28} {40} {51} {1:23} \"c\" \"Cosmetics_Weapon_Shiny_Kaleidosplode\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Kaleidosplode"
+    },
+    {
+      "id": "kaoson",
+      "display_name": "Kaoson",
+      "serial": "@UgxFw!35E/MjK>Z-i7Hg04pkBr6Ezcc6IB!SsWYfKs5+=zsBoxz=wbXGhVOa1Oiz#J-)lJxf4jd^blRQ&F2nEX+YJ",
+      "deserialized": "22, 0, 1, 60| 2, 3726|| {67} {2} {4} {3} {66} {72} {73} {75} {74} {15} {19} {25} {26} {44} {48} {59} \"c\" \"Cosmetics_Weapon_Shiny_KaoSon\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_KaoSon"
+    },
+    {
+      "id": "katagawa",
+      "display_name": "Katagawa's Revenge",
+      "serial": "@Ugydj=35E/MjK>bzhbmN~61Av94H?RZYKdBjnu&Ue3WK_X`hyCEs)b628p45x@qZY;=j}2*J)VEB<uLs1{!Y<pcmBH$)5GWRJq!",
+      "deserialized": "25, 0, 1, 60| 2, 3726|| {61} {2} {6} {4} {5} {3} {1:12} {60} {70} {69} {73} {71} {16} {27} {31} {32} {42} {52} {1:48} \"c\" \"Cosmetics_Weapon_Shiny_katagawa\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_katagawa"
+    },
+    {
+      "id": "kickballer",
+      "display_name": "Kickballer",
+      "serial": "@UgeU_{FnkbUJa$lORG}J`s3Aj-8j1RcdWrhf8&oXRIn+=FJd7X3@I7yr>FM$Odo73IZ})eKPP_BpWqQ08huQ418~",
+      "deserialized": "10, 0, 1, 60| 2, 3726|| {100} {2} {6} {4} {1:12} {7} {65} {63} {71} {15} {23} {40} {51} {1:18} \"c\" \"Cosmetics_Weapon_Shiny_Kickballer\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Kickballer"
+    },
+    {
+      "id": "kingsgambit",
+      "display_name": "King's Gambit",
+      "serial": "@UgbV{rFnkbUJa$k{RG}J`s6#F4CaNCl9V#9w45/*Q59$x97HS-N7+;Fvd)_Y7)8qN~S`NeC?(Y<xcIUs#wEH/ihTGya9R",
+      "deserialized": "3, 0, 1, 60| 2, 3726|| {76} {2} {6} {4} {3} {5} {75} {58} {55} {56} {16} {26} {30} {31} {42} {49} \"c\" \"Cosmetics_Weapon_Shiny_KingsGambit\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_KingsGambit"
+    },
+    {
+      "id": "leadballoon",
+      "display_name": "Lead Balloon",
+      "serial": "@UgfIh4FnkbUJa*7LRG/{psNq8KP$N;BYJ;kSx`SGU`h_0Gmty#yx6AbOc>cYX!/=EJJ4L76`7g5^CJV!C_WSJy",
+      "deserialized": "12, 0, 1, 60| 2, 3726|| {57} {2} {4} {6} {1:11} {56} {65} {13} {22} {26} {27} {37} {47} \"c\" \"Cosmetics_Weapon_Shiny_LeadBalloon\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_LeadBalloon"
+    },
+    {
+      "id": "linebacker",
+      "display_name": "Linebacker",
+      "serial": "@UgfIh4FnkbUJa*8a3YDlv4Hv41`iJU=+J_2>3WI8cs)M?NT7@3Qk7D?qx6AbOc>cYX!/=EJJ4L76`7bl=E{ntCby*G",
+      "deserialized": "12, 0, 1, 60| 2, 3726|| {1} {2} {4} {6} {1:11} {58} {63} {62} {61} {64} {16} {22} {26} {27} {37} \"c\" \"Cosmetics_Weapon_Shiny_Linebacker\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Linebacker"
+    },
+    {
+      "id": "loarmaster",
+      "display_name": "Loarmaster",
+      "serial": "@UgwSAs35E/MjO+(WiRy<s)S?<SRA?nCENUz&E-DNv4=NOD6e<@g9jYFB7(a^Pd)_Y7)8qN~S`NeC?(Y<xcIUs$cUayI&*^13",
+      "deserialized": "20, 0, 1, 60| 2, 2002|| {68} {62} {3} {5} {6} {1:10} {69} {80} {81} {88} {16} {28} {32} {33} {44} {52} {58} \"c\" \"Cosmetics_Weapon_Shiny_Loarmaster\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Loarmaster",
+      "note": "Not released — STX Partial Implementation / stub (formerly labeled Rogue)."
+    },
+    {
+      "id": "lucian",
+      "display_name": "Lucian's Flank",
+      "serial": "@Ugvelk35E/MjK>c8hbmN~5;bgSP+?IqQ8iJWs)Oo-`h&`aYKvNjDv2J(?_v0!x6AbOc>cYX!/=EJJ4L76`7g6RPKVt9",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {63} {2} {6} {4} {1:13} {1} {80} {72} {74} {14} {26} {30} {31} {44} {86} {53} {66} \"c\" \"Cosmetics_Weapon_Shiny_Lucian\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Lucian"
+    },
+    {
+      "id": "lumberjack",
+      "display_name": "Bloody Lumberjack",
+      "serial": "@Ugfs(8FnkbUJa$k_)Swo1s6-WN*w8%Grox~)^{F/iRH#^}Tc}#7cBp>nVf-kD?/HjSPmkx{YdH*myT4O(+MWM0>uqsat`3ja00",
+      "deserialized": "13, 0, 1, 60| 2, 3726|| {72} {1} {5} {3} {4} {2} {1:13} {57} {13} {16} {14} {15} {25} {36} {40} {43} {42} {54} {62} \"c\" \"Cosmetics_Weapon_Shiny_Lumberjack\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Lumberjack"
+    },
+    {
+      "id": "luty",
+      "display_name": "Luty Madlad",
+      "serial": "@UgwSAs35E/MjK>ZdiRy=HRH7DjsC=lgsIaKBsIsUqs6D7&sC1}$=wbXFhVOa1Oiz#J-)lJxf4jd^blRQ&GVAm_",
+      "deserialized": "20, 0, 1, 60| 2, 3726|| {65} {62} {6} {4} {5} {3} {60} {81} {80} {83} {82} {16} {29} {46} {52} {58} \"c\" \"Cosmetics_Weapon_Shiny_Luty\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Luty"
+    },
+    {
+      "id": "noisycricket",
+      "display_name": "Noisy Cricket",
+      "serial": "@Ugb)KvFnkbUJa$l6RG/{psGq2ls7&=ly+PeU<w3nd593cUe9zludU`znUdv(l+x?xQ)9(D&`A*OCLwS0<F4F-",
+      "deserialized": "4, 0, 1, 60| 2, 3726|| {80} {2} {4} {6} {79} {67} {12} {78} {23} {27} {28} {39} \"c\" \"Cosmetics_Weapon_Shiny_NoisyCricket\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_NoisyCricket"
+    },
+    {
+      "id": "ohmigot",
+      "display_name": "Ohm I Got",
+      "serial": "@Ugw$Yw35E/MjK>bjhbmN~5_JzX22}^u2lWS43v~`XjPJwnJ#Uxk>GAw~Er;Q6_jig;yYt^Cx}7/}=>P",
+      "deserialized": "21, 0, 1, 60| 2, 3726|| {60} {2} {6} {4} {59} {17} {26} {30} {31} {42} {51} \"c\" \"Cosmetics_Weapon_Shiny_OhmIGot\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_OhmIGot"
+    },
+    {
+      "id": "om",
+      "display_name": "Oscar Mike",
+      "serial": "@Ugfs(8FnkbUJa$lO)Swo1sNq79npCC6pz5GPp;Dn@p=zOSq1K^pqKENw7{2H2GCe(>f3M{*{O$fu(P?-7`)mR",
+      "deserialized": "13, 0, 1, 60| 2, 3726|| {100} {1} {5} {3} {1:11} {8} {9} {10} {17} {26} {32} {36} {40} {42} {43} {53} {75} \"c\" \"Cosmetics_Weapon_Shiny_OM\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_OM"
+    },
+    {
+      "id": "onslaught",
+      "display_name": "Onslaught",
+      "serial": "@UgxFw!35E/MjK>ZdRG}J`sNq5>Q8Q67Q8!UFQDIPXP<2qZQ1{To_)rYr^LCk@9?!qmav1)0f2ZiQJO6#U=j?F(jHUw",
+      "deserialized": "22, 0, 1, 60| 2, 3726|| {1} {2} {6} {4} {1:11} {68} {73} {72} {75} {74} {16} {25} {26} {43} {59} \"c\" \"Cosmetics_Weapon_Shiny_Onslaught\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Onslaught"
+    },
+    {
+      "id": "phantomflame",
+      "display_name": "Phantom Flame",
+      "serial": "@UgbV{rFnkbUJa$k/RG}KRs6-uVC+Zw39jYB_9ja4vP_<Ak(Zl#u4Bzv1nVufczt?gY{&s(-=(Ickg`&f5`n&x#vcv5%",
+      "deserialized": "3, 0, 1, 60| 2, 3726|| {78} {2} {6} {5} {4} {3} {77} {51} {52} {54} {53} {14} {25} {42} {70} \"c\" \"Cosmetics_Weapon_Shiny_Phantom_Flame\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Phantom_Flame"
+    },
+    {
+      "id": "plasmacoil",
+      "display_name": "Plasma Coil",
+      "serial": "@Ugw$Yw35E/MjK>c8hbmN~4z;MEL;X-IQ7us~QJtEDs)ag-8Wuc^AI0!JZ<p!m@%(!&hv9GccZyEC^Is@CJa31G?=%/",
+      "deserialized": "21, 0, 1, 60| 2, 3726|| {63} {2} {6} {3} {5} {1:14} {62} {69} {70} {71} {14} {25} {42} {51} {1:5} \"c\" \"Cosmetics_Weapon_Shiny_PlasmaCoil\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_PlasmaCoil"
+    },
+    {
+      "id": "potatothrower",
+      "display_name": "Potato Thrower IV",
+      "serial": "@Ugv4Ng35E/MjK>b@iAsk`RHKFp?L@sq-9yzwWvWwcP<2puP^(b8(8Kst4Bzv1nVufczt?gY{&s(-=(Ickg}&)w`kRWDzwc!^",
+      "deserialized": "17, 0, 1, 60| 2, 3726|| {78} {52} {4} {6} {1:10} {77} {71} {59} {58} {12} {14} {22} {26} {27} {37} {45} \"c\" \"Cosmetics_Weapon_Shiny_PotatoThrower\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_PotatoThrower"
+    },
+    {
+      "id": "prince",
+      "display_name": "Prince Harming",
+      "serial": "@Ugv?-o35E/MjK>ZdRG}J`s6#Dk=+GEcO;k(NOVp>vqVk/lp;DoCp?;x<@p~A)=j}2*J)VEB<uLs1{!Y<pcm4~Nr`_W+",
+      "deserialized": "19, 0, 1, 60| 2, 3726|| {1} {2} {6} {4} {3} {5} {1:14} {17} {74} {70} {71} {15} {81} {28} {35} {36} {45} {47} \"c\" \"Cosmetics_Weapon_Shiny_Prince\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Prince"
+    },
+    {
+      "id": "queensrest",
+      "display_name": "Queen's Rest",
+      "serial": "@Ugct)%FnkbUJa*7JRG}J`sG&pYP$^L%Q6o{EYJ;kSx`SGU%7q@rk7D?qx6AbOc>cYX!/=EJJ4L76`ERsdF1zQ_@/+F",
+      "deserialized": "6, 0, 1, 60| 2, 3726|| {53} {2} {6} {4} {1:14} {52} {68} {64} {65} {14} {22} {26} {27} {37} {44} \"c\" \"Cosmetics_Weapon_Shiny_QueensRest\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_QueensRest"
+    },
+    {
+      "id": "quickdraw",
+      "display_name": "San Saba Songbird",
+      "serial": "@UgbV{rFnkbUJa*7eRG}J`sF<jKsCcM(s7!UL4yq6852_X_C3+Yiis5_SF4NQF`S)55!{6@j6rFbGztMVnye7)ScK`",
+      "deserialized": "3, 0, 1, 60| 2, 3726|| {79} {2} {6} {4} {72} {63} {56} {57} {12} {14} {26} {30} {31} {42} {68} \"c\" \"Cosmetics_Weapon_Shiny_QuickDraw\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_QuickDraw"
+    },
+    {
+      "id": "rainbowvomit",
+      "display_name": "Rainbow Vomit",
+      "serial": "@Ugd_t@FnkbUJa*7pRG}J`s6n+wy+g%A)kD2Sy+O4??LrUZPceMY+huxsJpW$HVffqqoubq3{8t)IyT$Lj_1#X>0R",
+      "deserialized": "9, 0, 1, 60| 2, 3726|| {85} {2} {6} {4} {1} {86} {55} {56} {58} {87} {23} {38} {45} \"c\" \"Cosmetics_Weapon_Shiny_RainbowVomit\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_RainbowVomit"
+    },
+    {
+      "id": "rangefinder",
+      "display_name": "Rangefinder",
+      "serial": "@Uga`vnFnkbUJa*7MRG}J`s6!1E>WLbOI*IDk9#ksSEYvR4@C!VQFU9aZZ<p!m@%(!&hv9GccZyEC^IvJ$eJ-2RZgN=;",
+      "deserialized": "2, 0, 1, 60| 2, 3726|| {59} {2} {6} {4} {3} {1:10} {78} {65} {67} {14} {29} {36} {41} {45} {1:47} \"c\" \"Cosmetics_Weapon_Shiny_Rangefinder\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Rangefinder"
+    },
+    {
+      "id": "roach",
+      "display_name": "Roach",
+      "serial": "@Ugct)%FnkbUJa*8a3e~7Y4I65Q+K1}Y8dNOwFg_2%_q<)Er^oZ}wH$`O-QOuX?aqIt@9-E6",
+      "deserialized": "6, 0, 1, 60| 2, 3726|| {1} {2} {6} {4} {1:13} {54} {61} {14} {21} {40} \"c\" \"Cosmetics_Weapon_Shiny_Roach\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Roach"
+    },
+    {
+      "id": "rocketreload",
+      "display_name": "Lucky Clover",
+      "serial": "@Ugb)KvFnkbUJa*7JRG/{psIjPesC%eEtwgm!wL<+u593cUe9zludU`znUdv(l+x?xQ)9(CN`W~;#bZMFW4wC@",
+      "deserialized": "4, 0, 1, 60| 2, 3726|| {53} {2} {4} {6} {81} {58} {59} {1} {69} {22} {38} {47} \"c\" \"Cosmetics_Weapon_Shiny_RocketReload\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_RocketReload"
+    },
+    {
+      "id": "rowan",
+      "display_name": "Rowan's Charge",
+      "serial": "@UgzR8/35E/MjK>bDi7Hg17IhP~sW7Nc-9i09wL;ZG-9n{9%/j34^DunR+huxsJpW$HVffqqoubq3{8#$Ehur`",
+      "deserialized": "27, 0, 1, 60| 2, 3726|| {74} {2} {6} {5} {75} {13} {16} {14} {27} {31} {38} {42} {43} {52} {57} \"c\" \"Cosmetics_Weapon_Shiny_Rowan\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Rowan"
+    },
+    {
+      "id": "rubysgrasp",
+      "display_name": "Ruby's Grasp",
+      "serial": "@UgcJizFnkbUJa$k?RG}JmsG&n6Q8`gDQ8Q7QdV}hNDup_Qx`ir-9>$Mi_@1}R^z?ZCy_Uo9xBELqr``Flv@XuikMi&w4g",
+      "deserialized": "5, 0, 1, 60| 2, 3726|| {66} {2} {6} {3} {1:14} {65} {76} {72} {73} {12} {23} {30} {34} {35} {43} {50} \"c\" \"Cosmetics_Weapon_Shiny_RubysGrasp\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_RubysGrasp"
+    },
+    {
+      "id": "seventhsense",
+      "display_name": "Seventh Sense",
+      "serial": "@UgbV{rFnkbUJa*7nRG}J`s6#C(EGix99I72^9V!fJ4k{OF7kU_<is5_SF4NQF`S)55!{6@j6rFbGzw@%a?53l?^Rjzh1^",
+      "deserialized": "3, 0, 1, 60| 2, 3726|| {81} {2} {6} {4} {3} {5} {80} {52} {51} {54} {53} {16} {25} {44} {45} \"c\" \"Cosmetics_Weapon_Shiny_seventh_sense\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_seventh_sense"
+    },
+    {
+      "id": "sideshow",
+      "display_name": "Sideshow",
+      "serial": "@UgcJizFnkbUJa*8a3Uw0I2Gs{u3UvzA3$+eCjQ_*%J#Uxk>GAw~Er;Q6_jig;yYt^^np~cv-**5",
+      "deserialized": "5, 0, 1, 60| 2, 3726|| {1} {2} {67} {22} {30} {34} {35} {46} {53} \"c\" \"Cosmetics_Weapon_Shiny_Sideshow\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Sideshow"
+    },
+    {
+      "id": "slugger",
+      "display_name": "Hot Slugger",
+      "serial": "@Ugd_t@FnkbUJa$l6RH1&NdZON-Vxdx^hw*(FzUS>SJw2X(ujMfO?fy>DX?OlRW!KN=vK#",
+      "deserialized": "9, 0, 1, 60| 2, 3726|| {80} {2} {79} {78} {23} {40} {68} \"c\" \"Cosmetics_Weapon_Shiny_Slugger\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Slugger"
+    },
+    {
+      "id": "starhelix",
+      "display_name": "Star Helix",
+      "serial": "@Ugfs(8FnkbUJa*7b)Swo1sNq68QEO0}>eL-nDO4;}Ez~VkIaE&cFn$!n_q<)Er^oZ}wH$`O-QOuX?aqJa^sxMkF0<2k00",
+      "deserialized": "13, 0, 1, 60| 2, 3726|| {73} {1} {5} {3} {1:11} {77} {21} {13} {14} {27} {34} {40} {42} {43} {50} {76} \"c\" \"Cosmetics_Weapon_Shiny_star_helix\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_star_helix"
+    },
+    {
+      "id": "stopgap",
+      "display_name": "Stop Gap",
+      "serial": "@Uguq~c35E/MjK>Z-i7M2g7ByTbCaNZC4(cW<C#q9-P=8RNP_t0!Q0q/l(8KsX4Bzv1nVufczt?gY{&s(-=(Ickozma%V;Bw",
+      "deserialized": "16, 0, 1, 60| 2, 3726|| {67} {2} {3} {5} {1:11} {72} {74} {25} {75} {76} {14} {27} {31} {32} {41} {52} {53} {59} \"c\" \"Cosmetics_Weapon_Shiny_StopGap\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_StopGap"
+    },
+    {
+      "id": "stray",
+      "display_name": "Stray",
+      "serial": "@Ugxp/&35E/MjK>Z-gDO;_8Z}fX4Jsw7B&sH=Q+H5*P@zz_P~p(S_&f~X^LCk@9?!qmav1)0f2ZiQJO7>1<>5R",
+      "deserialized": "23, 0, 1, 60| 2, 3726|| {19} {2} {4} {6} {1:10} {20} {68} {66} {74} {14} {27} {31} {32} {43} {48} \"c\" \"Cosmetics_Weapon_Shiny_Stray\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Stray"
+    },
+    {
+      "id": "sweetembrace",
+      "display_name": "Sweet Embrace",
+      "serial": "@UgeU_{FnkbUJa*7LRG}J`s9{6(P%lxPii6sN%7co9x`!IZfQRv^7{2H2GCe(>f3M{*{O$fu(P?-7JH407^lz~(mWRh>00",
+      "deserialized": "10, 0, 1, 60| 2, 3726|| {57} {2} {6} {4} {1:13} {58} {71} {14} {24} {29} {28} {40} {59} {1:17} \"c\" \"Cosmetics_Weapon_Shiny_Sweet_Embrace\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Sweet_Embrace"
+    },
+    {
+      "id": "symmetry",
+      "display_name": "Symmetry",
+      "serial": "@Ugy>*^35E/MjK>bji7Hg15)~7bsZH%ctwPO0)k391<wFnS/1f;d+huxsJpW$HVffqqoubq3{CApfx65>S9s",
+      "deserialized": "26, 0, 1, 60| 2, 3726|| {76} {2} {6} {4} {72} {12} {13} {29} {37} {41} {42} {52} {60} \"c\" \"Cosmetics_Weapon_Shiny_Symmetry\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Symmetry"
+    },
+    {
+      "id": "tkswave",
+      "display_name": "T.K's Wave",
+      "serial": "@Ugd_t@FnkbUJa*7sRG}J`sJf_=sC%e<s7!q-E-DUc4=N8T7Ahrr7~hBCd)_Y7)8qN~S`NeC?(Y<xcIUs;<@_49mjM",
+      "deserialized": "9, 0, 1, 60| 2, 3726|| {91} {2} {6} {4} {90} {67} {59} {60} {12} {15} {88} {24} {29} {28} {40} {68} \"c\" \"Cosmetics_Weapon_Shiny_TKsWave\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_TKsWave"
+    },
+    {
+      "id": "truck",
+      "display_name": "Truck",
+      "serial": "@Ugy3L+35E/MjK>bji7Hg17IhO<50wvf5A~@ts5+=Vs6VJ$s9xw{d>)4HdAm$ckLTZOIShZhzf*MDo&Qqh_3;`",
+      "deserialized": "24, 0, 1, 60| 2, 3726|| {76} {2} {6} {5} {75} {58} {60} {59} {15} {19} {26} {30} {31} {42} {46} \"c\" \"Cosmetics_Weapon_Shiny_Truck\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Truck"
+    },
+    {
+      "id": "vamoose",
+      "display_name": "Vamoose",
+      "serial": "@Ugxp/&35E/MjK>ZdRG}KRs3AjZP&H94Q7=(3QJcDh`hyCEx`q0M9>(`!_@1}R^z?ZCy_Uo9xBELqr``FlHQau`=Vbr",
+      "deserialized": "23, 0, 1, 60| 2, 3726|| {1} {2} {6} {5} {1:12} {21} {74} {70} {71} {72} {13} {27} {31} {32} {43} {47} \"c\" \"Cosmetics_Weapon_Shiny_Vamoose\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Vamoose"
+    },
+    {
+      "id": "wf",
+      "display_name": "Whiskey Foxtrot",
+      "serial": "@Ugvelk35E/MjK>bziz-y35;bh7FDfi5Cu%3^Q)f_hP<>E;P_s~VQFBr8(8KsS4Bzv1nVufczt?gY{&s(-=(Icky&3@",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {93} {2} {6} {4} {1:13} {94} {80} {76} {77} {15} {19} {26} {30} {31} {41} {90} {89} {56} \"c\" \"Cosmetics_Weapon_Shiny_WF\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_WF"
+    },
+    {
+      "id": "wombocombo",
+      "display_name": "Wombo Combo",
+      "serial": "@Ugvelk35E/MjK>Zdi7Hg15;b%vBq}B<45/*Q59$vp7pfk57(a^Pd)_Y7)8qN~S`NeC?(Y<xcIUs>cU$}(zT4tA",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {65} {2} {6} {4} {1:14} {64} {72} {16} {26} {30} {31} {44} {58} \"c\" \"Cosmetics_Weapon_Shiny_WomboCombo\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_WomboCombo"
+    },
+    {
+      "id": "zipgun",
+      "display_name": "Zipper",
+      "serial": "@Uga`vnFnkbUJa$k!RG}7?s6!3vAF3Z}Q*%(Y(8KsW4Bzv1nVufczt?gY{&s(-=(Ick)u!R+x*G",
+      "deserialized": "2, 0, 1, 60| 2, 3726|| {54} {2} {5} {4} {3} {1} {63} {62} {13} {25} {42} \"c\" \"Cosmetics_Weapon_Shiny_Zipgun\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Zipgun"
+    },
+    {
+      "id": "arctic",
+      "display_name": "Arctic",
+      "serial": "@UgfIh4FnkbUJa*7eRG/{psG&kVQ6o_`Q6*8C>Qoz49n>AvDpWZ1Fn$l?_q<)Er^oZ}y&Q(W-QPJn?aqJ0@-aO<1^",
+      "deserialized": "12, 0, 1, 60| 2, 3726|| {79} {2} {4} {6} {1:10} {78} {65} {74} {66} {12} {14} {22} {26} {27} {37} {48} \"c\" \"cosmetics_weapon_shiny_arctic\"|",
+      "cosmetic": "cosmetics_weapon_shiny_arctic"
+    },
+    {
+      "id": "breadth",
+      "display_name": "Hardpoint",
+      "serial": "@Ugct)%FnkbUJa*7MRG/))sCuZBsF0/Us7/#()j{1stwQBQ599kVe$U%wdU`zn-pgV5+x?xR)9(CNEH8)2bTj",
+      "deserialized": "6, 0, 1, 60| 2, 3726|| {59} {2} {3} {4} {58} {68} {64} {65} {14} {22} {26} {27} {37} {76} \"c\" \"cosmetics_weapon_shiny_breadth\"|",
+      "cosmetic": "cosmetics_weapon_shiny_breadth"
+    },
+    {
+      "id": "brickhouse",
+      "display_name": "Brickhouse",
+      "serial": "@UgxFw!35E/MjO+*Miz?Ki615kV6SWi76BQOU26YGZ2NepH3snyF4s{Pbj334DJ#Uxk>GAw~Er;Q6_jig;yYpYMJUw2c-}QMJ",
+      "deserialized": "22, 0, 1, 60| 2, 2002|| {94} {2} {3} {4} {93} {76} {77} {78} {80} {17} {27} {31} {32} {44} {50} {55} {59} \"c\" \"Cosmetics_Weapon_Shiny_brickhouse\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_brickhouse"
+    },
+    {
+      "id": "bubbles",
+      "display_name": "Bubbles",
+      "serial": "@Ugvelk35E/MjK>a2jVe^55;b(_G%6-4ENUjIQ*}^%P=8RlP~lMNQ1Q^i_&$u^^LCk@9?!q`av1)0f9L45JO35e#bS1O4g",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {100} {2} {6} {4} {1:14} {99} {72} {80} {73} {14} {26} {30} {31} {44} {48} {52} {56} \"c\" \"cosmetics_weapon_shiny_bubbles\"|",
+      "cosmetic": "cosmetics_weapon_shiny_bubbles"
+    },
+    {
+      "id": "cannonbrawl",
+      "display_name": "Swan Song",
+      "serial": "@UgdhV<FnkbUWIs?@RG/))sC=lAsFJ9as7=K/<w5O1y+Vye593QQe9zludU`znUdv(l+x?xQ)9(Ct7<RkgZm~RkX9E",
+      "deserialized": "8, 0, 1, 60| 2, 2002|| {82} {2} {3} {4} {60} {65} {66} {69} {13} {24} {28} {29} {39} {81} \"c\" \"Cosmetics_Weapon_Shiny_Cannonbrawl\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Cannonbrawl"
+    },
+    {
+      "id": "cormano",
+      "display_name": "Cormano",
+      "serial": "@UgfIh4FnkbUWIxbZRG/))sI;h&sFSFbs7<v&)j{1stwNPW599kVe9zludU`znUdv(l+x?xQ)9(Ct_?EZB?l%",
+      "deserialized": "12, 0, 1, 60| 2, 2002|| {83} {2} {3} {4} {84} {65} {67} {69} {13} {22} {26} {27} {37} {82} \"c\" \"Cosmetics_Weapon_Shiny_Cormano\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Cormano"
+    },
+    {
+      "id": "demo",
+      "display_name": "Demo",
+      "serial": "@Ugd77*FnkbUJa$k#RG}J`s6#Dk*w8!FPE<?OOH>%t8`K`uA5<t*EL1u4F#ZnX_q<)Er^oZ}y&Q(W-QPJn?aqJ6<@Or",
+      "deserialized": "7, 0, 1, 60| 2, 3726|| {56} {2} {6} {4} {3} {5} {1:13} {55} {77} {70} {71} {16} {23} {29} {31} {32} {40} {50} \"c\" \"cosmetics_weapon_shiny_demo\"|",
+      "cosmetic": "cosmetics_weapon_shiny_demo"
+    },
+    {
+      "id": "discybusiness",
+      "display_name": "Discy Business",
+      "serial": "@UgeU_{FnkbUWIxbYRG/))sNq6oQU6dOQ7=)Qii667+JlOPI)@tGfQRv^7{2H2GCe(>f3M{*{O$fu(P?-7OH9wld0~B?c9-XK00",
+      "deserialized": "10, 0, 1, 60| 2, 2002|| {81} {2} {3} {4} {1:11} {82} {63} {64} {71} {14} {24} {28} {29} {40} {51} {1:23} \"c\" \"Cosmetics_Weapon_Shiny_DiscyBusiness\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_DiscyBusiness"
+    },
+    {
+      "id": "doeshot",
+      "display_name": "Doeshot",
+      "serial": "@Ugd_t@FnkbUJa$lORG}J`sMDyCsC%e=sJ^H&s5q!Rs6D7us9xw{d>_W/dAm$ckLTZeIShZhzjJijo&S>G<vIFI2L",
+      "deserialized": "9, 0, 1, 60| 2, 3726|| {100} {2} {6} {4} {99} {65} {59} {61} {94} {18} {24} {28} {29} {36} {46} \"c\" \"cosmetics_weapon_shiny_doeshot\"|",
+      "cosmetic": "cosmetics_weapon_shiny_doeshot"
+    },
+    {
+      "id": "falke",
+      "display_name": "Falke",
+      "serial": "@Ugv?-o35E/MjK>bThbmN}8Z~679;zm)Bq}8;4C)T*4=NO@7U~yz7@vpnd)_Y7)8qN~UJk?G?(ZC(cIUt5Fne7F",
+      "deserialized": "19, 0, 1, 60| 2, 3726|| {59} {2} {4} {6} {1:12} {58} {74} {66} {68} {16} {27} {31} {32} {42} {47} \"c\" \"cosmetics_weapon_shiny_falke\"|",
+      "cosmetic": "cosmetics_weapon_shiny_falke"
+    },
+    {
+      "id": "fearstalker",
+      "display_name": "Fearstalker",
+      "serial": "@Ugy3L+35E/MjK>b@i7Hg17PS+#4;2#C4;2Qr2bBu73RMf$3q6c4#rQpMm+9&8{Ch8l;cxeMj!wJtUvoJupVPzaby*G",
+      "deserialized": "24, 0, 1, 60| 2, 3726|| {78} {2} {6} {5} {77} {61} {64} {62} {16} {29} {36} {37} {42} {46} \"c\" \"cosmetics_weapon_shiny_fearstalker\"|",
+      "cosmetic": "cosmetics_weapon_shiny_fearstalker"
+    },
+    {
+      "id": "fishward",
+      "display_name": "Fishward",
+      "serial": "@UgzR8/35E/MjO+(Giz?Ki5>*zpsZWJL?LoCd)k57ur9<sQ599wZe9zludU`znUdv(l+x?xQ)9(D&oSviaVL2H",
+      "deserialized": "27, 0, 1, 60| 2, 2002|| {83} {2} {3} {4} {82} {13} {15} {16} {29} {38} {42} {43} {52} {61} \"c\" \"Cosmetics_Weapon_Shiny_fishward\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_fishward"
+    },
+    {
+      "id": "flashcyclone",
+      "display_name": "Flashcyclone",
+      "serial": "@Ugw$Yw35E/MjK>aIiz-y35;a^XEovreC8{N=Q*}^%P=8RfP;t@2_*0DE^LCk@9?!q`av1)0f9L45JO4Ga!*ldFKW4w(WdH",
+      "deserialized": "21, 0, 1, 60| 2, 3726|| {85} {2} {6} {4} {1:11} {84} {73} {69} {70} {14} {26} {30} {31} {41} {88} \"c\" \"cosmetics_weapon_shiny_flashcyclone\"|",
+      "cosmetic": "cosmetics_weapon_shiny_flashcyclone"
+    },
+    {
+      "id": "fleabag",
+      "display_name": "Fleabag",
+      "serial": "@Ugv4Ng35E/MjK>Z-i%N$/RHKFtl//J<l/<b`b*c@j4(bkS6>1lH7~hBSd)_Y7)8qN~UJk?G?(ZC(cIUrlb~!8#p8)",
+      "deserialized": "17, 0, 1, 60| 2, 3726|| {83} {52} {4} {6} {1:14} {82} {58} {66} {59} {14} {22} {26} {27} {37} {45} \"c\" \"cosmetics_weapon_shiny_fleabag\"|",
+      "cosmetic": "cosmetics_weapon_shiny_fleabag"
+    },
+    {
+      "id": "follower",
+      "display_name": "Follower",
+      "serial": "@UgwSAs35E/MjK>ZtR6kUs7BzHeP;*gfQEO41%7Y4p8ik65`iUOK/6%-/x6AbOc>cYY!/=EJJ4dJ8`LFrSX20)cIR",
+      "deserialized": "20, 0, 1, 60| 2, 3726|| {2} {62} {6} {5} {1:14} {1} {89} {84} {85} {14} {28} {32} {33} {40} {79} \"c\" \"cosmetics_weapon_shiny_follower\"|",
+      "cosmetic": "cosmetics_weapon_shiny_follower"
+    },
+    {
+      "id": "harddark",
+      "display_name": "Hard Dark",
+      "serial": "@Ugfs(8FnkbUWIxbb)SwD=sJ5t0eJTtp4=NQZ7OEEN7HS<TB&sEP82^Xid)_Y7)8qN~S`NeC?(Y<xcIUsyu$)W`%hvz",
+      "deserialized": "13, 0, 1, 60| 2, 2002|| {87} {1} {2} {3} {86} {13} {15} {16} {28} {36} {40} {42} {43} {53} {64} {70} \"c\" \"Cosmetics_Weapon_Shiny_HardDark\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HardDark"
+    },
+    {
+      "id": "hemorrhage",
+      "display_name": "Hemorrhage",
+      "serial": "@Uguq~c35E/MjK>a&iz-y37L};Cs5z*bsGF#qs7~EM{XvC7%/ew!y+hqY593EMe$U%wdU`zn-pgV5+x?xR)9(BiU2ebSa&-7y1^",
+      "deserialized": "16, 0, 1, 60| 2, 3726|| {88} {2} {6} {5} {4} {87} {25} {74} {75} {76} {14} {27} {31} {32} {41} {50} {55} {59} \"c\" \"cosmetics_weapon_shiny_hemorrhage\"|",
+      "cosmetic": "cosmetics_weapon_shiny_hemorrhage"
+    },
+    {
+      "id": "inscriber",
+      "display_name": "Inscriber",
+      "serial": "@UgcJizFnkbUJa$l9RG/*lsG&k@Q87`KdV}hNDup_Q>V+DI+J_#-hhqGmx6AbOc>cYY!/=EJJ4dJ8`ES}iAIsC?vK#",
+      "deserialized": "5, 0, 1, 60| 2, 3726|| {86} {2} {3} {6} {1:10} {85} {72} {10} {23} {30} {34} {35} {46} {49} {61} \"c\" \"cosmetics_weapon_shiny_inscriber\"|",
+      "cosmetic": "cosmetics_weapon_shiny_inscriber"
+    },
+    {
+      "id": "ishmael",
+      "display_name": "Ishmael",
+      "serial": "@Ugy>*^35E/MjO+(0iz?Ki61AwYs7!V0Q=968N`+d73X2}b_hI;+x6AbOc>cYX!/=EJJ4L76`EPQLZimZk00",
+      "deserialized": "26, 0, 1, 60| 2, 2002|| {82} {2} {3} {4} {5} {81} {12} {14} {15} {13} {30} {36} {53} {80} \"c\" \"Cosmetics_Weapon_Shiny_Ishmael\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Ishmael"
+    },
+    {
+      "id": "lasercutter",
+      "display_name": "Lasercutter",
+      "serial": "@Ugvelk35E/MjK>aojVe^55;bh7H7YD>CMqVXQ*}^%P=8RlP^(cV(Zl#sjNkKinVufczxQ$&{&s)o=(IckWrycw`M6G}m*oH",
+      "deserialized": "18, 0, 1, 60| 2, 3726|| {103} {2} {6} {4} {1:13} {102} {80} {73} {72} {14} {26} {30} {31} {44} {101} {67} \"c\" \"cosmetics_weapon_shiny_lasercutter\"|",
+      "cosmetic": "cosmetics_weapon_shiny_lasercutter"
+    },
+    {
+      "id": "laserdisc",
+      "display_name": "LaserDisc",
+      "serial": "@Ugg66CFnkbUJa*7eRG}Jms3Ai=QTI^qQ1MWgI*W>fs)M?N+J#Dq9>#}a{GPYV^z?ZCy_duAxBELsr``E4J3KGT$?5qR",
+      "deserialized": "14, 0, 1, 60| 2, 3726|| {79} {2} {6} {3} {1:12} {78} {59} {55} {56} {11} {83} {24} {26} {27} {45} {68} \"c\" \"cosmetics_weapon_shiny_laserdisc\"|",
+      "cosmetic": "cosmetics_weapon_shiny_laserdisc"
+    },
+    {
+      "id": "lightgun",
+      "display_name": "Lightgun",
+      "serial": "@Uguq~c35E/MjO+)xiz-y27ByU`E@}>{Ch8_CCu$7p4(bmo6si`g9O@nF9(ox6hv9qPF4NQF`S)55!{6@j6rFbGzs&R*O+VJ%00",
+      "deserialized": "16, 0, 1, 60| 2, 2002|| {91} {2} {4} {5} {1:11} {90} {25} {74} {75} {76} {17} {27} {31} {32} {42} {50} {55} {59} \"c\" \"Cosmetics_Weapon_Shiny_LightGun\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_LightGun"
+    },
+    {
+      "id": "lockjaw",
+      "display_name": "Lockjaw",
+      "serial": "@Ugv4Ng35E/MOs))Ci%N%TRHB9orA4ho)kEDwb*c=i4XO_64yqKYCVCj(hv9qPF4NQF`S)55!{6@j6rFbGzwGyTtq$J-",
+      "deserialized": "17, 0, 1, 60| 2, 3161|| {85} {52} {6} {4} {1:10} {84} {69} {58} {59} {14} {18} {22} {26} {27} {34} {74} \"c\" \"Cosmetics_Weapon_Shiny_lockjaw\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_lockjaw"
+    },
+    {
+      "id": "manifest",
+      "display_name": "Manifest",
+      "serial": "@Ugydj=35E/MjO+(`iz?Ki5;a_CEovmHBx)vV45}^a4(bmo6zUeL7b+fl82^Xid)_Y7)8qN~S`NeC?(Y<xcIUtCusdxo&*=a",
+      "deserialized": "25, 0, 1, 60| 2, 2002|| {87} {2} {3} {4} {1:11} {85} {65} {66} {73} {17} {86} {27} {31} {32} {43} {46} {56} \"c\" \"Cosmetics_Weapon_Shiny_manifest\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_manifest"
+    },
+    {
+      "id": "mantra",
+      "display_name": "Mantra",
+      "serial": "@UgeU_{FnkbUJa$l6RG}J`s9{6>P%lv@Q7KVlP;pRsP<v3ZQ1?*7hllZd7{BN3GCe(>fA8fm{O$hE(P?-7+YY<w@-P",
+      "deserialized": "10, 0, 1, 60| 2, 3726|| {80} {2} {6} {4} {1:13} {62} {71} {67} {68} {17} {24} {28} {29} {40} {59} {1:15} \"c\" \"cosmetics_weapon_shiny_mantra\"|",
+      "cosmetic": "cosmetics_weapon_shiny_mantra"
+    },
+    {
+      "id": "mercredi",
+      "display_name": "Hard Dark",
+      "serial": "@Ugfs(8FnkbUJa*7o)Swo1sG&n;QDab(s#G0RC{!v`EL1JjEz~;HT=X#h599Z/U8bkU^Y6VJhQHn4IXdmmf7@mGSY9Tl0R",
+      "deserialized": "13, 0, 1, 60| 2, 3726|| {83} {1} {5} {3} {1:14} {82} {17} {9} {10} {26} {32} {36} {40} {42} {43} {53} {89} \"c\" \"cosmetics_weapon_shiny_mercredi\"|",
+      "cosmetic": "cosmetics_weapon_shiny_mercredi"
+    },
+    {
+      "id": "mercury",
+      "display_name": "Mercury",
+      "serial": "@UgxFw!35E/MjK>bjiz-y28Z}htE-EZ4Cu%3EC+bskQFBmtP=8RNP`Oa&Q1MXr(8KsXjNkKinVufczxQ$&{&s)o=(IckZI/Wax;zg",
+      "deserialized": "22, 0, 1, 60| 2, 3726|| {92} {2} {4} {6} {1:10} {91} {80} {76} {77} {78} {15} {89} {25} {27} {31} {32} {44} {51} {56} {59} \"c\" \"cosmetics_weapon_shiny_mercury\"|",
+      "cosmetic": "cosmetics_weapon_shiny_mercury"
+    },
+    {
+      "id": "misslaser",
+      "display_name": "Missilaser",
+      "serial": "@UgdhV<FnkbUJa$k$RG}J`sNq8MP&HAR8iR_1%7fa2dWDLI9>#}a{GPYV^z?ZCy_duAxBELsr``E)J3XJX!}GEn",
+      "deserialized": "8, 0, 1, 60| 2, 3726|| {58} {2} {6} {4} {1:11} {57} {74} {12} {17} {24} {28} {29} {39} {56} \"c\" \"cosmetics_weapon_shiny_misslaser\"|",
+      "cosmetic": "cosmetics_weapon_shiny_misslaser"
+    },
+    {
+      "id": "murder",
+      "display_name": "Murmur",
+      "serial": "@Ugg66CFnkbUJa*7dRG}JmsNq66QTI^iQ0q{YI*W>fs)M?N3WrLG9>(us{GPYV^z?ZCy_duAxBELsr``E)yDle}<p2",
+      "deserialized": "14, 0, 1, 60| 2, 3726|| {77} {2} {6} {3} {1:11} {76} {59} {51} {53} {10} {83} {24} {26} {27} {48} {68} \"c\" \"cosmetics_weapon_shiny_murder\"|",
+      "cosmetic": "cosmetics_weapon_shiny_murder"
+    },
+    {
+      "id": "rainmaker",
+      "display_name": "Rainmaker",
+      "serial": "@Ugxp/&35E/MjK>a/hbmN~5;bI~9;zj(Ch8?BCaP0+P=8RNP`6O)Q2o%u_)v`B^LCk@9?!q`av1)0f9L45JO7o3)9!Y7U6um",
+      "deserialized": "23, 0, 1, 60| 2, 3726|| {57} {2} {6} {4} {1:12} {58} {70} {74} {71} {72} {14} {27} {31} {32} {43} {53} {62} \"c\" \"cosmetics_weapon_shiny_rainmaker\"|",
+      "cosmetic": "cosmetics_weapon_shiny_rainmaker"
+    },
+    {
+      "id": "reminisce",
+      "display_name": "Reminisce",
+      "serial": "@UgeU_{FnkbUJa*7NRG}J`sG&mnP&rYX3WJJ+%7fa2iiOIB9>#}a{GPYV^z?ZCy_duAxBELsr``FlyxdN^)AMl/",
+      "deserialized": "10, 0, 1, 60| 2, 3726|| {61} {2} {6} {4} {1:10} {60} {76} {13} {16} {24} {28} {29} {40} {44} \"c\" \"cosmetics_weapon_shiny_reminisce\"|",
+      "cosmetic": "cosmetics_weapon_shiny_reminisce"
+    },
+    {
+      "id": "rhythm",
+      "display_name": "Rhythm",
+      "serial": "@Ugb)KvFnkbUWIxbbRG/))sJ5tfsCTG-sF$dfs5huPs641wsFdho{2qqydAm$ckLTZOIShZhzf*MDo&QSFc{;ic",
+      "deserialized": "4, 0, 1, 60| 2, 2002|| {87} {2} {3} {4} {86} {54} {55} {62} {71} {69} {23} {27} {28} {39} {68} \"c\" \"Cosmetics_Weapon_Shiny_Rhythm\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Rhythm"
+    },
+    {
+      "id": "roil",
+      "display_name": "Roil",
+      "serial": "@Ugv?-o35E/MjK>a&hbmN~5;bgS9;zm)B<dt84C)T*4=NO@7HSQ87=MTHd)_Y7)8qN~UJk?G?(ZC(cIUtHcbW/",
+      "deserialized": "19, 0, 1, 60| 2, 3726|| {56} {2} {6} {4} {1:13} {57} {74} {66} {67} {16} {27} {31} {32} {42} {21} \"c\" \"cosmetics_weapon_shiny_roil\"|",
+      "cosmetic": "cosmetics_weapon_shiny_roil"
+    },
+    {
+      "id": "roulette",
+      "display_name": "Roulette",
+      "serial": "@Ugb)KvFnkbUJa*7pRG/{psI;hlsCuY-s7<{=-9hC+y+Wl#599wZe$U%wdU`zn-pgV5+x?xR)9(CN{;spjbb1*",
+      "deserialized": "4, 0, 1, 60| 2, 3726|| {85} {2} {4} {6} {84} {62} {58} {59} {13} {23} {27} {28} {39} {68} \"c\" \"cosmetics_weapon_shiny_roulette\"|",
+      "cosmetic": "cosmetics_weapon_shiny_roulette"
+    },
+    {
+      "id": "rowdy",
+      "display_name": "Rowdy Rider",
+      "serial": "@UgzR8/35E/MjK>c8i7Hg164ev6sW7Nc-9i09y+ox%twg0m#X}F{^DutT+huxsJpbOyVffqqoukw4{8#?Ilk)%",
+      "deserialized": "27, 0, 1, 60| 2, 3726|| {79} {2} {6} {4} {78} {13} {16} {14} {27} {31} {71} {68} {69} {52} {56} \"c\" \"cosmetics_weapon_shiny_rowdy\"|",
+      "cosmetic": "cosmetics_weapon_shiny_rowdy"
+    },
+    {
+      "id": "scootshoot",
+      "display_name": "Scootshoot",
+      "serial": "@Ugct)%FnkbUJa*7LRG}J`sNq8KP$^OQQ2S7wYJ;kSx`SGU+Jzp*k7E3ux6AbOc>cYY!/=EJJ4dJ8`R{!Ee$(gZ_nQs",
+      "deserialized": "6, 0, 1, 60| 2, 3726|| {57} {2} {6} {4} {1:11} {56} {68} {60} {61} {14} {22} {26} {27} {37} {45} \"c\" \"cosmetics_weapon_shiny_scootshoot\"|",
+      "cosmetic": "cosmetics_weapon_shiny_scootshoot"
+    },
+    {
+      "id": "seamstress",
+      "display_name": "Rooker",
+      "serial": "@Ugy>*^35E/MjK>c8i7Hg08r2gO1~sWRsF$dgs8y(0s9LCXsGaCx{3yondAm$ckLTZeIShZhzjJijo&V0u;r5&^FVE)y",
+      "deserialized": "26, 0, 1, 60| 2, 3726|| {79} {2} {4} {6} {78} {16} {9} {22} {71} {70} {37} {41} {42} {53} {77} \"c\" \"cosmetics_weapon_shiny_seamstress\"|",
+      "cosmetic": "cosmetics_weapon_shiny_seamstress"
+    },
+    {
+      "id": "shalashaska",
+      "display_name": "Shalashaska",
+      "serial": "@UgbV{rFnkbUJa*7oRG}KRsIsVZsCB4zs85/i)j{<^{Xxw_r9=<oOEG@W+huxsJpbOyVffqqoukw4{CAEHv%_<Ac)kt;",
+      "deserialized": "3, 0, 1, 60| 2, 3726|| {83} {2} {6} {5} {82} {52} {53} {54} {15} {19} {26} {30} {31} {41} {68} \"c\" \"cosmetics_weapon_shiny_shalashaska\"|",
+      "cosmetic": "cosmetics_weapon_shiny_shalashaska"
+    },
+    {
+      "id": "shammy",
+      "display_name": "Shammy",
+      "serial": "@UgcJizFnkbUI9//PRG}J`sG&n~Q8`g5Q7chzP<>FPP^VD4Q0vgc_&p5Y^LCk@9?!qmav1)0f2ZiQJO7=c!/iq+",
+      "deserialized": "5, 0, 1, 60| 2, 2956|| {89} {2} {6} {4} {1:14} {88} {76} {68} {69} {23} {30} {34} {35} {45} {53} \"c\" \"Cosmetics_Weapon_Shiny_Shammy\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Shammy"
+    },
+    {
+      "id": "shoals",
+      "display_name": "Shoals",
+      "serial": "@UgbV{rFnkbUWIxbaRG/))sI;hasC1}xs85wa)j{<^{Xxw_{X&gI599YRe9zludU`znUdv(l+x?xQ)9(Ctj(&&Pa{v",
+      "deserialized": "3, 0, 1, 60| 2, 2002|| {85} {2} {3} {4} {84} {51} {52} {53} {15} {18} {26} {30} {31} {41} {47} {65} \"c\" \"Cosmetics_Weapon_Shiny_shoals\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_shoals"
+    },
+    {
+      "id": "songbird",
+      "display_name": "Songbird",
+      "serial": "@Ugw$Yw35E/MjK>Zdiz-y35;b%vENUexCaNXsQ$JC4P<>E;P_<CK(8KsYjNkKinVufczxQ$&{&s)o=(Ickoxj~@aav9W",
+      "deserialized": "21, 0, 1, 60| 2, 3726|| {81} {2} {6} {4} {1:14} {80} {69} {72} {70} {15} {79} {26} {30} {31} {42} {46} \"c\" \"cosmetics_weapon_shiny_songbird\"|",
+      "cosmetic": "cosmetics_weapon_shiny_songbird"
+    },
+    {
+      "id": "sunspot",
+      "display_name": "Sunspot",
+      "serial": "@Ugb)KvFnkbUJa*7oRG}J`sIsV&sCKA#s7!V04eAam59$>vCVCj(hw*#fF4NQF`S)H9!{6@j9G!OOzw^3#4u8`D",
+      "deserialized": "4, 0, 1, 60| 2, 3726|| {83} {2} {6} {4} {82} {67} {54} {55} {12} {14} {23} {27} {28} {39} {72} \"c\" \"cosmetics_weapon_shiny_sunspot\"|",
+      "cosmetic": "cosmetics_weapon_shiny_sunspot"
+    },
+    {
+      "id": "tankbuster",
+      "display_name": "Tankbuster",
+      "serial": "@Ugxp/&35E/MjK>a&hbmN~5;at)4Jsw7B<dt;C8/?*P=8RNP`6Ow(8KsqjNkKinVufczxQ$&{&s)o=(IckrH9>XaeYoN%K-",
+      "deserialized": "23, 0, 1, 60| 2, 3726|| {56} {2} {6} {4} {1:10} {22} {68} {66} {67} {69} {14} {27} {31} {32} {43} {48} \"c\" \"cosmetics_weapon_shiny_tankbuster\"|",
+      "cosmetic": "cosmetics_weapon_shiny_tankbuster"
+    },
+    {
+      "id": "unstable",
+      "display_name": "Unstable Kor",
+      "serial": "@UgfIh4FnkbUJa*7dRG}J`sNq66QT<T=Q2S6JQDIPRP<2puP^(bo(8KsYjNkKinVufczxQ$&{&s)o=(Ickt-I&+u$Wy2",
+      "deserialized": "12, 0, 1, 60| 2, 3726|| {77} {2} {6} {4} {1:11} {76} {62} {63} {61} {64} {16} {22} {26} {27} {37} {50} \"c\" \"cosmetics_weapon_shiny_unstable\"|",
+      "cosmetic": "cosmetics_weapon_shiny_unstable"
+    },
+    {
+      "id": "crazedearl",
+      "display_name": "Crazed Earl",
+      "serial": "@Ugd77*FnkbUJa$k!RG}J`s9{5EP&H90Q72LJP<v2+P@zz@P~}j=J<xCtJd7X3_&slz>FM$OdoPFKZ})eOPP_Bpu{^9VlgnW_8v",
+      "deserialized": "7, 0, 1, 60| 2, 3726|| {54} {2} {6} {4} {1:13} {21} {74} {68} {67} {57} {29} {31} {32} {42} {50} {1:59} {1:51} \"c\" \"cosmetics_weapon_shiny_crazedearl\"|",
+      "cosmetic": "cosmetics_weapon_shiny_crazedearl"
+    },
+    {
+      "id": "jailbroken",
+      "display_name": "Jail-Broken",
+      "serial": "@Ugv?-o35E/MjO+*6hbmN}8Z}fXAF3qkB&sH=Q+H5*P@zz@Q0-9tP(wb@a1K0-AI0!JZ<p!m@%(!&hv9GccZyEC^Iv5+%@)hw>#`d",
+      "deserialized": "19, 0, 1, 60| 2, 2002|| {61} {2} {4} {6} {1:10} {60} {66} {67} {74} {14} {27} {31} {32} {42} {54} {62} {1:60} {1:51} \"c\" \"Cosmetics_Weapon_Shiny_Jailbroken\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Jailbroken"
+    },
+    {
+      "id": "locust",
+      "display_name": "Parasite",
+      "serial": "@UgxFw!35E/MjO+(mjVjck8Z~6-H7X}6Eb3FIQFBmtP=8RNP`Oa8QTI^8JJ4_rJdEGN@I7yr>FM$Odo73IZ})eKPP_A8=6hV9(*X",
+      "deserialized": "22, 0, 1, 60| 2, 2002|| {101} {2} {3} {6} {1:12} {103} {76} {80} {15} {99} {25} {27} {31} {32} {44} {102} {59} {1:55} {1:51} \"c\" \"Cosmetics_Weapon_Shiny_Locust\"|",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Locust"
+    },
+    {
+      "id": "soulsurvivor",
+      "display_name": "Soul Survivor",
+      "serial": "@Uga`vnFnkbUJa$l6RG}J`sG&nYQ6W(yQ72JhP<2p!P=8RhP`gmWEzmFzG@Jtu<4-Yu&)a2sdOZK$%VGH2{hg!J?)-QDuCwQLxjk)v%K-",
+      "deserialized": "2, 0, 1, 60| 2, 3726|| {80} {2} {6} {4} {1:14} {79} {64} {65} {67} {16} {26} {30} {31} {42} {45} {1:43} {1:57} {1:51} \"c\" \"cosmetics_weapon_shiny_soulsurvivor\"|",
+      "cosmetic": "cosmetics_weapon_shiny_soulsurvivor"
+    }
+  ]
+}

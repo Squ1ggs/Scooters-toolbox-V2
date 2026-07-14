@@ -7,7 +7,13 @@
   if (window.__ccLazyBundlesV1) return;
   window.__ccLazyBundlesV1 = true;
 
-  var DATA_BASE = './assets/data/';
+  var DATA_BASE = (function () {
+    if (typeof window.STX_DATA_BASE === 'string' && window.STX_DATA_BASE) return window.STX_DATA_BASE;
+    try {
+      if (/\/assets(\/|$)/i.test(String(location.pathname || ''))) return './data/';
+    } catch (_) {}
+    return './assets/data/';
+  })();
   var scriptPromises = Object.create(null);
 
   function loadScript(src) {
@@ -57,15 +63,18 @@
       return Promise.resolve(window.STX_SERIALS_DATA.serials);
     }
     if (serialsPromise) return serialsPromise;
-    serialsPromise = loadScriptsSequential([
-      DATA_BASE + 'serials_data.js',
-      DATA_BASE + 'bl4_spawncodes_bundle_serials.js',
-    ]).then(function () {
-      return (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
-    }).catch(function () {
-      serialsPromise = null;
-      return [];
-    });
+    serialsPromise = loadScript(DATA_BASE + 'serials_data.js')
+      .then(function () {
+        // Optional spawncodes overlay — never wipe the main catalog if it fails.
+        return loadScript(DATA_BASE + 'bl4_spawncodes_bundle_serials.js').catch(function () { return null; });
+      })
+      .then(function () {
+        return (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
+      })
+      .catch(function () {
+        serialsPromise = null;
+        return (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
+      });
     return serialsPromise;
   }
 
@@ -160,6 +169,12 @@
   window.__ccEnsureClassmodSkillsData = ensureClassmodSkillsData;
   window.__ccEnsureWeaponStatsData = ensureWeaponStatsData;
   window.__ccEnsureBuildStatsData = ensureBuildStatsData;
+
+  try {
+    if (typeof window.__stxRefreshSerialSearchCatalog === 'function') {
+      window.__stxRefreshSerialSearchCatalog();
+    }
+  } catch (_) {}
 
   function deferHeavyPanelWork(fn, idleMs) {
     var run = function () {

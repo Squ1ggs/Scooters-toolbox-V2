@@ -500,18 +500,31 @@ Include full item stats in exported JSON
       autoDecode(label);
       return true;
     }
+    function takeHandoff(key) {
+      var v = null;
+      try { v = localStorage.getItem(key); } catch (_) {}
+      if (v != null && v !== '') {
+        try { localStorage.removeItem(key); } catch (_) {}
+        try { sessionStorage.removeItem(key); } catch (_) {}
+        return v;
+      }
+      try { v = sessionStorage.getItem(key); } catch (_) {}
+      if (v != null && v !== '') {
+        try { sessionStorage.removeItem(key); } catch (_) {}
+        return v;
+      }
+      return null;
+    }
     if (/\bprefill_yaml=1\b/i.test(location.search || '')) {
-      var y = sessionStorage.getItem('stx_bulk_decoder_prefill_yaml');
+      var y = takeHandoff('stx_bulk_decoder_prefill_yaml');
       if (y) {
-        sessionStorage.removeItem('stx_bulk_decoder_prefill_yaml');
         applyPrefill(y, 'yaml', 'Loaded YAML from Toolbox — decoding serials…');
       }
       return;
     }
     if (/\bprefill=1\b/i.test(location.search || '')) {
-      var raw = sessionStorage.getItem('stx_bulk_decoder_prefill');
+      var raw = takeHandoff('stx_bulk_decoder_prefill');
       if (raw) {
-        sessionStorage.removeItem('stx_bulk_decoder_prefill');
         applyPrefill(raw, 'txt', 'Loaded serial lines from Toolbox — decoding…');
       }
     }

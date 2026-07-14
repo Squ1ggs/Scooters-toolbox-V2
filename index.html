@@ -969,6 +969,12 @@
       color: #f5fffb !important;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
     }
+    html:not(.fullAnimButtons) body.tobgun-reskin .btn--brand:not(.egg-off-btn):not(.btn--discord-community),
+    html:not(.fullAnimButtons) body.tobgun-reskin .with-thanks-toggle {
+      background-image: linear-gradient(90deg, rgba(230,57,70,0.55) 0%, rgba(45,108,223,0.45) 35%, rgba(230,57,70,0.5) 50%, rgba(45,108,223,0.45) 65%, rgba(230,57,70,0.55) 100%) !important;
+      color: #f8fbff !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45) !important;
+    }
 
     @media (hover: hover) and (pointer: fine) {
       html:not(.fullAnimButtons) .btn:not(.egg-off-btn):not(.btn--discord-community):hover,
@@ -1137,6 +1143,7 @@
     body.scooter-reskin .contributor-name { border-color: rgba(0,255,120,0.5); background: linear-gradient(135deg, rgba(0,255,120,0.2), rgba(255,40,40,0.15)); color: #fff; }
     body.ynot-reskin .contributor-name { border-color: rgba(0,212,232,0.5); background: linear-gradient(135deg, rgba(0,212,232,0.2), rgba(10,10,14,0.6)); color: #fff; }
     body.grimeey-reskin .contributor-name { border-color: rgba(255,140,0,0.5); background: linear-gradient(135deg, rgba(255,140,0,0.2), rgba(40,20,0,0.6)); color: #fff; }
+    body.tobgun-reskin .contributor-name { border-color: rgba(230,57,70,0.5); background: linear-gradient(135deg, rgba(230,57,70,0.22), rgba(45,108,223,0.2)); color: #fff; }
     .credits-msg, .credits-check, .credits-discord {
       margin: 0; font-size: 12px; color: var(--text-secondary);
       pointer-events: none;
@@ -1262,6 +1269,7 @@
     body.scooter-reskin .egg-off-btn { border-color: #00ff78; background: rgba(0,255,120,0.2); }
     body.ynot-reskin .egg-off-btn { border-color: #00d4e8; background: rgba(0,212,232,0.2); }
     body.grimeey-reskin .egg-off-btn { border-color: #ff8c00; background: rgba(255,140,0,0.2); }
+    body.tobgun-reskin .egg-off-btn { border-color: #e63946; background: rgba(45,108,223,0.22); }
 
     
     body.mattmab-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(255,215,0,.95), rgba(70,120,255,.95)); border-color: rgba(255,215,0,.65); box-shadow: 0 0 22px rgba(255,215,0,.35); }
@@ -1480,7 +1488,7 @@
     
     body.grimeey-reskin { --accent-cyan: #448f36; --accent-pink: #f8fafc; background: linear-gradient(135deg,#0a1810,#0f2218,#07120c,#0d1a12) !important; }
     body.grimeey-reskin .header-bar, body.grimeey-reskin .panel { border-color: rgba(68,143,54,0.45) !important; }
-    body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn, body.grimeey-reskin .egg-off-btn { display: inline-flex !important; }
+    body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn, body.grimeey-reskin .egg-off-btn, body.tobgun-reskin .egg-off-btn { display: inline-flex !important; }
     body.grimeey-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(68,143,54,.92), rgba(248,250,252,.12)); border-color: rgba(68,143,54,.65); box-shadow: 0 0 22px rgba(68,143,54,.35); }
     body.grimeey-reskin #rp-saveyaml-drawer { border-left-color: rgba(68,143,54,.42); }
     body.grimeey-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(68,143,54,.2) 0%, rgba(8,18,12,.95) 100%); border-bottom-color: rgba(68,143,54,.3); }
@@ -1504,7 +1512,7 @@
       color: #f0fdf4 !important;
     }
     body.mattmab-reskin .rebuild-details summary, body.mac10-reskin .rebuild-details summary,
-    body.badley-reskin .rebuild-details summary, body.scooter-reskin .rebuild-details summary, body.ynot-reskin .rebuild-details summary, body.grimeey-reskin .rebuild-details summary {
+    body.badley-reskin .rebuild-details summary, body.scooter-reskin .rebuild-details summary, body.ynot-reskin .rebuild-details summary, body.grimeey-reskin .rebuild-details summary, body.tobgun-reskin .rebuild-details summary {
       color: inherit;
     }
     body.grimeey-reskin .expander-bar { background: linear-gradient(90deg, rgba(68,143,54,0.22) 0%, rgba(8,14,10,0.92) 100%) !important; border-color: rgba(68,143,54,0.42) !important; color: #92c978 !important; }
@@ -1512,6 +1520,37 @@
     body.grimeey-reskin .custom-select-option { color: #ecfdf5 !important; }
     body.grimeey-reskin .custom-select-option:hover { background: rgba(68, 143, 54, 0.45) !important; }
     body.grimeey-reskin .custom-select-group-header { color: #92c978 !important; border-bottom-color: rgba(248,250,252,0.35) !important; }
+
+    body.tobgun-reskin { --accent-cyan: #2d6cdf; --accent-pink: #e63946; background: linear-gradient(135deg,#12060a,#061018,#1a0810,#071428,#100810) !important; }
+    body.tobgun-reskin .header-bar, body.tobgun-reskin .panel { border-color: rgba(230,57,70,0.42) !important; }
+    body.mattmab-reskin .egg-off-btn, body.mac10-reskin .egg-off-btn, body.badley-reskin .egg-off-btn, body.scooter-reskin .egg-off-btn, body.ynot-reskin .egg-off-btn, body.grimeey-reskin .egg-off-btn, body.tobgun-reskin .egg-off-btn { display: inline-flex !important; }
+    body.tobgun-reskin #rp-saveyaml-tab { background: linear-gradient(180deg, rgba(230,57,70,.95), rgba(45,108,223,.95)); border-color: rgba(230,57,70,.65); box-shadow: 0 0 22px rgba(230,57,70,.35); }
+    body.tobgun-reskin #rp-saveyaml-drawer { border-left-color: rgba(45,108,223,.42); }
+    body.tobgun-reskin #rp-saveyaml-drawer-header { background: linear-gradient(180deg, rgba(230,57,70,.2) 0%, rgba(45,108,223,.18) 100%); border-bottom-color: rgba(45,108,223,.32); }
+    body.tobgun-reskin #rp-saveyaml-drawer-title { color: #ff6b78; }
+    body.tobgun-reskin #rp-saveyaml-drawer-close { border-color: rgba(45,108,223,.5); }
+    html:not(.fullAnimButtons) body.tobgun-reskin .rebuild-floating-btn { border-color: rgba(230,57,70,.6); background: linear-gradient(135deg, rgba(230,57,70,.42), rgba(45,108,223,.4)), rgba(8,10,18,.92); box-shadow: 0 8px 24px rgba(0,0,0,.55), 0 0 18px rgba(230,57,70,.38); }
+    html:not(.fullAnimButtons) body.tobgun-reskin .rebuild-floating-btn:hover { background: linear-gradient(135deg, rgba(230,57,70,.52), rgba(45,108,223,.5)), rgba(10,12,22,.96); box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 0 24px rgba(45,108,223,.48); }
+    body.tobgun-reskin .rebuild-floating-panel { border-color: rgba(45,108,223,.5); box-shadow: 0 18px 42px rgba(0,0,0,.68), 0 0 24px rgba(230,57,70,.28); }
+    body.tobgun-reskin .rebuild-floating-panel-header { background: linear-gradient(90deg, rgba(230,57,70,.22) 0%, rgba(45,108,223,.18) 100%); border-bottom-color: rgba(45,108,223,.32); }
+    body.tobgun-reskin #floating-output-close { border-color: rgba(230,57,70,.45); background: rgba(45,108,223,.22); }
+    body.tobgun-reskin .editor-select, body.tobgun-reskin .editor-input,
+    body.tobgun-reskin select, body.tobgun-reskin input[type="number"],
+    body.tobgun-reskin textarea, body.tobgun-reskin .editor-output-code,
+    body.tobgun-reskin #yamlInput, body.tobgun-reskin #yaml-stats-section {
+      background: linear-gradient(135deg, rgba(28,12,18,0.96) 0%, rgba(10,16,32,0.98) 100%) !important;
+      border-color: rgba(230,57,70,0.45) !important;
+      color: #f2e8ec !important;
+    }
+    body.tobgun-reskin .editor-select option, body.tobgun-reskin select option {
+      background: linear-gradient(135deg, rgba(32,14,20,1) 0%, rgba(12,18,34,1) 100%) !important;
+      color: #f8eef2 !important;
+    }
+    body.tobgun-reskin .expander-bar { background: linear-gradient(90deg, rgba(230,57,70,0.22) 0%, rgba(45,108,223,0.18) 100%) !important; border-color: rgba(45,108,223,0.42) !important; color: #ff8a94 !important; }
+    body.tobgun-reskin .custom-select-display, body.tobgun-reskin .custom-select-list { background: linear-gradient(135deg, rgba(28,12,20,1) 0%, rgba(10,16,32,1) 100%) !important; border-color: rgba(45,108,223,0.45) !important; color: #f2e8ec !important; }
+    body.tobgun-reskin .custom-select-option { color: #f2e8ec !important; }
+    body.tobgun-reskin .custom-select-option:hover { background: rgba(230, 57, 70, 0.4) !important; }
+    body.tobgun-reskin .custom-select-group-header { color: #7eb0ff !important; border-bottom-color: rgba(230,57,70,0.35) !important; }
 
     
     .btn {
@@ -2361,6 +2400,7 @@
     body.scooter-reskin { --accent-cyan: #00ff78; --accent-pink: #ff2828; }
     body.ynot-reskin { --accent-cyan: #00d4e8; --accent-cyan-dim: rgba(0, 212, 232, 0.72); --accent-pink: #0a0a0c; --accent-pink-dim: rgba(12, 14, 18, 0.75); }
     body.grimeey-reskin { --accent-cyan: #448f36; --accent-cyan-dim: rgba(68, 143, 54, 0.78); --accent-pink: #f8fafc; --accent-pink-dim: rgba(248, 250, 252, 0.88); }
+    body.tobgun-reskin { --accent-cyan: #2d6cdf; --accent-cyan-dim: rgba(45, 108, 223, 0.78); --accent-pink: #e63946; --accent-pink-dim: rgba(230, 57, 70, 0.78); }
 
     
     :root { --stx-embed-h: min(96vh, 1300px); }
@@ -3428,6 +3468,25 @@
       text-shadow: none !important;
       border-color: rgba(68,143,54,0.5) !important;
     }
+    html.stxEggFullAnim body.tobgun-reskin .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin .btn--brand:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin .btn-primary:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin .btn-Firmware:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin a.btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin .with-thanks-toggle,
+    html.stxEggFullAnim body.tobgun-reskin .credits-discord-btns .btn:not(.egg-off-btn),
+    html.stxEggFullAnim body.tobgun-reskin button[id*="Add"],
+    html.stxEggFullAnim body.tobgun-reskin .with-thanks-list .contributor-name {
+      position: relative !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      color: #140810 !important;
+      text-shadow: none !important;
+      border-color: rgba(230,57,70,0.5) !important;
+    }
     html.stxEggFullAnim body.mattmab-reskin .btn:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin .btn--brand:not(.egg-off-btn)::before,
     html.stxEggFullAnim body.mattmab-reskin .btn-primary:not(.egg-off-btn)::before,
@@ -3556,6 +3615,28 @@
       z-index: -1;
       pointer-events: none;
       background-image: linear-gradient(90deg, #355d29 0%, #f8fafc 14%, #448f36 32%, #ecfdf5 50%, #448f36 68%, #f8fafc 86%, #355d29 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.tobgun-reskin .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin .btn--brand:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin .btn-primary:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin .btn-Firmware:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin a.btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin .with-thanks-toggle::before,
+    html.stxEggFullAnim body.tobgun-reskin .credits-discord-btns .btn:not(.egg-off-btn)::before,
+    html.stxEggFullAnim body.tobgun-reskin button[id*="Add"]::before,
+    html.stxEggFullAnim body.tobgun-reskin .with-thanks-list .contributor-name::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #e63946 0%, #2d6cdf 25%, #e63946 50%, #2d6cdf 75%, #e63946 100%);
       background-size: 100% 100%;
       animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: transform;
@@ -3737,6 +3818,36 @@
       z-index: -1;
       pointer-events: none;
       background-image: linear-gradient(90deg, #355d29 0%, #f8fafc 14%, #448f36 32%, #ecfdf5 50%, #448f36 68%, #f8fafc 86%, #355d29 100%);
+      background-size: 100% 100%;
+      animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
+      will-change: transform;
+    }
+    html.stxEggFullAnim body.tobgun-reskin #rp-saveyaml-tab {
+      position: fixed !important;
+      z-index: 2147483646 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      overflow: hidden !important;
+      isolation: isolate !important;
+      background: transparent !important;
+      background-image: none !important;
+      animation: none !important;
+      border-color: rgba(230,57,70,.65) !important;
+      box-shadow: 0 0 22px rgba(230,57,70,.35) !important;
+      color: #140810 !important;
+      text-shadow: none !important;
+    }
+    html.stxEggFullAnim body.tobgun-reskin #rp-saveyaml-tab::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: linear-gradient(90deg, #e63946 0%, #2d6cdf 25%, #e63946 50%, #2d6cdf 75%, #e63946 100%);
       background-size: 100% 100%;
       animation: stxEggSheenSlide var(--stx-fluid-speed) ease-in-out infinite alternate !important;
       will-change: transform;
@@ -4080,10 +4191,31 @@
 <span class="contributor-name">Sparkie</span>
 <span class="contributor-name">Super Exboom</span>
 <span class="contributor-name">ThatDonfc</span>
+<span class="contributor-name" data-egg="1" data-tooltip="👀" id="tobgunName" title="👀">Tobgun</span>
 <span class="contributor-name">Whiteshark</span>
 <span class="contributor-name">XRoxas15</span>
 <span class="contributor-name" data-egg="1" data-tooltip="👀" id="ynotName" title="👀">Ynot</span>
 </div>
+<script>
+(function () {
+  var list = document.getElementById('withThanksList');
+  if (!list || document.getElementById('tobgunName')) return;
+  var el = document.createElement('span');
+  el.className = 'contributor-name';
+  el.id = 'tobgunName';
+  el.setAttribute('data-egg', '1');
+  el.title = '\uD83D\uDC40';
+  el.textContent = 'Tobgun';
+  var kids = list.children;
+  for (var i = 0; i < kids.length; i++) {
+    if (String(kids[i].textContent || '').trim().localeCompare('Tobgun', undefined, { sensitivity: 'base' }) > 0) {
+      list.insertBefore(el, kids[i]);
+      return;
+    }
+  }
+  list.appendChild(el);
+})();
+</script>
 <p class="credits-msg">This project wouldn't have been made (or at least so soon) if not thanks to the contributors who helped to put this Spreadsheet below together</p>
 <p class="credits-check">Unsure what the part is? check here</p>
 <a class="btn btn--brand" href="https://docs.google.com/spreadsheets/d/11TmXyGmIVoDFn4IFNJN1s2HuijSnn_nPZqN3LkDd5TA/edit?gid=1385091622#gid=1385091622" rel="noopener noreferrer" target="_blank" title="Deserialization Spreadsheet">Deserialization Spreadsheet</a>
@@ -5425,9 +5557,9 @@
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
 <span aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em;">Found Serials (<span id="yaml-serial-count">0</span>)<span id="yaml-serials-source-badge" style="font-weight:600;opacity:0.9;"></span>:</span>
 <input accept=".json" id="loadDecodedResultsInput" name="loadDecodedResultsInput" style="display:none" type="file"/>
-<button class="btn btn-Firmware" id="loadDecodedResultsBtn" title="Load bulk decoder export (stx-decoded-results.json) for correct names/levels. Decode your serials in the bulk decoder first, export JSON, then load here." type="button">Load decoded results</button>
+<button class="btn btn-Firmware" id="loadDecodedResultsBtn" title="Optional: load names/levels from a bulk-decoder JSON export." type="button">Load decoded results</button>
 <span id="decodedResultsStatus" style="font-size:0.8em;color:rgba(0,243,255,0.8);"></span>
-<span class="decoded-results-hint" style="font-size:0.75em;color:rgba(0,243,255,0.55);">— Load for names, levels &amp; deserialized codes</span>
+<span class="decoded-results-hint" style="font-size:0.75em;color:rgba(0,243,255,0.55);">— optional names from bulk decoder</span>
 </div>
 <div class="yaml-serials-pagination-row" id="yaml-serials-pagination" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
 <button class="btn yaml-serials-page-btn" data-yaml-serials-dir="prev" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
@@ -5435,12 +5567,12 @@
 <span class="yaml-serials-page-info" id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
-<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials and starts decoding automatically." type="button">Open serials in bulk decoder</button>
-<button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB." type="button">Open full YAML in bulk decoder</button>
+<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Sends found serials to the bulk decoder and starts decoding." type="button">Open serials in bulk decoder</button>
+<button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends this YAML to the bulk decoder (max ~4MB)." type="button">Open full YAML in bulk decoder</button>
 </div>
 <div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Duplicate backpack or bank</div>
-<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Copies every occupied slot into new slots after the last one. Original slots are unchanged. <strong>At level</strong> re-levels each copy; enter the level before using those buttons.</p>
+<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Copies every filled slot into new slots. Set a level first if you use the “at level” buttons.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
 <label for="yamlDupTargetLevel" style="color: #00c8ff; font-size: 0.85em; display: flex; align-items: center; gap: 8px;">Level for copies <input id="yamlDupTargetLevel" inputmode="numeric" max="999" min="1" placeholder="e.g. 60" style="width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0; box-sizing: border-box;" type="number"/></label>
 </div>
@@ -5451,7 +5583,19 @@
 <button class="btn btn-Firmware" disabled="" id="yamlDupBankLevelBtn" title="Load profile .sav or YAML first." type="button">Duplicate bank at level</button>
 </div>
 </div>
-<p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Large lists: the editor only previews 50 rows and decodes in chunks. For thousands of items, use <strong>Open serials in bulk decoder</strong> or export JSON from the bulk tool and <strong>Load decoded results</strong> here for names without stressing this page.</p>
+<div id="yaml-merge-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
+<div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Merge items from another YAML</div>
+<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Appends items from another YAML into this save (character → backpack, profile → bank). Your current editor text stays the base.</p>
+<input accept=".yaml,.yml" aria-label="YAML file to merge items from" id="yamlMergeFileInput" name="yamlMergeFileInput" style="display: none;" type="file"/>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+<label for="yamlMergeTargetLevel" style="color: #00c8ff; font-size: 0.85em; display: flex; align-items: center; gap: 8px;">Level for imports <input id="yamlMergeTargetLevel" inputmode="numeric" max="999" min="1" placeholder="e.g. 60" style="width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,200,255,0.45); background: #1a2332; color: #b8e6f0; box-sizing: border-box;" type="number"/></label>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+<button class="btn btn-Firmware" disabled="" id="yamlMergeAsIsBtn" title="Load a character or profile YAML in the editor first." type="button">Merge from YAML (as-is)</button>
+<button class="btn btn-Firmware" disabled="" id="yamlMergeLevelBtn" title="Load a character or profile YAML in the editor first." type="button">Merge from YAML at level</button>
+</div>
+</div>
+<p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Huge lists? Use <strong>Open serials in bulk decoder</strong>, then optionally <strong>Load decoded results</strong> for names.</p>
 <div id="yaml-serials-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
 <div class="yaml-serials-pagination-row" id="yaml-serials-pagination-bottom" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;">
 <button class="btn yaml-serials-page-btn" data-yaml-serials-dir="prev" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
@@ -5461,7 +5605,7 @@
 </div>
 <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Search the full item catalog (same database as Prefix / Item Search). Optionally load your own serial file or paste list — results merge both. Select rows and use <strong>Add Selected</strong> for YAML, bank, or editor.</p>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Type a name or ID to browse the catalog. Select items, then add them to YAML, bank, or the editor.</p>
 <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
 <textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
 </details>
@@ -5482,12 +5626,12 @@
 </div>
 <div id="serial-search-status" style="color: rgba(0,200,255,0.9); font-size: 0.85em; margin-bottom: 8px;"></div>
 <div id="serial-search-results" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid rgba(0,200,255,0.2);">
-<div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Load a file or paste serials above to search.</div>
+<div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Loading catalog…</div>
 </div>
 </div>
 <div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
-<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste <strong>Base85</strong> serials (one per line), YAML <code>serial:</code> lines, or a <strong>JSON array</strong> of objects with a <code>"serial"</code> field (e.g. loot export lists). <strong>Character saves:</strong> items go to <code>backpack</code>. <strong>Profile saves:</strong> use <strong>Add to bank</strong>. Lines starting with <code>#</code> are ignored.</p>
+<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste @U serials (one per line) or JSON with a <code>serial</code> field. Character saves → backpack; profile saves → bank.</p>
 <label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
 <textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One @U serial per line — or paste JSON:
 [{&quot;id&quot;:&quot;lockjaw&quot;,&quot;serial&quot;:&quot;@Ugv4...&quot;}, ...]" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>

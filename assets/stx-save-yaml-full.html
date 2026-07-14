@@ -829,12 +829,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <span class="yaml-serials-page-info" id="yaml-serials-page-info" style="font-size:0.85em;color:rgba(0,243,255,0.85);"></span>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
-<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Opens legacy/bl4-bulk-decoder.html with these serials and starts decoding automatically." type="button">Open serials in bulk decoder</button>
-<button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends the full YAML from the editor to legacy/bl4-bulk-decoder.html (YAML mode). May fail if the save is larger than ~4MB." type="button">Open full YAML in bulk decoder</button>
+<button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Sends found serials to the bulk decoder and starts decoding." type="button">Open serials in bulk decoder</button>
+<button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends this YAML to the bulk decoder (max ~4MB)." type="button">Open full YAML in bulk decoder</button>
 </div>
 <div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Duplicate backpack or bank</div>
-<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Copies every occupied slot into new slots after the last one. Original slots are unchanged. <strong>At level</strong> re-levels each copy; enter the level before using those buttons.</p>
+<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Copies every filled slot into new slots. Set a level first if you use the “at level” buttons.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
 <label for="yamlDupTargetLevel" style="color: #00c8ff; font-size: 0.85em; display: flex; align-items: center; gap: 8px;">Level for copies <input id="yamlDupTargetLevel" inputmode="numeric" max="999" min="1" placeholder="e.g. 60" style="width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.45); background: #1a2332; color: #b8e6f0; box-sizing: border-box;" type="number"/></label>
 </div>
@@ -845,7 +845,19 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <button class="btn btn-Firmware" disabled="" id="yamlDupBankLevelBtn" title="Load profile .sav or YAML first." type="button">Duplicate bank at level</button>
 </div>
 </div>
-<p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Large lists: the editor only previews 50 rows and decodes in chunks. For thousands of items, use <strong>Open serials in bulk decoder</strong> or export JSON from the bulk tool and <strong>Load decoded results</strong> here for names without stressing this page.</p>
+<div id="yaml-merge-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
+<div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Merge items from another YAML</div>
+<p style="color: rgba(255,255,255,0.78); font-size: 0.84em; margin: 0 0 10px 0; line-height: 1.45;">Appends items from another YAML into this save (character → backpack, profile → bank). Your current editor text stays the base.</p>
+<input accept=".yaml,.yml" aria-label="YAML file to merge items from" id="yamlMergeFileInput" name="yamlMergeFileInput" style="display: none;" type="file"/>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px;">
+<label for="yamlMergeTargetLevel" style="color: #00c8ff; font-size: 0.85em; display: flex; align-items: center; gap: 8px;">Level for imports <input id="yamlMergeTargetLevel" inputmode="numeric" max="999" min="1" placeholder="e.g. 60" style="width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(0,200,255,0.45); background: #1a2332; color: #b8e6f0; box-sizing: border-box;" type="number"/></label>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+<button class="btn btn-Firmware" disabled="" id="yamlMergeAsIsBtn" title="Load a character or profile YAML in the editor first." type="button">Merge from YAML (as-is)</button>
+<button class="btn btn-Firmware" disabled="" id="yamlMergeLevelBtn" title="Load a character or profile YAML in the editor first." type="button">Merge from YAML at level</button>
+</div>
+</div>
+<p id="yaml-serials-bulk-hint" style="display:none;margin:0 0 10px 0;font-size:0.78em;line-height:1.35;color:rgba(0,243,255,0.65);max-width:900px;">Huge lists? Use <strong>Open serials in bulk decoder</strong>, then optionally <strong>Load decoded results</strong> for names.</p>
 <div id="yaml-serials-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
 <div class="yaml-serials-pagination-row" id="yaml-serials-pagination-bottom" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;">
 <button class="btn yaml-serials-page-btn" data-yaml-serials-dir="prev" style="padding:6px 12px;font-size:0.85em;" type="button">Previous 50</button>
@@ -866,7 +878,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </details>
 <div id="serial-search-section" style="margin-top: 15px; padding: 15px; background: rgba(0,150,255,0.12); border-radius: 8px; border: 1px solid rgba(0,200,255,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Serial Search &amp; Library</strong></div>
-<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Search the full item catalog (same as Prefix / Item Search on the main toolbox). Optionally load your own serial file or paste list. Select rows and use <strong>Add Selected</strong> for YAML, bank, or editor.</p>
+<p style="color: rgba(255,255,255,0.8); font-size: 0.9em; margin: 0 0 12px 0;">Type a name or ID to browse the catalog. Select items, then add them to YAML, bank, or the editor.</p>
 <details style="margin-bottom:10px;"><summary style="cursor:pointer;color:#00c8ff;font-size:0.9em;">Paste serials (YAML/TXT/JSON)</summary>
 <textarea id="serialLibraryPasteArea" name="serialLibraryPasteArea" placeholder="Paste YAML, TXT, or JSON here, then click Load from Paste" style="width:100%;min-height:80px;padding:10px;margin-top:8px;background:#1a2332;border:1px solid rgba(0,243,255,0.3);border-radius:8px;color:#b8e6f0;font-size:0.9em;font-family:monospace;resize:vertical;"></textarea>
 </details>
@@ -887,12 +899,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div id="serial-search-status" style="color: rgba(0,200,255,0.9); font-size: 0.85em; margin-bottom: 8px;"></div>
 <div id="serial-search-results" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px; background: rgba(0,0,0,0.25); border-radius: 8px; border: 1px solid rgba(0,200,255,0.2);">
-<div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Load a file or paste serials above to search.</div>
+<div style="color: rgba(255,255,255,0.6); font-size: 0.9em;">Loading catalog…</div>
 </div>
 </div>
 <div id="yaml-add-section" style="margin-top: 15px; padding: 15px; background: rgba(0,255,200,0.4); border-radius: 8px; border: 1px solid rgba(0,255,200,0.4);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.95em; display: block; margin-bottom: 8px;">Add New Item to YAML:</div>
-<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste <strong>Base85</strong> serials (one per line), YAML <code>serial:</code> lines, or a <strong>JSON array</strong> with <code>"serial"</code> fields. <strong>Character saves:</strong> <code>backpack</code>. <strong>Profile saves:</strong> <strong>Add to bank</strong>. Lines starting with <code>#</code> are ignored.</p>
+<p style="color: rgba(255,255,255,0.82); font-size: 0.86em; margin: 0 0 10px 0; line-height: 1.45;">Paste @U serials (one per line) or JSON with a <code>serial</code> field. Character saves → backpack; profile saves → bank.</p>
 <label for="yamlAddSerialsInput" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 6px;">Serial(s) to add</label>
 <textarea aria-label="Serials to add to YAML backpack or profile bank" id="yamlAddSerialsInput" name="yamlAddSerialsInput" placeholder="One @U serial per line — or paste JSON:
 [{&quot;id&quot;:&quot;lockjaw&quot;,&quot;serial&quot;:&quot;@Ugv4...&quot;}, ...]" style="width: 100%; min-height: 100px; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,255,200,0.55); background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; font-size: 0.9em; resize: vertical; box-sizing: border-box;"></textarea>

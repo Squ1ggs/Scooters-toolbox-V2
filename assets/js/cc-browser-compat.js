@@ -91,6 +91,26 @@
     drawer.classList.add('rp-open');
     if (!alreadyOpen) drawer.classList.add('rp-opening');
 
+    // Save/YAML serial library + decrypt tooling live in the deferred full-script pack —
+    // load them as soon as the panel opens (do not wait for the idle preload).
+    function kickSaveYamlScripts() {
+      var ready = typeof window.stxEnsureFullAppScripts === 'function'
+        ? window.stxEnsureFullAppScripts()
+        : Promise.resolve();
+      Promise.resolve(ready).then(function () {
+        try {
+          if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
+        } catch (_) {}
+        try {
+          if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
+        } catch (_) {}
+        try {
+          if (typeof window.__stxRefreshSerialSearchCatalog === 'function') window.__stxRefreshSerialSearchCatalog();
+        } catch (_) {}
+      }).catch(function () {});
+    }
+    try { kickSaveYamlScripts(); } catch (_) {}
+
     function afterPaint() {
       try { drawer.classList.remove('rp-opening'); } catch (_) {}
       try { document.body.classList.add('rp-saveyaml-drawer-open'); } catch (_) {}

@@ -517,7 +517,7 @@
       "key": "shiny_loarmaster",
       "cosmetic": "Cosmetics_Weapon_Shiny_Loarmaster",
       "unlockable": "Unlockable_Weapons.Shiny_Loarmaster",
-      "label": "Phosphene — Loarmaster"
+      "label": "Phosphene — Loarmaster (unreleased)"
     },
     {
       "key": "shiny_lockjaw",
@@ -891,7 +891,7 @@
       "key": "shiny_ultimate",
       "cosmetic": "Cosmetics_Weapon_Shiny_Ultimate",
       "unlockable": "Unlockable_Weapons.Shiny_Ultimate",
-      "label": "Phosphene — Ultimate"
+      "label": "Ratatataclysm — completion skin"
     },
     {
       "key": "shiny_unstable",
