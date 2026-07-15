@@ -1,6 +1,37 @@
 <?php
 declare(strict_types=1);
 
+/** Optional: STX_STATS_DATA_DIR = absolute path if .txt data lives outside this script directory (default: __DIR__). */
+function stx_stats_data_dir(): string
+{
+    $env = getenv('STX_STATS_DATA_DIR');
+    if (is_string($env)) {
+        $trim = rtrim($env, "/\\");
+        if ($trim !== '' && is_dir($trim)) {
+            return $trim;
+        }
+    }
+    return __DIR__;
+}
+
+function stx_count_nonempty_lines_file(string $file): int
+{
+    if (!file_exists($file)) {
+        return 0;
+    }
+    $n = 0;
+    $lines = preg_split('/\R+/', trim((string)file_get_contents($file)));
+    if (!is_array($lines)) {
+        return 0;
+    }
+    foreach ($lines as $line) {
+        if (trim($line) !== '') {
+            $n++;
+        }
+    }
+    return $n;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('Access-Control-Allow-Origin: *');
@@ -41,13 +72,18 @@ if ($expectedKey !== '') {
     }
 }
 $delta = (int)($data['delta'] ?? 1);
-if ($delta < 1) $delta = 1;
-if ($delta > 1000) $delta = 1000;
+if ($delta < 1) {
+    $delta = 1;
+}
+if ($delta > 1000) {
+    $delta = 1000;
+}
 
-$dir = __DIR__;
+$dir = stx_stats_data_dir();
 $itemsFile = $dir . DIRECTORY_SEPARATOR . 'items_made.txt';
 $totalFile = $dir . DIRECTORY_SEPARATOR . 'total.txt';
 $uniqueFile = $dir . DIRECTORY_SEPARATOR . 'unique.txt';
+$visitorIdsFile = $dir . DIRECTORY_SEPARATOR . 'stx_visitor_ids.txt';
 
 /* items_made += delta with lock */
 $itemsMade = 0;
@@ -61,7 +97,9 @@ flock($f, LOCK_EX);
 $raw = stream_get_contents($f);
 $itemsMade = (int)trim((string)$raw);
 $itemsMade += $delta;
-if ($itemsMade < 0) $itemsMade = 0;
+if ($itemsMade < 0) {
+    $itemsMade = 0;
+}
 rewind($f);
 ftruncate($f, 0);
 fwrite($f, (string)$itemsMade);
@@ -71,16 +109,14 @@ fclose($f);
 
 /* include current total/unique for UI parity */
 $total = file_exists($totalFile) ? (int)trim((string)file_get_contents($totalFile)) : 0;
-$unique = 0;
-if (file_exists($uniqueFile)) {
-    $lines = file($uniqueFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    $unique = is_array($lines) ? count($lines) : 0;
-}
+$unique = max(
+    stx_count_nonempty_lines_file($visitorIdsFile),
+    stx_count_nonempty_lines_file($uniqueFile)
+);
 
 echo json_encode([
     'ok' => true,
     'items_made' => $itemsMade,
     'total' => max(0, $total),
-    'unique' => max(0, $unique)
+    'unique' => max(0, $unique),
 ]);
-

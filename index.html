@@ -23,10 +23,10 @@
 </script>
 <meta content="dark" name="color-scheme"/>
 
-<meta content="https://save-editor.be/Scooters_TBX/track.php" name="stx-analytics-endpoint"/>
-<meta content="https://save-editor.be/Scooters_TBX/counter_v2.php" name="stx-counter-url"/>
-<meta content="https://save-editor.be/Scooters_TBX/items-bump.php" name="stx-items-bump-url"/>
-<meta content="counter_v2.php" name="stx-php-counter-url"/>
+<meta content="https://scooterstoolbox.com/track.php" name="stx-analytics-endpoint"/>
+<meta content="https://scooterstoolbox.com/counter_v2.php" name="stx-counter-url"/>
+<meta content="https://scooterstoolbox.com/items-bump.php" name="stx-items-bump-url"/>
+<meta content="https://scooterstoolbox.com/counter_v2.php" name="stx-php-counter-url"/>
 <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
 <meta content="wdA7kGwfbKBd5XFKH0dlsCxUwUmNW/UIt6sT5jptc1s=" name="stx-counter-key"/>
 <meta content="u0M3YoF4teWu6dpnne8kirI/bE9sVuWSNT1noWS45bY=" name="stx-items-bump-key"/>
@@ -36,9 +36,9 @@
 <meta content="Scooter's Toolbox" name="application-name"/>
 <meta content="#060a12" name="theme-color"/>
 <meta content="Borderlands 4 save editor, BL4 save editor, Borderlands 4 YAML editor, BL4 item editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder, Borderlands 4 mods" name="keywords"/>
-<link href="https://save-editor.be/Scooters_TBX/" rel="canonical"/>
+<link href="https://scooterstoolbox.com/" rel="canonical"/>
 <meta content="website" property="og:type"/>
-<meta content="https://save-editor.be/Scooters_TBX/" property="og:url"/>
+<meta content="https://scooterstoolbox.com/" property="og:url"/>
 <meta content="Scooter's Toolbox — Borderlands 4 save editor &amp; serial tools" property="og:title"/>
 <meta content="Borderlands 4 save editor: decrypt and edit .sav as YAML, tweak inventory serials, bulk-decode items, loot reference, guided builder — offline-friendly in your browser." property="og:description"/>
 <meta content="en_US" property="og:locale"/>
@@ -46,7 +46,7 @@
 <meta content="Scooter's Toolbox — Borderlands 4 save editor &amp; serial tools" name="twitter:title"/>
 <meta content="Borderlands 4 save editor: .sav / YAML, item serial tools, bulk decode, loot reference, guided builder." name="twitter:description"/>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","alternateName":"Borderlands 4 Save Editor","url":"https://save-editor.be/Scooters_TBX/","applicationCategory":"GameApplication","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based Borderlands 4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools, loot reference."}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Scooter's Toolbox","alternateName":"Borderlands 4 Save Editor","url":"https://scooterstoolbox.com/","applicationCategory":"GameApplication","operatingSystem":"Web browser","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Web-based Borderlands 4 save and item-serial toolkit: YAML save editing, serial decode and build, bulk tools, loot reference."}
 </script>
 <link href="./assets/favicon.svg" rel="icon" type="image/svg+xml"/>
 <link href="./assets/favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -212,11 +212,12 @@
       margin-top: 0;
     }
     html.stx-touch-ui .header-top-ctas #scrollToPasteCodeBtn,
-    html.stx-touch-ui .header-top-ctas #scrollToSavBtn {
+    html.stx-touch-ui .header-top-ctas #scrollToSavBtn,
+    html.stx-touch-ui .header-top-ctas .stx-header-issues {
       grid-column: span 1;
       flex: unset;
       width: 100%;
-      min-height: 44px;
+      min-height: 40px;
       text-align: center;
       justify-content: center;
     }
@@ -235,10 +236,12 @@
       text-align: center;
       justify-content: center;
     }
-    html.stx-touch-ui .btn,
     html.stx-touch-ui .splash__btn,
     html.stx-touch-ui .custom-select-display {
       min-height: 44px;
+    }
+    html.stx-touch-ui .btn {
+      min-height: 40px;
     }
     html.stx-touch-ui .editor-input,
     html.stx-touch-ui .editor-select,
@@ -264,10 +267,34 @@
       width: auto;
       min-width: 0;
       height: min(42vh, 300px);
+      /* Solid fill on mobile — no backdrop blur, page content must not show through */
+      background: #050c16 !important;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      opacity: 1;
+    }
+    html.stx-touch-ui #floating-output-panel .rebuild-floating-panel-header,
+    html.stx-touch-ui #floating-output-panel .floating-output-panel-header {
+      background: #071322;
+    }
+    html.stx-touch-ui #floating-output-panel .rebuild-floating-panel-body,
+    html.stx-touch-ui #floating-output-panel .floating-output-panel-body {
+      background: #050c16;
+    }
+    html.stx-touch-ui #floating-output-code {
+      background: #020810;
+      max-height: none;
+      min-height: 72px;
+      flex: 1 1 auto;
     }
     html.stx-touch-ui .rebuild-floating-btn {
       bottom: max(12px, env(safe-area-inset-bottom, 0px));
       left: max(12px, env(safe-area-inset-left, 0px));
+    }
+    html.stx-touch-ui .rebuild-floating-panel,
+    html.stx-touch-ui #floating-output-panel {
+      /* CSS resize is ignored on most mobile browsers — use grip + Tall button */
+      resize: none !important;
     }
     html.stx-touch-ui .rebuild-floating-panel {
       bottom: max(12px, env(safe-area-inset-bottom, 0px));
@@ -275,6 +302,18 @@
       width: calc(100vw - 24px);
       min-width: 0;
       max-height: calc(100dvh - 24px);
+      background: #050c16 !important;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    html.stx-touch-ui .rebuild-floating-resize-handle {
+      height: 28px;
+      min-height: 28px;
+    }
+    html.stx-touch-ui #floating-panel-size-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     html.stx-touch-ui .instructions-menu__panel {
       min-width: 0;
@@ -319,8 +358,18 @@
       html.stx-touch-ui .header-title { font-size: 1rem; }
     }
 
-    /* Desktop: external toolbox links stay inline in the dock row. */
-    html:not(.stx-touch-ui) .stxDockMoreTools { display: contents; }
+    /* Desktop: external toolbox links stay inline in the dock row.
+       Avoid display:contents — Chromium/Edge can drop <img> paint inside it. */
+    html:not(.stx-touch-ui) .stxDockMoreTools {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      overflow: visible;
+    }
     html:not(.stx-touch-ui) .stxDockMoreToolsSummary { display: none !important; }
     html:not(.stx-touch-ui) .stxDockMoreToolsLinks {
       display: flex;
@@ -329,20 +378,170 @@
       align-items: center;
       flex: 1 1 auto;
       min-width: 0;
-    }
-
-    /* Mobile: toolbox links in credits row (away from builder dropdowns). */
-    html.stx-touch-ui .stxDockMoreTools {
-      display: none !important;
+      width: 100%;
     }
     html:not(.stx-touch-ui) .stx-touch-tool-nav-link {
       display: none !important;
     }
-    html.stx-touch-ui .credits-discord-btns .btn {
-      flex: 1 1 calc(50% - 5px);
+    .stx-cta-short { display: none; }
+    .stx-garage-title-short { display: none; }
+    .stx-header-issues { display: none; }
+    .stx-btn-ico {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      flex: 0 0 32px;
+      display: inline-block;
+      position: relative;
+      z-index: 2;
+      border-radius: 6px;
+      background: #05080e;
+      box-shadow: 0 0 0 1px rgba(0, 243, 255, 0.35), 0 0 10px rgba(255, 0, 200, 0.22);
+      pointer-events: none;
+    }
+    .stx-btn-ico--emoji {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      line-height: 1;
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 0 0 1px rgba(0, 243, 255, 0.28);
+    }
+    .btn .stx-btn-ico,
+    .stxDockToggleBtn .stx-btn-ico,
+    .stxDockMoreToolsSummary .stx-btn-ico {
+      margin-right: 4px;
+    }
+    .stxDockToggleBtn .stx-btn-ico {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+    }
+    /* Keep tool icons above egg/full-anim sheen layers */
+    html.stxEggFullAnim .btn .stx-btn-ico,
+    html.fullAnimButtons .btn .stx-btn-ico,
+    html.stxEggFullAnim .stxDockToggleBtn .stx-btn-ico {
+      opacity: 1 !important;
+      visibility: visible !important;
+      z-index: 3;
+    }
+
+    /* Mobile: collapse tools under dock "More toolbox tools"; keep Discord row compact. */
+    html.stx-touch-ui .stx-touch-tool-nav-link {
+      display: none !important;
+    }
+    html.stx-touch-ui .stxDockMoreTools {
+      display: block;
+      width: 100%;
+      margin: 0;
+    }
+    html.stx-touch-ui .stxDockMoreToolsSummary {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 12px;
+      font-size: 13px;
+      justify-content: center;
+    }
+    html.stx-touch-ui .stxDockMoreToolsLinks {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    html.stx-touch-ui .stxDockMoreToolsLinks .btn {
       min-height: 44px;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      justify-content: flex-start;
+      text-align: left;
+      gap: 8px;
+    }
+    html.stx-touch-ui .credits-discord-btns {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-community--hero {
+      grid-column: 1;
+      min-width: 0;
+      min-height: 72px;
+      padding: 10px 12px;
+      gap: 2px;
+      flex: unset;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-community__kicker {
+      font-size: 10px;
+      letter-spacing: 0.05em;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-community__title {
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-community__sub {
+      display: none;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-community__icon {
+      width: 16px;
+      height: 16px;
+    }
+    html.stx-touch-ui .credits-discord-qr {
+      grid-column: 2;
+      flex: unset;
+      padding: 6px 8px;
+      gap: 4px;
+      min-width: 0;
+      align-self: center;
+    }
+    html.stx-touch-ui .credits-discord-qr__hint {
+      font-size: 11px;
+    }
+    html.stx-touch-ui .credits-discord-qr__img {
+      width: 96px;
+      height: 96px;
+    }
+    html.stx-touch-ui .credits-discord-btns .btn--discord-secondary {
+      display: none !important;
+    }
+    html.stx-touch-ui .stx-header-issues {
+      display: inline-flex;
+      grid-column: span 1;
+      width: 100%;
+      min-height: 40px;
+      padding: 8px 10px;
+      font-size: 12px;
       justify-content: center;
       text-align: center;
+    }
+    html.stx-touch-ui .stxDockMoreToolsLinks .stx-btn-ico {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+    }
+    html.stx-touch-ui .stx-cta-long { display: none; }
+    html.stx-touch-ui .stx-cta-short { display: inline; }
+    html.stx-touch-ui .stx-garage-title-long { display: none; }
+    html.stx-touch-ui .stx-garage-title-short { display: inline; }
+    html.stx-touch-ui .header-top-ctas .btn,
+    html.stx-touch-ui .header-top-ctas .support-menu > summary.btn {
+      min-height: 40px;
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+    html.stx-touch-ui .header-top-ctas .btn--discord-community--compact {
+      padding: 8px 10px;
+    }
+    html.stx-touch-ui .header-top-ctas .btn--discord-community__title {
+      font-size: 12px;
+    }
+    html.stx-touch-ui .header-top-ctas #scrollToPasteCodeBtn,
+    html.stx-touch-ui .header-top-ctas #scrollToSavBtn {
+      min-height: 40px;
+      font-size: 12px;
+      line-height: 1.25;
+      white-space: normal;
     }
     html.stx-touch-ui .stxDockTopRow {
       flex-direction: column;
@@ -1157,6 +1356,44 @@
     .credits-discord { margin-top: 8px; }
     .credits-discord-btns { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
 
+    .credits-discord-qr {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex: 0 0 auto;
+      min-width: 96px;
+      padding: 6px 8px;
+      border-radius: var(--radius-btn);
+      border: 1px solid rgba(88, 101, 242, 0.45);
+      background: rgba(8, 12, 24, 0.55);
+      text-decoration: none;
+      color: #f2fbff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .credits-discord-qr:hover {
+      border-color: rgba(255, 0, 200, 0.55);
+      box-shadow: 0 0 16px rgba(88, 101, 242, 0.35);
+      transform: translateY(-2px);
+    }
+    .credits-discord-qr__hint {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      color: rgba(242, 251, 255, 0.92);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    }
+    .credits-discord-qr__img {
+      width: 88px;
+      height: 88px;
+      display: block;
+      border-radius: 6px;
+      background: #fff;
+      image-rendering: auto;
+    }
+
     .btn--discord-community {
       display: inline-flex;
       align-items: center;
@@ -1176,11 +1413,17 @@
     }
     .btn--discord-community--hero {
       flex: 1 1 280px;
+      min-width: min(100%, 260px);
       min-height: 72px;
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
       gap: 2px;
+    }
+    html:not(.stx-touch-ui) .credits-discord-btns .btn--discord-secondary {
+      flex: 0 1 auto;
+      align-self: center;
+      white-space: nowrap;
     }
     .btn--discord-community--compact {
       padding: 10px 14px;
@@ -2194,7 +2437,8 @@
       height: min(280px, calc(100vh - 48px));
       min-height: 200px;
       z-index: 1000;
-      background: var(--bg-panel);
+      /* Opaque — ID selector used to beat --bg-panel (0.75), which reads see-through on mobile */
+      background: #050c16;
       border: 1px solid var(--accent-cyan-dim);
       border-radius: var(--radius-panel);
       box-shadow: var(--shadow-depth), var(--glow-cyan);
@@ -2419,22 +2663,31 @@
       gap: 7px;
     }
     .stx-tool-nav-btn__icon {
-      width: 16px;
-      height: 16px;
-      flex: 0 0 16px;
+      /* Legacy class — keep size in sync with .stx-btn-ico */
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
       object-fit: contain;
-      filter: drop-shadow(0 0 4px rgba(255, 220, 120, 0.35));
+      position: relative;
+      z-index: 2;
+      border-radius: 6px;
+      background: #05080e;
+      box-shadow: 0 0 0 1px rgba(0, 243, 255, 0.35), 0 0 10px rgba(255, 0, 200, 0.22);
     }
     .stxDockToggleBtn {
       appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       border: 1px solid rgba(255, 0, 200, 0.45);
       border-radius: 30px;
       background: linear-gradient(135deg, rgba(0, 243, 255, 0.1) 0%, rgba(255, 0, 200, 0.08) 100%);
       color: var(--accent-cyan);
       font-size: 12px;
       font-weight: 700;
-      min-height: 38px;
-      padding: 0 18px;
+      min-height: 44px;
+      padding: 6px 16px 6px 10px;
       cursor: pointer;
       transition: background var(--transition-fast), box-shadow var(--transition-fast);
     }
@@ -3231,6 +3484,11 @@
       -webkit-tap-highlight-color: rgba(0, 243, 255, 0.25);
       contain: layout style;
     }
+    html.fullAnimButtons #rp-saveyaml-tab,
+    html.stxEggFullAnim #rp-saveyaml-tab {
+      /* Allow continuous background/sheen animation while Full anim / egg is on */
+      contain: none;
+    }
     #rp-saveyaml-drawer {
       position: fixed;
       top: 0;
@@ -3263,19 +3521,15 @@
     html.stx-touch-ui #rp-saveyaml-drawer {
       transition: transform .12s ease-out;
     }
-    /* Tab is always on-screen — never keep a continuous sweep on mobile/lite (INP + battery) */
-    html.stx-lite-ui #rp-saveyaml-tab,
-    html.stx-touch-ui #rp-saveyaml-tab,
-    html.stx-lite-ui.fullAnimButtons #rp-saveyaml-tab,
-    html.stx-touch-ui.fullAnimButtons #rp-saveyaml-tab {
+    /* Tab is always on-screen — skip continuous sweep on lite/touch unless Full anim / egg is on */
+    html.stx-lite-ui:not(.fullAnimButtons):not(.stxEggFullAnim) #rp-saveyaml-tab,
+    html.stx-touch-ui:not(.fullAnimButtons):not(.stxEggFullAnim) #rp-saveyaml-tab {
       animation: none !important;
       will-change: auto !important;
       background-size: 100% 100% !important;
     }
-    html.stx-lite-ui.fullAnimButtons #rp-saveyaml-tab::before,
-    html.stx-touch-ui.fullAnimButtons #rp-saveyaml-tab::before,
-    html.stx-lite-ui.stxEggFullAnim #rp-saveyaml-tab::before,
-    html.stx-touch-ui.stxEggFullAnim #rp-saveyaml-tab::before {
+    html.stx-lite-ui:not(.fullAnimButtons):not(.stxEggFullAnim) #rp-saveyaml-tab::before,
+    html.stx-touch-ui:not(.fullAnimButtons):not(.stxEggFullAnim) #rp-saveyaml-tab::before {
       content: none !important;
       animation: none !important;
       display: none !important;
@@ -3350,9 +3604,10 @@
       flex-direction: column;
       border-radius: 16px;
       border: 2px solid rgba(255, 0, 200, 0.45);
-      background: rgba(0, 10, 22, 1);
+      background: #050c16;
       box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 243, 255, 0.25), 0 0 20px rgba(255, 0, 200, 0.2);
-      backdrop-filter: blur(12px);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       overflow: hidden;
     }
     .rebuild-floating-panel.open {
@@ -3362,9 +3617,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       padding: 12px 16px;
-      background: linear-gradient(90deg, rgba(0, 234, 255, 0.15) 0%, rgba(255, 0, 200, 0.1) 100%);
+      background: linear-gradient(90deg, #0a2030 0%, #1a1028 100%);
       border-bottom: 1px solid rgba(255, 0, 200, 0.3);
+      touch-action: none;
     }
     .rebuild-floating-drag-area {
       flex: 1;
@@ -3372,6 +3629,9 @@
       display: flex;
       align-items: center;
       min-width: 0;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .rebuild-floating-panel-title {
       font-weight: 600;
@@ -3380,7 +3640,47 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    #floating-panel-size-btn {
+      display: none;
+      appearance: none;
+      flex: 0 0 auto;
+      min-height: 34px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 243, 255, 0.45);
+      background: rgba(0, 30, 48, 0.95);
+      color: #b2f6ff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
     .rebuild-floating-panel-body { padding: 16px; overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; }
+    .rebuild-floating-resize-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      height: 18px;
+      cursor: ns-resize;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      background: linear-gradient(180deg, rgba(0, 20, 36, 0.2) 0%, rgba(0, 30, 48, 0.95) 100%);
+      border-top: 1px solid rgba(0, 243, 255, 0.28);
+    }
+    .rebuild-floating-resize-handle::before {
+      content: "";
+      width: 44px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(178, 246, 255, 0.55);
+      box-shadow: 0 0 8px rgba(0, 243, 255, 0.35);
+    }
+    .rebuild-floating-resize-handle:active,
+    .rebuild-floating-resize-handle.is-active {
+      background: rgba(0, 40, 60, 0.98);
+    }
     #floating-output-close {
       background: rgba(0, 234, 255, 0.2);
       border: 1px solid rgba(0, 234, 255, 0.5);
@@ -4019,12 +4319,13 @@
 </label>
 </div>
 <button class="egg-off-btn egg-off-btn--header" hidden="" id="eggOffBtnHeader" style="display:none;" type="button" title="Turn off the contributor easter-egg theme">Reset theme</button>
-<button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button">Have a code to import/edit? Click here</button>
-<a class="btn btn--discord-community btn--discord-community--compact" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Join Scooters Garage — Vault Hunters Discord">
+<button class="btn btn--brand" id="scrollToPasteCodeBtn" type="button"><span class="stx-cta-long">Have a code to import/edit? Click here</span><span class="stx-cta-short">Import / edit code</span></button>
+<a class="btn btn--discord-community btn--discord-community--compact" href="https://discord.gg/scooterstoolbox" rel="noopener noreferrer" target="_blank" title="Join Scooters Garage — Vault Hunters Discord">
 <svg class="btn--discord-community__icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
 <span class="btn--discord-community__title">Scooters Garage</span>
 </a>
-<button class="btn btn--brand" id="scrollToSavBtn" type="button">💾 Using a .Sav/.yaml? Click here</button>
+<button class="btn btn--brand" id="scrollToSavBtn" type="button"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/><span class="stx-cta-long">Using a .Sav/.yaml? Click here</span><span class="stx-cta-short">Open Save / YAML</span></button>
+<a class="btn btn--brand btn--discord-secondary stx-header-issues" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Issues</a>
 
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
 <summary class="btn btn--brand" title="Site visits &amp; your local craft tally">📊 Stats</summary>
@@ -4221,56 +4522,68 @@
 <a class="btn btn--brand" href="https://docs.google.com/spreadsheets/d/11TmXyGmIVoDFn4IFNJN1s2HuijSnn_nPZqN3LkDd5TA/edit?gid=1385091622#gid=1385091622" rel="noopener noreferrer" target="_blank" title="Deserialization Spreadsheet">Deserialization Spreadsheet</a>
 <p class="credits-discord">Join the community on Discord — hang out, share builds, and get help from other players.</p>
 <div class="credits-discord-btns">
-<a class="btn btn--discord-community btn--discord-community--hero" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Scooters Garage — Vault Hunters Discord">
+<a class="btn btn--discord-community btn--discord-community--hero" href="https://discord.gg/scooterstoolbox" rel="noopener noreferrer" target="_blank" title="Scooters Garage — Vault Hunters Discord">
 <span class="btn--discord-community__kicker">Vault Hunters</span>
-<span class="btn--discord-community__title"><svg class="btn--discord-community__icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> Scooters Garage (community)</span>
+<span class="btn--discord-community__title"><svg class="btn--discord-community__icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> <span class="stx-garage-title-long">Scooters Garage (community)</span><span class="stx-garage-title-short">Scooters Garage</span></span>
 <span class="btn--discord-community__sub">Join us here!</span>
 </a>
+<a class="credits-discord-qr" href="https://discord.gg/scooterstoolbox" rel="noopener noreferrer" target="_blank" title="Scan or tap to join Scooters Garage Discord">
+<span class="credits-discord-qr__hint">👉 or scan here</span>
+<img alt="QR code — join Scooters Garage Discord" class="credits-discord-qr__img" decoding="async" height="88" loading="lazy" src="./assets/img/scooter-garage-discord-qr.png" width="88"/>
+</a>
 <a class="btn btn--brand btn--discord-secondary" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Issues &amp; ideas</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/.">Bulk decoder</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints">Bulk serial validator</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials">Loot reference</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
-<button class="btn btn--brand stx-touch-tool-nav-link js-stx-show-history" title="View a history of items you have crafted in this browser" type="button">📄 Items Made</button>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/> Bulk decoder</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/> Bulk serial validator</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/> Parts stats catalog</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/> Prefix Lookup</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/> Legit Builder</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/> Loot reference</a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/> Save/Yaml</a>
+<button class="btn btn--brand stx-touch-tool-nav-link js-stx-show-history" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> Items Made</button>
 </div>
 <button class="egg-off-btn" hidden="" id="eggOffBtn" style="display:none;" type="button">Disable Easter Eggs &amp; Reset Theme</button>
 </div>
 
 <div id="stxDockBlock">
 <div class="stxDockTopRow">
-<button aria-controls="stxDockDetails rebuildGuidedBuilderSection" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button" title="Switch to Guided Builder">Guided Builder</button>
+<button aria-controls="stxDockDetails rebuildGuidedBuilderSection" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button" title="Switch to Guided Builder"><img alt="" aria-hidden="true" class="stx-btn-ico stx-dock-toggle-ico" height="34" src="./assets/img/tool-nav/guided-builder.png" width="34"/> <span class="stx-dock-toggle-label">Guided Builder</span></button>
 <script>
 (function () {
   var btn = document.getElementById('stxDockToggleBtn');
   if (!btn) return;
-  if (document.documentElement.classList.contains('stx-builder-mode-guided')) {
-    btn.textContent = 'Simple Builder';
-    btn.title = 'Switch to Simple Builder';
-    btn.setAttribute('aria-expanded', 'false');
+  var label = btn.querySelector('.stx-dock-toggle-label');
+  var ico = btn.querySelector('.stx-dock-toggle-ico');
+  function setDockToggle(guided) {
+    if (label) label.textContent = guided ? 'Simple Builder' : 'Guided Builder';
+    btn.title = guided ? 'Switch to Simple Builder' : 'Switch to Guided Builder';
+    btn.setAttribute('aria-expanded', guided ? 'false' : 'true');
+    if (ico) ico.src = guided ? './assets/img/tool-nav/simple-builder.png' : './assets/img/tool-nav/guided-builder.png';
   }
+  setDockToggle(document.documentElement.classList.contains('stx-builder-mode-guided'));
+  window.__stxSyncDockToggleIcons = setDockToggle;
 })();
 </script>
-<details class="stxDockMoreTools" id="stxDockMoreTools">
+<details class="stxDockMoreTools" id="stxDockMoreTools" open>
 <summary class="btn btn--brand stxDockMoreToolsSummary" title="Open bulk decoder, prefix lookup, loot reference, and other standalone tools">More toolbox tools</summary>
 <div class="stxDockMoreToolsLinks">
-<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/.">Bulk decoder</a>
-<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints">Bulk serial validator</a>
-<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
-<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
-<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
-<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials">Loot reference</a>
-<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
-<button class="btn btn--brand" id="btnShowHistory" title="View a history of items you have crafted in this browser" type="button">📄 Items Made</button>
+<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/> Bulk decoder</a>
+<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/> Bulk serial validator</a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/> Parts stats catalog</a>
+<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/> Prefix Lookup</a>
+<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/> Legit Builder</a>
+<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/> Loot reference</a>
+<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/> Save/Yaml</a>
+<button class="btn btn--brand" id="btnShowHistory" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> Items Made</button>
 </div>
 </details>
 <script>
 (function () {
-  if (!document.documentElement.classList.contains('stx-touch-ui')) {
-    var el = document.getElementById('stxDockMoreTools');
-    if (el) el.setAttribute('open', '');
+  var el = document.getElementById('stxDockMoreTools');
+  if (!el) return;
+  if (document.documentElement.classList.contains('stx-touch-ui')) {
+    el.removeAttribute('open');
+  } else {
+    el.setAttribute('open', '');
   }
 })();
 </script>
@@ -5665,6 +5978,7 @@
 <div class="rebuild-floating-drag-area" id="floating-panel-drag-handle">
 <span class="rebuild-floating-panel-title">Generated Item Code</span>
 </div>
+<button id="floating-panel-size-btn" title="Cycle panel height (Compact / Medium / Tall)" type="button">Tall</button>
 <button class="btn rebuild-floating-panel-close" id="floating-output-close" title="Minimize to logo" type="button">Close</button>
 </div>
 <div class="rebuild-floating-panel-body">
@@ -5684,6 +5998,7 @@
 <button class="btn btn--brand" id="floatingCopyBtn" type="button">Copy to Clipboard</button>
 </div>
 </div>
+<div aria-label="Drag to resize panel height" class="rebuild-floating-resize-handle" id="floating-panel-resize-handle" role="separator" title="Drag to resize height"></div>
 </div>
 <script id="editor-rebuild-js">
     (function () {
@@ -5890,16 +6205,16 @@
           root.classList.add(mode === 'guided' ? 'stx-builder-mode-guided' : 'stx-builder-mode-simple');
           if (mode === 'simple') {
             details.open = true;
-            btn.textContent = 'Guided Builder';
-            btn.title = 'Switch to Guided Builder';
-            btn.setAttribute('aria-expanded', 'true');
             btn.setAttribute('data-stx-builder-mode', 'simple');
           } else {
             details.open = false;
-            btn.textContent = 'Simple Builder';
-            btn.title = 'Switch to Simple Builder';
-            btn.setAttribute('aria-expanded', 'false');
             btn.setAttribute('data-stx-builder-mode', 'guided');
+          }
+          if (typeof window.__stxSyncDockToggleIcons === 'function') {
+            window.__stxSyncDockToggleIcons(mode === 'guided');
+          } else {
+            btn.title = mode === 'guided' ? 'Switch to Simple Builder' : 'Switch to Guided Builder';
+            btn.setAttribute('aria-expanded', mode === 'guided' ? 'false' : 'true');
           }
           try { localStorage.setItem(STORAGE_KEY, mode); } catch (_) {}
           try { window.__CC_BUILDER_UI_MODE = mode; } catch (_) {}
@@ -6309,30 +6624,103 @@
         };
         if (btn) btn.addEventListener('click', openPanel);
         if (closeBtn) closeBtn.addEventListener('click', closePanel);
-        if (dragHandle && panel) {
-          var dragging = false, startX, startY, startLeft, startTop;
-          dragHandle.addEventListener('mousedown', function (e) {
-            if (e.button !== 0) return;
-            dragging = true;
+
+        /* Pointer-based move + height resize (works on touch; CSS resize does not). */
+        var SIZE_STEPS = [
+          { key: 'compact', label: 'Medium', vh: 0.34, px: 240 },
+          { key: 'medium', label: 'Tall', vh: 0.52, px: 360 },
+          { key: 'tall', label: 'Compact', vh: 0.78, px: 520 }
+        ];
+        var sizeIdx = 1;
+        var sizeBtn = byId('floating-panel-size-btn');
+        var resizeHandle = byId('floating-panel-resize-handle');
+        var SIZE_STORE = 'stxFloatingPanelSizeIdx';
+
+        function panelMaxHeight() {
+          return Math.max(220, Math.floor((window.innerHeight || 640) - 24));
+        }
+        function applyPanelHeight(px, persistIdx) {
+          if (!panel) return;
+          var h = Math.max(200, Math.min(panelMaxHeight(), Math.round(px)));
+          panel.style.height = h + 'px';
+          panel.style.maxHeight = panelMaxHeight() + 'px';
+          if (typeof persistIdx === 'number') {
+            sizeIdx = persistIdx;
+            try { localStorage.setItem(SIZE_STORE, String(sizeIdx)); } catch (_) {}
+          }
+          if (sizeBtn) {
+            var next = SIZE_STEPS[(sizeIdx + 1) % SIZE_STEPS.length];
+            sizeBtn.textContent = next.label;
+            sizeBtn.setAttribute('aria-label', 'Resize panel — next: ' + next.label);
+          }
+        }
+        function applySizeStep(idx) {
+          idx = ((idx % SIZE_STEPS.length) + SIZE_STEPS.length) % SIZE_STEPS.length;
+          var step = SIZE_STEPS[idx];
+          var h = Math.round(Math.min(panelMaxHeight(), Math.max(step.px, (window.innerHeight || 640) * step.vh)));
+          applyPanelHeight(h, idx);
+        }
+        try {
+          var stored = parseInt(localStorage.getItem(SIZE_STORE) || '', 10);
+          if (stored >= 0 && stored < SIZE_STEPS.length) sizeIdx = stored;
+        } catch (_) {}
+        if (sizeBtn) {
+          sizeBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            applySizeStep(sizeIdx + 1);
+          });
+        }
+        if (panel && document.documentElement.classList.contains('stx-touch-ui')) {
+          applySizeStep(sizeIdx);
+        }
+
+        function bindPanelPointerDrag(el, mode) {
+          if (!el || !panel || !window.PointerEvent) return;
+          var active = false, pid = null, startX = 0, startY = 0, startLeft = 0, startTop = 0, startH = 0;
+          el.addEventListener('pointerdown', function (e) {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            if (mode === 'move' && e.target && e.target.closest && e.target.closest('button')) return;
+            active = true;
+            pid = e.pointerId;
+            try { el.setPointerCapture(pid); } catch (_) {}
             var r = panel.getBoundingClientRect();
             startX = e.clientX;
             startY = e.clientY;
             startLeft = r.left;
             startTop = r.top;
-            panel.style.left = startLeft + 'px';
-            panel.style.top = startTop + 'px';
-            panel.style.right = 'auto';
-            panel.style.bottom = 'auto';
+            startH = r.height;
+            if (mode === 'move') {
+              panel.style.left = startLeft + 'px';
+              panel.style.top = startTop + 'px';
+              panel.style.right = 'auto';
+              panel.style.bottom = 'auto';
+            } else {
+              el.classList.add('is-active');
+            }
             e.preventDefault();
           });
-          document.addEventListener('mousemove', function (e) {
-            if (!dragging) return;
-            var dx = e.clientX - startX, dy = e.clientY - startY;
-            panel.style.left = (startLeft + dx) + 'px';
-            panel.style.top = (startTop + dy) + 'px';
+          el.addEventListener('pointermove', function (e) {
+            if (!active || e.pointerId !== pid) return;
+            if (mode === 'move') {
+              panel.style.left = (startLeft + (e.clientX - startX)) + 'px';
+              panel.style.top = (startTop + (e.clientY - startY)) + 'px';
+            } else {
+              applyPanelHeight(startH + (e.clientY - startY));
+            }
           });
-          document.addEventListener('mouseup', function () { dragging = false; });
+          function endPointer(e) {
+            if (!active || (e && e.pointerId !== pid)) return;
+            active = false;
+            pid = null;
+            el.classList.remove('is-active');
+            try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+          }
+          el.addEventListener('pointerup', endPointer);
+          el.addEventListener('pointercancel', endPointer);
         }
+        bindPanelPointerDrag(dragHandle, 'move');
+        bindPanelPointerDrag(resizeHandle, 'resize');
         window.syncFloatingOutput = function (force) {
           if (force) {
             floatingSyncPaused = false;
@@ -6949,6 +7337,11 @@
     function wireImg(img) {
       if (!img || img.__ccMissingWired) return;
       img.__ccMissingWired = true;
+      // Keep toolbar / dock icons visible even if a load briefly fails —
+      // hiding them made "showed then vanished" regressions hard to spot.
+      if (img.classList && (img.classList.contains('stx-btn-ico') || img.classList.contains('stx-tool-nav-btn__icon') || img.classList.contains('stx-dock-toggle-ico'))) {
+        return;
+      }
       img.addEventListener('load', function () {
         try {
           if (img.dataset) img.dataset.ccMissingApplied = '';

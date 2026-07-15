@@ -1,6 +1,34 @@
 <?php
 declare(strict_types=1);
 
+/** Optional: STX_STATS_DATA_DIR = absolute path if .txt data lives outside this script directory (default: __DIR__). */
+function stx_stats_data_dir(): string
+{
+    $env = getenv('STX_STATS_DATA_DIR');
+    if (is_string($env)) {
+        $trim = rtrim($env, "/\\");
+        if ($trim !== '' && is_dir($trim)) {
+            return $trim;
+        }
+    }
+    return __DIR__;
+}
+
+function stx_count_nonempty_lines(string $raw): int
+{
+    $n = 0;
+    $lines = preg_split('/\R+/', trim($raw));
+    if (!is_array($lines)) {
+        return 0;
+    }
+    foreach ($lines as $line) {
+        if (trim($line) !== '') {
+            $n++;
+        }
+    }
+    return $n;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('Access-Control-Allow-Origin: *');
@@ -28,7 +56,7 @@ if ($expectedKey !== '') {
     }
 }
 
-$dir = __DIR__;
+$dir = stx_stats_data_dir();
 $totalFile = $dir . DIRECTORY_SEPARATOR . 'total.txt';
 $uniqueFile = $dir . DIRECTORY_SEPARATOR . 'unique.txt';
 $visitorIdsFile = $dir . DIRECTORY_SEPARATOR . 'stx_visitor_ids.txt';
@@ -47,29 +75,17 @@ if ($readOnly) {
             $total = 0;
         }
     }
-    $uniqueCount = 0;
+    /* Legacy counter used unique.txt (one line per IP). track.php uses stx_visitor_ids.txt (cookie UUIDs).
+     * Read-only UI must not "reset" when the new file starts filling: show the higher of the two counts. */
+    $uniqueVisitors = 0;
     if (file_exists($visitorIdsFile)) {
-        $rawV = (string)file_get_contents($visitorIdsFile);
-        $linesV = preg_split('/\R+/', trim($rawV));
-        if (is_array($linesV)) {
-            foreach ($linesV as $line) {
-                if (trim($line) !== '') {
-                    $uniqueCount++;
-                }
-            }
-        }
+        $uniqueVisitors = stx_count_nonempty_lines((string)file_get_contents($visitorIdsFile));
     }
-    if ($uniqueCount === 0 && file_exists($uniqueFile)) {
-        $rawU = (string)file_get_contents($uniqueFile);
-        $linesU = preg_split('/\R+/', trim($rawU));
-        if (is_array($linesU)) {
-            foreach ($linesU as $line) {
-                if (trim($line) !== '') {
-                    $uniqueCount++;
-                }
-            }
-        }
+    $uniqueIps = 0;
+    if (file_exists($uniqueFile)) {
+        $uniqueIps = stx_count_nonempty_lines((string)file_get_contents($uniqueFile));
     }
+    $uniqueCount = max($uniqueVisitors, $uniqueIps);
     $itemsMade = 0;
     if (file_exists($itemsFile)) {
         $itemsMade = (int)trim((string)file_get_contents($itemsFile));
@@ -146,6 +162,7 @@ fflush($uf);
 flock($uf, LOCK_UN);
 fclose($uf);
 $uniqueCount = count($allIps);
+@file_put_contents($dir . DIRECTORY_SEPARATOR . 'unique.count', (string)@filemtime($uniqueFile) . '|' . $uniqueCount, LOCK_EX);
 
 /* read items_made */
 $itemsMade = 0;
