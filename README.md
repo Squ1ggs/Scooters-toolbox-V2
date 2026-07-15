@@ -1,3 +1,17 @@
+# Scooter's Toolbox — Borderlands 4 save editor
+
+**Live site (GitHub Pages):** **[https://squ1ggs.github.io/Scooters-toolbox-V2/](https://squ1ggs.github.io/Scooters-toolbox-V2/)**
+
+Also mirrored at [save-editor.be/Scooters_TBX](https://save-editor.be/Scooters_TBX/) (shared hosting + PHP counters).
+
+Free **Borderlands 4 (BL4)** tools: edit `.sav` and YAML saves, build and decode item serials, bulk inventory checks, loot reference, cosmetics unlocks, legit builder, prefix lookup. Runs locally in the browser after the page loads.
+
+**Repo maintainers:** set the **About** box (pencil on the repo home) **Website** to `https://squ1ggs.github.io/Scooters-toolbox-V2/` and topics `borderlands-4`, `bl4`, `save-editor`, `game-tools` so mobile shows the link.
+
+---
+
+## User guide
+
 ================================================================================
   SCOOTER'S TOOLBOX (REBUILD) — SIMPLE USER GUIDE
 ================================================================================

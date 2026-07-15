@@ -2,7 +2,7 @@
   'use strict';
   var patch = [
   {
-    "manufacturer": "bor",
+    "manufacturer": "Ripper",
     "itemType": "Heavy Weapon",
     "itemTypeString": "BOR_HW.comp_05_legendary_draupner",
     "familyId": 275,
@@ -11,7 +11,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "bor",
+    "manufacturer": "Ripper",
     "itemType": "Repkit",
     "itemTypeString": "BOR_REPAIR_KIT.comp_05_legendary_hugger",
     "familyId": 274,
@@ -20,7 +20,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "bor",
+    "manufacturer": "Ripper",
     "itemType": "Shield",
     "itemTypeString": "BOR_SHIELD.comp_05_legendary_overswarm",
     "familyId": 300,
@@ -29,7 +29,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "bor",
+    "manufacturer": "Ripper",
     "itemType": "SMG",
     "itemTypeString": "BOR_SM.comp_05_legendary_falke",
     "familyId": 19,
@@ -38,7 +38,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "borg",
+    "manufacturer": "Ripper",
     "itemType": "Grenade",
     "itemTypeString": "BORG_GRENADE_GADGET.comp_05_legendary_pellet",
     "familyId": 278,
@@ -47,7 +47,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Siren",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_dark_siren.comp_05_legendary_cowbell",
     "familyId": 254,
@@ -56,7 +56,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Siren",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_dark_siren.comp_05_legendary_raid2",
     "familyId": 254,
@@ -65,7 +65,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Siren",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_dark_siren.comp_05_legendary_tuba",
     "familyId": 254,
@@ -74,7 +74,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Exo Soldier",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_exo_soldier.comp_05_legendary_cowbell",
     "familyId": 256,
@@ -83,7 +83,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Exo Soldier",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_exo_soldier.comp_05_legendary_raid2",
     "familyId": 256,
@@ -92,7 +92,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Exo Soldier",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_exo_soldier.comp_05_legendary_tuba",
     "familyId": 256,
@@ -101,7 +101,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Gravitar",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_gravitar.comp_05_legendary_cowbell",
     "familyId": 259,
@@ -110,7 +110,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Gravitar",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_gravitar.comp_05_legendary_raid2",
     "familyId": 259,
@@ -119,7 +119,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Gravitar",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_gravitar.comp_05_legendary_tuba",
     "familyId": 259,
@@ -128,7 +128,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Paladin",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_paladin.comp_05_legendary_cowbell",
     "familyId": 255,
@@ -137,7 +137,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Paladin",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_paladin.comp_05_legendary_raid2",
     "familyId": 255,
@@ -146,7 +146,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Paladin",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_paladin.comp_05_legendary_tuba",
     "familyId": 255,
@@ -155,7 +155,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Robodealer",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_robodealer.comp_05_legendary_raid2",
     "familyId": 404,
@@ -164,7 +164,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "classmod",
+    "manufacturer": "Robodealer",
     "itemType": "Class Mod",
     "itemTypeString": "classmod_robodealer.comp_05_legendary_tuba",
     "familyId": 404,
@@ -173,7 +173,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "dad",
+    "manufacturer": "Daedalus",
     "itemType": "Assault Rifle",
     "itemTypeString": "DAD_AR.comp_05_legendary_harddark",
     "familyId": 13,
@@ -182,7 +182,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "dad",
+    "manufacturer": "Daedalus",
     "itemType": "Shotgun",
     "itemTypeString": "DAD_SG.comp_05_legendary_cannonbrawl",
     "familyId": 8,
@@ -191,7 +191,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "dad",
+    "manufacturer": "Daedalus",
     "itemType": "Shield",
     "itemTypeString": "DAD_SHIELD.comp_05_legendary_honeybadger",
     "familyId": 312,
@@ -200,7 +200,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "dad",
+    "manufacturer": "Daedalus",
     "itemType": "SMG",
     "itemTypeString": "DAD_SM.comp_05_legendary_follower",
     "familyId": 20,
@@ -209,7 +209,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "dad",
+    "manufacturer": "Daedalus",
     "itemType": "SMG",
     "itemTypeString": "DAD_SM.comp_05_legendary_raiden",
     "familyId": 20,
@@ -218,7 +218,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "jak",
+    "manufacturer": "Jakobs",
     "itemType": "Assault Rifle",
     "itemTypeString": "JAK_AR.comp_05_legendary_fishward",
     "familyId": 27,
@@ -227,7 +227,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "jak",
+    "manufacturer": "Jakobs",
     "itemType": "Grenade",
     "itemTypeString": "JAK_GRENADE_GADGET.comp_05_legendary_bismuth",
     "familyId": 267,
@@ -236,7 +236,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "jak",
+    "manufacturer": "Jakobs",
     "itemType": "Pistol",
     "itemTypeString": "JAK_PS.comp_05_legendary_shoals",
     "familyId": 3,
@@ -245,7 +245,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "jak",
+    "manufacturer": "Jakobs",
     "itemType": "Repkit",
     "itemTypeString": "JAK_REPAIR_KIT.comp_05_legendary_vitae",
     "familyId": 265,
@@ -254,7 +254,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "jak",
+    "manufacturer": "Jakobs",
     "itemType": "Sniper Rifle",
     "itemTypeString": "JAK_SR.comp_05_legendary_fearstalker",
     "familyId": 24,
@@ -263,7 +263,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Heavy Weapon",
     "itemTypeString": "MAL_HW.comp_05_legendary_barrel",
     "familyId": 289,
@@ -272,7 +272,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Heavy Weapon",
     "itemTypeString": "MAL_HW.comp_05_legendary_ichor",
     "familyId": 289,
@@ -281,7 +281,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Repkit",
     "itemTypeString": "MAL_REPAIR_KIT.comp_05_legendary_geigerroid",
     "familyId": 266,
@@ -290,7 +290,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Shotgun",
     "itemTypeString": "MAL_SG.comp_05_legendary_discybusiness",
     "familyId": 10,
@@ -299,7 +299,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Shotgun",
     "itemTypeString": "MAL_SG.comp_05_legendary_reminisce",
     "familyId": 10,
@@ -308,7 +308,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "SMG",
     "itemTypeString": "MAL_SM.comp_05_legendary_flashcyclone",
     "familyId": 21,
@@ -317,7 +317,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "mal",
+    "manufacturer": "Maliwan",
     "itemType": "Sniper Rifle",
     "itemTypeString": "MAL_SR.comp_05_legendary_manifest",
     "familyId": 25,
@@ -326,7 +326,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ord",
+    "manufacturer": "Order",
     "itemType": "Pistol",
     "itemTypeString": "ORD_PS.comp_05_legendary_rhythm",
     "familyId": 4,
@@ -335,7 +335,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ord",
+    "manufacturer": "Order",
     "itemType": "Pistol",
     "itemTypeString": "ORD_PS.comp_05_legendary_sunspot",
     "familyId": 4,
@@ -344,7 +344,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ord",
+    "manufacturer": "Order",
     "itemType": "Repkit",
     "itemTypeString": "ORD_REPAIR_KIT.comp_05_legendary_paleblood",
     "familyId": 285,
@@ -353,7 +353,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ord",
+    "manufacturer": "Order",
     "itemType": "Sniper Rifle",
     "itemTypeString": "ORD_SR.comp_05_legendary_ishmael",
     "familyId": 26,
@@ -362,7 +362,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ord",
+    "manufacturer": "Order",
     "itemType": "Turret",
     "itemTypeString": "ORD_TURRET_GADGET.comp_05_legendary_anchor",
     "familyId": 326,
@@ -371,7 +371,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ted",
+    "manufacturer": "Tediore",
     "itemType": "Grenade",
     "itemTypeString": "TED_GRENADE_GADGET.comp_05_legendary_ordinance",
     "familyId": 311,
@@ -380,7 +380,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "ted",
+    "manufacturer": "Tediore",
     "itemType": "Shield",
     "itemTypeString": "TED_SHIELD.comp_05_legendary_pocketbuddies",
     "familyId": 287,
@@ -389,7 +389,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "tor",
+    "manufacturer": "Torgue",
     "itemType": "Heavy Weapon",
     "itemTypeString": "TOR_HW.comp_05_legendary_dahlfather",
     "familyId": 273,
@@ -398,7 +398,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "tor",
+    "manufacturer": "Torgue",
     "itemType": "Pistol",
     "itemTypeString": "TOR_PS.comp_05_legendary_scootshoot",
     "familyId": 6,
@@ -407,7 +407,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "tor",
+    "manufacturer": "Torgue",
     "itemType": "Shotgun",
     "itemTypeString": "TOR_SG.comp_05_legendary_cormano",
     "familyId": 12,
@@ -416,7 +416,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "tor",
+    "manufacturer": "Torgue",
     "itemType": "Shotgun",
     "itemTypeString": "TOR_SG.comp_05_legendary_unstable_kor",
     "familyId": 12,
@@ -425,7 +425,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "vla",
+    "manufacturer": "Vladof",
     "itemType": "Assault Rifle",
     "itemTypeString": "VLA_AR.comp_05_legendary_lasercutter",
     "familyId": 18,
@@ -434,7 +434,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "vla",
+    "manufacturer": "Vladof",
     "itemType": "Grenade",
     "itemTypeString": "VLA_GRENADE_GADGET.comp_05_legendary_barb",
     "familyId": 291,
@@ -443,7 +443,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "vla",
+    "manufacturer": "Vladof",
     "itemType": "SMG",
     "itemTypeString": "VLA_SM.comp_05_legendary_brickhouse",
     "familyId": 22,
@@ -452,7 +452,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "vla",
+    "manufacturer": "Vladof",
     "itemType": "Sniper Rifle",
     "itemTypeString": "VLA_SR.comp_05_legendary_hemorrhage",
     "familyId": 16,
@@ -461,7 +461,7 @@
     "source": "STX supplement"
   },
   {
-    "manufacturer": "vla",
+    "manufacturer": "Vladof",
     "itemType": "Sniper Rifle",
     "itemTypeString": "VLA_SR.comp_05_legendary_lightgun",
     "familyId": 16,

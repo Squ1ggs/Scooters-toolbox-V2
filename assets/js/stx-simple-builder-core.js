@@ -2109,11 +2109,24 @@ function getAllParts(){
     return Array.from(new Set(list.filter(Boolean)));
   }
 
-  /** Collapse rarity-sheet / parts-list duplicates (e.g. COV vs Cov). */
+  /** Collapse rarity-sheet / parts-list duplicates (e.g. COV vs Cov, bor→Ripper). */
   function stxCanonicalizeManufacturerDisplayName(m){
     const s = String(m || '').trim();
     if (!s) return s;
+    const lo = s.toLowerCase();
     if (/^cov$/i.test(s) || /^children\s+of\s+the\s+vault$/i.test(s)) return 'COV';
+    // Spawn-code prefixes that slipped into STX_RARITIES supplement rows.
+    if (lo === 'bor' || lo === 'borg' || lo === 'rip') return 'Ripper';
+    if (lo === 'dad' || lo === 'dae') return 'Daedalus';
+    if (lo === 'jak') return 'Jakobs';
+    if (lo === 'mal') return 'Maliwan';
+    if (lo === 'ord') return 'Order';
+    if (lo === 'ted') return 'Tediore';
+    if (lo === 'tor') return 'Torgue';
+    if (lo === 'vla') return 'Vladof';
+    if (lo === 'atl') return 'Atlas';
+    if (lo === 'hyp') return 'Hyperion';
+    if (lo === 'classmod') return '';
     return s;
   }
 
@@ -5010,7 +5023,7 @@ function getAllParts(){
         mans = unique(
           rows
             .filter(r => String(r && r.itemType || '') === 'Class Mod' || /class\s*mod|classmod/i.test(String(r && r.itemTypeString || '')))
-            .map(r => String(r && r.manufacturer || '').trim())
+            .map(r => stxCanonicalizeManufacturerDisplayName(String(r && r.manufacturer || '').trim()))
             .filter(Boolean)
         ).map(m => (/^c4sh$/i.test(m) || /^robodealer$/i.test(m)) ? 'Robodealer' : m);
         mans = unique(mans).sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
@@ -5104,7 +5117,11 @@ function getAllParts(){
       // (and weapon itemType when Weapon). A global allowlist previously pulled Class Mod names into Weapon.
       try{
         const scopedRows = stxRarityRowsForManufacturerAllowlist(cat, wtNorm);
-        const allowed = unique(scopedRows.map(r => String(r && r.manufacturer || '').trim()).filter(Boolean));
+        const allowed = unique(
+          scopedRows
+            .map(r => stxCanonicalizeManufacturerDisplayName(String(r && r.manufacturer || '').trim()))
+            .filter(Boolean)
+        );
         if (allowed.length){
           const allow = new Set(allowed.map(a => String(a).trim().toLowerCase()));
           mans = mans.filter(m => allow.has(String(m || '').trim().toLowerCase()));
@@ -5120,10 +5137,13 @@ function getAllParts(){
         }
       }catch(_e){}
 
-      mans = mans.filter(function (m){
-        const ml = String(m || '').trim().toLowerCase();
-        return ml && !STX_CLASS_MOD_ONLY_MANUFACTURERS.has(ml);
-      });
+      mans = mans
+        .map(stxCanonicalizeManufacturerDisplayName)
+        .filter(function (m){
+          const ml = String(m || '').trim().toLowerCase();
+          return ml && !STX_CLASS_MOD_ONLY_MANUFACTURERS.has(ml);
+        });
+      mans = unique(mans).sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
 }
     return { mans, isClassMod };
   }
@@ -5177,9 +5197,9 @@ function getAllParts(){
         }
       });
     }
-    // Safety: remove any disallowed pseudo-manufacturers that may slip in (e.g. Firmware)
+    // Safety: remove any disallowed pseudo-manufacturers that may slip in (e.g. Firmware, bor/dad codes)
     try{
-      const bad = new Set(['firmware','gadgets','generic','all','universal','characters','weapon','heavy weapon','splat','nova','immunity','elemental','ground splat','splat pack','resist','resistance','elemental resist','capacity','duration','cooldown','stats','augment','perk','payload','size','part','main body','status','secondary rarity','class mod','grenade','repkit','shield']);
+      const bad = new Set(['firmware','gadgets','generic','all','universal','characters','weapon','heavy weapon','splat','nova','immunity','elemental','ground splat','splat pack','resist','resistance','elemental resist','capacity','duration','cooldown','stats','augment','perk','payload','size','part','main body','status','secondary rarity','class mod','grenade','repkit','shield','bor','borg','dad','jak','mal','ord','ted','tor','vla','atl','hyp','rip','dae','classmod']);
       const sel = $('manufacturer');
       if (sel && sel.options){
         Array.from(sel.options).forEach(opt=>{
