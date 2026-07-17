@@ -79,20 +79,20 @@
   };
 
   /**
-   * Open Save/YAML drawer with paint-first timing (mobile INP).
-   * Shows the shell immediately, keeps the heavy body skipped for 1–2 frames,
-   * then unlocks content and optionally schedules backpack parse.
+   * Open Save/YAML drawer with a clean slide: shell + body visible immediately,
+   * heavy script/parse work deferred until after the transition (INP-friendly).
    */
   window.stxOpenSaveYamlDrawer = function (opts) {
     opts = opts || {};
     var drawer = document.getElementById('rp-saveyaml-drawer');
     if (!drawer) return;
     var alreadyOpen = drawer.classList.contains('rp-open');
-    drawer.classList.add('rp-open');
-    if (!alreadyOpen) drawer.classList.add('rp-opening');
 
-    // Save/YAML serial library + decrypt tooling live in the deferred full-script pack —
-    // load them as soon as the panel opens (do not wait for the idle preload).
+    // Paint-critical only: open drawer + move tab together on the click frame.
+    drawer.classList.add('rp-open');
+    drawer.classList.remove('rp-opening');
+    try { document.body.classList.add('rp-saveyaml-drawer-open'); } catch (_) {}
+
     function kickSaveYamlScripts() {
       var ready = typeof window.stxEnsureFullAppScripts === 'function'
         ? window.stxEnsureFullAppScripts()
@@ -109,11 +109,15 @@
         } catch (_) {}
       }).catch(function () {});
     }
-    try { kickSaveYamlScripts(); } catch (_) {}
 
-    function afterPaint() {
-      try { drawer.classList.remove('rp-opening'); } catch (_) {}
-      try { document.body.classList.add('rp-saveyaml-drawer-open'); } catch (_) {}
+    function runDeferredOpenWork() {
+      try {
+        if (typeof window.__ccEnsureNativeMissionSelects === 'function') {
+          window.__ccEnsureNativeMissionSelects();
+        }
+      } catch (_) {}
+      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(kickSaveYamlScripts);
+      else window.setTimeout(kickSaveYamlScripts, 0);
       if (opts.skipParse) return;
       function runParse() {
         var ta = document.getElementById('yamlInput');
@@ -126,7 +130,7 @@
         }
         if (typeof window.scheduleParseYAMLBackpack === 'function') {
           var delay = opts.parseDelay;
-          if (delay == null) delay = liteUi ? 220 : 120;
+          if (delay == null) delay = liteUi ? 280 : 180;
           window.scheduleParseYAMLBackpack(delay);
         }
       }
@@ -135,16 +139,26 @@
     }
 
     if (alreadyOpen) {
-      afterPaint();
+      if (typeof window.stxScheduleIdle === 'function') window.stxScheduleIdle(runDeferredOpenWork, 48);
+      else window.setTimeout(runDeferredOpenWork, 48);
       return;
     }
-    if (typeof window.requestAnimationFrame === 'function') {
-      window.requestAnimationFrame(function () {
-        window.requestAnimationFrame(afterPaint);
-      });
-    } else {
-      window.setTimeout(afterPaint, liteUi ? 48 : 32);
+
+    var finished = false;
+    function finishOnce() {
+      if (finished) return;
+      finished = true;
+      try { drawer.removeEventListener('transitionend', onTransitionEnd); } catch (_) {}
+      runDeferredOpenWork();
     }
+    function onTransitionEnd(ev) {
+      if (ev && ev.target !== drawer) return;
+      if (ev && ev.propertyName && ev.propertyName !== 'transform') return;
+      finishOnce();
+    }
+    try { drawer.addEventListener('transitionend', onTransitionEnd); } catch (_) {}
+    // Fallback if transitionend is skipped (reduced-motion / already at end).
+    window.setTimeout(finishOnce, liteUi ? 180 : 280);
   };
 
   window.stxCloseSaveYamlDrawer = function () {
@@ -368,8 +382,8 @@
   }
 
   /**
-   * Shared-host deploy base (e.g. save-editor.be/Scooters_TBX).
-   * Root-absolute href="/…" would otherwise open save-editor.be/ (another toolbox).
+   * Shared-host deploy base (e.g. /Scooters_TBX).
+   * Root-absolute href="/…" would otherwise leave the toolbox path.
    */
   function stxDetectDeployBase() {
     try {

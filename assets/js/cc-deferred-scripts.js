@@ -58,10 +58,11 @@
     './assets/js/cc-serial-nicnl-rebuild.js',
     './assets/js/stx-decode-bridge-shared.js',
     './assets/js/cc-sav-crypto-rebuild.js',
-    './assets/js/cc-lazy-bundles-rebuild.js',
     './assets/js/cc-yaml-save-rebuild.js',
     './assets/js/cc-stx-decoder-bridge.js',
+    /* Prefix/Godroll search must load before lazy-bundles so bootstrap hooks exist when open panels arm. */
     './assets/js/cc-prefix-item-search-rebuild.js',
+    './assets/js/cc-lazy-bundles-rebuild.js',
     './assets/data/preset_data.js',
     './assets/data/profile_progression_catalog.js',
     './assets/data/yaml_save_catalog.js',
@@ -69,7 +70,6 @@
     './assets/js/cc-preset-rebuild.js',
     './assets/js/cc-part-tooltip-rebuild.js',
     './assets/js/cc-part-dropdown-meta-rebuild.js',
-    './assets/js/cc-skin-mixer-rebuild.js',
     './assets/js/rebuild-presets-random.js',
     './assets/js/cc-tool-nav-buttons.js',
     './assets/js/rebuild-credits-eggs.js',
@@ -227,10 +227,11 @@
   function armFullScriptIdleLoad() {
     var run = function () { ensureFullScripts(); };
     var arm = function () {
+      /* Prefix/Godroll panels are open by default — don't wait 18s before their scripts. */
       if (typeof window.stxScheduleIdle === 'function') {
-        window.stxScheduleIdle(run, 18000);
+        window.stxScheduleIdle(run, 2200);
       } else {
-        setTimeout(run, 18000);
+        setTimeout(run, 2200);
       }
     };
     if (typeof window.stxWhenSplashDismissed === 'function') {
@@ -240,7 +241,36 @@
     }
   }
 
+  function armPrefixGodrollEarlyLoad() {
+    function bind() {
+      var ids = ['rebuildPrefixItemSearchSection', 'rebuildGodrollSection', 'prefixItemSearchInput', 'godrollSearchInput'];
+      var armed = false;
+      var arm = function () {
+        if (armed) return;
+        armed = true;
+        yieldMain(function () { ensureFullScripts(); });
+      };
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (!el || el.__stxFullScriptArm) continue;
+        el.__stxFullScriptArm = true;
+        el.addEventListener('pointerdown', arm, { once: true, passive: true });
+        el.addEventListener('focusin', arm, { once: true });
+        if (el.open) {
+          /* Open by default — kick full scripts soon after splash/core. */
+          setTimeout(arm, 900);
+        }
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bind, { once: true });
+    } else {
+      bind();
+    }
+  }
+
   armSplashCoreBoot();
   armGuidedEarlyLoad();
+  armPrefixGodrollEarlyLoad();
   armFullScriptIdleLoad();
 })();

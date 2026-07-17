@@ -2,14 +2,34 @@
   'use strict';
 
   var CUSTOM_B85_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~';
+  var B85_CHAR_IDX = (function () {
+    var map = new Int16Array(128);
+    for (var i = 0; i < 128; i++) map[i] = -1;
+    for (var j = 0; j < CUSTOM_B85_ALPHABET.length; j++) {
+      var c = CUSTOM_B85_ALPHABET.charCodeAt(j);
+      if (c < 128) map[c] = j;
+    }
+    return map;
+  })();
+  var DESER_CACHE_MAX = 64;
+  var deserializeCache = Object.create(null);
+  var deserializeCacheKeys = [];
+  var BIT_REVERSE8 = (function () {
+    var t = new Uint8Array(256);
+    for (var b = 0; b < 256; b++) {
+      var rev = 0;
+      var v = b;
+      for (var i = 0; i < 8; i++) {
+        rev = (rev << 1) | (v & 1);
+        v >>= 1;
+      }
+      t[b] = rev;
+    }
+    return t;
+  })();
 
   function reverseBitsInByte(b) {
-    var rev = 0;
-    for (var i = 0; i < 8; i++) {
-      rev = (rev << 1) | (b & 1);
-      b >>= 1;
-    }
-    return rev;
+    return BIT_REVERSE8[b & 255];
   }
 
   function stripOuterQuotes(s) {
@@ -27,27 +47,32 @@
 
   function customBase85Decode(data) {
     data = String(data || '');
-    if (data.indexOf('@U') === 0) data = data.slice(2);
+    if (data.charAt(0) === '@' && (data.charAt(1) === 'U' || data.charAt(1) === 'u')) data = data.slice(2);
     data = data.replace(/\//g, '|');
     var padLen = (5 - (data.length % 5)) % 5;
     var lastChar = CUSTOM_B85_ALPHABET.charAt(CUSTOM_B85_ALPHABET.length - 1);
-    for (var p = 0; p < padLen; p++) data += lastChar;
-    var out = [];
+    if (padLen) {
+      for (var p = 0; p < padLen; p++) data += lastChar;
+    }
+    var rawLen = (data.length / 5) * 4;
+    var out = new Uint8Array(rawLen);
+    var o = 0;
     for (var i = 0; i < data.length; i += 5) {
-      var chunk = data.slice(i, i + 5);
       var acc = 0;
-      for (var j = 0; j < chunk.length; j++) {
-        var idx = CUSTOM_B85_ALPHABET.indexOf(chunk.charAt(j));
+      for (var j = 0; j < 5; j++) {
+        var code = data.charCodeAt(i + j);
+        var idx = code < 128 ? B85_CHAR_IDX[code] : -1;
         if (idx < 0) idx = 0;
         acc = acc * 85 + idx;
       }
-      for (var k = 3; k >= 0; k--) {
-        out.push((acc >> (8 * k)) & 0xff);
-      }
+      out[o++] = (acc >>> 24) & 0xff;
+      out[o++] = (acc >>> 16) & 0xff;
+      out[o++] = (acc >>> 8) & 0xff;
+      out[o++] = acc & 0xff;
     }
-    if (padLen) out = out.slice(0, -padLen);
-    var mirrored = new Uint8Array(out.length);
-    for (var m = 0; m < out.length; m++) mirrored[m] = reverseBitsInByte(out[m]);
+    var usable = padLen ? (rawLen - padLen) : rawLen;
+    var mirrored = new Uint8Array(usable);
+    for (var m = 0; m < usable; m++) mirrored[m] = BIT_REVERSE8[out[m]];
     return mirrored;
   }
 
@@ -335,10 +360,31 @@
     return head + '||' + m[2] + m[3];
   }
 
+  function deserializeCacheKey(b85) {
+    var s = stripOuterQuotes(b85);
+    if (!s) return '';
+    if (s.indexOf('@u') === 0) s = '@U' + s.slice(2);
+    else if (s.indexOf('@U') !== 0 && /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(s)) s = '@U' + s;
+    return s;
+  }
+
+  function rememberDeserializeCache(key, out) {
+    if (!key || !out) return;
+    if (deserializeCache[key]) return;
+    deserializeCacheKeys.push(key);
+    deserializeCache[key] = out;
+    if (deserializeCacheKeys.length > DESER_CACHE_MAX) {
+      var old = deserializeCacheKeys.shift();
+      if (old) delete deserializeCache[old];
+    }
+  }
+
   function deserializeBase85(b85, headerWords) {
     headerWords = headerWords || 17;
     b85 = stripOuterQuotes(b85);
     if (!b85) return '';
+    var cacheKey = deserializeCacheKey(b85);
+    if (cacheKey && deserializeCache[cacheKey]) return deserializeCache[cacheKey];
     var bytes;
     try {
       bytes = customBase85Decode(b85);
@@ -360,6 +406,7 @@
         try { delete window.__ccStxRoundtrip; } catch (_) {}
       }
       rememberDeserializeRoundtrip(b85, out);
+      if (cacheKey) rememberDeserializeCache(cacheKey, out);
       return out;
     } catch (e) {
       console.warn('Failed to parse bitstream:', e);
@@ -791,6 +838,20 @@
     if (!w.heavy) return run();
     setTimeout(run, 0);
     return '';
+  };
+  window.ccDeserializeBase85Async = function (b85, cb, headerWords) {
+    var src = String(b85 || '').trim();
+    var run = function () {
+      var out = deserializeBase85(src, headerWords);
+      if (typeof cb === 'function') cb(out);
+      return out;
+    };
+    /* Yield so Convert buttons stay responsive on long @U serials. */
+    if (typeof cb === 'function') {
+      setTimeout(run, 0);
+      return '';
+    }
+    return run();
   };
   window.updateSerialLevel = updateSerialLevel;
   window.updateSerialLevelFlexible = updateSerialLevelFlexible;

@@ -4,10 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
-  <meta name="description" content="Borderlands 4 loot reference: boss drop rates, shiny phosphenes, pearlescents, weapon skins, player outfits, spawn actors and item pools."/>
+  <meta name="description" content="Borderlands 4 loot reference: boss drop rates, shiny phosphenes, pearlescents, weapon skins, gear rarities, and part stats (underbarrels, barrels, mags)."/>
   <meta name="robots" content="index,follow"/>
   <link rel="canonical" href="https://scooterstoolbox.com/assets/loot-reference.html"/>
-  <title>Borderlands 4 Loot Reference — Drops, Rarities &amp; Sources</title>
+  <title>Borderlands 4 Loot Reference — Drops, Gear &amp; Parts</title>
   <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
   <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
   <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -303,6 +303,64 @@
     .gear-card__row .txt-drops { color: var(--world); }
     .gear-card__phos { margin-top: 2px; }
     .gear-card__serial {
+      font-family: var(--font-code); font-size: 0.78rem; word-break: break-all;
+    }
+    .gear-card__dmg {
+      margin-top: 4px; font-size: 0.95rem; font-weight: 700; color: #ffc98a;
+    }
+    .gear-card__stats {
+      margin: 6px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .gear-card__stats li {
+      font-size: 0.75rem; color: var(--muted);
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      border-radius: 999px; padding: 2px 8px;
+    }
+    .parts-slot-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .parts-slot-bar button {
+      background: rgba(5, 12, 24, 0.65); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 0.82rem;
+    }
+    .parts-slot-bar button.active {
+      border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 0 12px rgba(0, 243, 255, 0.18);
+    }
+    .parts-top-strip {
+      display: grid; gap: 8px; margin: 0 0 14px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    .parts-top-chip {
+      background: rgba(5, 12, 24, 0.75);
+      border: 1px solid rgba(255, 201, 138, 0.35);
+      border-radius: 10px; padding: 10px 12px;
+    }
+    .parts-top-chip__rank { font-size: 0.72rem; color: var(--muted); margin-bottom: 2px; }
+    .parts-top-chip__name { font-weight: 700; color: var(--name); font-size: 0.92rem; }
+    .parts-top-chip__part { font-size: 0.75rem; color: var(--type); margin-top: 2px; }
+    .parts-top-chip__dmg { color: #ffc98a; font-weight: 700; font-size: 0.88rem; margin-top: 4px; }
+    .parts-view-toggle { display: inline-flex; gap: 6px; margin-left: auto; }
+    .parts-view-toggle button {
+      background: rgba(5, 12, 24, 0.65); color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem;
+    }
+    .parts-view-toggle button.active {
+      border-color: var(--accent); color: var(--accent);
+    }
+    .parts-copy-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .parts-copy-btn {
+      background: rgba(0, 243, 255, 0.08); color: var(--accent);
+      border: 1px solid rgba(0, 243, 255, 0.28); border-radius: 6px;
+      padding: 4px 8px; font-size: 0.75rem; cursor: pointer;
+    }
+    .parts-copy-btn:hover { border-color: var(--accent); }
+    .gear-card__partname { font-size: 0.82rem; color: var(--type); margin-top: 2px; }
+    .gear-card__gamename { font-size: 0.78rem; color: var(--muted); margin-top: 1px; }
+    #partsTableWrap { margin-top: 8px; }
+    #partsTableWrap td, #partsTableWrap th { vertical-align: top; }
+    .parts-table-names { display: grid; gap: 2px; }
+    .parts-table-names .game { color: var(--name); font-weight: 600; }
+    .parts-table-names .part { color: var(--type); font-size: 0.82rem; }
+    .gear-card__serial {
       font-size: 0.75rem;
       word-break: break-all;
       max-height: 3.2em;
@@ -412,13 +470,14 @@
       <button type="button" data-tab="all">Boss drop rates</button>
       <button type="button" data-tab="skins">Cosmetics</button>
       <button type="button" data-tab="tiers">Mob loot</button>
-      <button type="button" data-tab="gear">Legendary &amp; gear</button>
+      <button type="button" data-tab="gear">Gear</button>
+      <button type="button" data-tab="parts">Parts</button>
       <button type="button" data-tab="rarities" class="tech-only">Pool rarities</button>
       <button type="button" data-tab="chests" class="tech-only">Chests &amp; world</button>
       <button type="button" data-tab="rewards" class="tech-only">Mission rewards</button>
     </div>
     <div class="toolbar">
-      <input type="search" id="q" placeholder="Search gun, boss, or source…" autocomplete="off"/>
+      <input type="search" id="q" placeholder="Search gun, boss, part, or source…" autocomplete="off"/>
       <span class="result-count" id="resultCount"></span>
       <label class="subtle" title="Show internal game IDs, spawn actors, comps, and pool names"><input type="checkbox" id="showTechnical"/> Show spawn codes &amp; data IDs</label>
     </div>
@@ -527,8 +586,8 @@
     <div class="filters hidden" id="gearFilters">
       <label>Rarity
         <select class="filter-select" id="gearTierFilter">
-          <option value="legendary" selected>Legendary</option>
-          <option value="">All rarities</option>
+          <option value="" selected>All rarities</option>
+          <option value="legendary">Legendary</option>
           <option value="epic">Epic</option>
           <option value="rare">Rare</option>
           <option value="uncommon">Uncommon</option>
@@ -548,6 +607,61 @@
         </select>
       </label>
       <label><input type="checkbox" id="gearPhospheneOnly"/> Has phosphene variant</label>
+    </div>
+    <div class="filters hidden" id="partsFilters">
+      <label>Slot
+        <select class="filter-select" id="partsSlotFilter">
+          <option value="underbarrel" selected>Underbarrel</option>
+          <option value="">All slots</option>
+          <option value="barrel">Barrel</option>
+          <option value="magazine">Magazine</option>
+          <option value="magazine_acc">Mag Acc</option>
+          <option value="scope">Scope</option>
+          <option value="grip">Grip</option>
+          <option value="foregrip">Foregrip</option>
+          <option value="body">Body</option>
+          <option value="element">Element</option>
+          <option value="firmware">Firmware</option>
+          <option value="shield">Shield part</option>
+          <option value="grenade">Grenade part</option>
+          <option value="repkit">Repkit part</option>
+          <option value="classmod">Class mod part</option>
+          <option value="enhancement">Enhancement part</option>
+          <option value="rarity">Rarity ID</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      <label>Manufacturer
+        <select class="filter-select" id="partsManFilter">
+          <option value="">All manufacturers</option>
+        </select>
+      </label>
+      <label>Weapon type
+        <select class="filter-select" id="partsWeaponFilter">
+          <option value="">All types</option>
+          <option value="Assault Rifle">Assault Rifle</option>
+          <option value="SMG">SMG</option>
+          <option value="Shotgun">Shotgun</option>
+          <option value="Pistol">Pistol</option>
+          <option value="Sniper">Sniper</option>
+          <option value="Heavy">Heavy</option>
+        </select>
+      </label>
+      <label>Sort
+        <select class="filter-select" id="partsSortFilter">
+          <option value="damage" selected>Damage (high → low)</option>
+          <option value="name">In-game name A–Z</option>
+          <option value="part">Part name A–Z</option>
+          <option value="code">Spawn code</option>
+        </select>
+      </label>
+      <label>View
+        <select class="filter-select" id="partsViewFilter">
+          <option value="cards" selected>Cards</option>
+          <option value="table">Table</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="partsDamageOnly"/> Has damage / projectile stats</label>
     </div>
 
     <div class="filters hidden" id="normalFilters">
@@ -751,10 +865,10 @@
 
     <section id="panel-gear" class="hidden">
       <div class="accuracy-note">
-        <strong>Legendary &amp; gear catalog</strong> — named items from game loot pools (legendary shown first by default).
+        <strong>Gear catalog</strong> — items from game loot pools across common → legendary (use the rarity bar or filter to narrow).
         Each card lists the item ID, loot pool, manufacturer/type when known, phosphene link, and drop/serial info when we have it.
+        Named pearlescents stay on the <em>Pearlescents</em> tab. Phosphene details stay on the first tab.
         Color key: <span class="txt-name">name</span> · <span class="txt-type">type</span> · <code class="code--itemid">item ID</code> · <code class="code--pool">pool</code> · <code class="code--skin">skin</code> · <code class="code--serial">serial</code> · <span class="txt-drops">drops</span>.
-        Phosphene details stay on the first tab.
       </div>
       <div class="section-head">
         <h2>Gear catalog</h2>
@@ -763,6 +877,38 @@
       <div class="gear-tier-bar" id="gearTierBar" aria-label="Quick rarity filters"></div>
       <div class="gear-grid" id="gearCards"></div>
       <p class="note hidden" id="gearEmpty">No gear matches. Clear filters or run <code>node scripts/build-loot-rarity-pools-data.mjs</code>.</p>
+    </section>
+
+    <section id="panel-parts" class="hidden">
+      <div class="accuracy-note">
+        <strong>Parts catalog</strong> — browse weapon and gear parts by slot. Each card shows the name you see in-game and the technical part name underneath.
+        Starts on <em>Underbarrel</em>, highest damage first, with a quick top-damage row at the top when available.
+        Damage numbers are base values from the part itself — they can look different on a finished gun once level and mayhem apply.
+        Tap a spawn code or ID (or use Copy) to drop it into the Guided or Simple builder.
+      </div>
+      <div class="section-head">
+        <h2>Parts</h2>
+        <span class="section-stat" id="partsSectionStat"></span>
+      </div>
+      <div class="parts-slot-bar" id="partsSlotBar" aria-label="Quick slot filters"></div>
+      <div id="partsTopStrip" class="parts-top-strip hidden" aria-label="Top damage parts"></div>
+      <div class="gear-grid" id="partsCards"></div>
+      <div class="table-wrap hidden" id="partsTableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Names</th>
+              <th>Damage</th>
+              <th>Mfr / type</th>
+              <th>Spawn</th>
+              <th>ID</th>
+              <th>Stats</th>
+            </tr>
+          </thead>
+          <tbody id="partsTableBody"></tbody>
+        </table>
+      </div>
+      <p class="note hidden" id="partsEmpty">No parts match. Clear filters or run <code>node scripts/build-loot-parts-reference-data.mjs</code>.</p>
     </section>
 
     <section id="panel-tiers" class="hidden">
@@ -810,6 +956,7 @@
   <script src="data/skin_list_data.js"></script>
   <script src="data/loot_reference_data.js?v=20260714flavor"></script>
   <script src="data/loot_rarity_pools_data.js?v=20260711r2"></script>
+  <script src="data/loot_parts_reference_data.js?v=20260717parts4"></script>
   <script src="data/loot_config_data.js"></script>
   <script src="data/rewards_data.js"></script>
   <script src="data/enemy_drops_data.js"></script>
@@ -823,6 +970,7 @@
       var data = window.LOOT_REFERENCE_DATA;
       var skinData = window.SKIN_LIST_DATA;
       var rarityData = window.LOOT_RARITY_POOLS_DATA;
+      var partsData = window.LOOT_PARTS_REFERENCE_DATA;
       var chestData = window.LOOT_CONFIG_DATA;
       var rewardsData = window.REWARDS_DATA;
       var enemyTiers = window.ENEMY_DROPS_DATA;
@@ -883,6 +1031,20 @@
       var gearEmpty = document.getElementById('gearEmpty');
       var gearTierBar = document.getElementById('gearTierBar');
       var gearSectionStat = document.getElementById('gearSectionStat');
+      var partsFilters = document.getElementById('partsFilters');
+      var partsSlotFilter = document.getElementById('partsSlotFilter');
+      var partsManFilter = document.getElementById('partsManFilter');
+      var partsWeaponFilter = document.getElementById('partsWeaponFilter');
+      var partsSortFilter = document.getElementById('partsSortFilter');
+      var partsViewFilter = document.getElementById('partsViewFilter');
+      var partsDamageOnly = document.getElementById('partsDamageOnly');
+      var partsCards = document.getElementById('partsCards');
+      var partsTableWrap = document.getElementById('partsTableWrap');
+      var partsTableBody = document.getElementById('partsTableBody');
+      var partsTopStrip = document.getElementById('partsTopStrip');
+      var partsEmpty = document.getElementById('partsEmpty');
+      var partsSlotBar = document.getElementById('partsSlotBar');
+      var partsSectionStat = document.getElementById('partsSectionStat');
       var combatOnly = document.getElementById('combatOnly');
       var hideBossRank = document.getElementById('hideBossRank');
       var phosOnly = null;
@@ -1468,6 +1630,7 @@
       }
 
       function bindCopy(root) {
+        if (!root) return;
         root.querySelectorAll('.copyable').forEach(function (el) {
           el.addEventListener('click', function () {
             var t = el.getAttribute('data-full') || el.textContent || '';
@@ -1476,6 +1639,15 @@
               el.classList.add('copied');
               showToast('Copied ' + (el.getAttribute('data-copy-label') || 'value'));
               setTimeout(function () { el.classList.remove('copied'); }, 1200);
+            });
+          });
+        });
+        root.querySelectorAll('.parts-copy-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var t = btn.getAttribute('data-copy') || '';
+            if (!t || !navigator.clipboard) return;
+            navigator.clipboard.writeText(t).then(function () {
+              showToast('Copied ' + (btn.getAttribute('data-copy-label') || 'value'));
             });
           });
         });
@@ -1684,6 +1856,170 @@
             render();
           });
         });
+      }
+
+      function populatePartsManFilter() {
+        if (!partsManFilter || !partsData || !partsData.parts) return;
+        var seen = {};
+        var mans = [];
+        partsData.parts.forEach(function (p) {
+          var m = String(p.manufacturer || '').trim();
+          if (!m || seen[m]) return;
+          seen[m] = true;
+          mans.push(m);
+        });
+        mans.sort(function (a, b) { return a.localeCompare(b); });
+        var cur = partsManFilter.value || '';
+        partsManFilter.innerHTML = '<option value="">All manufacturers</option>' + mans.map(function (m) {
+          return '<option value="' + esc(m) + '"' + (m === cur ? ' selected' : '') + '>' + esc(m) + '</option>';
+        }).join('');
+      }
+
+      function renderPartsSlotBar(activeSlot) {
+        if (!partsSlotBar) return;
+        var slots = [
+          { id: 'underbarrel', label: 'Underbarrel' },
+          { id: '', label: 'All' },
+          { id: 'barrel', label: 'Barrel' },
+          { id: 'magazine', label: 'Magazine' },
+          { id: 'magazine_acc', label: 'Mag Acc' },
+          { id: 'scope', label: 'Scope' },
+          { id: 'grip', label: 'Grip' },
+          { id: 'body', label: 'Body' },
+          { id: 'element', label: 'Element' },
+          { id: 'firmware', label: 'Firmware' }
+        ];
+        partsSlotBar.innerHTML = slots.map(function (s) {
+          return '<button type="button" data-slot="' + esc(s.id) + '" class="' + (activeSlot === s.id ? 'active' : '') + '">' + esc(s.label) + '</button>';
+        }).join('');
+        partsSlotBar.querySelectorAll('button').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (partsSlotFilter) partsSlotFilter.value = btn.getAttribute('data-slot') || '';
+            render();
+          });
+        });
+      }
+
+      function formatPartDamageLine(p) {
+        if (p.damage != null && p.projectiles != null && p.projectiles > 1) {
+          return p.damage + ' × ' + p.projectiles + ' = ' + (p.damage_product != null ? p.damage_product : (p.damage * p.projectiles));
+        }
+        if (p.damage != null) return String(p.damage) + ' damage';
+        return '';
+      }
+
+      function partGameName(p) {
+        return String(p.game_name || p.name || '').trim();
+      }
+
+      function partPartName(p) {
+        return String(p.part_name || '').trim();
+      }
+
+      function partNamesHtml(p) {
+        var game = partGameName(p);
+        var part = partPartName(p);
+        var bits = [];
+        if (game) {
+          bits.push('<h3 class="gear-card__name">' + esc(game) + '</h3>');
+          if (part && part.toLowerCase() !== game.toLowerCase()) {
+            bits.push('<div class="gear-card__partname">Part: ' + esc(part) + '</div>');
+          }
+        } else if (part) {
+          bits.push('<h3 class="gear-card__name">' + esc(part) + '</h3>');
+          bits.push('<div class="gear-card__gamename">Part name (no separate in-game title)</div>');
+        } else {
+          bits.push('<h3 class="gear-card__name">' + esc(p.code || 'Part') + '</h3>');
+        }
+        return bits.join('');
+      }
+
+      function partCopyButtons(p) {
+        var bits = ['<div class="parts-copy-row">'];
+        if (p.code) {
+          bits.push('<button type="button" class="parts-copy-btn" data-copy="' + esc(p.code) + '" data-copy-label="spawn code">Copy spawn</button>');
+        }
+        if (p.id_raw) {
+          bits.push('<button type="button" class="parts-copy-btn" data-copy="' + esc(p.id_raw) + '" data-copy-label="part ID">Copy ID</button>');
+        }
+        bits.push('</div>');
+        return bits.join('');
+      }
+
+      function appendPartCard(p) {
+        if (!partsCards) return;
+        var card = document.createElement('article');
+        card.className = 'gear-card gear-card--' + esc(p.slot || 'other');
+        var bits = [];
+        bits.push('<div class="gear-card__head">' +
+          partNamesHtml(p) +
+          '<div class="gear-card__meta">' +
+          '<span class="pill pill--gear">' + esc(p.slot_label || p.slot || 'Part') + '</span>' +
+          (p.manufacturer ? '<span class="pill">' + esc(p.manufacturer) + '</span>' : '') +
+          (p.weapon_type ? '<span class="pill">' + esc(p.weapon_type) + '</span>' : '') +
+          '</div></div>');
+        var dmg = formatPartDamageLine(p);
+        if (dmg) bits.push('<div class="gear-card__dmg">' + esc(dmg) + '</div>');
+        bits.push('<div class="gear-card__row"><strong>Spawn</strong> ' + codeCell(p.code, 'Part spawn') + '</div>');
+        if (p.id_raw) bits.push('<div class="gear-card__row"><strong>ID</strong> ' + codeCell(p.id_raw, 'Part ID') + '</div>');
+        if (p.part_type) bits.push('<div class="gear-card__row"><strong>Part type</strong> <span class="txt-type">' + esc(p.part_type) + '</span></div>');
+        if (p.stat_lines && p.stat_lines.length) {
+          bits.push('<ul class="gear-card__stats">' + p.stat_lines.map(function (line) {
+            return '<li>' + esc(line) + '</li>';
+          }).join('') + '</ul>');
+        }
+        bits.push(partCopyButtons(p));
+        card.innerHTML = bits.join('');
+        partsCards.appendChild(card);
+      }
+
+      function appendPartTableRow(p) {
+        if (!partsTableBody) return;
+        var tr = document.createElement('tr');
+        var game = partGameName(p);
+        var part = partPartName(p);
+        var names = '<div class="parts-table-names">';
+        if (game) names += '<span class="game">' + esc(game) + '</span>';
+        if (part) names += '<span class="part">' + (game ? 'Part: ' : '') + esc(part) + '</span>';
+        if (!game && !part) names += '<span class="game">' + esc(p.code || '—') + '</span>';
+        names += '</div>';
+        var mfr = [p.manufacturer, p.weapon_type].filter(Boolean).map(function (x) { return esc(x); }).join(' · ') || '—';
+        var stats = (p.stat_lines && p.stat_lines.length)
+          ? esc(p.stat_lines.slice(0, 4).join(' · '))
+          : '—';
+        tr.innerHTML =
+          '<td>' + names + '</td>' +
+          '<td>' + esc(formatPartDamageLine(p) || '—') + '</td>' +
+          '<td>' + mfr + '</td>' +
+          '<td>' + codeCell(p.code, 'Part spawn') + partCopyButtons(p) + '</td>' +
+          '<td>' + (p.id_raw ? codeCell(p.id_raw, 'Part ID') : '—') + '</td>' +
+          '<td>' + stats + '</td>';
+        partsTableBody.appendChild(tr);
+      }
+
+      function renderPartsTopStrip(pool) {
+        if (!partsTopStrip) return;
+        var ranked = pool.filter(function (p) {
+          return p.damage != null || p.damage_product != null;
+        }).slice(0, 5);
+        if (!ranked.length) {
+          partsTopStrip.classList.add('hidden');
+          partsTopStrip.innerHTML = '';
+          return;
+        }
+        partsTopStrip.classList.remove('hidden');
+        partsTopStrip.innerHTML = ranked.map(function (p, i) {
+          var game = partGameName(p);
+          var part = partPartName(p);
+          return '<div class="parts-top-chip">' +
+            '<div class="parts-top-chip__rank">#' + (i + 1) + ' damage</div>' +
+            '<div class="parts-top-chip__name">' + esc(game || part || p.code) + '</div>' +
+            (part && game && part.toLowerCase() !== game.toLowerCase()
+              ? '<div class="parts-top-chip__part">' + esc(part) + '</div>'
+              : '') +
+            '<div class="parts-top-chip__dmg">' + esc(formatPartDamageLine(p)) + '</div>' +
+            '</div>';
+        }).join('');
       }
 
       function acquisitionStatusPill(g) {
@@ -2161,6 +2497,7 @@
         document.getElementById('panel-rewards').classList.toggle('hidden', tab !== 'rewards');
         document.getElementById('panel-tiers').classList.toggle('hidden', tab !== 'tiers');
         document.getElementById('panel-gear').classList.toggle('hidden', tab !== 'gear');
+        document.getElementById('panel-parts').classList.toggle('hidden', tab !== 'parts');
         gunFilters.classList.toggle('hidden', tab !== 'guns');
         if (pearlFilters) pearlFilters.classList.toggle('hidden', tab !== 'pearls');
         allFilters.classList.toggle('hidden', tab !== 'all');
@@ -2169,6 +2506,7 @@
         if (rarityFilters) rarityFilters.classList.toggle('hidden', tab !== 'rarities');
         if (normalFilters) normalFilters.classList.toggle('hidden', tab !== 'tiers');
         if (gearFilters) gearFilters.classList.toggle('hidden', tab !== 'gear');
+        if (partsFilters) partsFilters.classList.toggle('hidden', tab !== 'parts');
         render();
       }
 
@@ -2281,6 +2619,12 @@
         if (pearlOnlyBody) pearlOnlyBody.innerHTML = '';
         if (skinBody) skinBody.innerHTML = '';
         if (gearCards) gearCards.innerHTML = '';
+        if (partsCards) partsCards.innerHTML = '';
+        if (partsTableBody) partsTableBody.innerHTML = '';
+        if (partsTopStrip) {
+          partsTopStrip.innerHTML = '';
+          partsTopStrip.classList.add('hidden');
+        }
         enemyCards.innerHTML = '';
         allEnemyCards.innerHTML = '';
         if (rarityCards) rarityCards.innerHTML = '';
@@ -2389,6 +2733,7 @@
         var skinShown = 0;
         var skinTotal = skinData && skinData.skins ? skinData.skins.length : 0;
         var gearShown = 0;
+        var partsShown = 0;
         var bossOnlyOn = bossOnly && bossOnly.checked;
         var withDropsOn = !withDrops || withDrops.checked;
         var kindFilter = dropKindFilter ? dropKindFilter.value : '';
@@ -2619,6 +2964,52 @@
           if (gearEmpty) gearEmpty.classList.toggle('hidden', gearShown > 0);
         }
 
+        if (partsCards && activeTab === 'parts' && partsData && Array.isArray(partsData.parts)) {
+          var slotWant = partsSlotFilter ? partsSlotFilter.value : 'underbarrel';
+          var manWant = partsManFilter ? String(partsManFilter.value || '').trim().toLowerCase() : '';
+          var wtWant = partsWeaponFilter ? String(partsWeaponFilter.value || '').trim().toLowerCase() : '';
+          var sortMode = partsSortFilter ? partsSortFilter.value : 'damage';
+          var viewMode = partsViewFilter ? partsViewFilter.value : 'cards';
+          var dmgOnly = !!(partsDamageOnly && partsDamageOnly.checked);
+          renderPartsSlotBar(slotWant);
+          var pool = partsData.parts.filter(function (p) {
+            if (slotWant && p.slot !== slotWant) return false;
+            if (manWant && String(p.manufacturer || '').trim().toLowerCase() !== manWant) return false;
+            if (wtWant && String(p.weapon_type || '').trim().toLowerCase() !== wtWant) return false;
+            if (dmgOnly && p.damage == null && p.damage_product == null) return false;
+            var rowHay = hay([
+              p.name, p.part_name, p.game_name, p.code, p.slot, p.slot_label, p.manufacturer, p.weapon_type, p.part_type, p.id_raw,
+              (p.stat_lines || []).join(' ')
+            ]);
+            if (term && !searchMatchesTerm(rowHay, term)) return false;
+            return true;
+          });
+          pool.sort(function (a, b) {
+            if (sortMode === 'name') return partGameName(a).localeCompare(partGameName(b));
+            if (sortMode === 'part') return partPartName(a).localeCompare(partPartName(b));
+            if (sortMode === 'code') return String(a.code || '').localeCompare(String(b.code || ''));
+            var as = Number(a.sort_score) || 0;
+            var bs = Number(b.sort_score) || 0;
+            if (bs !== as) return bs - as;
+            return partGameName(a).localeCompare(partGameName(b));
+          });
+          renderPartsTopStrip(pool);
+          var showTable = viewMode === 'table';
+          if (partsCards) partsCards.classList.toggle('hidden', showTable);
+          if (partsTableWrap) partsTableWrap.classList.toggle('hidden', !showTable);
+          pool.forEach(function (p) {
+            partsShown++;
+            if (showTable) appendPartTableRow(p);
+            else appendPartCard(p);
+          });
+          bindCopy(partsCards);
+          bindCopy(partsTableWrap);
+          if (partsSectionStat) {
+            partsSectionStat.textContent = partsShown + ' shown' + (partsShown !== partsData.parts.length ? ' of ' + partsData.parts.length : '');
+          }
+          if (partsEmpty) partsEmpty.classList.toggle('hidden', partsShown > 0);
+        }
+
         var normalStats = { summaryShown: 0, tierShown: 0, actorShown: 0 };
         if (activeTab === 'tiers' && renderNormalEnemies) {
           normalStats = renderNormalEnemies(term);
@@ -2633,6 +3024,7 @@
           resultCount.textContent = normalStats.tierShown + ' tiers · ' + normalStats.actorShown + ' mobs';
         }
         else if (activeTab === 'gear') resultCount.textContent = gearShown + ' items shown';
+        else if (activeTab === 'parts') resultCount.textContent = partsShown + ' parts shown';
         else if (activeTab === 'rarities') resultCount.textContent = rarityShown + ' rarity pools shown';
         else if (activeTab === 'chests') resultCount.textContent = chestShown + ' containers shown';
         else if (activeTab === 'rewards') resultCount.textContent = rewardShown + ' rewards shown';
@@ -2649,7 +3041,7 @@
         });
       });
 
-      [bossOnly, withDrops, hasSerial, hasSerialPearl, bossDropOnly, worldDropOnly, pearlPhosOnly, pearlNoPhosOnly, dropKindFilter, rarityTierFilter, rarityCatFilter, rarityHasComp, combatOnly, hideBossRank, showTechnical, skinKindFilter, skinSortMode, skinHasSerial, gearTierFilter, gearCatFilter, gearPhospheneOnly, dropUvhLevel, dropShowCompare].forEach(function (el) {
+      [bossOnly, withDrops, hasSerial, hasSerialPearl, bossDropOnly, worldDropOnly, pearlPhosOnly, pearlNoPhosOnly, dropKindFilter, rarityTierFilter, rarityCatFilter, rarityHasComp, combatOnly, hideBossRank, showTechnical, skinKindFilter, skinSortMode, skinHasSerial, gearTierFilter, gearCatFilter, gearPhospheneOnly, partsSlotFilter, partsManFilter, partsWeaponFilter, partsSortFilter, partsViewFilter, partsDamageOnly, dropUvhLevel, dropShowCompare].forEach(function (el) {
         if (el) el.addEventListener('change', function () {
           if (el === pearlPhosOnly && pearlPhosOnly.checked && pearlNoPhosOnly) pearlNoPhosOnly.checked = false;
           if (el === pearlNoPhosOnly && pearlNoPhosOnly.checked && pearlPhosOnly) pearlPhosOnly.checked = false;
@@ -2702,6 +3094,7 @@
 
       var hashTab = (location.hash || '').replace(/^#/, '');
       if (hashTab === 'normal') hashTab = 'tiers';
+      try { populatePartsManFilter(); } catch (_pm) {}
       if (hashTab && document.querySelector('.tabs button[data-tab="' + hashTab + '"]')) {
         switchTab(hashTab);
       } else {

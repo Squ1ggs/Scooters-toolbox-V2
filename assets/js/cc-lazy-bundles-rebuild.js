@@ -111,16 +111,23 @@
   function classmodSkillsLoaded() {
     var src = window.__LEGACY_CLASSMOD_PARTS_BY_KEY;
     if (!src) return false;
-    for (var key in src) {
-      if (!Object.prototype.hasOwnProperty.call(src, key)) continue;
-      var list = src[key];
-      if (!Array.isArray(list)) continue;
+    /* names.js seeds Name+Skin (+ c4sh Skills). Real VH skill names live in
+       legacy_classmod_skills_full.js — require Skill rows for every vault hunter. */
+    var required = ['vex', 'amon', 'rafa', 'harlowe', 'c4sh'];
+    for (var r = 0; r < required.length; r++) {
+      var list = src[required[r]];
+      if (!Array.isArray(list) || !list.length) return false;
+      var hasSkill = false;
       for (var i = 0; i < list.length; i++) {
         var row = list[i];
-        if (Array.isArray(row) && row.length >= 3 && String(row[2] || '').trim() === 'Skill') return true;
+        if (Array.isArray(row) && row.length >= 3 && String(row[2] || '').trim() === 'Skill') {
+          hasSkill = true;
+          break;
+        }
       }
+      if (!hasSkill) return false;
     }
-    return false;
+    return true;
   }
 
   var classmodSkillsPromise = null;
@@ -130,6 +137,9 @@
     }
     if (classmodSkillsPromise) return classmodSkillsPromise;
     classmodSkillsPromise = loadScript(DATA_BASE + 'legacy_classmod_skills_full.js').then(function () {
+      try {
+        if (typeof window.__ccClassmodSkillsReady === 'function') window.__ccClassmodSkillsReady();
+      } catch (_) {}
       return window.__LEGACY_CLASSMOD_PARTS_BY_KEY || {};
     }).catch(function () {
       classmodSkillsPromise = null;
@@ -167,6 +177,7 @@
   window.__ccEnsureGodrollBundles = ensureGodrollBundles;
   window.__ccEnsureLootReferenceData = ensureLootReferenceData;
   window.__ccEnsureClassmodSkillsData = ensureClassmodSkillsData;
+  window.__ccClassmodSkillsLoaded = classmodSkillsLoaded;
   window.__ccEnsureWeaponStatsData = ensureWeaponStatsData;
   window.__ccEnsureBuildStatsData = ensureBuildStatsData;
 
@@ -222,19 +233,33 @@
     input.addEventListener('pointerdown', once, { once: true, passive: true });
   }
 
+  function callWhenReady(getter, tries) {
+    tries = tries == null ? 40 : tries;
+    function attempt() {
+      var fn = getter();
+      if (typeof fn === 'function') {
+        try { fn(); } catch (_) {}
+        return;
+      }
+      if (tries-- <= 0) return;
+      setTimeout(attempt, 120);
+    }
+    attempt();
+  }
+
   function wireLazyBundles() {
     whenPanelNeedsData('rebuildPrefixItemSearchSection', ensureSerialsCatalog, function () {
-      if (typeof window.__ccBootstrapPrefixItemSearch === 'function') window.__ccBootstrapPrefixItemSearch();
+      callWhenReady(function () { return window.__ccBootstrapPrefixItemSearch; });
     });
     wireSearchFocusLoad('prefixItemSearchInput', ensureSerialsCatalog, function () {
-      if (typeof window.__ccBootstrapPrefixItemSearch === 'function') window.__ccBootstrapPrefixItemSearch();
+      callWhenReady(function () { return window.__ccBootstrapPrefixItemSearch; });
     });
 
     whenPanelNeedsData('rebuildGodrollSection', ensureGodrollBundles, function () {
-      if (typeof window.__ccBootstrapGodrollSearch === 'function') window.__ccBootstrapGodrollSearch();
+      callWhenReady(function () { return window.__ccBootstrapGodrollSearch; });
     });
     wireSearchFocusLoad('godrollSearchInput', ensureGodrollBundles, function () {
-      if (typeof window.__ccBootstrapGodrollSearch === 'function') window.__ccBootstrapGodrollSearch();
+      callWhenReady(function () { return window.__ccBootstrapGodrollSearch; });
     });
 
     whenPanelNeedsData('rebuildBuildStatsSection', ensureBuildStatsData, function () {

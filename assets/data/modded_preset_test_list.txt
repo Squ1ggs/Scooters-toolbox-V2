@@ -1,5 +1,5 @@
 Modded BL4 preset test list — stacks are approximate (combined ≈ perStack^N)
-Source: echobot 394 serials + save-editor.be 300 modded codes
+Source: community serial dumps + internal modded codes
 
 === WEAPON ===
 DAMAGE (per stack ~×1.05–1.08 for barrel/acc tokens)
@@ -39,7 +39,7 @@ SPLASH
   {289:17} MAL HW +Damage (max 17)
   {275:23} BOR HW -CD +Damage
   {282:7}  VLA HW +Ammo body (max 65)
-  {8:40}   +Fire Rate barrel (max 283 save-editor)
+  {8:40}   +Fire Rate barrel (max 283)
   {282:18} +Splash radius
 
 === GRENADE (family 245) ===
@@ -51,7 +51,7 @@ SPLASH
 
 === SHIELD (family 246) ===
   {246:54} Capacity +50% (max 214)
-  {246:56} Adaptive (max 810 save-editor)
+  {246:56} Adaptive (max 810)
 
 === CLASS MOD (family 234) ===
   {234:19} Damage Dealt +20%/stack (max 212)

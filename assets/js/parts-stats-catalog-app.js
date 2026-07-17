@@ -105,27 +105,91 @@
     return dot > 0 ? c.slice(0, dot) : c || 'unknown';
   }
 
+  var MANUFACTURER_PREFIX_MAP = {
+    atl: 'atlas',
+    bor: 'bor',
+    dad: 'dad',
+    jak: 'jak',
+    mal: 'mal',
+    ord: 'ord',
+    ted: 'ted',
+    tor: 'tor',
+    vla: 'vla',
+    hyp: 'hyperion',
+    cov: 'cov',
+    exo: 'exo',
+    torgue: 'tor',
+    vladof: 'vla',
+    maliwan: 'mal',
+    jakobs: 'jak',
+    daedalus: 'dad',
+    tediore: 'ted',
+    atlas: 'atlas',
+    order: 'ord',
+    borg: 'borg',
+    ripper: 'bor',
+    hyperion: 'hyperion',
+    dark_siren: 'dark_siren',
+    darksiren: 'dark_siren',
+    exo_soldier: 'exo',
+    exo_soldier_2: 'exo',
+    exo_soldier_3: 'exo'
+  };
+
+  var MANUFACTURER_LABELS = {
+    atlas: 'Atlas',
+    bor: 'Bor',
+    cov: 'COV',
+    dad: 'Daedalus',
+    dark_siren: 'Dark Siren',
+    exo: 'Exo Soldier',
+    hyperion: 'Hyperion',
+    jak: 'Jakobs',
+    mal: 'Maliwan',
+    ord: 'Order',
+    ted: 'Tediore',
+    tor: 'Torgue',
+    vla: 'Vladof'
+  };
+
+  function canonicalManufacturerKey(name) {
+    var s = String(name || '').trim().toLowerCase();
+    if (!s) return '';
+    if (MANUFACTURER_PREFIX_MAP[s]) return MANUFACTURER_PREFIX_MAP[s];
+    var t = s.replace(/[^a-z]/g, '_');
+    if (MANUFACTURER_PREFIX_MAP[t]) return MANUFACTURER_PREFIX_MAP[t];
+    var prefix = s.match(/^([a-z]{3})/);
+    if (prefix && MANUFACTURER_PREFIX_MAP[prefix[1]]) return MANUFACTURER_PREFIX_MAP[prefix[1]];
+    return '';
+  }
+
   function inferMfr(code, part) {
     var m = String((part && part.manufacturer) || '').trim().toLowerCase();
-    if (m) {
-      if (m.indexOf('daedalus') === 0) return 'dad';
-      if (m.indexOf('jakobs') === 0) return 'jak';
-      if (m.indexOf('maliwan') === 0) return 'mal';
-      if (m.indexOf('tediore') === 0) return 'ted';
-      if (m.indexOf('torgue') === 0) return 'tor';
-      if (m.indexOf('vladof') === 0) return 'vla';
-      if (m.indexOf('order') === 0) return 'ord';
-      if (m.indexOf('borg') === 0) return 'borg';
-      if (m.indexOf('ripper') === 0) return 'bor';
-      return m.slice(0, 12).replace(/\s+/g, '_');
-    }
+    var fromMfr = canonicalManufacturerKey(m);
+    if (fromMfr) return fromMfr;
+
     var fam = inferFamily(code);
     var hit = fam.match(/^([a-z]{3})_/);
-    return hit ? hit[1] : 'unknown';
+    if (hit && MANUFACTURER_PREFIX_MAP[hit[1]]) return MANUFACTURER_PREFIX_MAP[hit[1]];
+    return '';
   }
 
   function inferSlot(code) {
     return /\.comp_/i.test(String(code || '')) ? 'comp' : 'part';
+  }
+
+  function inferCatalogCategoryFromCode(code) {
+    var c = normCode(code);
+    if (!c) return 'Other';
+    if (c.indexOf('classmod.') === 0) return 'Class Mod';
+    if (c.indexOf('character.') === 0) return 'Character';
+    if (c.indexOf('shield.') === 0) return 'Shield';
+    if (c.indexOf('firmware.') === 0) return 'Firmware';
+    if (c.indexOf('gadget.') === 0) return 'Gadget';
+    if (c.indexOf('grenade.') === 0) return 'Grenade';
+    if (c.indexOf('repkit.') === 0) return 'Repkit';
+    if (c.indexOf('enhancement.') === 0) return 'Enhancement';
+    return 'Weapon';
   }
 
   function statDedupeKey(row) {
@@ -839,6 +903,32 @@
       seen[key] = true;
       out.push(p);
     }
+
+    var psData = window.PARTS_STATS_DATA;
+    var byPart = psData && psData.by_part_code;
+    if (byPart) {
+      var statKeys = Object.keys(byPart);
+      for (var j = 0; j < statKeys.length; j++) {
+        var statKey = String(statKeys[j] || '').trim();
+        if (!statKey) continue;
+        var canonical = normCode(statKey);
+        var syntheticKey = canonical + '\x00';
+        if (seen[syntheticKey]) continue;
+        seen[syntheticKey] = true;
+        out.push({
+          code: statKey,
+          spawnCode: statKey,
+          importCode: statKey,
+          idRaw: '',
+          name: statKey,
+          manufacturer: inferMfr(statKey, null),
+          category: inferCatalogCategoryFromCode(statKey),
+          itemType: inferCatalogCategoryFromCode(statKey),
+          partType: inferSlot(statKey)
+        });
+      }
+    }
+
     return out;
   }
 
@@ -852,14 +942,20 @@
     frag.appendChild(opt0);
     var arr = values.slice().sort();
     for (var i = 0; i < arr.length; i++) {
+      var val = arr[i];
+      if (!val) continue;
       var o = document.createElement('option');
-      o.value = arr[i];
-      o.textContent = labelFn ? labelFn(arr[i]) : arr[i];
+      o.value = val;
+      o.textContent = labelFn ? labelFn(val) : val;
       frag.appendChild(o);
     }
     sel.innerHTML = '';
     sel.appendChild(frag);
-    if (current && arr.indexOf(current) >= 0) sel.value = current;
+    if (current && Array.prototype.indexOf.call(sel.options, current) >= 0) {
+      sel.value = current;
+    } else {
+      sel.value = '';
+    }
   }
 
   function appendTechnicalSection(parent, entry, opts) {
@@ -1238,7 +1334,11 @@
       if (e.slot) slotSet[e.slot] = true;
       if (e.category) catSet[e.category] = true;
     }
-    fillSelect(byId('mfr'), Object.keys(mfrSet));
+    fillSelect(
+      byId('mfr'),
+      Object.keys(mfrSet),
+      function (val) { return MANUFACTURER_LABELS[val] || val; }
+    );
     fillSelect(byId('slot'), Object.keys(slotSet));
     fillSelect(byId('cat'), Object.keys(catSet));
   }

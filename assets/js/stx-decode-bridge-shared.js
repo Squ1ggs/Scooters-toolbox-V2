@@ -63,7 +63,7 @@
 
   /**
    * If the tail starts with `{…}` or `"…"` but only a single `|` precedes it, WASM may reject it.
-   * Also handle missing `||` before `{` when nicnl-style `ensureDoublePipe` applies.
+   * Also handle missing `||` before `{` when double-pipe normalization applies.
    */
   function ensureDoublePipeBeforePartTail(s) {
     s = String(s || '').trim();
@@ -140,7 +140,7 @@
       var s = serials[i];
       var v0 = norm(s);
       if (looksDeserialized(s)) {
-        // WASM b85.Decode only accepts @U…; pack via nicnl FromString+Serialize (stx-nicnl-serial-pack.js).
+        // WASM b85.Decode only accepts @U…; pack via local FromString+Serialize (stx-nicnl-serial-pack.js).
         var normD = normalizeDeserializedForWasm(s);
         var packed = normD;
         if (typeof window.__stxNicnlPackDeserialized === 'function') {

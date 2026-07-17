@@ -1,5 +1,5 @@
 /**
- * Pack nicnl-style deserialized text -> @U Base85 (matches borderlands4-serials FromString + Serialize + b85.Encode).
+ * Pack deserialized text -> @U Base85 (FromString + Serialize + b85.Encode).
  * Required because WASM bl4DecodeBulk only accepts @U (b85.Decode rejects plain text).
  */
 (function () {
@@ -421,7 +421,7 @@
       if (!s) return '';
       var blocks = fromStringToBlocks(s);
       var raw = serializeBlocks(blocks);
-      // bytesToCustomB85 (and fallback) mirror each byte like nicnl b85.Encode.
+      // bytesToCustomB85 (and fallback) mirror each byte like standard b85.Encode.
       var body = bytesToB85Body(raw);
       if (!body) return '';
       body = String(body).replace(/\|/g, '/');

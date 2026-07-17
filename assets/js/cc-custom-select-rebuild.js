@@ -19,7 +19,6 @@
     'ccGadgetRaritySelect', 'ccHeavyRaritySelect', 'cmRaritySelect'
   ];
   var LARGE_SKIN_SELECT_IDS = [
-    'mixSkin1', 'mixSkin2', 'mixSkin3',
     'toolsSkinSelect', 'toolsCamoSelect',
     'ccGuidedSkinSelect', 'ccGuidedCamoSelect',
     'skinSelect', 'camoSelect'
@@ -86,6 +85,28 @@
       if (typeof window.stxIsTouchUi === 'function') return window.stxIsTouchUi();
     } catch (_) {}
     return document.documentElement.classList.contains('stx-touch-ui');
+  }
+
+  function selectHostNeedsTopStack(sel) {
+    try {
+      if (!sel || !sel.closest) return false;
+      return !!(
+        sel.closest('#rp-saveyaml-drawer') ||
+        sel.closest('#ccMissionsEditor') ||
+        sel.closest('#ccExtraYamlEditors')
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function floatingListZIndex(sel) {
+    // Drawer/tab use ~2147483645; default float (2147483001) opens under them and looks "dead".
+    return selectHostNeedsTopStack(sel) ? '2147483647' : '2147483001';
+  }
+
+  function floatingBackdropZIndex(sel) {
+    return selectHostNeedsTopStack(sel) ? '2147483646' : '2147482000';
   }
 
   function ensureSelectBackdrop() {
@@ -165,7 +186,12 @@
 
   function shouldUseNativeSelect(sel) {
     if (!sel) return true;
-    return String(sel.getAttribute('data-native-select') || '').trim().toLowerCase() === 'yes';
+    if (String(sel.getAttribute('data-native-select') || '').trim().toLowerCase() === 'yes') return true;
+    try {
+      // Mission / YAML editor lists are long and live in a top-layer drawer — keep OS native.
+      if (sel.closest && sel.closest('#ccMissionsEditor, #ccExtraYamlEditors')) return true;
+    } catch (_) {}
+    return false;
   }
 
   function unwrapNativeSelect(sel) {
@@ -193,6 +219,12 @@
       }
       if (sel.size > 1) return;
       if (String(sel.getAttribute('data-native-select') || '').trim().toLowerCase() === 'yes') return;
+      var originalRect = null;
+      var originalStyle = null;
+      try {
+        originalRect = sel.getBoundingClientRect();
+        originalStyle = window.getComputedStyle(sel);
+      } catch (_) {}
       sel.dataset.customSelect = 'yes';
 
       var wrapper = document.createElement('div');
@@ -205,10 +237,24 @@
         if (sel.style.flexShrink) wrapper.style.flexShrink = sel.style.flexShrink;
         if (sel.style.flexBasis) wrapper.style.flexBasis = sel.style.flexBasis;
       } catch (_) {}
+      if (originalStyle) {
+        /* Replacing the native control asynchronously must preserve its outer box.
+           Otherwise every lost select margin/height moves all following panels. */
+        wrapper.style.marginTop = originalStyle.marginTop;
+        wrapper.style.marginRight = originalStyle.marginRight;
+        wrapper.style.marginBottom = originalStyle.marginBottom;
+        wrapper.style.marginLeft = originalStyle.marginLeft;
+        wrapper.style.alignSelf = originalStyle.alignSelf;
+        wrapper.style.verticalAlign = originalStyle.verticalAlign;
+        wrapper.style.maxWidth = originalStyle.maxWidth;
+      }
 
       var display = document.createElement('div');
       display.className = 'custom-select-display editor-select';
       display.style.cssText = 'width:100%; padding:7px 11px; border-radius:6px; border:1px solid rgba(255, 120, 220, 0.45); background:' + DROPDOWN_BG + '; color:var(--text-primary); font-size:13px; line-height:1.35; cursor:pointer; min-height:22px; display:flex; align-items:center; gap:8px; box-sizing:border-box;';
+      if (originalRect && originalRect.height > 0) {
+        display.style.minHeight = Math.ceil(originalRect.height * 100) / 100 + 'px';
+      }
       display.setAttribute('aria-haspopup', 'listbox');
       display.setAttribute('role', 'combobox');
 
@@ -467,7 +513,7 @@
       list.style.right = 'auto';
       list.style.maxHeight = maxH + 'px';
       list.style.overflowY = 'auto';
-      list.style.zIndex = '2147483001';
+      list.style.zIndex = floatingListZIndex(sel);
       list.style.pointerEvents = 'auto';
       if (spaceBelow >= 120 || spaceBelow >= spaceAbove) {
         list.style.top = (r.bottom + 2) + 'px';
@@ -511,6 +557,13 @@
         clearTimeout(closeHandlerTimer);
         closeHandlerTimer = 0;
       }
+      try {
+        var searchEl = list.querySelector('.custom-select-search');
+        if (searchEl) {
+          searchEl.value = '';
+          applySearchFilter('');
+        }
+      } catch (_) {}
       list.style.display = 'none';
       restoreFloatedListHost();
       wrapper.classList.remove('is-open');
@@ -700,6 +753,7 @@
             }
           } else {
             wrapperListDirty = false;
+            ensureSearchUi();
           }
         }
         nextChunk();
@@ -724,6 +778,89 @@
       }
       list.appendChild(fragment);
       wrapperListDirty = false;
+      ensureSearchUi();
+    }
+
+    function applySearchFilter(q) {
+      var needle = String(q || '').trim().toLowerCase();
+      var opts = list.querySelectorAll('.custom-select-option');
+      var i;
+      for (i = 0; i < opts.length; i++) {
+        var item = opts[i];
+        if (!needle) {
+          item.style.display = '';
+          continue;
+        }
+        var blob = (
+          String(item.dataset.value || '') + ' ' +
+          String(item.textContent || '') + ' ' +
+          String(item.getAttribute('title') || '')
+        ).toLowerCase();
+        item.style.display = blob.indexOf(needle) >= 0 ? '' : 'none';
+      }
+      var headers = list.querySelectorAll('.custom-select-group-header');
+      for (i = 0; i < headers.length; i++) {
+        var h = headers[i];
+        var next = h.nextElementSibling;
+        var any = false;
+        while (next && !next.classList.contains('custom-select-group-header')) {
+          if (next.classList.contains('custom-select-option') && next.style.display !== 'none') {
+            any = true;
+            break;
+          }
+          next = next.nextElementSibling;
+        }
+        h.style.display = (!needle || any) ? '' : 'none';
+      }
+    }
+
+    function ensureSearchUi() {
+      var n = countSelectOptions(sel);
+      var existing = list.querySelector('.custom-select-search');
+      if (n < 12) {
+        if (existing) existing.remove();
+        return;
+      }
+      if (!existing) {
+        existing = document.createElement('input');
+        existing.type = 'search';
+        existing.className = 'custom-select-search';
+        existing.setAttribute('placeholder', 'Search…');
+        existing.setAttribute('autocomplete', 'off');
+        existing.setAttribute('aria-label', 'Filter options');
+        existing.style.cssText = 'position:sticky;top:0;z-index:3;width:100%;box-sizing:border-box;padding:8px 10px;margin:0;border:0;border-bottom:1px solid rgba(255,120,220,0.35);border-radius:6px 6px 0 0;background:' + DROPDOWN_BG + ';color:var(--text-primary);font-size:13px;outline:none;';
+        existing.addEventListener('click', function (e) { e.stopPropagation(); });
+        existing.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+        existing.addEventListener('touchstart', function (e) { e.stopPropagation(); }, { passive: true });
+        existing.addEventListener('keydown', function (e) {
+          e.stopPropagation();
+          if (e.key === 'Escape') {
+            existing.value = '';
+            applySearchFilter('');
+            finishCloseDropdown();
+          }
+        });
+        existing.addEventListener('input', function () {
+          applySearchFilter(existing.value);
+        });
+      }
+      /* Chrome Issues: form fields need id or name (autofill / a11y). */
+      if (!existing.id && !existing.name) {
+        var base = String(sel.id || sel.name || 'select').replace(/[^a-zA-Z0-9_-]/g, '_') || 'select';
+        var sid = 'cc-cs-search-' + base;
+        if (document.getElementById(sid) && document.getElementById(sid) !== existing) {
+          sid = sid + '-' + Math.random().toString(36).slice(2, 7);
+        }
+        existing.id = sid;
+        existing.name = sid;
+      } else if (!existing.name && existing.id) {
+        existing.name = existing.id;
+      } else if (!existing.id && existing.name) {
+        existing.id = existing.name;
+      }
+      if (list.firstChild !== existing) {
+        list.insertBefore(existing, list.firstChild);
+      }
     }
 
     function openList(e) {
@@ -767,16 +904,10 @@
             }
           } catch (_) {}
         });
-      } else if (sid === 'mixSkin1' || sid === 'mixSkin2' || sid === 'mixSkin3') {
-        lazyOpen(function () {
-          try {
-            if (typeof window.populateMixDropdowns === 'function') window.populateMixDropdowns();
-          } catch (_) {}
-        });
       }
       var bd = ensureSelectBackdrop();
       bd.style.pointerEvents = 'auto';
-      bd.style.zIndex = '2147482000';
+      bd.style.zIndex = floatingBackdropZIndex(sel);
       bd.onclick = function (ev) {
         if (ev) {
           try { ev.preventDefault(); ev.stopPropagation(); } catch (_) {}
@@ -784,7 +915,7 @@
         backdropClosesDropdown(ev, finishCloseDropdown);
       };
       wrapper.classList.add('is-open');
-      wrapper.style.zIndex = '2147483000';
+      wrapper.style.zIndex = selectHostNeedsTopStack(sel) ? '2147483647' : '2147483000';
       list.style.display = 'block';
       if (wrapperListDirty && !list.querySelector('.custom-select-option')) {
         list.innerHTML = '<div class="cc-custom-select-loading" style="padding:10px;color:var(--text-muted);font-size:11px;">Loading options…</div>';
@@ -797,12 +928,25 @@
       openGuardUntil = Date.now() + guardMs;
       try { window.__stxCustomSelectOpenGuardUntil = openGuardUntil; } catch (_) {}
       armOutsideCloseListeners();
+      // Never build the full option DOM on the click frame — paint open shell first (INP).
       if (wrapperListDirty) {
-        var openPolicy = getListBuildPolicy(sel, countSelectOptions(sel));
-        if (openPolicy.sync) buildList();
-        else requestAnimationFrame(function () { buildList(); });
+        var deferBuild = function () {
+          if (!wrapper.classList.contains('is-open')) return;
+          buildList();
+          floatOpenList();
+        };
+        if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(deferBuild);
+        else requestAnimationFrame(function () { setTimeout(deferBuild, 0); });
+      } else {
+        ensureSearchUi();
       }
-      requestAnimationFrame(function () { floatOpenList(); });
+      requestAnimationFrame(function () {
+        floatOpenList();
+        try {
+          var searchFocus = list.querySelector('.custom-select-search');
+          if (searchFocus && !touchSelectUi()) searchFocus.focus();
+        } catch (_) {}
+      });
     }
 
     function closeHandler(e) {
@@ -987,6 +1131,15 @@
   function init() {
     try {
       if (typeof window.stxMarkGuidedSlotNativeSelects === 'function') window.stxMarkGuidedSlotNativeSelects();
+    } catch (_) {}
+
+    // Mission / YAML-field selects may already be wrapped from an older boot — force native.
+    try {
+      var nativeRoots = document.querySelectorAll('#ccMissionsEditor select, #ccExtraYamlEditors select');
+      for (var ni = 0; ni < nativeRoots.length; ni++) {
+        nativeRoots[ni].setAttribute('data-native-select', 'yes');
+        unwrapNativeSelect(nativeRoots[ni]);
+      }
     } catch (_) {}
 
     var selects = Array.prototype.slice.call(document.querySelectorAll('select.editor-select, .editor-page select, .app-shell select'));

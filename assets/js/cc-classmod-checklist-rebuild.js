@@ -1,6 +1,6 @@
 /**
  * cc-classmod-checklist-rebuild.js
- * Guided Class Mod checklist UI – matches old ScootersToolbox.html behavior.
+ * Guided Class Mod checklist UI.
  * Character buttons + Primary (skills) + Secondary (Perks/Firmware) checkbox lists.
  * Syncs with state.slots (perk, universal, firmware) and refreshOutputs.
  */
@@ -114,6 +114,7 @@
     if (!parts.length) {
       if (partType === 'Firmware') return getItemsForKey('firmware');
       if (partType === 'Universal') return getItemsForKey('universal');
+      if (partType === 'Secondary') return getItemsForKey('secondary');
       return [];
     }
     return parts
@@ -126,6 +127,8 @@
     atlasinfinum: 'atlasinfinium',
     atlasinfiniumm: 'atlasinfinium',
     daeddyo: 'daedyo',
+    deaddyo: 'daedyo',
+    bulletspare: 'bulletstospare',
     getthrowin: 'getthrowd'
   };
   var CM_PERK_ICON_KEY_ALIASES = {
@@ -136,7 +139,16 @@
     batterysubscriptionservicerafa: 'batterysubscriptionservice',
     firstimpressionrafa: 'firstimpression',
     propreitaryincendiary: 'proprietaryincendiary',
-    thethrill: 'thethrillamon'
+    thethrill: 'thethrillamon',
+    healthregenpersecond: 'gravevitality',
+    maximumhealthcapacity: 'vitalorgans',
+    maximumshieldcapacity: 'shieldbarriest',
+    movementspeed: 'fasthands',
+    legerdamain: 'legerdemain',
+    toothofnail: 'toothandnail',
+    chainreaction: 'chainreactor',
+    scertaintyprinciple: 'harlowescertaintyprinciple',
+    certaintyprinciple: 'harlowescertaintyprinciple'
   };
 
   function normalizePerkNameForMeta(name) {
@@ -249,38 +261,44 @@
     }
 
     function pushSpeculativeUrls(stem) {
-      var s = normalizePerkNameForMeta(stem);
-      if (!s) return;
+      var raw = normalizePerkNameForMeta(stem);
+      if (!raw) return;
+      var variants = [raw];
+      var stripped = raw;
       if (typeof window.stxStripVaultHunterPrefixFromClassmodPerkStem === 'function') {
-        try { s = window.stxStripVaultHunterPrefixFromClassmodPerkStem(s) || s; } catch (_) {}
+        try { stripped = window.stxStripVaultHunterPrefixFromClassmodPerkStem(raw) || raw; } catch (_) {}
       }
-      if (typeof window.stxRemapClassmodPerkArtStem === 'function') {
-        try { s = window.stxRemapClassmodPerkArtStem(s) || s; } catch (_) {}
-      }
+      if (stripped && stripped !== raw) variants.push(stripped);
 
-      var uni = typeof window.stxResolveUniversalClassmodPerkIconUrl === 'function' ? window.stxResolveUniversalClassmodPerkIconUrl(s) : null;
-      if (uni) out.push(uni);
+      for (var vi = 0; vi < variants.length; vi++) {
+        var s = variants[vi];
+        if (typeof window.stxRemapClassmodPerkArtStem === 'function') {
+          try { s = window.stxRemapClassmodPerkArtStem(s) || s; } catch (_) {}
+        }
+        if (!s) continue;
 
-      // Avoid pointless disk/CDN lookups for plain stat rows once universal art is wired.
-      var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance/.test(s);
-      if (isGeneric) {
+        /* Prefer catalog/CDN map first so missing local PNGs don't spam 404s. */
         if (map[s]) out.push(map[s]);
-        return;
-      }
 
-      if (isFw) {
-        var fw = CM_FIRMWARE_ICON_STEM_ALIASES[s] || s;
-        out.push('./assets/img/classmod-firmware/' + fw + '.png');
-      } else if (isPassive) {
-        out.push('./assets/img/classmod-passive/' + s + '.png');
-        out.push('./assets/img/classmod-perks/' + s + '.png');
-      } else {
-        out.push('./assets/img/classmod-perks/' + s + '.png');
-        out.push('./assets/img/classmod-passive/' + s + '.png');
-        out.push('./assets/img/classmod-firmware/' + s + '.png');
-      }
+        var uni = typeof window.stxResolveUniversalClassmodPerkIconUrl === 'function' ? window.stxResolveUniversalClassmodPerkIconUrl(s) : null;
+        if (uni) out.push(uni);
 
-      if (map[s]) out.push(map[s]);
+        // Avoid pointless disk/CDN lookups for plain stat rows once universal art is wired.
+        var isGeneric = /actionskill|assaultrifle|criticalhit|damagedealt|damagereduction|elementaldamage|energyshield|firerate|criticalhitchance/.test(s);
+        if (isGeneric) continue;
+
+        if (isFw) {
+          var fw = CM_FIRMWARE_ICON_STEM_ALIASES[s] || s;
+          out.push('./assets/img/classmod-firmware/' + fw + '.png');
+        } else if (isPassive) {
+          out.push('./assets/img/classmod-passive/' + s + '.png');
+          out.push('./assets/img/classmod-perks/' + s + '.png');
+        } else {
+          out.push('./assets/img/classmod-perks/' + s + '.png');
+          out.push('./assets/img/classmod-passive/' + s + '.png');
+          out.push('./assets/img/classmod-firmware/' + s + '.png');
+        }
+      }
     }
 
     for (var ci = 0; ci < keyCandidates.length; ci++) pushSpeculativeUrls(keyCandidates[ci]);
@@ -463,6 +481,7 @@
     if (!all.length) return [];
 
     var fam = FAMILY_BY_KEY[k];
+    if (k === 'secondary') fam = FAMILY_BY_KEY.universal; /* shared perk family 234 */
     var seen = new Set();
     var out = [];
 
@@ -476,9 +495,15 @@
         var codeL = String((p.code || p.spawnCode || '') || '').toLowerCase();
         if (pt !== 'firmware' && codeL.indexOf('part_firmware') === -1) continue;
       }
-      if (k === 'universal') {
+      if (k === 'universal' || k === 'secondary') {
         var pt2 = String((p.partType || p.kind || '') || '').toLowerCase();
+        var codeL2 = String((p.code || p.spawnCode || '') || '').toLowerCase();
+        if (pt2 !== 'perk') continue;
         if (pt2 === 'firmware' || pt2 === 'rarity' || pt2 === 'name+skin' || pt2 === 'body') continue;
+        if (codeL2.indexOf('statspecial') !== -1) continue;
+        var isStat2 = /(^|[._])stat2([._]|$)/.test(codeL2);
+        if (k === 'universal' && isStat2) continue;
+        if (k === 'secondary' && !isStat2) continue;
       }
       var code = partCodeOf(p);
       if (!code || seen.has(code)) continue;
@@ -488,8 +513,8 @@
         name: String((p.name || p.legendaryName || code) || '').trim() || code,
         code: code,
         partType: String((p.partType || p.kind || '') || '').trim(),
-        category: k === 'universal' || k === 'firmware' ? 'Classmod Perk' : 'Classmod',
-        _cmSource: k === 'firmware' ? 'firmware' : 'perk',
+        category: (k === 'universal' || k === 'firmware' || k === 'secondary') ? 'Classmod Perk' : 'Classmod',
+        _cmSource: k === 'firmware' ? 'firmware' : (k === 'secondary' ? 'secondary' : 'perk'),
         part: p
       });
     }
@@ -499,12 +524,39 @@
   function getClassModPrimaryItems(charName) {
     var cls = String(charName || getSelectedCharacter() || '').trim();
     var raw = [];
-    if (typeof window.getLegacyClassModSkillParts === 'function') {
+    try {
+      if (typeof window.__ccEnsureClassmodSkillsData === 'function') {
+        var p = window.__ccEnsureClassmodSkillsData();
+        var skillsReady = typeof window.__ccClassmodSkillsLoaded === 'function'
+          ? !!window.__ccClassmodSkillsLoaded()
+          : !!(window.__LEGACY_CLASSMOD_PARTS_BY_KEY && window.__LEGACY_CLASSMOD_PARTS_BY_KEY.vex);
+        if (p && typeof p.then === 'function' && !skillsReady) {
+          p.then(function () {
+            try {
+              if (typeof window.__ccClassmodSkillsReady === 'function') window.__ccClassmodSkillsReady();
+              else if (typeof window.__ccClassmodChecklistRender === 'function') window.__ccClassmodChecklistRender();
+            } catch (_) {}
+          });
+        }
+      }
+    } catch (_) {}
+    var getLegacy = typeof window.getLegacyClassModSkillParts === 'function'
+      ? window.getLegacyClassModSkillParts
+      : null;
+    if (getLegacy) {
       try {
-        raw = window.getLegacyClassModSkillParts(cls) || [];
+        raw = getLegacy(cls) || [];
+        if (!raw.length) {
+          /* Retry with manufacturer / display aliases (Vex↔Siren, etc.). */
+          var man = getClassModManufacturerName(cls);
+          if (man && man !== cls) raw = getLegacy(man) || [];
+          var disp = getDisplayClassName(cls);
+          if (!raw.length && disp && disp !== cls) raw = getLegacy(disp) || [];
+        }
       } catch (_) { raw = []; }
     }
-    if (!raw.length) raw = getFilteredClassModRawParts(cls, 'Skill');
+    /* Dataset Skill rows are Nexus stubs ("Passive Blue …") — never use them for Primary. */
+    if (!raw.length) return [];
     raw = raw.filter(isGuidedPerkEntry);
     if (!raw.length) return [];
 
@@ -848,7 +900,7 @@
     return /class\s*mod|classmod/i.test(String(itemType || ''));
   }
 
-  var CHAR_ALIAS = { vex: 'vex', siren: 'vex', amon: 'amon', paladin: 'amon', rafa: 'rafa', 'exo soldier': 'rafa', 'exo-soldier': 'rafa', exosoldier: 'rafa', harlowe: 'harlowe', gravitar: 'harlowe', c4sh: 'c4sh', robodealer: 'c4sh', universal: 'universal' };
+  var CHAR_ALIAS = { vex: 'vex', siren: 'vex', 'dark siren': 'vex', darksiren: 'vex', amon: 'amon', paladin: 'amon', rafa: 'rafa', 'exo soldier': 'rafa', 'exo-soldier': 'rafa', exosoldier: 'rafa', harlowe: 'harlowe', gravitar: 'harlowe', c4sh: 'c4sh', robodealer: 'c4sh', universal: 'universal' };
   var KEY_TO_DISPLAY = { vex: 'Vex', amon: 'Amon', rafa: 'Rafa', harlowe: 'Harlowe', c4sh: 'C4sh', universal: 'Universal' };
   var DISPLAY_TO_MAN = { Vex: 'Siren', Amon: 'Paladin', Rafa: 'Exo Soldier', Harlowe: 'Gravitar', C4sh: 'Robodealer', Universal: 'Universal' };
   var MAN_TO_DISPLAY = { 'Siren': 'Vex', 'Paladin': 'Amon', 'Exo Soldier': 'Rafa', 'Gravitar': 'Harlowe', 'Robodealer': 'C4sh', 'C4sh': 'C4sh', 'Universal': 'Universal' };
@@ -1146,10 +1198,14 @@
     }
 
     var out = family + ', 0, 1, ' + level + '|';
-    if (lockFirmware) out += ' 9, 1|';
-    if (buybackFlag) out += ' 10, 1|';
-    if (Number(seed) !== 0) out += ' 2, ' + seed + '||';
-    else out += '||';
+    if (typeof window.stxBuildSerialHeaderSuffix === 'function') {
+      out += window.stxBuildSerialHeaderSuffix(seed, lockFirmware, buybackFlag);
+    } else {
+      if (lockFirmware) out += ' 9, 1|';
+      if (buybackFlag) out += ' 10, 1|';
+      if (Number(seed) !== 0) out += ' 2, ' + seed + '||';
+      else out += '||';
+    }
     out += normalizedTokens.length ? (' ' + normalizedTokens.join(' ') + '|') : '|';
     return String(out || '').replace(/\s+\|$/, '|');
   }
@@ -1161,7 +1217,8 @@
     var outCode = byId('outCode');
     var guidedOut = byId('guidedOutputDeserialized');
     if (guidedOut) guidedOut.value = code;
-    else if (outCode) outCode.value = code;
+    if (outCode) outCode.value = code;
+    try { window.__CC_LAST_CODE_TARGET = guidedOut ? 'guided' : 'simple'; } catch (_) {}
     try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
@@ -1246,6 +1303,10 @@
     var nn = nm.toLowerCase().replace(/\s+/g, '');
     if (/broken(red|green|blue|white)/.test(nn)) return true;
     if (/^broken\?+$/.test(nn) || /^broken\?{3,}$/i.test(nn.replace(/\s+/g, ''))) return true;
+    if (/^passive\s+(blue|green|red|white|purple)\b/i.test(nm)) return true;
+    if (/^action\s+skill\b/i.test(nm) && /\btier\s*\d+/i.test(nm)) return true;
+    if (/^capstone\b/i.test(nm) && /\btier\s*\d+/i.test(nm)) return true;
+    if (/(^|[._])passive_(blue|green|red|white|purple)(_|\d)/i.test(code)) return true;
     return false;
   }
 
@@ -1267,9 +1328,11 @@
     var pt = String((it && it.partType) || (it && it.part && it.part.partType) || '').toLowerCase();
     if (!nm) return false;
     if (kd.indexOf('name+skin') !== -1 || pt.indexOf('name+skin') !== -1) return false;
-    if (pt === 'rarity' || nm.indexOf('rarity') !== -1 || kd.indexOf('rarity') !== -1) return false;
-    if (nm.indexOf(' body') !== -1 || nm.indexOf('body') === 0 || nm.indexOf('class body') !== -1 || kd.indexOf('body') !== -1 || pt.indexOf('body') !== -1) return false;
-    if (nm.indexOf('common') !== -1 || nm.indexOf('uncommon') !== -1 || nm.indexOf('rare') !== -1 || nm.indexOf('epic') !== -1 || nm.indexOf('legendary') !== -1) return false;
+    if (pt === 'rarity' || pt === 'item card') return false;
+    if (pt === 'body') return false;
+    /* Exact rarity / body labels only — never substring-match real perk names. */
+    if (/^(common|uncommon|rare|epic|legendary|pearlescent)(\b|$)/i.test(nm)) return false;
+    if (/^(class\s*)?body\b/i.test(nm)) return false;
     return true;
   }
 
@@ -1699,4 +1762,5 @@
   }
 
   window.__ccClassmodChecklistRender = renderUI;
+  window.syncChecklistClassModOutputs = syncChecklistClassModOutputs;
 })();

@@ -85,13 +85,20 @@
   function computeSimpleBuilderItemSlug(st) {
     if (!st || typeof st !== 'object') return '';
     var catUi = st.itemType || '';
-    var cat = (catUi === 'Heavy' || catUi === 'Heavy Weapon') ? 'Weapon' : catUi;
     var man = normMfrSlugToken(st.manufacturer);
     if (!man) return '';
+    /* Heavy / legacy Gadget → manufacturer_heavy_weapon slug (not leftover AR/SMG weaponType). */
+    if (catUi === 'Heavy' || catUi === 'Heavy Weapon' || catUi === 'Gadget') {
+      var hm = { maliwan: 1, ripper: 1, torgue: 1, vladof: 1 };
+      if (hm[man]) return man + '_heavy_weapon';
+      return '';
+    }
+    var cat = catUi;
 
     if (cat === 'Weapon') {
       var wt = weaponTypeToSlugSuffix(st.weaponType);
       if (!wt) return '';
+      if (wt === 'heavy_weapon') return '';
       return man + '_' + wt;
     }
     if (cat === 'Shield') return man + '_shield';
@@ -108,11 +115,6 @@
         robodealer: 'classmod_robodealer'
       };
       return cm[ch] || ('classmod_' + ch);
-    }
-    if (cat === 'Gadget') {
-      var hm = { maliwan: 1, ripper: 1, torgue: 1, vladof: 1 };
-      if (hm[man]) return man + '_heavy_weapon';
-      return '';
     }
     return '';
   }
@@ -164,11 +166,12 @@
     var slots = sm[slug].ncs_slots;
     var hasNcs = {};
     var i;
-    for (i = 0; i < slots.length; i++) hasNcs[slots[i]] = true;
+    for (i = 0; i < slots.length; i++) hasNcs[String(slots[i] || '').trim().toLowerCase()] = true;
     var rows = [];
     var seenKey = {};
     for (i = 0; i < slots.length; i++) {
-      var ns = slots[i];
+      /* NCS source sometimes uses "Body" — normalize so body slot is never dropped. */
+      var ns = String(slots[i] || '').trim().toLowerCase();
       /* Fold NCS `body_bolt` into Body Accessory UI (same parts; dataset lists bolt under Body). */
       if (ns === 'body_bolt') continue;
       /* Thrown Tediore mags belong in the main Magazine dropdown (not a separate slot). */
@@ -202,21 +205,156 @@
 
   /**
    * Lowercased part code — belongs in NCS `magazine_acc` only.
-   * NCS pool: `part_mag_torgue_*`, `part_mag_(05_)borg_barrel_*`, and explicit `*_acc*` mag accessories.
-   * Not main magazine bodies, not plain `mag_05_borg` (separate slot), not `mag_ted_thrown`.
+   * Explicit accessory stems (`mag_acc` / `part_mag*_acc*`) only.
+   * Torgue gyrojets (`part_mag_torgue_normal` / `_sticky`) live in the main Magazine
+   * slot per BL4_MANIFEST (`mag`) — not Mag Acc.
    */
   function magazineAccessoryCodeMatchLo(codeLc) {
-    var x = String(codeLc || '').toLowerCase();
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
     if (!x) return false;
     if (x.indexOf('mag_ted_thrown') !== -1) return false;
-    // Plain Borg specialty mags belong in `magazine_borg`, not this slot.
-    if (/part_mag_(?:05_)?borg(?!_barrel|_acc)/.test(x)) return false;
+    // Torgue gyrojets (incl. *_normal) are main Magazine options in the legit manifest.
+    if (/part_mag_torgue|mag_torgue|mag_normal/i.test(x)) return false;
+    // Plain Borg specialty mags + borg barrel-mags belong in main Mag / magazine_borg — not Mag Acc.
+    if (/part_mag_(?:05_)?borg/i.test(x)) return false;
     if (/mag_acc|magazine_acc/i.test(x)) return true;
-    if (/part_mag_torgue/i.test(x)) return true;
-    if (/part_mag_(?:05_)?borg_barrel/i.test(x)) return true;
     // Explicit accessory stem only (avoid matching "accuracy" substrings).
     if (/part_mag[^.\s]*_acc(?:_|$|\.)/.test(x) || /part_mag_acc/.test(x)) return true;
     return false;
+  }
+
+  /** Plain Borg specialty magazine (`magazine_borg` slot) — not barrel-acc variants. */
+  function magazineBorgCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x) return false;
+    if (magazineAccessoryCodeMatchLo(x)) return false;
+    return /part_mag_(?:05_)?borg(?!_barrel|_acc)|mag_05_borg|mag_.*_borg/.test(x);
+  }
+
+  /** Main magazine bodies (excludes accessories, borg specialty). Ted thrown stays here. */
+  function magazineMainCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('part_mag') === -1) return false;
+    if (magazineAccessoryCodeMatchLo(x)) return false;
+    if (magazineBorgCodeMatchLo(x)) return false;
+    return true;
+  }
+
+  /**
+   * Lowercased spawn code — belongs in NCS `barrel_acc` only.
+   * Letter accessories: `part_barrel_01_a` … `_d`, mix tags like `part_barrel_02_dXa` / `_aXD`.
+   * Not main barrels (`part_barrel_01`), not legendary named barrels (`part_barrel_02_lumberjack`).
+   */
+  function barrelAccessoryCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('part_barrel') === -1) return false;
+    if (/barrel_licensed|part_barrel_unique/.test(x)) return false;
+    if (/barrel_acc|part_barrel_acc/.test(x)) return true;
+    var m = x.match(/part_barrel_(\d+)_(.+)$/);
+    if (!m) return false;
+    var suf = String(m[2] || '');
+    // Single letter accessory (a–d).
+    if (/^[a-d]$/.test(suf)) return true;
+    // Heavy mix accessories: aXD / dXa / axd…
+    if (/^[a-d]x[a-z0-9]*$/i.test(suf)) return true;
+    return false;
+  }
+
+  /** Main barrel slot codes (excludes letter accessories + licensed). */
+  function barrelMainCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('part_barrel') === -1) return false;
+    if (/barrel_licensed/.test(x)) return false;
+    if (barrelAccessoryCodeMatchLo(x)) return false;
+    return true;
+  }
+
+  /** Scope accessories: `part_scope_acc_*` (or partType Scope Accessory). */
+  function scopeAccessoryCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('part_scope') === -1) return false;
+    if (/part_scope_acc|scope_acc/.test(x)) return true;
+    if (/part_scope[^.\s]*_acc(?:_|$|\.)/.test(x)) return true;
+    return false;
+  }
+
+  function scopeMainCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('part_scope') === -1) return false;
+    if (scopeAccessoryCodeMatchLo(x)) return false;
+    return true;
+  }
+
+  /** Underbarrel accessories: `*_acc` / `*_acc_vis` (same dataset partType as main underbarrel). */
+  function underbarrelAccessoryCodeMatchLo(codeLc, visOnly) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('underbarrel') === -1) return false;
+    if (visOnly) return /underbarrel.*acc_vis/.test(x);
+    if (/underbarrel.*acc_vis/.test(x)) return false;
+    return /underbarrel.*_acc(?:_|$|\.)|underbarrel_.*acc/.test(x);
+  }
+
+  function underbarrelMainCodeMatchLo(codeLc) {
+    var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!x || x.indexOf('underbarrel') === -1) return false;
+    if (underbarrelAccessoryCodeMatchLo(x, false) || underbarrelAccessoryCodeMatchLo(x, true)) return false;
+    return true;
+  }
+
+  /**
+   * Unified weapon-slot membership (Guided + Simple).
+   * @param {string} slotKey  Guided/Simple state key (`mag`, `magazineAcc`, `barrel`, …)
+   * @param {object} p        part row
+   * @returns {boolean}
+   */
+  function stxWeaponSlotPartMatch(slotKey, p) {
+    if (!p || !slotKey) return false;
+    var key = String(slotKey);
+    var x = String((p.code != null ? p.code : (p.spawnCode || '')) || '').toLowerCase().replace(/^["']|["']$/g, '');
+    var pt = String(p.partType || '').trim().toLowerCase();
+    switch (key) {
+      case 'mag':
+      case 'magazine':
+        // Main magazine bodies (incl. Torgue gyrojets). Don't require partType === Magazine —
+        // dataset often tags torgue mags as "Manufacturer Part".
+        if (magazineAccessoryCodeMatchLo(x) || magazineBorgCodeMatchLo(x)) return false;
+        if (magazineMainCodeMatchLo(x)) return true;
+        return pt === 'magazine';
+      case 'magazineAcc':
+      case 'magazine_acc':
+        if (magazineAccessoryCodeMatchLo(x)) return true;
+        return pt === 'magazine accessory';
+      case 'magazineBorg':
+      case 'magazine_borg':
+        return magazineBorgCodeMatchLo(x);
+      case 'barrel':
+        if (pt === 'barrel accessory') return false;
+        if (barrelAccessoryCodeMatchLo(x)) return false;
+        return pt === 'barrel' || barrelMainCodeMatchLo(x);
+      case 'barrelAcc':
+      case 'barrel_acc':
+        if (pt === 'barrel accessory') return true;
+        return barrelAccessoryCodeMatchLo(x);
+      case 'scope':
+        if (pt === 'scope accessory') return false;
+        if (scopeAccessoryCodeMatchLo(x)) return false;
+        return pt === 'scope' || scopeMainCodeMatchLo(x);
+      case 'scopeAcc':
+      case 'scope_acc':
+        if (pt === 'scope accessory') return true;
+        return scopeAccessoryCodeMatchLo(x);
+      case 'underbarrel':
+        if (underbarrelAccessoryCodeMatchLo(x, false) || underbarrelAccessoryCodeMatchLo(x, true)) return false;
+        return pt === 'underbarrel' || underbarrelMainCodeMatchLo(x);
+      case 'underbarrelAcc':
+      case 'underbarrel_acc':
+        return underbarrelAccessoryCodeMatchLo(x, false);
+      case 'underbarrelAccVis':
+      case 'underbarrel_acc_vis':
+        return underbarrelAccessoryCodeMatchLo(x, true);
+      default:
+        return true;
+    }
   }
 
   window.SLUG_TO_PREFIX = SLUG_TO_PREFIX;
@@ -225,4 +363,13 @@
   window.ncsNameToStateKey = ncsNameToStateKey;
   window.buildWeaponSlotSchemaFromNcs = buildWeaponSlotSchemaFromNcs;
   window.magazineAccessoryCodeMatchLo = magazineAccessoryCodeMatchLo;
+  window.magazineBorgCodeMatchLo = magazineBorgCodeMatchLo;
+  window.magazineMainCodeMatchLo = magazineMainCodeMatchLo;
+  window.barrelAccessoryCodeMatchLo = barrelAccessoryCodeMatchLo;
+  window.barrelMainCodeMatchLo = barrelMainCodeMatchLo;
+  window.scopeAccessoryCodeMatchLo = scopeAccessoryCodeMatchLo;
+  window.scopeMainCodeMatchLo = scopeMainCodeMatchLo;
+  window.underbarrelAccessoryCodeMatchLo = underbarrelAccessoryCodeMatchLo;
+  window.underbarrelMainCodeMatchLo = underbarrelMainCodeMatchLo;
+  window.stxWeaponSlotPartMatch = stxWeaponSlotPartMatch;
 })();

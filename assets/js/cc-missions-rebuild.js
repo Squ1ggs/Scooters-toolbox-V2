@@ -18,10 +18,37 @@
 
   var lastNodes = [];
   var lastYamlText = '';
+  var lastScope = '';
+  var refreshTimer = 0;
+  var lastFingerprint = '';
 
   function byId(id) {
     return document.getElementById(id);
   }
+
+  function ensureNativeMissionSelects() {
+    var root = byId('ccMissionsEditor');
+    if (!root) return;
+    var sels = root.querySelectorAll('select');
+    for (var si = 0; si < sels.length; si++) {
+      var sel = sels[si];
+      try { sel.setAttribute('data-native-select', 'yes'); } catch (_) {}
+      var wrap = sel.closest && sel.closest('.custom-select-wrapper');
+      if (!wrap || !wrap.parentNode) continue;
+      try {
+        wrap.parentNode.insertBefore(sel, wrap);
+        wrap.parentNode.removeChild(wrap);
+        sel.style.position = '';
+        sel.style.left = '';
+        sel.style.width = '';
+        sel.style.height = '';
+        sel.style.opacity = '';
+        sel.style.pointerEvents = '';
+        delete sel.dataset.customSelect;
+      } catch (_) {}
+    }
+  }
+  window.__ccEnsureNativeMissionSelects = ensureNativeMissionSelects;
 
   function yamlTextarea() {
     return byId('yamlInput') || byId('fullYamlInput') || document.querySelector('textarea[aria-label="YAML editor"]');
@@ -147,6 +174,7 @@
   function populateStatusSelect(nodes, currentStatus) {
     var sel = byId('ccMissionStatusSelect');
     if (!sel) return;
+    ensureNativeMissionSelects();
     var seen = Object.create(null);
     var opts = [];
     function add(v) {
@@ -158,23 +186,27 @@
     COMMON_STATUSES.forEach(add);
     for (var i = 0; i < nodes.length; i++) add(nodes[i].status);
     add(currentStatus);
-    sel.innerHTML = '';
+    var frag = document.createDocumentFragment();
     for (var j = 0; j < opts.length; j++) {
       var o = document.createElement('option');
       o.value = opts[j];
       o.textContent = opts[j];
-      sel.appendChild(o);
+      frag.appendChild(o);
     }
+    sel.innerHTML = '';
+    sel.appendChild(frag);
     if (currentStatus && seen[currentStatus]) sel.value = currentStatus;
     else if (opts.length) sel.value = opts[0];
   }
 
-  function populateNodeSelect(nodes, yamlLoaded) {
+  function populateNodeSelect(nodes, yamlLoaded, keepValue) {
     var sel = byId('ccMissionNodeSelect');
     var meta = byId('ccMissionsFoundMeta');
     if (!sel) return;
+    ensureNativeMissionSelects();
+    var prev = keepValue != null ? String(keepValue) : String(sel.value || '');
 
-    sel.innerHTML = '';
+    var frag = document.createDocumentFragment();
     var placeholder = document.createElement('option');
     placeholder.value = '';
     if (!yamlLoaded) {
@@ -184,14 +216,20 @@
     } else {
       placeholder.textContent = '(Select a mission entry)';
     }
-    sel.appendChild(placeholder);
+    frag.appendChild(placeholder);
 
     for (var i = 0; i < nodes.length; i++) {
       var n = nodes[i];
       var opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = n.label;
-      sel.appendChild(opt);
+      frag.appendChild(opt);
+    }
+    sel.innerHTML = '';
+    sel.appendChild(frag);
+    if (prev) {
+      sel.value = prev;
+      if (sel.value !== prev) sel.selectedIndex = 0;
     }
 
     if (meta) {
@@ -209,16 +247,28 @@
     return lastNodes[idx];
   }
 
-  function refreshMissionEditor() {
+  function yamlFingerprint(text, scope) {
+    // Cheap change detection — avoid full re-scan + option rebuild while typing/syncing.
+    var t = String(text || '');
+    return String(scope || 'all') + '|' + t.length + '|' + t.slice(0, 64) + '|' + t.slice(-64);
+  }
+
+  function refreshMissionEditor(force) {
+    ensureNativeMissionSelects();
     var text = getYamlTextSafe().trim();
     var scopeEl = byId('ccMissionScopeSelect');
     var scope = scopeEl ? scopeEl.value : 'all';
+    var fp = yamlFingerprint(text, scope);
+    if (!force && fp === lastFingerprint && lastNodes.length) return;
     var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(text) : 'unknown';
+    var keep = byId('ccMissionNodeSelect') ? byId('ccMissionNodeSelect').value : '';
 
     if (!text) {
       lastNodes = [];
       lastYamlText = '';
-      populateNodeSelect([], false);
+      lastScope = scope;
+      lastFingerprint = fp;
+      populateNodeSelect([], false, '');
       populateStatusSelect([], '');
       return;
     }
@@ -226,18 +276,38 @@
     if (kind !== 'character' && !/^\s*missions\s*:/m.test(text) && !/\n\s+missions\s*:/m.test(text)) {
       lastNodes = [];
       lastYamlText = text;
-      populateNodeSelect([], true);
+      lastScope = scope;
+      lastFingerprint = fp;
+      populateNodeSelect([], true, '');
       populateStatusSelect([], '');
       showMsg('Mission editor needs a character save YAML with a missions: block.', true);
       return;
     }
 
     lastYamlText = text;
+    lastScope = scope;
+    lastFingerprint = fp;
     lastNodes = scanMissionStatusNodes(text, scope);
-    populateNodeSelect(lastNodes, true);
+    populateNodeSelect(lastNodes, true, keep);
     var node = selectedNode();
     populateStatusSelect(lastNodes, node ? node.status : '');
     if (lastNodes.length) showMsg('');
+  }
+
+  function scheduleRefreshMissionEditor(force) {
+    if (force) {
+      if (refreshTimer) {
+        clearTimeout(refreshTimer);
+        refreshTimer = 0;
+      }
+      refreshMissionEditor(true);
+      return;
+    }
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(function () {
+      refreshTimer = 0;
+      refreshMissionEditor(false);
+    }, 120);
   }
 
   function applyStatusToLine(lines, node, newStatus) {
@@ -268,13 +338,13 @@
     var lines = text.replace(/\r\n?/g, '\n').split('\n');
     if (!applyStatusToLine(lines, node, newStatus)) {
       showMsg('Could not update status line (YAML may have changed). Refresh and try again.', true);
-      refreshMissionEditor();
+      scheduleRefreshMissionEditor(true);
       return;
     }
     var updated = lines.join('\n');
     setYamlTextSafe(updated);
     if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
-    else refreshMissionEditor();
+    else scheduleRefreshMissionEditor(true);
     showMsg('Updated status for ' + node.parentKey + ' \u2192 ' + newStatus + '.', false);
   }
 
@@ -338,7 +408,7 @@
     }
     setYamlTextSafe(lines.join('\n'));
     if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
-    else refreshMissionEditor();
+    else scheduleRefreshMissionEditor(true);
     showMsg(addFlags ? 'Added ui_flags: 1 to mission blocks.' : 'Removed ui_flags lines from mission blocks.', false);
   }
 
@@ -347,13 +417,15 @@
     if (!root || root.dataset.ccMissionsWired === '1') return;
     root.dataset.ccMissionsWired = '1';
 
+    ensureNativeMissionSelects();
+
     var scopeEl = byId('ccMissionScopeSelect');
     var nodeSel = byId('ccMissionNodeSelect');
     var applyBtn = byId('ccApplyMissionStatusBtn');
     var stripBtn = byId('ccStripUiFlagsBtn');
     var addBtn = byId('ccAddUiFlagsBtn');
 
-    if (scopeEl) scopeEl.addEventListener('change', refreshMissionEditor);
+    if (scopeEl) scopeEl.addEventListener('change', function () { scheduleRefreshMissionEditor(true); });
     if (nodeSel) {
       nodeSel.addEventListener('change', function () {
         var node = selectedNode();
@@ -367,15 +439,15 @@
     var ta = yamlTextarea();
     if (ta) {
       ta.addEventListener('input', function () {
-        refreshMissionEditor();
+        scheduleRefreshMissionEditor(false);
       });
     }
 
-    refreshMissionEditor();
+    scheduleRefreshMissionEditor(true);
   }
 
   window.__ccSyncMissionsEditorFromYaml = function () {
-    refreshMissionEditor();
+    scheduleRefreshMissionEditor(false);
   };
 
   if (document.readyState === 'loading') {

@@ -112,17 +112,21 @@
     return s.length > max ? s.slice(0, max - 1) + '…' : s;
   }
 
-  /** Flavor after "Perk - …" split (same rule as guided barrel dropdowns). */
-  function partRedTextFromEffectsField(p) {
+  /** Flavor after "Perk - …" split — mechanical ability body, NOT card red-text quotes. */
+  function partAbilityBodyFromEffectsField(p) {
     if (!p) return '';
     var ef = q(p.effects != null ? p.effects : (p.effect || p.effects_text));
     if (!ef) return '';
     var split = splitEffectPerkBody(ef);
-    if (split.body) return clip(split.body, 240);
+    if (split.body && !isGenericPartPlaceholderText(split.body)) return clip(split.body, 240);
     return '';
   }
 
-  /** In-game flavor quote — catalog, part fields, or effect body after perk dash. */
+  /**
+   * In-game card “red text” (flavor quote) only.
+   * Does NOT use effects/ability bodies — those belong in partEffectDescForDropdown.
+   * Falling back to effect text was painting Mag Acc / normal parts coral incorrectly.
+   */
   function partRedTextForDropdown(p) {
     if (!p) return '';
     var row = gearCatalogRowForPart(p);
@@ -130,7 +134,7 @@
     if (red) return clip(red, 240);
     red = q(p.redText || p.red_text || p.flavorText || p.flavor_text);
     if (red) return clip(red, 240);
-    return partRedTextFromEffectsField(p);
+    return '';
   }
 
   function enhancementCoreEffectText(p) {
@@ -142,7 +146,7 @@
     return '';
   }
 
-  /** What the part does — ability, perk, stats summary, or effects (not flavor red text). */
+  /** What the part does — ability / effect body / stats (not flavor red-text quotes). */
   function partEffectDescForDropdown(p) {
     if (!p) return '';
 
@@ -153,6 +157,14 @@
     var core = enhancementCoreEffectText(p);
     if (core) return clip(core, 220);
 
+    var body = partAbilityBodyFromEffectsField(p);
+    if (body) return body;
+
+    var ef = q(p.effects != null ? p.effects : (p.effect || p.effects_text));
+    var split = ef ? splitEffectPerkBody(ef) : { perk: '', body: '' };
+    // Perk title only when there is no mechanical body (short single-line perks).
+    if (split.perk && !isGenericPartPlaceholderText(split.perk)) return clip(split.perk, 220);
+
     if (typeof window.formatPartStatsSummary === 'function') {
       try {
         var sum = q(window.formatPartStatsSummary(p, 3));
@@ -160,13 +172,22 @@
       } catch (_) {}
     }
 
-    var ef = q(p.effects != null ? p.effects : (p.effect || p.effects_text));
     if (ef && !isGenericPartPlaceholderText(ef)) return clip(ef, 220);
 
     var stats = q(p.stats != null ? p.stats : p.stats_text).replace(/\s+/g, ' ');
     if (stats && !isGenericPartPlaceholderText(stats)) return clip(stats, 220);
 
     return '';
+  }
+
+  function textsLooselySame(a, b) {
+    var x = q(a).toLowerCase().replace(/\s+/g, ' ');
+    var y = q(b).toLowerCase().replace(/\s+/g, ' ');
+    if (!x || !y) return false;
+    if (x === y) return true;
+    if (x.length > 12 && y.indexOf(x) >= 0) return true;
+    if (y.length > 12 && x.indexOf(y) >= 0) return true;
+    return false;
   }
 
   function applyPartDropdownMeta(opt, p, ctx) {
@@ -176,12 +197,7 @@
     var red = partRedTextForDropdown(p);
     var desc = partEffectDescForDropdown(p);
 
-    if (red && desc) {
-      var redLc = red.toLowerCase();
-      var descLc = desc.toLowerCase();
-      if (descLc === redLc || descLc.indexOf(redLc) >= 0) desc = '';
-      else if (redLc.indexOf(descLc) >= 0) desc = '';
-    }
+    if (red && desc && textsLooselySame(red, desc)) desc = '';
 
     if (red) opt.setAttribute('data-cc-barrel-sub', red);
     else opt.removeAttribute('data-cc-barrel-sub');
@@ -218,7 +234,7 @@
     return seg.replace(/^"+|"+$/g, '').trim();
   }
 
-  /** save-editor.be-style: strip part_/comp_ prefix and underscores → spaces. */
+  /** Strip part_/comp_ prefix and underscores → spaces. */
   function formatSpawnPartName(code) {
     return spawnSegmentFromCode(code).replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim();
   }
@@ -233,30 +249,47 @@
     return id;
   }
 
-  /** Rich one-line label: spawn name · display name · {fam:id} · stats/effects (save-editor.be friendly). */
+  /** Rich one-line label: spawn name · display name · {fam:id} · stats/effects. */
   function ccRichPartDropdownLabel(p, maxLen) {
     if (!p) return '-';
     maxLen = maxLen || 220;
     var raw = normCode(p);
     var spawn = formatSpawnPartName(raw);
     var name = q(p.name).replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim();
+    var pt = q(p.partType);
+    var ptLo = pt.toLowerCase();
+    var isRarity = ptLo === 'rarity' || /\.comp_0[1-6]_/i.test(raw) || /\.part_rarity\b/i.test(raw);
+    if (isRarity && typeof window.stxStripRarityIdSkinDisplaySuffix === 'function') {
+      name = window.stxStripRarityIdSkinDisplaySuffix(name) || name;
+    }
+    /* Rarity ID: prefer human title over raw spawn · name · stats dumps. */
+    if (isRarity && typeof window.stxRarityIdHumanTitleForPart === 'function') {
+      try {
+        var human = q(window.stxRarityIdHumanTitleForPart(p));
+        if (human) name = human;
+      } catch (_) {}
+    }
     var idTok = partIdTokenForDropdown(p);
     var stats = q(p.stats).replace(/\s+/g, ' ').trim();
     var ef = q(p.effects || p.effect).replace(/\s+/g, ' ').trim();
-    var pt = q(p.partType);
 
     var bits = [];
-    if (raw) bits.push(raw);
-    else if (spawn) bits.push(spawn);
-    if (name) {
-      var spawnNorm = spawn.toLowerCase().replace(/[^a-z0-9]/g, '');
-      var nameNorm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-      if (nameNorm && nameNorm !== spawnNorm && spawnNorm.indexOf(nameNorm) === -1) bits.push(name);
+    if (isRarity) {
+      if (name) bits.push(name);
+      if (idTok) bits.push(idTok);
+    } else {
+      if (raw) bits.push(raw);
+      else if (spawn) bits.push(spawn);
+      if (name) {
+        var spawnNorm = spawn.toLowerCase().replace(/[^a-z0-9]/g, '');
+        var nameNorm = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (nameNorm && nameNorm !== spawnNorm && spawnNorm.indexOf(nameNorm) === -1) bits.push(name);
+      }
+      if (idTok) bits.push(idTok);
+      if (stats) bits.push(stats.length > 44 ? stats.slice(0, 43) + '…' : stats);
+      else if (ef) bits.push(ef.length > 44 ? ef.slice(0, 43) + '…' : ef);
+      else if (pt && ptLo !== 'body' && ptLo !== 'magazine') bits.push(pt);
     }
-    if (idTok) bits.push(idTok);
-    if (stats) bits.push(stats.length > 44 ? stats.slice(0, 43) + '…' : stats);
-    else if (ef) bits.push(ef.length > 44 ? ef.slice(0, 43) + '…' : ef);
-    else if (pt && pt.toLowerCase() !== 'body' && pt.toLowerCase() !== 'magazine') bits.push(pt);
 
     var line = bits.filter(Boolean).join(' · ');
     if (line.length > maxLen) line = line.slice(0, maxLen - 1) + '…';

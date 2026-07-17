@@ -1,6 +1,57 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Writable folder for total.txt, unique.txt, stx_visitor_ids.txt, stx_visits/, items_made.txt
+ * (default: this file's directory). Optional: STX_STATS_DATA_DIR = absolute path.
+ * Set STX_VISIT_LOG=1 to append stx_visit_log.txt (off by default — was a slowdown).
+ */
+function stx_stats_data_dir(): string
+{
+    $env = getenv('STX_STATS_DATA_DIR');
+    if (is_string($env)) {
+        $trim = rtrim($env, "/\\");
+        if ($trim !== '' && is_dir($trim)) {
+            return $trim;
+        }
+    }
+    return __DIR__;
+}
+
+function stx_count_nonempty_lines(string $raw): int
+{
+    $n = 0;
+    $lines = preg_split('/\R+/', trim($raw));
+    if (!is_array($lines)) {
+        return 0;
+    }
+    foreach ($lines as $line) {
+        if (trim($line) !== '') {
+            $n++;
+        }
+    }
+    return $n;
+}
+
+/** Cached line count for large list files; refreshes when source mtime changes. */
+function stx_cached_line_count(string $sourceFile, string $cacheFile): int
+{
+    if (!file_exists($sourceFile)) {
+        return 0;
+    }
+    $mtime = (string)@filemtime($sourceFile);
+    if (file_exists($cacheFile)) {
+        $raw = (string)@file_get_contents($cacheFile);
+        $parts = explode('|', trim($raw), 2);
+        if (count($parts) === 2 && $parts[0] === $mtime) {
+            return max(0, (int)$parts[1]);
+        }
+    }
+    $count = stx_count_nonempty_lines((string)file_get_contents($sourceFile));
+    @file_put_contents($cacheFile, $mtime . '|' . $count, LOCK_EX);
+    return $count;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 header('Access-Control-Allow-Origin: *');
@@ -56,9 +107,12 @@ if (strlen($visitorId) > 200) {
     $visitorId = substr($visitorId, 0, 200);
 }
 
-$dir = __DIR__;
+$dir = stx_stats_data_dir();
 $totalFile = $dir . DIRECTORY_SEPARATOR . 'total.txt';
 $visitorIdsFile = $dir . DIRECTORY_SEPARATOR . 'stx_visitor_ids.txt';
+$visitorCountCache = $dir . DIRECTORY_SEPARATOR . 'stx_visitor_ids.count';
+$uniqueIpFile = $dir . DIRECTORY_SEPARATOR . 'unique.txt';
+$uniqueIpCountCache = $dir . DIRECTORY_SEPARATOR . 'unique.count';
 $itemsFile = $dir . DIRECTORY_SEPARATOR . 'items_made.txt';
 
 /* Per-browser load count — same field as Netlify track (`your_visits`). */
@@ -107,8 +161,10 @@ fflush($tf);
 flock($tf, LOCK_UN);
 fclose($tf);
 
-/* distinct visitors by stx_aid (same idea as Netlify track.mjs) */
-$uniqueCount = 0;
+/*
+ * Distinct visitors by stx_aid — append-only when new (no full-file rewrite/sort every hit).
+ */
+$uniqueVisitors = 0;
 $vf = fopen($visitorIdsFile, 'c+');
 if ($vf === false) {
     http_response_code(500);
@@ -116,31 +172,35 @@ if ($vf === false) {
     exit;
 }
 flock($vf, LOCK_EX);
-$vRaw = stream_get_contents($vf);
-$vLines = preg_split('/\R+/', trim((string)$vRaw));
-$seenIds = [];
-if (is_array($vLines)) {
-    foreach ($vLines as $line) {
-        $line = trim($line);
-        if ($line !== '') {
-            $seenIds[$line] = true;
-        }
+$vRaw = (string)stream_get_contents($vf);
+$hay = "\n" . str_replace(["\r\n", "\r"], "\n", $vRaw) . "\n";
+$needle = "\n" . $visitorId . "\n";
+$isNew = ($visitorId !== '' && strpos($hay, $needle) === false);
+if ($isNew) {
+    if ($vRaw !== '' && substr($vRaw, -1) !== "\n") {
+        fwrite($vf, "\n");
     }
+    fwrite($vf, $visitorId . "\n");
+    fflush($vf);
+    $uniqueVisitors = stx_count_nonempty_lines($vRaw) + 1;
+    flock($vf, LOCK_UN);
+    fclose($vf);
+    $vf = null;
+    @file_put_contents($visitorCountCache, (string)@filemtime($visitorIdsFile) . '|' . $uniqueVisitors, LOCK_EX);
+} else {
+    flock($vf, LOCK_UN);
+    fclose($vf);
+    $vf = null;
+    $uniqueVisitors = stx_cached_line_count($visitorIdsFile, $visitorCountCache);
 }
-if (!isset($seenIds[$visitorId])) {
-    $seenIds[$visitorId] = true;
+if ($vf !== null) {
+    flock($vf, LOCK_UN);
+    fclose($vf);
 }
-$allIds = array_keys($seenIds);
-sort($allIds, SORT_STRING);
-$uniqueCount = count($allIds);
-rewind($vf);
-ftruncate($vf, 0);
-if ($uniqueCount > 0) {
-    fwrite($vf, implode("\n", $allIds) . "\n");
-}
-fflush($vf);
-flock($vf, LOCK_UN);
-fclose($vf);
+
+/* Legacy GET counter used unique.txt (IPs); keep display from cliffing. */
+$uniqueIpsLegacy = stx_cached_line_count($uniqueIpFile, $uniqueIpCountCache);
+$uniqueCount = max($uniqueVisitors, $uniqueIpsLegacy);
 
 $itemsMade = 0;
 if (file_exists($itemsFile)) {
@@ -150,9 +210,12 @@ if (file_exists($itemsFile)) {
     }
 }
 
-/* Optional lightweight visit log (path + time); ignore read failures. */
-$logLine = gmdate('Y-m-d\TH:i:s\Z') . "\t" . $visitorId . "\t" . str_replace(["\n", "\r"], ' ', $pagePath) . "\n";
-@file_put_contents($dir . DIRECTORY_SEPARATOR . 'stx_visit_log.txt', $logLine, FILE_APPEND | LOCK_EX);
+/* Optional visit log — off unless STX_VISIT_LOG=1 (append+lock was contributing to slowdowns). */
+$logEnv = strtolower((string)(getenv('STX_VISIT_LOG') ?: ''));
+if ($logEnv === '1' || $logEnv === 'true' || $logEnv === 'yes' || $logEnv === 'on') {
+    $logLine = gmdate('Y-m-d\TH:i:s\Z') . "\t" . $visitorId . "\t" . str_replace(["\n", "\r"], ' ', $pagePath) . "\n";
+    @file_put_contents($dir . DIRECTORY_SEPARATOR . 'stx_visit_log.txt', $logLine, FILE_APPEND | LOCK_EX);
+}
 
 echo json_encode([
     'ok' => true,

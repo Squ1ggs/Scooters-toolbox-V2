@@ -1,6 +1,6 @@
 /**
  * Profile progression tools — account unlock ledger, world pin registry, echo upgrade tracks.
- * Distinct UX from other editors; uses PROFILE_PROGRESSION_CATALOG + profile YAML paths.
+ * Uses PROFILE_PROGRESSION_CATALOG + profile YAML paths.
  */
 (function () {
   'use strict';
@@ -194,8 +194,9 @@
       var row = rows[i];
       var on = activeSet.has(row.id);
       var sel = selectedUnlockIds.has(row.id);
-      html += '<label class="cc-unlock-ledger-row" style="display:flex;align-items:flex-start;gap:8px;padding:6px 4px;border-bottom:1px solid rgba(0,200,255,0.08);cursor:pointer;">' +
-        '<input type="checkbox" data-unlock-pick="' + escapeAttr(row.id) + '"' + (sel ? ' checked' : '') + ' style="margin-top:3px;"/>' +
+      var unlockPickId = 'cc-unlock-pick-' + String(row.id || i).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
+      html += '<label class="cc-unlock-ledger-row" for="' + escapeAttr(unlockPickId) + '" style="display:flex;align-items:flex-start;gap:8px;padding:6px 4px;border-bottom:1px solid rgba(0,200,255,0.08);cursor:pointer;">' +
+        '<input type="checkbox" id="' + escapeAttr(unlockPickId) + '" name="' + escapeAttr(unlockPickId) + '" data-unlock-pick="' + escapeAttr(row.id) + '"' + (sel ? ' checked' : '') + ' style="margin-top:3px;"/>' +
         '<span style="flex:1;min-width:0;">' +
         '<span style="display:block;color:' + (on ? '#7dffb8' : '#c4f0ff') + ';font-size:0.86em;line-height:1.35;">' + escapeHtml(row.label) + '</span>' +
         '<code style="font-size:0.72em;opacity:0.72;word-break:break-all;">' + escapeHtml(row.id) + '</code>' +
@@ -272,7 +273,7 @@
       var val = tiers[tr.id] || 0;
       html += '<div style="display:grid;grid-template-columns:minmax(120px,1fr) 72px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,200,255,0.1);">' +
         '<label for="ccSduTier_' + escapeAttr(tr.id) + '" style="color:#b8e6f0;font-size:0.86em;">' + escapeHtml(tr.label) + '</label>' +
-        '<input id="ccSduTier_' + escapeAttr(tr.id) + '" data-sdu-track="' + escapeAttr(tr.id) + '" type="number" min="0" max="' + tr.max + '" value="' + val + '" style="width:100%;padding:6px 8px;background:#1a2332;border:1px solid rgba(0,243,255,0.4);border-radius:8px;color:#00f3ff;"/>' +
+        '<input id="ccSduTier_' + escapeAttr(tr.id) + '" name="ccSduTier_' + escapeAttr(tr.id) + '" data-sdu-track="' + escapeAttr(tr.id) + '" type="number" min="0" max="' + tr.max + '" value="' + val + '" style="width:100%;padding:6px 8px;background:#1a2332;border:1px solid rgba(0,243,255,0.4);border-radius:8px;color:#00f3ff;"/>' +
         '</div>';
     }
     host.innerHTML = html || '<div style="color:rgba(255,255,255,0.55);font-size:0.88em;">SDU catalog missing.</div>';

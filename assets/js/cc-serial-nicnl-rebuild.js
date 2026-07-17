@@ -1,12 +1,23 @@
 /**
- * Canonical BL-base85 serialization via the same Nicnl-compatible API used by BL4 save editors
- * NICNL serialize API — POST { deserialized } → { serial_b85 } (hosted endpoint in meta / below).
+ * Optional remote BL-base85 serialization.
+ * POST { deserialized } → { serial_b85 }.
+ * Prefer <meta name="stx-serialize-url"> when set; otherwise use the default remote endpoint.
  * Falls back to window.serializeToBase85 when offline, CORS-blocked, or API errors.
  */
 (function () {
   'use strict';
 
-  var SERIALIZE_URL = 'https://save-editor.be/nicnl/api.php';
+  var DEFAULT_SERIALIZE_URL = 'https://save-editor.be/nicnl/api.php';
+
+  function resolveSerializeUrl() {
+    try {
+      var meta = document.querySelector('meta[name="stx-serialize-url"]');
+      var u = meta && meta.getAttribute('content');
+      u = u && String(u).trim();
+      if (u) return u;
+    } catch (_) {}
+    return DEFAULT_SERIALIZE_URL;
+  }
 
   /**
    * @param {string} deserialized
@@ -22,6 +33,8 @@
     if (window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteSerialization) {
       return Promise.resolve('');
     }
+    var SERIALIZE_URL = resolveSerializeUrl();
+    if (!SERIALIZE_URL) return Promise.resolve('');
     var timeoutMs = (opts && opts.timeoutMs != null) ? Number(opts.timeoutMs) : 900;
     if (!(timeoutMs > 0)) timeoutMs = 900;
     var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;

@@ -666,7 +666,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Vladof",
       "ncs_slots": [
         "rarity",
-        "Body",
+        "body",
         "body_acc",
         "body_ele",
         "barrel",
@@ -725,7 +725,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Jakobs",
       "ncs_slots": [
         "rarity",
-        "Body",
+        "body",
         "body_acc",
         "barrel",
         "barrel_acc",
@@ -749,7 +749,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Maliwan",
       "ncs_slots": [
         "rarity",
-        "Body",
+        "body",
         "body_acc",
         "body_ele",
         "barrel",
@@ -887,7 +887,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Vladof",
       "ncs_slots": [
         "rarity",
-        "Body",
+        "body",
         "body_acc",
         "body_ele",
         "barrel",

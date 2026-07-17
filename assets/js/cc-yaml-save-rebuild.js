@@ -98,18 +98,35 @@
     var looksDeserialized = deser && (deser.indexOf('||') >= 0 || /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(deser));
     if (looksDeserialized) out.deserialized = deser;
     if (!deser || !looksDeserialized) return out;
-    var head = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|\s*(\d+)\s*,\s*(\d+)\s*(?:\||\s)/);
     var headerHasItemId = false;
-    if (head) {
-      out.familyId = parseInt(head[1], 10);
-      out.level = parseInt(head[2], 10);
-      out.itemId = parseInt(head[4], 10);
-      headerHasItemId = true;
+    var headMatch = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|([\s\S]*?)\|\|/);
+    if (headMatch) {
+      out.familyId = parseInt(headMatch[1], 10);
+      out.level = parseInt(headMatch[2], 10);
+      var flagSegments = String(headMatch[3] || '').split('|').map(function (s) { return String(s || '').trim(); }).filter(Boolean);
+      for (var fi = 0; fi < flagSegments.length; fi++) {
+        var fsm = flagSegments[fi].match(/^(\d+)\s*,\s*(\d+)\s*$/);
+        if (!fsm) continue;
+        var fid = parseInt(fsm[1], 10);
+        var fval = parseInt(fsm[2], 10);
+        if (fid === 2 && Number.isFinite(fval)) {
+          out.itemId = fval;
+          headerHasItemId = true;
+        }
+      }
     } else {
-      var fb = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|/);
-      if (fb) {
-        out.familyId = parseInt(fb[1], 10);
-        out.level = parseInt(fb[2], 10);
+      var head = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|\s*(\d+)\s*,\s*(\d+)\s*(?:\||\s)/);
+      if (head) {
+        out.familyId = parseInt(head[1], 10);
+        out.level = parseInt(head[2], 10);
+        out.itemId = parseInt(head[4], 10);
+        headerHasItemId = true;
+      } else {
+        var fb = deser.match(/^\s*(\d+)\s*,\s*\d+\s*,\s*\d+\s*,\s*(\d+)\s*\|/);
+        if (fb) {
+          out.familyId = parseInt(fb[1], 10);
+          out.level = parseInt(fb[2], 10);
+        }
       }
     }
     var pairRe = /\{\s*(\d+)\s*:\s*(\d+)\s*\}/g;
@@ -2149,19 +2166,23 @@
         var meta = parseSerialMeta(item.serial);
         var name = item.name || meta.name || lookupNameBySerial(item.serial) || 'Unknown Item';
         var level = Number.isFinite(meta.level) ? ' Lv' + meta.level : '';
-        var idStr = (meta.familyId != null && meta.itemId != null) ? ' (' + meta.familyId + ':' + meta.itemId + ')' : '';
         var tag = item.source === 'library' ? ' <span style="opacity:0.55;font-size:0.75em;">(your list)</span>' : '';
         var row = document.createElement('div');
         row.style.cssText = 'display:flex;align-items:flex-start;gap:8px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;border:1px solid rgba(0,200,255,0.2);';
         var cb = document.createElement('input');
         cb.type = 'checkbox';
+        var cbKey = String(item.serial || item.name || Math.random()).replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 48);
+        cb.id = 'cc-yaml-serial-pick-' + cbKey;
+        cb.name = cb.id;
+        cb.setAttribute('aria-label', 'Select ' + (item.name || 'serial'));
         cb.checked = isRowSelected(item);
         cb.addEventListener('change', function () {
           setRowSelected(item, this.checked);
         });
         var label = document.createElement('div');
         label.style.cssText = 'flex:1;min-width:0;color:rgba(255,255,255,0.9);font-size:0.9em;';
-        label.innerHTML = escapeHtml(name + level + idStr) + tag;
+        /* Show name + level only — hide raw family:item ids like (25:2504) from the list UI. */
+        label.innerHTML = escapeHtml(name + level) + tag;
         row.appendChild(cb);
         row.appendChild(label);
         var btnStyle = 'padding:4px 8px;font-size:11px;';

@@ -35,6 +35,41 @@
     return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   }
 
+  var SEARCH_DATA_BASE = (function () {
+    if (typeof window.STX_DATA_BASE === 'string' && window.STX_DATA_BASE) return window.STX_DATA_BASE;
+    try {
+      if (/\/assets(\/|$)/i.test(String(location.pathname || ''))) return './data/';
+    } catch (_) {}
+    return './assets/data/';
+  })();
+  var catalogScriptPromises = Object.create(null);
+  function loadCatalogScript(src) {
+    src = String(src || '').trim();
+    if (!src) return Promise.resolve();
+    if (catalogScriptPromises[src]) return catalogScriptPromises[src];
+    catalogScriptPromises[src] = new Promise(function (resolve, reject) {
+      var el = document.createElement('script');
+      el.src = src;
+      el.async = true;
+      el.onload = function () { resolve(); };
+      el.onerror = function () {
+        delete catalogScriptPromises[src];
+        reject(new Error('Failed to load ' + src));
+      };
+      (document.head || document.documentElement).appendChild(el);
+    });
+    return catalogScriptPromises[src];
+  }
+  function loadCatalogScriptsSequential(list) {
+    var chain = Promise.resolve();
+    for (var i = 0; i < list.length; i++) {
+      (function (src) {
+        chain = chain.then(function () { return loadCatalogScript(src); });
+      })(list[i]);
+    }
+    return chain;
+  }
+
   var serialsData = null;
   var lastSelected = null;
   var godrollData = null;
@@ -73,15 +108,15 @@
       return Promise.resolve(serialsData);
     }
     if (loadPromise) return loadPromise;
-    var proto = (typeof location !== 'undefined' && location.protocol) || '';
-    if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
-      serialsData = [];
-      loadPromise = Promise.resolve(serialsData);
-      return loadPromise;
-    }
     var ensure = (typeof window.__ccEnsureSerialsCatalog === 'function')
       ? window.__ccEnsureSerialsCatalog()
-      : Promise.resolve([]);
+      : loadCatalogScript(SEARCH_DATA_BASE + 'serials_data.js')
+          .then(function () {
+            return loadCatalogScript(SEARCH_DATA_BASE + 'bl4_spawncodes_bundle_serials.js').catch(function () { return null; });
+          })
+          .then(function () {
+            return (window.STX_SERIALS_DATA && window.STX_SERIALS_DATA.serials) || [];
+          });
     loadPromise = ensure.then(function (arr) {
       if (arr && arr.length) {
         serialsData = arr;
@@ -107,7 +142,7 @@
     return el ? String(el.value || '').trim().toLowerCase() : '';
   }
 
-  function buildSerialSearchHay(item, allowDecode) {
+  function buildSerialSearchHay(item) {
     var parts = [
       String(item.name || '').toLowerCase(),
       String(item.serial || '').toLowerCase(),
@@ -116,15 +151,6 @@
       parts.push(String(item.familyId) + ':' + String(item.itemId));
     }
     if (item.idRaw) parts.push(String(item.idRaw).toLowerCase());
-    if (allowDecode && window.parseSerialMeta) {
-      try {
-        var meta = window.parseSerialMeta(item.serial);
-        if (meta.familyId != null && meta.itemId != null) {
-          parts.push(String(meta.familyId) + ':' + String(meta.itemId));
-        }
-        if (meta.name) parts.push(String(meta.name).toLowerCase());
-      } catch (_e) {}
-    }
     return parts.join('\x00');
   }
 
@@ -162,19 +188,32 @@
 
   function matches(item, q) {
     if (!q) return true;
-    var hay = item.__searchHay || buildSerialSearchHay(item, false);
-    if (hay.indexOf(q) >= 0) return true;
-    if (!/\d/.test(q)) return false;
-    if (!item.__searchHayDecoded) {
-      item.__searchHayDecoded = buildSerialSearchHay(item, true);
-    }
-    return item.__searchHayDecoded.indexOf(q) >= 0;
+    var hay = item.__searchHay || buildSerialSearchHay(item);
+    return hay.indexOf(q) >= 0;
   }
 
   function filterSerials(q) {
     if (!serialsData) return [];
     if (!q) return serialsData;
     return serialsData.filter(function (item) { return matches(item, q); });
+  }
+
+  function buildCompactPrefixPreviewHtml(item) {
+    var name = item.name || 'Unknown';
+    var meta = window.parseSerialMeta ? window.parseSerialMeta(item.serial) : {};
+    var level = Number.isFinite(meta.level) ? ' Lv' + meta.level : '';
+    var serialPreview = String(item.serial || '').trim();
+    var deserPreview = '';
+    try {
+      if (item.deserialized) deserPreview = String(item.deserialized || '').trim();
+      else if (meta && String(meta.deserialized || '').trim()) deserPreview = String(meta.deserialized || '').trim();
+    } catch (_e) {}
+    if (deserPreview.length > 180) deserPreview = deserPreview.slice(0, 177) + '…';
+    return '<div style="flex:1;min-width:0;color:rgba(255,255,255,0.95);font-size:0.9em;">'
+      + '<div>' + escapeHtml(name + level) + '</div>'
+      + (serialPreview ? '<div style="font-size:0.72em;color:rgba(200,230,255,0.88);margin-top:3px;word-break:break-all;font-family:Consolas,monospace;">' + escapeHtml(serialPreview) + '</div>' : '')
+      + (deserPreview ? '<div style="font-size:0.68em;color:rgba(200,230,255,0.78);margin-top:2px;word-break:break-all;font-family:Consolas,monospace;">' + escapeHtml(deserPreview) + '</div>' : '')
+      + '</div>';
   }
 
   function renderResults(items) {
@@ -189,21 +228,8 @@
       var row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;padding:8px;background:rgba(0,200,255,0.06);border-radius:6px;margin-bottom:6px;border:1px solid rgba(0,200,255,0.15);cursor:pointer;';
       row.setAttribute('data-serial', item.serial || '');
-      var name = item.name || 'Unknown';
-      var meta = window.parseSerialMeta ? window.parseSerialMeta(item.serial) : {};
-      var level = Number.isFinite(meta.level) ? ' Lv' + meta.level : '';
-      var idStr = (meta.familyId != null && meta.itemId != null) ? ' (' + meta.familyId + ':' + meta.itemId + ')' : '';
-      
-      var deser = getCachedDeserialized(item);
-      var deserHtml = '';
-      if (deser) {
-        deserHtml = '<div style="font-size:0.7em;color:rgba(200,230,255,0.8);margin-top:3px;word-break:break-all;font-family:Consolas,monospace;background:rgba(0,0,0,0.15);padding:2px 4px;border-radius:3px;">' + escapeHtml(deser) + '</div>';
-      }
-
-      row.innerHTML = '<div style="flex:1;min-width:0;color:rgba(255,255,255,0.95);font-size:0.9em;">' + escapeHtml(name + level + idStr) + 
-        deserHtml + 
-        '</div>' +
-        '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Copy serial to clipboard">Copy</button>' +
+      row.innerHTML = buildCompactPrefixPreviewHtml(item)
+        + '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Copy serial to clipboard">Copy</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to editor">Editor</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to character backpack">YAML</button>' +
         '<button type="button" class="btn" style="padding:4px 8px;font-size:11px;" title="Add to profile bank">Bank</button>';
@@ -500,7 +526,14 @@
     var data = godrollStatsCache[cacheKey];
     if (data === undefined) {
       data = buildGodrollFullStatsData(item);
-      godrollStatsCache[cacheKey] = data || null;
+      if (data) {
+        godrollStatsCache[cacheKey] = data;
+      } else {
+        delete godrollStatsCache[cacheKey];
+      }
+    }
+    if (!data && (!window.PARTS_STATS_DATA || !window.PARTS_STATS_DATA.by_part_code)) {
+      return '<div class="cc-godroll-stats" style="margin-top:6px;padding:6px;border:1px dashed rgba(255,190,80,0.3);border-radius:6px;font-size:0.72em;color:rgba(255,220,170,0.85);">Loading full stats…</div>';
     }
     if (!data) {
       return '<div class="cc-godroll-stats" style="margin-top:6px;padding:6px;border:1px dashed rgba(255,190,80,0.3);border-radius:6px;font-size:0.72em;color:rgba(255,220,170,0.85);">Full stats: no mapped rows</div>';
@@ -566,34 +599,24 @@
   }
 
   function buildGodrollDetailBlockHtml(item) {
-    var partsLine = formatGodrollPartsLine(item && item.rpParts);
-    var deser = getCachedDeserialized(item);
     var out = '';
-    if (partsLine) {
-      out += '<div class="cc-godroll-parts" style="font-size:0.72em;line-height:1.35;color:rgba(255,235,200,0.88);margin-top:4px;word-break:break-word;">'
-        + '<span style="opacity:0.75;font-weight:700;">Parts:</span> '
-        + escapeHtml(partsLine)
-        + '</div>';
+    var serial = String(item && item.serial || '').trim();
+    if (serial) {
+      out += '<div class="cc-godroll-serial" style="font-size:0.7em;color:rgba(200,230,255,0.88);margin-top:4px;word-break:break-all;font-family:Consolas,monospace;">' + escapeHtml(serial) + '</div>';
     }
+    var deser = '';
+    try {
+      if (item && item.deserialized) deser = String(item.deserialized || '').trim();
+      else if (window.parseSerialMeta && item && item.serial) {
+        var m = window.parseSerialMeta(item.serial);
+        if (m && String(m.deserialized || '').trim()) deser = String(m.deserialized || '').trim();
+      }
+    } catch (_e) {}
+    if (deser.length > 180) deser = deser.slice(0, 177) + '…';
     if (deser) {
-      var deserEsc = escapeHtml(deser);
-      out += '<div class="cc-godroll-deser" style="margin-top:5px;font-size:0.68em;line-height:1.3;color:rgba(200,230,255,0.82);">'
-        + '<div style="opacity:0.8;font-weight:700;margin-bottom:2px;">Deserialized</div>'
-        + '<pre style="margin:0;max-height:4.2em;overflow:auto;white-space:pre-wrap;word-break:break-all;font-family:Consolas,ui-monospace,monospace;background:rgba(0,0,0,0.22);padding:4px 6px;border-radius:4px;border:1px solid rgba(255,180,80,0.2);" title="' + escapeAttr(deser) + '">'
-        + deserEsc
-        + '</pre></div>';
+      out += '<div class="cc-godroll-deser" style="margin-top:3px;font-size:0.68em;color:rgba(200,230,255,0.78);word-break:break-all;font-family:Consolas,monospace;">' + escapeHtml(deser) + '</div>';
     }
     return out;
-  }
-
-  var deserCache = new Map();
-  function getCachedDeserialized(item) {
-    var s = String(item && item.serial || '').trim();
-    if (!s) return '';
-    if (deserCache.has(s)) return deserCache.get(s);
-    var d = godrollDeserializedForDisplay(item);
-    deserCache.set(s, d);
-    return d;
   }
 
   function looksGenericItemName(name) {
@@ -687,16 +710,15 @@
     if (godrollLoadPromise) return godrollLoadPromise;
     var ensure = (typeof window.__ccEnsureGodrollBundles === 'function')
       ? window.__ccEnsureGodrollBundles()
-      : Promise.resolve();
+      : loadCatalogScriptsSequential([
+        SEARCH_DATA_BASE + 'godroll_serials_data.js',
+        SEARCH_DATA_BASE + 'godroll_grimeey_serials_data.js',
+        SEARCH_DATA_BASE + 'bl4_spawncodes_bundle_notes.js'
+      ]).then(function () { return true; });
     godrollLoadPromise = ensure.then(function () {
       var merged = mergeBundledGodrolls();
       if (merged.length) {
         godrollData = merged;
-        return godrollData;
-      }
-      var proto = (typeof location !== 'undefined' && location.protocol) || '';
-      if (proto === 'file:' || proto === 'chrome-extension:' || proto === 'moz-extension:') {
-        godrollData = [];
         return godrollData;
       }
       return fetch('./assets/data/godroll_serials.json')
@@ -714,7 +736,7 @@
     return godrollLoadPromise;
   }
 
-  function buildGodrollSearchHay(item, allowDecode) {
+  function buildGodrollSearchHay(item) {
     var parts = [
       String(item.name || '').toLowerCase(),
       String(item.serial || '').toLowerCase(),
@@ -724,19 +746,6 @@
       String(item.prefixHint || '').toLowerCase(),
       formatGodrollPartsLine(item.rpParts || [], { max: 200 }).toLowerCase(),
     ];
-    if (allowDecode) {
-      if (item.deserialized) parts.push(String(item.deserialized).toLowerCase());
-      else parts.push(String(getCachedDeserialized(item) || '').toLowerCase());
-      if (window.parseSerialMeta) {
-        try {
-          var meta = window.parseSerialMeta(item.serial);
-          if (meta.familyId != null && meta.itemId != null) {
-            parts.push(String(meta.familyId) + ':' + String(meta.itemId));
-          }
-          if (meta.name) parts.push(String(meta.name).toLowerCase());
-        } catch (_e) {}
-      }
-    }
     return parts.join('\x00');
   }
 
@@ -774,12 +783,8 @@
 
   function matchesGodroll(item, q) {
     if (!q) return true;
-    var hay = item.__searchHay || buildGodrollSearchHay(item, false);
-    if (hay.indexOf(q) >= 0) return true;
-    if (!item.__searchHayDecoded) {
-      item.__searchHayDecoded = buildGodrollSearchHay(item, true);
-    }
-    return item.__searchHayDecoded.indexOf(q) >= 0;
+    var hay = item.__searchHay || buildGodrollSearchHay(item);
+    return hay.indexOf(q) >= 0;
   }
 
   function filterGodrollPool(pool, q) {
@@ -803,7 +808,6 @@
       var meta = window.parseSerialMeta ? window.parseSerialMeta(item.serial) : {};
       var nm = effectiveGodrollName(item);
       var lvl = Number.isFinite(item.level) ? (' Lv' + item.level) : (Number.isFinite(meta.level) ? (' Lv' + meta.level) : '');
-      var idStr = (meta.familyId != null && meta.itemId != null) ? ' (' + meta.familyId + ':' + meta.itemId + ')' : '';
       var badge = [item.manufacturer, item.itemType, item.rarity].filter(Boolean).join(' · ');
       var hint = String(item.prefixHint || '').trim();
       var hintLine = '';
@@ -821,7 +825,7 @@
         }
       }
       row.innerHTML = '<div style="flex:1;min-width:0;color:rgba(255,248,230,0.96);font-size:0.9em;">'
-        + escapeHtml(nm + lvl + idStr)
+        + '<div>' + escapeHtml(nm + lvl) + '</div>'
         + hintLine
         + bundledLine
         + (badge ? '<div style="font-size:0.76em;color:rgba(255,220,170,0.82);margin-top:2px;">' + escapeHtml(badge) + '</div>' : '')
@@ -1184,7 +1188,17 @@
     }
     var showStatsToggle = byId('godrollShowFullStatsToggle');
     if (showStatsToggle) {
-      showStatsToggle.addEventListener('change', function () { runGodrollSearch(); });
+      showStatsToggle.addEventListener('change', function () {
+        if (showStatsToggle.checked && typeof window.__ccEnsurePartsStatsData === 'function' && !window.PARTS_STATS_DATA) {
+          window.__ccEnsurePartsStatsData().then(function () {
+            runGodrollSearch();
+          }).catch(function () {
+            runGodrollSearch();
+          });
+        } else {
+          runGodrollSearch();
+        }
+      });
     }
     var godrollCatSel = byId('godrollCategorySelect');
     if (godrollCatSel) {
@@ -1254,6 +1268,20 @@
     wireGodrollFileLoad();
 
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+
+    /* Sections are open by default — bootstrap as soon as the script lands (and after catalog hooks exist). */
+    function autoBootOpenSearchPanels() {
+      var prefixDet = byId('rebuildPrefixItemSearchSection');
+      var godrollDet = byId('rebuildGodrollSection');
+      if (prefixDet && prefixDet.open) bootstrapPrefixSearch();
+      if (godrollDet && godrollDet.open) bootstrapGodrollSearch();
+    }
+    if (typeof window.__ccEnsureSerialsCatalog === 'function' || typeof window.__ccEnsureGodrollBundles === 'function') {
+      autoBootOpenSearchPanels();
+    } else {
+      setTimeout(autoBootOpenSearchPanels, 0);
+      setTimeout(autoBootOpenSearchPanels, 400);
+    }
   }
 
   if (document.readyState === 'loading') {

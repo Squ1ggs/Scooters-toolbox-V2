@@ -288,7 +288,19 @@
   window.syncYamlToFields = function () {
     var t = window.getYamlText();
     var text = (t && t.text) || '';
-    if (!text || !text.trim()) return;
+    if (!text || !text.trim()) {
+      try {
+        if (typeof window.__ccSyncMissionsEditorFromYaml === 'function') {
+          window.__ccSyncMissionsEditorFromYaml();
+        }
+      } catch (_) {}
+      return;
+    }
+    try {
+      if (typeof window.__ccSyncMissionsEditorFromYaml === 'function') {
+        window.__ccSyncMissionsEditorFromYaml();
+      }
+    } catch (_) {}
     try {
       var data = window.getYamlDataFromEditor();
       if (!data) return;
@@ -340,9 +352,6 @@
       }
       if (typeof window.__ccSyncYamlExtrasFromData === 'function') {
         window.__ccSyncYamlExtrasFromData(data);
-      }
-      if (typeof window.__ccSyncMissionsEditorFromYaml === 'function') {
-        window.__ccSyncMissionsEditorFromYaml();
       }
       var kind = typeof detectYamlKind === 'function' ? detectYamlKind(text) : 'unknown';
       var bankSum = byId('yaml-profile-bank-summary');

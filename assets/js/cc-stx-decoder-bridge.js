@@ -196,16 +196,53 @@
     getIframe();
   };
 
-  /**
-   * Decode one @U / game serial to desktop text via the WASM bridge (canonical).
-   * Local JS deserialize is only a last-resort fallback, and is rejected when it
-   * fails a pack round-trip (it silently truncates many real serials).
-   * @param {string} serial
-   * @returns {Promise<string>}
-   */
-  window.ccDecodeSerialToDesktop = function (serial) {
+  function looksDeserializedSerial(s) {
+    var v = String(s || '').trim();
+    if (!v) return false;
+    if (/^@U/i.test(v)) return false;
+    if (v.indexOf('||') >= 0) return true;
+    if (/^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|/.test(v)) return true;
+    return /^\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*\{/.test(v);
+  }
+
+  function decodeSerialFastLocal(serial) {
     var s = String(serial || '').trim();
     if (!s) return Promise.resolve('');
+    if (looksDeserializedSerial(s)) return Promise.resolve(s);
+    /* Prefer sync local decode for Convert buttons — avoids WASM wait + pack round-trip. */
+    if (typeof window.deserializeBase85 === 'function') {
+      try {
+        var d = window.deserializeBase85(s);
+        return Promise.resolve((d && String(d).trim()) || '');
+      } catch (_) {
+        return Promise.resolve('');
+      }
+    }
+    if (typeof window.ccDeserializeBase85Async === 'function') {
+      return new Promise(function (resolve) {
+        window.ccDeserializeBase85Async(s, function (out) {
+          resolve((out && String(out).trim()) || '');
+        });
+      });
+    }
+    return Promise.resolve('');
+  }
+
+  /**
+   * Decode one @U / game serial to desktop text.
+   * Default (`fast: true`) uses local decode immediately — no WASM wait, no pack round-trip.
+   * Pass `{ fast: false }` when you need WASM / faithful verification (imports, validators).
+   * @param {string} serial
+   * @param {{ fast?: boolean }} [options]
+   * @returns {Promise<string>}
+   */
+  window.ccDecodeSerialToDesktop = function (serial, options) {
+    options = options || {};
+    var fast = options.fast !== false;
+    var s = String(serial || '').trim();
+    if (!s) return Promise.resolve('');
+    if (looksDeserializedSerial(s)) return Promise.resolve(s);
+    if (fast) return decodeSerialFastLocal(s);
 
     function localDecode() {
       if (typeof window.deserializeBase85 !== 'function') return '';
@@ -258,23 +295,28 @@
     }
 
     function fallbackLocal() {
-      return localDecodeIfFaithful() || '';
+      /* Prefer faithful round-trip when possible; otherwise return local decode immediately. */
+      return localDecodeIfFaithful() || localDecode() || '';
     }
 
     try { window.initStxDecoderBridge(); } catch (_) {}
 
     if (typeof window.decodeSerialsViaBridge !== 'function') {
-      return Promise.resolve(fallbackLocal());
+      return decodeSerialFastLocal(s);
     }
 
     return new Promise(function (resolve) {
       var attempts = 0;
-      var maxAttempts = 40; /* ~2s at 50ms — accuracy over instant local */
+      var maxAttempts = 6; /* ~300ms — accurate path only; don't block UI for seconds */
       function run() {
-        var ready = typeof window.stxDecoderBridgeReady !== 'function' || window.stxDecoderBridgeReady();
+        var ready = typeof window.stxDecoderBridgeReady === 'function' && window.stxDecoderBridgeReady();
         if (!ready && attempts < maxAttempts) {
           attempts++;
           setTimeout(run, 50);
+          return;
+        }
+        if (!ready) {
+          resolve(fallbackLocal() || '');
           return;
         }
         window.decodeSerialsViaBridge([s], null, { enrichResolved: false }).then(function (results) {
@@ -283,9 +325,9 @@
             resolve(String(r.deserialized).trim());
             return;
           }
-          resolve(fallbackLocal());
+          resolve(fallbackLocal() || '');
         }).catch(function () {
-          resolve(fallbackLocal());
+          resolve(fallbackLocal() || '');
         });
       }
       run();
