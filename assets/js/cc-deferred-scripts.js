@@ -41,7 +41,7 @@
   var GUIDED_SCRIPTS = [
     './legacy/ncs_slot_map.js',
     './assets/js/cc-item-slug.js?v=77j',
-    './assets/js/cc-guided-builder-rebuild.js',
+    './assets/js/cc-guided-builder-rebuild.js?v=77n',
     './assets/js/stx-editor-smoke-guards.js'
   ];
 

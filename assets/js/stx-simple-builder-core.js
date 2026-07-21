@@ -13706,6 +13706,7 @@ function resetAll(){
       window.stxGrenadeGadgetRowMatchesSelectedManufacturer = stxGrenadeGadgetRowMatchesSelectedManufacturer;
       window.stxWeaponRowMatchesSelectedManufacturer = stxWeaponRowMatchesSelectedManufacturer;
       window.stxIsWeaponNaturalBodyPoolRowCode = stxIsWeaponNaturalBodyPoolRowCode;
+      window.stxIsWeaponBodySlotFallbackRowCode = stxIsWeaponBodySlotFallbackRowCode;
       window.stxSlotRequiresItemManufacturer = stxSlotRequiresItemManufacturer;
       window.classModFamilyIdForCharacter = classModFamilyIdForCharacter;
       window.stxIsBrokenClassmodDatasetPlaceholderPart = stxIsBrokenClassmodDatasetPlaceholderPart;

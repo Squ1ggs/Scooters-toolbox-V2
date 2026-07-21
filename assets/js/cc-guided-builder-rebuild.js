@@ -4243,6 +4243,30 @@
             if (btok) seenBodyTok[btok] = true;
             bodyHits.push(bp);
           }
+          /* Some weapon families have no plain `*.part_body` dataset row. In that
+           * case only, use their same-manufacturer + same-weapon-type Body rows.
+           * Keep accessories/elements/mags out of this required identity slot. */
+          if (!bodyHits.length) {
+            for (var bfi = 0; bfi < allBody.length; bfi++) {
+              var bfp = allBody[bfi];
+              if (!bfp) continue;
+              var bfx = c(bfp);
+              var isFallbackBody = false;
+              if (typeof window.stxIsWeaponBodySlotFallbackRowCode === 'function') {
+                isFallbackBody = window.stxIsWeaponBodySlotFallbackRowCode(bfx, man, wt);
+              } else if (typeof window.stxWeaponRowMatchesSelectedManufacturer === 'function') {
+                isFallbackBody = String(bfp.partType || '').trim().toLowerCase() === 'body'
+                  && window.stxWeaponRowMatchesSelectedManufacturer(bfx, man.toLowerCase(), wt)
+                  && /\.part_body(?:$|_[a-z0-9])/.test(bfx)
+                  && !/part_body_(?:bolt|flap|ele|mag)/.test(bfx);
+              }
+              if (!isFallbackBody) continue;
+              var bftok = getPartToken(bfp);
+              if (bftok && seenBodyTok[bftok]) continue;
+              if (bftok) seenBodyTok[bftok] = true;
+              bodyHits.push(bfp);
+            }
+          }
         }
         return bodyHits;
       }
