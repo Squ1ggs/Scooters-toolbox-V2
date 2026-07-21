@@ -47,6 +47,40 @@ th { position:sticky; top:0; background:#0e1630; z-index:1; }
 .part { border:1px solid var(--line); border-radius:12px; padding:8px; background:#0a0f1d; }
 .part h4 { margin:0 0 4px; font-size:13px; }
 .part .meta { font-size:12px; color:var(--muted); }
+.bulk-parts-details { min-width:210px; }
+.bulk-parts-details > summary {
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  cursor:pointer; list-style:none; border:1px solid var(--line); border-radius:10px;
+  padding:8px 10px; background:rgba(0,0,0,.2); color:var(--text); font-weight:700;
+}
+.bulk-parts-details > summary::-webkit-details-marker { display:none; }
+.bulk-parts-details > summary::before { content:"▸"; color:var(--accent); }
+.bulk-parts-details[open] > summary::before { content:"▾"; }
+.bulk-parts-details[open] > summary { margin-bottom:8px; border-color:rgba(0,243,255,.38); }
+.bulk-parts-details[open] .bulk-parts-summary-hint { font-size:0; }
+.bulk-parts-details[open] .bulk-parts-summary-hint::after { content:"Hide parts"; font-size:12px; }
+.bulk-parts-summary-hint { margin-left:auto; font-size:12px; color:var(--muted); font-weight:600; }
+.bulk-result-number { margin-bottom:3px; color:var(--accent); font-size:11px; font-weight:800; letter-spacing:.06em; }
+.bulk-part-order {
+  display:inline-grid; place-items:center; min-width:22px; height:22px; margin-right:7px;
+  border-radius:7px; background:rgba(0,243,255,.12); color:var(--accent); font-size:11px; font-weight:900;
+}
+.part-unresolved { border-color:rgba(255,159,159,.4); }
+.bulk-code-details { min-width:145px; }
+.bulk-code-details > summary {
+  display:grid; gap:2px; position:relative; cursor:pointer; list-style:none; border:1px solid var(--line);
+  border-radius:9px; padding:7px 9px 7px 24px; background:rgba(0,0,0,.18); color:var(--text); font-weight:700;
+}
+.bulk-code-details > summary::-webkit-details-marker { display:none; }
+.bulk-code-details > summary::before { content:"▸"; position:absolute; left:8px; top:8px; color:var(--accent); }
+.bulk-code-details[open] > summary::before { content:"▾"; }
+.bulk-code-preview { color:var(--muted); font:11px/1.3 ui-monospace, Consolas, monospace; font-weight:500; }
+.bulk-code-body { display:grid; gap:7px; margin-top:7px; }
+.bulk-code-body code { display:block; max-height:180px; overflow:auto; padding:8px; border-radius:8px; background:rgba(0,0,0,.28); }
+.bulk-copy-code-btn { justify-self:start; padding:6px 9px !important; font-size:11px !important; }
+#resultsBody tr:nth-child(even) { background:rgba(255,255,255,.018); }
+#resultsBody tr:hover { background:rgba(0,243,255,.035); }
+#resultsBody tr > td:first-child { border-left:3px solid rgba(0,243,255,.28); }
 code { font-family:ui-monospace, SFMono-Regular, monospace; word-break:break-word; }
 #bulk-table-wrap { max-height: min(72vh, 820px); }
 @media (max-width: 980px) { .grid.cols { grid-template-columns:1fr; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } }
@@ -417,6 +451,11 @@ Include full item stats in exported JSON
 <div class="kpi"><span class="small">Part rows resolved</span><strong id="kResolved">0</strong></div>
 <div class="kpi"><span class="small">Unresolved part rows</span><strong id="kUnresolved">0</strong></div>
 </div>
+<div class="row" id="bulk-parts-controls" style="align-items:center;gap:10px;margin-bottom:10px;">
+<span class="small">Parts are collapsed per item so long result lists stay readable.</span>
+<button class="secondary" id="bulk-expand-parts-btn" type="button">Expand all parts</button>
+<button class="secondary" id="bulk-collapse-parts-btn" type="button">Collapse all parts</button>
+</div>
 <div class="row" id="bulk-results-pagination" style="display:none;align-items:center;gap:10px;margin-bottom:10px;">
 <button class="secondary" id="bulk-prev-btn" type="button">Previous 50</button>
 <button class="secondary" id="bulk-next-btn" type="button">Next 50</button>
@@ -465,7 +504,7 @@ Include full item stats in exported JSON
 <script src="../assets/data/stx_raid2_supplement.js"></script>
 <script src="../assets/data/part_display_overrides.js"></script>
 <script src="../assets/data/part_ref_meta.js"></script>
-<script src="../assets/js/stx-bulk-decoder-main.js"></script>
+<script src="../assets/js/stx-bulk-decoder-main.js?v=77n"></script>
 <script src="../assets/js/stx-bulk-decoder-patch-parts-lookup.js"></script>
 <script src="../assets/js/stx-bulk-decoder-patch-dataset.js"></script>
 <script src="../assets/js/stx-bulk-decoder-patch-classmod-aliases.js"></script>

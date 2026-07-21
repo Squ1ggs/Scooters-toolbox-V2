@@ -37,6 +37,30 @@ th { position:sticky; top:0; background:#0e1630; z-index:1; }
 .part { border:1px solid var(--line); border-radius:12px; padding:8px; background:#0a0f1d; }
 .part h4 { margin:0 0 4px; font-size:13px; }
 .part .meta { font-size:12px; color:var(--muted); }
+.bulk-parts-details { min-width:210px; }
+.bulk-parts-details > summary { display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; list-style:none; border:1px solid var(--line); border-radius:10px; padding:8px 10px; background:rgba(0,0,0,.2); color:var(--text); font-weight:700; }
+.bulk-parts-details > summary::-webkit-details-marker { display:none; }
+.bulk-parts-details > summary::before { content:"▸"; color:var(--accent); }
+.bulk-parts-details[open] > summary::before { content:"▾"; }
+.bulk-parts-details[open] > summary { margin-bottom:8px; border-color:var(--accent); }
+.bulk-parts-details[open] .bulk-parts-summary-hint { font-size:0; }
+.bulk-parts-details[open] .bulk-parts-summary-hint::after { content:"Hide parts"; font-size:12px; }
+.bulk-parts-summary-hint { margin-left:auto; font-size:12px; color:var(--muted); font-weight:600; }
+.bulk-result-number { margin-bottom:3px; color:var(--accent); font-size:11px; font-weight:800; letter-spacing:.06em; }
+.bulk-part-order { display:inline-grid; place-items:center; min-width:22px; height:22px; margin-right:7px; border-radius:7px; background:rgba(118,168,255,.14); color:var(--accent); font-size:11px; font-weight:900; }
+.part-unresolved { border-color:rgba(255,159,159,.4); }
+.bulk-code-details { min-width:145px; }
+.bulk-code-details > summary { display:grid; gap:2px; position:relative; cursor:pointer; list-style:none; border:1px solid var(--line); border-radius:9px; padding:7px 9px 7px 24px; background:rgba(0,0,0,.18); color:var(--text); font-weight:700; }
+.bulk-code-details > summary::-webkit-details-marker { display:none; }
+.bulk-code-details > summary::before { content:"▸"; position:absolute; left:8px; top:8px; color:var(--accent); }
+.bulk-code-details[open] > summary::before { content:"▾"; }
+.bulk-code-preview { color:var(--muted); font:11px/1.3 ui-monospace, Consolas, monospace; font-weight:500; }
+.bulk-code-body { display:grid; gap:7px; margin-top:7px; }
+.bulk-code-body code { display:block; max-height:180px; overflow:auto; padding:8px; border-radius:8px; background:rgba(0,0,0,.28); }
+.bulk-copy-code-btn { justify-self:start; padding:6px 9px !important; font-size:11px !important; }
+#resultsBody tr:nth-child(even) { background:rgba(255,255,255,.018); }
+#resultsBody tr:hover { background:rgba(118,168,255,.05); }
+#resultsBody tr > td:first-child { border-left:3px solid rgba(118,168,255,.45); }
 code { font-family:ui-monospace, SFMono-Regular, monospace; word-break:break-word; }
 #bulk-table-wrap { max-height: min(72vh, 820px); }
 @media (max-width: 980px) { .grid.cols { grid-template-columns:1fr; } .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } }
@@ -94,6 +118,11 @@ code { font-family:ui-monospace, SFMono-Regular, monospace; word-break:break-wor
 <button class="secondary bulk-view-btn" data-bulk-view="virtual" type="button">Virtual list</button>
 <button class="secondary bulk-view-btn" data-bulk-view="full" type="button">Full table</button>
 <span class="small" id="bulk-view-hint" style="max-width:640px;line-height:1.35;"></span>
+</div>
+<div class="row" id="bulk-parts-controls" style="align-items:center;gap:10px;margin-bottom:10px;">
+<span class="small">Parts are collapsed per item so long result lists stay readable.</span>
+<button class="secondary" id="bulk-expand-parts-btn" type="button">Expand all parts</button>
+<button class="secondary" id="bulk-collapse-parts-btn" type="button">Collapse all parts</button>
 </div>
 <div class="row" id="bulk-results-pagination" style="display:none;align-items:center;gap:10px;margin-bottom:10px;">
 <button class="secondary" id="bulk-prev-btn" type="button">Previous 50</button>
@@ -725,6 +754,7 @@ const EDITOR_PAGE = '../index.html';
 let lastResults = [];
 let bulkPageIndex = 0;
 const BULK_PAGE_SIZE = 50;
+const expandedPartRows = new Set();
 let decoderReadyPromise = null;
 
 function status(msg, kind='') {
@@ -892,18 +922,27 @@ function partRefMetaHint(key) {
   if (m.note) bits.push(m.note);
   return bits.join(' · ');
 }
-function renderPartCard(p) {
+function renderPartCard(p, partIndex) {
+  const orderLabel = '<span class="bulk-part-order">' + String(Number(partIndex || 0) + 1) + '</span>';
   if (p.unresolved) {
     const hint = partRefMetaHint(p.key);
     const hintHtml = hint ? '<div class="small" style="color:var(--warn);margin-top:6px;">' + escapeHtml(hint) + '</div>' : '';
-    return '<div class="part"><h4 class="bad">' + escapeHtml(p.raw) + '</h4><div class="meta">Unresolved' + (p.key ? ' • ' + escapeHtml(p.key) : '') + '</div>' + hintHtml + '</div>';
+    return '<div class="part part-unresolved"><h4 class="bad">' + orderLabel + escapeHtml(p.raw) + '</h4><div class="meta">Unresolved' + (p.key ? ' • ' + escapeHtml(p.key) : '') + '</div>' + hintHtml + '</div>';
   }
-  return '<div class="part"><h4>' + escapeHtml(prettyPartTitle(p)) + '</h4>' +
+  return '<div class="part"><h4>' + orderLabel + escapeHtml(prettyPartTitle(p)) + '</h4>' +
     '<div class="meta">' + escapeHtml(partMetaLine(p)) + '</div>' +
     (p.alpha_code ? '<div class="small"><code>' + escapeHtml(p.alpha_code) + '</code></div>' : '') +
     (p.stats_text ? '<div class="small">' + escapeHtml(p.stats_text) + '</div>' : '') +
     (p.effects_text ? '<div class="small">' + escapeHtml(p.effects_text) + '</div>' : '') +
     '</div>';
+}
+function compactCodeDetails(label, value, idx, kind) {
+  const text = String(value || '');
+  const preview = text.length > 14 ? text.slice(0, 10) + '\u2026' : text;
+  return '<details class="bulk-code-details"><summary><span>' + escapeHtml(label) + '</span><span class="bulk-code-preview">' +
+    escapeHtml(preview) + ' • ' + String(text.length) + ' chars</span></summary>' +
+    '<div class="bulk-code-body"><button class="secondary bulk-copy-code-btn" type="button" data-result-index="' + String(idx) +
+    '" data-copy-kind="' + escapeHtml(kind) + '">Copy</button><code>' + escapeHtml(text) + '</code></div></details>';
 }
 function enrichResultForUi(result) {
   const resolved = resolveParts(result);
@@ -918,16 +957,25 @@ window.__stxEnrichDecodeResult = function (result) {
 };
 function buildResultRowHtml(result, idx) {
   const resolved = result.__resolvedUi;
-  const partsHtml = resolved.parts.length ? '<div class="details">' + resolved.parts.map(renderPartCard).join('') + '</div>' : '<span class="small">No parts found.</span>';
+  const resolvedPartCount = resolved.parts.filter(p => !p.unresolved).length;
+  const unresolvedPartCount = Number(resolved.unresolved || 0);
+  const partsSummary = String(resolved.parts.length) + ' part' + (resolved.parts.length === 1 ? '' : 's') +
+    ' • ' + resolvedPartCount + ' resolved' +
+    (unresolvedPartCount ? ' • ' + unresolvedPartCount + ' unresolved' : '');
+  const partsHtml = resolved.parts.length
+    ? '<details class="bulk-parts-details" data-result-index="' + String(idx) + '"' + (expandedPartRows.has(idx) ? ' open' : '') + '>' +
+      '<summary><span>' + escapeHtml(partsSummary) + '</span><span class="bulk-parts-summary-hint">Show parts</span></summary>' +
+      '<div class="details">' + resolved.parts.map((p, partIndex) => renderPartCard(p, partIndex)).join('') + '</div></details>'
+    : '<span class="small">No parts found.</span>';
   const dropSource = (typeof window.CC_ITEMPOOL_DROP_CHECK !== 'undefined' && window.CC_ITEMPOOL_DROP_CHECK.getDropSource)
     ? window.CC_ITEMPOOL_DROP_CHECK.getDropSource(result, resolved.parts) : '—';
   return '<tr>' +
-    '<td><strong>' + escapeHtml(itemTitle(result)) + '</strong><div class="chips">' +
+    '<td><div class="bulk-result-number">#' + String(idx + 1) + '</div><strong>' + escapeHtml(itemTitle(result)) + '</strong><div class="chips">' +
     (result.success ? '<span class="chip good">decoded</span>' : '<span class="chip bad">failed</span>') +
     (result.itemTypeId != null ? '<span class="chip">family ' + escapeHtml(String(result.itemTypeId)) + '</span>' : '') +
     '</div></td>' +
-    '<td><code>' + escapeHtml(result.input) + '</code></td>' +
-    '<td>' + (result.success ? '<code>' + escapeHtml(result.deserialized || '') + '</code>' : '<span class="bad">' + escapeHtml(result.error || 'decode failed') + '</span>') + '</td>' +
+    '<td>' + compactCodeDetails('View serial', result.input, idx, 'input') + '</td>' +
+    '<td>' + (result.success ? compactCodeDetails('View decoded', result.deserialized || '', idx, 'deserialized') : '<span class="bad">' + escapeHtml(result.error || 'decode failed') + '</span>') + '</td>' +
     '<td>' + partsHtml + '</td>' +
     '<td><div class="small">' + escapeHtml(noteSummary(result, resolved)) + '</div></td>' +
     '<td><div class="small">' + escapeHtml(dropSource) + '</div></td>' +
@@ -978,6 +1026,7 @@ function renderResultsBody() {
 function render(results) {
   lastResults = results;
   bulkPageIndex = 0;
+  expandedPartRows.clear();
   exportBtn.disabled = !results.length;
   if (!results.length) {
     resultsBody.innerHTML = '<tr><td colspan="7" class="small">No results yet.</td></tr>';
@@ -1027,7 +1076,7 @@ function extractFromYaml(raw) {
     if (v.startsWith('@U')) out.push(v);
   }
   if (out.length) return uniqueSerials(out);
-  const loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
+  const loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
   return uniqueSerials(loose);
 }
 function extractJsonStrings(node, out) {
@@ -1052,7 +1101,7 @@ function extractFromJson(raw) {
     extractJsonStrings(parsed, out);
     return uniqueSerials(out);
   } catch (err) {
-    const matches = text.match(/@U[^\s"'`,\]}]+/g) || [];
+    const matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
     return uniqueSerials(matches);
   }
 }
@@ -1063,7 +1112,7 @@ function extractFromTxt(raw) {
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    const match = trimmed.match(/@U[^\s"'`,\]}]+/);
+    const match = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
     out.push(match ? match[0] : trimmed.replace(/^['"]|['"]$/g, ''));
   }
   return uniqueSerials(out);
@@ -1141,6 +1190,55 @@ async function initDecoder() {
   }
   return decoderReadyPromise;
 }
+
+/** Decode bounded batches so large profile/character YAML files cannot make WASM return an empty array. */
+async function decodeBulkInputsInChunks(inputs) {
+  const src = Array.isArray(inputs) ? inputs : [];
+  const out = [];
+  const batchSize = 32;
+
+  function callWasm(chunk) {
+    const parsed = JSON.parse(window.stxDecodeBulk(JSON.stringify(chunk)) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  }
+
+  for (let offset = 0; offset < src.length; offset += batchSize) {
+    const chunk = src.slice(offset, offset + batchSize);
+    let decoded = [];
+    let batchError = null;
+    try {
+      decoded = callWasm(chunk);
+    } catch (err) {
+      batchError = err;
+    }
+
+    if (decoded.length === chunk.length) {
+      out.push(...decoded);
+    } else {
+      /* One malformed item must not erase the other results in its batch. */
+      for (let i = 0; i < chunk.length; i++) {
+        const input = chunk[i];
+        try {
+          const one = callWasm([input]);
+          if (one.length) out.push(one[0]);
+          else out.push({ input, success: false, error: 'Decoder returned no result for this serial.' });
+        } catch (err) {
+          out.push({
+            input,
+            success: false,
+            error: err && err.message ? err.message : String(err || batchError || 'Decode failed')
+          });
+        }
+      }
+    }
+
+    const done = Math.min(offset + chunk.length, src.length);
+    status('Decoding serials… ' + String(done) + ' of ' + String(src.length));
+    if (done < src.length) await new Promise(resolve => setTimeout(resolve, 0));
+  }
+  return out;
+}
+
 async function decodeCurrent(filename='') {
   const raw = inputBox.value;
   const mode = modeSelect.value === 'auto' ? detectMode(raw, filename) : modeSelect.value;
@@ -1151,9 +1249,13 @@ async function decodeCurrent(filename='') {
   try {
     await initDecoder();
     status('Decoder ready. Decoding ' + String(serials.length) + ' serials...');
-    const results = JSON.parse(window.stxDecodeBulk(JSON.stringify(serials)) || '[]');
+    const results = await decodeBulkInputsInChunks(serials);
     render(results);
-    status('Decoded ' + String(results.filter(r => r.success).length) + ' of ' + String(results.length) + ' serials locally.', 'good');
+    const decodedCount = results.filter(r => r.success).length;
+    status(
+      'Decoded ' + String(decodedCount) + ' of ' + String(results.length) + ' serials locally.',
+      decodedCount ? 'good' : 'bad'
+    );
   } catch (err) {
     console.error(err);
     status('Decoder error: ' + (err && err.message ? err.message : String(err)), 'bad');
@@ -1188,7 +1290,57 @@ decodeBtn.addEventListener('click', () => decodeCurrent(fileInput.files && fileI
   }
 })();
 
-resultsBody.addEventListener('click', ev => {
+const expandPartsBtn = document.getElementById('bulk-expand-parts-btn');
+const collapsePartsBtn = document.getElementById('bulk-collapse-parts-btn');
+if (expandPartsBtn) {
+  expandPartsBtn.addEventListener('click', () => {
+    expandedPartRows.clear();
+    for (let i = 0; i < lastResults.length; i++) expandedPartRows.add(i);
+    renderResultsBody();
+  });
+}
+if (collapsePartsBtn) {
+  collapsePartsBtn.addEventListener('click', () => {
+    expandedPartRows.clear();
+    renderResultsBody();
+  });
+}
+resultsBody.addEventListener('toggle', ev => {
+  const details = ev.target;
+  if (!details || !details.classList || !details.classList.contains('bulk-parts-details')) return;
+  const index = Number(details.getAttribute('data-result-index'));
+  if (!Number.isFinite(index)) return;
+  if (details.open) expandedPartRows.add(index);
+  else expandedPartRows.delete(index);
+}, true);
+
+resultsBody.addEventListener('click', async ev => {
+  const copyBtn = ev.target && ev.target.closest ? ev.target.closest('.bulk-copy-code-btn') : null;
+  if (copyBtn) {
+    const copyIndex = Number(copyBtn.getAttribute('data-result-index'));
+    const copyKind = String(copyBtn.getAttribute('data-copy-kind') || '');
+    const copyResult = lastResults[copyIndex];
+    const copyText = copyKind === 'deserialized'
+      ? String(copyResult && copyResult.deserialized || '')
+      : String(copyResult && copyResult.input || '');
+    if (!copyText) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(copyText);
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = copyText;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+      }
+      status((copyKind === 'deserialized' ? 'Decoded code' : 'Serial') + ' copied.', 'good');
+    } catch (err) {
+      status('Could not copy code: ' + (err && err.message ? err.message : String(err)), 'bad');
+    }
+    return;
+  }
   const btn = ev.target && ev.target.closest ? ev.target.closest('.send-editor-btn') : null;
   if (!btn) return;
   const index = Number(btn.getAttribute('data-result-index'));

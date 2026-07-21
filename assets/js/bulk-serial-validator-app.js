@@ -145,7 +145,12 @@
   /** Buckets `legitState.details` lines for JSON `flagging.detail_line_categories`. */
   function categorizeLegitDetailLine(line) {
     var s = String(line || '');
+    if (/^\[critical\]/i.test(s) || /wrong root/i.test(s) || (/Duplicate part/i.test(s) && /only 1 allowed/i.test(s))) {
+      return 'critical_rules';
+    }
+    if (/Part order mismatch/i.test(s) || /^\[order\]/i.test(s)) return 'part_order';
     if (/^\[composition\]/i.test(s)) return 'composition';
+    if (/^\[slot-map\]/i.test(s)) return 'slot_map';
     if (/^\[raw\]/i.test(s)) return 'raw_composition';
     if (/^Exclusion:/i.test(s)) return 'exclusion';
     if (/^Comp allowlist:/i.test(s)) return 'comp_allowlist';
@@ -153,7 +158,7 @@
     if (/^Inv tags/i.test(s)) return 'inv_tags';
     if (/missing dependency tag/i.test(s)) return 'dependency';
     if (
-      /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:|Passes our checks|Rules passed:|Spawn claim:)/i.test(
+      /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:|Passes our checks|Rules passed:|Spawn claim:|Bulk natural|Natural legitimacy)/i.test(
         s
       )
     ) {
@@ -161,6 +166,7 @@
     }
     if (/weight|schedule|spawn|off_pool/i.test(s)) return 'loot_meta';
     if (/NCS|slot order|wrong slot/i.test(s)) return 'ncs';
+    if (/Balance Fail/i.test(s)) return 'balance_fail';
     return 'other';
   }
 
@@ -180,7 +186,13 @@
     var d;
     for (i = 0; i < (details || []).length; i++) {
       d = String(details[i] || '');
-      if (/^(Exclusion:|Compatibility:|Inv tags|\[composition\]|\[raw\])/i.test(d)) return d;
+      if (
+        /^(Exclusion:|Compatibility:|Inv tags|\[composition\]|\[raw\]|\[critical\]|\[slot-map\]|Part order mismatch)/i.test(
+          d
+        )
+      ) {
+        return d;
+      }
     }
     return details && details[0] != null ? String(details[0]) : '';
   }
@@ -397,6 +409,31 @@
     return rows.slice();
   }
 
+  /** Rows that passed composition (OK / legit). */
+  function collectLegitPassRows() {
+    return state.rows.filter(function (r) {
+      return classifyRow(r) === 'ok';
+    });
+  }
+
+  /**
+   * Non-pass rows for save filtering: Fail + Uncertain + decode/manifest issues.
+   * Stricter than Fail-only — catches “slightly modded” / unmapped uncertain gear.
+   */
+  function collectNonOkModdedRows() {
+    return state.rows.filter(function (r) {
+      return classifyRow(r) !== 'ok';
+    });
+  }
+
+  /** Composition hard-fails only (Fail data / decode / no manifest). */
+  function collectFailDataRows() {
+    return state.rows.filter(function (r) {
+      var c = classifyRow(r);
+      return c === 'err' || c === 'decode' || c === 'nomanifest';
+    });
+  }
+
   function downloadBlob(filename, mime, text) {
     var blob = new Blob([text], { type: mime });
     var a = document.createElement('a');
@@ -404,6 +441,64 @@
     a.download = filename;
     a.click();
     URL.revokeObjectURL(a.href);
+  }
+
+  function stampExportName(prefix) {
+    return prefix + '-' + new Date().toISOString().slice(0, 19).replace(/:/g, '') + '.txt';
+  }
+
+  /**
+   * Plain serial list (one per line) for backpack / bulk-add paste.
+   * @param {'legit'|'nonok'|'fail'|'ok_drop_modded'|'ok_pool'} kind
+   */
+  function exportSerialListTxt(kind) {
+    var rows;
+    var label;
+    var fname;
+    if (kind === 'legit') {
+      rows = collectLegitPassRows();
+      label = 'OK / legit';
+      fname = stampExportName('bulk-serials-ok-legit');
+    } else if (kind === 'fail') {
+      rows = collectFailDataRows();
+      label = 'Fail (data) / decode / no manifest';
+      fname = stampExportName('bulk-serials-fail-only');
+    } else if (kind === 'ok_drop_modded') {
+      rows = state.rows.filter(function (r) {
+        return classifyRow(r) === 'ok' && String(r.dropText || '').trim().toLowerCase() === 'modded';
+      });
+      label = 'OK + Drop hint Modded';
+      fname = stampExportName('bulk-serials-ok-drop-modded');
+    } else if (kind === 'ok_pool') {
+      rows = state.rows.filter(function (r) {
+        return (
+          classifyRow(r) === 'ok' && String(r.dropText || '').trim().toLowerCase() !== 'modded'
+        );
+      });
+      label = 'OK + non-Modded drop hint';
+      fname = stampExportName('bulk-serials-ok-pool-hint');
+    } else {
+      rows = collectNonOkModdedRows();
+      label = 'non-OK / modded (+ uncertain)';
+      fname = stampExportName('bulk-serials-nonok-modded');
+    }
+    if (!state.rows.length) {
+      statusLine('Nothing to export — run validation first.', 'warn');
+      return;
+    }
+    if (!rows.length) {
+      statusLine('No ' + label + ' rows in this run.', 'warn');
+      return;
+    }
+    var lines = [];
+    var i;
+    var s;
+    for (i = 0; i < rows.length; i++) {
+      s = String(rows[i].serial || '').trim();
+      if (s) lines.push(s);
+    }
+    downloadBlob(fname, 'text/plain;charset=utf-8', lines.join('\n') + (lines.length ? '\n' : ''));
+    statusLine('Exported ' + lines.length + ' ' + label + ' serial(s) → ' + fname, 'ok');
   }
 
   function csvEscape(s) {
@@ -476,7 +571,7 @@
         'Every row includes align_* booleans. If bucket is not ok, flagging holds primary_reason, full legit_details_all (every Legit Builder line, including Parts:/Stats: diagnostics omitted from notes_full), detail_line_categories counts, validation snapshot, and compact decode stats — use this to see exactly why a row failed.',
       alignment_definitions: {
         align_strict_ok_data:
-          'Same as KPI OK (data): LegitBuilderApi status OK (bulk cheat-audit: may include unmapped rows with clean raw composition).',
+          'Same as KPI OK (data): LegitBuilderApi status OK with mapped slots (unmapped rows are Uncertain, not OK).',
         align_no_fail_data:
           'Decoded + manifest item resolved + not Fail (data).',
         align_mapped_no_fail_data:
@@ -484,7 +579,7 @@
         align_soft_ok_or_warn:
           'Mapped + legit state ok or warn (not err). Counts rows that are not hard-fail even if tag/source lines are warnings.',
         alignment_flags_note:
-          'Bulk validator uses cheat-audit mode: composition (inv tags, comp allowlist, raw graph, weights, elements) drives Fail (data); spawn-table gaps and slot-order FYI do not reduce OK.'
+          'Bulk uses natural legitimacy: strict slot-map match, inv tags (incl. unique/licensed), weights/schedule. Soft uni_/leg_ dep gaps alone stay FYI. Unmapped → Fail or Uncertain.'
       },
       alignment_summary: buildAlignmentSummary(rows),
       options: {
@@ -665,8 +760,8 @@
     if (!row.validation || row.validation.phase === 'manifest') return 'nomanifest';
     if (row.validation.mapped === false) {
       var lsU = row.validation.legitState;
-      if (lsU && lsU.status === 'ok') return 'ok';
       if (lsU && lsU.status === 'err') return 'err';
+      /* Unmapped without Fail → Uncertain (no longer OK even if raw exclusion scan is clean). */
       return 'nomap';
     }
     var st = row.validation.legitState;
@@ -810,7 +905,7 @@
         out.push(buildRow(serial, dr || { success: false, error: 'no result' }, null, '—'));
         continue;
       }
-      /* relaxInvUniLegDeps: false — enforce Nexus dependencytags in slot order (validateDecodedSerial no longer forces relax when bulkCheatAuditMode is on). */
+      /* rawSerial must be deserialized `{fam:id}` text — Base85 (@U) breaks Critical dup/wrong-root expand. */
       v = helpers.validateDecodedSerial(dr, {
         strictMode: strictMode !== false,
         itemLevel: itemLevel,
@@ -818,7 +913,7 @@
         invTagFailuresAsErr: true,
         detectPlainFrameUniLeg: true,
         failOffPoolNamedLegendaryBarrels: false,
-        rawSerial: serial,
+        rawSerial: (dr && dr.deserialized) || serial,
         bulkCheatAuditMode: true
       });
       dropTxt = '—';
@@ -846,13 +941,21 @@
     var subNomap = 0;
     var subWarn = 0;
     var subIdle = 0;
+    var dropModded = 0;
+    var okDropModded = 0;
     var i;
     var r;
     var c;
+    var dropLc;
     for (i = 0; i < n; i++) {
       r = rows[i];
       if (r.decodeOk) dec++;
       c = classifyRow(r);
+      dropLc = String(r.dropText || '').trim().toLowerCase();
+      if (dropLc === 'modded') {
+        dropModded++;
+        if (c === 'ok') okDropModded++;
+      }
       if (c === 'ok') ok++;
       else if (c === 'decode') decodeFail++;
       else if (c === 'nomanifest') nomanifest++;
@@ -879,6 +982,10 @@
     if (elDf) elDf.textContent = String(decodeFail);
     if (elNm) elNm.textContent = String(nomanifest);
     if (elLe) elLe.textContent = String(legitErr);
+    var elDm = $('k-drop-modded');
+    var elOdm = $('k-ok-drop-modded');
+    if (elDm) elDm.textContent = String(dropModded);
+    if (elOdm) elOdm.textContent = String(okDropModded);
     var sum = ok + wrn + decodeFail + nomanifest + legitErr;
     var rec = $('k-reconcile');
     if (rec) {
@@ -909,6 +1016,12 @@
           ' · ' + String(state.inputDupMerged) + ' duplicate input line(s) merged (same serial text; enable Keep duplicate lines for one row each).';
       } else if (state.inputPreserveDups && n > 0) {
         rec.textContent += ' · duplicate lines kept as separate rows';
+      }
+      if (okDropModded > 0) {
+        rec.textContent +=
+          ' · ' +
+          String(okDropModded) +
+          ' OK (data) with Drop hint Modded (composition passed; not in shiny pool — use Export non-OK or filter Drop column for editor/off-pool hygiene).';
       }
     }
   }
@@ -947,6 +1060,11 @@
           (row.validation.legitState.statsAnyFound != null ? row.validation.legitState.statsAnyFound : '?') +
           '/' +
           (row.validation.legitState.partCount != null ? row.validation.legitState.partCount : '?');
+      } else if (!row.decodeOk) {
+        legitLabel = 'Decode failed';
+        details = row.decodeError
+          ? String(row.decodeError)
+          : 'WASM could not decode this serial (corrupt, truncated, or unsupported format).';
       } else if (row.validation && row.validation.mapped === false) {
         legitLabel = 'Uncertain (no slot map)';
         details = 'Decode OK; no manifest parts matched NCS slots';
@@ -1121,6 +1239,11 @@
     var doneParts = ['Done.', String(total), total === 1 ? 'serial' : 'serials', '· mode', parsed.modeUsed];
     if (dupMerged) doneParts.push('·', String(dupMerged), dupMerged === 1 ? 'dup line merged' : 'dup lines merged');
     doneParts.push(invTagBundleStatusSuffix());
+    try {
+      if (window.LegitDecodeHelpers && window.LegitDecodeHelpers.__version) {
+        doneParts.push('·', String(window.LegitDecodeHelpers.__version));
+      }
+    } catch (_) {}
     statusLine(doneParts.join(' '), 'ok');
     updateKpis();
     renderTable();
@@ -1159,6 +1282,16 @@
     if (exJ) exJ.addEventListener('click', exportJsonReport);
     if (exC) exC.addEventListener('click', exportCsv);
     if (exM) exM.addEventListener('click', exportMarkdownSummary);
+    var exLegit = $('bv-export-legit-txt');
+    var exModded = $('bv-export-modded-txt');
+    var exFail = $('bv-export-fail-txt');
+    if (exLegit) exLegit.addEventListener('click', function () { exportSerialListTxt('legit'); });
+    if (exModded) exModded.addEventListener('click', function () { exportSerialListTxt('nonok'); });
+    if (exFail) exFail.addEventListener('click', function () { exportSerialListTxt('fail'); });
+    var exOkDm = $('bv-export-ok-drop-modded-txt');
+    var exOkPool = $('bv-export-ok-drop-clean-txt');
+    if (exOkDm) exOkDm.addEventListener('click', function () { exportSerialListTxt('ok_drop_modded'); });
+    if (exOkPool) exOkPool.addEventListener('click', function () { exportSerialListTxt('ok_pool'); });
     if (filt) {
       filt.addEventListener('change', function () {
         state.filter = filt.value;

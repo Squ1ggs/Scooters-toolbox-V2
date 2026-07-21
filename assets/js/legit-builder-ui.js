@@ -11,9 +11,12 @@
       if (partCount === 0) {
         validationEl.className = 'validation-bar v-idle';
         validationEl.innerHTML = 'Select parts to validate.';
+        try { window.__legitLastPartSlotDiagnostics = null; } catch (_) {}
+        scheduleLegitSlotOptionValidityRefresh();
         return;
       }
       var st = computeLegitValidationState(selectedItem, selectedParts, {});
+      try { window.__legitLastPartSlotDiagnostics = st.partSlotDiagnostics || null; } catch (_) {}
       validationEl.className = 'validation-bar ' + st.className;
       var metaRe = /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:)/;
       var detailLines = '';
@@ -23,12 +26,15 @@
         detailLines += '<div class="v-detail-line' + (metaRe.test(line) ? ' v-detail-meta' : '') + '">' + escapeV(line) + '</div>';
       }
       validationEl.innerHTML = '<strong>' + escapeV(st.statusText) + '</strong><div class="v-details">' + detailLines + '</div>' + st.miniLineageHtml;
-      if (typeof window.__stxRefreshLegitSlotOptionValidity === 'function') window.__stxRefreshLegitSlotOptionValidity();
+      /* Debounced once — avoid sync refresh + second scheduled refresh per part change. */
+      scheduleLegitSlotOptionValidityRefresh();
     }
     itemSelect.addEventListener('change', function() {
       var slug = itemSelect.value;
       if (!slug) {
         selectedItem = null;
+        __lastDropSourcesSlug = null;
+        try { window.__legitLastPartSlotDiagnostics = null; } catch (_) {}
         slotsContainer.innerHTML = '<div class="slot-empty-msg">Select an item type above to see available slots.</div>';
         outputEl.innerHTML = '<span class="o-empty">Select an item type and parts to begin.</span>';
         outputEl.dataset.plain = '';
@@ -37,6 +43,7 @@
         itemStatsEl.innerHTML = '<div class="stats-empty">Select an item type to see info.</div>';
         statEffectsEl.innerHTML = '<div class="stats-empty">Select parts to see their stat effects.</div>';
         proofEvidenceEl.innerHTML = '<div class="stats-empty">Select parts to view proof details.</div>';
+        if (dropSourcesEl) dropSourcesEl.innerHTML = '';
         try { window.__legitSerialSeed = null; window.__legitBuildSeedForSlug = null; } catch (_) {}
         return;
       }

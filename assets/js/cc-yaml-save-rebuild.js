@@ -1623,6 +1623,130 @@
     return true;
   };
 
+  function normalizeSerialKeyForYamlDedupe(raw) {
+    var s0 = String(raw == null ? '' : raw).trim().replace(/^['"]|['"]$/g, '');
+    if (!s0) return '';
+    var s = typeof window.ensureBase85SerialForYamlSave === 'function'
+      ? (window.ensureBase85SerialForYamlSave(s0) || s0)
+      : s0;
+    s = String(s || '').trim();
+    if (!s) return '';
+    if (s.indexOf('@U') !== 0) s = '@U' + s.replace(/^@U/, '');
+    return s;
+  }
+
+  /**
+   * Remove duplicate serial strings from backpack (character) or bank (profile).
+   * Keeps the first occurrence of each serial (slot order ascending) and rebuilds
+   * contiguous slot_0…slot_n-1. Non-slot keys on the container are preserved.
+   * @returns {{ removed: number, kept: number, dest: string, compacted: boolean }|false}
+   */
+  window.dedupeYamlInventorySerials = function () {
+    var yaml = getYamlText();
+    if (!yaml.text || !String(yaml.text).trim()) {
+      alert('Load or paste YAML in the editor first.');
+      return false;
+    }
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yaml.text) : 'unknown';
+    if (kind !== 'character' && kind !== 'profile') {
+      alert('De-dupe needs a character save (root state:) or profile save loaded in the editor.');
+      return false;
+    }
+    if (typeof window.getYamlDataFromEditor !== 'function' || typeof window.commitYamlDataToEditor !== 'function') {
+      alert('YAML tools are not ready yet. Reload the page.');
+      return false;
+    }
+    var data = window.getYamlDataFromEditor();
+    if (!data) {
+      alert('Could not parse YAML. Fix syntax errors and try again.');
+      return false;
+    }
+    var destWhich = kind === 'profile' ? 'bank' : 'backpack';
+    var container = getYamlInventoryContainer(data, destWhich);
+    if (!container) {
+      alert(destWhich === 'backpack' ? 'No backpack object found in this save.' : 'No shared bank object found in this profile.');
+      return false;
+    }
+
+    var keyRows = [];
+    for (var sk in container) {
+      if (!Object.prototype.hasOwnProperty.call(container, sk)) continue;
+      var mm = /^slot_(\d+)$/.exec(sk);
+      if (mm) keyRows.push({ key: sk, n: parseInt(mm[1], 10) });
+    }
+    keyRows.sort(function (a, b) { return a.n - b.n; });
+
+    var seen = Object.create(null);
+    var kept = [];
+    var removed = 0;
+    var scanned = 0;
+    var needsCompact = false;
+    for (var i = 0; i < keyRows.length; i++) {
+      var entry = container[keyRows[i].key];
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) continue;
+      var rawSerial = entry.serial;
+      if (rawSerial == null || !String(rawSerial).trim()) continue;
+      scanned++;
+      var key = normalizeSerialKeyForYamlDedupe(rawSerial);
+      if (!key) key = String(rawSerial).trim().replace(/^['"]|['"]$/g, '');
+      if (!key) continue;
+      if (seen[key]) {
+        removed++;
+        continue;
+      }
+      seen[key] = true;
+      var copy = shallowCopySlotObject(entry);
+      if (key.indexOf('@U') === 0) copy.serial = key;
+      kept.push(copy);
+      if (keyRows[i].n !== kept.length - 1) needsCompact = true;
+    }
+
+    if (!scanned) {
+      alert(destWhich === 'backpack' ? 'No backpack items with serials found.' : 'No bank items with serials found.');
+      return false;
+    }
+    if (!removed && !needsCompact) {
+      return { removed: 0, kept: kept.length, dest: destWhich, compacted: false };
+    }
+    if (!removed && needsCompact) {
+      var okCompact = confirm(
+        'No duplicate serials found, but ' + destWhich + ' slots are not contiguous.\n\n' +
+        'Renumber ' + kept.length + ' item(s) as slot_0…slot_' + (kept.length - 1) + '?'
+      );
+      if (!okCompact) return false;
+    } else {
+      var okDup = confirm(
+        'Remove ' + removed + ' duplicate serial(s) from ' + destWhich + '?\n\n' +
+        'Keep ' + kept.length + ' unique item(s) and renumber as slot_0…slot_' + Math.max(0, kept.length - 1) + '.'
+      );
+      if (!okDup) return false;
+    }
+
+    var nonSlot = {};
+    for (var nk in container) {
+      if (!Object.prototype.hasOwnProperty.call(container, nk)) continue;
+      if (/^slot_\d+$/.test(nk)) continue;
+      nonSlot[nk] = container[nk];
+    }
+    for (var dk in container) {
+      if (Object.prototype.hasOwnProperty.call(container, dk) && /^slot_\d+$/.test(dk)) {
+        delete container[dk];
+      }
+    }
+    for (var j = 0; j < kept.length; j++) {
+      container['slot_' + j] = kept[j];
+    }
+    for (var rk in nonSlot) {
+      if (Object.prototype.hasOwnProperty.call(nonSlot, rk)) container[rk] = nonSlot[rk];
+    }
+
+    window.commitYamlDataToEditor(data);
+    if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(80);
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
+    return { removed: removed, kept: kept.length, dest: destWhich, compacted: true };
+  };
+
   /** Enable/disable Add to YAML (character backpack) vs Add to bank (profile) by detectYamlSaveKind. */
   window.updateYamlInjectButtons = function () {
     var txt = '';
@@ -1632,12 +1756,16 @@
     var yamlIds = ['prefixItemAddToYamlBtn', 'godrollAddToYamlBtn', 'serialSearchAddToYamlBtn', 'yamlAddSerialsBtn', 'guidedAddItemToYaml', 'floatingAddItemToYaml', 'yamlDupBackpackBtn', 'yamlDupBackpackLevelBtn'];
     var bankIds = ['prefixItemAddToBankBtn', 'godrollAddToBankBtn', 'serialSearchAddToBankBtn', 'yamlAddSerialsBankBtn', 'guidedAddItemToBank', 'floatingAddItemToBank', 'yamlDupBankBtn', 'yamlDupBankLevelBtn'];
     var mergeIds = ['yamlMergeAsIsBtn', 'yamlMergeLevelBtn'];
+    var dedupeIds = ['yamlDedupeSerialsBtn'];
     var yTitleOk = 'Add to character backpack (root state: save)';
     var yTitleNo = 'Load a character save YAML (root state:) first.';
     var bTitleOk = 'Add to profile bank (shared inventory)';
     var bTitleNo = 'Load profile .sav or YAML first.';
     var mTitleOk = 'Append all items from another YAML into this save';
     var mTitleNo = 'Load a character or profile YAML in the editor first.';
+    var dTitleOkChar = 'Remove duplicate backpack serials and renumber slots';
+    var dTitleOkProf = 'Remove duplicate bank serials and renumber slots';
+    var dTitleNo = 'Load a character or profile YAML in the editor first.';
     for (var a = 0; a < yamlIds.length; a++) {
       var ye = byId(yamlIds[a]);
       if (!ye) continue;
@@ -1658,6 +1786,12 @@
       if (!me) continue;
       me.disabled = !mergeOk;
       me.title = mergeOk ? mTitleOk : mTitleNo;
+    }
+    for (var d = 0; d < dedupeIds.length; d++) {
+      var de = byId(dedupeIds[d]);
+      if (!de) continue;
+      de.disabled = !mergeOk;
+      de.title = !mergeOk ? dTitleNo : (kind === 'profile' ? dTitleOkProf : dTitleOkChar);
     }
     var strip = byId('stx-yaml-kind-strip');
     if (strip) {
@@ -1804,6 +1938,40 @@
         }
         if (window.duplicateYamlInventorySection && window.duplicateYamlInventorySection('bank', L2)) {
           showStatus('Duplicated bank at level ' + L2 + '.', true);
+        }
+      });
+    }
+    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+  };
+
+  window.initYamlDedupeSection = function () {
+    var root = byId('yaml-dedupe-section');
+    if (!root || root.dataset.yamlDedupeWired === '1') return;
+    root.dataset.yamlDedupeWired = '1';
+    var btn = byId('yamlDedupeSerialsBtn');
+    var status = byId('yaml-add-serials-status');
+    function showStatus(msg, ok) {
+      if (!status) return;
+      status.style.display = 'block';
+      status.style.color = ok ? 'rgba(0,200,255,0.95)' : '#ff9090';
+      status.textContent = msg;
+    }
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var result = window.dedupeYamlInventorySerials ? window.dedupeYamlInventorySerials() : false;
+        if (!result) return;
+        if (!result.removed && !result.compacted) {
+          showStatus('No duplicate serials in ' + result.dest + ' (' + result.kept + ' unique).', true);
+          return;
+        }
+        if (result.removed) {
+          showStatus(
+            'Removed ' + result.removed + ' duplicate(s) from ' + result.dest +
+            '; kept ' + result.kept + ' unique item(s), renumbered slot_0…',
+            true
+          );
+        } else {
+          showStatus('Renumbered ' + result.kept + ' ' + result.dest + ' item(s) as contiguous slots.', true);
         }
       });
     }
@@ -2585,6 +2753,7 @@
         if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
         if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
         if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
+        if (typeof window.initYamlDedupeSection === 'function') window.initYamlDedupeSection();
         if (typeof window.initYamlMergeSection === 'function') window.initYamlMergeSection();
         if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
         initYamlTextareaDragDrop();
@@ -2598,6 +2767,7 @@
       if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
       if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
       if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
+      if (typeof window.initYamlDedupeSection === 'function') window.initYamlDedupeSection();
       if (typeof window.initYamlMergeSection === 'function') window.initYamlMergeSection();
       if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
       initYamlTextareaDragDrop();

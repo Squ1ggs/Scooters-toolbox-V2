@@ -369,7 +369,6 @@
     {key:'foregrip', label:'Foregrip', partType:'Foregrip'},
     {key:'underbarrel', label:'Underbarrel', partType:'Underbarrel'},
     {key:'underbarrelAcc', label:'Underbarrel Accessory', partType:'Underbarrel', ncsSlot:'underbarrel_acc'},
-    {key:'underbarrelAccVis', label:'Underbarrel Accessory (Visual)', partType:'Underbarrel', ncsSlot:'underbarrel_acc_vis'},
     {key:'licensed', label:'Licensed Manufacturer Part', partType:'Manufacturer Part'},
     {key:'secondaryAmmo', label:'Secondary Ammo Type', partType:'Manufacturer Part', ncsSlot:'secondary_ammo'},
     {key:'hyperionSecondaryAcc', label:'Hyperion Amp Shield', partType:'Manufacturer Part', ncsSlot:'hyperion_secondary_acc'},
@@ -438,24 +437,12 @@
       out.splice(at, 0, magAccRow);
       seen.magazineAcc = true;
     }
-    if (!stxSimpleBuilderItemTypeIsHeavyUi(state && state.itemType, state && state.weaponType) && !seen.underbarrelAcc) {
-      const ubaRow = { key: 'underbarrelAcc', label: 'Underbarrel Accessory', partType: 'Underbarrel', ncsSlot: 'underbarrel_acc' };
-      let at = out.length;
-      for (let j = 0; j < out.length; j++) {
-        if (String(out[j] && out[j].key || '') === 'underbarrel') { at = j + 1; break; }
-      }
-      out.splice(at, 0, ubaRow);
-      seen.underbarrelAcc = true;
-    }
-    if (!stxSimpleBuilderItemTypeIsHeavyUi(state && state.itemType, state && state.weaponType) && !seen.underbarrelAccVis) {
-      const ubvRow = { key: 'underbarrelAccVis', label: 'Underbarrel Accessory (Visual)', partType: 'Underbarrel', ncsSlot: 'underbarrel_acc_vis' };
-      let at = out.length;
-      for (let j = 0; j < out.length; j++) {
-        const k = String(out[j] && out[j].key || '');
-        if (k === 'underbarrelAcc' || k === 'underbarrel') at = j + 1;
-      }
-      out.splice(at, 0, ubvRow);
-    }
+    /*
+     * Accessory and visual-accessory rows are not universal weapon slots. Keep
+     * them only when the active NCS schema declares them (or when the fallback
+     * WEAPON_SLOT_SCHEMA is in use); otherwise an unrelated gun gets an empty
+     * control with no valid serialized position.
+     */
     return out;
   }
 
@@ -482,17 +469,18 @@
   }
 
   const STX_UNDERBARREL_SLOT_HINT = 'Usually Vladof ARs, SMGs, and snipers in legit data. Other guns rarely show a pool here — use Additional parts for modded underbarrels.';
+  const STX_UNDERBARREL_VISUAL_HINT = 'Cosmetic companion part used by a small number of underbarrels. It does not add a separate gameplay stat.';
 
   /**
-   * Hide empty optional / specialty slots (Body Mag, Borg Mag, pearl, etc.) so the UI
+   * Hide empty optional / specialty slots (Body Mag, Borg Mag, Mag Acc, pearl, etc.) so the UI
    * only shows pools that exist for this manufacturer + weapon type.
-   * Always keep Body / Barrel / Magazine visible.
+   * Always keep Body / Barrel / Magazine and the main Underbarrel control visible.
+   * Accessory/visual underbarrel controls only help when their filtered pool exists.
    */
   function stxWeaponSlotHideWhenEmpty(slotKey){
     const k = String(slotKey || '');
     if (k === 'body' || k === 'barrel' || k === 'mag' || k === 'magazine') return false;
-    if (k === 'magazineAcc') return false;
-    if (stxWeaponSlotIsUnderbarrelFamily(k)) return false;
+    if (k === 'underbarrel') return false;
     return true;
   }
 
@@ -792,10 +780,19 @@
         return o;
       }
       case 'underbarrel_acc_vis': {
-        const o = rawOpts.filter(p => {
+        const isVisualAcc = (p) => {
           if (typeof window.stxWeaponSlotPartMatch === 'function') return window.stxWeaponSlotPartMatch('underbarrelAccVis', p);
-          return /underbarrel_.*acc_vis/i.test(lower(p));
-        });
+          return /underbarrel_.*acc_vis/i.test(lower(p)) || /^"?vla_ar\.part_underbarrel_07_b"?$/i.test(String(normCode(p && p.code) || ''));
+        };
+        let o = rawOpts.filter(isVisualAcc);
+        /* Strict Underbarrel filtering intentionally removes accessory rows; recover only NCS visual members. */
+        if (!o.length) {
+          o = getAllParts().filter((p) =>
+            p &&
+            String(p.category || '').trim() === 'Weapon' &&
+            isVisualAcc(p)
+          );
+        }
         return o;
       }
       case 'body_bolt': return filt(p => lower(p).includes('part_body_bolt') || lower(p).includes('part_body_flap'));
@@ -848,7 +845,7 @@
         return /underbarrel_.*_acc/i.test(lo) && !/acc_vis/i.test(lo);
       case 'underbarrel_acc_vis':
         if (typeof window.stxWeaponSlotPartMatch === 'function') return window.stxWeaponSlotPartMatch('underbarrelAccVis', p);
-        return /underbarrel_.*acc_vis/i.test(lo);
+        return /underbarrel_.*acc_vis/i.test(lo) || /^vla_ar\.part_underbarrel_07_b$/i.test(lo);
       case 'body':
         if (lo.includes('part_body_bolt') || lo.includes('part_body_flap')) return false;
         if (lo.includes('part_body_ele')) return false;
@@ -900,15 +897,18 @@
       {key:'legendary', label:'Legendary Perks', partType:'Legendary Perks', multi:true},
       {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
     ],
-    /* Grenade: identity + variant bases share one Base slot (multi-select). */
+    /* Grenade: NCS/Legit order — body → element → payload → payload_augment →
+       stat_augment → firmware → endgame → pearl_*. Keep slot keys stable for import/emit. */
     Grenade: [
-      {key:'body', label:'Base', partType:'Base', multi:true},
-      {key:'element', label:'Element', partType:'Element'},
-      {key:'payload', label:'Payload', partType:'Payload', multi:true},
-      {key:'augment', label:'Augment', partType:'Augment', multi:true},
-      {key:'grenadeKitStats', label:'Grenade stat parts', partType:'', customType:'grenadeKitStats'},
-      {key:'special', label:'Special / Unique', partType:''},
-      {key:'firmware', label:'Firmware', partType:'Firmware'},
+      {key:'body', label:'Body', partType:'Base', multi:true, ncsSlot:'body'},
+      {key:'element', label:'Element', partType:'Element', ncsSlot:'element'},
+      {key:'payload', label:'Payload', partType:'Payload', multi:true, ncsSlot:'payload'},
+      {key:'augment', label:'Payload Augment', partType:'Augment', multi:true, ncsSlot:'payload_augment'},
+      {key:'grenadeKitStats', label:'Stat Augment', partType:'', customType:'grenadeKitStats', ncsSlot:'stat_augment'},
+      {key:'firmware', label:'Firmware', partType:'Firmware', ncsSlot:'firmware'},
+      {key:'special', label:'Endgame / Unique', partType:'', ncsSlot:'endgame'},
+      {key:'pearlElem', label:'Pearl Element', partType:'', customType:'grenadePearlElem', ncsSlot:'pearl_elem', hideWhenEmpty:true},
+      {key:'pearlStat', label:'Pearl Stat', partType:'', customType:'grenadePearlStat', ncsSlot:'pearl_stat', hideWhenEmpty:true},
       {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
     ],
     /* Gadget item type = heavy weapons / turrets only (`*_HW`, `heavy_weapon_gadget`). Grenade NCS rows also use dataset category `Gadget` — filter them out in `filterParts`. */
@@ -1233,6 +1233,29 @@
     if (!pref) return false;
     if (!stxWeaponSpawnPrefixMatchesCode(c, pref)) return false;
     return /\.part_body(?:$|_\d)/.test(c);
+  }
+
+  /**
+   * Fallback Body pool when the strict natural body (`mfr_wt.part_body`) is missing from the dataset:
+   * letter accessories / other Body-typed rows for the same spawn prefix (still excludes bolt/ele/mag).
+   */
+  function stxIsWeaponBodySlotFallbackRowCode(normLo, wantMan, weaponType){
+    const c = String(normLo || '').toLowerCase().replace(/^["']|["']$/g, '');
+    if (!c || !/part_body/i.test(c)) return false;
+    if (c.includes('part_body_bolt') || c.includes('part_body_flap') || c.includes('part_body_ele') || c.includes('part_body_mag')) return false;
+    if (c.includes('.comp_') || /(?:^|[._])comp_0[1-6]_/.test(c) || /(?:^|[._])pearl_/.test(c)) return false;
+    const pref = stxWeaponSpawnPrefixForUiManufacturer(wantMan, weaponType);
+    if (!pref) return false;
+    if (!stxWeaponSpawnPrefixMatchesCode(c, pref)) return false;
+    return /\.part_body(?:$|_[a-z0-9])/.test(c);
+  }
+
+  /** Drop cached part pools after deferred supplements mutate ALL_PARTS. */
+  function stxInvalidateSimpleBuilderPartCaches(){
+    try { __filterPartsCache.clear(); } catch (_e) {}
+    try { window.__stxPartCategoryIndex = null; } catch (_e) {}
+    try { window.__stxAllPartsIndexed = false; } catch (_e) {}
+    try { __allPartsIdxStamp = -1; } catch (_e) {}
   }
 
   /** Body / main-body slots must stay tied to the item under construction (even when “all manufacturers” is on). */
@@ -2239,6 +2262,14 @@
     let primary = spawnSeg || (rawCode ? (rawCode.length <= 80 ? rawCode : rawCode.slice(0, 77) + '…') : '');
     if (!primary && datasetName) primary = datasetName.length > 80 ? datasetName.slice(0, 77) + '…' : datasetName;
     if (!primary) primary = id || '-';
+
+    /* Bare `part_body` codes often ship with empty/useless names — surface a readable Body label. */
+    if ((/^part_body$/i.test(spawnSeg) || /^part_body$/i.test(String(datasetName || '').trim())) && (!datasetName || /^part_body$/i.test(datasetName) || !String(datasetName).trim())) {
+      const manHint = String(p.manufacturer || '').trim();
+      const typeHint = String(p.itemType || p.weaponType || '').trim();
+      primary = [manHint, typeHint, 'Body'].filter(Boolean).join(' ') || 'Body';
+      datasetName = '';
+    }
 
     const nameLc = datasetName.toLowerCase().replace(/[^a-z0-9]/g, '');
     const primLc = primary.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -6622,6 +6653,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       slotLabel += ' (optional)';
     }
     name.textContent = slotLabel;
+    if ((category === 'Weapon' || category === 'Gadget') && schemaItem.key === 'underbarrelAccVis') {
+      name.title = STX_UNDERBARREL_VISUAL_HINT;
+    }
 
     const btnClear = document.createElement('button');
     btnClear.type = 'button';
@@ -6698,6 +6732,12 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         if (isAllPartsEnabled()) return true;
         return stxGrenadeGadgetRowMatchesSelectedManufacturer(c, man);
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+    } else if (schemaItem && (schemaItem.customType === 'grenadePearlElem' || schemaItem.key === 'pearlElem') && category === 'Grenade') {
+      rawOpts = getAllParts().filter(weaponPearlElemPartMatch)
+        .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+    } else if (schemaItem && (schemaItem.customType === 'grenadePearlStat' || schemaItem.key === 'pearlStat') && category === 'Grenade') {
+      rawOpts = getAllParts().filter(weaponPearlStatPartMatch)
+        .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else if (schemaItem && schemaItem.customType === 'repkitBase') {
       const man = String(state.manufacturer || '').trim().toLowerCase();
       const spawn = stxRepkitSpawnPrefixForUiManufacturer(man);
@@ -6794,37 +6834,70 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
 
       if (isItemBodyFamilySlot && state.manufacturer){
         const manLo = String(state.manufacturer || '').trim().toLowerCase();
+        const wtBody = String(state.weaponType || '').trim();
         rawOpts = rawOpts.filter((p)=>{
           const c = String(normCode(p && p.code || '') || '').toLowerCase();
           if (category === 'Weapon') {
             if (slotKeySimple === 'body') {
               /* Strict: only the body for this manufacturer + weapon type (e.g. jak_ar.part_body). */
-              if (!String(state.weaponType || '').trim()) return false;
-              return stxIsWeaponNaturalBodyPoolRowCode(c, manLo, state.weaponType);
+              if (!wtBody) return false;
+              return stxIsWeaponNaturalBodyPoolRowCode(c, manLo, wtBody);
             }
             return stxWeaponRowMatchesSelectedManufacturer(c, manLo, state.weaponType);
           }
           if (category === 'Shield') return stxShieldGadgetRowMatchesSelectedManufacturer(c, manLo);
-          if (category === 'Grenade') return stxGrenadeGadgetRowMatchesSelectedManufacturer(c, manLo);
+          if (category === 'Grenade') {
+            if (slotKeySimple === 'body') return stxIsGrenadeBodyPoolRowCode(c) && stxGrenadeGadgetRowMatchesSelectedManufacturer(c, manLo);
+            return stxGrenadeGadgetRowMatchesSelectedManufacturer(c, manLo);
+          }
           if (category === 'Enhancement') return stxEnhancementGadgetRowMatchesSelectedManufacturer(c, manLo);
           return true;
         });
         /* Body: partType filter can miss the natural body — rescue from full parts pool. */
-        if (category === 'Weapon' && slotKeySimple === 'body' && (!rawOpts || !rawOpts.length) && String(state.weaponType || '').trim()) {
+        if (category === 'Weapon' && slotKeySimple === 'body' && (!rawOpts || !rawOpts.length) && wtBody) {
           const rescued = [];
           const seenTok = Object.create(null);
           const allP = (typeof getAllParts === 'function') ? getAllParts() : (Array.isArray(window.PARTS) ? window.PARTS : []);
-          for (let ri = 0; ri < allP.length; ri++) {
-            const rp = allP[ri];
-            if (!rp) continue;
-            const rc = String(normCode(rp.code || '') || '').toLowerCase();
-            if (!stxIsWeaponNaturalBodyPoolRowCode(rc, manLo, state.weaponType)) continue;
-            const tok = String((rp.idRaw != null ? rp.idRaw : rp.id) || rc);
-            if (seenTok[tok]) continue;
-            seenTok[tok] = true;
-            rescued.push(rp);
+          const pushRescue = (pred)=>{
+            for (let ri = 0; ri < allP.length; ri++) {
+              const rp = allP[ri];
+              if (!rp) continue;
+              const rc = String(normCode(rp.code || '') || '').toLowerCase();
+              if (!pred(rc, rp)) continue;
+              const tok = String((rp.idRaw != null ? rp.idRaw : rp.id) || rc);
+              if (seenTok[tok]) continue;
+              seenTok[tok] = true;
+              rescued.push(rp);
+            }
+          };
+          pushRescue((rc) => stxIsWeaponNaturalBodyPoolRowCode(rc, manLo, wtBody));
+          /* Dataset gaps: some mfr/type combos lack `*.part_body` but still have letter Body rows. */
+          if (!rescued.length) {
+            pushRescue((rc, rp) => {
+              if (stxIsWeaponBodySlotFallbackRowCode(rc, manLo, wtBody)) return true;
+              const pt = String(rp.partType || '').trim().toLowerCase();
+              return pt === 'body' && stxWeaponRowMatchesSelectedManufacturer(rc, manLo, wtBody)
+                && !/part_body_(?:bolt|flap|ele|mag)/.test(rc);
+            });
           }
           if (rescued.length) rawOpts = rescued.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+        }
+        if (category === 'Grenade' && slotKeySimple === 'body' && (!rawOpts || !rawOpts.length)) {
+          const rescuedG = [];
+          const seenG = Object.create(null);
+          const allG = (typeof getAllParts === 'function') ? getAllParts() : [];
+          for (let gi = 0; gi < allG.length; gi++) {
+            const gp = allG[gi];
+            if (!gp) continue;
+            const gc = String(normCode(gp.code || '') || '').toLowerCase();
+            if (!stxIsGrenadeBodyPoolRowCode(gc)) continue;
+            if (!stxGrenadeGadgetRowMatchesSelectedManufacturer(gc, manLo)) continue;
+            const tok = String((gp.idRaw != null ? gp.idRaw : gp.id) || gc);
+            if (seenG[tok]) continue;
+            seenG[tok] = true;
+            rescuedG.push(gp);
+          }
+          if (rescuedG.length) rawOpts = rescuedG.sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
         }
       }
 
@@ -7651,6 +7724,13 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       ubHint.style.lineHeight = '1.4';
       ubHint.textContent = STX_UNDERBARREL_SLOT_HINT;
       slot.appendChild(ubHint);
+    } else if ((category === 'Weapon' || category === 'Gadget') && schemaItem.key === 'underbarrelAccVis') {
+      const ubvHint = document.createElement('div');
+      ubvHint.className = 'muted small';
+      ubvHint.style.margin = '-4px 0 8px';
+      ubvHint.style.lineHeight = '1.4';
+      ubvHint.textContent = STX_UNDERBARREL_VISUAL_HINT;
+      slot.appendChild(ubvHint);
     }
 
     if (useTickPicker){
@@ -8540,6 +8620,21 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     for (let i = 0; i < n; i++) all[i].__idx = i;
     __allPartsIdxStamp = n;
   }
+
+  function stxRefreshBuilderAfterDatasetGrowth(){
+    try { stxInvalidateSimpleBuilderPartCaches(); } catch (_e) {}
+    try { ensureAllPartsIndexed(); } catch (_e) {}
+    try {
+      if (typeof refreshTopSelectors === 'function') refreshTopSelectors();
+    } catch (_e) {}
+    try {
+      if (typeof invokeRefreshMainPart === 'function') invokeRefreshMainPart(true);
+      else if (typeof refreshMainPart === 'function') refreshMainPart();
+    } catch (_e) {}
+    try {
+      if (state && state.mainPart && typeof refreshBuilder === 'function') refreshBuilder();
+    } catch (_e) {}
+  }
   function refreshBuilder(){
     const gen = ++__refreshBuilderGen;
 
@@ -9030,7 +9125,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           if (p && !seen.has(p)) { out.push(p); seen.add(p); }
         }
       }
-      const grenadeEmitOrder = ['element', 'payload', 'augment', 'grenadeKitStats', 'special', 'firmware', 'otherParts'];
+      const grenadeEmitOrder = ['element', 'payload', 'augment', 'grenadeKitStats', 'firmware', 'special', 'pearlElem', 'pearlStat', 'otherParts'];
       const gEmitted = new Set(['body']);
       for (const k of grenadeEmitOrder){
         gEmitted.add(k);
@@ -11250,6 +11345,64 @@ function computeFullDeserializedCode(){
     }catch(_){}
   }
 
+  /**
+   * Clear every visible generated-code surface when starting a new item
+   * (item type / manufacturer / weapon type). Simple used to only clear its
+   * own boxes later via idle refreshOutputs, leaving Guided + floating stale.
+   */
+  function clearAllGeneratedCodeForNewItem(opts){
+    opts = opts || {};
+    if (window.__CC_IMPORT_IN_PROGRESS && !opts.force) return;
+    try { clearImportedOutputLock(); } catch (_) {}
+    try { if (typeof window.clearGuidedImportLock === 'function') window.clearGuidedImportLock(); } catch (_) {}
+
+    try {
+      if ($('outCode')) $('outCode').value = '';
+      if ($('outCodeB85')) $('outCodeB85').value = '';
+      if ($('outList')) $('outList').value = '';
+      if ($('outJson')) $('outJson').value = '';
+    } catch (_) {}
+    try {
+      if (window.__stxB85RefreshTimer) {
+        clearTimeout(window.__stxB85RefreshTimer);
+        window.__stxB85RefreshTimer = 0;
+      }
+    } catch (_) {}
+
+    try {
+      const guidedDeser = document.getElementById('guidedOutputDeserialized');
+      const guidedSerial = document.getElementById('guidedOutputSerial');
+      if (guidedDeser) {
+        guidedDeser.__ccUserTailEdit = false;
+        guidedDeser.__ccImportedValue = null;
+        guidedDeser.value = '';
+      }
+      if (guidedSerial) {
+        guidedSerial.__ccImportedValue = null;
+        guidedSerial.value = '';
+      }
+    } catch (_) {}
+
+    if (opts.clearImportBox) {
+      try { if ($('importBox')) $('importBox').value = ''; } catch (_) {}
+    }
+
+    try {
+      if (opts.source === 'simple') window.__CC_LAST_CODE_TARGET = 'simple';
+      else if (opts.source === 'guided') window.__CC_LAST_CODE_TARGET = 'guided';
+    } catch (_) {}
+
+    try {
+      if (typeof window.resetFloatingOutputMirror === 'function') {
+        window.resetFloatingOutputMirror(true);
+      } else if (typeof window.syncFloatingOutput === 'function') {
+        window.syncFloatingOutput(true);
+      }
+    } catch (_) {}
+    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+  }
+  try { window.clearAllGeneratedCodeForNewItem = clearAllGeneratedCodeForNewItem; } catch (_) {}
+
   /** Parse optional `9, 1|` / `10, 1|` header segments (before `||`, after level). */
   function stxParseHeaderModifierFlags(headStr) {
     const out = { lockFirmware: false, buybackFlag: false };
@@ -11407,13 +11560,12 @@ function resetAll(){
     if ($('camoSelect')) $('camoSelect').value = '';
     state.mainPart = null;
     clearBuilderState();
-    if ($('importBox')) $('importBox').value = '';
-    try{ if ($('outCode')) $('outCode').value=''; if ($('outList')) $('outList').value=''; if ($('outJson')) $('outJson').value=''; }catch(_){ }
+    clearAllGeneratedCodeForNewItem({ source: 'simple', clearImportBox: true, force: true });
     refreshTopSelectors();
     $('builder').innerHTML = '';
     $('builderEmpty').style.display = '';
     $('detectedCat').textContent = '-';
-    refreshOutputs();
+    refreshOutputs(true);
   }
 
   function clearParts(){
@@ -12819,6 +12971,8 @@ function resetAll(){
           const c = String(normCode(p && p.code) || '').toLowerCase();
           if (/grenade_gadget\.part_stat_/.test(c)) return slotByKey.get('grenadeKitStats') || null;
           if (stxIsGrenadeBodyPoolRowCode(c)) return slotByKey.get('body') || null;
+          if (weaponPearlElemPartMatch(p)) return slotByKey.get('pearlElem') || null;
+          if (weaponPearlStatPartMatch(p)) return slotByKey.get('pearlStat') || null;
           return null;
         };
         for (const p of partsLeft){
@@ -13010,6 +13164,8 @@ function resetAll(){
       const itPick = stxNormalizeSimpleBuilderItemTypeUi(String($('itemType').value || '').trim());
       if (itPick === 'Weapon' && stxWeaponTypeIsHeavyLabel(state.weaponType)) state.weaponType = '';
       clearBuilderState(false);
+      clearAllGeneratedCodeForNewItem({ source: 'simple' });
+      try { refreshOutputs(true); } catch (_e) {}
       refreshManufacturer();
       refreshWeaponType();
       refreshRarity();
@@ -13020,6 +13176,8 @@ function resetAll(){
       clearImportedOutputLock();
       state.manufacturer = $('manufacturer').value || '';
       clearBuilderState(false);
+      clearAllGeneratedCodeForNewItem({ source: 'simple' });
+      try { refreshOutputs(true); } catch (_e) {}
       try { stxSyncCustomSelectIfWrapped($('manufacturer')); } catch (_e) {}
       refreshWeaponType();
       refreshRarity();
@@ -13033,6 +13191,8 @@ function resetAll(){
       state.weaponType = $('weaponType').value || '';
       if (state.weaponType === 'Heavy') state.weaponType = 'Heavy Weapon';
       clearBuilderState(true);
+      clearAllGeneratedCodeForNewItem({ source: 'simple' });
+      try { refreshOutputs(true); } catch (_e) {}
       // Weapon type does not change the manufacturer list; keep it stable to avoid empty/invalid states.
       refreshManufacturer();
       refreshRarity();
@@ -13487,6 +13647,7 @@ function resetAll(){
       }
       const refreshAfterDeferred = () => {
         try { updateSimplePresets(); } catch (_) {}
+        try { stxRefreshBuilderAfterDatasetGrowth(); } catch (_) {}
       };
       window.addEventListener('stx:deferred-core-ready', refreshAfterDeferred);
       window.addEventListener('stx:full-scripts-ready', refreshAfterDeferred);
@@ -13640,6 +13801,21 @@ function resetAll(){
     }
     wireEvents();
     exposeBuilderApi();
+    try {
+      if (!window.__stxSimpleDatasetGrowthHooked) {
+        window.__stxSimpleDatasetGrowthHooked = true;
+        const onDatasetGrowth = () => {
+          try { stxRefreshBuilderAfterDatasetGrowth(); } catch (_e) {}
+        };
+        window.addEventListener('stx:deferred-core-ready', onDatasetGrowth);
+        window.addEventListener('stx:full-scripts-ready', onDatasetGrowth);
+        /* Deferred may have finished before Simple finished booting — refresh once if parts already grew. */
+        try {
+          const n = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS && window.STX_DATASET.ALL_PARTS.length) || 0;
+          if (n && window.__stxDeferredCoreReady) onDatasetGrowth();
+        } catch (_e) {}
+      }
+    } catch (_e) {}
     try {
       window.__stxBuilderInteractive = true;
       window.dispatchEvent(new CustomEvent('stx:builder-interactive'));

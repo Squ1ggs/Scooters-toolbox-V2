@@ -12,7 +12,7 @@
     './assets/data/stx_rarities_community_pearl_patch.js',
     './assets/data/stx_rarities_supplement_patch.js',
     './assets/data/legacy_classmod_names.js',
-    './assets/js/stx-simple-builder-core.js',
+    './assets/js/stx-simple-builder-core.js?v=77j',
     './assets/js/cc-custom-select-rebuild.js'
   ];
 
@@ -26,7 +26,7 @@
     './assets/js/tag-comp-validation.js',
     './assets/data/part_ref_meta.js',
     './assets/data/source_paths_data.js',
-    './assets/data/loot_reference_data.js',
+    /* loot_reference_data.js (~1.6MB) loads lazily via __ccEnsureLootReferenceData / idle preload */
     './assets/js/cc-itempool-drop-check.js',
     './assets/data/skin_data.js',
     './assets/data/modded_preset_catalog.js',
@@ -40,7 +40,7 @@
 
   var GUIDED_SCRIPTS = [
     './legacy/ncs_slot_map.js',
-    './assets/js/cc-item-slug.js',
+    './assets/js/cc-item-slug.js?v=77j',
     './assets/js/cc-guided-builder-rebuild.js',
     './assets/js/stx-editor-smoke-guards.js'
   ];
@@ -49,7 +49,7 @@
     './assets/js/cc-classmod-checklist-rebuild.js',
     './assets/js/cc-enhancement-checklist-rebuild.js',
     './assets/js/cc-adv-search-stable.js',
-    './assets/js/cc-build-stats-rebuild.js',
+    './assets/js/cc-build-stats-rebuild.js?v=77j',
     './assets/vendor/cryptojs-inline.js',
     './assets/vendor/pako-inline.js',
     './assets/vendor/jsyaml-inline.js',
@@ -70,7 +70,7 @@
     './assets/js/cc-preset-rebuild.js',
     './assets/js/cc-part-tooltip-rebuild.js',
     './assets/js/cc-part-dropdown-meta-rebuild.js',
-    './assets/js/rebuild-presets-random.js',
+    './assets/js/rebuild-presets-random.js?v=77m',
     './assets/js/cc-tool-nav-buttons.js',
     './assets/js/rebuild-credits-eggs.js',
     './assets/js/cc-toolbox-analytics.js',
@@ -127,6 +127,7 @@
   function ensureDeferredCore() {
     if (deferredCorePromise) return deferredCorePromise;
     deferredCorePromise = loadScriptList(DEFERRED_CORE_SCRIPTS).then(function () {
+      try { window.__stxDeferredCoreReady = true; } catch (_) {}
       try { window.dispatchEvent(new CustomEvent('stx:deferred-core-ready')); } catch (_) {}
     });
     return deferredCorePromise;
@@ -227,7 +228,7 @@
   function armFullScriptIdleLoad() {
     var run = function () { ensureFullScripts(); };
     var arm = function () {
-      /* Prefix/Godroll panels are open by default — don't wait 18s before their scripts. */
+      /* Full scripts still idle-load after splash; Prefix/Godroll only arm early when opened. */
       if (typeof window.stxScheduleIdle === 'function') {
         window.stxScheduleIdle(run, 2200);
       } else {
@@ -251,15 +252,21 @@
         yieldMain(function () { ensureFullScripts(); });
       };
       for (var i = 0; i < ids.length; i++) {
-        var el = document.getElementById(ids[i]);
-        if (!el || el.__stxFullScriptArm) continue;
-        el.__stxFullScriptArm = true;
-        el.addEventListener('pointerdown', arm, { once: true, passive: true });
-        el.addEventListener('focusin', arm, { once: true });
-        if (el.open) {
-          /* Open by default — kick full scripts soon after splash/core. */
-          setTimeout(arm, 900);
-        }
+        (function (el) {
+          if (!el || el.__stxFullScriptArm) return;
+          el.__stxFullScriptArm = true;
+          el.addEventListener('pointerdown', arm, { once: true, passive: true });
+          el.addEventListener('focusin', arm, { once: true });
+          if (el.tagName === 'DETAILS') {
+            el.addEventListener('toggle', function () {
+              if (el.open) arm();
+            });
+          }
+          /* Panels start collapsed — only arm early if a user left them open. */
+          if (el.open) {
+            setTimeout(arm, 900);
+          }
+        })(document.getElementById(ids[i]));
       }
     }
     if (document.readyState === 'loading') {

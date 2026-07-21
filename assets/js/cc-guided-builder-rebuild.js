@@ -4546,13 +4546,15 @@
     ],
     Grenade: [
       { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccGrenadeRaritySelect', btnId: 'ccGrenadeRarityAdd' },
-      { key: 'body', label: 'Base', partType: 'Base', selectId: 'ccGrenadeBodySelect', btnId: 'ccGrenadeBodyAdd' },
+      { key: 'body', label: 'Body', partType: 'Base', selectId: 'ccGrenadeBodySelect', btnId: 'ccGrenadeBodyAdd' },
       { key: 'element', label: 'Element', partType: 'Element', selectId: 'ccGrenadeElementSelect', btnId: 'ccGrenadeElementAdd' },
       { key: 'payload', label: 'Payload', partType: 'Payload', selectId: 'ccGrenadePayloadSelect', btnId: 'ccGrenadePayloadAdd' },
-      { key: 'augment', label: 'Augment', partType: 'Augment', selectId: 'ccGrenadeAugmentSelect', btnId: 'ccGrenadeAugmentAdd' },
-      { key: 'grenadeKitStats', label: 'Grenade stat parts', partType: '__grenadeKitStats', selectId: 'ccGrenadeKitStatsSelect', btnId: 'ccGrenadeKitStatsAdd' },
-      { key: 'special', label: 'Special / Unique', partType: '', selectId: 'ccGrenadeSpecialSelect', btnId: 'ccGrenadeSpecialAdd' },
-      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccGrenadeFirmwareSelect', btnId: 'ccGrenadeFirmwareAdd' }
+      { key: 'augment', label: 'Payload Augment', partType: 'Augment', selectId: 'ccGrenadeAugmentSelect', btnId: 'ccGrenadeAugmentAdd' },
+      { key: 'grenadeKitStats', label: 'Stat Augment', partType: '__grenadeKitStats', selectId: 'ccGrenadeKitStatsSelect', btnId: 'ccGrenadeKitStatsAdd' },
+      { key: 'firmware', label: 'Firmware', partType: 'Firmware', selectId: 'ccGrenadeFirmwareSelect', btnId: 'ccGrenadeFirmwareAdd' },
+      { key: 'special', label: 'Endgame / Unique', partType: '', selectId: 'ccGrenadeSpecialSelect', btnId: 'ccGrenadeSpecialAdd' },
+      { key: 'pearlElem', label: 'Pearl Element', partType: '', selectId: 'ccGrenadePearlElemSelect', btnId: 'ccGrenadePearlElemAdd', pearlElemPick: true, hideWhenEmpty: true },
+      { key: 'pearlStat', label: 'Pearl Stat', partType: '', selectId: 'ccGrenadePearlStatSelect', btnId: 'ccGrenadePearlStatAdd', pearlStatPick: true, hideWhenEmpty: true }
     ],
     Repkit: [
       { key: 'rarity', label: 'Rarity ID', partType: 'Rarity', selectId: 'ccRepkitRaritySelect', btnId: 'ccRepkitRarityAdd' },
@@ -4690,6 +4692,24 @@
           filtered.push(pgk);
         }
         filtered = sortGuidedPartsByCode(filtered);
+      } else if (category === 'Grenade' && (slot.key === 'pearlElem' || slot.pearlElemPick)) {
+        filtered = [];
+        var matchPe = typeof window.weaponPearlElemPartMatch === 'function' ? window.weaponPearlElemPartMatch : null;
+        var allPe = getAllParts();
+        for (var pei = 0; pei < allPe.length; pei++) {
+          var pep = allPe[pei];
+          if (pep && matchPe && matchPe(pep)) filtered.push(pep);
+        }
+        filtered = sortGuidedPartsByCode(filtered);
+      } else if (category === 'Grenade' && (slot.key === 'pearlStat' || slot.pearlStatPick)) {
+        filtered = [];
+        var matchPs = typeof window.weaponPearlStatPartMatch === 'function' ? window.weaponPearlStatPartMatch : null;
+        var allPs = getAllParts();
+        for (var psi = 0; psi < allPs.length; psi++) {
+          var psp = allPs[psi];
+          if (psp && matchPs && matchPs(psp)) filtered.push(psp);
+        }
+        filtered = sortGuidedPartsByCode(filtered);
       } else if (useSimpleFilter) {
         var ptSlot = String(slot.partType || '');
         if (ptSlot === '__grenadeVariant' || ptSlot === '__grenadeKitStats') ptSlot = '';
@@ -4782,6 +4802,10 @@
       }
       var fgc = (filtered && filtered.length) ? filtered.length : 0;
       applyGuidedBodySlotRowVisibility(sel, category, slot.key, fgc);
+      if (slot.hideWhenEmpty) {
+        var hideRow = getGuidedSlotGridRow(sel);
+        if (hideRow) hideRow.style.display = fgc ? '' : 'none';
+      }
     }
     try {
       if (typeof window.__ccBootGuidedSlotSelects === 'function') window.__ccBootGuidedSlotSelects();
@@ -5250,16 +5274,34 @@
     function clearCodeSectionsForNewItem() {
       var out = byId('guidedOutputDeserialized');
       var outSerial = byId('guidedOutputSerial');
-      
+
       // If we have an imported value, don't clear it
       if (out && out.__ccImportedValue && out.value === out.__ccImportedValue) {
          return;
       }
-      if (out) out.__ccUserTailEdit = false;
-      
-      if (out) out.value = '';
-      if (outSerial) outSerial.value = '';
-      
+
+      if (typeof window.clearAllGeneratedCodeForNewItem === 'function') {
+        window.clearAllGeneratedCodeForNewItem({ source: 'guided' });
+      } else {
+        if (out) out.__ccUserTailEdit = false;
+        if (out) out.value = '';
+        if (outSerial) outSerial.value = '';
+        try {
+          var oc = byId('outCode');
+          var ocb = byId('outCodeB85');
+          var ol = byId('outList');
+          var oj = byId('outJson');
+          if (oc) oc.value = '';
+          if (ocb) ocb.value = '';
+          if (ol) ol.value = '';
+          if (oj) oj.value = '';
+        } catch (_) {}
+        try {
+          if (typeof window.resetFloatingOutputMirror === 'function') window.resetFloatingOutputMirror(true);
+          else if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
+        } catch (_) {}
+      }
+
       // Ensure state is ready for prefix computation
       if (typeof syncGuidedToSimple === 'function') syncGuidedToSimple();
 
@@ -5276,6 +5318,8 @@
         }
       }
       try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
     }
     function onItemTypeChange() {
       if (window.__CC_IMPORT_IN_PROGRESS) return;

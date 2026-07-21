@@ -406,7 +406,7 @@ aside li { margin-bottom: 6px; }
 <div class="header-main">
 <h1 class="header-title">Bulk serial validator</h1>
 <p>
-      Paste <code>@U</code> Base85 serials or <strong>deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). That text is not the same bytes as WASM <code>@U</code>; the decoder iframe parses it when WASM cannot. YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
+      Paste <code>@U</code> Base85 serials or <strong>deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). Deserialized text is normalized on this page and decoded with the same inline WASM path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe). YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
       then checked with the same <strong>data-backed</strong> rules as <a href='../legacy/legit-builder.html' rel='noopener noreferrer' target='_blank'>Legit Builder</a>
       (manifest, NCS, <strong>inv composition tags</strong> from <code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>, loot schedules, weights, source tables, stats coverage). Parts not on the manifest loot-pool export are listed as <strong>FYI</strong> only (rewards/vendors/quests are still valid). Drop hints use <code>SOURCE_PATHS_DATA</code> when applicable.
     </p>
@@ -569,38 +569,44 @@ Keep duplicate lines</label>
 <button class="btn" id="bv-export-csv" type="button">Export CSV</button>
 <button class="btn" id="bv-export-md" type="button">Export Markdown summary</button>
 </div>
+<div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center;">
+<button class="btn btn--brand" id="bv-export-legit-txt" title="One @U / serial per line — only OK (data) rows. Safe list for legit-only save inject." type="button">Export OK / legit serials (.txt)</button>
+<button class="btn" id="bv-export-modded-txt" title="One serial per line — everything that is not OK (data): Fail, Uncertain, decode/manifest issues. Use to filter slightly modded loot out of save adds." type="button">Export non-OK / modded serials (.txt)</button>
+<button class="btn" id="bv-export-fail-txt" title="One serial per line — Fail (data) composition hard-fails only (excludes Uncertain)." type="button">Export Fail only (.txt)</button>
+<button class="btn" id="bv-export-ok-drop-modded-txt" title="OK (data) composition but Drop hint is Modded — off shiny pool / editor-looking. Filter these out for strict drop-table saves." type="button">Export OK+drop Modded (.txt)</button>
+<button class="btn btn--brand" id="bv-export-ok-drop-clean-txt" title="OK (data) and Drop hint is not Modded — composition pass + has a shiny/pool path hint." type="button">Export OK + pool hint (.txt)</button>
+</div>
 <div class="row" style="align-items:center;gap:10px;flex-wrap:wrap;">
-<div class="bv-status" id="bv-status">Idle. <strong>Bulk cheat-audit</strong>: composition rules (inv tags, raw serial graph, weights, elements) decide Fail (data); missing spawn-table rows and slot-map gaps do not mark uncertain. Item level applies when the serial has no level.</div>
+<div class="bv-status" id="bv-status">Idle. <strong>Natural legitimacy</strong>: OK means the serial can occur in-game (strict slot-map + inv tags + elements/pearl/frame + weights/schedule). Parts outside the item map, unique/licensed conflicts, 0% weight, or below MinGameStage → Fail. Soft uni_/leg_ dep gaps alone stay FYI.</div>
 <span class="bv-inv-tag-badge" id="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
 </div>
 </div>
 <aside class="panel panel--bv-aside">
 <div class="panel__title">How it works</div>
 <ul>
-<li><strong>Decode</strong>: Same-page WASM + shared decode path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe).</li>
-<li><strong>Inv tags</strong>: Rolling tag pool from comp basetags/addtags, then each part’s dependencytags, exclusiontags, and comp allowlists — same rules as <a href="../legacy/legit-builder.html">Legit Builder</a>. Missing deps or exclusion conflicts → <strong>Fail (data)</strong>. Raw serial tokens also feed a parallel graph check when slot mapping is ambiguous.</li>
-<li><strong>Bulk strict inv</strong>: Same inv <strong>exclusion</strong> chain, comp <strong>slot counts</strong> (min/max), and <strong>comp allowlist</strong> checks as interactive Legit Builder (a part not in the dump’s allowed list for that comp slot → <strong>Fail (data)</strong>). Soft dependencytag gaps stay FYI. NCS “wrong slot” / schedule level / 0% weight remain FYI here, not Fail.</li>
-<li><strong>Loot-pool FYI</strong>: <code>off_pool_*</code> rows are reported for visibility only. They do not hard-fail by themselves.</li>
-<li><strong>Drops</strong>: <code>cc-itempool-drop-check.js</code> (legendary shiny pool path).</li>
-<li><strong>Chunked</strong>: Batches of 32; falls back per-serial if a batch times out.</li>
-<li><strong>Per-part clarity</strong>: Legit Builder shows a <em>Selected parts</em> table (drop pool vs inv-tag columns). Here, <strong>Notes</strong> lists real failure lines (inv tag graph, weights, NCS, etc.) — not the footer stats block.</li>
-<li><strong>Export</strong>: JSON report (KPI + histogram + flat rows), <strong>CSV</strong> (includes <code>off_pool_summary</code>), or <strong>Markdown summary</strong> for pasting. Check “Export only rows matching…” to export e.g. uncertain-only after choosing the filter.</li>
-<li><strong>Alignment flags</strong> (<code>align_*</code>): Extra booleans + <code>alignment_summary</code> / <code>alignment_definitions</code> in JSON for comparing row buckets in the same export (e.g. OK vs not Fail vs mapped-only).</li>
+<li><strong>Decode</strong>: Serials are decoded in this page (same engine as the bulk decoder). Paste <code>@U…</code> lines or deserialized forms.</li>
+<li><strong>OK (data)</strong>: Composition looks naturally possible under our balance rules — close to save-editor.be’s Balance <em>Pass</em>. Not a promise that a specific boss dropped this exact roll. Quest/vendor/mail gear can still be OK even if Drop hint is empty.</li>
+<li><strong>Fail / Balance Fail (Modded)</strong>: Hard problems such as <em>wrong-root weapon parts</em> (e.g. Ripper parts on a Maliwan gun), <em>exact duplicate</em> part keys in a slot, inv <em>exclusion</em> clashes (incl. unique/licensed), <em>over-max</em> slot counts, element/pearl/frame conflicts, and clear NCS base-map breaches. Shared ClassMod / Shield / Grenade / Enhancement / Weapon pools are allowed.</li>
+<li><strong>FYI (does not Fail by itself)</strong>: Soft <code>uni_</code>/<code>leg_</code> and most other dependency gaps (only missing <code>licensed</code>/<code>unique</code> hard-fail), NCS part-order noise, loot weight 0%, MinGameStage, under-min slot counts, barrel_01/02 structure tags, and most “not in our option list” gaps. Those may still show in Notes.</li>
+<li><strong>Drop hint</strong>: Legendary shiny / pool path hint. <strong>Modded</strong> here is visibility only — it does not flip OK→Fail. Use KPI <em>OK + drop Modded</em> when you want editor/off-pool gear that still passes composition.</li>
+<li><strong>Notes</strong>: Actionable failure lines (exclusions, duplicates, wrong-root, etc.), not the footer stats block.</li>
+<li><strong>Export</strong>: JSON / CSV / Markdown summaries, plus quick lists: OK only, non-OK, Fail only, or OK+drop Modded. Optional “export only rows matching filter.”</li>
 </ul>
-<p class="small" style="margin-top:12px;">Decoder scripts load from <code>assets/js</code> + <code>assets/wasm</code>; keep the project folder layout when hosting.</p>
 </aside>
 <div class="panel panel--bv-summary" style="grid-column: 1 / -1;">
 <div class="panel__title">Summary</div>
-<p class="small muted" style="margin:0 0 12px;line-height:1.45;">Rows use the same <strong>inv composition tag</strong> checks as Legit Builder. Use <strong>Notes</strong> for tag failures (<code>Inv tags:</code> …), weight/NCS lines, and other data-rule messages.</p>
+<p class="small muted" style="margin:0 0 12px;line-height:1.45;">Use <strong>Notes</strong> for the real fail reasons (exclusions, duplicates, wrong-root, etc.). Drop hint is separate from OK/Fail.</p>
 <div class="kpis">
 <div class="kpi" title="Rows in the table for this run (unique serial strings after default dedupe)."><span>Serials <strong id="k-total">0</strong></span></div>
 <div class="kpi" title="Input lines with the same serial text collapsed into one row when deduping. — when Keep duplicate lines is on."><span>Dup lines merged <strong id="k-dup-merged">0</strong></span></div>
 <div class="kpi" title="WASM decode succeeded."><span>Decoded OK <strong id="k-decoded">0</strong></span></div>
-<div class="kpi" title="Passed composition + cheat-audit gates."><span>OK (data) <strong id="k-ok">0</strong></span></div>
-<div class="kpi" title="Not OK and not hard-fail (warn / unmapped without clean raw pass, etc.)."><span>Uncertain <strong id="k-warn">0</strong></span></div>
+<div class="kpi" title="Passed composition / balance gates."><span>OK (data) <strong id="k-ok">0</strong></span></div>
+<div class="kpi" title="Not OK and not hard-fail (warn / unmapped without Fail, etc.)."><span>Uncertain <strong id="k-warn">0</strong></span></div>
 <div class="kpi" title="Could not parse serial."><span>Decode failed <strong id="k-decode-fail">0</strong></span></div>
-<div class="kpi" title="Decoded but item type not on manifest."><span>No manifest <strong id="k-nomanifest">0</strong></span></div>
-<div class="kpi" title="Composition / weight / element / NCS hard-fail."><span>Fail (data) <strong id="k-legit-err">0</strong></span></div>
+<div class="kpi" title="Decoded but item type not recognized."><span>No manifest <strong id="k-nomanifest">0</strong></span></div>
+<div class="kpi" title="Composition hard-fail (wrong-root, duplicates, exclusions, over-max, elements/pearl/frame, etc.)."><span>Fail (data) <strong id="k-legit-err">0</strong></span></div>
+<div class="kpi" title="Drop hint column says Modded (no legendary shiny pool row). Separate from Fail (data) — composition can still be OK."><span>Drop hint Modded <strong id="k-drop-modded">0</strong></span></div>
+<div class="kpi" title="OK (data) composition but Drop hint is Modded (off shiny pool / not in SOURCE_PATHS)."><span>OK + drop Modded <strong id="k-ok-drop-modded">0</strong></span></div>
 </div>
 <p class="small muted" id="k-reconcile" style="margin:10px 0 0;line-height:1.5;" title="Each serial is counted in exactly one bucket."></p>
 <details class="bv-kpi-key" style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid var(--line-soft);">
@@ -613,23 +619,27 @@ Keep duplicate lines</label>
 <dt><strong>Decoded OK</strong></dt>
 <dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn’t be parsed.</dd>
 <dt><strong>OK (data)</strong></dt>
-<dd>Decoded + manifest item found + slot map matched + passes all checks (inv tags, schedules, sources). Strict pass.</dd>
+<dd>Balance / natural composition pass (wrong-root, duplicates, exclusions, over-max, etc. clear). Soft FYI lines may still appear in Notes. Not a guarantee of a specific boss drop.</dd>
 <dt><strong>Uncertain</strong></dt>
-<dd>Decoded but not strict OK: usually <strong>no NCS→manifest slot map</strong> (shows “Uncertain (no slot map)”), or <strong>warnings</strong> from schedules/weights/inv tags (Legit column shows a warn state). The line under the tiles sums buckets so OK + Uncertain + failures = Serials.</dd>
+<dd>Decoded but not a clear OK or Fail — often unmapped without a hard critical rule, or warn-state only.</dd>
 <dt><strong>Decode failed</strong></dt>
-<dd>WASM couldn’t decode (bad Base85, corrupted, or unknown format).</dd>
+<dd>Couldn’t decode — see Notes for the error (corrupt/truncated/@U). Filter “Failures” to find them.</dd>
 <dt><strong>No manifest</strong></dt>
-<dd>Decoded but manufacturer/item type don’t match any known manifest item.</dd>
+<dd>Decoded but manufacturer/item type don’t match any known item type we validate.</dd>
 <dt><strong>Fail (data)</strong></dt>
-<dd>Decoded + manifest + mapped but validation failed (inv tags wrong, off loot schedule, etc.). See Notes.</dd>
+<dd>Hard composition fail — often labeled <strong>Balance Fail (Modded)</strong> with buckets (Critical Rules, Tag Exclusion, …). Includes wrong-root weapon parts, exact duplicates, exclusion clashes, over-max stacks, element/pearl/frame issues.</dd>
+<dt><strong>Drop hint Modded</strong></dt>
+<dd>No legendary shiny / pool path hint. Common for quests, vendors, mail, or editor items. <strong>Does not by itself change OK/Fail.</strong></dd>
+<dt><strong>OK + drop Modded</strong></dt>
+<dd>Passed composition (OK) but Drop hint is Modded — useful when filtering editor/off-pool gear that still passes balance checks.</dd>
 </dl>
 </details>
 <div class="row" style="margin-top:14px;">
 <label>Show <select id="bv-filter" name="bv-filter">
 <option value="all">All rows</option>
-<option value="ok">OK (data) only</option>
+<option value="ok">OK / legit only</option>
 <option value="warn">Uncertain only</option>
-<option value="err">Failures only</option>
+<option value="err">Failures / modded only</option>
 </select></label>
 <button class="btn" id="bv-prev" type="button">Previous page</button>
 <button class="btn" id="bv-next" type="button">Next page</button>
@@ -672,11 +682,11 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="data/stx_raid2_supplement.js"></script>
 <script src="data/part_display_overrides.js"></script>
 <script src="data/part_ref_meta.js"></script>
-<script src="js/stx-bulk-decoder-main.js"></script>
+<script src="js/stx-bulk-decoder-main.js?v=77n"></script>
 <script src="js/stx-bulk-decoder-patch-parts-lookup.js"></script>
 <script src="js/stx-bulk-decoder-patch-dataset.js"></script>
 <script src="js/stx-bulk-decoder-patch-classmod-aliases.js"></script>
-<script src="js/stx-bulk-decoder-patch-gap-fill.js"></script>
+<script src="js/stx-bulk-decoder-patch-gap-fill.js?v=77e"></script>
 <script src="js/stx-decode-bridge-shared.js"></script>
 <script src="../legacy/bl4_manifest.js"></script>
 <script src="../legacy/ncs_extra.js"></script>
@@ -694,18 +704,19 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="data/stx_rarities_community_pearl_patch.js"></script>
 <script src="data/stx_rarities_supplement_patch.js"></script>
 <script src="data/classmod_manifest_items.js"></script>
-<script src="js/cc-item-slug.js"></script>
+<script src="js/cc-item-slug.js?v=77j"></script>
 <script src="js/tag-comp-validation.js"></script>
 <script src="data/inv_comp_tag_data.js"></script>
+<script src="data/inv_comp_slot_rules.js?v=77e"></script>
 <script src="data/inventory_item_catalog.js"></script>
 <script src="data/inv_part_layout_rules.js"></script>
-<script src="js/legit-builder-core.js"></script>
-<script src="js/legit-decode-validate.js"></script>
-<script src="js/rebuild-presets-random.js"></script>
+<script src="js/legit-builder-core.js?v=77f"></script>
+<script src="js/legit-decode-validate.js?v=78"></script>
+<script src="js/rebuild-presets-random.js?v=77m"></script>
 <script src="js/cc-stx-decoder-bridge.js"></script>
 <script src="js/cc-itempool-drop-check.js"></script>
-<script src="js/bulk-serial-input-parse.js"></script>
-<script src="js/bulk-serial-validator-app.js"></script>
+<script src="js/bulk-serial-input-parse.js?v=77g"></script>
+<script src="js/bulk-serial-validator-app.js?v=77e"></script>
 <script src="js/cc-toolbox-analytics.js"></script>
 <script src="js/cc-toolbox-items-made.js"></script>
 <script src="js/cc-toolbox-public-counter.js"></script>

@@ -18,7 +18,9 @@
     var SLUG_TO_PREFIX = window.SLUG_TO_PREFIX;
     var buildSlugPrefix = window.buildSlugPrefix;
 
+    var __allItemsCache = null;
     function getAllItems() {
+      if (__allItemsCache) return __allItemsCache;
       var list = (M && M.items) ? M.items.slice() : [];
       var cm = (typeof CLASSMOD_MANIFEST_ITEMS !== 'undefined' && Array.isArray(CLASSMOD_MANIFEST_ITEMS)) ? CLASSMOD_MANIFEST_ITEMS : [];
       if (cm.length) {
@@ -28,7 +30,10 @@
           if (!haveCm[i.slug]) { list.push(i); haveCm[i.slug] = true; }
         });
       }
-      if (!NMAP || !NMAP.items || !NMAP.category_ids) return list;
+      if (!NMAP || !NMAP.items || !NMAP.category_ids) {
+        __allItemsCache = list;
+        return __allItemsCache;
+      }
       var manifestSlugs = {};
       list.forEach(function(i) { manifestSlugs[i.slug] = true; });
       var supplement = [];
@@ -50,7 +55,59 @@
         });
       });
       supplement.sort(function(a, b) { return (a.name || '').localeCompare(b.name || ''); });
-      return list.concat(supplement);
+      __allItemsCache = list.concat(supplement);
+      return __allItemsCache;
+    }
+
+    /** One-time name sets for body accessory / bolt filtering (same membership as prior .reduce). */
+    var __npartsBodyAccNames = null;
+    var __npartsBodyBoltNames = null;
+    function getNpartsNameSet(slotKey) {
+      if (slotKey === 'body_acc') {
+        if (__npartsBodyAccNames) return __npartsBodyAccNames;
+        __npartsBodyAccNames = {};
+        ((NPARTS && NPARTS.body_acc) || []).forEach(function (p) {
+          var n = String((p && p.name) || '').toLowerCase();
+          if (n) __npartsBodyAccNames[n] = true;
+        });
+        return __npartsBodyAccNames;
+      }
+      if (slotKey === 'body_bolt') {
+        if (__npartsBodyBoltNames) return __npartsBodyBoltNames;
+        __npartsBodyBoltNames = {};
+        ((NPARTS && NPARTS.body_bolt) || []).forEach(function (p) {
+          var n = String((p && p.name) || '').toLowerCase();
+          if (n) __npartsBodyBoltNames[n] = true;
+        });
+        return __npartsBodyBoltNames;
+      }
+      return {};
+    }
+
+    /** Index STX_DATASET.ALL_PARTS by partType once — barrel/rarity extras stay identical. */
+    var __stxPartsByType = null;
+    var __stxPartsByTypeLen = -1;
+    function getStxPartsByType(partType) {
+      var want = String(partType || '');
+      var parts =
+        typeof window !== 'undefined' &&
+        window.STX_DATASET &&
+        Array.isArray(window.STX_DATASET.ALL_PARTS)
+          ? window.STX_DATASET.ALL_PARTS
+          : [];
+      if (!__stxPartsByType || __stxPartsByTypeLen !== parts.length) {
+        __stxPartsByType = Object.create(null);
+        __stxPartsByTypeLen = parts.length;
+        var si;
+        for (si = 0; si < parts.length; si++) {
+          var row = parts[si];
+          if (!row) continue;
+          var t = String(row.partType || '');
+          if (!__stxPartsByType[t]) __stxPartsByType[t] = [];
+          __stxPartsByType[t].push(row);
+        }
+      }
+      return __stxPartsByType[want] || [];
     }
 
     var SLOT_LABELS = {
@@ -176,12 +233,7 @@
 
     /** Barrel rows present in STX dataset but missing from static bl4_manifest / NCS extract (Raid 2 named barrels). */
     function getExtraStxBarrelOptions(item, existingOptions) {
-      var parts =
-        typeof window !== 'undefined' &&
-        window.STX_DATASET &&
-        Array.isArray(window.STX_DATASET.ALL_PARTS)
-          ? window.STX_DATASET.ALL_PARTS
-          : [];
+      var parts = getStxPartsByType('Barrel');
       if (!item || !parts.length) return [];
       var slug = String(item.slug || '').trim().toLowerCase();
       if (!slug || !/_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slug)) return [];
@@ -196,7 +248,7 @@
       var out = [];
       for (var i = 0; i < parts.length; i++) {
         var row = parts[i];
-        if (!row || String(row.partType || '') !== 'Barrel') continue;
+        if (!row) continue;
         var code = normalizeStxSpawnCode(row.code);
         if (!code || code.indexOf(slug + '.') !== 0) continue;
         var pk = code.split('.').pop() || '';
@@ -255,12 +307,7 @@
 
     /** Rarity comps in STX dataset but missing from manifest / stx_rarities (community pearls, DLC legendaries). */
     function getExtraStxRarityFromDataset(item, existingOptions) {
-      var parts =
-        typeof window !== 'undefined' &&
-        window.STX_DATASET &&
-        Array.isArray(window.STX_DATASET.ALL_PARTS)
-          ? window.STX_DATASET.ALL_PARTS
-          : [];
+      var parts = getStxPartsByType('Rarity');
       if (!item || !parts.length) return [];
       var fam = Number(item.category_id);
       if (!Number.isFinite(fam)) return [];
@@ -275,7 +322,7 @@
       var out = [];
       for (var i = 0; i < parts.length; i++) {
         var row = parts[i];
-        if (!row || String(row.partType || '') !== 'Rarity') continue;
+        if (!row) continue;
         var code = normalizeStxSpawnCode(row.code);
         if (!code) continue;
         var pk = code.split('.').pop() || '';
@@ -1071,14 +1118,20 @@
       dataHealthEl.innerHTML = html;
     }
 
+    var __lastDropSourcesSlug = null;
     function updateDropSources() {
       if (!dropSourcesEl) return;
       if (!selectedItem) {
+        __lastDropSourcesSlug = null;
         dropSourcesEl.innerHTML = '';
         return;
       }
+      var slugNow = String(selectedItem.slug || '');
+      /* Source evidence is slug-stable (cached); skip rebuild when only parts changed. */
+      if (slugNow && slugNow === __lastDropSourcesSlug && dropSourcesEl.innerHTML) return;
       var ev = getSourceEvidence(selectedItem);
       if (!ev.rowsMapped) {
+        __lastDropSourcesSlug = slugNow || null;
         dropSourcesEl.innerHTML = '';
         return;
       }
@@ -1138,6 +1191,17 @@
       proofBits.push('Enemy:' + ev.enemy.rows.length + ' Reward:' + ev.reward.rows.length + ' Other:' + ev.other.rows.length);
       html += '<div style="margin-top:6px;font-size:0.72rem;color:rgba(233,254,255,0.38);line-height:1.4;">' + proofBits.join(' | ') + '</div>';
       dropSourcesEl.innerHTML = html;
+      __lastDropSourcesSlug = slugNow;
+    }
+
+    /** Shared post-selection cascade — validation owns the (debounced) option ✓/✗ refresh. */
+    function refreshAfterPartChange() {
+      updateOutput();
+      updateValidation();
+      updateItemStats();
+      updateStatEffects();
+      updateDropSources();
+      updateProofEvidence();
     }
 
     function populateItemTypes() {
@@ -1348,12 +1412,7 @@
               if (strictMode && sel.value === String(o.value)) {
                 sel.value = '';
                 delete selectedParts[slotNameUi];
-                updateOutput();
-                updateValidation();
-                updateItemStats();
-                updateStatEffects();
-                updateDropSources();
-                updateProofEvidence();
+                refreshAfterPartChange();
               }
             }
           }
@@ -1535,8 +1594,8 @@
             }
             /* NCS alignment: exclude accessory parts from main slot dropdowns (body_acc from body, barrel_acc from barrel). */
             if (isWeaponSlug && NPARTS && (slotName === 'body' || manifestKey === 'body')) {
-              var bodyAccNames = (NPARTS.body_acc || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
-              var bodyBoltNames = (NPARTS.body_bolt || []).reduce(function(set, p) { set[(p.name || '').toLowerCase()] = true; return set; }, {});
+              var bodyAccNames = getNpartsNameSet('body_acc');
+              var bodyBoltNames = getNpartsNameSet('body_bolt');
               options = options.filter(function(o) {
                 var on = String(o.name || '').toLowerCase();
                 /* Never hide the canonical body row. */
@@ -1630,25 +1689,13 @@
               if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
                 sel.value = '';
                 delete selectedParts[sn];
-                updateOutput();
-                updateValidation();
-                updateItemStats();
-                updateStatEffects();
-                updateDropSources();
-                updateProofEvidence();
-                scheduleLegitSlotOptionValidityRefresh();
+                refreshAfterPartChange();
                 return;
               }
               if (strictMode && opt && opt.disabled && opt.value) {
                 sel.value = '';
                 delete selectedParts[sn];
-                updateOutput();
-                updateValidation();
-                updateItemStats();
-                updateStatEffects();
-                updateDropSources();
-                updateProofEvidence();
-                scheduleLegitSlotOptionValidityRefresh();
+                refreshAfterPartChange();
                 return;
               }
               if (opt.value) {
@@ -1662,13 +1709,7 @@
               } else {
                 delete selectedParts[sn];
               }
-              updateOutput();
-              updateValidation();
-              updateItemStats();
-              updateStatEffects();
-              updateDropSources();
-              updateProofEvidence();
-              scheduleLegitSlotOptionValidityRefresh();
+              refreshAfterPartChange();
             });
           } else {
             var ncsParts = NPARTS ? NPARTS[slotName] : null;
@@ -1714,25 +1755,13 @@
                 if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
                   sel.value = '';
                   delete selectedParts[sn];
-                  updateOutput();
-                  updateValidation();
-                  updateItemStats();
-                  updateStatEffects();
-                  updateDropSources();
-                  updateProofEvidence();
-                  scheduleLegitSlotOptionValidityRefresh();
+                  refreshAfterPartChange();
                   return;
                 }
                 if (strictMode && opt && opt.disabled && opt.value) {
                   sel.value = '';
                   delete selectedParts[sn];
-                  updateOutput();
-                  updateValidation();
-                  updateItemStats();
-                  updateStatEffects();
-                  updateDropSources();
-                  updateProofEvidence();
-                  scheduleLegitSlotOptionValidityRefresh();
+                  refreshAfterPartChange();
                   return;
                 }
                 if (opt.value) {
@@ -1740,13 +1769,7 @@
                 } else {
                   delete selectedParts[sn];
                 }
-                updateOutput();
-                updateValidation();
-                updateItemStats();
-                updateStatEffects();
-                updateDropSources();
-                updateProofEvidence();
-                scheduleLegitSlotOptionValidityRefresh();
+                refreshAfterPartChange();
               });
             } else {
               rendered++;
@@ -1872,7 +1895,10 @@
       html += '<div class="item-stat-card ' + poolClass + '" title="Manifest-mapped slots: in_pool from our loot-pool export. NCS-only catalog picks are shown separately and are not &ldquo;off-pool&rdquo; drops."><div class="stat-value">' + inPool + poolNote + ncsNote + '</div><div class="stat-label">In drop-pool list</div></div>';
       html += '</div>';
 
-      html += renderPartDiagnosticPanelHtml(getPartSlotDiagnostics(selectedParts, null, ncsInfo && ncsInfo.ncs_slots));
+      html += renderPartDiagnosticPanelHtml(
+        (typeof window !== 'undefined' && window.__legitLastPartSlotDiagnostics) ||
+          getPartSlotDiagnostics(selectedParts, null, ncsInfo && ncsInfo.ncs_slots)
+      );
 
       if (mfr || typeCode) {
         html += '<div style="margin-top:8px;font-size:0.75rem;color:rgba(233,254,255,0.5);">';
@@ -2411,8 +2437,15 @@
 
     /** Manifest slot → comp slot for parttypeselectionrules (stat/stat2/stat3 → stat_augment). */
     var MANIFEST_SLOT_TO_COMP_SLOT = {
-      stat: 'stat_augment', stat2: 'stat_augment', stat3: 'stat_augment',
-      stat_group1: 'stat_augment', stat_group2: 'stat_augment', stat_group3: 'stat_augment'
+      stat: 'stat_augment',
+      stat2: 'stat_augment',
+      stat3: 'stat_augment',
+      stat_group1: 'stat_augment',
+      stat_group2: 'stat_augment',
+      stat_group3: 'stat_augment',
+      /* Manifest often uses mag; Nexus parttypeselectionrules use magazine. */
+      mag: 'magazine',
+      class_mod: 'class_mod_body'
     };
 
     /** How many manifest slots can satisfy each comp slot for this item (used to drop impossible min/max noise). */
@@ -2436,11 +2469,8 @@
      * @param {object} invData
      * @param {string[]} [ncsSlotsOpt] — NCS slot order for this item (from getNcsInfo)
      */
-    /** Skip inv compSlotRules allowlist/minmax only where comp dumps are known mixed (class mods). */
+    /** Skip inv compSlotRules only for skill-rank noise — still enforce CM body/augments/passives. */
     function slugSkipsInvCompSlotRules(slug, selectedItem) {
-      var s = String(slug || '');
-      if (/^classmod_/i.test(s)) return true;
-      if (selectedItem && selectedItem.slots && selectedItem.slots.class_mod) return true;
       return false;
     }
 
@@ -2805,6 +2835,30 @@
       }
       /* Standard tier comps 01–06 (incl. pearlescent): base barrels exclude "unique" while lower pools never carry it — skip or bulk banks false-fail. */
       var skipUniqueExcl = !!(compKeyNorm && /^comp_0[1-6]_/i.test(compKeyNorm));
+
+      /* Bulk: seed licensed tags from unmapped licensed decode rows before slot progression
+         (grip/deps often need licensed_ted while the licensed barrel never mapped to a slot). */
+      if (progOpts.bulkLegitStrictInvTags === true && Array.isArray(progOpts.bulkGlobalExclRows)) {
+        for (var lsx = 0; lsx < progOpts.bulkGlobalExclRows.length; lsx++) {
+          var lber = progOpts.bulkGlobalExclRows[lsx];
+          if (!lber || !lber.manifestName) continue;
+          var lnm = String(lber.manifestName || lber.invDumpKey || '').toLowerCase();
+          if (!/licensed/i.test(lnm)) continue;
+          var lbp = {
+            name: lber.manifestName,
+            invDumpKey: lber.invDumpKey != null ? lber.invDumpKey : null,
+            slot: lber.slotKey
+          };
+          var lmeta = resolveInvPartMeta(partsByName, lbp);
+          if (lmeta) TC.applyPartAddTagsToPool(tagPool, lmeta);
+          tagPool.add('licensed');
+          if (/licensed_ted/i.test(lnm)) tagPool.add('licensed_ted');
+          if (/licensed_jak/i.test(lnm)) tagPool.add('licensed_jak');
+          if (/licensed_hyp/i.test(lnm)) tagPool.add('licensed_hyp');
+          if (/licensed_cov|conglomerate/i.test(lnm)) tagPool.add('licensed');
+        }
+      }
+
       for (var ti = 0; ti < sortedKeys.length; ti++) {
         var sk = sortedKeys[ti];
         var skBase = slotBaseKey(sk);
@@ -2982,102 +3036,132 @@
             }
           }
         }
-        /* Bulk cheat-audit: full inv_comp min/max caused large false-positive waves. Keep strict behavior for
-           normal validation, but in bulk mode re-enable only actionable under-min on barrel_acc using every
-           mapped decode row (incl. duplicate-slot rows via bulkGlobalExclRows). */
-        if (!progOpts.bulkLegitStrictInvTags) {
-          var countsByCompSlot = {};
-          for (var ti = 0; ti < sortedKeys.length; ti++) {
-            var sk = sortedKeys[ti];
-            var skBase = slotBaseKey(sk);
-            var p = selectedParts[sk];
-            if (!p || !p.name) continue;
-            var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[skBase] || skBase;
-            countsByCompSlot[compSlot] = (countsByCompSlot[compSlot] || 0) + 1;
+        /* Comp min/max: count by decoded slot, then credit parts that Nexus lists under
+           a different slot key (e.g. part_underbarrel_03_seamstress under foregrip). */
+        var countsByCompSlot = {};
+        var seenByCompSlot = {};
+        var partsByCompSlot = {};
+        for (var ti = 0; ti < sortedKeys.length; ti++) {
+          var sk = sortedKeys[ti];
+          var skBase = slotBaseKey(sk);
+          var p = selectedParts[sk];
+          if (!p || !p.name) continue;
+          var compSlot = MANIFEST_SLOT_TO_COMP_SLOT[skBase] || skBase;
+          countsByCompSlot[compSlot] = (countsByCompSlot[compSlot] || 0) + 1;
+          seenByCompSlot[compSlot] = (seenByCompSlot[compSlot] || 0) + 1;
+          if (!partsByCompSlot[compSlot]) partsByCompSlot[compSlot] = [];
+          partsByCompSlot[compSlot].push(p);
+        }
+        /* Cross-slot credit for under-min: if a part's inv key is in another slot's
+           allowlist (Nexus puts underbarrel parts under foregrip), count it there too
+           for min satisfaction only — do not inflate over-max on the home slot. */
+        var creditByCompSlot = {};
+        function partKeysForCredit(pp) {
+          var out = [];
+          var nm = String(pp.name || '')
+            .toLowerCase()
+            .trim();
+          var idk = String(pp.invDumpKey || '')
+            .toLowerCase()
+            .trim();
+          if (nm) {
+            out.push(nm);
+            if (nm.indexOf('.') >= 0) out.push(nm.split('.').pop());
           }
-          for (var compSlot in countsByCompSlot) {
-            if (!rules[compSlot]) continue;
-            var r = rules[compSlot];
-            var cnt = countsByCompSlot[compSlot];
-            var min = typeof r.min === 'number' ? r.min : (r.parts && r.parts.length ? 1 : 0);
-            var max = typeof r.max === 'number' ? r.max : 999;
-            /* Match Nexus legit-builder rules: merged rules often imply min 1 when firmware options
-               exist, but serials and the online editor treat firmware as optional. */
-            if (compSlot === 'firmware' && min > 0) min = 0;
-            if (cnt < min || cnt > max) {
-              var msg = 'Comp slot ' + compSlot + ': count ' + cnt + ' outside range [' + min + ',' + max + ']';
-              globalReasons.push(msg);
-              var skKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function(s) { return MANIFEST_SLOT_TO_COMP_SLOT[s] === compSlot; });
-              if (!skKeys.length) skKeys = [compSlot];
-              for (var si = 0; si < skKeys.length; si++) {
-                var skk = skKeys[si];
-                if (bySlot[skk] && bySlot[skk].status === 'ok') {
-                  bySlot[skk] = { status: 'fail', reasons: [msg], partName: selectedParts[skk] && selectedParts[skk].name };
-                }
-              }
+          if (idk) out.push(idk);
+          return out;
+        }
+        function partInAllowlist(pp, allowParts) {
+          if (!allowParts || !allowParts.length) return false;
+          var keys = partKeysForCredit(pp);
+          for (var ai = 0; ai < allowParts.length; ai++) {
+            var a = String(allowParts[ai] || '')
+              .toLowerCase()
+              .trim();
+            if (!a) continue;
+            for (var ki = 0; ki < keys.length; ki++) {
+              if (keys[ki] === a || keys[ki].indexOf(a) >= 0 || a.indexOf(keys[ki]) >= 0) return true;
             }
           }
-        } else if (Array.isArray(progOpts.bulkGlobalExclRows) && progOpts.bulkGlobalExclRows.length) {
-          /* Bulk: for barrel_acc, count only parts that are exclusion-valid in the global pool.
-             This matches editor behavior where an excluded barrel_acc doesn't satisfy the slot requirement. */
-          var bulkGlobalPool = new Set();
-          var bulkResolved = [];
-          for (var bx = 0; bx < progOpts.bulkGlobalExclRows.length; bx++) {
-            var br = progOpts.bulkGlobalExclRows[bx];
-            if (!br || !br.slotKey || !br.manifestName) continue;
-            var bp = { name: br.manifestName, invDumpKey: br.invDumpKey != null ? br.invDumpKey : null, slot: br.slotKey };
-            var bmeta = resolveInvPartMeta(partsByName, bp);
-            if (!bmeta) continue;
-            bulkResolved.push({ slotKey: br.slotKey, p: bp, meta: bmeta });
-            var badds = TC.formatTags(bmeta.addtags);
-            for (var ba = 0; ba < badds.length; ba++) bulkGlobalPool.add(badds[ba]);
-            var bnm = String(bp.name || '').toLowerCase();
-            if (/part_barrel_02|barrel_02/i.test(bnm)) bulkGlobalPool.add('barrel_02');
-            if (/part_barrel_01|barrel_01|zipgun/i.test(bnm)) bulkGlobalPool.add('barrel_01');
+          return false;
+        }
+        for (var ruleSlot in rules) {
+          if (!Object.prototype.hasOwnProperty.call(rules, ruleSlot)) continue;
+          var rr = rules[ruleSlot];
+          if (!rr || !rr.parts || !rr.parts.length) continue;
+          var already = countsByCompSlot[ruleSlot] || 0;
+          var credited = 0;
+          for (var tj = 0; tj < sortedKeys.length; tj++) {
+            var sk2 = sortedKeys[tj];
+            var home = MANIFEST_SLOT_TO_COMP_SLOT[slotBaseKey(sk2)] || slotBaseKey(sk2);
+            if (home === ruleSlot) continue;
+            var p2 = selectedParts[sk2];
+            if (!p2 || !p2.name) continue;
+            if (partInAllowlist(p2, rr.parts)) credited++;
           }
-
-          var bulkCountsByCompSlot = {};
-          var bulkSeenByCompSlot = {};
-          for (var bc = 0; bc < bulkResolved.length; bc++) {
-            var br2 = bulkResolved[bc];
-            var bslotBase = slotBaseKey(br2.slotKey);
-            var bcompSlot = MANIFEST_SLOT_TO_COMP_SLOT[bslotBase] || bslotBase;
-            bulkSeenByCompSlot[bcompSlot] = (bulkSeenByCompSlot[bcompSlot] || 0) + 1;
-            var okForCount = true;
-            if (bcompSlot === 'barrel_acc') {
-              var bv = TC.partValidForPool(br2.meta, bulkGlobalPool, {
-                skipUniqueExclusion: skipUniqueExcl,
-                skipAllDependencyChecks: true,
-                skipRarityPoolMatch: true
-              });
-              if (!bv.ok) {
-                /* If this barrel_acc has any exclusion conflict, it does not satisfy the requirement. */
-                var hasExcl = bv.reasons.some(function (r) { return String(r).indexOf('exclusion tag "') === 0; });
-                if (hasExcl) okForCount = false;
-              }
-            }
-            if (!okForCount) continue;
-            bulkCountsByCompSlot[bcompSlot] = (bulkCountsByCompSlot[bcompSlot] || 0) + 1;
-          }
-          var bulkMinOnlySlots = { barrel_acc: true };
-          for (var bcomp in bulkMinOnlySlots) {
-            if (!bulkMinOnlySlots[bcomp]) continue;
-            var brule = rules[bcomp];
-            if (!brule) continue;
-            /* Do not invent slot requirements for items that do not map this comp slot at all. */
-            if (!(bulkSeenByCompSlot[bcomp] > 0)) continue;
-            var bcnt = bulkCountsByCompSlot[bcomp] || 0;
-            var bmin = typeof brule.min === 'number' ? brule.min : (brule.parts && brule.parts.length ? 1 : 0);
-            if (bcnt < bmin) {
-              var bmsg = 'Comp slot ' + bcomp + ': count ' + bcnt + ' outside range [' + bmin + ',999]';
-              globalReasons.push(bmsg);
-              var bskKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function(s) { return MANIFEST_SLOT_TO_COMP_SLOT[s] === bcomp; });
-              if (!bskKeys.length) bskKeys = [bcomp];
-              for (var bsi = 0; bsi < bskKeys.length; bsi++) {
-                var bsk = bskKeys[bsi];
-                var bprev = bySlot[bsk];
-                var breasons = bprev && bprev.reasons ? bprev.reasons.concat(bmsg) : [bmsg];
-                bySlot[bsk] = { status: 'fail', reasons: breasons, partName: selectedParts[bsk] && selectedParts[bsk].name };
+          if (credited > 0) creditByCompSlot[ruleSlot] = credited;
+        }
+        /* Dual-barrel / secondbarrel: underbarrel often is the only "barrel" geometry
+           on Pass legendaries whose barrel allowlist is a single named part we didn't map. */
+        if ((countsByCompSlot.underbarrel || 0) > 0) {
+          creditByCompSlot.barrel = (creditByCompSlot.barrel || 0) + 1;
+        }
+        /* Include every rule slot — missing required parts are count 0 and were skipped
+           when we only inspected slots present on the serial (.be Missing required gap). */
+        var slotsToCheck = {};
+        for (var csRule in rules) {
+          if (Object.prototype.hasOwnProperty.call(rules, csRule)) slotsToCheck[csRule] = true;
+        }
+        for (var csSeen in seenByCompSlot) {
+          if (Object.prototype.hasOwnProperty.call(seenByCompSlot, csSeen)) slotsToCheck[csSeen] = true;
+        }
+        for (var csCnt in countsByCompSlot) {
+          if (Object.prototype.hasOwnProperty.call(countsByCompSlot, csCnt)) slotsToCheck[csCnt] = true;
+        }
+        for (var compSlot in slotsToCheck) {
+          if (!rules[compSlot]) continue;
+          var r = rules[compSlot];
+          var homeCnt = countsByCompSlot[compSlot] || 0;
+          var creditCnt = creditByCompSlot[compSlot] || 0;
+          var cntForMin = homeCnt + creditCnt;
+          var cntForMax = homeCnt;
+          var min = typeof r.min === 'number' ? r.min : r.parts && r.parts.length ? 1 : 0;
+          var max = typeof r.max === 'number' ? r.max : 999;
+          /* Match Nexus legit-builder rules: merged rules often imply min 1 when firmware options
+             exist, but serials and the online editor treat firmware as optional. */
+          if (compSlot === 'firmware' && min > 0) min = 0;
+          var under = cntForMin < min;
+          var over = cntForMax > max;
+          if (under || over) {
+            var cntShow = over ? cntForMax : cntForMin;
+            var msg =
+              'Comp slot ' + compSlot + ': count ' + cntShow + ' outside range [' + min + ',' + max + ']';
+            globalReasons.push(msg);
+            var skKeys = Object.keys(MANIFEST_SLOT_TO_COMP_SLOT).filter(function (s) {
+              return MANIFEST_SLOT_TO_COMP_SLOT[s] === compSlot;
+            });
+            if (!skKeys.length) skKeys = [compSlot];
+            for (var si = 0; si < skKeys.length; si++) {
+              var skk = skKeys[si];
+              if (bySlot[skk] && bySlot[skk].status === 'ok') {
+                bySlot[skk] = {
+                  status: 'fail',
+                  reasons: [msg],
+                  partName: selectedParts[skk] && selectedParts[skk].name
+                };
+              } else if (bySlot[skk] && bySlot[skk].status === 'fail') {
+                var prevReasons = bySlot[skk].reasons || [];
+                bySlot[skk] = {
+                  status: 'fail',
+                  reasons: prevReasons.concat([msg]),
+                  partName: bySlot[skk].partName || (selectedParts[skk] && selectedParts[skk].name)
+                };
+              } else if (!bySlot[skk] && selectedParts[skk]) {
+                bySlot[skk] = {
+                  status: 'fail',
+                  reasons: [msg],
+                  partName: selectedParts[skk].name
+                };
               }
             }
           }
@@ -3189,49 +3273,164 @@
     }
 
     /**
-     * Dependency basetags where linear slot→tagPool progression often disagrees with strict Nexus simulation
-     * (v23–v25). Barrel_01/02: satisfied via barrel-slot name seed above — do not mark as bulk noise or
-     * real cheats that still have other bad deps/exclusions won’t pass.
+     * Soft deps that still false-fail linear tag pools on many natural legendaries.
+     * licensed_ is NOT soft for bulk natural legitimacy — missing licensed deps = modded.
+     */
+    /**
+     * Soft deps that still false-fail linear tag pools on many natural legendaries.
+     * Bulk hard-fails missing deps only for licensed / unique (see invReasonIsBulkHardFail).
      */
     function bulkMissingDepTagIsEditorParityNoise(tag) {
       var t = String(tag || '').toLowerCase();
       if (t.indexOf('uni_') === 0) return true;
       if (t.indexOf('leg_') === 0) return true;
-      if (t.indexOf('licensed_') === 0) return true;
       if (t === 'elem') return true;
-      if (t === 'ted_mirv') return true;
+      if (t.indexOf('ted_') === 0) return true;
+      if (t === 'barrel_01' || t === 'barrel_02') return true;
       return false;
     }
 
+    /** Exclusion tags that fire on natural licensed / structure pairings vs .be Pass. */
+    function bulkExclusionTagIsParityNoise(tag) {
+      var t = String(tag || '').toLowerCase();
+      if (t === 'barrel_01' || t === 'barrel_02') return true;
+      if (t === 'underbarrel_barrel' || t === 'hyp_shield') return true;
+      /* barrel_mod_d fires from ironsight scopes on natural plasmacoil/.be Pass guns. */
+      if (t === 'barrel_mod_d' || t.indexOf('barrel_mod_') === 0) return true;
+      /* Licensed barrel partner tags (mirv / shooting / combo) often sit in scope/mag pools. */
+      if (t.indexOf('ted_') === 0) return true;
+      if (t === 'jak_ricochet' || t.indexOf('jak_') === 0) return true;
+      if (t.indexOf('hyp_') === 0 && t !== 'hyp_shield') return true;
+      return false;
+    }
+
+    function bulkMissingDepTagIsHardFail(tag) {
+      var t = String(tag || '').toLowerCase();
+      /* .be Prerequisite Fail (~27/7k): licensed_* and unique. uni_/leg_ stay soft. */
+      if (t === 'licensed' || t.indexOf('licensed_') === 0) return true;
+      if (t === 'unique') return true;
+      return false;
+    }
+
+    /** Comp allowlist hard-fail — soft *_acc / ele / body (lists incomplete). */
+    function bulkCompAllowlistSlotIsHardFail(slot) {
+      var s = String(slot || '')
+        .toLowerCase()
+        .trim();
+      if (!s || /_acc$/i.test(s) || s === 'firmware' || s === 'endgame') return false;
+      if (s === 'body_ele' || s === 'secondary_ele' || s === 'element' || s === 'magazine_borg' || s === 'body') {
+        return false;
+      }
+      return true;
+    }
+
+    /** Comp under-min hard-fail. Soft: *_acc/ele/firmware/endgame, body/unique,
+     * magazine (named-only mag lists false-fail Pass pistols like bully). */
+    function bulkCompUnderMinSlotIsHardFail(slot) {
+      var s = String(slot || '')
+        .toLowerCase()
+        .trim();
+      if (!s || /_acc$/i.test(s) || s === 'firmware' || s === 'endgame' || s === 'barrel_licensed') {
+        return false;
+      }
+      if (
+        s === 'body_ele' ||
+        s === 'secondary_ele' ||
+        s === 'element' ||
+        s === 'magazine_borg' ||
+        s === 'body' ||
+        s === 'unique' ||
+        s === 'magazine' ||
+        s === 'mag' ||
+        s === 'pearl_elem' ||
+        s === 'pearl_stat' ||
+        s === 'secondary_ammo'
+      ) {
+        return false;
+      }
+      return true;
+    }
+
     /**
-     * Bulk page only: hard-fail lines that match interactive Legit Builder’s inv-tag bar (exclusion clash,
-     * comp-slot under-min, comp allowlist mismatch, actionable missing deps). Dependency lines that are
-     * soft dependency noise stay FYI via bulkMissingDepTagIsEditorParityNoise.
+     * Bulk natural legitimacy hard-fails: exclusion clash (incl. unique), over-max,
+     * licensed/unique missing deps. Soft structure + uni_/leg_/atlas-style deps stay FYI.
      */
     function invReasonIsBulkHardFail(line) {
       var s = String(line || '');
-      if (/^Comp allowlist:/i.test(s)) return true;
-      if (/rarity tags do not match pool/i.test(s)) return true;
+      if (/^\[critical\]/i.test(s)) return true;
+      if (/wrong root/i.test(s)) return true;
+      if (/Duplicate part/i.test(s) && /only 1 allowed/i.test(s)) return true;
+      if (/^Comp allowlist:/i.test(s)) {
+        var alSlot = (s.match(/not in allowed parts for ([a-z0-9_]+)/i) || [])[1];
+        return bulkCompAllowlistSlotIsHardFail(alSlot);
+      }
+      /* Rarity pool mismatches are often dump incompleteness — FYI in bulk. */
+      if (/rarity tags do not match pool/i.test(s)) return false;
       if (/pearl-only slot requires pearlescent/i.test(s)) return true;
       if (/missing dependency tag/i.test(s)) {
         var rxd = /missing dependency tag "([^"]+)"/gi;
         var md;
         var sawQuoted = false;
-        var hasActionableMissingDep = false;
+        var hasHardMissingDep = false;
         while ((md = rxd.exec(s)) !== null) {
           sawQuoted = true;
-          if (!bulkMissingDepTagIsEditorParityNoise(md[1])) hasActionableMissingDep = true;
+          if (bulkMissingDepTagIsHardFail(md[1])) hasHardMissingDep = true;
         }
-        if (hasActionableMissingDep) return true;
-        if (!sawQuoted) return true;
-        /* Else: only uni_/leg_/licensed_ deps missing — FYI, not Fail (data). */
+        if (hasHardMissingDep) return true;
+        /* Soft uni_/leg_/elem/ted_/barrel_0x and other structure deps (atlas_dart, etc.).
+           .be Prereq is mostly unique/licensed — unknown deps mass-false-fail natural UB parts. */
+        if (sawQuoted) return false;
+        return true;
       }
-      if (/Exclusion:/i.test(s) && /pool/i.test(s)) return true;
-      var m = s.match(/Comp slot[^:]+: count (\d+) outside range \[(\d+),(\d+)\]/);
+      if (/Exclusion:/i.test(s) && /pool/i.test(s)) {
+        var exTags = [];
+        var exM = s.match(/Excludes tags in pool:\s*([^;\n]+)/i);
+        if (exM) {
+          String(exM[1])
+            .split(/[,\s]+/)
+            .map(function (x) {
+              return String(x || '')
+                .trim()
+                .toLowerCase();
+            })
+            .filter(Boolean)
+            .forEach(function (t) {
+              exTags.push(t);
+            });
+        }
+        var exRe2 = /exclusion tag\s+"([^"]+)"/gi;
+        var exMm;
+        while ((exMm = exRe2.exec(s)) !== null) exTags.push(String(exMm[1]).toLowerCase());
+        if (exTags.length) {
+          var onlyNoiseEx = true;
+          for (var exi = 0; exi < exTags.length; exi++) {
+            if (!bulkExclusionTagIsParityNoise(exTags[exi])) {
+              onlyNoiseEx = false;
+              break;
+            }
+          }
+          if (onlyNoiseEx) return false;
+        }
+        return true;
+      }
+      var m = s.match(/Comp slot ([^:]+): count (\d+) outside range \[(\d+),(\d+)\]/);
       if (m) {
-        var cnt = parseInt(m[1], 10);
-        var mi = parseInt(m[2], 10);
-        if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi) return true;
+        var slotNm = String(m[1] || '')
+          .trim()
+          .toLowerCase();
+        var cnt = parseInt(m[2], 10);
+        var mi = parseInt(m[3], 10);
+        var ma = parseInt(m[4], 10);
+        /* Over-max hard — .be Compatibility "Too many" includes body_acc/barrel_acc.
+           Soft only firmware/endgame optional stacks (and under-min for *_acc stays soft). */
+        if (Number.isFinite(cnt) && Number.isFinite(ma) && cnt > ma) {
+          if (slotNm === 'firmware' || slotNm === 'endgame') return false;
+          return true;
+        }
+        if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi && bulkCompUnderMinSlotIsHardFail(slotNm)) {
+          return true;
+        }
+        return false;
       }
       if (s.indexOf('exclusion tag') >= 0) {
         var tags = [];
@@ -3239,10 +3438,9 @@
         var mm;
         while ((mm = re.exec(s)) !== null) tags.push(String(mm[1]).toLowerCase());
         if (tags.length === 0) return true;
-        /* Bulk: many FYI lines are only "unique" (or barrel tag structure) vs pool; real cheats carry other exclusion tags (licensed, …). */
-        var bulkNoiseExcl = { unique: true, barrel_01: true, barrel_02: true };
+        /* Structure / accessory / licensed-partner noise — not .be-style Tag Exclusion fails. */
         for (var i = 0; i < tags.length; i++) {
-          if (!bulkNoiseExcl[tags[i]]) return true;
+          if (!bulkExclusionTagIsParityNoise(tags[i])) return true;
         }
         return false;
       }
@@ -3256,8 +3454,11 @@
       if (m) {
         var cnt = parseInt(m[1], 10);
         var mi = parseInt(m[2], 10);
+        var ma = parseInt(m[3], 10);
         /* Interactive builder: treat under-min as "incomplete build" (not hard fail yet). */
         if (Number.isFinite(cnt) && Number.isFinite(mi) && cnt < mi) return false;
+        /* Over-max (stacked parts) is modded — hard fail. */
+        if (Number.isFinite(cnt) && Number.isFinite(ma) && cnt > ma) return true;
       }
       if (invReasonIsBulkHardFail(s)) return true;
       if (/^Comp allowlist:/i.test(s)) return true;
@@ -3266,7 +3467,7 @@
 
     /**
      * Data-backed checks (same as manual slot selection). Used by updateValidation and decode-from-serial path.
-     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page uses strict inv hard-fails only (exclusion / comp-slot under-min / allowlist). bulkGlobalExclRows: all manifest-mapped decode rows for order-independent exclusion pool. Interactive UI promotes Fail from inv-tag lines only when invReasonIsBulkHardFail.
+     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page uses strict inv hard-fails (exclusion / comp-slot min/max / allowlist). bulkGlobalExclRows: all manifest-mapped decode rows for order-independent exclusion pool + duplicate-slot counts. Interactive UI promotes Fail from inv-tag lines only when invReasonIsInteractiveHardFail.
      */
     function computeLegitValidationState(selectedItem, selectedParts, opts) {
       opts = opts || {};
@@ -3357,26 +3558,31 @@
         });
         if (badSlots.length) {
           details.push('Slot(s) not in NCS for this item: ' + badSlots.join(', '));
+          /* Bulk: FYI — NCS slot lists omit licensed/underbarrel/CM stat variants that .be still Passes.
+             Interactive: still Fail. */
           if (!bulkAudit) {
             status = 'err';
             statusText = 'Fail (data)';
           }
         }
       }
-      if (status !== 'err' && opts.partOrderMismatches && opts.partOrderMismatches.length) {
+      if (opts.partOrderMismatches && opts.partOrderMismatches.length) {
         details.push('Part order mismatch vs NCS: ' + opts.partOrderMismatches.join('; '));
+        /* Bulk: FYI only — our NCS subsequence check is far noisier than save-editor.be
+           (they report ~single-digit Order Issues on large banks). Interactive: Uncertain. */
         if (!bulkAudit) {
-          status = 'warn';
-          statusText = 'Uncertain (slot order)';
+          if (status !== 'err') {
+            status = 'warn';
+            statusText = 'Uncertain (slot order)';
+          }
         }
       }
       var elemConf = analyzeElementConflicts(selectedParts);
       if (elemConf.hasConflict) {
         for (var eci = 0; eci < elemConf.messages.length; eci++) details.push(elemConf.messages[eci]);
-        if (!bulkAudit) {
-          status = 'err';
-          statusText = 'Fail (data)';
-        }
+        /* Element clashes are composition-illegal — Fail in bulk too (not spawn-table FYI). */
+        status = 'err';
+        statusText = 'Fail (data)';
       }
 
       // Hard legit rule: element-like parts can only be in actual element slot(s) for this item.
@@ -3395,10 +3601,8 @@
         if (!hasAnyAllowed && bad.length === 0) return;
         if (bad.length) {
           details.push('Element control in invalid slot for this item: ' + bad.join('; '));
-          if (!bulkAudit) {
-            status = 'err';
-            statusText = 'Fail (data)';
-          }
+          status = 'err';
+          statusText = 'Fail (data)';
         }
       })();
 
@@ -3416,10 +3620,8 @@
         var compInv = rp && rp.invDumpKey ? String(rp.invDumpKey).trim().toLowerCase() : '';
         if (isPearlRarityCompName(compEff) || isPearlRarityCompName(compNm) || isPearlRarityCompName(compInv)) return;
         details.push('Pearl-only slots selected (pearl element/stat) without pearlescent rarity comp.');
-        if (!bulkAudit) {
-          status = 'err';
-          statusText = 'Fail (data)';
-        }
+        status = 'err';
+        statusText = 'Fail (data)';
       })();
 
       var tagProgResult = null;
@@ -3456,6 +3658,7 @@
         }
         var frameViol = plainFrameUniLegViolations(selectedParts, tagInv.partsByName, compCheck, selectedItem);
         for (var fvx = 0; fvx < frameViol.length; fvx++) details.push(frameViol[fvx]);
+        /* Bulk: FYI — .be has no plain-frame bucket; epic+named barrel often Passes. Interactive: Fail. */
         if (frameViol.length && !bulkAudit) {
           status = 'err';
           statusText = 'Fail (data)';
@@ -3468,6 +3671,7 @@
         details.push('weapon_part_weight_table: 0% roll weight for ' + sched.zeroWeightParts.map(function(z) {
           return z.slot + ':' + formatPartName(z.part) + ' [' + z.row + ']';
         }).join('; '));
+        /* Interactive: hard Fail. Bulk balance parity: FYI — weight tables are incomplete vs .be Pass. */
         if (!bulkAudit) {
           status = 'err';
           statusText = 'Fail (data)';
@@ -3475,6 +3679,7 @@
       }
       if (status !== 'err' && useStrict && LSCHED && sched.maxMinStage > 0 && il < sched.maxMinStage) {
         details.push('Item level ' + il + ' < LootSchedule MinGameStage ' + sched.maxMinStage);
+        /* Interactive: hard Fail. Bulk: FYI (loot schedule coverage ≠ .be Balance Invalid). */
         if (!bulkAudit) {
           status = 'err';
           statusText = 'Fail (data)';
@@ -3484,19 +3689,18 @@
       var itemSlotMax = ncsInfo ? ncsInfo.ncs_slot_count : (selectedItem ? selectedItem.slot_count : v.part_count.max);
       if (partCount > itemSlotMax) {
         details.push('Part count ' + partCount + ' exceeds this item\'s ' + itemSlotMax + ' slots');
-        if (!bulkAudit) {
-          status = 'err';
-          statusText = 'Fail (data)';
-        }
+        status = 'err';
+        statusText = 'Fail (data)';
       }
 
       if (status !== 'err') {
         var finalSourceOk = bulkAudit ? true : useStrict ? sourceOk : sourceEvidence && sourceEvidence.rowsMapped > 0;
         var schedLevelOk = !LSCHED || sched.maxMinStage === 0 || il >= sched.maxMinStage;
-        var schedBlockOk = schedLevelOk || bulkAudit;
+        /* Schedule under-min already hard-fails above when useStrict; do not soft-pass in bulk. */
+        var schedBlockOk = schedLevelOk;
         if (finalSourceOk) {
           if (!schedLevelOk && LSCHED && sched.maxMinStage > 0) {
-            details.push('Item level ' + il + ' is below LootSchedule MinGameStage ' + sched.maxMinStage + ' (strict mode marks Fail (data))');
+            details.push('Item level ' + il + ' is below LootSchedule MinGameStage ' + sched.maxMinStage + ' (Fail (data))');
           }
           if (schedBlockOk) {
             if (tagProgResult && tagProgResult.globalReasons.length) {
@@ -3505,7 +3709,10 @@
                   var hasBulkHardInv = false;
                   var hbi;
                   for (hbi = 0; hbi < tagProgResult.globalReasons.length; hbi++) {
-                    if (invReasonIsBulkHardFail(tagProgResult.globalReasons[hbi])) {
+                    var hbLine = tagProgResult.globalReasons[hbi];
+                    /* Same bar as details: impossible mins (min > manifest capacity) are not hard. */
+                    if (isNonActionableCompUnderMinLine(hbLine)) continue;
+                    if (invReasonIsBulkHardFail(hbLine)) {
                       hasBulkHardInv = true;
                       break;
                     }
@@ -3517,7 +3724,7 @@
                     status = 'ok';
                     statusText = 'OK (data)';
                     details.push(
-                      'Bulk inv scan: FYI lines only (no exclusion clash, comp-slot under-min, or comp allowlist mismatch).'
+                      'Bulk natural scan: FYI lines only (no exclusion clash, licensed/unique conflict, slot-map breach, min/max, or allowlist mismatch).'
                     );
                   }
                 } else {
@@ -3565,7 +3772,7 @@
               statusText = 'OK (data)';
               details.push(
                 bulkAudit
-                  ? 'Bulk cheat-audit: composition checks passed (inv-tag chain, weights, elements, NCS slots). Spawn-pathway tables not required for OK in this mode.'
+                  ? 'Natural legitimacy: composition passed (critical wrong-root/dups, exclusions, over-max). Soft: uni_/leg_ deps, NCS order, weight/schedule, under-min.'
                   : 'Rules passed: NCS/slots, inv-tag chain (if bundle loaded), weight table, elements, preferred parts — and bundled source tables show at least one pathway for this item type (not this exact roll).'
               );
             }
@@ -3645,5 +3852,6 @@
       getPartSlotDiagnostics: getPartSlotDiagnostics,
       getAllItems: getAllItems,
       getNcsInfo: getNcsInfo,
-      formatPartName: formatPartName
+      formatPartName: formatPartName,
+      slotNameAllowedOnNcs: slotNameAllowedOnNcs
     };

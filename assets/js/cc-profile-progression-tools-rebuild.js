@@ -166,12 +166,17 @@
   var unlockQuery = '';
   var selectedUnlockIds = new Set();
 
-  function filteredUnlockRows() {
+  function filteredUnlockRows(activeSet) {
     var cat = catalog();
     var rows = (cat && cat.account_unlocks) || [];
     var q = unlockQuery.trim().toLowerCase();
+    var onOnly = unlockFilter === 'on_profile';
     return rows.filter(function (row) {
-      if (unlockFilter !== 'all' && row.family !== unlockFilter) return false;
+      if (onOnly) {
+        if (!activeSet || !activeSet.has(row.id)) return false;
+      } else if (unlockFilter !== 'all' && row.family !== unlockFilter) {
+        return false;
+      }
       if (!q) return true;
       return (row.id + ' ' + row.label).toLowerCase().indexOf(q) >= 0;
     });
@@ -181,9 +186,9 @@
     var list = byId('ccUnlockLedgerList');
     var meta = byId('ccUnlockLedgerMeta');
     if (!list) return;
-    var rows = filteredUnlockRows();
+    var rows = filteredUnlockRows(activeSet);
     if (meta) {
-      meta.textContent = rows.length + ' catalog row(s) · ' + activeSet.size + ' on profile';
+      meta.textContent = rows.length + ' shown · ' + activeSet.size + ' on profile (green in list)';
     }
     if (!rows.length) {
       list.innerHTML = '<div style="color:rgba(255,255,255,0.55);font-size:0.88em;padding:6px;">No matches.</div>';
@@ -198,7 +203,10 @@
       html += '<label class="cc-unlock-ledger-row" for="' + escapeAttr(unlockPickId) + '" style="display:flex;align-items:flex-start;gap:8px;padding:6px 4px;border-bottom:1px solid rgba(0,200,255,0.08);cursor:pointer;">' +
         '<input type="checkbox" id="' + escapeAttr(unlockPickId) + '" name="' + escapeAttr(unlockPickId) + '" data-unlock-pick="' + escapeAttr(row.id) + '"' + (sel ? ' checked' : '') + ' style="margin-top:3px;"/>' +
         '<span style="flex:1;min-width:0;">' +
-        '<span style="display:block;color:' + (on ? '#7dffb8' : '#c4f0ff') + ';font-size:0.86em;line-height:1.35;">' + escapeHtml(row.label) + '</span>' +
+        '<span style="display:block;color:' + (on ? '#7dffb8' : '#c4f0ff') + ';font-size:0.86em;line-height:1.35;">' +
+        escapeHtml(row.label) +
+        (on ? ' <span style="opacity:0.75;font-size:0.78em;">· on profile</span>' : '') +
+        '</span>' +
         '<code style="font-size:0.72em;opacity:0.72;word-break:break-all;">' + escapeHtml(row.id) + '</code>' +
         '</span></label>';
     }
@@ -206,24 +214,8 @@
   }
 
   function renderUnlockActiveChips(activeSet) {
-    var box = byId('ccUnlockLedgerActive');
-    if (!box) return;
-    if (!activeSet.size) {
-      box.innerHTML = '<span style="color:rgba(255,255,255,0.5);font-size:0.82em;">None staged on this profile yet.</span>';
-      return;
-    }
-    var ids = [...activeSet].sort();
-    var html = '';
-    for (var i = 0; i < ids.length; i++) {
-      html += '<span class="cc-prog-chip" title="' + escapeAttr(ids[i]) + '">' + escapeHtml(shortUnlockLabel(ids[i])) + '</span>';
-    }
-    box.innerHTML = html;
-  }
-
-  function shortUnlockLabel(id) {
-    var tail = id.indexOf('.') >= 0 ? id.slice(id.indexOf('.') + 1) : id;
-    if (tail.length > 28) return tail.slice(0, 26) + '…';
-    return tail.replace(/_/g, ' ');
+    /* Chip wall removed — on-profile status is shown in the scrollable ledger list + meta count. */
+    void activeSet;
   }
 
   function escapeHtml(s) {

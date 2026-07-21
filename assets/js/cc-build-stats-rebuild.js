@@ -89,13 +89,14 @@
     var s = String(text || '');
     var o = opts || {};
     var baseFam = o.baseFamilyId != null ? o.baseFamilyId : inferBaseFamilyFromSerialText(s);
+    /*
+     * This expression already captures both plain `family:id` refs and refs
+     * inside `{family:id}`. Do not scan brace pairs a second time: doing so
+     * counted every normal dual-ID part twice while still looking like an
+     * intentional stacked duplicate.
+     */
     var ms = s.match(/\b\d{1,6}:\d{1,6}\b/g);
     if (ms) ms.forEach(function (r) { pushRef(refList, r); });
-    var braceMs = s.match(/\{\s*(\d{1,6})\s*:\s*(\d{1,6})\s*\}/g);
-    if (braceMs) braceMs.forEach(function (b) {
-      var m = b.match(/\{\s*(\d+)\s*:\s*(\d+)\s*\}/);
-      if (m) pushRef(refList, m[1] + ':' + m[2]);
-    });
     var bareMs = s.match(/\{\s*(\d{1,6})\s*\}/g);
     if (bareMs) bareMs.forEach(function (b) {
       var m = b.match(/\{\s*(\d+)\s*\}/);
@@ -218,10 +219,12 @@
       if (!c) continue;
       if (data.by_id_raw && data.by_id_raw[c]) return data.by_id_raw[c];
       if (data.by_part_code && data.by_part_code[c]) return data.by_part_code[c];
-      if (data.by_code_suffix && data.by_code_suffix[c]) return data.by_code_suffix[c];
-      var suffix = c.indexOf('.') >= 0 ? c.split('.').pop() : c;
-      if (data.by_code_suffix && data.by_code_suffix[suffix]) return data.by_code_suffix[suffix];
     }
+    /*
+     * Do not fall back to the global first match in by_code_suffix. Generic
+     * suffixes (part_barrel_01, comp_05_legendary, etc.) collide across
+     * manufacturers and weapon classes and can borrow unrelated stat rows.
+     */
     return null;
   }
 
@@ -240,22 +243,13 @@
     return out.length ? out : stats;
   }
 
-  /**
-   * PARTS_STATS_DATA often exports weapon-part damage_scale as combine "mul" with values in (0,1)
-   * (e.g. 0.475). Those are fractional layers in the game's stack, not literal ×0.475 vs a neutral gun.
-   * Rarity / perk rows use mul ≥ 1 (1.1, 1.3). For display + build comparison, map sub-unity
-   * damage_scale mul to a bonus multiplier (1 + v) so the Damage card matches "+damage" parts.
-   */
+  /** Preserve raw damage scales; magnitude alone cannot identify add-vs-multiply semantics. */
   function partsStatsDamageScaleMulToDisplayMult(statField, combine, val) {
     var field = String(statField || '').toLowerCase();
     if (field !== 'damage_scale') return null;
     if (String(combine || '').trim().toLowerCase() !== 'mul') return null;
     var v = Number(val);
-    if (!Number.isFinite(v) || v <= 0) return null;
-    if (v >= 1) return v;
-    /** Sub-0.5 rows are fractional damage layers (e.g. 0.475 → +47.5%); 0.5–1 are literal × multipliers. */
-    if (v < 0.5) return 1 + v;
-    return v;
+    return Number.isFinite(v) ? v : null;
   }
 
   /** Effective multiplier for human-readable % next to a raw ×scale value. */
@@ -276,28 +270,86 @@
     if (!stats || !Array.isArray(stats)) return;
     stats = dedupeExcelStatRows(stats);
     var pl = partLabel || '';
-    for (var i = 0; i < stats.length; i++) {
-      var s = stats[i];
+    var grouped = Object.create(null);
+    for (var gi = 0; gi < stats.length; gi++) {
+      var gs = stats[gi];
+      if (!gs || typeof gs !== 'object') continue;
+      var gb = String(gs.bucket || '').trim();
+      var gf = String(gs.stat_field || gb).trim().toLowerCase();
+      var gc = String(gs.combine || 'add').trim().toLowerCase();
+      if (!gb || !buckets[gb]) continue;
+      var gk = gb + '\0' + gf + '\0' + gc;
+      if (!grouped[gk]) grouped[gk] = [];
+      grouped[gk].push(gs);
+    }
+    var groupKeys = Object.keys(grouped);
+    for (var gidx = 0; gidx < groupKeys.length; gidx++) {
+      var group = grouped[groupKeys[gidx]];
+      var distinct = [];
+      var seenValues = Object.create(null);
+      for (var gv = 0; gv < group.length; gv++) {
+        var gn = Number(group[gv].stat_value);
+        if (!Number.isFinite(gn)) continue;
+        var gnKey = String(gn);
+        if (seenValues[gnKey]) continue;
+        seenValues[gnKey] = true;
+        distinct.push(gn);
+      }
+      var s = group[0];
       var bucket = s && s.bucket ? String(s.bucket).trim() : '';
-      if (!bucket || !buckets[bucket]) continue;
-      var comb = String(s.combine || '').trim();
-      /** Raw engine offsets (accuracy_value, firerate_value, etc.) — not scale multipliers. */
-      if (comb === 'value') continue;
+      var comb = String(s.combine || 'add').trim().toLowerCase();
+      var statField = String(s.stat_field || bucket);
+      var sfLow = statField.toLowerCase();
+      if (distinct.length > 1) {
+        distinct.sort(function (a, b) { return a - b; });
+        record(bucket, '', null, {
+          part: pl,
+          source: 'PARTS_STATS_DATA',
+          detail: statField + ': alternate context values ' + distinct.join(', '),
+          combine: 'alternative',
+          statField: statField,
+          alternatives: distinct,
+          invertedBenefit: !!WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[sfLow]
+        });
+        continue;
+      }
       var val = Number(s.stat_value);
       if (!Number.isFinite(val)) continue;
       var mult = 1;
       if (comb === 'mul') {
+        if (val <= 0) {
+          record(bucket, '', null, {
+            part: pl,
+            source: 'PARTS_STATS_DATA',
+            detail: statField + ': invalid/unsupported scale ' + val,
+            combine: 'invalid',
+            statField: statField,
+            invalidValue: val
+          });
+          continue;
+        }
         mult = val;
         var dmgFix = partsStatsDamageScaleMulToDisplayMult(s.stat_field, comb, val);
         if (dmgFix != null) mult = dmgFix;
-      } else if (comb === 'add' || !comb) {
+        if ((s.invert || WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[sfLow]) && mult !== 0) mult = 1 / mult;
+      } else if (comb === 'add') {
         mult = 1 + val;
+      } else if (comb === 'value') {
+        mult = null;
       } else {
         continue;
       }
-      if (s.invert && mult !== 0) mult = 1 / mult;
       var detail = formatExcelStatRow(s);
-      record(bucket, '', mult, { part: pl, source: 'PARTS_STATS_DATA', detail: detail, combine: comb, multApplied: mult });
+      record(bucket, '', mult, {
+        part: pl,
+        source: 'PARTS_STATS_DATA',
+        detail: detail,
+        combine: comb,
+        statField: statField,
+        rawValue: val,
+        multApplied: mult,
+        invertedBenefit: !!WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[sfLow]
+      });
     }
   }
 
@@ -363,19 +415,44 @@
     var keys = Object.keys(obj);
     for (var i = 0; i < keys.length; i++) {
       var k = keys[i];
-      if (k.indexOf('_value') !== -1) continue;
       var bucket = FIELD_TO_BUCKET[k];
       if (!bucket || !buckets[bucket]) continue;
       var val = Number(obj[k]);
-      if (!Number.isFinite(val) || val === 0) continue;
+      if (!Number.isFinite(val)) continue;
       var mult;
+      var combine;
       if (k.indexOf('_add') !== -1) {
         mult = 1 + val;
+        combine = 'add';
+      } else if (k.indexOf('_value') !== -1) {
+        mult = null;
+        combine = 'value';
       } else {
+        if (val <= 0) {
+          record(bucket, k, null, {
+            part: pl,
+            source: 'WEAPON_STATS_DATA',
+            detail: k + ': invalid/unsupported scale ' + obj[k],
+            combine: 'invalid',
+            statField: k,
+            invalidValue: val
+          });
+          continue;
+        }
         mult = wstatRawScaleToBenefitMult(k, val);
         if (mult == null) continue;
+        combine = 'mul';
       }
-      record(bucket, k, mult, { part: pl, source: 'WEAPON_STATS_DATA', detail: k + ': ' + obj[k], multApplied: mult });
+      record(bucket, k, mult, {
+        part: pl,
+        source: 'WEAPON_STATS_DATA',
+        detail: k + ': ' + obj[k],
+        combine: combine,
+        statField: k,
+        rawValue: val,
+        multApplied: mult,
+        invertedBenefit: !!WSTAT_KEYS_INVERT_SCALE_FOR_BENEFIT[k]
+      });
     }
   }
 
@@ -1007,6 +1084,123 @@
     return { entries: entries, slugHint: slug || null };
   }
 
+  function applyBuildStatContribution(bucket, mult, contrib) {
+    if (!bucket) return bucket;
+    var c = contrib || {};
+    if (!bucket.fields) bucket.fields = Object.create(null);
+    if (!Array.isArray(bucket.values)) bucket.values = [];
+    if (!Array.isArray(bucket.contributions)) bucket.contributions = [];
+    if (!Number.isFinite(Number(bucket.mult))) bucket.mult = 1;
+    if (!Number.isFinite(Number(bucket.add))) bucket.add = 0;
+    bucket.hits = Number(bucket.hits || 0) + 1;
+    bucket.nonNumeric = Number(bucket.nonNumeric || 0);
+    var combine = String(c.combine || 'mul').toLowerCase();
+    var fieldKey = String(c.statField || 'effect').toLowerCase();
+    var f = bucket.fields[fieldKey];
+    if (!f) {
+      f = bucket.fields[fieldKey] = {
+        field: fieldKey,
+        mul: 1,
+        add: 0,
+        offsets: [],
+        alternatives: [],
+        invalidValues: [],
+        mulHits: 0,
+        addHits: 0,
+        valueHits: 0,
+        ambiguousHits: 0,
+        invalidHits: 0,
+        hits: 0,
+        invertedBenefit: false
+      };
+    }
+    f.hits++;
+    if (c.invertedBenefit) f.invertedBenefit = true;
+    if (combine === 'alternative') {
+      var alternatives = Array.isArray(c.alternatives) ? c.alternatives : [];
+      for (var ai = 0; ai < alternatives.length; ai++) {
+        var av = Number(alternatives[ai]);
+        if (Number.isFinite(av) && f.alternatives.indexOf(av) < 0) f.alternatives.push(av);
+      }
+      f.ambiguousHits++;
+    } else if (combine === 'invalid') {
+      var invalidValue = Number(c.invalidValue);
+      if (Number.isFinite(invalidValue)) f.invalidValues.push(invalidValue);
+      f.invalidHits++;
+    } else if (combine === 'value') {
+      var rawOffset = Number(c.rawValue);
+      if (Number.isFinite(rawOffset)) {
+        bucket.values.push(rawOffset);
+        f.offsets.push(rawOffset);
+        f.valueHits++;
+      } else {
+        bucket.nonNumeric++;
+      }
+    } else if (combine === 'add') {
+      var rawAdd = Number(c.rawValue);
+      if (Number.isFinite(rawAdd)) {
+        bucket.add += rawAdd;
+        f.add += rawAdd;
+        f.addHits++;
+      } else {
+        bucket.nonNumeric++;
+      }
+    } else if (Number.isFinite(Number(mult)) && Number(mult) !== 0) {
+      bucket.mult *= Number(mult);
+      f.mul *= Number(mult);
+      f.mulHits++;
+    } else {
+      bucket.nonNumeric++;
+    }
+    bucket.contributions.push(c);
+    return bucket;
+  }
+
+  /**
+   * Convert one operation-aware bucket into stable per-field effects.
+   * Additive rows are summed, multiplicative rows are multiplied, and raw
+   * engine value rows remain offsets. Different stat fields are never folded
+   * into one pretend final number.
+   */
+  function summarizeBuildStatBucket(bucket) {
+    if (!bucket || !bucket.fields) return [];
+    var out = [];
+    var keys = Object.keys(bucket.fields);
+    for (var i = 0; i < keys.length; i++) {
+      var f = bucket.fields[keys[i]];
+      if (!f) continue;
+      var offsets = Array.isArray(f.offsets) ? f.offsets.slice() : [];
+      var alternatives = Array.isArray(f.alternatives) ? f.alternatives.slice().sort(function (a, b) { return a - b; }) : [];
+      var invalidValues = Array.isArray(f.invalidValues) ? f.invalidValues.slice() : [];
+      var offsetTotal = 0;
+      for (var oi = 0; oi < offsets.length; oi++) {
+        var ov = Number(offsets[oi]);
+        if (Number.isFinite(ov)) offsetTotal += ov;
+      }
+      out.push({
+        field: f.field,
+        mul: Number.isFinite(f.mul) ? f.mul : 1,
+        add: Number.isFinite(f.add) ? f.add : 0,
+        offsetTotal: offsetTotal,
+        offsetCount: offsets.length,
+        alternatives: alternatives,
+        invalidValues: invalidValues,
+        mulHits: Number(f.mulHits || 0),
+        addHits: Number(f.addHits || 0),
+        valueHits: Number(f.valueHits || 0),
+        ambiguousHits: Number(f.ambiguousHits || 0),
+        invalidHits: Number(f.invalidHits || 0),
+        hits: Number(f.hits || 0),
+        invertedBenefit: !!f.invertedBenefit
+      });
+    }
+    out.sort(function (a, b) {
+      if (b.hits !== a.hits) return b.hits - a.hits;
+      return String(a.field).localeCompare(String(b.field));
+    });
+    return out;
+  }
+
   function accumulateFromSelected() {
     var col = collectRefsListForStats();
     if (!col || !col.parts.length) return null;
@@ -1015,28 +1209,24 @@
     var pname = function (part) { return partDisplayName(part); };
 
     var buckets = {
-      damage: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      crit: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      elemental: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      accuracy: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      ads: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      firerate: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      reload_time: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      reload_speed: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      ammo_mag: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] },
-      projectiles: { mult: 1, hits: 0, nonNumeric: 0, contributions: [] }
+      damage: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      crit: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      elemental: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      accuracy: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      ads: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      firerate: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      reload_time: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      reload_speed: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      ammo_mag: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] },
+      projectiles: { mult: 1, add: 0, values: [], fields: Object.create(null), hits: 0, nonNumeric: 0, contributions: [] }
     };
 
     function record(key, line, mult, contrib) {
       var b = buckets[key];
       if (!b) return;
-      b.hits++;
-      if (mult) {
-        b.mult *= mult;
-      } else {
-        b.nonNumeric++;
-      }
-      if (contrib && b.contributions) b.contributions.push(contrib);
+      var c = contrib || {};
+      if (!c.statField) c.statField = key || 'effect';
+      applyBuildStatContribution(b, mult, c);
     }
 
     for (var idx = 0; idx < deduped.length; idx++) {
@@ -1066,7 +1256,7 @@
         var line = lines[li];
         var c = classifyLine(line);
         var mult = parseNumericEffect(line);
-        var cb = { part: pl, source: 'parsed text', detail: line, multApplied: mult };
+        var cb = { part: pl, source: 'parsed text', detail: line, combine: 'mul', statField: 'text_effect', multApplied: mult };
         if (c.damage) record('damage', line, mult, cb);
         if (c.crit) record('crit', line, mult, cb);
         if (c.elemental) record('elemental', line, mult, cb);
@@ -1089,7 +1279,10 @@
     var keys = Object.keys(buckets);
     for (var ki = 0; ki < keys.length; ki++) {
       var bk = buckets[keys[ki]];
-      if (bk && bk.hits) detected += Number(bk.hits) || 0;
+      if (bk && bk.hits) {
+        detected += Number(bk.hits) || 0;
+        bk.effects = summarizeBuildStatBucket(bk);
+      }
     }
     buckets.detectedParts = detected;
 
@@ -1125,6 +1318,8 @@
   window.displayStatsFor = displayStatsFor;
   window.getBuildStatsDebugInfo = getBuildStatsDebugInfo;
   window.getFullStatsBreakdown = getFullStatsBreakdown;
+  window.applyBuildStatContribution = applyBuildStatContribution;
+  window.summarizeBuildStatBucket = summarizeBuildStatBucket;
   window.getFullStatLinesForPart = getFullStatLinesForPart;
   window.sortFullStatLinesByImpact = sortFullStatLinesByImpact;
   window.statRowToDisplayMult = statRowToDisplayMult;

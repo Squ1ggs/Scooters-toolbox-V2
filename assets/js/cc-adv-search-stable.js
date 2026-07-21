@@ -481,8 +481,39 @@
     return null;
   }
 
+  var __poolForCache = Object.create(null);
+  var __poolForStamp = "";
+  function poolStamp(){
+    return [
+      getStxParts().length,
+      asArr(window.ALL_PARTS).length,
+      asArr(window.GUN_PARTS).length,
+      asArr(window.GRENADE_PARTS).length,
+      asArr(window.SHIELD_PARTS).length,
+      asArr(window.REPKIT_PARTS).length,
+      asArr(window.ENHANCEMENT_PARTS).length,
+      asArr(window.HEAVY_PARTS).length,
+      asArr(window.CLASSMOD_PARTS).length,
+      asArr(window.AI_CAR_GUNS).length,
+      asArr(window.EXP_TERMINAL).length,
+      asArr(window.EXP_TURRET).length
+    ].join("|");
+  }
+
   function poolFor(domain){
     var d = q(domain).toLowerCase();
+    var stamp = poolStamp();
+    if (stamp !== __poolForStamp){
+      __poolForCache = Object.create(null);
+      __poolForStamp = stamp;
+    }
+    if (Object.prototype.hasOwnProperty.call(__poolForCache, d)) return __poolForCache[d];
+    var out = poolForCompute(d);
+    __poolForCache[d] = out;
+    return out;
+  }
+
+  function poolForCompute(d){
     function hasCode(p){ return !!q(p && (p.code || p.spawnCode || p.importCode || p.raw || p.value || p.name)); }
     function dedupeByCode(list){
       var out = [];

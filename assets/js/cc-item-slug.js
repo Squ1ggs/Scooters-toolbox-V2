@@ -289,8 +289,10 @@
   function underbarrelAccessoryCodeMatchLo(codeLc, visOnly) {
     var x = String(codeLc || '').toLowerCase().replace(/^["']|["']$/g, '');
     if (!x || x.indexOf('underbarrel') === -1) return false;
-    if (visOnly) return /underbarrel.*acc_vis/.test(x);
-    if (/underbarrel.*acc_vis/.test(x)) return false;
+    /* NCS puts both VLA AR dual-damage companion rows in underbarrel_acc_vis. */
+    var isVisual = /underbarrel.*acc_vis/.test(x) || /^vla_ar\.part_underbarrel_07_b$/.test(x);
+    if (visOnly) return isVisual;
+    if (isVisual) return false;
     return /underbarrel.*_acc(?:_|$|\.)|underbarrel_.*acc/.test(x);
   }
 

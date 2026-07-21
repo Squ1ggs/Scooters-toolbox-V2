@@ -22,6 +22,7 @@ const EDITOR_PAGE = '../index.html';
 let lastResults = [];
 let bulkPageIndex = 0;
 const BULK_PAGE_SIZE = 50;
+const expandedPartRows = new Set();
 let decoderReadyPromise = null;
 
 /** Same tail fix as stx-decode-bridge-shared.ensureDoublePipeBeforePartTail (standalone page may load without bridge). */
@@ -180,11 +181,12 @@ function stxPartToLookupRow(p) {
 }
 function resolveCandidatesFromStxDataset(key) {
   if (!key || !/^\d+:\d+$/.test(String(key))) return [];
-  if (!__stxIdRawPartCache) {
-    __stxIdRawPartCache = {};
-    const ap = (typeof window !== 'undefined' && window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS))
-      ? window.STX_DATASET.ALL_PARTS
-      : [];
+  const ap = (typeof window !== 'undefined' && window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS))
+    ? window.STX_DATASET.ALL_PARTS
+    : [];
+  /* Dataset is deferred (__ccRun via setTimeout). Rebuild if ALL_PARTS was empty on first miss. */
+  if (!__stxIdRawPartCache || __stxIdRawPartCache.__apLen !== ap.length) {
+    __stxIdRawPartCache = { __apLen: ap.length };
     for (let i = 0; i < ap.length; i++) {
       const p = ap[i];
       if (!p || p.idRaw == null) continue;
@@ -296,18 +298,27 @@ function partRefMetaHint(key) {
   if (m.note) bits.push(m.note);
   return bits.join(' · ');
 }
-function renderPartCard(p) {
+function renderPartCard(p, partIndex) {
+  const orderLabel = '<span class="bulk-part-order">' + String(Number(partIndex || 0) + 1) + '</span>';
   if (p.unresolved) {
     const hint = partRefMetaHint(p.key);
     const hintHtml = hint ? '<div class="small" style="color:var(--warn);margin-top:6px;">' + escapeHtml(hint) + '</div>' : '';
-    return '<div class="part"><h4 class="bad">' + escapeHtml(p.raw) + '</h4><div class="meta">Unresolved' + (p.key ? ' • ' + escapeHtml(p.key) : '') + '</div>' + hintHtml + '</div>';
+    return '<div class="part part-unresolved"><h4 class="bad">' + orderLabel + escapeHtml(p.raw) + '</h4><div class="meta">Unresolved' + (p.key ? ' • ' + escapeHtml(p.key) : '') + '</div>' + hintHtml + '</div>';
   }
-  return '<div class="part"><h4>' + escapeHtml(prettyPartTitle(p)) + '</h4>' +
+  return '<div class="part"><h4>' + orderLabel + escapeHtml(prettyPartTitle(p)) + '</h4>' +
     '<div class="meta">' + escapeHtml(partMetaLine(p)) + '</div>' +
     (p.alpha_code ? '<div class="small"><code>' + escapeHtml(p.alpha_code) + '</code></div>' : '') +
     (p.stats_text ? '<div class="small">' + escapeHtml(p.stats_text) + '</div>' : '') +
     (p.effects_text ? '<div class="small">' + escapeHtml(p.effects_text) + '</div>' : '') +
     '</div>';
+}
+function compactCodeDetails(label, value, idx, kind) {
+  const text = String(value || '');
+  const preview = text.length > 14 ? text.slice(0, 10) + '\u2026' : text;
+  return '<details class="bulk-code-details"><summary><span>' + escapeHtml(label) + '</span><span class="bulk-code-preview">' +
+    escapeHtml(preview) + ' • ' + String(text.length) + ' chars</span></summary>' +
+    '<div class="bulk-code-body"><button class="secondary bulk-copy-code-btn" type="button" data-result-index="' + String(idx) +
+    '" data-copy-kind="' + escapeHtml(kind) + '">Copy</button><code>' + escapeHtml(text) + '</code></div></details>';
 }
 function enrichResultForUi(result) {
   const resolved = resolveParts(result);
@@ -395,17 +406,26 @@ window.__stxEnrichDecodeResult = function (result) {
 };
 function buildResultRowHtml(result, idx) {
   const resolved = result.__resolvedUi;
-  const partsHtml = resolved.parts.length ? '<div class="details">' + resolved.parts.map(renderPartCard).join('') + '</div>' : '<span class="small">No parts found.</span>';
+  const resolvedPartCount = resolved.parts.filter(p => !p.unresolved).length;
+  const unresolvedPartCount = Number(resolved.unresolved || 0);
+  const partsSummary = String(resolved.parts.length) + ' part' + (resolved.parts.length === 1 ? '' : 's') +
+    ' • ' + resolvedPartCount + ' resolved' +
+    (unresolvedPartCount ? ' • ' + unresolvedPartCount + ' unresolved' : '');
+  const partsHtml = resolved.parts.length
+    ? '<details class="bulk-parts-details" data-result-index="' + String(idx) + '"' + (expandedPartRows.has(idx) ? ' open' : '') + '>' +
+      '<summary><span>' + escapeHtml(partsSummary) + '</span><span class="bulk-parts-summary-hint">Show parts</span></summary>' +
+      '<div class="details">' + resolved.parts.map((p, partIndex) => renderPartCard(p, partIndex)).join('') + '</div></details>'
+    : '<span class="small">No parts found.</span>';
   const dropSource = (typeof window.CC_ITEMPOOL_DROP_CHECK !== 'undefined' && window.CC_ITEMPOOL_DROP_CHECK.getDropSource)
     ? window.CC_ITEMPOOL_DROP_CHECK.getDropSource(result, resolved.parts) : '—';
   const statsSummary = (result && result.full_item_stats_summary) ? (' • Full stats: ' + result.full_item_stats_summary) : '';
   return '<tr>' +
-    '<td><strong>' + escapeHtml(itemTitle(result)) + '</strong><div class="chips">' +
+    '<td><div class="bulk-result-number">#' + String(idx + 1) + '</div><strong>' + escapeHtml(itemTitle(result)) + '</strong><div class="chips">' +
     (result.success ? '<span class="chip good">decoded</span>' : '<span class="chip bad">failed</span>') +
     (result.itemTypeId != null ? '<span class="chip">family ' + escapeHtml(String(result.itemTypeId)) + '</span>' : '') +
     '</div></td>' +
-    '<td><code>' + escapeHtml(result.input) + '</code></td>' +
-    '<td>' + (result.success ? '<code>' + escapeHtml(result.deserialized || '') + '</code>' : '<span class="bad">' + escapeHtml(result.error || 'decode failed') + '</span>') + '</td>' +
+    '<td>' + compactCodeDetails('View serial', result.input, idx, 'input') + '</td>' +
+    '<td>' + (result.success ? compactCodeDetails('View decoded', result.deserialized || '', idx, 'deserialized') : '<span class="bad">' + escapeHtml(result.error || 'decode failed') + '</span>') + '</td>' +
     '<td>' + partsHtml + '</td>' +
     '<td><div class="small">' + escapeHtml(noteSummary(result, resolved) + statsSummary) + '</div></td>' +
     '<td><div class="small">' + escapeHtml(dropSource) + '</div></td>' +
@@ -456,6 +476,7 @@ function renderResultsBody() {
 function render(results) {
   lastResults = results;
   bulkPageIndex = 0;
+  expandedPartRows.clear();
   exportBtn.disabled = !results.length;
   if (!results.length) {
     resultsBody.innerHTML = '<tr><td colspan="7" class="small">No results yet.</td></tr>';
@@ -499,7 +520,12 @@ function extractStxTokenFromLineBulk(line) {
   if ((trimmed.startsWith("'") && trimmed.endsWith("'")) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
     trimmed = trimmed.slice(1, -1);
   }
-  const mU = trimmed.match(/@U[^\s"'`,\]}]+/);
+  /*
+   * Match the actual STX Base85 alphabet. `}` and backtick are valid encoded
+   * characters; treating them as JSON/YAML terminators truncated most plain
+   * validator exports before they reached WASM.
+   */
+  const mU = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
   if (mU) return mU[0];
   const mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
   if (mRB && looksLikeRawBase85TokenStx(mRB[1])) return mRB[1];
@@ -540,7 +566,7 @@ function extractFromYaml(raw) {
     if (v.startsWith('@U') || looksDeserializedStx(v) || looksLikeRawBase85TokenStx(v)) out.push(v);
   }
   if (out.length) return uniqueSerials(out);
-  const loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
+  const loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
   if (loose.length) return uniqueSerials(loose);
   const fallback = [];
   for (const ln of text.split('\n')) {
@@ -575,7 +601,7 @@ function extractFromJson(raw) {
     extractJsonStrings(parsed, out);
     return uniqueSerials(out);
   } catch (err) {
-    const matches = text.match(/@U[^\s"'`,\]}]+/g) || [];
+    const matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
     const lines = text.split(/\r?\n/);
     for (const ln of lines) {
       const tok = extractStxTokenFromLineBulk(ln);
@@ -666,6 +692,60 @@ async function initDecoder() {
   }
   return decoderReadyPromise;
 }
+
+/** Decode bounded batches so large profile/character YAML files cannot make WASM return an empty array. */
+async function decodeBulkInputsInChunks(inputs) {
+  const src = Array.isArray(inputs) ? inputs : [];
+  const out = [];
+  const batchSize = 32;
+
+  function callWasm(chunk) {
+    const parsed = JSON.parse(window.stxDecodeBulk(JSON.stringify(chunk)) || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  }
+
+  for (let offset = 0; offset < src.length; offset += batchSize) {
+    const chunk = src.slice(offset, offset + batchSize);
+    let decoded = [];
+    let batchError = null;
+    try {
+      decoded = callWasm(chunk);
+    } catch (err) {
+      batchError = err;
+    }
+
+    if (decoded.length === chunk.length) {
+      out.push(...decoded);
+    } else {
+      /* One malformed item must not erase the other results in its batch. */
+      for (let i = 0; i < chunk.length; i++) {
+        const input = chunk[i];
+        try {
+          const one = callWasm([input]);
+          if (one.length) {
+            out.push(one[0]);
+          } else {
+            out.push({ input, success: false, error: 'Decoder returned no result for this serial.' });
+          }
+        } catch (err) {
+          out.push({
+            input,
+            success: false,
+            error: err && err.message ? err.message : String(err || batchError || 'Decode failed')
+          });
+        }
+      }
+    }
+
+    const done = Math.min(offset + chunk.length, src.length);
+    status('Decoding serials… ' + String(done) + ' of ' + String(src.length));
+    if (done < src.length) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+  }
+  return out;
+}
+
 async function decodeCurrent(filename = '') {
   const raw = inputBox.value;
   const mode = modeSelect.value === 'auto' ? detectMode(raw, filename) : modeSelect.value;
@@ -698,9 +778,13 @@ async function decodeCurrent(filename = '') {
       }
       return normalizeDeserializedForWasmBulk(x);
     });
-    const results = JSON.parse(window.stxDecodeBulk(JSON.stringify(forWasm)) || '[]');
+    const results = await decodeBulkInputsInChunks(forWasm);
     render(results);
-    status('Decoded ' + String(results.filter(r => r.success).length) + ' of ' + String(results.length) + ' serials locally.', 'good');
+    const decodedCount = results.filter(r => r.success).length;
+    status(
+      'Decoded ' + String(decodedCount) + ' of ' + String(results.length) + ' serials locally.',
+      decodedCount ? 'good' : 'bad'
+    );
   } catch (err) {
     console.error(err);
     status('Decoder error: ' + (err && err.message ? err.message : String(err)), 'bad');
@@ -738,7 +822,57 @@ decodeBtn.addEventListener('click', () => decodeCurrent(fileInput.files && fileI
   }
 })();
 
-resultsBody.addEventListener('click', ev => {
+const expandPartsBtn = document.getElementById('bulk-expand-parts-btn');
+const collapsePartsBtn = document.getElementById('bulk-collapse-parts-btn');
+if (expandPartsBtn) {
+  expandPartsBtn.addEventListener('click', () => {
+    expandedPartRows.clear();
+    for (let i = 0; i < lastResults.length; i++) expandedPartRows.add(i);
+    renderResultsBody();
+  });
+}
+if (collapsePartsBtn) {
+  collapsePartsBtn.addEventListener('click', () => {
+    expandedPartRows.clear();
+    renderResultsBody();
+  });
+}
+resultsBody.addEventListener('toggle', ev => {
+  const details = ev.target;
+  if (!details || !details.classList || !details.classList.contains('bulk-parts-details')) return;
+  const index = Number(details.getAttribute('data-result-index'));
+  if (!Number.isFinite(index)) return;
+  if (details.open) expandedPartRows.add(index);
+  else expandedPartRows.delete(index);
+}, true);
+
+resultsBody.addEventListener('click', async ev => {
+  const copyBtn = ev.target && ev.target.closest ? ev.target.closest('.bulk-copy-code-btn') : null;
+  if (copyBtn) {
+    const copyIndex = Number(copyBtn.getAttribute('data-result-index'));
+    const copyKind = String(copyBtn.getAttribute('data-copy-kind') || '');
+    const copyResult = lastResults[copyIndex];
+    const copyText = copyKind === 'deserialized'
+      ? String(copyResult && copyResult.deserialized || '')
+      : String(copyResult && copyResult.input || '');
+    if (!copyText) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(copyText);
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = copyText;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        temp.remove();
+      }
+      status((copyKind === 'deserialized' ? 'Decoded code' : 'Serial') + ' copied.', 'good');
+    } catch (err) {
+      status('Could not copy code: ' + (err && err.message ? err.message : String(err)), 'bad');
+    }
+    return;
+  }
   const btn = ev.target && ev.target.closest ? ev.target.closest('.send-editor-btn') : null;
   if (!btn) return;
   const index = Number(btn.getAttribute('data-result-index'));

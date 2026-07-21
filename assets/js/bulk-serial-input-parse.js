@@ -36,7 +36,11 @@
     if ((trimmed.charAt(0) === "'" && trimmed.charAt(trimmed.length - 1) === "'") || (trimmed.charAt(0) === '"' && trimmed.charAt(trimmed.length - 1) === '"')) {
       trimmed = trimmed.slice(1, -1);
     }
-    var mU = trimmed.match(/@U[^\s"'`,\]}]+/);
+    /*
+     * Use the real STX Base85 alphabet. `}` and backtick are valid payload
+     * characters, so generic JSON/YAML terminators must not truncate them.
+     */
+    var mU = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
     if (mU) return mU[0];
     var mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
     if (mRB && looksLikeRawBase85Token(mRB[1])) return mRB[1];
@@ -101,7 +105,7 @@
       if (v.indexOf('@U') === 0 || looksDeserialized(v) || looksLikeRawBase85Token(v)) out.push(v);
     }
     if (out.length) return out;
-    var loose = text.match(/@U[^\s"'`,\]}]+/g) || [];
+    var loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
     if (loose.length) return loose.slice();
     for (li = 0; li < lines.length; li++) {
       var tok = extractStxTokenFromLine(lines[li]);
@@ -146,7 +150,7 @@
       extractJsonStrings(parsed, out);
       return out;
     } catch (err) {
-      var matches = text.match(/@U[^\s"'`,\]}]+/g) || [];
+      var matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
       var lines = text.split(/\r?\n/);
       var i;
       for (i = 0; i < lines.length; i++) {

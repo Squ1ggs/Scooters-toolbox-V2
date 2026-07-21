@@ -218,28 +218,64 @@
     }
     return out;
   }
-  function tryResolveToken(tok) {
-    var t = String(tok || "").trim();
-    if (!t) return null;
+  var __resolvePartsIndex = null;
+  var __resolvePartsStamp = "";
+  function getResolvePartsIndex() {
+    var stxLen = 0;
+    var allLen = 0;
+    var gunLen = 0;
+    var grenLen = 0;
+    var shieldLen = 0;
+    try { if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) stxLen = window.STX_DATASET.ALL_PARTS.length; } catch(_){}
+    try { if (Array.isArray(window.ALL_PARTS)) allLen = window.ALL_PARTS.length; } catch(_){}
+    try { if (Array.isArray(window.GUN_PARTS)) gunLen = window.GUN_PARTS.length; } catch(_){}
+    try { if (Array.isArray(window.GRENADE_PARTS)) grenLen = window.GRENADE_PARTS.length; } catch(_){}
+    try { if (Array.isArray(window.SHIELD_PARTS)) shieldLen = window.SHIELD_PARTS.length; } catch(_){}
+    var stamp = [stxLen, allLen, gunLen, grenLen, shieldLen].join("|");
+    if (__resolvePartsIndex && __resolvePartsStamp === stamp) return __resolvePartsIndex;
     var all = [];
     try { if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) all = all.concat(window.STX_DATASET.ALL_PARTS); } catch(_){}
     try { if (Array.isArray(window.ALL_PARTS)) all = all.concat(window.ALL_PARTS); } catch(_){}
     try { if (Array.isArray(window.GUN_PARTS)) all = all.concat(window.GUN_PARTS); } catch(_){}
     try { if (Array.isArray(window.GRENADE_PARTS)) all = all.concat(window.GRENADE_PARTS); } catch(_){}
     try { if (Array.isArray(window.SHIELD_PARTS)) all = all.concat(window.SHIELD_PARTS); } catch(_){}
+    var byIdRaw = Object.create(null);
+    var byCode = Object.create(null);
+    var byNumId = Object.create(null);
     var norm = function(s){ return String(s||"").replace(/^"+|"+$/g,"").trim(); };
-    var tNorm = norm(t);
     for (var i = 0; i < all.length; i++) {
       var p = all[i];
       if (!p) continue;
-      if (String(p.idRaw || p.idraw || "").trim() === t) return p;
-      if (/^\d+$/.test(t) && Number(p.id) === Number(t)) return p;
-      if (norm(p.code || p.spawnCode || "") === tNorm) return p;
-      var brace = parseBrace(t);
-      if (brace && brace.b != null) {
-        var famIdKey = String(brace.a) + ":" + String(brace.b);
-        if (String(p.idRaw || p.idraw || "").trim() === famIdKey) return p;
+      var idRaw = String(p.idRaw || p.idraw || "").trim();
+      if (idRaw && !byIdRaw[idRaw]) byIdRaw[idRaw] = p;
+      if (p.id != null && Number.isFinite(Number(p.id))) {
+        var nid = String(Number(p.id));
+        if (!byNumId[nid]) byNumId[nid] = p;
       }
+      var code = norm(p.code || p.spawnCode || "");
+      if (code && !byCode[code]) byCode[code] = p;
+    }
+    __resolvePartsIndex = { all: all, byIdRaw: byIdRaw, byCode: byCode, byNumId: byNumId, norm: norm };
+    __resolvePartsStamp = stamp;
+    return __resolvePartsIndex;
+  }
+  function tryResolveToken(tok) {
+    var t = String(tok || "").trim();
+    if (!t) return null;
+    var idx = getResolvePartsIndex();
+    var tNorm = idx.norm(t);
+    if (idx.byIdRaw[t]) return idx.byIdRaw[t];
+    if (/^\d+$/.test(t) && idx.byNumId[t]) return idx.byNumId[t];
+    if (tNorm && idx.byCode[tNorm]) return idx.byCode[tNorm];
+    var brace = parseBrace(t);
+    if (brace && brace.b != null) {
+      var famIdKey = String(brace.a) + ":" + String(brace.b);
+      if (idx.byIdRaw[famIdKey]) return idx.byIdRaw[famIdKey];
+    }
+    var all = idx.all;
+    for (var i = 0; i < all.length; i++) {
+      var p = all[i];
+      if (!p) continue;
       if (brace && p.family != null && p.id != null && brace.b != null && brace.a === Number(p.family) && brace.b === Number(p.id)) return p;
     }
     return null;
@@ -250,15 +286,14 @@
     if (p) return p;
     var brace = parseBrace(t);
     if (!brace) return null;
-    var all = [];
-    try { if (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) all = all.concat(window.STX_DATASET.ALL_PARTS); } catch(_){}
-    try { if (Array.isArray(window.ALL_PARTS)) all = all.concat(window.ALL_PARTS); } catch(_){}
+    var idx = getResolvePartsIndex();
+    var all = idx.all;
     if (brace.b != null) {
+      var famIdKey = String(brace.a) + ":" + String(brace.b);
+      if (idx.byIdRaw[famIdKey]) return idx.byIdRaw[famIdKey];
       for (var i = 0; i < all.length; i++) {
         var row = all[i];
         if (!row) continue;
-        var idRaw = String(row.idRaw || row.idraw || "").trim();
-        if (idRaw === String(brace.a) + ":" + String(brace.b)) return row;
         if (row.family != null && row.id != null && Number(row.family) === Number(brace.a) && Number(row.id) === Number(brace.b)) return row;
       }
     }
@@ -269,7 +304,7 @@
       var row2 = all[j];
       if (!row2) continue;
       if (Number(row2.family) === Number(baseFamilyId) && Number(row2.id) === targetId) return row2;
-      if (Number(row2.family) === Number(baseFamilyId) && row2.id == null && Number(row2.itemId) === targetId) return row2;
+      if (Number(row2.family) === Number(baseFamilyId) && row2.id == null && Number(row2.tokenId) === targetId) return row2;
     }
     return null;
   }
@@ -903,17 +938,23 @@
         var b = window.accumulateFromSelected();
         lastBuckets = b || null;
         if (b && typeof b === "object") {
-          var reloadSpeedMult = Number((b.reload_speed && b.reload_speed.mult) || 1) / Math.max(1e-9, Number((b.reload_time && b.reload_time.mult) || 1));
+          function effectsOf(bucket) {
+            if (!bucket) return [];
+            if (Array.isArray(bucket.effects)) return bucket.effects.slice();
+            return typeof window.summarizeBuildStatBucket === "function"
+              ? window.summarizeBuildStatBucket(bucket)
+              : [];
+          }
           var items = [
-            { label: "Damage", mult: (b.damage && b.damage.mult) || 1, hits: (b.damage && b.damage.hits) || 0, nonNumeric: (b.damage && b.damage.nonNumeric) || 0 },
-            { label: "Critical Damage", mult: (b.crit && b.crit.mult) || 1, hits: (b.crit && b.crit.hits) || 0, nonNumeric: (b.crit && b.crit.nonNumeric) || 0 },
-            { label: "Elemental", mult: (b.elemental && b.elemental.mult) || 1, hits: (b.elemental && b.elemental.hits) || 0, nonNumeric: (b.elemental && b.elemental.nonNumeric) || 0 },
-            { label: "Accuracy", mult: (b.accuracy && b.accuracy.mult) || 1, hits: (b.accuracy && b.accuracy.hits) || 0, nonNumeric: (b.accuracy && b.accuracy.nonNumeric) || 0 },
-            { label: "ADS / Handling", mult: (b.ads && b.ads.mult) || 1, hits: (b.ads && b.ads.hits) || 0, nonNumeric: (b.ads && b.ads.nonNumeric) || 0 },
-            { label: "Fire Rate", mult: (b.firerate && b.firerate.mult) || 1, hits: (b.firerate && b.firerate.hits) || 0, nonNumeric: (b.firerate && b.firerate.nonNumeric) || 0 },
-            { label: "Reload Speed", mult: reloadSpeedMult, hits: Number((b.reload_speed && b.reload_speed.hits) || 0) + Number((b.reload_time && b.reload_time.hits) || 0), nonNumeric: Number((b.reload_speed && b.reload_speed.nonNumeric) || 0) + Number((b.reload_time && b.reload_time.nonNumeric) || 0) },
-            { label: "Ammo / Mag", mult: (b.ammo_mag && b.ammo_mag.mult) || 1, hits: (b.ammo_mag && b.ammo_mag.hits) || 0, nonNumeric: (b.ammo_mag && b.ammo_mag.nonNumeric) || 0 },
-            { label: "Projectiles", mult: (b.projectiles && b.projectiles.mult) || 1, hits: (b.projectiles && b.projectiles.hits) || 0, nonNumeric: (b.projectiles && b.projectiles.nonNumeric) || 0 }
+            { label: "Damage", effects: effectsOf(b.damage), hits: (b.damage && b.damage.hits) || 0, nonNumeric: (b.damage && b.damage.nonNumeric) || 0 },
+            { label: "Critical Damage", effects: effectsOf(b.crit), hits: (b.crit && b.crit.hits) || 0, nonNumeric: (b.crit && b.crit.nonNumeric) || 0 },
+            { label: "Elemental", effects: effectsOf(b.elemental), hits: (b.elemental && b.elemental.hits) || 0, nonNumeric: (b.elemental && b.elemental.nonNumeric) || 0 },
+            { label: "Accuracy", effects: effectsOf(b.accuracy), hits: (b.accuracy && b.accuracy.hits) || 0, nonNumeric: (b.accuracy && b.accuracy.nonNumeric) || 0 },
+            { label: "ADS / Handling", effects: effectsOf(b.ads), hits: (b.ads && b.ads.hits) || 0, nonNumeric: (b.ads && b.ads.nonNumeric) || 0 },
+            { label: "Fire Rate", effects: effectsOf(b.firerate), hits: (b.firerate && b.firerate.hits) || 0, nonNumeric: (b.firerate && b.firerate.nonNumeric) || 0 },
+            { label: "Reload", effects: effectsOf(b.reload_time).concat(effectsOf(b.reload_speed)), hits: Number((b.reload_speed && b.reload_speed.hits) || 0) + Number((b.reload_time && b.reload_time.hits) || 0), nonNumeric: Number((b.reload_speed && b.reload_speed.nonNumeric) || 0) + Number((b.reload_time && b.reload_time.nonNumeric) || 0) },
+            { label: "Ammo / Mag", effects: effectsOf(b.ammo_mag), hits: (b.ammo_mag && b.ammo_mag.hits) || 0, nonNumeric: (b.ammo_mag && b.ammo_mag.nonNumeric) || 0 },
+            { label: "Projectiles", effects: effectsOf(b.projectiles), hits: (b.projectiles && b.projectiles.hits) || 0, nonNumeric: (b.projectiles && b.projectiles.nonNumeric) || 0 }
           ];
           var detected = 0;
           try { var r = Object.keys(b); for (var i = 0; i < r.length; i++) { var k = b[r[i]]; if (k && k.hits) detected += Number(k.hits) || 0; } } catch(_){}
@@ -922,15 +963,15 @@
       }
     } catch(_){ lastBuckets = null; }
     var defaultItems = [
-        { label: "Damage", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Critical Damage", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Elemental", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Accuracy", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "ADS / Handling", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Fire Rate", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Reload Speed", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Ammo / Mag", mult: 1, hits: 0, nonNumeric: 0 },
-        { label: "Projectiles", mult: 1, hits: 0, nonNumeric: 0 }
+        { label: "Damage", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Critical Damage", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Elemental", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Accuracy", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "ADS / Handling", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Fire Rate", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Reload", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Ammo / Mag", effects: [], hits: 0, nonNumeric: 0 },
+        { label: "Projectiles", effects: [], hits: 0, nonNumeric: 0 }
       ];
     if (!core || !core.items || !core.items.length) {
       sub.innerHTML = "Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.";
@@ -963,8 +1004,8 @@
     }
     if (core && core.items && core.items.length) {
     sub.innerHTML = (core.detectedParts > 0)
-      ? "<span>Model estimate — " + Number(core.detectedParts) + " stat line(s) rolled into buckets (compare builds; not exact DPS).</span><span class=\"cc-stats-disclaimer\"><strong>Scale 1.000 = baseline.</strong> Each card is a <strong>combined scale</strong> vs baseline (same bucket idea as in-game <code>_scale</code>), not a gear score. The % line is vs that baseline. Uses PARTS_STATS_DATA when available, else weapon init tables (if <code>weapon_stats_data.js</code> loads + item slug in output), else parsed text.</span>"
-      : "<span>Model estimate — no stat lines detected yet.</span><span class=\"cc-stats-disclaimer\"><strong>Scale 1.000 = baseline.</strong> Paste a serial, pick parts in Guided Builder, or ensure output lists an item slug (e.g. <code>maliwan_pistol</code>) for manufacturer / barrel-mag tables.</span>";
+      ? "<span>" + Number(core.detectedParts) + " contributing effect(s) from the selected parts.</span><span class=\"cc-stats-disclaimer\">Headline cards show reliable scales only: additive bonuses are summed, compatible scales are multiplied, and different stat fields stay separate. Raw offsets and alternate contexts are excluded from the scale and shown only in the detailed sections.</span>"
+      : "<span>No stat effects detected yet.</span><span class=\"cc-stats-disclaimer\">Paste a serial or select parts to see source-aware modifiers.</span>";
     var pal = function(lbl) {
       var k = String(lbl||"").toLowerCase().replace(/\s+/g,"");
       if (k.indexOf("critical") >= 0) return { border: "rgba(255,179,71,0.42)", bgTop: "rgba(255,179,71,0.16)", bgBottom: "rgba(45,26,6,0.34)", title: "#ffd7a0", value: "#fff1d8", pos: "#ffc76a", neg: "#ff9a7a", meta: "rgba(255,236,210,0.9)" };
@@ -978,104 +1019,136 @@
       return { border: "rgba(255,255,255,0.2)", bgTop: "rgba(255,255,255,0.08)", bgBottom: "rgba(255,255,255,0.02)", title: "#fff", value: "#fff", pos: "#7df", neg: "#f99", meta: "rgba(255,255,255,0.9)" };
     };
     var esc = function(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); };
+    function readableNumber(value, maxDecimals) {
+      var n = Number(value);
+      if (!Number.isFinite(n)) return "\u2014";
+      if (Math.abs(n) < 1e-12) n = 0;
+      if (Math.abs(n) >= 1e12) return n.toExponential(3);
+      return n.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: maxDecimals == null ? 3 : maxDecimals
+      });
+    }
+    function signedNumber(value, suffix, maxDecimals) {
+      var n = Number(value);
+      if (!Number.isFinite(n)) return "\u2014";
+      return (n > 0 ? "+" : "") + readableNumber(n, maxDecimals) + (suffix || "");
+    }
+    function statFieldLabel(field) {
+      var f = String(field || "").toLowerCase();
+      var known = {
+        damage_scale: "Damage", critdamage_add: "Critical damage",
+        statuschance_scale: "Status chance", statusdamage_scale: "Status damage",
+        elementaldamage_scale: "Elemental damage", elementalchance_scale: "Elemental chance",
+        accuracy_scale: "Accuracy", maxaccuracy_scale: "Maximum accuracy", spread_scale: "Spread",
+        recoil_scale: "Recoil", sway_scale: "Sway", accimpulse_scale: "Accuracy impulse",
+        zoomtime_scale: "ADS time", zoomduration_scale: "ADS duration",
+        equiptime_scale: "Equip time", putdowntime_scale: "Put-down time",
+        firerate_scale: "Fire rate", firerate_value: "Fire-rate value",
+        reloadtime_scale: "Reload time", reloadtime_value: "Reload-time value",
+        thrownreloadtime_value: "Thrown reload-time value",
+        maxloadedammo_value: "Loaded ammo", magazine_size: "Magazine size",
+        projectilespershot_value: "Projectiles per shot", projpershot_scale: "Projectiles per shot",
+        text_effect: "Parsed text effect"
+      };
+      if (known[f]) return known[f];
+      return f.replace(/_+/g, " ").replace(/\b\w/g, function(ch) { return ch.toUpperCase(); });
+    }
+    function reliableScaleForEffect(effect) {
+      var e = effect || {};
+      var hasMul = Number(e.mulHits || 0) > 0;
+      var hasAdd = Number(e.addHits || 0) > 0;
+      if (!hasMul && !hasAdd) return null;
+      var mul = hasMul ? Number(e.mul) : 1;
+      var addLayer = hasAdd ? 1 + Number(e.add) : 1;
+      var scale = mul * addLayer;
+      return Number.isFinite(scale) && scale > 0 ? scale : null;
+    }
+    function reliableScaleSummary(effect) {
+      var scale = reliableScaleForEffect(effect);
+      if (scale == null) return "";
+      var suffix = effect && effect.invertedBenefit ? " benefit" : "";
+      return statFieldLabel(effect && effect.field) + ": \u00d7" + readableNumber(scale, 3) + suffix;
+    }
+    function impactStrength(deltaPct) {
+      var amount = Math.abs(Number(deltaPct) || 0);
+      if (amount < 1) return "Near neutral";
+      if (amount < 5) return "Slight change";
+      if (amount < 25) return "Noticeable change";
+      if (amount < 100) return "Strong change";
+      return "Major change";
+    }
+    function humanImpactForEffect(effect) {
+      var scale = reliableScaleForEffect(effect);
+      if (scale == null) return "\u2014";
+      var delta = (scale - 1) * 100;
+      if (Math.abs(delta) < 0.05) return "About the same as neutral";
+      var amount = readableNumber(Math.abs(delta), 1) + "%";
+      if (effect && effect.invertedBenefit) {
+        return amount + (delta > 0 ? " better (lower raw scale)" : " worse (lower raw scale)");
+      }
+      return amount + (delta > 0 ? " above neutral" : " below neutral");
+    }
     grid.innerHTML = core.items.map(function(it) {
-      var mult = Number(it.mult || 1);
-      var hits = Number(it.hits || 0);
+      var effects = Array.isArray(it.effects) ? it.effects : [];
+      var scaleEffects = effects.filter(function(e) { return reliableScaleForEffect(e) != null; });
       var nn = Number(it.nonNumeric || 0);
-      var delta = (mult - 1) * 100;
-      var deltaCapped = Math.max(-500, Math.min(500, delta));
-      var pctText = "vs baseline: " + (deltaCapped >= 0 ? "+" : "") + deltaCapped.toFixed(1) + "%";
-      var scaleNum = mult >= 1000 ? mult.toExponential(3) : mult.toFixed(3);
-      var meta = hits ? ("Lines: " + hits + (nn ? " | non-numeric: " + nn : "")) : "—";
+      var mainValue = scaleEffects.length === 1
+        ? "\u00d7" + readableNumber(reliableScaleForEffect(scaleEffects[0]), 3)
+        : (scaleEffects.length ? scaleEffects.length + " scales" : "\u2014");
+      var detail = scaleEffects.length
+        ? scaleEffects.slice(0, 2).map(reliableScaleSummary).join(" \u00b7 ") + (scaleEffects.length > 2 ? " \u00b7 +" + (scaleEffects.length - 2) + " more" : "")
+        : "No reliable scale";
+      var scaleHitCount = 0;
+      var excludedCount = nn;
+      for (var ei = 0; ei < effects.length; ei++) {
+        scaleHitCount += Number(effects[ei].mulHits || 0) + Number(effects[ei].addHits || 0);
+        excludedCount += Number(effects[ei].valueHits || 0) + Number(effects[ei].ambiguousHits || 0) + Number(effects[ei].invalidHits || 0);
+      }
+      var meta = scaleHitCount
+        ? ("Scale effects: " + scaleHitCount + (excludedCount ? " | raw/context excluded: " + excludedCount : ""))
+        : (excludedCount ? "Raw/context effects excluded: " + excludedCount : "\u2014");
       var p = pal(it.label);
       var titleRow = esc(it.label);
-      return "<div class=\"cc-core-card\" style=\"border-color:" + p.border + ";background:linear-gradient(180deg," + p.bgTop + " 0%," + p.bgBottom + " 100%);\"><div class=\"cc-core-card-title\" style=\"color:" + p.title + "\">" + titleRow + "</div><div class=\"cc-core-card-scale-label\">Scale</div><div class=\"cc-core-card-scale\" style=\"color:" + (delta >= 0 ? p.pos : p.neg) + "\" title=\"Combined scale vs 1.000 baseline\">" + scaleNum + "</div><div class=\"cc-core-card-pct\">" + pctText + "</div><div class=\"cc-core-card-meta\" style=\"color:" + p.meta + "\">" + esc(meta) + "</div></div>";
+      return "<div class=\"cc-core-card\" style=\"border-color:" + p.border + ";background:linear-gradient(180deg," + p.bgTop + " 0%," + p.bgBottom + " 100%);\"><div class=\"cc-core-card-title\" style=\"color:" + p.title + "\">" + titleRow + "</div><div class=\"cc-core-card-scale-label\">Scale</div><div class=\"cc-core-card-scale\" style=\"color:" + p.value + "\" title=\"Reliable scale from compatible selected-part effects\">" + esc(mainValue) + "</div><div class=\"cc-core-card-pct\">" + esc(detail) + "</div><div class=\"cc-core-card-meta\" style=\"color:" + p.meta + "\">" + esc(meta) + "</div></div>";
     }).join("");
     var finalPanel = byId("buildStatsFinalEstimates");
     if (finalPanel) {
       try {
-        var byLabel = {};
+        var rows = [];
         for (var ci0 = 0; ci0 < core.items.length; ci0++) {
           var c0 = core.items[ci0];
-          if (!c0 || !c0.label) continue;
-          byLabel[String(c0.label).toLowerCase()] = c0;
-        }
-        function getMult(label, fallback) {
-          var it = byLabel[String(label || '').toLowerCase()];
-          if (!it) return Number(fallback || 1);
-          var v = Number(it.mult);
-          return Number.isFinite(v) ? v : Number(fallback || 1);
-        }
-        function getHits(label) {
-          var it = byLabel[String(label || '').toLowerCase()];
-          if (!it) return 0;
-          var v = Number(it.hits || 0);
-          return Number.isFinite(v) ? v : 0;
-        }
-        function formatStatValue(base, mult, decimals, suffix) {
-          var b = Number(base);
-          var m = Number(mult);
-          if (!Number.isFinite(b) || !Number.isFinite(m)) return '—';
-          if (suffix === '%' && (Math.abs(m) > 5 || Math.abs(m - 1) > 4)) {
-            return '×' + m.toFixed(3) + ' scale';
+          var cEffects = c0 && Array.isArray(c0.effects) ? c0.effects : [];
+          for (var cei = 0; cei < cEffects.length; cei++) {
+            var ce = cEffects[cei];
+            var reliableScale = reliableScaleForEffect(ce);
+            if (reliableScale == null) continue;
+            var opNotes = [];
+            if (Number(ce.mulHits || 0)) opNotes.push("scale product from " + Number(ce.mulHits) + " effect(s)");
+            if (Number(ce.addHits || 0)) opNotes.push("summed additive bonus");
+            var excludedForField = Number(ce.valueHits || 0) + Number(ce.ambiguousHits || 0) + Number(ce.invalidHits || 0);
+            if (excludedForField) opNotes.push(excludedForField + " raw/context effect(s) excluded");
+            opNotes.unshift(impactStrength((reliableScale - 1) * 100));
+            rows.push({
+              name: c0.label + " \u2014 " + statFieldLabel(ce.field),
+              value: humanImpactForEffect(ce),
+              note: opNotes.join("; ")
+            });
           }
-          var val = b * m;
-          return val.toFixed(Math.max(0, Number(decimals || 0))) + (suffix || '');
-        }
-        // Try to get actual base damage from weapon stats data
-        var baseDamage = 100;
-        try {
-          if (typeof window.inferSlugHint === 'function' && typeof window.getWstatsGlobal === 'function') {
-            var slug = window.inferSlugHint();
-            var WSTATS = window.getWstatsGlobal && window.getWstatsGlobal();
-            if (slug && WSTATS && WSTATS.Weapon_Init && WSTATS.Weapon_Init.rows && WSTATS.Weapon_Init.rows[slug]) {
-              var wrow = WSTATS.Weapon_Init.rows[slug];
-              if (wrow && typeof wrow.damage_base !== 'undefined') {
-                baseDamage = Number(wrow.damage_base) || baseDamage;
-              }
-            }
-          }
-        } catch (e) {}
-        var damageMult = getMult('Damage', 1);
-        var critMult = getMult('Critical Damage', 1);
-        var elementalMult = getMult('Elemental', 1);
-        var accuracyMult = getMult('Accuracy', 1);
-        var adsMult = getMult('ADS / Handling', 1);
-        var fireRateMult = getMult('Fire Rate', 1);
-        var reloadSpeedMult = getMult('Reload Speed', 1);
-        var ammoMult = getMult('Ammo / Mag', 1);
-        var projMult = getMult('Projectiles', 1);
-        var rows = [
-          { name: 'Damage', value: formatStatValue(baseDamage, damageMult, 0, ''), note: 'Est. numeric (base from stats)' },
-          { name: 'Critical Damage', value: formatStatValue(100, critMult, 1, '%'), note: 'Est. crit bonus scale' },
-          { name: 'Elemental', value: formatStatValue(100, elementalMult, 1, '%'), note: 'Est. elemental effectiveness' },
-          { name: 'Accuracy', value: formatStatValue(100, accuracyMult, 1, '%'), note: 'Est. aim precision scale' },
-          { name: 'ADS', value: formatStatValue(100, adsMult, 1, '%'), note: 'Est. ADS responsiveness' },
-          { name: 'Handling', value: formatStatValue(100, adsMult, 1, '%'), note: 'Mapped from ADS/handling bucket' },
-          { name: 'Fire Rate', value: formatStatValue(10, fireRateMult, 2, ' /s'), note: 'Est. rounds per second' },
-          { name: 'Reload Speed', value: formatStatValue(100, reloadSpeedMult, 1, '%'), note: 'Higher is faster reload' },
-          { name: 'Ammo / Mag', value: formatStatValue(30, ammoMult, 1, ''), note: 'Est. mag size (base 30)' },
-          { name: 'Projectiles', value: formatStatValue(1, projMult, 2, ''), note: 'Est. projectiles per shot' }
-        ];
-        var anyHits = 0;
-        for (var rh = 0; rh < rows.length; rh++) {
-          var lname = rows[rh].name.toLowerCase();
-          if (lname === 'handling') lname = 'ads / handling';
-          anyHits += getHits(lname);
         }
         var bits = [];
-        bits.push("<div class=\"cc-final-estimates-title\">Estimated Final Stats</div>");
+        bits.push("<div class=\"cc-final-estimates-title\">Build Impact Overview</div>");
         bits.push("<div class=\"cc-final-estimates-grid\">");
         for (var rix = 0; rix < rows.length; rix++) {
           var rr = rows[rix];
           bits.push("<div class=\"cc-final-est-row\"><div class=\"cc-final-est-name\">" + esc(rr.name) + "</div><div class=\"cc-final-est-value\">" + esc(rr.value) + "</div><div class=\"cc-final-est-note\">" + esc(rr.note) + "</div></div>");
         }
         bits.push("</div>");
-        bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:8px;\">These are model estimates from your selected parts. They are useful for comparing builds and may differ from exact in-game card values.</div>");
-        if (!anyHits) bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:6px;\">No stat lines detected yet. Add/import parts to populate these estimates.</div>");
+        bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:8px;\">Plain-language comparison against a neutral 1.000 scale. Exact scales remain in the cards above; raw offsets and alternate table contexts remain in the detailed sections below.</div>");
+        if (!rows.length) bits.push("<div class=\"cc-final-est-note\" style=\"margin-top:6px;\">There are no reliable scale effects to interpret for this build.</div>");
         finalPanel.innerHTML = bits.join("");
       } catch (e0) {
-        finalPanel.innerHTML = "<div class=\"cc-final-estimates-title\">Estimated Final Stats</div><p class=\"cc-full-stats-empty\">" + esc(String(e0 && e0.message)) + "</p>";
+        finalPanel.innerHTML = "<div class=\"cc-final-estimates-title\">Build Impact Overview</div><p class=\"cc-full-stats-empty\">" + esc(String(e0 && e0.message)) + "</p>";
       }
     }
     var fullPanel = byId("buildStatsFullStats");
@@ -1121,7 +1194,7 @@
             ["ads", "ADS / Handling"], ["firerate", "Fire Rate"], ["reload_time", "Reload (time)"], ["reload_speed", "Reload (speed)"],
             ["ammo_mag", "Ammo / Mag"], ["projectiles", "Projectiles"]
           ];
-          var parts = ["<details class=\"cc-bucket-details\"><summary>How scale contributions combine (per source line)</summary>"];
+          var parts = ["<details class=\"cc-bucket-details\"><summary>How modifiers combine (per source effect)</summary>"];
           var any = false;
           for (var bi = 0; bi < order.length; bi++) {
             var bk = lastBuckets[order[bi][0]];
@@ -1131,8 +1204,15 @@
             for (var ci = 0; ci < bk.contributions.length; ci++) {
               var c = bk.contributions[ci];
               var ma = "";
-              if (c.multApplied != null && Number.isFinite(Number(c.multApplied))) ma = " \u2192 applied scale " + Number(c.multApplied).toFixed(4);
-              else if (c.combine) ma = " [" + esc(c.combine) + "]";
+              if (String(c.combine || "").toLowerCase() === "add" && Number.isFinite(Number(c.rawValue))) {
+                ma = " \u2192 additive " + signedNumber(Number(c.rawValue) * 100, "%", 1);
+              } else if (String(c.combine || "").toLowerCase() === "value" && Number.isFinite(Number(c.rawValue))) {
+                ma = " \u2192 engine offset " + signedNumber(c.rawValue, "", 3);
+              } else if (c.multApplied != null && Number.isFinite(Number(c.multApplied))) {
+                ma = " \u2192 scale \u00d7" + readableNumber(c.multApplied, 4);
+              } else if (c.combine) {
+                ma = " [" + esc(c.combine) + "]";
+              }
               parts.push("<div class=\"cc-bucket-line\"><strong>" + esc(c.part || "") + "</strong> <span class=\"cc-bucket-src\">" + esc(c.source || "") + "</span><br>" + esc(c.detail || "") + ma + "</div>");
             }
             parts.push("</div>");

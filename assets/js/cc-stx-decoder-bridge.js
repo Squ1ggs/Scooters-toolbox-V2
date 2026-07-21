@@ -192,8 +192,8 @@
       }
       return;
     }
-    /* Warm the iframe early so Convert does not race the first decode. */
-    getIframe();
+    /* Do not warm the iframe here — bl4-bulk-decoder pulls ~9MB WASM + PARTS_DB.
+       decodeSerialsViaBridge() creates it on first faithful (non-local) decode. */
   };
 
   function looksDeserializedSerial(s) {
@@ -334,7 +334,7 @@
     });
   };
 
-  /* Prefetch decoder so the first Convert is less likely to hit the wait loop. */
+  /* Prefetch comment: Convert prefers local base85 — do not warm the heavy decoder iframe on load. */
   try {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function () {
