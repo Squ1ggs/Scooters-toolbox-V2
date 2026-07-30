@@ -833,12 +833,14 @@
     if (catSel) catSel.addEventListener("change", loadPresetParts);
     if (addBtn) addBtn.addEventListener("click", addPresetPart);
     var randBtn = byId("rebuildRandomFullBuildBtn");
-    if (randBtn) {
+    if (randBtn && !randBtn.__moddedGenWired) {
+      randBtn.__moddedGenWired = true;
       randBtn.onclick = function () {
         var repEl = byId("rebuildRandomRepeat");
         var n = repEl ? parseInt(String(repEl.value || "1"), 10) : 1;
         if (!Number.isFinite(n) || n < 1) n = 1;
-        if (n > 50) n = 50;
+        if (n > 100) n = 100;
+        if (repEl) repEl.value = String(n);
         if (n > 1 && typeof window.randomFullBuildBatch === "function") {
           window.randomFullBuildBatch(n);
         } else if (typeof window.randomFullBuild === "function") {

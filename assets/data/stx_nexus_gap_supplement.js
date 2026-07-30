@@ -1,24 +1,12 @@
 (function(){
   'use strict';
   var add = [
-  {
-    "category": "Weapon",
-    "manufacturer": "",
-    "itemType": "Weapon",
-    "weaponType": "",
-    "partType": "Rarity",
-    "code": "\"weapon_soldier_sprayer.comp_soldier_sprayer_0\"",
-    "name": "Comp Soldier Sprayer 0",
-    "source": "export_spawn_catalog",
-    "dataNote": "From inv deps (full export catalog).",
-    "scanSources": [
-      "inv_deps"
-    ]
-  }
+
   ];
   function merge(){
     try{
-      var ds = (window.STX_DATASET = window.STX_DATASET || []);
+      var ds = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) ? window.STX_DATASET.ALL_PARTS : null;
+      if (!ds) { setTimeout(merge, 25); return; }
       var have = new Set();
       for (var i=0;i<ds.length;i++){
         var p = ds[i];
@@ -33,6 +21,11 @@
         if (!rc || have.has(rc)) continue;
         ds.push(r);
         have.add(rc);
+      }
+      if (add.length){
+        try{ window.GUN_PARTS = window.GRENADE_PARTS = window.SHIELD_PARTS = window.REPKIT_PARTS = window.ENHANCEMENT_PARTS = window.HEAVY_PARTS = window.CLASSMOD_PARTS = undefined; }catch(_e){}
+        try{ if (typeof window.ensurePartPools === 'function') window.ensurePartPools(); }catch(_e){}
+        try{ window.__ccStablePartRenderStateV1 = null; }catch(_e){}
       }
     }catch(_e){}
   }

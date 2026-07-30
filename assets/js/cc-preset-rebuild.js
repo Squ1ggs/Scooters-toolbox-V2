@@ -118,10 +118,15 @@
 
   window.applyUpdatedYAMLToEditors = function (updatedYAML) {
     if (!updatedYAML) return;
-    var ta = yamlTextarea();
-    if (ta) ta.value = String(updatedYAML);
+    if (typeof window.setYamlText === 'function') window.setYamlText(String(updatedYAML));
+    else {
+      var ta = yamlTextarea();
+      if (ta) ta.value = String(updatedYAML);
+      if (typeof window.invalidateYamlParseCache === 'function') window.invalidateYamlParseCache();
+    }
     try {
-      if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
+      if (typeof window.scheduleSyncYamlToFields === 'function') window.scheduleSyncYamlToFields(60);
+      else if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
       if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
       if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
       if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
@@ -131,6 +136,7 @@
 
   window.commitYamlDataToEditor = function (data) {
     try {
+      if (typeof window.invalidateYamlParseCache === 'function') window.invalidateYamlParseCache();
       if (typeof window.normalizeYamlExperiencePointsInData === 'function') {
         try {
           window.normalizeYamlExperiencePointsInData(data);

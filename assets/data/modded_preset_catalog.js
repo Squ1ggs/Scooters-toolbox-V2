@@ -30,6 +30,9 @@
         { key: 22, value: '72', perStack: 1.08, note: 'VLA SMG barrel +Damage — extreme stacks in wild (64–1096)', moddedMax: 1096, stackExamples: stacks(1.08, T) },
         { key: 9, value: '28', perStack: 1.05, note: 'Universal +Damage (scope acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
         { key: 9, value: '55', perStack: 1.05, note: 'Universal +Damage (barrel acc)', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '59', perStack: 1.05, note: 'Universal +Damage accessory', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '62', perStack: 1.05, note: 'Universal +Damage accessory', moddedMax: 64, stackExamples: stacks(1.05, T) },
+        { key: 9, value: '68', perStack: 1.05, note: 'Universal +Damage accessory', moddedMax: 64, stackExamples: stacks(1.05, T) },
         { key: 13, value: '13', perStack: 1.05, note: 'Daedalus AR barrel 02 +Damage', moddedMax: 237, stackExamples: stacks(1.05, T) },
         { key: 7, value: '66', perStack: 1.05, note: 'Jakobs SG barrel +Damage', moddedMax: 180, stackExamples: stacks(1.05, T) },
         { key: 13, value: '9', perStack: 1.05, note: 'Daedalus AR barrel +Damage', moddedMax: 26, stackExamples: stacks(1.05, T) },
@@ -58,6 +61,11 @@
       accuracy: [
         { key: 13, value: '12', perStack: 1.05, note: 'DAD AR barrel +Accuracy', moddedMax: 26, stackExamples: stacks(1.05, T) },
         { key: 9, value: '48', perStack: 1.05, note: 'Universal +Accuracy', stackExamples: stacks(1.05, T) },
+      ],
+      ads: [
+        { key: 21, value: '25', perStack: 1.05, note: 'ADS / handling stack', moddedMax: 48, stackExamples: stacks(1.05, T) },
+        { key: 15, value: '2', perStack: 1.05, note: 'ADS accessory stack', moddedMax: 32, stackExamples: stacks(1.05, T) },
+        { key: 2, value: '15', perStack: 1.03, note: 'DAD PS mag / handling context', moddedMax: 42, stackExamples: stacks(1.03, T) },
       ],
       splash: [
         { key: 6, value: '33', perStack: 2, note: 'TOR PS +Blast Radius — extreme stacks', moddedMax: 110, stackExamples: stacks(2, T) },

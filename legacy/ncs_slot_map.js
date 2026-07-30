@@ -666,7 +666,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Vladof",
       "ncs_slots": [
         "rarity",
-        "body",
+        "Body",
         "body_acc",
         "body_ele",
         "barrel",
@@ -725,7 +725,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Jakobs",
       "ncs_slots": [
         "rarity",
-        "body",
+        "Body",
         "body_acc",
         "barrel",
         "barrel_acc",
@@ -749,7 +749,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Maliwan",
       "ncs_slots": [
         "rarity",
-        "body",
+        "Body",
         "body_acc",
         "body_ele",
         "barrel",
@@ -887,7 +887,7 @@ const NCS_SLOT_MAP = {
       "manufacturer": "Vladof",
       "ncs_slots": [
         "rarity",
-        "body",
+        "Body",
         "body_acc",
         "body_ele",
         "barrel",
@@ -1783,12 +1783,11 @@ const NCS_SLOT_MAP = {
       "type": "weapon_gadget_turret",
       "manufacturer": null,
       "ncs_slots": [
+        "rarity",
         "body",
-        "secondary_augment",
-        "body_ele",
-        "underbarrel"
+        "body_ele"
       ],
-      "ncs_slot_count": 4
+      "ncs_slot_count": 3
     },
     "classmod_dark_siren": {
       "ncs_id": "ClassMod_DarkSiren",

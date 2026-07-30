@@ -97,11 +97,64 @@ textarea.stx-yaml-drop-target.stx-yaml-drop-hover {
   flex-shrink: 0;
   filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(5000%) hue-rotate(343deg) brightness(1.02) contrast(1.05);
 }
+.stx-vc4-update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 0.92em;
+  font-weight: 700;
+  color: rgba(255, 220, 240, 0.96);
+  background: linear-gradient(90deg, rgba(255, 0, 200, 0.12) 0%, rgba(0, 243, 255, 0.1) 50%, rgba(255, 0, 200, 0.12) 100%);
+  border-bottom: 1px solid rgba(255, 0, 200, 0.35);
+  box-shadow: 0 1px 0 rgba(0, 243, 255, 0.12);
+}
+.stx-vc4-update-banner img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
 #ccProfileYamlTools .yaml-profile-vc-grid {
   display: grid;
-  gap: 12px 14px;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  align-items: start;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  align-items: stretch;
+}
+#ccProfileYamlTools .yaml-profile-vc-card {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 200, 255, 0.22);
+  background: rgba(0, 12, 24, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#ccProfileYamlTools .yaml-profile-vc-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #7dfff0;
+  font-weight: 800;
+  font-size: 0.88em;
+  line-height: 1.2;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+}
+#ccProfileYamlTools .yaml-profile-vc-card-head img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+#ccProfileYamlTools .yaml-profile-vc-section-title {
+  color: #7dfff0;
+  font-weight: 700;
+  font-size: 0.9em;
+  margin: 12px 0 8px;
 }
 #ccProfileYamlTools .yaml-profile-vc-grid > div {
   min-width: 0;
@@ -412,6 +465,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div class="bv-header-actions">
 <a class='btn btn--brand' href='../index.html'>← Full toolbox</a>
 <a class='btn btn--brand' href='../legacy/legit-builder.html' rel='noopener noreferrer' target='_blank'>Legit Builder</a>
+<a class='btn btn--brand' href='./parts-stats-catalog.html' rel='noopener noreferrer' target='_blank' title='Human-readable part stats catalog with deep per-part engine rows'>Parts stats catalog</a>
+<a class='btn btn--brand' href='../legacy/prefix-lookup.html' rel='noopener noreferrer' target='_blank' title='Enhancement prefix lookup and stat bucket index'>Prefix Lookup</a>
+<a class='btn btn--brand' href='./loot-reference.html' rel='noopener noreferrer' target='_blank' title='Boss drops, parts browser, skins, enemy tiers'>Loot reference</a>
 <a class='btn btn--brand' href='./bulk-serial-validator.html' rel='noopener noreferrer' target='_blank'>Bulk serial validator</a>
 <a class='btn btn--brand' href='../legacy/bl4-bulk-decoder.html' rel='noopener noreferrer' target='_blank'>Bulk decoder</a>
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
@@ -441,6 +497,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </details>
 </div>
 </header>
+<div class="stx-vc4-update-banner" id="stxVc4UpdateBanner" role="status">
+<img alt="" decoding="async" height="24" loading="lazy" src="./img/ui/ico_ui_art_currency_vc4.png" width="24"/>
+<span>Updated for Vault card 4</span>
+</div>
 <script>
 (function () {
   var menu = document.getElementById('stxInstructionsMenuYaml');
@@ -626,30 +686,37 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <input id="yaml-profile-vh-current" max="7" min="0" name="yaml-profile-vh-current" placeholder="e.g. 7" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
 </div>
-<div class="yaml-profile-vc-grid" style="margin-top:12px;">
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens" title="domains.local.shared.currencies.vaultcard01_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_01.png" width="22"/><span>Vault Card 1 tokens</span></label>
+<div class="yaml-profile-vc-section">
+<div class="yaml-profile-vc-section-title">Vault Cards</div>
+<div class="yaml-profile-vc-grid">
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./img/ui/ico_vault_card_01.png" width="24"/><span>Vault Card 1</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens" title="domains.local.shared.currencies.vaultcard01_tokens"><span>Tokens</span></label>
 <input id="yaml-profile-vaultcard01-tokens" min="0" name="yaml-profile-vaultcard01-tokens" placeholder="vaultcard01_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard02-tokens" title="domains.local.shared.currencies.vaultcard02_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_02.png" width="22"/><span>Vault Card 2 tokens</span></label>
-<input id="yaml-profile-vaultcard02-tokens" min="0" name="yaml-profile-vaultcard02-tokens" placeholder="vaultcard02_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard03-tokens" title="domains.local.shared.currencies.vaultcard03_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_03.png" width="22"/><span>Vault Card 3 tokens</span></label>
-<input id="yaml-profile-vaultcard03-tokens" min="0" name="yaml-profile-vaultcard03-tokens" placeholder="vaultcard03_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc01-level" title="VaultCard01_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_01.png" width="22"/><span>Vault Card 1 level</span></label>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc01-level" title="VaultCard01_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc01-level" min="0" name="yaml-profile-vc01-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc02-level" title="VaultCard02_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_02.png" width="22"/><span>Vault Card 2 level</span></label>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./img/ui/ico_vault_card_02.png" width="24"/><span>Vault Card 2</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard02-tokens" title="domains.local.shared.currencies.vaultcard02_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard02-tokens" min="0" name="yaml-profile-vaultcard02-tokens" placeholder="vaultcard02_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc02-level" title="VaultCard02_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc02-level" min="0" name="yaml-profile-vc02-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc03-level" title="VaultCard03_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./img/ui/ico_vault_card_03.png" width="22"/><span>Vault Card 3 level</span></label>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./img/ui/ico_ui_art_currency_vc3.png" width="24"/><span>Vault Card 3</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard03-tokens" title="domains.local.shared.currencies.vaultcard03_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard03-tokens" min="0" name="yaml-profile-vaultcard03-tokens" placeholder="vaultcard03_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc03-level" title="VaultCard03_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc03-level" min="0" name="yaml-profile-vc03-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./img/ui/ico_ui_art_currency_vc4.png" width="24"/><span>Vault Card 4</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard04-tokens" title="domains.local.shared.currencies.vaultcard04_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard04-tokens" min="0" name="yaml-profile-vaultcard04-tokens" placeholder="vaultcard04_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc04-level" title="VaultCard04_Experience"><span>Level</span></label>
+<input id="yaml-profile-vc04-level" min="0" name="yaml-profile-vc04-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
 </div>
 </div>
 <div style="margin-top:10px;">
@@ -857,6 +924,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
 <button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Sends found serials to the bulk decoder and starts decoding." type="button">Open serials in bulk decoder</button>
 <button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends this YAML to the bulk decoder (max ~4MB)." type="button">Open full YAML in bulk decoder</button>
+<button class="btn btn-Firmware" id="yaml-serials-open-validator-btn" title="Sends found serials to the bulk serial validator (Legit Builder checks)." type="button">Validate serials in bulk</button>
+<button class="btn" id="yaml-serials-open-validator-yaml-btn" title="Sends this YAML to the bulk serial validator (max ~4MB)." type="button">Validate full YAML in bulk</button>
 </div>
 <div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Duplicate backpack or bank</div>
@@ -1021,10 +1090,14 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
       if (!f) return;
       var r = new FileReader();
       r.onload = function () {
-        var ta = byId('yamlInput');
-        if (ta) ta.value = r.result;
+        if (typeof window.setYamlText === 'function') window.setYamlText(r.result);
+        else {
+          var ta = byId('yamlInput');
+          if (ta) ta.value = r.result;
+        }
         if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
-        if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
+        if (typeof window.scheduleSyncYamlToFields === 'function') window.scheduleSyncYamlToFields(80);
+        else if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
         if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
         if (typeof window.__ccRenderRuntimeStatus === 'function') window.__ccRenderRuntimeStatus();
       };

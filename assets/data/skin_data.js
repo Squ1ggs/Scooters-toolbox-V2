@@ -102,10 +102,10 @@
     { value: "Cosmetics_Weapon_Shiny_convergence", label: "Phosphene — Convergence" },
     { value: "Cosmetics_Weapon_Shiny_cormano", label: "Phosphene — Cormano" },
     { value: "Cosmetics_Weapon_Shiny_Cormano", label: "Phosphene — Cormano" },
-    { value: "Cosmetics_Weapon_Shiny_crazedEarl", label: "Pearlescent + phosphene — Crazed Earl" },
-    { value: "Cosmetics_Weapon_Shiny_crowsourced", label: "Pearlescent — Crow-Sourced (no phosphene)" },
-    { value: "Cosmetics_Weapon_Shiny_CrowdSourced", label: "Phosphene — Midnight Defiance (Vladof SR; not Crow-Sourced AR)" },
+    { value: "Cosmetics_Weapon_Shiny_crazedEarl", label: "Pearlescent — Crazed Earl (no phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_crowdsourced", label: "Phosphene — Midnight Defiance (Vladof SR; not Crow-Sourced AR)" },
+    { value: "Cosmetics_Weapon_Shiny_CrowdSourced", label: "Phosphene — Midnight Defiance (Vladof SR; not Crow-Sourced AR)" },
+    { value: "Cosmetics_Weapon_Shiny_crowsourced", label: "Pearlescent — Crow-Sourced (no phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_dahlfather", label: "Phosphene — Dahlfather" },
     { value: "Cosmetics_Weapon_Shiny_Demo", label: "Phosphene — Hair Trigger (legendary; not pearl)" },
     { value: "Cosmetics_Weapon_Shiny_discybusiness", label: "Phosphene — Discy Business" },
@@ -150,6 +150,7 @@
     { value: "Cosmetics_Weapon_Shiny_Inscriber", label: "Phosphene — Inscriber" },
     { value: "Cosmetics_Weapon_Shiny_ishmael", label: "Phosphene — Ishmael" },
     { value: "Cosmetics_Weapon_Shiny_Ishmael", label: "Phosphene — Ishmael" },
+    { value: "Cosmetics_Weapon_Shiny_jailbroken", label: "Pearlescent — Jail-Broken Gatling (no phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_Jailbroken", label: "Pearlescent — Jail-Broken Gatling (no phosphene)" },
     { value: "Cosmetics_Weapon_Shiny_kaleidosplode", label: "Phosphene — Kaleidosplode" },
     { value: "Cosmetics_Weapon_Shiny_Kaleidosplode", label: "Phosphene — Kaleidosplode" },
@@ -227,6 +228,7 @@
     { value: "Cosmetics_Weapon_Shiny_seamstress", label: "Phosphene — Rooker" },
     { value: "Cosmetics_Weapon_Shiny_seventh_sense", label: "Phosphene — Seventh Sense" },
     { value: "Cosmetics_Weapon_Shiny_Shalashaska", label: "Phosphene — Shalashaska (legendary; not pearl)" },
+    { value: "Cosmetics_Weapon_Shiny_shammy", label: "Phosphene — Shammy" },
     { value: "Cosmetics_Weapon_Shiny_Shammy", label: "Phosphene — Shammy" },
     { value: "Cosmetics_Weapon_Shiny_shoals", label: "Phosphene — Shoals" },
     { value: "Cosmetics_Weapon_Shiny_sideshow", label: "Phosphene — Sideshow" },
@@ -261,9 +263,7 @@
     { value: "Cosmetics_Weapon_Shiny_wombocombo", label: "Phosphene — Wombo Combo" },
     { value: "Cosmetics_Weapon_Shiny_WomboCombo", label: "Phosphene — Wombo Combo" },
     { value: "Cosmetics_Weapon_Shiny_zipgun", label: "Phosphene — Zipper" },
-    { value: "Cosmetics_Weapon_Shiny_Zipgun", label: "Phosphene — Zipper" },
-    { value: "Cosmetics_Weapon_Shiny_jailbroken", label: "Pearlescent — Jail-Broken Gatling (no phosphene)" },
-    { value: "Cosmetics_Weapon_Shiny_shammy", label: "Phosphene — Shammy" }
+    { value: "Cosmetics_Weapon_Shiny_Zipgun", label: "Phosphene — Zipper" }
   ];
 
 var EXTRA_SKINS = [
@@ -442,7 +442,9 @@ var EXTRA_SKINS = [
     { name: "Shoals", code: "{3:85}" },
     { name: "Sunspot", code: "{4:83}" },
     { name: "Solar Temper", code: "{26:84}" },
-    { name: "Unstable Kor", code: "{12:77}" }
+    { name: "Unstable Kor", code: "{12:77}" },
+    { name: "Lightgun", code: "{16:91}" },
+    { name: "Loarmaster", code: "{20:68}" }
   ];
 
   // Mat01–39: |"c",N| = 111 − matNum (Mat01=110 … Mat39=72). Mat40–62: provisional 116–138

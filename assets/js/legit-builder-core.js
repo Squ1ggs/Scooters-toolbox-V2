@@ -3568,7 +3568,7 @@
       }
       if (opts.partOrderMismatches && opts.partOrderMismatches.length) {
         details.push('Part order mismatch vs NCS: ' + opts.partOrderMismatches.join('; '));
-        /* Bulk: FYI only — our NCS subsequence check is far noisier than save-editor.be
+        /* Bulk: FYI only — our NCS subsequence check is far noisier than hosted
            (they report ~single-digit Order Issues on large banks). Interactive: Uncertain. */
         if (!bulkAudit) {
           if (status !== 'err') {

@@ -39,7 +39,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 11,
+        "option_count": 15,
         "options": [
           {
             "index": 1,
@@ -94,6 +94,26 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 11,
             "name": "leg_body_cowbell",
+            "in_pool": true
+          },
+          {
+            "index": 12,
+            "name": "leg_body_harmonica",
+            "in_pool": true
+          },
+          {
+            "index": 13,
+            "name": "leg_body_tuba",
+            "in_pool": true
+          },
+          {
+            "index": 14,
+            "name": "leg_body_dlc1",
+            "in_pool": true
+          },
+          {
+            "index": 15,
+            "name": "leg_body_dlc2",
             "in_pool": true
           }
         ]
@@ -177,7 +197,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 11,
+        "option_count": 15,
         "options": [
           {
             "index": 1,
@@ -232,6 +252,26 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 11,
             "name": "leg_body_cowbell",
+            "in_pool": true
+          },
+          {
+            "index": 12,
+            "name": "leg_body_harmonica",
+            "in_pool": true
+          },
+          {
+            "index": 13,
+            "name": "leg_body_tuba",
+            "in_pool": true
+          },
+          {
+            "index": 14,
+            "name": "leg_body_dlc1",
+            "in_pool": true
+          },
+          {
+            "index": 15,
+            "name": "leg_body_dlc2",
             "in_pool": true
           }
         ]
@@ -315,7 +355,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 11,
+        "option_count": 15,
         "options": [
           {
             "index": 1,
@@ -370,6 +410,26 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 11,
             "name": "leg_body_cowbell",
+            "in_pool": true
+          },
+          {
+            "index": 12,
+            "name": "leg_body_harmonica",
+            "in_pool": true
+          },
+          {
+            "index": 13,
+            "name": "leg_body_tuba",
+            "in_pool": true
+          },
+          {
+            "index": 14,
+            "name": "leg_body_dlc1",
+            "in_pool": true
+          },
+          {
+            "index": 15,
+            "name": "leg_body_dlc2",
             "in_pool": true
           }
         ]
@@ -453,7 +513,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 11,
+        "option_count": 15,
         "options": [
           {
             "index": 1,
@@ -508,6 +568,26 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 11,
             "name": "leg_body_cowbell",
+            "in_pool": true
+          },
+          {
+            "index": 12,
+            "name": "leg_body_harmonica",
+            "in_pool": true
+          },
+          {
+            "index": 13,
+            "name": "leg_body_tuba",
+            "in_pool": true
+          },
+          {
+            "index": 14,
+            "name": "leg_body_dlc1",
+            "in_pool": true
+          },
+          {
+            "index": 15,
+            "name": "leg_body_dlc2",
             "in_pool": true
           }
         ]
@@ -591,7 +671,7 @@ var CLASSMOD_MANIFEST_ITEMS = [
       },
       "class_mod": {
         "parts_per_slot": 1,
-        "option_count": 9,
+        "option_count": 10,
         "options": [
           {
             "index": 1,
@@ -636,6 +716,11 @@ var CLASSMOD_MANIFEST_ITEMS = [
           {
             "index": 9,
             "name": "leg_body_dlc1",
+            "in_pool": true
+          },
+          {
+            "index": 10,
+            "name": "leg_body_tuba",
             "in_pool": true
           }
         ]

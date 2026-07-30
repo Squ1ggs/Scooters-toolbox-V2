@@ -18,7 +18,16 @@
     var el = yamlTextarea();
     return { el: el, text: el ? (el.value || '') : '' };
   };
+  var __yamlParseCacheText = '';
+  var __yamlParseCacheData = null;
+  function invalidateYamlParseCache() {
+    __yamlParseCacheText = '';
+    __yamlParseCacheData = null;
+  }
+  window.invalidateYamlParseCache = invalidateYamlParseCache;
+
   window.setYamlText = function (text) {
+    invalidateYamlParseCache();
     var el = yamlTextarea();
     if (el) el.value = text;
   };
@@ -105,6 +114,7 @@
     var text = (t && typeof t === 'object' && t.text !== undefined) ? t.text : (typeof t === 'string' ? t : '');
     if (!text || !text.trim()) return null;
     text = sanitizeYamlForParse(text);
+    if (text === __yamlParseCacheText && __yamlParseCacheData) return __yamlParseCacheData;
     var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
     if (!y || typeof y.load !== 'function') return null;
     var attempts = [];
@@ -118,6 +128,8 @@
         var data = y.load(text, attempts[i]);
         if (data && typeof data === 'object') {
           normalizeYamlExperiencePointsInData(data);
+          __yamlParseCacheText = text;
+          __yamlParseCacheData = data;
           return data;
         }
       } catch (e) {
@@ -336,9 +348,11 @@
       var vc01El = byId('yaml-profile-vc01-level');
       var vc02El = byId('yaml-profile-vc02-level');
       var vc03El = byId('yaml-profile-vc03-level');
+      var vc04El = byId('yaml-profile-vc04-level');
       var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
       var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
       var vcTok3El = byId('yaml-profile-vaultcard03-tokens');
+      var vcTok4El = byId('yaml-profile-vaultcard04-tokens');
       var echoTokEl = byId('yaml-profile-echotoken-points');
       if (data.globals && typeof data.globals === 'object') {
         var gvh = data.globals.highest_unlocked_vault_hunter_level;
@@ -386,13 +400,16 @@
         var e1 = sharedExpByType('VaultCard01_Experience');
         var e2 = sharedExpByType('VaultCard02_Experience');
         var e3 = sharedExpByType('VaultCard03_Experience');
-        if (vc01El && e1 && e1.level != null) vc01El.value = String(e1.level);
-        if (vc02El && e2 && e2.level != null) vc02El.value = String(e2.level);
-        if (vc03El && e3 && e3.level != null) vc03El.value = String(e3.level);
+        var e4 = sharedExpByType('VaultCard04_Experience');
+        if (vc01El) vc01El.value = (e1 && e1.level != null) ? String(e1.level) : '';
+        if (vc02El) vc02El.value = (e2 && e2.level != null) ? String(e2.level) : '';
+        if (vc03El) vc03El.value = (e3 && e3.level != null) ? String(e3.level) : '';
+        if (vc04El) vc04El.value = (e4 && e4.level != null) ? String(e4.level) : '';
         var cur = sh.currencies || {};
-        if (vcTok1El && cur.vaultcard01_tokens != null) vcTok1El.value = String(cur.vaultcard01_tokens);
-        if (vcTok2El && cur.vaultcard02_tokens != null) vcTok2El.value = String(cur.vaultcard02_tokens);
-        if (vcTok3El && cur.vaultcard03_tokens != null) vcTok3El.value = String(cur.vaultcard03_tokens);
+        if (vcTok1El) vcTok1El.value = (cur.vaultcard01_tokens != null) ? String(cur.vaultcard01_tokens) : '';
+        if (vcTok2El) vcTok2El.value = (cur.vaultcard02_tokens != null) ? String(cur.vaultcard02_tokens) : '';
+        if (vcTok3El) vcTok3El.value = (cur.vaultcard03_tokens != null) ? String(cur.vaultcard03_tokens) : '';
+        if (vcTok4El) vcTok4El.value = (cur.vaultcard04_tokens != null) ? String(cur.vaultcard04_tokens) : '';
       }
       var progShared = data.domains && data.domains.local && data.domains.local.progression_shared;
       if (echoTokEl && progShared && progShared.point_pools && progShared.point_pools.echotokenprogresspoints != null) {
@@ -419,6 +436,23 @@
         if (achTaClear) achTaClear.value = '';
       }
     } catch (_e) {}
+  };
+  var syncFieldsTimer = null;
+  window.scheduleSyncYamlToFields = function (delay) {
+    if (delay == null) {
+      var ta = yamlTextarea();
+      var len = ta && ta.value ? ta.value.length : 0;
+      if (len > 500000) delay = 500;
+      else if (len > 200000) delay = 350;
+      else if (len > 80000) delay = 250;
+      else if (len > 30000) delay = 180;
+      else delay = 120;
+    }
+    if (syncFieldsTimer) clearTimeout(syncFieldsTimer);
+    syncFieldsTimer = setTimeout(function () {
+      syncFieldsTimer = null;
+      if (window.syncYamlToFields) window.syncYamlToFields();
+    }, delay);
   };
   window.setYAMLDifficulty = function (mode) {
     var ta = yamlTextarea();
@@ -523,6 +557,57 @@
     return Math.max(0, Math.min(max, n));
   }
 
+  function ensureSharedProfileBlock(data) {
+    data.domains = data.domains || {};
+    data.domains.local = data.domains.local || {};
+    data.domains.local.shared = data.domains.local.shared || {};
+    return data.domains.local.shared;
+  }
+
+  function ensureSharedExperienceArray(sh) {
+    if (!Array.isArray(sh.experience)) sh.experience = [];
+    return sh.experience;
+  }
+
+  function sharedExpEntry(sh, typeName) {
+    var ex = sh && sh.experience;
+    if (!Array.isArray(ex) || !typeName) return null;
+    for (var i = 0; i < ex.length; i++) {
+      var en = ex[i];
+      if (en && String(en.type || '') === typeName) return en;
+    }
+    return null;
+  }
+
+  function upsertVaultCardLevel(arr, typeName, level) {
+    if (level == null || !Array.isArray(arr) || !typeName) return false;
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] && String(arr[i].type || '') === typeName) {
+        arr[i].level = level;
+        return false;
+      }
+    }
+    arr.push({ type: typeName, level: level, points: 0 });
+    return true;
+  }
+
+  /** Minimal VC4 rows when a profile has no Vault Card 4 yet (matches fresh game saves). */
+  function ensureVaultCard04Scaffold(sh, level, tokens) {
+    if (!sh) return;
+    sh.currencies = sh.currencies || {};
+    var exp = ensureSharedExperienceArray(sh);
+    var hadExp = !!sharedExpEntry(sh, 'VaultCard04_Experience');
+    var hadTok = Object.prototype.hasOwnProperty.call(sh.currencies, 'vaultcard04_tokens');
+    if (tokens != null) sh.currencies.vaultcard04_tokens = tokens;
+    else if (!hadTok && level != null) sh.currencies.vaultcard04_tokens = 0;
+    if (level != null) {
+      var created = upsertVaultCardLevel(exp, 'VaultCard04_Experience', level);
+      if (created) hadExp = true;
+    } else if (!hadExp && tokens != null) {
+      upsertVaultCardLevel(exp, 'VaultCard04_Experience', 1);
+    }
+  }
+
   window.applyProfileYamlFieldChanges = function () {
     var data = window.getYamlDataFromEditor();
     if (!data) return alert('Load or paste a YAML file first.');
@@ -534,9 +619,11 @@
     var vc01El = byId('yaml-profile-vc01-level');
     var vc02El = byId('yaml-profile-vc02-level');
     var vc03El = byId('yaml-profile-vc03-level');
+    var vc04El = byId('yaml-profile-vc04-level');
     var vcTok1El = byId('yaml-profile-vaultcard01-tokens');
     var vcTok2El = byId('yaml-profile-vaultcard02-tokens');
     var vcTok3El = byId('yaml-profile-vaultcard03-tokens');
+    var vcTok4El = byId('yaml-profile-vaultcard04-tokens');
     var echoTokEl = byId('yaml-profile-echotoken-points');
     var vhProfUnlockedEl = byId('yaml-profile-vh-unlocked');
     var hu = parseOptionalInt(vhProfUnlockedEl);
@@ -547,13 +634,11 @@
       if (hu != null) data.globals.highest_unlocked_vault_hunter_level = clampVaultHunterLevel(hu);
       if (vlc != null) data.globals.vault_hunter_level = clampVaultHunterLevel(vlc);
     }
-    data.domains = data.domains || {};
-    data.domains.local = data.domains.local || {};
-    data.domains.local.shared = data.domains.local.shared || {};
-    var sh = data.domains.local.shared;
+    var sh = ensureSharedProfileBlock(data);
     var t1 = parseOptionalInt(vcTok1El);
     var t2 = parseOptionalInt(vcTok2El);
     var t3 = parseOptionalInt(vcTok3El);
+    var t4 = parseOptionalInt(vcTok4El);
     if (t1 != null || t2 != null || t3 != null) {
       sh.currencies = sh.currencies || {};
       if (t1 != null) sh.currencies.vaultcard01_tokens = t1;
@@ -563,18 +648,14 @@
     var l1 = parseOptionalInt(vc01El);
     var l2 = parseOptionalInt(vc02El);
     var l3 = parseOptionalInt(vc03El);
+    var l4 = parseOptionalInt(vc04El);
     if (l1 != null || l2 != null || l3 != null) {
-      sh.experience = Array.isArray(sh.experience) ? sh.experience : [];
-      function setVaultCardLevelIfPresent(arr, typeName, level) {
-        if (level == null || !Array.isArray(arr)) return;
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i] && String(arr[i].type || '') === typeName) { arr[i].level = level; return; }
-        }
-      }
-      setVaultCardLevelIfPresent(sh.experience, 'VaultCard01_Experience', l1);
-      setVaultCardLevelIfPresent(sh.experience, 'VaultCard02_Experience', l2);
-      setVaultCardLevelIfPresent(sh.experience, 'VaultCard03_Experience', l3);
+      var exp = ensureSharedExperienceArray(sh);
+      upsertVaultCardLevel(exp, 'VaultCard01_Experience', l1);
+      upsertVaultCardLevel(exp, 'VaultCard02_Experience', l2);
+      upsertVaultCardLevel(exp, 'VaultCard03_Experience', l3);
     }
+    if (l4 != null || t4 != null) ensureVaultCard04Scaffold(sh, l4, t4);
     var echoN = parseOptionalInt(echoTokEl);
     if (echoN != null) {
       data.domains.local.progression_shared = data.domains.local.progression_shared || {};
@@ -735,17 +816,33 @@
       });
     }
   }
+  function wireYamlSyncInput() {
+    var syncFn = window.scheduleSyncYamlToFields || window.syncYamlToFields;
+    if (!syncFn) return;
+    var ta1 = byId('yamlInput');
+    var ta2 = byId('fullYamlInput');
+    function onYamlEdit() { syncFn(); }
+    if (ta1 && ta1.dataset.ccYamlSyncWired !== '1') {
+      ta1.dataset.ccYamlSyncWired = '1';
+      ta1.addEventListener('input', onYamlEdit);
+      ta1.addEventListener('paste', onYamlEdit);
+    }
+    if (ta2 && ta2.dataset.ccYamlSyncWired !== '1') {
+      ta2.dataset.ccYamlSyncWired = '1';
+      ta2.addEventListener('input', onYamlEdit);
+      ta2.addEventListener('paste', onYamlEdit);
+    }
+  }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       setTimeout(function () {
         wire();
         updateButtons();
-        var ta = yamlTextarea();
-        if (ta) ta.addEventListener('input', function () { if (window.syncYamlToFields) window.syncYamlToFields(); });
+        wireYamlSyncInput();
       }, 50);
     });
   } else {
-    setTimeout(function () { wire(); updateButtons(); }, 50);
+    setTimeout(function () { wire(); updateButtons(); wireYamlSyncInput(); }, 50);
   }
 })();
 
@@ -842,6 +939,7 @@
       var newLines = lines.slice(0, headerIndex).concat(lines.slice(endIndex));
       var updated = newLines.join('\n');
       setYamlText(updated);
+      if (window.scheduleSyncYamlToFields) window.scheduleSyncYamlToFields(40);
       try {
         if (window.yamlBackpackData && typeof window.yamlBackpackData === 'object') delete window.yamlBackpackData[String(slotNum)];
         if (window.updatedYAMLBackpack && typeof window.updatedYAMLBackpack === 'object') delete window.updatedYAMLBackpack[String(slotNum)];
@@ -853,11 +951,6 @@
       return true;
     } catch (_e) { return false; }
   };
-  var yamlEl = byId('yamlInput');
-  if (yamlEl) {
-    yamlEl.addEventListener('input', function () { if (window.scheduleParseYAMLBackpack) window.scheduleParseYAMLBackpack(300); });
-    yamlEl.addEventListener('paste', function () { if (window.scheduleParseYAMLBackpack) window.scheduleParseYAMLBackpack(300); });
-  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { if (window.parseYAMLBackpack) window.parseYAMLBackpack(); });
   else setTimeout(function () { if (window.parseYAMLBackpack) window.parseYAMLBackpack(); }, 100);
 })();

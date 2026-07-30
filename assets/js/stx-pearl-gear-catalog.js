@@ -2,7 +2,7 @@
   'use strict';
   window.STX_PEARL_GEAR_CATALOG = {
   "version": "Raid 2 (May 2026)",
-  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "byNorm": {
     "jailbroken": {
       "name": "Jail-Broken Gatling",
@@ -490,6 +490,51 @@
         "firework",
         "juliet",
         "julietssparkle"
+      ]
+    },
+    "burrow": {
+      "name": "burrow",
+      "isPearlescent": true,
+      "weaponType": "",
+      "manufacturer": "",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "export_synced",
+      "notes": "Export-synced pearl (rarity_06_pearlescent).",
+      "expectedInv": "",
+      "spawnTokens": [
+        "burrow"
+      ]
+    },
+    "kaos": {
+      "name": "kaos",
+      "isPearlescent": true,
+      "weaponType": "",
+      "manufacturer": "",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "export_synced",
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
+      "expectedInv": "",
+      "spawnTokens": [
+        "kaos"
+      ]
+    },
+    "pchonk": {
+      "name": "pchonk",
+      "isPearlescent": true,
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Order",
+      "redText": "",
+      "ability": "",
+      "source": "",
+      "status": "export_synced",
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
+      "expectedInv": "ord_ar",
+      "spawnTokens": [
+        "pchonk"
       ]
     },
     "fleabag": {

@@ -1269,6 +1269,14 @@ const NCS_PARTS = {
       "index": 11
     },
     {
+      "name": "part_barb",
+      "index": 11
+    },
+    {
+      "name": "part_payload_pressurecooker",
+      "index": 11
+    },
+    {
       "name": "part_06_lingering_cryo",
       "index": 12
     },
@@ -1278,6 +1286,10 @@ const NCS_PARTS = {
     },
     {
       "name": "part_06_lingering_radiation",
+      "index": 14
+    },
+    {
+      "name": "part_ordinance",
       "index": 14
     },
     {
@@ -1428,6 +1440,10 @@ const NCS_PARTS = {
     },
     {
       "name": "part_02_divider_03_singularity",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_bloodiron",
       "index": 8
     },
     {
@@ -1980,6 +1996,22 @@ const NCS_PARTS = {
     },
     {
       "name": "part_aug_D_ShieldCharge",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_bloodiron",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_hugger",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_paleblood",
+      "index": 8
+    },
+    {
+      "name": "part_augment_unique_vitae",
       "index": 8
     },
     {
@@ -3169,6 +3201,10 @@ const NCS_PARTS = {
       "index": 11
     },
     {
+      "name": "part_unique_hydrowerks",
+      "index": 11
+    },
+    {
       "name": "part_unique_barrel_01_atlinggun",
       "index": 25
     },
@@ -3183,6 +3219,10 @@ const NCS_PARTS = {
     {
       "name": "part_unique_barrel_02_demo",
       "index": 55
+    },
+    {
+      "name": "part_unique_barrel_02_plumbbob",
+      "index": 59
     },
     {
       "name": "part_unique_barrel_02_convergence",
@@ -4009,6 +4049,10 @@ const NCS_PARTS = {
       "index": 8
     },
     {
+      "name": "comp_05_legendary_bloodiron",
+      "index": 9
+    },
+    {
       "name": "comp_05_legendary_disco_disc",
       "index": 9
     },
@@ -4118,6 +4162,14 @@ const NCS_PARTS = {
     },
     {
       "name": "comp_05_legendary_flare",
+      "index": 12
+    },
+    {
+      "name": "comp_05_legendary_hydrowerks",
+      "index": 12
+    },
+    {
+      "name": "comp_05_legendary_pressurecooker",
       "index": 12
     },
     {
@@ -4247,6 +4299,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_dahlfather",
       "index": 43
+    },
+    {
+      "name": "comp_05_legendary_loiter",
+      "index": 45
     },
     {
       "name": "comp_05_legendary_06",
@@ -4406,6 +4462,10 @@ const NCS_PARTS = {
     },
     {
       "name": "comp_05_legendary_luty",
+      "index": 65
+    },
+    {
+      "name": "comp_05_legendary_plumbbob",
       "index": 65
     },
     {
@@ -4573,6 +4633,10 @@ const NCS_PARTS = {
       "index": 79
     },
     {
+      "name": "comp_05_legendary_pchonk",
+      "index": 79
+    },
+    {
       "name": "comp_05_legendary_quickdraw",
       "index": 79
     },
@@ -4625,6 +4689,10 @@ const NCS_PARTS = {
       "index": 81
     },
     {
+      "name": "comp_05_legendary_testament",
+      "index": 81
+    },
+    {
       "name": "comp_05_legendary_cannonbrawl",
       "index": 82
     },
@@ -4639,6 +4707,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_ishmael",
       "index": 82
+    },
+    {
+      "name": "comp_05_legendary_burrow",
+      "index": 83
     },
     {
       "name": "comp_05_legendary_cormano",
@@ -4669,8 +4741,16 @@ const NCS_PARTS = {
       "index": 83
     },
     {
+      "name": "comp_05_legendary_stealth",
+      "index": 83
+    },
+    {
       "name": "comp_05_legendary_sunspot",
       "index": 83
+    },
+    {
+      "name": "comp_05_legendary_silversliver",
+      "index": 84
     },
     {
       "name": "comp_05_legendary_temper",
@@ -4745,6 +4825,10 @@ const NCS_PARTS = {
       "index": 90
     },
     {
+      "name": "comp_05_legendary_kaos",
+      "index": 91
+    },
+    {
       "name": "comp_05_legendary_lightgun",
       "index": 91
     },
@@ -4763,6 +4847,10 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_brickhouse",
       "index": 94
+    },
+    {
+      "name": "comp_05_legendary_earlyexcess",
+      "index": 99
     },
     {
       "name": "comp_05_legendary_bubbles",
@@ -4795,6 +4883,14 @@ const NCS_PARTS = {
     {
       "name": "comp_05_legendary_lasercutter",
       "index": 103
+    },
+    {
+      "name": "comp_05_legendary_verce",
+      "index": 104
+    },
+    {
+      "name": "comp_05_legendary_extinction",
+      "index": 105
     },
     {
       "name": "comp_05_legendary_raid1",
@@ -5077,6 +5173,10 @@ const NCS_PARTS = {
     {
       "name": "part_barrel_dahlfather",
       "index": 42
+    },
+    {
+      "name": "part_barrel_loiter",
+      "index": 44
     },
     {
       "name": "part_barrel_01_bod",
@@ -5407,6 +5507,10 @@ const NCS_PARTS = {
       "index": 80
     },
     {
+      "name": "part_barrel_02_pchonk",
+      "index": 80
+    },
+    {
       "name": "part_barrel_02_songbird",
       "index": 80
     },
@@ -5439,11 +5543,19 @@ const NCS_PARTS = {
       "index": 82
     },
     {
+      "name": "part_barrel_02_burrow",
+      "index": 82
+    },
+    {
       "name": "part_barrel_02_firework",
       "index": 82
     },
     {
       "name": "part_barrel_02_fishward",
+      "index": 82
+    },
+    {
+      "name": "part_barrel_02_testament",
       "index": 82
     },
     {
@@ -5457,6 +5569,10 @@ const NCS_PARTS = {
     {
       "name": "part_barrel_sunspot",
       "index": 82
+    },
+    {
+      "name": "part_barrel_01_silversliver",
+      "index": 83
     },
     {
       "name": "part_barrel_02_temper",
@@ -5476,6 +5592,10 @@ const NCS_PARTS = {
     },
     {
       "name": "part_barrel_02_roulette",
+      "index": 84
+    },
+    {
+      "name": "part_barrel_02_stealth",
       "index": 84
     },
     {
@@ -5523,6 +5643,10 @@ const NCS_PARTS = {
       "index": 88
     },
     {
+      "name": "part_barrel_02_kaos",
+      "index": 88
+    },
+    {
       "name": "part_barrel_01_sharkbait",
       "index": 89
     },
@@ -5547,6 +5671,10 @@ const NCS_PARTS = {
       "index": 93
     },
     {
+      "name": "part_barrel_02_earlyexcess",
+      "index": 94
+    },
+    {
       "name": "part_barrel_wf",
       "index": 94
     },
@@ -5569,6 +5697,14 @@ const NCS_PARTS = {
     {
       "name": "part_barrel_locust",
       "index": 103
+    },
+    {
+      "name": "part_barrel_verce",
+      "index": 103
+    },
+    {
+      "name": "part_barrel_01_extinction",
+      "index": 104
     }
   ],
   "foregrip": [
@@ -5741,6 +5877,10 @@ const NCS_PARTS = {
     {
       "name": "part_grip_05a_ted_legs_sharkbait",
       "index": 88
+    },
+    {
+      "name": "part_grip_05a_ted_legs_earlyexcess",
+      "index": 92
     }
   ],
   "magazine": [
@@ -6433,6 +6573,10 @@ const NCS_PARTS = {
     {
       "name": "part_underbarrel_02_wf_scrapcannon",
       "index": 92
+    },
+    {
+      "name": "part_underbarrel_02_rockets_earlyexcess",
+      "index": 93
     },
     {
       "name": "part_underbarrel_07_secondbarrel_lasercutter",

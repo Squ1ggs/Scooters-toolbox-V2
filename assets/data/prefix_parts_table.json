@@ -1,7 +1,7 @@
 {
-  "generated": "2026-07-09T22:50:54.251Z",
+  "generated": "2026-07-30T20:19:10.165Z",
   "source": "Nexus gbx_ue_data_table + inv_name_part + preferredparts",
-  "total_entries": 1362,
+  "total_entries": 1356,
   "by_prefix": {
     "X-Y Combo": [
       {
@@ -733,6 +733,13 @@
         "part_id": "np_cm_exo_08",
         "prefix": "Trooper",
         "required_parts": "np_cm_exo_08"
+      },
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_cm_grav_leg_raid1",
+        "prefix": "Trooper",
+        "required_parts": "np_cm_grav_leg_raid1"
       }
     ],
     "Vanguard": [
@@ -6498,10 +6505,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "default",
         "prefix": "-Provided",
-        "required_parts": "NewRow (default mag)"
+        "required_parts": "licensed_ted (default mag)"
       }
     ],
     "-Inspired": [
@@ -7691,10 +7698,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "borg_mag",
         "prefix": "-Stuffed",
-        "required_parts": "NewRow + borg_mag"
+        "required_parts": "licensed_ted + borg_mag"
       }
     ],
     "-Exploding": [
@@ -7702,10 +7709,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "cov_mag",
         "prefix": "-Exploding",
-        "required_parts": "NewRow + cov_mag"
+        "required_parts": "licensed_ted + cov_mag"
       }
     ],
     "-Jobbed": [
@@ -7713,10 +7720,10 @@
         "source": "gbx_ue_data_table",
         "table": "TOR_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "default",
         "prefix": "-Jobbed",
-        "required_parts": "NewRow (default mag)"
+        "required_parts": "licensed_ted (default mag)"
       }
     ],
     "Topping": [
@@ -8461,10 +8468,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "borg_mag",
         "prefix": "-Affixed",
-        "required_parts": "NewRow + borg_mag"
+        "required_parts": "licensed_ted + borg_mag"
       }
     ],
     "-Installed": [
@@ -8472,10 +8479,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "cov_mag",
         "prefix": "-Installed",
-        "required_parts": "NewRow + cov_mag"
+        "required_parts": "licensed_ted + cov_mag"
       }
     ],
     "-Wasted": [
@@ -8483,10 +8490,10 @@
         "source": "gbx_ue_data_table",
         "table": "VLA_Weapon_LicensedPartPrefix_Table",
         "type": "part_slot_mag",
-        "row_key": "NewRow",
+        "row_key": "licensed_ted",
         "col_key": "tor_mag",
         "prefix": "-Wasted",
-        "required_parts": "NewRow + tor_mag"
+        "required_parts": "licensed_ted + tor_mag"
       }
     ],
     "Party's": [
@@ -13416,6 +13423,24 @@
         "required_parts": "np_Inscriber"
       }
     ],
+    "Jetsetter": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_jetset",
+        "prefix": "Jetsetter",
+        "required_parts": "np_jetset"
+      }
+    ],
+    "Mantra": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_mantra",
+        "prefix": "Mantra",
+        "required_parts": "np_mantra"
+      }
+    ],
     "Missilaser": [
       {
         "source": "inv_name_part",
@@ -13432,6 +13457,15 @@
         "part_id": "np_Murder",
         "prefix": "Murmur",
         "required_parts": "np_Murder"
+      }
+    ],
+    "Rainmaker": [
+      {
+        "source": "inv_name_part",
+        "type": "part_display_name",
+        "part_id": "np_rainmaker",
+        "prefix": "Rainmaker",
+        "required_parts": "np_rainmaker"
       }
     ],
     "Healthraiser": [
@@ -13479,139 +13513,49 @@
         "required_parts": "np_skully"
       }
     ],
-    "Swan Song": [
+    "Undershield": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "NP_CannonBrawl",
-        "prefix": "Swan Song",
-        "required_parts": "NP_CannonBrawl"
+        "part_id": "np_undershield",
+        "prefix": "Undershield",
+        "required_parts": "np_undershield"
       }
     ],
-    "Living Weapon": [
+    "Urchin": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_ds_leg_tuba",
-        "prefix": "Living Weapon",
-        "required_parts": "np_cm_ds_leg_tuba"
+        "part_id": "np_urchin",
+        "prefix": "Urchin",
+        "required_parts": "np_urchin"
       }
     ],
-    "Power-Puncher": [
+    "Misericorde": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_exo_leg_tuba",
-        "prefix": "Power-Puncher",
-        "required_parts": "np_cm_exo_leg_tuba"
+        "part_id": "np_cm_ds_leg_raid1",
+        "prefix": "Misericorde",
+        "required_parts": "np_cm_ds_leg_raid1"
       }
     ],
-    "Chirurgeon": [
+    "Overdriver": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_grav_leg_tuba",
-        "prefix": "Chirurgeon",
-        "required_parts": "np_cm_grav_leg_tuba"
+        "part_id": "np_cm_exo_leg_raid1",
+        "prefix": "Overdriver",
+        "required_parts": "np_cm_exo_leg_raid1"
       }
     ],
-    "Damned": [
+    "Lamplighter": [
       {
         "source": "inv_name_part",
         "type": "part_display_name",
-        "part_id": "np_cm_pld_leg_tuba",
-        "prefix": "Damned",
-        "required_parts": "np_cm_pld_leg_tuba"
-      }
-    ],
-    "Trainer": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_cm_robo_leg_tuba",
-        "prefix": "Trainer",
-        "required_parts": "np_cm_robo_leg_tuba"
-      }
-    ],
-    "Draupner": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Draupner",
-        "prefix": "Draupner",
-        "required_parts": "np_Draupner"
-      }
-    ],
-    "Fishward": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_fishward",
-        "prefix": "Fishward",
-        "required_parts": "np_fishward"
-      }
-    ],
-    "Ishmael": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_ishmael",
-        "prefix": "Ishmael",
-        "required_parts": "np_ishmael"
-      }
-    ],
-    "Marshall's Claw": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_manifest",
-        "prefix": "Marshall's Claw",
-        "required_parts": "np_manifest"
-      }
-    ],
-    "Ordinance": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Ordinance",
-        "prefix": "Ordinance",
-        "required_parts": "np_Ordinance"
-      }
-    ],
-    "Little Sister": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_PocketBuddies",
-        "prefix": "Little Sister",
-        "required_parts": "np_PocketBuddies"
-      }
-    ],
-    "Vitae": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_repkit_uni_JAK_Vitae",
-        "prefix": "Vitae",
-        "required_parts": "np_repkit_uni_JAK_Vitae"
-      }
-    ],
-    "Sharkbait": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_sharkbait",
-        "prefix": "Sharkbait",
-        "required_parts": "np_sharkbait"
-      }
-    ],
-    "Shoals": [
-      {
-        "source": "inv_name_part",
-        "type": "part_display_name",
-        "part_id": "np_Shoals",
-        "prefix": "Shoals",
-        "required_parts": "np_Shoals"
+        "part_id": "np_cm_pld_leg_raid1",
+        "prefix": "Lamplighter",
+        "required_parts": "np_cm_pld_leg_raid1"
       }
     ],
     "Swarming": [
@@ -20049,28 +19993,28 @@
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "borg_mag",
       "prefix": "-Stuffed",
-      "required_parts": "NewRow + borg_mag"
+      "required_parts": "licensed_ted + borg_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "cov_mag",
       "prefix": "-Exploding",
-      "required_parts": "NewRow + cov_mag"
+      "required_parts": "licensed_ted + cov_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "TOR_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "default",
       "prefix": "-Jobbed",
-      "required_parts": "NewRow (default mag)"
+      "required_parts": "licensed_ted (default mag)"
     },
     {
       "source": "gbx_ue_data_table",
@@ -20697,37 +20641,37 @@
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "borg_mag",
       "prefix": "-Affixed",
-      "required_parts": "NewRow + borg_mag"
+      "required_parts": "licensed_ted + borg_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "cov_mag",
       "prefix": "-Installed",
-      "required_parts": "NewRow + cov_mag"
+      "required_parts": "licensed_ted + cov_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "tor_mag",
       "prefix": "-Wasted",
-      "required_parts": "NewRow + tor_mag"
+      "required_parts": "licensed_ted + tor_mag"
     },
     {
       "source": "gbx_ue_data_table",
       "table": "VLA_Weapon_LicensedPartPrefix_Table",
       "type": "part_slot_mag",
-      "row_key": "NewRow",
+      "row_key": "licensed_ted",
       "col_key": "default",
       "prefix": "-Provided",
-      "required_parts": "NewRow (default mag)"
+      "required_parts": "licensed_ted (default mag)"
     },
     {
       "source": "gbx_ue_data_table",
@@ -24698,6 +24642,20 @@
     {
       "source": "inv_name_part",
       "type": "part_display_name",
+      "part_id": "np_jetset",
+      "prefix": "Jetsetter",
+      "required_parts": "np_jetset"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_mantra",
+      "prefix": "Mantra",
+      "required_parts": "np_mantra"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
       "part_id": "NP_misslaser",
       "prefix": "Missilaser",
       "required_parts": "NP_misslaser"
@@ -24708,6 +24666,13 @@
       "part_id": "np_Murder",
       "prefix": "Murmur",
       "required_parts": "np_Murder"
+    },
+    {
+      "source": "inv_name_part",
+      "type": "part_display_name",
+      "part_id": "np_rainmaker",
+      "prefix": "Rainmaker",
+      "required_parts": "np_rainmaker"
     },
     {
       "source": "inv_name_part",
@@ -24747,107 +24712,44 @@
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "NP_CannonBrawl",
-      "prefix": "Swan Song",
-      "required_parts": "NP_CannonBrawl"
+      "part_id": "np_undershield",
+      "prefix": "Undershield",
+      "required_parts": "np_undershield"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_ds_leg_tuba",
-      "prefix": "Living Weapon",
-      "required_parts": "np_cm_ds_leg_tuba"
+      "part_id": "np_urchin",
+      "prefix": "Urchin",
+      "required_parts": "np_urchin"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_exo_leg_tuba",
-      "prefix": "Power-Puncher",
-      "required_parts": "np_cm_exo_leg_tuba"
+      "part_id": "np_cm_ds_leg_raid1",
+      "prefix": "Misericorde",
+      "required_parts": "np_cm_ds_leg_raid1"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_grav_leg_tuba",
-      "prefix": "Chirurgeon",
-      "required_parts": "np_cm_grav_leg_tuba"
+      "part_id": "np_cm_exo_leg_raid1",
+      "prefix": "Overdriver",
+      "required_parts": "np_cm_exo_leg_raid1"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_pld_leg_tuba",
-      "prefix": "Damned",
-      "required_parts": "np_cm_pld_leg_tuba"
+      "part_id": "np_cm_grav_leg_raid1",
+      "prefix": "Trooper",
+      "required_parts": "np_cm_grav_leg_raid1"
     },
     {
       "source": "inv_name_part",
       "type": "part_display_name",
-      "part_id": "np_cm_robo_leg_tuba",
-      "prefix": "Trainer",
-      "required_parts": "np_cm_robo_leg_tuba"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Draupner",
-      "prefix": "Draupner",
-      "required_parts": "np_Draupner"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_fishward",
-      "prefix": "Fishward",
-      "required_parts": "np_fishward"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_ishmael",
-      "prefix": "Ishmael",
-      "required_parts": "np_ishmael"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_manifest",
-      "prefix": "Marshall's Claw",
-      "required_parts": "np_manifest"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Ordinance",
-      "prefix": "Ordinance",
-      "required_parts": "np_Ordinance"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_PocketBuddies",
-      "prefix": "Little Sister",
-      "required_parts": "np_PocketBuddies"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_repkit_uni_JAK_Vitae",
-      "prefix": "Vitae",
-      "required_parts": "np_repkit_uni_JAK_Vitae"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_sharkbait",
-      "prefix": "Sharkbait",
-      "required_parts": "np_sharkbait"
-    },
-    {
-      "source": "inv_name_part",
-      "type": "part_display_name",
-      "part_id": "np_Shoals",
-      "prefix": "Shoals",
-      "required_parts": "np_Shoals"
+      "part_id": "np_cm_pld_leg_raid1",
+      "prefix": "Lamplighter",
+      "required_parts": "np_cm_pld_leg_raid1"
     },
     {
       "source": "inv_name_part",

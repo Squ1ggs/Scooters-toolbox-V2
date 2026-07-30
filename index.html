@@ -3401,6 +3401,27 @@
       flex-shrink: 0;
     }
     
+    .stx-vc4-update-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 16px;
+      font-size: 0.92em;
+      font-weight: 700;
+      color: rgba(255, 220, 240, 0.96);
+      background: linear-gradient(90deg, rgba(255, 0, 200, 0.12) 0%, rgba(0, 243, 255, 0.1) 50%, rgba(255, 0, 200, 0.12) 100%);
+      border-bottom: 1px solid rgba(255, 0, 200, 0.35);
+      box-shadow: 0 1px 0 rgba(0, 243, 255, 0.12);
+    }
+    .stx-vc4-update-banner img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    
     #ccProfileYamlTools .yaml-profile-vc-label {
       display: flex;
       align-items: flex-start;
@@ -3426,9 +3447,42 @@
     }
     #ccProfileYamlTools .yaml-profile-vc-grid {
       display: grid;
-      gap: 12px 14px;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      align-items: start;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      align-items: stretch;
+    }
+    #ccProfileYamlTools .yaml-profile-vc-card {
+      min-width: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 200, 255, 0.22);
+      background: rgba(0, 12, 24, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #ccProfileYamlTools .yaml-profile-vc-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #7dfff0;
+      font-weight: 800;
+      font-size: 0.88em;
+      line-height: 1.2;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(0, 200, 255, 0.15);
+    }
+    #ccProfileYamlTools .yaml-profile-vc-card-head img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    #ccProfileYamlTools .yaml-profile-vc-section-title {
+      color: #7dfff0;
+      font-weight: 700;
+      font-size: 0.9em;
+      margin: 12px 0 8px;
     }
     #ccProfileYamlTools .yaml-profile-vc-grid > div {
       min-width: 0;
@@ -4278,7 +4332,7 @@
 <div aria-label="Welcome" class="splash" id="splash" role="dialog">
 <img alt="" aria-hidden="true" class="splash__logo" height="128" src="./assets/favicon.ico" width="128"/>
 <h1 class="splash__title" id="stxToolboxSplashTitle">Scooter's Toolbox</h1>
-<p class="splash__sub">Cyber workshop · V2 - 2.5.8</p>
+<p class="splash__sub">Cyber workshop · V2 - 2.5.9</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
 <script>
@@ -4374,6 +4428,10 @@
 </details>
 </div>
 </header>
+<div class="stx-vc4-update-banner" id="stxVc4UpdateBanner" role="status">
+<img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_ui_art_currency_vc4.png" width="24"/>
+<span>Updated for Vault card 4</span>
+</div>
 <script>
     (function () {
       var menu = document.getElementById('stxInstructionsMenuMain');
@@ -4537,7 +4595,7 @@
 <span class="btn--discord-community__title"><svg class="btn--discord-community__icon" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg> <span class="stx-garage-title-long">Scooters Garage (community)</span><span class="stx-garage-title-short">Scooters Garage</span></span>
 <span class="btn--discord-community__sub">Join us here!</span>
 </a>
-<a class="credits-discord-qr" href="https://discord.gg/scooterstoolbox" rel="noopener noreferrer" target="_blank" title="Scan or tap to join Scooters Garage Discord">
+<a class="credits-discord-qr" href="https://discord.gg/DqetrAK2sJ" rel="noopener noreferrer" target="_blank" title="Scan or tap to join Scooters Garage Discord">
 <span class="credits-discord-qr__hint">👉 or scan here</span>
 <img alt="QR code — join Scooters Garage Discord" class="credits-discord-qr__img" decoding="async" height="88" loading="lazy" src="./assets/img/scooter-garage-discord-qr.png" width="88"/>
 </a>
@@ -5382,8 +5440,8 @@
 <summary>Random modded item generator</summary>
 <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
 <div>
-<label for="rebuildRandomRepeat" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Rolls</label>
-<input class="editor-input" id="rebuildRandomRepeat" max="50" min="1" name="rebuildRandomRepeat" style="width:56px;" title="How many fresh random modded items to generate in a row." type="number" value="1"/>
+<label for="rebuildRandomRepeat" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Amount</label>
+<input class="editor-input" id="rebuildRandomRepeat" max="100" min="1" name="rebuildRandomRepeat" style="width:64px;" title="How many random modded items to generate (1 keeps only the last in the editor; 2+ fills the batch list below)." type="number" value="1"/>
 </div>
 <div style="min-width:150px;">
 <label for="moddedGenItemType" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Item type</label>
@@ -5409,6 +5467,33 @@
 <option value="Sniper Rifle">Sniper Rifle</option>
 </select>
 </div>
+<div style="min-width:150px;">
+<label for="moddedGenManufacturer" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Manufacturer</label>
+<select class="editor-select" data-native-select="yes" id="moddedGenManufacturer" name="moddedGenManufacturer" style="width:100%;" title="Pick an item type first — list only shows manufacturers for that category.">
+<option selected="" value="">Random / Guided</option>
+</select>
+</div>
+<div style="min-width:140px;">
+<label for="moddedGenLegendaryCount" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Legendary effect parts</label>
+<select class="editor-select" data-native-select="yes" id="moddedGenLegendaryCount" name="moddedGenLegendaryCount" style="width:100%;" title="Legendary perks and red-text barrels (e.g. comp_05_legendary / unique barrels on weapons).">
+<option value="auto" selected="">Auto</option>
+<option value="0">None</option>
+<option value="1">1 part</option>
+<option value="2">2 parts</option>
+<option value="3">3 parts</option>
+<option value="4">4 parts</option>
+<option value="5">5 parts</option>
+<option value="6">6 parts</option>
+</select>
+</div>
+<div style="min-width:140px;">
+<label for="moddedGenBuildStyle" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Build style</label>
+<select class="editor-select" id="moddedGenBuildStyle" name="moddedGenBuildStyle" style="width:100%;" title="Packed: core legit slots plus bracket stat stacks ({fam:[id id…]}).">
+<option value="packed" selected="">Packed stacks (modded)</option>
+<option value="balanced">Balanced mix</option>
+<option value="stacks">Stacks only</option>
+</select>
+</div>
 <div style="min-width:140px;">
 <label for="moddedGenIntensity" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Stack intensity</label>
 <select class="editor-select" id="moddedGenIntensity" name="moddedGenIntensity" style="width:100%;">
@@ -5416,6 +5501,17 @@
 <option value="medium" selected="">Medium (~×5)</option>
 <option value="heavy">Heavy (~×10)</option>
 <option value="wild">Wild (high)</option>
+</select>
+</div>
+<div style="min-width:120px;">
+<label for="moddedGenStackCats" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Stat lines</label>
+<select class="editor-select" id="moddedGenStackCats" name="moddedGenStackCats" style="width:100%;" title="How many different modded stat stacks to mix (often 2–4 for heavy builds).">
+<option value="">Auto</option>
+<option value="1">1 line</option>
+<option value="2">2 lines</option>
+<option value="3">3 lines</option>
+<option value="4">4 lines</option>
+<option value="5">5 lines</option>
 </select>
 </div>
 <div style="min-width:150px;">
@@ -5428,18 +5524,28 @@
 <option value="ammo">Ammo / mag</option>
 <option value="reload">Reload</option>
 <option value="accuracy">Accuracy</option>
+<option value="ads">ADS / handling</option>
 <option value="splash">Splash</option>
 </select>
 </div>
-<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);">
+<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--text-secondary);min-width:170px;">
 <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input checked="" id="moddedGenFillSlots" name="moddedGenFillSlots" type="checkbox"/> Random base parts</label>
 <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input checked="" id="moddedGenIncludeStacks" name="moddedGenIncludeStacks" type="checkbox"/> Add modded stat stacks</label>
+<label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input checked="" id="moddedGenPackStacks" name="moddedGenPackStacks" type="checkbox"/> Pack stacks ({fam:[id id…]})</label>
+<label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input id="moddedGenRandomElement" name="moddedGenRandomElement" type="checkbox"/> Random element (guns)</label>
 <label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input id="moddedGenAppendMode" name="moddedGenAppendMode" type="checkbox"/> Append to current serial</label>
+<label style="display:flex;align-items:center;gap:6px;cursor:pointer;"><input checked="" id="moddedGenBatchToList" name="moddedGenBatchToList" type="checkbox"/> Collect batch to list</label>
 </div>
 <button class="btn btn--brand" id="rebuildRandomFullBuildBtn" type="button">Generate modded item</button>
+<button class="btn" id="moddedGenCopyBatchBtn" style="display:none;" type="button">Copy batch list</button>
+<button class="btn" id="moddedGenClearBatchBtn" style="display:none;" type="button">Clear batch list</button>
 </div>
-<p style="color:var(--text-muted);font-size:11px;margin-top:8px;line-height:1.45;">Pick an <strong>Item type</strong> here to force weapons, shields, grenades, etc. (optional <strong>Weapon type</strong> when generating guns). Otherwise uses <strong>Guided Builder</strong> item type + manufacturer, or fully random gear. Fills legit slots, then stacks modded preset parts. Set rolls to <strong>10</strong> for ten fresh builds.</p>
+<p style="color:var(--text-muted);font-size:11px;margin-top:8px;line-height:1.45;"><strong>Packed stacks</strong> fills core legit slots (barrel, mag, scope…) then adds packed stat lines like <code>{24:[44 44 44]}</code>. <strong>Class Mod</strong> needs a character selected — it rolls skill perks plus optional universal/secondary parts and class-mod stat stacks. Set <strong>Amount</strong> to <strong>10</strong> for ten builds — the last one stays in Guided output; all roll into the batch list when collection is on.</p>
 <div aria-live="polite" id="moddedGenStatus" style="color:rgba(0,243,255,0.88);font-size:11px;margin-top:6px;min-height:1.2em;"></div>
+<div id="moddedGenBatchWrap" style="display:none;margin-top:10px;">
+<label for="moddedGenBatchOutput" style="font-size:12px;color:var(--accent-cyan);display:block;margin-bottom:4px;">Batch output (one deserialized serial per line)</label>
+<textarea class="editor-output-code" id="moddedGenBatchOutput" name="moddedGenBatchOutput" placeholder="Generate 2+ items to fill this list…" rows="5" spellcheck="false" style="width:100%;resize:vertical;font-family:ui-monospace,monospace;font-size:0.88em;"></textarea>
+</div>
 </details>
 <details class="rebuild-details rebuild-details--ipi" id="rebuildImportedInspectorDetails">
 <summary>Imported parts inspector &amp; added parts</summary>
@@ -5518,6 +5624,7 @@
 <a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use this slide-out for quick YAML work, or open the full page for more room — same tools.">Save/Yaml</a>
 <a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
 <a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
+<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Enhancement prefix lookup and stat bucket index">Prefix Lookup</a>
 <a class="btn" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
 </div>
 </div>
@@ -5598,30 +5705,37 @@
 <input id="yaml-profile-vh-current" max="7" min="0" name="yaml-profile-vh-current" placeholder="e.g. 7" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
 </div>
-<div class="yaml-profile-vc-grid" style="margin-top:12px;">
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens" title="domains.local.shared.currencies.vaultcard01_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_01.png" width="22"/><span>Vault Card 1 tokens</span></label>
+<div class="yaml-profile-vc-section">
+<div class="yaml-profile-vc-section-title">Vault Cards</div>
+<div class="yaml-profile-vc-grid">
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_vault_card_01.png" width="24"/><span>Vault Card 1</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard01-tokens" title="domains.local.shared.currencies.vaultcard01_tokens"><span>Tokens</span></label>
 <input id="yaml-profile-vaultcard01-tokens" min="0" name="yaml-profile-vaultcard01-tokens" placeholder="vaultcard01_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard02-tokens" title="domains.local.shared.currencies.vaultcard02_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_02.png" width="22"/><span>Vault Card 2 tokens</span></label>
-<input id="yaml-profile-vaultcard02-tokens" min="0" name="yaml-profile-vaultcard02-tokens" placeholder="vaultcard02_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard03-tokens" title="domains.local.shared.currencies.vaultcard03_tokens"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_03.png" width="22"/><span>Vault Card 3 tokens</span></label>
-<input id="yaml-profile-vaultcard03-tokens" min="0" name="yaml-profile-vaultcard03-tokens" placeholder="vaultcard03_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
-</div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc01-level" title="VaultCard01_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_01.png" width="22"/><span>Vault Card 1 level</span></label>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc01-level" title="VaultCard01_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc01-level" min="0" name="yaml-profile-vc01-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc02-level" title="VaultCard02_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_02.png" width="22"/><span>Vault Card 2 level</span></label>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_vault_card_02.png" width="24"/><span>Vault Card 2</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard02-tokens" title="domains.local.shared.currencies.vaultcard02_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard02-tokens" min="0" name="yaml-profile-vaultcard02-tokens" placeholder="vaultcard02_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc02-level" title="VaultCard02_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc02-level" min="0" name="yaml-profile-vc02-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
 </div>
-<div>
-<label class="yaml-profile-vc-label" for="yaml-profile-vc03-level" title="VaultCard03_Experience"><img alt="" class="yaml-profile-vc-icon" decoding="async" height="22" loading="lazy" src="./assets/img/ui/ico_vault_card_03.png" width="22"/><span>Vault Card 3 level</span></label>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_ui_art_currency_vc3.png" width="24"/><span>Vault Card 3</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard03-tokens" title="domains.local.shared.currencies.vaultcard03_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard03-tokens" min="0" name="yaml-profile-vaultcard03-tokens" placeholder="vaultcard03_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc03-level" title="VaultCard03_Experience"><span>Level</span></label>
 <input id="yaml-profile-vc03-level" min="0" name="yaml-profile-vc03-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
+<div class="yaml-profile-vc-card">
+<div class="yaml-profile-vc-card-head"><img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_ui_art_currency_vc4.png" width="24"/><span>Vault Card 4</span></div>
+<label class="yaml-profile-vc-label" for="yaml-profile-vaultcard04-tokens" title="domains.local.shared.currencies.vaultcard04_tokens"><span>Tokens</span></label>
+<input id="yaml-profile-vaultcard04-tokens" min="0" name="yaml-profile-vaultcard04-tokens" placeholder="vaultcard04_tokens" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+<label class="yaml-profile-vc-label" for="yaml-profile-vc04-level" title="VaultCard04_Experience"><span>Level</span></label>
+<input id="yaml-profile-vc04-level" min="0" name="yaml-profile-vc04-level" style="width:100%;padding:8px 10px;background:#1f1f1f;border:1px solid rgba(0,243,255,0.5);border-radius:8px;color:#00f3ff;" type="number"/>
+</div>
 </div>
 </div>
 <div style="margin-top:10px;">
@@ -5887,6 +6001,8 @@
 <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;">
 <button class="btn btn-Firmware" id="yaml-serials-open-bulk-btn" title="Sends found serials to the bulk decoder and starts decoding." type="button">Open serials in bulk decoder</button>
 <button class="btn" id="yaml-serials-open-bulk-yaml-btn" title="Sends this YAML to the bulk decoder (max ~4MB)." type="button">Open full YAML in bulk decoder</button>
+<button class="btn btn-Firmware" id="yaml-serials-open-validator-btn" title="Sends found serials to the bulk serial validator (Legit Builder checks)." type="button">Validate serials in bulk</button>
+<button class="btn" id="yaml-serials-open-validator-yaml-btn" title="Sends this YAML to the bulk serial validator (max ~4MB)." type="button">Validate full YAML in bulk</button>
 </div>
 <div id="yaml-dup-section" style="margin: 0 0 12px 0; padding: 12px; background: rgba(0,255,200,0.12); border-radius: 8px; border: 1px solid rgba(0,255,200,0.35);">
 <div aria-level="3" role="heading" style="color: #00c8ff; font-size: 0.9em; margin-bottom: 8px;">Duplicate backpack or bank</div>
@@ -6337,10 +6453,14 @@
             if (f) {
               var r = new FileReader();
               r.onload = function () {
-                var ta = byId('yamlInput');
-                if (ta) ta.value = r.result;
+                if (typeof window.setYamlText === 'function') window.setYamlText(r.result);
+                else {
+                  var ta = byId('yamlInput');
+                  if (ta) ta.value = r.result;
+                }
                 if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(50);
-                if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
+                if (typeof window.scheduleSyncYamlToFields === 'function') window.scheduleSyncYamlToFields(80);
+                else if (typeof window.syncYamlToFields === 'function') window.syncYamlToFields();
                 if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
                 if (typeof window.__ccRenderRuntimeStatus === 'function') window.__ccRenderRuntimeStatus();
               };
@@ -6619,17 +6739,17 @@
           var guidedLive = guidedVal && guidedVal.indexOf('||') >= 0;
           var outVal = outCodeEl && String(outCodeEl.value || '').trim();
           var outLive = outVal && outVal.indexOf('||') >= 0;
-          /* Honor last writer first — leftover Guided Class Mod codes used to pin the floating panel forever.
-             After a Simple new-item clear, outCode may be empty; still prefer it so we do not re-mirror stale Guided. */
+          var simpleActive = outCodeEl && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild();
+          var outHasHeader = outCodeEl && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader();
+          /* Simple Builder with a live serial wins over stale Guided mirror (Guided can still hold an old shorter tail). */
+          if (outCodeEl && outLive && (simpleActive || outHasHeader || last === 'simple')) {
+            if (!guidedLive || outVal.length >= guidedVal.length) return outCodeEl;
+          }
           if (last === 'simple' && outCodeEl) return outCodeEl;
-          if (last === 'guided' && guidedDeser) return guidedDeser;
+          if (last === 'guided' && guidedDeser && guidedLive) return guidedDeser;
           if (guidedModeActive() && guidedLive) return guidedDeser;
-          if (outCodeEl && typeof window.stxOutCodeHasItemHeader === 'function' && window.stxOutCodeHasItemHeader()) {
-            return outCodeEl;
-          }
-          if (outCodeEl && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) {
-            return outCodeEl;
-          }
+          if (outCodeEl && outHasHeader) return outCodeEl;
+          if (simpleActive && outCodeEl) return outCodeEl;
           if (guidedDeser && guidedLive) return guidedDeser;
           if (guidedModeActive() && guidedDeser && guidedVal) return guidedDeser;
           return outCodeEl;

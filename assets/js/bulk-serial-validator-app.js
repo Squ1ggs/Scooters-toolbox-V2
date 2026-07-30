@@ -1342,6 +1342,41 @@
         reader.readAsText(f);
       });
     }
+
+    function takeValidatorHandoff(key) {
+      var v = null;
+      try {
+        v = localStorage.getItem(key);
+        if (v != null && v !== '') {
+          try { localStorage.removeItem(key); } catch (_) {}
+          return v;
+        }
+      } catch (_) {}
+      try {
+        v = sessionStorage.getItem(key);
+        if (v != null && v !== '') {
+          try { sessionStorage.removeItem(key); } catch (_) {}
+          return v;
+        }
+      } catch (_) {}
+      return null;
+    }
+    try {
+      if (/\bprefill_yaml=1\b/i.test(location.search || '')) {
+        var yHand = takeValidatorHandoff('stx_bulk_validator_prefill_yaml');
+        if (yHand && inp) {
+          inp.value = yHand;
+          if (mode) mode.value = 'yaml';
+          statusLine('Loaded YAML from Save/YAML — click Validate all.', 'ok');
+        }
+      } else if (/\bprefill=1\b/i.test(location.search || '')) {
+        var rawHand = takeValidatorHandoff('stx_bulk_validator_prefill');
+        if (rawHand && inp) {
+          inp.value = rawHand;
+          statusLine('Loaded serial lines from Save/YAML — click Validate all.', 'ok');
+        }
+      }
+    } catch (_) {}
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);

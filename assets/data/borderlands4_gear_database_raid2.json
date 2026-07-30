@@ -1,6 +1,6 @@
 {
   "version": "Raid 2 (May 2026)",
-  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "pearlescent_weapons": [
     {
       "name": "Jail-Broken Gatling",
@@ -163,7 +163,10 @@
       "status": "needs_verification",
       "redText": "It stares back.",
       "ability": "Abyss — Increases damage the higher it is charged. If full charge is held too long, triggers a self-damaging explosion.",
-      "notes": "Export-synced pearl (rarity_06_pearlescent)."
+      "notes": "Export-synced pearl (rarity_06_pearlescent).",
+      "alternateEditorComps": [
+        "bor_sr.comp_05_legendary_abyss"
+      ]
     },
     {
       "name": "Screwstonian",
@@ -287,6 +290,42 @@
       "notes": "Nexus supplement comp_06_pearl_juliet (Pearl Juliet) Export-synced pearl (comp_06_pearl_key+base_comp_06_pearlescent).",
       "alternateEditorComps": [
         "mal_sm.comp_06_pearl_juliet"
+      ]
+    },
+    {
+      "name": "burrow",
+      "weaponType": "",
+      "manufacturer": "",
+      "expectedInv": "",
+      "spawnTokens": [
+        "burrow"
+      ],
+      "status": "export_synced",
+      "notes": "Export-synced pearl (rarity_06_pearlescent)."
+    },
+    {
+      "name": "kaos",
+      "weaponType": "",
+      "manufacturer": "",
+      "expectedInv": "",
+      "spawnTokens": [
+        "kaos"
+      ],
+      "status": "export_synced",
+      "notes": "Export-synced pearl (base_comp_06_pearlescent)."
+    },
+    {
+      "name": "pchonk",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Order",
+      "expectedInv": "ord_ar",
+      "spawnTokens": [
+        "pchonk"
+      ],
+      "status": "export_synced",
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
+      "alternateEditorComps": [
+        "ord_ar.comp_05_legendary_pchonk"
       ]
     }
   ],
@@ -413,9 +452,9 @@
     }
   ],
   "export_pearl_sync": {
-    "synced_at": "2026-07-13T23:06:42.965Z",
+    "synced_at": "2026-07-30T20:19:26.534Z",
     "nexus_dir": "references/bl4_toolbox_export/ncs/json",
-    "pearl_count": 17,
+    "pearl_count": 20,
     "added": [],
     "demoted": [],
     "ensured_legendary_shinies": []

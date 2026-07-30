@@ -17,6 +17,30 @@
   var YAML_DECODE_CHUNK_SIZE = 400;
   if (window.__yamlSerialsPageIndex == null) window.__yamlSerialsPageIndex = 0;
 
+  function yamlTextLengthHint() {
+    var ta = byId('yamlInput') || byId('fullYamlInput');
+    return ta && ta.value ? ta.value.length : 0;
+  }
+  function yamlParseDelayHint(explicit) {
+    if (explicit != null && explicit > 0) return explicit;
+    var len = yamlTextLengthHint();
+    if (len > 500000) return 600;
+    if (len > 200000) return 400;
+    if (len > 80000) return 250;
+    if (len > 30000) return 150;
+    return 80;
+  }
+  function yamlDecodeChunkSize(total) {
+    if (total > 3000) return 120;
+    if (total > 1500) return 200;
+    return YAML_DECODE_CHUNK_SIZE;
+  }
+  function yamlDecodeChunkDelay(total) {
+    if (total > 2000) return 16;
+    if (total > 800) return 8;
+    return 0;
+  }
+
   function cacheKeyVariants(raw) {
     var s = String(raw || '').trim().replace(/^["']|["']$/g, '');
     if (!s) return [];
@@ -515,14 +539,96 @@
         if (typeof window.refreshBuilder === 'function') window.refreshBuilder();
       }
     } catch (_) {}
+    try {
+      if (typeof window.__ccEnsureBuildStatsData === 'function') {
+        window.__ccEnsureBuildStatsData(function () {
+          try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
+        });
+      } else if (typeof window.refreshBuildStatsCore === 'function') {
+        window.refreshBuildStatsCore();
+      }
+    } catch (_) {}
   }
   window.importSerialToEditor = importSerialToEditor;
+
+  function getDecodedCacheForSerial(serial) {
+    var cache = window.__ccDecodedSerialsCache;
+    if (!cache) return null;
+    var keys = cacheKeyVariants(String(serial || '').trim());
+    for (var ki = 0; ki < keys.length; ki++) {
+      if (cache[keys[ki]]) return cache[keys[ki]];
+    }
+    return null;
+  }
+
+  function yamlPartStatsKeyFromRow(p) {
+    var alpha = String((p && p.alpha_code) || '').trim().replace(/^"(.*)"$/, '$1');
+    if (alpha) return alpha.toLowerCase();
+    var key = String((p && p.key) || '').trim();
+    if (/^\d+:\d+$/.test(key)) return key;
+    return '';
+  }
+
+  function formatStatRowBrief(s) {
+    var f = String((s && s.stat_field) || '').trim();
+    var v = s && s.stat_value;
+    if (!f || !Number.isFinite(Number(v))) return '';
+    return f.replace(/_value|_scale|_add/g, '') + ': ' + Number(v);
+  }
+
+  function buildYamlSerialPartStatsHtml(serial) {
+    var c = getDecodedCacheForSerial(serial);
+    if (!c || !Array.isArray(c.resolvedParts) || !c.resolvedParts.length) {
+      return '<div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:8px;">Part stats unavailable — re-parse YAML or open in bulk decoder first.</div>';
+    }
+    var byPart = window.PARTS_STATS_DATA && window.PARTS_STATS_DATA.by_part_code;
+    var byIdRaw = window.PARTS_STATS_DATA && window.PARTS_STATS_DATA.by_id_raw;
+    var blocks = [];
+    var maxParts = 12;
+    for (var i = 0; i < c.resolvedParts.length && i < maxParts; i++) {
+      var p = c.resolvedParts[i];
+      if (p && p.unresolved) continue;
+      var title = String((p && (p.name || p.pretty || p.alpha_code)) || yamlPartStatsKeyFromRow(p) || 'Part').trim();
+      var lines = [];
+      var pk = yamlPartStatsKeyFromRow(p);
+      if (byPart && pk && Array.isArray(byPart[pk])) {
+        for (var si = 0; si < byPart[pk].length && lines.length < 6; si++) {
+          var brief = formatStatRowBrief(byPart[pk][si]);
+          if (brief) lines.push(brief);
+        }
+      }
+      if (!lines.length && byIdRaw && p && p.key && Array.isArray(byIdRaw[p.key])) {
+        for (var ri = 0; ri < byIdRaw[p.key].length && lines.length < 6; ri++) {
+          brief = formatStatRowBrief(byIdRaw[p.key][ri]);
+          if (brief) lines.push(brief);
+        }
+      }
+      if (!lines.length && p && (p.stats_text || p.effects_text)) {
+        lines.push(String(p.stats_text || p.effects_text).slice(0, 140));
+      }
+      if (!lines.length) continue;
+      blocks.push(
+        '<div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.08);">' +
+        '<div style="font-size:11px;color:rgba(0,243,255,0.9);">' + escapeHtml(title) + '</div>' +
+        '<div style="font-size:10px;color:rgba(255,255,255,0.72);margin-top:3px;line-height:1.4;">' + escapeHtml(lines.join(' · ')) + '</div></div>'
+      );
+    }
+    if (!blocks.length) {
+      return '<div style="font-size:11px;color:rgba(255,255,255,0.55);margin-top:8px;">No deep stat rows in PARTS_STATS_DATA for resolved parts.</div>';
+    }
+    var more = c.resolvedParts.length > maxParts
+      ? ('<div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:4px;">+' + (c.resolvedParts.length - maxParts) + ' more parts — import for full build stats or open Parts stats catalog.</div>')
+      : '';
+    return '<div class="yaml-serial-part-stats" style="margin-top:8px;width:100%;">' + blocks.join('') + more + '</div>';
+  }
 
   function createSerialRowElement(item, idx) {
     var meta = parseSerialMeta(item.serial);
     var row = document.createElement('div');
     row.className = 'yaml-serial-row';
-    row.style.cssText = 'padding:10px;background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.25);border-radius:6px;margin-bottom:8px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px;';
+    row.style.cssText = 'padding:10px;background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.25);border-radius:6px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px;';
+    var topRow = document.createElement('div');
+    topRow.style.cssText = 'display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px;width:100%;';
     var left = document.createElement('div');
     left.style.flex = '1';
     left.style.minWidth = '0';
@@ -557,6 +663,32 @@
     importBtn.type = 'button';
     importBtn.title = 'Import into editor / builder';
     importBtn.addEventListener('click', function () { importSerialToEditor(item.serial); });
+    var statsBtn = document.createElement('button');
+    statsBtn.className = 'btn';
+    statsBtn.textContent = 'Part stats';
+    statsBtn.type = 'button';
+    statsBtn.title = 'Show deep per-part stat rows from PARTS_STATS_DATA';
+    var statsPanel = document.createElement('div');
+    statsPanel.style.display = 'none';
+    statsPanel.style.width = '100%';
+    statsBtn.addEventListener('click', function () {
+      var open = statsPanel.style.display !== 'none';
+      if (open) {
+        statsPanel.style.display = 'none';
+        statsBtn.textContent = 'Part stats';
+        return;
+      }
+      function renderStatsPanel() {
+        statsPanel.innerHTML = buildYamlSerialPartStatsHtml(item.serial);
+        statsPanel.style.display = '';
+        statsBtn.textContent = 'Hide stats';
+      }
+      if (window.PARTS_STATS_DATA && typeof window.__ccEnsureBuildStatsData === 'function') {
+        window.__ccEnsureBuildStatsData(renderStatsPanel);
+      } else {
+        renderStatsPanel();
+      }
+    });
     var delBtn = document.createElement('button');
     delBtn.className = 'btn';
     delBtn.textContent = 'Delete';
@@ -570,9 +702,12 @@
     });
     right.appendChild(copyBtn);
     right.appendChild(importBtn);
+    right.appendChild(statsBtn);
     right.appendChild(delBtn);
-    row.appendChild(left);
-    row.appendChild(right);
+    topRow.appendChild(left);
+    topRow.appendChild(right);
+    row.appendChild(topRow);
+    row.appendChild(statsPanel);
     return row;
   }
 
@@ -663,6 +798,8 @@
   var SESSION_HANDOFF_MAX = 4 * 1024 * 1024 - 65536;
   var HANDOFF_PREFILL_KEY = 'stx_bulk_decoder_prefill';
   var HANDOFF_YAML_KEY = 'stx_bulk_decoder_prefill_yaml';
+  var HANDOFF_VALIDATOR_KEY = 'stx_bulk_validator_prefill';
+  var HANDOFF_VALIDATOR_YAML_KEY = 'stx_bulk_validator_prefill_yaml';
 
   function storeBulkHandoff(key, text) {
     // localStorage survives noopener window.open (sessionStorage does not across tabs).
@@ -714,6 +851,7 @@
   }
 
   window.initYamlBulkDecoderHandoff = function () {
+    if (typeof window.initYamlBulkValidatorHandoff === 'function') window.initYamlBulkValidatorHandoff();
     var linesBtn = byId('yaml-serials-open-bulk-btn');
     var yamlBtn = byId('yaml-serials-open-bulk-yaml-btn');
     if (linesBtn && !linesBtn._bulkHandoffBound) {
@@ -760,6 +898,52 @@
         }
         var bulkDecY = (typeof window.STX_BULK_DECODER_PAGE === 'string' && window.STX_BULK_DECODER_PAGE) ? window.STX_BULK_DECODER_PAGE : './legacy/bl4-bulk-decoder.html';
         window.open(bulkDecY + (bulkDecY.indexOf('?') >= 0 ? '&' : '?') + 'prefill_yaml=1', '_blank');
+      });
+    }
+  };
+
+  function openBulkValidatorHandoff(text, isYaml) {
+    if (!text || !String(text).trim()) {
+      alert(isYaml ? 'No YAML in the editor.' : 'No serials found in the loaded YAML. Paste a character or profile save first.');
+      return;
+    }
+    if (text.length > SESSION_HANDOFF_MAX) {
+      alert('Payload is too large for a browser handoff (~4MB cap). Save to a file and open it in the bulk serial validator instead.');
+      return;
+    }
+    try {
+      storeBulkHandoff(isYaml ? HANDOFF_VALIDATOR_YAML_KEY : HANDOFF_VALIDATOR_KEY, text);
+    } catch (e) {
+      alert('Could not store handoff: ' + (e && e.message ? e.message : String(e)));
+      return;
+    }
+    var validatorPage = (typeof window.STX_BULK_VALIDATOR_PAGE === 'string' && window.STX_BULK_VALIDATOR_PAGE)
+      ? window.STX_BULK_VALIDATOR_PAGE
+      : './assets/bulk-serial-validator.html';
+    var rel = validatorPage;
+    try {
+      if (/save-yaml-full\.html/i.test(String(location.pathname || ''))) {
+        rel = validatorPage.replace(/^\.\//, '');
+      }
+    } catch (_) {}
+    window.open(rel + (rel.indexOf('?') >= 0 ? '&' : '?') + (isYaml ? 'prefill_yaml=1' : 'prefill=1'), '_blank');
+  }
+
+  window.initYamlBulkValidatorHandoff = function () {
+    var linesBtn = byId('yaml-serials-open-validator-btn');
+    var yamlBtn = byId('yaml-serials-open-validator-yaml-btn');
+    if (linesBtn && !linesBtn._validatorHandoffBound) {
+      linesBtn._validatorHandoffBound = true;
+      linesBtn.addEventListener('click', function () {
+        var out = collectSerialLinesForBulkHandoff();
+        openBulkValidatorHandoff(out.join('\n'), false);
+      });
+    }
+    if (yamlBtn && !yamlBtn._validatorHandoffBound) {
+      yamlBtn._validatorHandoffBound = true;
+      yamlBtn.addEventListener('click', function () {
+        var t = getYamlText();
+        openBulkValidatorHandoff((t && t.text) ? String(t.text) : '', true);
       });
     }
   };
@@ -946,64 +1130,70 @@
       else clearUi();
       return;
     }
-    window.__yamlSerialsPageIndex = 0;
-    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
-    if (kind === 'profile') {
-      window.__yamlInventorySource = 'bank';
-      window.extractedSerials = extractBankSerialsSimple(yamlText);
-    } else if (kind === 'character') {
-      window.__yamlInventorySource = 'backpack';
-      window.extractedSerials = extractBackpackSerialsSimple(yamlText);
-    } else {
-      window.__yamlInventorySource = '';
-      window.extractedSerials = extractBackpackSerialsSimple(yamlText);
-    }
-    refreshBackpackUI();
+    function runParse() {
+      window.__yamlSerialsPageIndex = 0;
+      var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
+      if (kind === 'profile') {
+        window.__yamlInventorySource = 'bank';
+        window.extractedSerials = extractBankSerialsSimple(yamlText);
+      } else if (kind === 'character') {
+        window.__yamlInventorySource = 'backpack';
+        window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+      } else {
+        window.__yamlInventorySource = '';
+        window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+      }
+      refreshBackpackUI();
 
-    var serials = window.extractedSerials || [];
-    var seen = Object.create(null);
-    var toDecode = [];
-    for (var i = 0; i < serials.length; i++) {
-      var s = String((serials[i] && serials[i].serial) || '').trim().replace(/^["']|["']$/g, '');
-      if (!s || s.length < 10 || seen[s]) continue;
-      seen[s] = true;
-      toDecode.push(s);
-    }
-    if (toDecode.length === 0 || typeof window.decodeSerialsViaBridge !== 'function') {
-      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
-      return;
-    }
+      var serials = window.extractedSerials || [];
+      var seen = Object.create(null);
+      var toDecode = [];
+      for (var i = 0; i < serials.length; i++) {
+        var s = String((serials[i] && serials[i].serial) || '').trim().replace(/^["']|["']$/g, '');
+        if (!s || s.length < 10 || seen[s]) continue;
+        seen[s] = true;
+        toDecode.push(s);
+      }
+      if (toDecode.length === 0 || typeof window.decodeSerialsViaBridge !== 'function') {
+        if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+        return;
+      }
 
-    if (typeof window.initStxDecoderBridge === 'function') window.initStxDecoderBridge();
+      if (typeof window.initStxDecoderBridge === 'function') window.initStxDecoderBridge();
 
-    var offset = 0;
-    function decodeNextChunk() {
-      if (offset >= toDecode.length) return;
-      var chunk = toDecode.slice(offset, offset + YAML_DECODE_CHUNK_SIZE);
-      offset += chunk.length;
-      window.decodeSerialsViaBridge(chunk, function (results) {
-        if (results && results.length) {
-          var fixed = [];
-          for (var j = 0; j < chunk.length; j++) {
-            var r = results[j] || {};
-            var entry = {};
-            for (var k in r) if (Object.prototype.hasOwnProperty.call(r, k)) entry[k] = r[k];
-            entry.input = chunk[j];
-            fixed.push(entry);
+      var offset = 0;
+      var chunkSize = yamlDecodeChunkSize(toDecode.length);
+      var chunkDelay = yamlDecodeChunkDelay(toDecode.length);
+      function decodeNextChunk() {
+        if (offset >= toDecode.length) return;
+        var chunk = toDecode.slice(offset, offset + chunkSize);
+        offset += chunk.length;
+        window.decodeSerialsViaBridge(chunk, function (results) {
+          if (results && results.length) {
+            var fixed = [];
+            for (var j = 0; j < chunk.length; j++) {
+              var r = results[j] || {};
+              var entry = {};
+              for (var k in r) if (Object.prototype.hasOwnProperty.call(r, k)) entry[k] = r[k];
+              entry.input = chunk[j];
+              fixed.push(entry);
+            }
+            populateCacheFromDecodedResults(fixed);
           }
-          populateCacheFromDecodedResults(fixed);
-        }
-        if (offset < toDecode.length) setTimeout(decodeNextChunk, 0);
-        else if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
-      });
+          if (offset < toDecode.length) setTimeout(decodeNextChunk, chunkDelay);
+          else if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
+        });
+      }
+      decodeNextChunk();
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
     }
-    decodeNextChunk();
-    if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runParse);
+    else runParse();
   };
 
   var parseTimer = null;
   window.scheduleParseYAMLBackpack = function (delay) {
-    delay = delay || 80;
+    delay = yamlParseDelayHint(delay);
     if (parseTimer) clearTimeout(parseTimer);
     parseTimer = setTimeout(function () {
       parseTimer = null;
@@ -1013,7 +1203,7 @@
 
   (function () {
     function onYamlInput() {
-      window.scheduleParseYAMLBackpack(150);
+      window.scheduleParseYAMLBackpack();
       if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
     }
     var ta = byId('yamlInput');

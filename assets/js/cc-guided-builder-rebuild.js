@@ -3027,17 +3027,29 @@
         var v = String(rt || '').trim();
         if (!v || !wantType) return false;
         if (wantType === 'Heavy Weapon') return v === 'Heavy Weapon' || v === 'Heavy' || v === 'HeavyWeapon';
+        if (wantType === 'Class Mod') return v === 'Class Mod';
         return v === wantType;
       };
 
       var pool = rows.filter(function (r) {
+        if (cat === 'Class Mod') {
+          if (!moddedGenIsClassModRarityRow(r)) return false;
+          if (!manL) return true;
+          return moddedGenClassModRowMatchesCharacter(r, man);
+        }
         if (cat === 'Weapon' && guidedRowLooksPearl(r)) return true;
         if (!matchesType(r && r.itemType)) return false;
         if (!manL) return true;
         return String((r && r.manufacturer) || '').trim().toLowerCase() === manL;
       });
+      if (!pool.length && cat === 'Class Mod') {
+        pool = rows.filter(moddedGenIsClassModRarityRow);
+      }
       if (!pool.length) {
-        pool = rows.filter(function (r) { return matchesType(r && r.itemType); });
+        pool = rows.filter(function (r) {
+          if (cat === 'Class Mod') return moddedGenIsClassModRarityRow(r);
+          return matchesType(r && r.itemType);
+        });
       }
 
       var pick = null;
@@ -3430,6 +3442,16 @@
   window.__ccGuidedHasLiveTailSerial = guidedHasLiveTailSerial;
 
   function syncGuidedFloatingOutputFromDeser() {
+    try {
+      var outCode = byId('outCode');
+      var outVal = outCode && String(outCode.value || '').trim();
+      var outLive = outVal && outVal.indexOf('||') >= 0;
+      if (outLive && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) {
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
+        return;
+      }
+    } catch (_) {}
     try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
     var gDes = byId('guidedOutputDeserialized');
     var v = gDes ? String(gDes.value || '').trim() : '';
@@ -4938,6 +4960,7 @@
         if (window.__CC_IMPORT_IN_PROGRESS) {
           window.__ccDeferredGuidedVisibilityRefresh = true;
         } else {
+          try { refreshGearDropdowns('Class Mod'); } catch (_) {}
           try { window.__ccClassmodChecklistRender(); } catch (_) {}
         }
       }
@@ -5489,14 +5512,32 @@
       }, guidedBootDelayMs);
     }
     var randBtn = byId('rebuildRandomFullBuildBtn');
-    if (randBtn && typeof randomFullBuild === 'function') {
-      randBtn.onclick = function () { randomFullBuild(); };
+    if (randBtn && !randBtn.__moddedGenWired && typeof randomFullBuild === 'function') {
+      randBtn.__moddedGenWired = true;
+      randBtn.onclick = function () {
+        var repEl = byId('rebuildRandomRepeat');
+        var n = repEl ? parseInt(String(repEl.value || '1'), 10) : 1;
+        if (!Number.isFinite(n) || n < 1) n = 1;
+        if (n > 100) n = 100;
+        if (repEl) repEl.value = String(n);
+        if (n > 1 && typeof randomFullBuildBatch === 'function') randomFullBuildBatch(n);
+        else randomFullBuild();
+      };
     }
     var moddedTypeEl = byId('moddedGenItemType');
     if (moddedTypeEl) {
-      moddedTypeEl.addEventListener('change', syncModdedGenWeaponTypeWrap);
+      moddedTypeEl.addEventListener('change', function () {
+        syncModdedGenWeaponTypeWrap();
+        refreshModdedGenManufacturerSelect();
+      });
       syncModdedGenWeaponTypeWrap();
     }
+    var moddedWtEl = byId('moddedGenWeaponType');
+    if (moddedWtEl) {
+      moddedWtEl.addEventListener('change', refreshModdedGenManufacturerSelect);
+    }
+    refreshModdedGenManufacturerSelect();
+    wireModdedGenBatchButtons();
   }
 
   var PART_SECTIONS = [
@@ -6056,6 +6097,13 @@
     var appendEl = byId('moddedGenAppendMode');
     var itemTypeEl = byId('moddedGenItemType');
     var weaponTypeEl = byId('moddedGenWeaponType');
+    var manEl = byId('moddedGenManufacturer');
+    var styleEl = byId('moddedGenBuildStyle');
+    var stackCatsEl = byId('moddedGenStackCats');
+    var packEl = byId('moddedGenPackStacks');
+    var elemEl = byId('moddedGenRandomElement');
+    var batchEl = byId('moddedGenBatchToList');
+    var legEl = byId('moddedGenLegendaryCount');
     return {
       intensity: (intensityEl && intensityEl.value) ? String(intensityEl.value) : 'medium',
       statFocus: (focusEl && focusEl.value) ? String(focusEl.value).trim() : '',
@@ -6063,15 +6111,315 @@
       includeStacks: !(stacksEl && stacksEl.checked === false),
       appendMode: !!(appendEl && appendEl.checked),
       itemType: (itemTypeEl && itemTypeEl.value) ? String(itemTypeEl.value).trim() : '',
-      weaponType: (weaponTypeEl && weaponTypeEl.value) ? String(weaponTypeEl.value).trim() : ''
+      weaponType: (weaponTypeEl && weaponTypeEl.value) ? String(weaponTypeEl.value).trim() : '',
+      manufacturer: (manEl && manEl.value) ? String(manEl.value).trim() : '',
+      legendaryCount: (legEl && legEl.value != null) ? String(legEl.value).trim() : 'auto',
+      buildStyle: (styleEl && styleEl.value) ? String(styleEl.value).trim().toLowerCase() : 'packed',
+      stackCategories: (stackCatsEl && stackCatsEl.value) ? String(stackCatsEl.value).trim() : '',
+      packStacks: !(packEl && packEl.checked === false),
+      randomElement: !!(elemEl && elemEl.checked),
+      batchToList: !(batchEl && batchEl.checked === false)
     };
   }
 
-  function pickRandomRarityRowForGenerator(rarities, forcedItemType, forcedWeaponType) {
+  var MODDED_GEN_SKIP_MANUFACTURERS = {
+    characters: 1,
+    gadgets: 1,
+    generic: 1,
+    all: 1,
+    universal: 1,
+    firmware: 1,
+    weapon: 1,
+    'heavy weapon': 1,
+    enhancement: 1,
+    shield: 1,
+    grenade: 1,
+    repkit: 1,
+    'class mod': 1,
+    gadget: 1
+  };
+
+  function moddedGenManufacturerIsSkipped(m) {
+    var lo = String(m || '').trim().toLowerCase();
+    return !lo || !!MODDED_GEN_SKIP_MANUFACTURERS[lo];
+  }
+
+  function appendModdedGenManufacturerOption(sel, label, value) {
+    if (!sel || !value) return;
+    sel.appendChild(new Option(label || value, value));
+  }
+
+  function collectModdedGenManufacturers(itemType, weaponType) {
+    var it = String(itemType || '').trim();
+    var wt = String(weaponType || '').trim();
+    var seen = Object.create(null);
+    var out = [];
+    function pushMan(m) {
+      m = String(m || '').trim();
+      if (!m || seen[m] || moddedGenManufacturerIsSkipped(m)) return;
+      seen[m] = true;
+      out.push(m);
+    }
+
+    if (!it) return out;
+
+    if (it === 'Class Mod') {
+      for (var cmf = 0; cmf < CLASSMOD_FALLBACK_MANS.length; cmf++) pushMan(CLASSMOD_FALLBACK_MANS[cmf]);
+      return out.sort(function (a, b) { return a.localeCompare(b); });
+    }
+
+    if (it === 'Heavy' || it === 'Heavy Weapon') {
+      var raritiesH = window.STX_RARITIES;
+      if (Array.isArray(raritiesH)) {
+        for (var rh = 0; rh < raritiesH.length; rh++) {
+          var rowH = raritiesH[rh];
+          if (!rowH || String(rowH.itemType || '') !== 'Heavy Weapon') continue;
+          pushMan(rowH.manufacturer);
+        }
+      }
+      if (!out.length) {
+        for (var hf = 0; hf < HEAVY_FALLBACK_MANS.length; hf++) pushMan(HEAVY_FALLBACK_MANS[hf]);
+      }
+      return out.sort(function (a, b) { return a.localeCompare(b); });
+    }
+
+    if (typeof window.getManufacturersForCategory === 'function') {
+      try {
+        var catUi = it;
+        var weaponTypeFilter = wt || null;
+        if (it === 'Weapon') {
+          catUi = 'Weapon';
+          if (!weaponTypeFilter) weaponTypeFilter = 'Assault Rifle';
+        }
+        var mansFn = window.getManufacturersForCategory(catUi, weaponTypeFilter);
+        if (Array.isArray(mansFn) && mansFn.length) {
+          for (var k = 0; k < mansFn.length; k++) pushMan(mansFn[k]);
+          return out.sort(function (a, b) { return a.localeCompare(b); });
+        }
+      } catch (_eMans) {}
+    }
+
+    var map = { 'Weapon': ['Assault Rifle', 'Pistol', 'Shotgun', 'SMG', 'Sniper Rifle', 'Sniper'] };
+    var rarities = window.STX_RARITIES;
+    if (Array.isArray(rarities)) {
+      for (var i = 0; i < rarities.length; i++) {
+        var r = rarities[i];
+        if (!r || !r.manufacturer) continue;
+        var rowIt = String(r.itemType || '').trim();
+        var itStr = String(r.itemTypeString || '').toLowerCase();
+        var match = (rowIt.toLowerCase() === it.toLowerCase()) ||
+          (it === 'Weapon' && map['Weapon'] && map['Weapon'].indexOf(rowIt) >= 0) ||
+          (it === 'Class Mod' && (rowIt === 'Class Mod' || /classmod|class\s*mod/i.test(itStr)));
+        if (!match) continue;
+        pushMan(r.manufacturer);
+      }
+    }
+
+    if (!out.length) {
+      var all = getAllParts();
+      var catNorm = it.toLowerCase();
+      for (var j = 0; j < all.length; j++) {
+        var p = all[j];
+        if (!p || !p.manufacturer) continue;
+        var pCat = String(p.category || p.itemType || '').toLowerCase();
+        var pIt = String(p.itemType || '').toLowerCase();
+        var ok = (pCat === catNorm || pIt === catNorm) ||
+          (catNorm === 'weapon' && /assault|pistol|shotgun|smg|sniper|heavy/i.test(pCat + ' ' + pIt)) ||
+          (catNorm === 'class mod' && /class\s*mod|classmod/i.test(pCat + ' ' + pIt));
+        if (!ok) continue;
+        pushMan(p.manufacturer);
+      }
+    }
+
+    if (!out.length) {
+      var fallback = it === 'Class Mod' ? CLASSMOD_FALLBACK_MANS
+        : (it === 'Weapon' ? WEAPON_FALLBACK_MANS : null);
+      if (fallback) {
+        for (var f = 0; f < fallback.length; f++) pushMan(fallback[f]);
+      }
+    }
+
+    return out.sort(function (a, b) { return a.localeCompare(b); });
+  }
+
+  function refreshModdedGenManufacturerSelect() {
+    var sel = byId('moddedGenManufacturer');
+    if (!sel) return;
+    var itemTypeEl = byId('moddedGenItemType');
+    var weaponTypeEl = byId('moddedGenWeaponType');
+    var itemType = itemTypeEl ? String(itemTypeEl.value || '').trim() : '';
+    var weaponType = weaponTypeEl ? String(weaponTypeEl.value || '').trim() : '';
+    var preserve = String(sel.value || '').trim();
+    sel.innerHTML = '<option value="">Random / Guided</option>';
+    if (!itemType) {
+      sel.value = '';
+      if (typeof sel.__customSelectSync === 'function') sel.__customSelectSync();
+      return;
+    }
+    var mans = collectModdedGenManufacturers(itemType, weaponType);
+    for (var mi = 0; mi < mans.length; mi++) {
+      var m = mans[mi];
+      var label = (itemType === 'Class Mod') ? getClassModDisplayName(m) : m;
+      appendModdedGenManufacturerOption(sel, label, m);
+    }
+    if (preserve && Array.prototype.some.call(sel.options, function (o) { return String(o.value || '').trim() === preserve; })) {
+      sel.value = preserve;
+    } else {
+      sel.value = '';
+    }
+    if (typeof sel.__customSelectSync === 'function') sel.__customSelectSync();
+    if (typeof sel.__customSelectForceRebuild === 'function') sel.__customSelectForceRebuild();
+  }
+
+  function updateModdedGenBatchUi(lineCount) {
+    var wrap = byId('moddedGenBatchWrap');
+    var copyBtn = byId('moddedGenCopyBatchBtn');
+    var clearBtn = byId('moddedGenClearBatchBtn');
+    var show = lineCount > 0;
+    if (wrap) wrap.style.display = show ? '' : 'none';
+    if (copyBtn) copyBtn.style.display = show ? '' : 'none';
+    if (clearBtn) clearBtn.style.display = show ? '' : 'none';
+  }
+
+  function appendModdedGenBatchLine(serial) {
+    var s = String(serial || '').trim();
+    if (!s || s.indexOf('||') < 0) return;
+    var ta = byId('moddedGenBatchOutput');
+    if (!ta) return;
+    var cur = String(ta.value || '').trim();
+    ta.value = cur ? (cur + '\n' + s) : s;
+    var lines = ta.value.split(/\r?\n/).filter(function (ln) { return String(ln || '').trim(); });
+    updateModdedGenBatchUi(lines.length);
+  }
+
+  function wireModdedGenBatchButtons() {
+    var copyBtn = byId('moddedGenCopyBatchBtn');
+    var clearBtn = byId('moddedGenClearBatchBtn');
+    if (copyBtn && !copyBtn.__moddedGenWired) {
+      copyBtn.__moddedGenWired = true;
+      copyBtn.addEventListener('click', function () {
+        var ta = byId('moddedGenBatchOutput');
+        var text = ta ? String(ta.value || '').trim() : '';
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            setModdedGenStatus('Copied ' + text.split(/\r?\n/).filter(Boolean).length + ' serial(s) to clipboard.');
+          }).catch(function () {
+            try { ta.select(); document.execCommand('copy'); } catch (_) {}
+          });
+        } else if (ta) {
+          try { ta.select(); document.execCommand('copy'); } catch (_) {}
+        }
+      });
+    }
+    if (clearBtn && !clearBtn.__moddedGenWired) {
+      clearBtn.__moddedGenWired = true;
+      clearBtn.addEventListener('click', function () {
+        var ta = byId('moddedGenBatchOutput');
+        if (ta) ta.value = '';
+        updateModdedGenBatchUi(0);
+        setModdedGenStatus('Batch list cleared.');
+      });
+    }
+  }
+
+  function isModdedGenClassModItemType(itemType) {
+    return /^Class Mod$/i.test(String(itemType || '').trim());
+  }
+
+  function moddedGenIsClassModRarityRow(r) {
+    if (!r) return false;
+    if (String(r.itemType || '').trim() === 'Class Mod') return true;
+    return /classmod_/i.test(String(r.itemTypeString || ''));
+  }
+
+  function moddedGenNormalizeClassModCharacter(name) {
+    var aliasByLower = {
+      vex: 'Siren', siren: 'Siren', 'dark siren': 'Siren', darksiren: 'Siren',
+      amon: 'Paladin', paladin: 'Paladin',
+      rafa: 'Exo Soldier', 'exo soldier': 'Exo Soldier', exosoldier: 'Exo Soldier',
+      harlowe: 'Gravitar', gravitar: 'Gravitar',
+      c4sh: 'Robodealer', robodealer: 'Robodealer'
+    };
+    var lc = String(name || '').trim().toLowerCase();
+    return aliasByLower[lc] || String(name || '').trim();
+  }
+
+  function moddedGenClassModCharacterSlug(charName) {
+    var n = moddedGenNormalizeClassModCharacter(charName);
+    var slugMap = {
+      Siren: 'dark_siren', Paladin: 'paladin', 'Exo Soldier': 'exo_soldier',
+      Gravitar: 'gravitar', Robodealer: 'robodealer'
+    };
+    return slugMap[n] || n.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+  }
+
+  function moddedGenClassModRowMatchesCharacter(r, charName) {
+    if (!r || !charName) return true;
+    var norm = moddedGenNormalizeClassModCharacter(charName);
+    var man = String(r.manufacturer || '').trim();
+    if (man && man !== 'Class Mod' && man.toLowerCase() === norm.toLowerCase()) return true;
+    var its = String(r.itemTypeString || '').toLowerCase();
+    var slug = moddedGenClassModCharacterSlug(charName);
+    return its.indexOf('classmod_' + slug) >= 0 || its.indexOf(slug.replace(/_/g, '')) >= 0;
+  }
+
+  function moddedGenCharacterFromClassModRarityRow(r) {
+    if (!r) return '';
+    var man = String(r.manufacturer || '').trim();
+    if (man && man !== 'Class Mod') return moddedGenNormalizeClassModCharacter(man);
+    var its = String(r.itemTypeString || '').toLowerCase();
+    if (/dark_siren|classmod_siren/.test(its)) return 'Siren';
+    if (/paladin/.test(its)) return 'Paladin';
+    if (/exo_soldier/.test(its)) return 'Exo Soldier';
+    if (/gravitar/.test(its)) return 'Gravitar';
+    if (/robodealer/.test(its)) return 'Robodealer';
+    return '';
+  }
+
+  function pickRandomClassModRarityRow(rarities, character) {
+    if (!Array.isArray(rarities) || !rarities.length) return null;
+    var rows = rarities.filter(moddedGenIsClassModRarityRow);
+    var wantChar = String(character || '').trim();
+    if (wantChar) {
+      var scoped = rows.filter(function (r) { return moddedGenClassModRowMatchesCharacter(r, wantChar); });
+      if (scoped.length) rows = scoped;
+    }
+    if (!rows.length) return null;
+    return rows[Math.floor(Math.random() * rows.length)];
+  }
+
+  function resolveModdedGenClassModManufacturer(rarities, forcedManufacturer, guidedMan) {
+    var manufacturer = String(forcedManufacturer || '').trim();
+    if (!manufacturer && guidedMan && String(guidedMan.value || '').trim()) {
+      manufacturer = String(guidedMan.value || '').trim();
+    }
+    manufacturer = moddedGenNormalizeClassModCharacter(manufacturer);
+    if (!manufacturer) {
+      var pick = pickRandomClassModRarityRow(rarities, '');
+      manufacturer = moddedGenCharacterFromClassModRarityRow(pick);
+    }
+    if (!manufacturer) {
+      manufacturer = CLASSMOD_FALLBACK_MANS[Math.floor(Math.random() * CLASSMOD_FALLBACK_MANS.length)];
+    }
+    return manufacturer;
+  }
+
+  function pickRandomRarityRowForGenerator(rarities, forcedItemType, forcedWeaponType, forcedManufacturer) {
     if (!Array.isArray(rarities) || !rarities.length) return null;
     var want = String(forcedItemType || '').trim();
     var wantWt = String(forcedWeaponType || '').trim();
+    var wantMan = String(forcedManufacturer || '').trim();
+    if (want === 'Class Mod') {
+      return pickRandomClassModRarityRow(rarities, wantMan);
+    }
     var rows = rarities;
+    if (wantMan) {
+      rows = rows.filter(function (r) {
+        return String(r && r.manufacturer || '').trim() === wantMan;
+      });
+      if (!rows.length) rows = rarities;
+    }
     if (want) {
       rows = rarities.filter(function (r) {
         var it = String(r && r.itemType || '').trim();
@@ -6087,22 +6435,26 @@
     } else {
       rows = rarities.filter(function (r) {
         var it = String(r && r.itemType || '').trim();
-        return /^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle|Heavy Weapon|Shield|Grenade|Repkit|Class Mod|Enhancement|Gadget)$/i.test(it);
+        return /^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle|Heavy Weapon|Shield|Grenade|Repkit|Enhancement|Gadget)$/i.test(it);
       });
       if (!rows.length) rows = rarities;
     }
     return rows[Math.floor(Math.random() * rows.length)];
   }
 
-  function applyForcedModdedGenItemType(forcedItemType, forcedWeaponType, rarities, guidedMan) {
+  function applyForcedModdedGenItemType(forcedItemType, forcedWeaponType, rarities, guidedMan, forcedManufacturer) {
     var itemType = String(forcedItemType || '').trim();
     var weaponType = String(forcedWeaponType || '').trim();
-    var manufacturer = '';
-    if (guidedMan && String(guidedMan.value || '').trim()) {
+    var manufacturer = String(forcedManufacturer || '').trim();
+    if (itemType === 'Class Mod') {
+      manufacturer = resolveModdedGenClassModManufacturer(rarities, manufacturer, guidedMan);
+      return applyGuidedGeneratorItemType('Class Mod', manufacturer, '');
+    }
+    if (!manufacturer && guidedMan && String(guidedMan.value || '').trim()) {
       manufacturer = String(guidedMan.value || '').trim();
     }
     if (!manufacturer) {
-      var pick = pickRandomRarityRowForGenerator(rarities, itemType, weaponType);
+      var pick = pickRandomRarityRowForGenerator(rarities, itemType, weaponType, forcedManufacturer);
       if (pick) manufacturer = String(pick.manufacturer || '').trim();
     }
     if (itemType === 'Weapon') {
@@ -6182,6 +6534,24 @@
     legendary: 1
   };
 
+  /** Modded builds: core legit slots only (typical stacked-weapon layout). */
+  var MODDED_GEN_CORE_SLOTS = {
+    rarity: 1,
+    barrel: 1,
+    body: 1,
+    magazine: 1,
+    scope: 1,
+    grip: 1,
+    bodyAcc: 1,
+    barrelAcc: 1,
+    magazineAcc: 1,
+    scopeAcc: 1,
+    underbarrel: 1,
+    additionalParts: 1
+  };
+
+  var MODDED_GEN_ELEMENT_CODES = ['{1:10}', '{1:11}', '{1:12}', '{1:13}', '{1:14}'];
+
   function selectHasRealOptions(sel) {
     if (!sel || !sel.options || !sel.options.length) return false;
     for (var j = 0; j < sel.options.length; j++) {
@@ -6220,9 +6590,11 @@
         required++;
         if (selectHasRealOptions(sel)) filled++;
       }
-      var minNeed = isGear
-        ? Math.min(3, Math.max(1, Math.ceil(required * 0.35)))
-        : Math.min(4, Math.max(2, Math.ceil(required * 0.2)));
+      var minNeed = isModdedGenClassModItemType(itemType)
+        ? 1
+        : (isGear
+          ? Math.min(3, Math.max(1, Math.ceil(required * 0.35)))
+          : Math.min(4, Math.max(2, Math.ceil(required * 0.2))));
       var ok = required > 0 && filled >= minNeed;
       var timedOut = Date.now() - start >= maxWaitMs;
       if (ok || (timedOut && (!isGear || filled > 0))) {
@@ -6309,6 +6681,8 @@
     if (!catKeys.length) return [];
 
     var focus = String(opts.statFocus || '').trim();
+    var style = String(opts.buildStyle || 'balanced').toLowerCase();
+    var wantCats = parseInt(String(opts.stackCategories || ''), 10);
     if (focus && catKeys.indexOf(focus) >= 0) {
       catKeys = [focus];
     } else {
@@ -6318,7 +6692,16 @@
         catKeys[i] = catKeys[j];
         catKeys[j] = tmp;
       }
-      var pickCats = Math.min(catKeys.length, focus ? 1 : (1 + Math.floor(Math.random() * 3)));
+      var pickCats;
+      if (Number.isFinite(wantCats) && wantCats > 0) {
+        pickCats = Math.min(catKeys.length, wantCats);
+      } else if (style === 'packed') {
+        pickCats = Math.min(catKeys.length, 2 + Math.floor(Math.random() * 3));
+      } else if (style === 'stacks') {
+        pickCats = Math.min(catKeys.length, 1 + Math.floor(Math.random() * 2));
+      } else {
+        pickCats = Math.min(catKeys.length, 1 + Math.floor(Math.random() * 3));
+      }
       catKeys = catKeys.slice(0, pickCats);
     }
 
@@ -6326,24 +6709,231 @@
     for (var ci = 0; ci < catKeys.length; ci++) {
       var pool = mergeModdedPresetPool(catalogType, catKeys[ci]);
       if (!pool.length) continue;
-      var entry = pool[Math.floor(Math.random() * pool.length)];
-      var tok = presetEntryToTokenLocal(entry);
-      if (!tok) continue;
-      var stacks = stackCountForPresetEntry(entry, opts.intensity || 'medium');
-      for (var s = 0; s < stacks; s++) tokens.push(tok);
+      var picksInCat = style === 'packed' && Math.random() < 0.35 ? 2 : 1;
+      for (var pc = 0; pc < picksInCat && pool.length; pc++) {
+        var entry = pool[Math.floor(Math.random() * pool.length)];
+        var tok = presetEntryToTokenLocal(entry);
+        if (!tok) continue;
+        var stacks = stackCountForPresetEntry(entry, opts.intensity || 'medium');
+        if (style === 'packed' && stacks > 2) stacks = Math.max(2, Math.floor(stacks * 0.85));
+        for (var s = 0; s < stacks; s++) tokens.push(tok);
+      }
     }
     return tokens;
   }
 
+  function addRandomModdedElement(itemType, targetOut) {
+    if (!targetOut || !MODDED_GEN_ELEMENT_CODES.length) return false;
+    var it = String(itemType || '').trim();
+    if (!/^(Weapon|Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle|Heavy Weapon|Heavy|Gadget)$/i.test(it)) return false;
+    var tok = MODDED_GEN_ELEMENT_CODES[Math.floor(Math.random() * MODDED_GEN_ELEMENT_CODES.length)];
+    appendToOutCode(tok, targetOut);
+    return true;
+  }
+
+  function getModdedGenLegendarySelectId(itemType) {
+    var it = String(itemType || '').trim().toLowerCase();
+    if (it === 'weapon' || /^(assault rifle|pistol|shotgun|smg|sniper rifle)$/i.test(it)) return 'ccWeaponLegendarySelect';
+    if (/heavy/.test(it)) return 'ccHeavyLegendarySelect';
+    if (it === 'repkit') return 'ccRepkitLegendarySelect';
+    if (it === 'grenade' || it === 'gadget') return 'ccGadgetLegendarySelect';
+    return '';
+  }
+
+  function resolveModdedGenLegendaryCount(genOpts, itemType) {
+    var raw = genOpts && genOpts.legendaryCount != null ? String(genOpts.legendaryCount).trim().toLowerCase() : 'auto';
+    if (raw === '' || raw === 'auto') {
+      var itLo = String(itemType || '').trim().toLowerCase();
+      if (/weapon|assault|pistol|shotgun|smg|sniper|heavy/.test(itLo)) return Math.floor(Math.random() * 3);
+      if (/shield|grenade|repkit|gadget/.test(itLo)) return Math.random() < 0.55 ? 1 : 0;
+      return 0;
+    }
+    var n = parseInt(raw, 10);
+    return Number.isFinite(n) ? Math.max(0, Math.min(6, n)) : 0;
+  }
+
+  function moddedGenPartHasLegendaryRedText(p) {
+    if (!p) return false;
+    if (typeof window.partRedTextForDropdown === 'function') {
+      try {
+        if (String(window.partRedTextForDropdown(p) || '').trim()) return true;
+      } catch (_) {}
+    }
+    var code = String(p.code || p.spawnCode || '').replace(/^["']|["']$/g, '').trim().toLowerCase();
+    if (code.indexOf('part_unique_barrel') >= 0 || code.indexOf('comp_05_legendary') >= 0) return true;
+    return !!String(p.legendaryName || '').trim();
+  }
+
+  function filterLegendaryPoolForModdedGen(pool, itemType, manufacturer, weaponType) {
+    if (!Array.isArray(pool) || !pool.length) return [];
+    var man = String(manufacturer || '').trim().toLowerCase();
+    var wt = String(weaponType || '').trim();
+    var itLo = String(itemType || '').trim().toLowerCase();
+    return pool.filter(function (p) {
+      if (!p) return false;
+      if (man) {
+        var pm = String(p.manufacturer || '').trim().toLowerCase();
+        var pt = String(p.partType || '').trim().toLowerCase();
+        if (pm && pm !== man && pm.indexOf(man) < 0 && man.indexOf(pm) < 0) {
+          if (pt === 'barrel' || pt === 'body') return false;
+        }
+      }
+      if (wt && typeof window.stxPartMatchesLegendaryPoolWeaponType === 'function') {
+        try {
+          if (!window.stxPartMatchesLegendaryPoolWeaponType(p, wt)) return false;
+        } catch (_) {}
+      }
+      if (/^class mod$/i.test(itLo)) {
+        var pCat = String(p.category || p.itemType || '').toLowerCase();
+        if (pCat && pCat.indexOf('class') < 0 && String(p.partType || '').toLowerCase() === 'barrel') return false;
+      }
+      return true;
+    });
+  }
+
+  function pickRandomLegendaryTokensFromSelect(selectId, count, used, itemType) {
+    var sel = byId(selectId);
+    if (!sel || !selectHasRealOptions(sel) || count <= 0) return [];
+    var opts = [];
+    for (var j = 0; j < sel.options.length; j++) {
+      var v = String(sel.options[j].value || '').trim();
+      if (!v || v.indexOf('--') === 0 || v.indexOf('(Empty)') >= 0) continue;
+      if (used[v]) continue;
+      if (!isTokenValidForModdedGenItemType(v, itemType)) continue;
+      opts.push(v);
+    }
+    var picks = [];
+    while (opts.length && picks.length < count) {
+      var idx = Math.floor(Math.random() * opts.length);
+      picks.push(opts[idx]);
+      used[opts[idx]] = true;
+      opts.splice(idx, 1);
+    }
+    return picks;
+  }
+
+  function addRandomLegendaryEffectParts(itemType, manufacturer, weaponType, targetOut, count) {
+    if (!targetOut || !count || count <= 0) return 0;
+    var itLo = String(itemType || '').trim().toLowerCase();
+    if (!/weapon|assault|pistol|shotgun|smg|sniper|heavy|shield|grenade|repkit|gadget/.test(itLo)) return 0;
+
+    var used = Object.create(null);
+    var existing = String(targetOut.value || '');
+    var added = 0;
+
+    function tryAppend(tok) {
+      var t = String(tok || '').trim();
+      if (!t || used[t] || existing.indexOf(t) >= 0) return false;
+      if (!isTokenValidForModdedGenItemType(t, itemType)) return false;
+      used[t] = true;
+      appendToOutCode(t, targetOut);
+      added++;
+      return true;
+    }
+
+    var selId = getModdedGenLegendarySelectId(itemType);
+    var fromSelect = pickRandomLegendaryTokensFromSelect(selId, count, used, itemType);
+    for (var si = 0; si < fromSelect.length; si++) tryAppend(fromSelect[si]);
+    if (added >= count) return added;
+
+    var all = getAllParts();
+    var pool = [];
+    if (typeof window.collectLegendaryPerkDropdownParts === 'function') {
+      var includeBarrels = /weapon|assault|pistol|shotgun|smg|sniper|heavy/.test(itLo);
+      pool = window.collectLegendaryPerkDropdownParts(all, {
+        includeBarrels: includeBarrels,
+        weaponType: weaponType,
+        ignoreWeaponType: !weaponType
+      });
+    }
+    pool = filterLegendaryPoolForModdedGen(pool, itemType, manufacturer, weaponType);
+
+    var redBarrels = [];
+    var otherLeg = [];
+    for (var pi = 0; pi < pool.length; pi++) {
+      var p = pool[pi];
+      var tok = getPartToken(p);
+      if (!tok || used[tok]) continue;
+      var row = { p: p, tok: tok };
+      if (moddedGenPartHasLegendaryRedText(p)) redBarrels.push(row);
+      else otherLeg.push(row);
+    }
+
+    function removeTok(arr, tok) {
+      for (var ri = 0; ri < arr.length; ri++) {
+        if (arr[ri].tok === tok) {
+          arr.splice(ri, 1);
+          return;
+        }
+      }
+    }
+
+    var need = count - added;
+    for (var c = 0; c < need; c++) {
+      var pickPool = (redBarrels.length && (c === 0 || Math.random() < 0.7)) ? redBarrels : (otherLeg.length ? otherLeg : redBarrels);
+      if (!pickPool.length) break;
+      var choice = pickPool[Math.floor(Math.random() * pickPool.length)];
+      if (!choice || !choice.tok) break;
+      removeTok(redBarrels, choice.tok);
+      removeTok(otherLeg, choice.tok);
+      if (!tryAppend(choice.tok)) c--;
+    }
+    return added;
+  }
+
+  function addRandomClassModParts(itemType, manufacturer, weaponType, targetOut, opts) {
+    opts = opts || {};
+    var style = String(opts.buildStyle || 'balanced').toLowerCase();
+    var used = Object.create(null);
+    var added = 0;
+
+    function tryPick(selectId) {
+      var sel = byId(selectId);
+      if (!sel || !selectHasRealOptions(sel)) return false;
+      var tries = 0;
+      while (tries < 16) {
+        tries++;
+        var tok = pickRandomSelectToken(selectId);
+        if (!tok || used[tok]) continue;
+        if (!isTokenValidForModdedGenItemType(tok, itemType)) continue;
+        used[tok] = true;
+        appendToOutCode(tok, targetOut);
+        added++;
+        return true;
+      }
+      return false;
+    }
+
+    var perkCount = style === 'stacks' ? 2 : (style === 'packed' ? 6 + Math.floor(Math.random() * 5) : 4 + Math.floor(Math.random() * 4));
+    for (var pi = 0; pi < perkCount; pi++) tryPick('ccClassModPerkSelect');
+    if (Math.random() < 0.78) tryPick('ccClassModUniversalSelect');
+    if (Math.random() < 0.62) tryPick('ccClassModSecondarySelect');
+    if (Math.random() < 0.22) tryPick('ccClassModElementSelect');
+    if (Math.random() < 0.18) tryPick('ccClassModFirmwareSelect');
+
+    if (added === 0) {
+      setModdedGenStatus('No Class Mod perks loaded — pick a character above and retry.');
+    }
+    return added;
+  }
+
   function addRandomLegitSlots(itemType, manufacturer, weaponType, targetOut, opts) {
     opts = opts || {};
+    var style = String(opts.buildStyle || 'balanced').toLowerCase();
     var slots = getSlotsForModdedGen(itemType);
     var manL = String(manufacturer || '').trim().toLowerCase();
     var added = 0;
     var rejected = 0;
+    var maxAdds = style === 'packed' ? 8 : (style === 'stacks' ? 2 : 999);
     for (var i = 0; i < slots.length; i++) {
+      if (added >= maxAdds) break;
       var slot = slots[i];
       if (MODDED_GEN_ALWAYS_SKIP_SLOTS[slot.key]) continue;
+      if (style === 'packed') {
+        if (!MODDED_GEN_CORE_SLOTS[slot.key] && Math.random() < 0.82) continue;
+      } else if (style === 'stacks') {
+        if (slot.key !== 'rarity' && Math.random() < 0.92) continue;
+      }
       if (opts.skipOptional && MODDED_GEN_OPTIONAL_SLOTS[slot.key]) {
         if (Math.random() < 0.65) continue;
       }
@@ -6421,7 +7011,17 @@
     }
     var addedSlots = 0;
     if (genOpts.fillSlots !== false) {
-      addedSlots = addRandomLegitSlots(itemType, manufacturer, weaponType, out, { skipOptional: true });
+      if (isModdedGenClassModItemType(itemType)) {
+        addedSlots = addRandomClassModParts(itemType, manufacturer, weaponType, out, {
+          skipOptional: true,
+          buildStyle: genOpts.buildStyle
+        });
+      } else {
+        addedSlots = addRandomLegitSlots(itemType, manufacturer, weaponType, out, {
+          skipOptional: true,
+          buildStyle: genOpts.buildStyle
+        });
+      }
     }
     var stackTokens = [];
     var stackCount = 0;
@@ -6432,35 +7032,75 @@
       for (var si = 0; si < stackTokens.length; si++) {
         if (isTokenValidForModdedGenItemType(stackTokens[si], itemType)) validStacks.push(stackTokens[si]);
       }
-      packedStacks = packModdedStackTokens(validStacks);
-      for (var pi = 0; pi < packedStacks.tokens.length; pi++) {
-        appendToOutCode(packedStacks.tokens[pi], out);
+      if (genOpts.packStacks !== false) {
+        packedStacks = packModdedStackTokens(validStacks);
+        for (var pi = 0; pi < packedStacks.tokens.length; pi++) {
+          appendToOutCode(packedStacks.tokens[pi], out);
+        }
+        stackCount = packedStacks.stackCount;
+      } else {
+        for (var ui = 0; ui < validStacks.length; ui++) {
+          appendToOutCode(validStacks[ui], out);
+        }
+        stackCount = validStacks.length;
+        packedStacks = { tokens: validStacks.slice() };
       }
-      stackCount = packedStacks.stackCount;
     }
+    var elemAdded = 0;
+    if (genOpts.randomElement) {
+      if (addRandomModdedElement(itemType, out)) elemAdded = 1;
+    }
+    var legAdded = addRandomLegendaryEffectParts(itemType, manufacturer, weaponType, out, resolveModdedGenLegendaryCount(genOpts, itemType));
     setModdedGenStatus(
       'Added ' + addedSlots + ' base part(s)'
       + (stackCount ? (' + ' + stackCount + ' stacked stat id(s)'
-        + (packedStacks && packedStacks.tokens.length ? (' in ' + packedStacks.tokens.length + ' packed token(s)') : '')) : '')
+        + (packedStacks && packedStacks.tokens.length ? (' in ' + packedStacks.tokens.length + ' token(s)') : '')) : '')
+      + (elemAdded ? ' + element' : '')
+      + (legAdded ? (' + ' + legAdded + ' legendary effect part(s)') : '')
       + ' (' + itemType + ').'
     );
+  }
+
+  function ensureModdedGenOutputPrefix(out, ctx) {
+    if (!out) return;
+    var serial = String(out.value || '').trim();
+    if (serial.indexOf('||') >= 0) return;
+    try {
+      applyGuidedGeneratorItemType(ctx.itemType, ctx.manufacturer, ctx.weaponType);
+      dispatchModdedGenGuidedSync(ctx);
+    } catch (_) {}
+    try {
+      if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput();
+    } catch (_) {}
+    serial = String(out.value || '').trim();
+    if (serial.indexOf('||') >= 0) return;
+    var prefix = computeGuidedPrefixSafe();
+    if (prefix) {
+      out.value = (String(prefix).indexOf('||') >= 0 ? String(prefix).trim() : (String(prefix).trim() + ' ||')) + '|';
+    }
   }
 
   function syncModdedGenFloatingOutput() {
     syncGuidedFloatingOutputFromDeser();
   }
 
-  function runModdedGenBuild(ctx, genOpts, useAppend, targetOut) {
+  function runModdedGenBuild(ctx, genOpts, useAppend, targetOut, onDone) {
     try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
+    ensureModdedGenOutputPrefix(targetOut, ctx);
     addRandomPartsForItemType(ctx.itemType, ctx.manufacturer, ctx.weaponType, useAppend, targetOut, genOpts);
     try { if (typeof window.refreshGuidedOutput === 'function') window.refreshGuidedOutput(); } catch (_) {}
     try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     syncModdedGenFloatingOutput();
+    var serial = targetOut ? String(targetOut.value || '').trim() : '';
+    if (genOpts.batchToList !== false && serial.indexOf('||') >= 0) {
+      appendModdedGenBatchLine(serial);
+    }
+    if (typeof onDone === 'function') onDone(serial);
   }
 
-  function scheduleModdedGenBuild(ctx, genOpts, useAppend, targetOut) {
+  function scheduleModdedGenBuild(ctx, genOpts, useAppend, targetOut, onDone) {
     var syncAttempts = 0;
     function startWhenReady() {
       if (!moddedGenGuidedUiMatches(ctx) && syncAttempts < 8) {
@@ -6471,7 +7111,7 @@
         return setTimeout(startWhenReady, 150);
       }
       whenGuidedSlotsReady(ctx.itemType, function () {
-        runModdedGenBuild(ctx, genOpts, useAppend, targetOut);
+        runModdedGenBuild(ctx, genOpts, useAppend, targetOut, onDone);
       });
     }
     applyGuidedGeneratorItemType(ctx.itemType, ctx.manufacturer, ctx.weaponType);
@@ -6652,7 +7292,7 @@
     return normalizeGuidedItemTypeForGenerator(itemType, weaponType);
   }
 
-  function randomFullBuild() {
+  function randomFullBuild(onDone) {
     try {
       window.__CC_LAST_CODE_TARGET = 'guided';
       var genOpts = getModdedGenOptionsFromUI();
@@ -6660,6 +7300,7 @@
       var rarities = window.STX_RARITIES;
       if (!Array.isArray(rarities) || !rarities.length) {
         alert('STX_RARITIES not loaded.');
+        if (typeof onDone === 'function') onDone('');
         return;
       }
       var out = byId('guidedOutputDeserialized');
@@ -6669,6 +7310,7 @@
       var itemType, manufacturer, weaponType;
       var forcedType = String(genOpts.itemType || '').trim();
       var forcedWeaponType = String(genOpts.weaponType || '').trim();
+      var forcedManufacturer = String(genOpts.manufacturer || '').trim();
       var guidedMan = byId('ccGuidedManufacturer');
       var deferUiMs = 60;
 
@@ -6689,13 +7331,24 @@
 
       if (!appendOnly) {
         var stPick = getGuidedState();
-        var useGuidedPick = !forcedType && String(stPick.itemType || '').trim() && String(stPick.manufacturer || '').trim();
+        var useGuidedPick = !forcedType && !forcedManufacturer && String(stPick.itemType || '').trim() && String(stPick.manufacturer || '').trim();
 
         if (forcedType) {
-          var forced = applyForcedModdedGenItemType(forcedType, forcedWeaponType, rarities, guidedMan);
+          var forced = applyForcedModdedGenItemType(forcedType, forcedWeaponType, rarities, guidedMan, forcedManufacturer);
           itemType = forced.itemType;
           manufacturer = forced.manufacturer;
           weaponType = forced.weaponType;
+        } else if (forcedManufacturer) {
+          var manPick = pickRandomRarityRowForGenerator(rarities, '', '', forcedManufacturer);
+          manufacturer = forcedManufacturer;
+          itemType = manPick ? String(manPick.itemType || '').trim() : 'Weapon';
+          weaponType = itemType;
+          if (/^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle)$/i.test(itemType)) weaponType = itemType;
+          else if (/Heavy Weapon/i.test(itemType)) weaponType = 'Heavy Weapon';
+          var normM = normalizeGuidedItemTypeForGenerator(itemType, weaponType);
+          itemType = normM.itemType;
+          weaponType = normM.weaponType;
+          applyGuidedGeneratorItemType(itemType, manufacturer, weaponType);
         } else if (useGuidedPick) {
           itemType = String(stPick.itemType).trim();
           manufacturer = String(stPick.manufacturer).trim();
@@ -6706,7 +7359,7 @@
         } else {
           var poolRows = rarities.filter(function (r) {
             var it = String(r && r.itemType || '').trim();
-            return /^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle|Heavy Weapon|Shield|Grenade|Repkit|Class Mod|Enhancement|Gadget)$/i.test(it);
+            return /^(Assault Rifle|Pistol|Shotgun|SMG|Sniper Rifle|Heavy Weapon|Shield|Grenade|Repkit|Enhancement|Gadget)$/i.test(it);
           });
           if (!poolRows.length) poolRows = rarities;
           var pick = poolRows[Math.floor(Math.random() * poolRows.length)];
@@ -6727,6 +7380,8 @@
         weaponType = normE.weaponType;
       }
 
+      if (forcedManufacturer && manufacturer !== forcedManufacturer) manufacturer = forcedManufacturer;
+
       var ctx = {
         itemType: itemType,
         manufacturer: manufacturer,
@@ -6734,11 +7389,12 @@
         deferUiMs: deferUiMs
       };
       var useAppend = appendOnly && genOpts.appendMode;
-      scheduleModdedGenBuild(ctx, genOpts, useAppend, out);
+      scheduleModdedGenBuild(ctx, genOpts, useAppend, out, onDone);
     } catch (err) {
       console.error('Random Full Build failed:', err);
       setModdedGenStatus('Generator failed — see console.');
       alert('Random modded item failed: ' + (err && err.message));
+      if (typeof onDone === 'function') onDone('');
     }
   }
 
@@ -6747,17 +7403,27 @@
    * (otherwise the 2nd+ run would append-only to the previous serial).
    */
   function randomFullBuildBatch(n) {
-    var count = Math.min(50, Math.max(1, parseInt(n, 10) || 1));
+    var count = Math.min(100, Math.max(1, parseInt(n, 10) || 1));
     var i = 0;
+    var batchTa = byId('moddedGenBatchOutput');
+    if (count > 1 && batchTa && !(byId('moddedGenAppendMode') && byId('moddedGenAppendMode').checked)) {
+      batchTa.value = '';
+      updateModdedGenBatchUi(0);
+    }
     function step() {
-      if (i >= count) return;
+      if (i >= count) {
+        setModdedGenStatus('Finished ' + count + ' roll(s).');
+        return;
+      }
       var out = byId('guidedOutputDeserialized');
       var appendEl = byId('moddedGenAppendMode');
       if (out && !(appendEl && appendEl.checked)) out.value = '';
-      setModdedGenStatus('Roll ' + (i + 1) + ' / ' + count + '…');
-      randomFullBuild();
-      i++;
-      if (i < count) setTimeout(step, 950);
+      setModdedGenStatus('Generating ' + (i + 1) + ' / ' + count + '…');
+      randomFullBuild(function () {
+        i++;
+        if (i < count) setTimeout(step, 1100);
+        else setModdedGenStatus('Finished ' + count + ' roll(s).');
+      });
     }
     step();
   }

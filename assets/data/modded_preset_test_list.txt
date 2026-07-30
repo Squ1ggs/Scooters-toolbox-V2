@@ -1,5 +1,5 @@
 Modded BL4 preset test list — stacks are approximate (combined ≈ perStack^N)
-Source: community serial dumps + internal modded codes
+Source: internal modded serial patterns + preset catalog
 
 === WEAPON ===
 DAMAGE (per stack ~×1.05–1.08 for barrel/acc tokens)

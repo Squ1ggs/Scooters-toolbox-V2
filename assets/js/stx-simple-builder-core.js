@@ -7684,16 +7684,10 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     function renderPicked(){
       if (!showInlinePicked) return;
       const cur = state.slots[schemaItem.key];
-      if (schemaItem.multi){
-        const arr = Array.isArray(cur) ? cur : (cur ? [cur] : []);
-        picked.innerHTML = arr.length
-          ? `<div>${arr.map(p=>`* ${escapeHtml(displayForPart(p))}<br><code>${escapeHtml(tokenForPart(p))}</code>`).join('<br>')}</div>`
-          : `<div class="muted small">Nothing selected.</div>`;
-      } else {
-        picked.innerHTML = cur
-          ? `<div>${escapeHtml(displayForPart(cur))}<br><code>${escapeHtml(tokenForPart(cur))}</code></div>`
-          : `<div class="muted small">Nothing selected.</div>`;
-      }
+      const arr = Array.isArray(cur) ? cur : (cur ? [cur] : []);
+      picked.innerHTML = arr.length
+        ? `<div>${arr.map(p=>`* ${escapeHtml(displayForPart(p))}<br><code>${escapeHtml(tokenForPart(p))}</code>`).join('<br>')}</div>`
+        : `<div class="muted small">Nothing selected.</div>`;
     }
 
     // Tickbox selectors (searchable) for large pools.
@@ -8138,11 +8132,9 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       // (Without this, the slot may be populated in the output/picked list, but the <select> stays on placeholder.)
       const cur = state.slots[schemaItem.key];
       let curPart = cur;
-      if (schemaItem.multi){
-        const arr = Array.isArray(cur) ? cur : [];
-        if (arr.length){
-          // Prefer the last added/parsed element (importOrder if present).
-          const sorted = arr.slice().sort((a,b)=>(a.__importOrder ?? 0) - (b.__importOrder ?? 0));
+      if (Array.isArray(cur)) {
+        if (cur.length) {
+          const sorted = cur.slice().sort((a,b)=>(a.__importOrder ?? 0) - (b.__importOrder ?? 0));
           curPart = sorted[sorted.length - 1];
         } else {
           curPart = null;
@@ -8287,21 +8279,19 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } else {
         const existing = state.slots[schemaItem.key];
         if (existing){
-          const stackTok = tokenForPart(part) || normCode(part.code);
-          if (stackTok && typeof stxAppendPartTokenViaExtras === 'function'){
-            stxAppendPartTokenViaExtras(stackTok, { type: 'stackedSlot', skipRefresh: true });
-          } else {
-            state.extras = Array.isArray(state.extras) ? state.extras : [];
-            let maxOrd = 0;
-            for (const ex of state.extras){
-              const ord = ex && typeof ex.order === 'number' ? ex.order : 0;
-              if (ord > maxOrd) maxOrd = ord;
-            }
-            const t = tokenForPart(part) || normCode(part.code);
-            if (t) state.extras.push({ tok: String(t), order: maxOrd + 1, type: 'stackedSlot' });
-          }
+          const arr = Array.isArray(existing) ? existing.slice() : [existing];
+          const orders = stxNextImportOrders(arr, count);
+          for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
+          state.slots[schemaItem.key] = arr;
         } else {
-          state.slots[schemaItem.key] = part;
+          if (count > 1){
+            const orders = stxNextImportOrders([], count);
+            const arr = [];
+            for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
+            state.slots[schemaItem.key] = arr;
+          } else {
+            state.slots[schemaItem.key] = part;
+          }
         }
       }
       state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
@@ -11230,11 +11220,13 @@ function computeFullDeserializedCode(){
 
   let __refreshOutputsPending = false;
   let __refreshOutputsForceQueued = false;
+  let __refreshOutputsRescheduleQueued = false;
   function refreshOutputs(force){
     if (!force && typeof window.__ccIsScrollBusy === 'function' && window.__ccIsScrollBusy()) return;
     
     if (__refreshOutputsPending) {
       if (force) __refreshOutputsForceQueued = true;
+      else __refreshOutputsRescheduleQueued = true;
       return;
     }
     __refreshOutputsPending = true;
@@ -11281,8 +11273,19 @@ function computeFullDeserializedCode(){
       
       $('outList').value = partsListValue;
       const lastTarget = String(window.__CC_LAST_CODE_TARGET || '').trim();
-      const writeSimpleOut = $('outCode') && lastTarget !== 'guided' && (runForce || lastTarget === 'simple');
-      if (writeSimpleOut) $('outCode').value = code;
+      const simpleActive = typeof stxSimpleBuilderHasActiveBuild === 'function' && stxSimpleBuilderHasActiveBuild();
+      const writeSimpleOut = $('outCode') && (
+        simpleActive ||
+        ((runForce || lastTarget === 'simple') && lastTarget !== 'guided')
+      );
+      if (writeSimpleOut) {
+        $('outCode').value = code;
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        try {
+          const outEl = $('outCode');
+          if (outEl) outEl.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (_) {}
+      }
       try{
         const b85El = $('outCodeB85');
         const showB85 = b85El && lastTarget !== 'guided' && (runForce || lastTarget === 'simple');
@@ -11302,7 +11305,7 @@ function computeFullDeserializedCode(){
           }, runForce ? 0 : 80);
         }
       }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
-      if (!runForce) window.__CC_LAST_CODE_TARGET = 'simple';
+      if (!runForce && lastTarget !== 'guided') window.__CC_LAST_CODE_TARGET = 'simple';
       $('outJson').value = JSON.stringify(json, null, 2);
       try {
         if (typeof window.refreshImportedInspector === 'function' && !window.__CC_IMPORT_IN_PROGRESS) {
@@ -11323,6 +11326,9 @@ function computeFullDeserializedCode(){
       if (__refreshOutputsForceQueued) {
         __refreshOutputsForceQueued = false;
         refreshOutputs(true);
+      } else if (__refreshOutputsRescheduleQueued) {
+        __refreshOutputsRescheduleQueued = false;
+        refreshOutputs(false);
       }
     });
   }

@@ -1,13 +1,11 @@
 /**
- * Optional remote BL-base85 serialization.
- * POST { deserialized } → { serial_b85 }.
- * Prefer <meta name="stx-serialize-url"> when set; otherwise use the default remote endpoint.
- * Falls back to window.serializeToBase85 when offline, CORS-blocked, or API errors.
+ * Optional remote BL-base85 serialization when <meta name="stx-serialize-url"> is set.
+ * Falls back to window.serializeToBase85 (local WASM) when no URL is configured.
  */
 (function () {
   'use strict';
 
-  var DEFAULT_SERIALIZE_URL = 'https://save-editor.be/nicnl/api.php';
+  var DEFAULT_SERIALIZE_URL = '';
 
   function resolveSerializeUrl() {
     try {

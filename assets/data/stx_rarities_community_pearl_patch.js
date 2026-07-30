@@ -76,15 +76,6 @@
   {
     "manufacturer": "Daedalus",
     "itemType": "SMG",
-    "itemTypeString": "DAD_SM.comp_05_legendary_raiden",
-    "familyId": 20,
-    "itemId": 70,
-    "legendaryName": "Raiden",
-    "source": "Community Pearl"
-  },
-  {
-    "manufacturer": "Daedalus",
-    "itemType": "SMG",
     "itemTypeString": "DAD_SM.comp_06_pearl_screwed",
     "familyId": 245,
     "itemId": 249,
