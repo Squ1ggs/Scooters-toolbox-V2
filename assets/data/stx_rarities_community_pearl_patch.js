@@ -12,11 +12,11 @@
   },
   {
     "manufacturer": "Jakobs",
-    "itemType": "Shotgun",
-    "itemTypeString": "JAK_SG.comp_06_pearl_constable",
-    "familyId": 9,
-    "itemId": 101,
-    "legendaryName": "Constable",
+    "itemType": "Sniper Rifle",
+    "itemTypeString": "JAK_SR.comp_05_legendary_burrow",
+    "familyId": 24,
+    "itemId": 83,
+    "legendaryName": "burrow",
     "source": "Community Pearl"
   },
   {
@@ -47,30 +47,30 @@
     "source": "Community Pearl"
   },
   {
-    "manufacturer": "Torgue",
-    "itemType": "Pistol",
-    "itemTypeString": "TOR_PS.comp_06_pearl_herald",
-    "familyId": 6,
-    "itemId": 85,
-    "legendaryName": "Herald",
+    "manufacturer": "Weapon",
+    "itemType": "Weapon",
+    "itemTypeString": "DAD_AR.comp_05_legendary_kaos",
+    "familyId": 13,
+    "itemId": 91,
+    "legendaryName": "kaos",
     "source": "Community Pearl"
   },
   {
-    "manufacturer": "Maliwan",
-    "itemType": "SMG",
-    "itemTypeString": "MAL_SM.comp_06_pearl_juliet",
-    "familyId": 21,
-    "itemId": 90,
-    "legendaryName": "Juliet's Sparkle",
+    "manufacturer": "Order",
+    "itemType": "Assault Rifle",
+    "itemTypeString": "ORD_AR.comp_05_legendary_pchonk",
+    "familyId": 15,
+    "itemId": 79,
+    "legendaryName": "pchonk",
     "source": "Community Pearl"
   },
   {
-    "manufacturer": "Vladof",
+    "manufacturer": "Daedalus",
     "itemType": "SMG",
-    "itemTypeString": "VLA_SM.comp_06_pearl_locust",
-    "familyId": 22,
-    "itemId": 101,
-    "legendaryName": "Parasite",
+    "itemTypeString": "DAD_SM.comp_05_legendary_raiden",
+    "familyId": 20,
+    "itemId": 70,
+    "legendaryName": "Raiden",
     "source": "Community Pearl"
   },
   {

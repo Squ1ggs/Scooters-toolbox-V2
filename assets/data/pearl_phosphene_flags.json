@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-30T20:19:26.707Z",
+  "generated_at": "2026-08-04T21:09:15.372Z",
   "source": "Nexus NCS export (challenge shiny + itempool_*_shiny + Cosmetics_Weapon_Shiny_*)",
   "proof_rule": "Challenge_Shiny_* / challengereward_*_shiny_* for slug, OR itempool_*_shiny with legendary/pearl-legendary comp + Cosmetics_Weapon_Shiny_*",
   "nexus_dir": "references/bl4_toolbox_export/ncs/json",
@@ -14,20 +14,26 @@
   ],
   "stats": {
     "total": 20,
-    "verified_yes": 1,
-    "verified_no": 19,
+    "verified_yes": 3,
+    "verified_no": 17,
     "ambiguous": 0,
     "challenge_hits": 0,
     "pool_hits": 1
   },
   "flags": {
     "jailbroken": {
-      "can_be_phosphene": false,
-      "status": "verified_no",
+      "can_be_phosphene": true,
+      "status": "verified_yes",
       "display_name": "Jail-Broken Gatling",
       "gear_slug": "jailbroken",
-      "evidence": [],
-      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+      "evidence": [
+        {
+          "kind": "override",
+          "notes": "Curated: Jail-Broken Gatling phosphene (Subjugator pearl) — export ItemPoolList chunk may omit shiny proof.",
+          "source_file": "pearl_phosphene_overrides.json"
+        }
+      ],
+      "notes": "Curated: Jail-Broken Gatling phosphene (Subjugator pearl) — export ItemPoolList chunk may omit shiny proof."
     },
     "gomie": {
       "can_be_phosphene": false,
@@ -65,9 +71,14 @@
           "comp": "DAD_PS.comp_05_legendary_soulsurvivor",
           "cosmetic": "Cosmetics_Weapon_Shiny_soulsurvivor",
           "matched_key": "soulsurvivor"
+        },
+        {
+          "kind": "override",
+          "notes": "Curated: Soul Survivor phosphene — Drone Captain dedicated drop; ItemPoolList not in partial export.",
+          "source_file": "pearl_phosphene_overrides.json"
         }
       ],
-      "notes": "Export: shiny pool itempool_dad_ps_05_legendary_soulsurvivor_shiny + Cosmetics_Weapon_Shiny_soulsurvivor"
+      "notes": "Curated: Soul Survivor phosphene — Drone Captain dedicated drop; ItemPoolList not in partial export."
     },
     "crowsourced": {
       "can_be_phosphene": false,
@@ -84,12 +95,18 @@
       "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced)."
     },
     "crazedearl": {
-      "can_be_phosphene": false,
-      "status": "verified_no",
+      "can_be_phosphene": true,
+      "status": "verified_yes",
       "display_name": "Crazed Earl",
       "gear_slug": "crazedearl",
-      "evidence": [],
-      "notes": "Export: no Challenge_Shiny_* / challengereward_*_shiny_* and no itempool_*_shiny with Cosmetics_Weapon_Shiny_* for this pearl slug."
+      "evidence": [
+        {
+          "kind": "override",
+          "notes": "Curated: Crazed Earl phosphene — dedicated Crazy Earl pool; export may lack Challenge_Shiny row.",
+          "source_file": "pearl_phosphene_overrides.json"
+        }
+      ],
+      "notes": "Curated: Crazed Earl phosphene — dedicated Crazy Earl pool; export may lack Challenge_Shiny row."
     },
     "eigenburst": {
       "can_be_phosphene": false,

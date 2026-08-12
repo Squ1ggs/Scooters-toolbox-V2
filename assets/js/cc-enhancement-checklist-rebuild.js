@@ -331,7 +331,15 @@
     var delim = ((byId('enhDelim247') || {}).value || ' ').slice(0,3);
     if (list247.length) parts.push(' {247:[' + list247.join(delim) + ']}');
     out.value = parts.join(' ');
-    try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_t) {}
+    try {
+      if (typeof window.writeSharedItemCode === 'function') {
+        window.writeSharedItemCode({ deser: String(out.value || '').trim(), source: 'guided', force: true });
+      } else {
+        window.__CC_LAST_CODE_TARGET = 'guided';
+      }
+    } catch (_t) {
+      try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
+    }
     try { if (window.refreshGuidedOutputPreview) window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
     try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}

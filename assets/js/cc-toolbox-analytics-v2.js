@@ -1,10 +1,6 @@
 (function () {
   var META = 'stx-analytics-endpoint';
 
-  function isDesktopNoTelemetry() {
-    return !!(window.STX_DESKTOP && window.STX_DESKTOP.disableRemoteTelemetry);
-  }
-
   function configuredEndpoint() {
     if (typeof window.STX_ANALYTICS_ENDPOINT === 'string' && window.STX_ANALYTICS_ENDPOINT.trim()) {
       return window.STX_ANALYTICS_ENDPOINT.trim();
@@ -15,7 +11,6 @@
 
   /** file://, iframe sandbox, etc. — remote Netlify has no CORS for Origin "null"; skip to avoid console noise. */
   function allowRemoteAnalyticsEndpoints() {
-    if (isDesktopNoTelemetry()) return false;
     if (typeof location === 'undefined') return false;
     if (!/^https?:$/i.test(location.protocol || '')) return false;
     try {
@@ -26,13 +21,13 @@
     }
     try {
       var h = String(location.hostname || '').toLowerCase();
-      if (h === 'scooters-toolbox.netlify.app' || h === 'save-editor.be') return true;
-      /* GitHub Pages mirror: allow POST when meta points at the shared HTTPS analytics API. */
+      if (h === 'scooters-toolbox.netlify.app') return true;
+      /* GitHub Pages mirror: allow POST when meta points at a real HTTPS API (patch sets save-editor track.php). */
       if (h === 'github.io' || h.slice(-10) === '.github.io') {
         var ep = configuredEndpoint();
         if (ep && /^https:\/\//i.test(ep)) return true;
       }
-      /* Other mirrors: disable remote analytics POST to avoid 403/404 spam. */
+      /* Other shared-host / mirrors: disable remote analytics POST to avoid 403/404 spam. */
       return false;
     } catch (_) {
       return false;

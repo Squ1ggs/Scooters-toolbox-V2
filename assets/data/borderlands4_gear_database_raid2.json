@@ -1,6 +1,6 @@
 {
   "version": "Raid 2 (May 2026)",
-  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "pearlescent_weapons": [
     {
       "name": "Jail-Broken Gatling",
@@ -32,7 +32,10 @@
       "redText": "Still Got It.",
       "ability": "Ascending Storm — On hit, gain a stack of Firestorm. Each stack increases Weapon Damage. Reloading unleashes Firestorm on nearby enemies.",
       "source": "World Drop (Raid 2)",
-      "notes": "Export-synced pearl (base_comp_06_pearlescent)."
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
+      "alternateEditorComps": [
+        "jak_ar.comp_05_legendary_gomie"
+      ]
     },
     {
       "name": "Herald",
@@ -294,25 +297,31 @@
     },
     {
       "name": "burrow",
-      "weaponType": "",
-      "manufacturer": "",
-      "expectedInv": "",
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Jakobs",
+      "expectedInv": "jak_sr",
       "spawnTokens": [
         "burrow"
       ],
       "status": "export_synced",
-      "notes": "Export-synced pearl (rarity_06_pearlescent)."
+      "notes": "Export-synced pearl (rarity_06_pearlescent).",
+      "alternateEditorComps": [
+        "jak_sr.comp_05_legendary_burrow"
+      ]
     },
     {
       "name": "kaos",
-      "weaponType": "",
-      "manufacturer": "",
-      "expectedInv": "",
+      "weaponType": "Assault Rifle",
+      "manufacturer": "Daedalus",
+      "expectedInv": "dad_ar",
       "spawnTokens": [
         "kaos"
       ],
       "status": "export_synced",
-      "notes": "Export-synced pearl (base_comp_06_pearlescent)."
+      "notes": "Export-synced pearl (base_comp_06_pearlescent).",
+      "alternateEditorComps": [
+        "dad_ar.comp_05_legendary_kaos"
+      ]
     },
     {
       "name": "pchonk",
@@ -452,7 +461,7 @@
     }
   ],
   "export_pearl_sync": {
-    "synced_at": "2026-07-30T20:19:26.534Z",
+    "synced_at": "2026-08-04T21:25:23.571Z",
     "nexus_dir": "references/bl4_toolbox_export/ncs/json",
     "pearl_count": 20,
     "added": [],

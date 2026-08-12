@@ -3443,10 +3443,12 @@
 
   function syncGuidedFloatingOutputFromDeser() {
     try {
+      var last = String(window.__CC_LAST_CODE_TARGET || '').trim();
       var outCode = byId('outCode');
       var outVal = outCode && String(outCode.value || '').trim();
       var outLive = outVal && outVal.indexOf('||') >= 0;
-      if (outLive && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) {
+      /* When Guided owns the build, always mirror Guided → shared/Simple IDs. */
+      if (last !== 'guided' && outLive && typeof window.stxSimpleBuilderHasActiveBuild === 'function' && window.stxSimpleBuilderHasActiveBuild()) {
         try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
         if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
         return;
@@ -3456,8 +3458,20 @@
     var gDes = byId('guidedOutputDeserialized');
     var v = gDes ? String(gDes.value || '').trim() : '';
     if (!v) return;
-    var outCode = byId('outCode');
-    if (outCode) outCode.value = v;
+    var gSer = byId('guidedOutputSerial');
+    var b85 = gSer ? String(gSer.value || '').trim() : '';
+    if (typeof window.writeSharedItemCode === 'function') {
+      window.writeSharedItemCode({
+        deser: v,
+        b85: b85 || undefined,
+        source: 'guided',
+        skipB85: !b85,
+        force: !!window.__CC_BUILDER_HANDOFF
+      });
+      return;
+    }
+    var outCode2 = byId('outCode');
+    if (outCode2) outCode2.value = v;
     var imp = byId('importBox');
     if (imp && String(imp.value || '').trim() === v) { /* already synced */ }
     else if (imp && !String(imp.value || '').trim()) imp.value = v;
@@ -5144,6 +5158,17 @@
       return false;
     }
 
+    function finishGuidedSharedMirror() {
+      try {
+        if (typeof window.syncGuidedFloatingOutputFromDeser === 'function') {
+          window.syncGuidedFloatingOutputFromDeser();
+          return;
+        }
+      } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    }
+
     function refreshGuidedOutput() {
       var deserEl = byId('guidedOutputDeserialized');
       if (!deserEl) return;
@@ -5155,8 +5180,7 @@
       var guidedItEnh = byId('ccGuidedItemType');
       if (guidedItEnh && String(guidedItEnh.value || '').trim() === 'Enhancement') {
         try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        finishGuidedSharedMirror();
         return;
       }
       
@@ -5170,8 +5194,7 @@
           }
         } catch (_) {}
         try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        finishGuidedSharedMirror();
         return;
       }
       // Safety: If current value is exactly the protected imported value, don't clear it or mangle it.
@@ -5195,7 +5218,7 @@
                }
             }
             try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
-            try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+            finishGuidedSharedMirror();
             return;
          }
       }
@@ -5209,8 +5232,7 @@
            if (serialEl) serialEl.value = '';
            try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
         }
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        finishGuidedSharedMirror();
         return;
       }
       var dbl = existing.indexOf('||');
@@ -5223,6 +5245,7 @@
            // Keep existing if it looks like a full code (e.g. from an import)
            if (deserEl.__ccImportedValue === existing) {
               // It's the imported value, don't clear it.
+              finishGuidedSharedMirror();
               return;
            }
         } else {
@@ -5230,8 +5253,7 @@
         }
         if (deserEl.value && !/\|\s*$/.test(deserEl.value.trim())) deserEl.value = deserEl.value.trim() + '|';
         try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+        finishGuidedSharedMirror();
         return;
       }
       var tail = existing.slice(dbl + 2).trim();
@@ -5301,7 +5323,7 @@
               if (b85_2) serialEl2.value = String(b85_2).trim();
            } catch(_) {}
         }
-        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+        finishGuidedSharedMirror();
         return;
       }
     }
@@ -5314,8 +5336,7 @@
       }
     }
       try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
-      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
-      try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+      finishGuidedSharedMirror();
     }
     window.refreshGuidedOutput = refreshGuidedOutput;
     function clearCodeSectionsForNewItem() {

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   window.YAML_SAVE_CATALOG = {
-  "generated": "2026-07-30T20:11:16.992Z",
+  "generated": "2026-08-04T20:44:21.318Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "shiny_gear": [
     {
@@ -302,7 +302,13 @@
       "key": "shiny_loarmaster",
       "cosmetic": "Cosmetics_Weapon_Shiny_Loarmaster",
       "unlockable": "Unlockable_Weapons.Shiny_Loarmaster",
-      "label": "Phosphene — Cold Shoulder"
+      "label": "Phosphene — ARC-TAN"
+    },
+    {
+      "key": "shiny_lockjaw",
+      "cosmetic": "Cosmetics_Weapon_Shiny_lockjaw",
+      "unlockable": "Unlockable_Weapons.Shiny_lockjaw",
+      "label": "Phosphene — Lockjaw"
     },
     {
       "key": "shiny_lucian",
@@ -497,6 +503,12 @@
       "label": "Phosphene — Shalashaska (legendary; not pearl)"
     },
     {
+      "key": "shiny_shammy",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Shammy",
+      "unlockable": "Unlockable_Weapons.Shiny_Shammy",
+      "label": "Phosphene — Shammy"
+    },
+    {
       "key": "shiny_sideshow",
       "cosmetic": "Cosmetics_Weapon_Shiny_Sideshow",
       "unlockable": "Unlockable_Weapons.Shiny_Sideshow",
@@ -656,6 +668,7 @@
     "shiny_leadballoon",
     "shiny_linebacker",
     "shiny_loarmaster",
+    "shiny_lockjaw",
     "shiny_lucian",
     "shiny_lumberjack",
     "shiny_luty",
@@ -688,6 +701,7 @@
     "shiny_seamstress",
     "shiny_seventh_sense",
     "shiny_shalashaska",
+    "shiny_shammy",
     "shiny_sideshow",
     "shiny_slugger",
     "shiny_songbird",
@@ -1162,6 +1176,46 @@
       "c": 138,
       "name": "Tracer Bullet",
       "code": "|\"c\",138|"
+    },
+    {
+      "c": 139,
+      "name": "GoldenHoneycomb",
+      "code": "|\"c\",139|"
+    },
+    {
+      "c": 140,
+      "name": "FancySometimes",
+      "code": "|\"c\",140|"
+    },
+    {
+      "c": 141,
+      "name": "AcridLandscape",
+      "code": "|\"c\",141|"
+    },
+    {
+      "c": 142,
+      "name": "TechRain",
+      "code": "|\"c\",142|"
+    },
+    {
+      "c": 143,
+      "name": "OilCamo",
+      "code": "|\"c\",143|"
+    },
+    {
+      "c": 144,
+      "name": "Bubbles",
+      "code": "|\"c\",144|"
+    },
+    {
+      "c": 145,
+      "name": "EmpireCamo",
+      "code": "|\"c\",145|"
+    },
+    {
+      "c": 146,
+      "name": "ShinyMap",
+      "code": "|\"c\",146|"
     }
   ],
   "ammo_keys": [

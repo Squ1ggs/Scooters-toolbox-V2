@@ -8,6 +8,21 @@
       "can_be_phosphene": false,
       "status": "verified_no",
       "notes": "Override: Order AR Crow-Sourced is not Midnight Defiance (Cosmetics_Weapon_Shiny_CrowdSourced / Challenge_Shiny_CrowdSourced)."
+    },
+    "jailbroken": {
+      "can_be_phosphene": true,
+      "status": "verified_yes",
+      "notes": "Curated: Jail-Broken Gatling phosphene (Subjugator pearl) — export ItemPoolList chunk may omit shiny proof."
+    },
+    "crazedearl": {
+      "can_be_phosphene": true,
+      "status": "verified_yes",
+      "notes": "Curated: Crazed Earl phosphene — dedicated Crazy Earl pool; export may lack Challenge_Shiny row."
+    },
+    "soulsurvivor": {
+      "can_be_phosphene": true,
+      "status": "verified_yes",
+      "notes": "Curated: Soul Survivor phosphene — Drone Captain dedicated drop; ItemPoolList not in partial export."
     }
   }
 }

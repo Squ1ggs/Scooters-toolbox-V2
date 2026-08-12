@@ -2232,6 +2232,15 @@
     const rawCode = normCode(p.code);
     const spawnSeg = spawnSegmentFromNormCode(rawCode);
     let datasetName = (p.name && String(p.name).trim()) ? String(p.name).trim() : '';
+    try {
+      const catLo = String(p.category || p.itemType || '').toLowerCase();
+      const isCm = /class\s*mod/.test(catLo) || /classmod_/.test(String(rawCode || '').toLowerCase());
+      if (isCm) {
+        const resolved = String(stxResolveClassModPartDisplayName(p) || '').trim();
+        if (resolved) datasetName = resolved;
+        else if (stxIsClassModUnnamedLegendaryStub(p)) datasetName = '';
+      }
+    } catch (_e) {}
 
     // Repkit placeholder rows: make them meaningful instead of showing "PLACEHOLDER".
     try{
@@ -2397,6 +2406,22 @@ function getAllParts(){
     return Array.from(new Set(list.filter(Boolean)));
   }
 
+  /**
+   * Canonical vault-hunter manufacturer key for Class Mod rows.
+   * Nexus/extract sometimes ships "Dark Siren" while the live editor uses "Siren" (UI: Vex).
+   */
+  function stxCanonicalClassModManufacturerKey(m){
+    const lo = String(m || '').trim().toLowerCase().replace(/[\s_-]+/g, ' ');
+    if (!lo) return '';
+    if (lo === 'vex' || lo === 'siren' || lo === 'dark siren' || lo === 'darksiren') return 'siren';
+    if (lo === 'amon' || lo === 'paladin' || lo === 'forge knight') return 'paladin';
+    if (lo === 'rafa' || lo === 'exo soldier' || lo === 'exo-soldier' || lo === 'exosoldier') return 'exo soldier';
+    if (lo === 'harlowe' || lo === 'gravitar') return 'gravitar';
+    if (lo === 'c4sh' || lo === 'robodealer' || lo === 'robo dealer') return 'robodealer';
+    if (lo === 'universal') return 'universal';
+    return lo;
+  }
+
   /** Collapse rarity-sheet / parts-list duplicates (e.g. COV vs Cov, bor→Ripper). */
   function stxCanonicalizeManufacturerDisplayName(m){
     const s = String(m || '').trim();
@@ -2414,7 +2439,15 @@ function getAllParts(){
     if (lo === 'vla') return 'Vladof';
     if (lo === 'atl') return 'Atlas';
     if (lo === 'hyp') return 'Hyperion';
-    if (lo === 'classmod') return '';
+    if (lo === 'classmod' || lo === 'class mod') return '';
+    // Class Mod character aliases → stable internal family names (UI maps Siren→Vex, etc.).
+    const cmKey = stxCanonicalClassModManufacturerKey(s);
+    if (cmKey === 'siren') return 'Siren';
+    if (cmKey === 'paladin') return 'Paladin';
+    if (cmKey === 'exo soldier') return 'Exo Soldier';
+    if (cmKey === 'gravitar') return 'Gravitar';
+    if (cmKey === 'robodealer') return 'Robodealer';
+    if (cmKey === 'universal') return 'Universal';
     return s;
   }
 
@@ -2681,6 +2714,12 @@ function getAllParts(){
     try {
       if (document.documentElement.classList.contains('stx-lite-ui')) return;
     } catch (_) {}
+    const icon = String(opt.getAttribute('data-cc-icon') || '');
+    /* Vault-hunter portraits have face detail; brightness(0) gold fill turns them into solid yellow blobs. */
+    if (/vault-hunters\//i.test(icon)) {
+      if (!opt.getAttribute('data-cc-primary-tone')) opt.setAttribute('data-cc-primary-tone', 'legendary');
+      return;
+    }
     opt.setAttribute('data-cc-icon-filter', STX_CLASSMOD_LEGENDARY_BODY_ICON_FILTER);
   }
   /**
@@ -2724,13 +2763,13 @@ function getAllParts(){
   function stxManufacturerIconUrl(rawMfr, itemTypeCat){
     const it = String(itemTypeCat || '').trim();
     if (/class\s*mod/i.test(it)){
-      const m = String(rawMfr || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      const key = stxCanonicalClassModManufacturerKey(rawMfr);
       const base = './assets/img/vault-hunters/';
-      if (m === 'siren') return base + 'player_class_dark_siren.png';
-      if (m === 'paladin') return base + 'player_class_paladin.png';
-      if (m === 'exo soldier' || m === 'exosoldier') return base + 'player_class_exo_soldier.png';
-      if (m === 'gravitar') return base + 'player_class_gravitar.png';
-      if (m === 'robodealer' || m === 'c4sh') return base + 'player_robodealer.png';
+      if (key === 'siren') return base + 'player_class_dark_siren.png';
+      if (key === 'paladin') return base + 'player_class_paladin.png';
+      if (key === 'exo soldier') return base + 'player_class_exo_soldier.png';
+      if (key === 'gravitar') return base + 'player_class_gravitar.png';
+      if (key === 'robodealer') return base + 'player_robodealer.png';
       return '';
     }
     const m = String(rawMfr || '').trim().toLowerCase();
@@ -3502,13 +3541,13 @@ function getAllParts(){
 
     // 4. Class Mod Body / Character Body (not skill/universal rows — those use section 3)
     if ((cat === 'Class Mod' || cat === 'Character' || its.indexOf('classmod') !== -1 || its.indexOf('character') !== -1) && !perkishSchema && !perkishDataset){
-      const mfr = String(p.manufacturer || '').toLowerCase();
-      // Character portraits
-      if (mfr === 'siren') return './assets/img/vault-hunters/player_class_dark_siren.png';
-      if (mfr === 'paladin') return './assets/img/vault-hunters/player_class_paladin.png';
-      if (mfr === 'exo soldier' || mfr === 'exosoldier') return './assets/img/vault-hunters/player_class_exo_soldier.png';
-      if (mfr === 'gravitar') return './assets/img/vault-hunters/player_class_gravitar.png';
-      if (mfr === 'robodealer' || mfr === 'c4sh') return './assets/img/vault-hunters/player_robodealer.png';
+      const mfrKey = stxCanonicalClassModManufacturerKey(p.manufacturer);
+      // Character portraits (Dark Siren ≡ Siren / Vex)
+      if (mfrKey === 'siren') return './assets/img/vault-hunters/player_class_dark_siren.png';
+      if (mfrKey === 'paladin') return './assets/img/vault-hunters/player_class_paladin.png';
+      if (mfrKey === 'exo soldier') return './assets/img/vault-hunters/player_class_exo_soldier.png';
+      if (mfrKey === 'gravitar') return './assets/img/vault-hunters/player_class_gravitar.png';
+      if (mfrKey === 'robodealer') return './assets/img/vault-hunters/player_robodealer.png';
     }
 
     // 5. Legendary Augments (true legendaries only — not pearlescent comp_05 allowlist rows)
@@ -3648,6 +3687,21 @@ function getAllParts(){
     opt.removeAttribute('data-cc-icon-alt');
     const iconUrl = stxResolvePartIconUrl(p, schemaItem, category);
     if (iconUrl) stxSetOptionDataCcIconFromUrl(opt, iconUrl);
+    if (typeof window.stxApplyPartDropdownMeta === 'function') {
+      try {
+        window.stxApplyPartDropdownMeta(opt, p, {
+          isBarrelSlot: isBarrelFamilySchemaSlot(schemaItem, category),
+          allowLegendaryTone: true
+        });
+      } catch (_e) {}
+    } else {
+      const redSub = stxPartRedTextSubForDropdown(p);
+      if (redSub) opt.setAttribute('data-cc-barrel-sub', redSub);
+      else opt.removeAttribute('data-cc-barrel-sub');
+      if (stxBarrelSlotLegendaryPrimaryTone(p, schemaItem, category)) opt.setAttribute('data-cc-primary-tone', 'legendary');
+      else opt.removeAttribute('data-cc-primary-tone');
+    }
+    /* After meta: Class Mod legendary bodies — gold-fill flat icons, or legendary text tone for portraits. */
     if (String(category || '').trim() === 'Class Mod' && (
       String(schemaItem.key || '') === 'body' ||
       String(schemaItem.key || '') === 'mainBody' ||
@@ -3656,20 +3710,6 @@ function getAllParts(){
     )) {
       stxApplyClassModBodyLegendaryIconFilter(opt, p);
     }
-    if (typeof window.stxApplyPartDropdownMeta === 'function') {
-      try {
-        window.stxApplyPartDropdownMeta(opt, p, {
-          isBarrelSlot: isBarrelFamilySchemaSlot(schemaItem, category),
-          allowLegendaryTone: true
-        });
-        return;
-      } catch (_e) {}
-    }
-    const redSub = stxPartRedTextSubForDropdown(p);
-    if (redSub) opt.setAttribute('data-cc-barrel-sub', redSub);
-    else opt.removeAttribute('data-cc-barrel-sub');
-    if (stxBarrelSlotLegendaryPrimaryTone(p, schemaItem, category)) opt.setAttribute('data-cc-primary-tone', 'legendary');
-    else opt.removeAttribute('data-cc-primary-tone');
   }
 
   let __rarityRowsCacheKey = '';
@@ -3727,11 +3767,19 @@ function getAllParts(){
       return code.includes('pearl_') || /(?:^|[._])comp_06_pearlescent/.test(code);
     };
 
+    const isClassModCtx = /class\s*mod/i.test(String(cat || '')) || /class\s*mod/i.test(String(wantType || ''));
+    const manCmKey = isClassModCtx ? stxCanonicalClassModManufacturerKey(man) : '';
     let rows = table.filter(r => {
       if (wantType === 'Heavy Weapon' && stxIsGrenKitStxRarityRow(r)) return false;
       if (!itemTypeMatches(r && r.itemType)) return false;
       if (useAllMfr) return true;
-      return String(r && r.manufacturer || '').trim().toLowerCase() === manL;
+      const rm = String(r && r.manufacturer || '').trim().toLowerCase();
+      if (rm === manL) return true;
+      // Class Mod: treat Dark Siren ≡ Siren ≡ Vex (and peers) so extract + live sheet rows both match.
+      if (isClassModCtx && manCmKey) {
+        return stxCanonicalClassModManufacturerKey(rm) === manCmKey;
+      }
+      return false;
     });
 
     // Fallback when manufacturer-specific rows are missing.
@@ -4319,25 +4367,29 @@ function getAllParts(){
       if (!raw) return null;
 
       // Accept either internal family names (Siren/Paladin/Exo Soldier/Gravitar/Robodealer)
-      // or displayed BL4 character names (Vex/Amon/Rafa/Harlowe).
+      // or displayed BL4 character names (Vex/Amon/Rafa/Harlowe) / Nexus "Dark Siren".
       const aliasByLower = { 'vex':'Siren', 'siren':'Siren', 'dark siren':'Siren', 'darksiren':'Siren', 'amon':'Paladin', 'paladin':'Paladin', 'rafa':'Exo Soldier', 'exo soldier':'Exo Soldier', 'harlowe':'Gravitar', 'gravitar':'Gravitar', 'c4sh':'Robodealer', 'robodealer':'Robodealer' };
       const lc = raw.toLowerCase();
-      const name = aliasByLower[lc] || raw;
+      const name = aliasByLower[lc] || stxCanonicalizeManufacturerDisplayName(raw) || raw;
+      const wantCmKey = stxCanonicalClassModManufacturerKey(name);
 
-      // Primary: manufacturer exact match for Class Mod rows
+      // Primary: manufacturer match for Class Mod rows (alias-aware: Dark Siren ≡ Siren)
       let row = rows.find(r =>
         String(r && r.itemType || '') === 'Class Mod' &&
-        String(r && r.manufacturer || '').trim() === name
+        (String(r && r.manufacturer || '').trim() === name ||
+          (wantCmKey && stxCanonicalClassModManufacturerKey(r && r.manufacturer) === wantCmKey))
       );
       if (row && row.familyId != null) return row.familyId;
 
       // Fallback: match by itemTypeString slug (e.g., classmod_paladin...)
+      // Siren family spawn codes use classmod_dark_siren.*, not classmod_siren.*.
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+      const slugAlts = (slug === 'siren') ? ['siren', 'dark_siren', 'darksiren'] : [slug];
       row = rows.find(r => {
         const it = String(r && r.itemType || '');
         const its = String(r && r.itemTypeString || '').toLowerCase();
         if (it !== 'Class Mod' && !/class\s*mod|classmod/i.test(its)) return false;
-        return its.includes('classmod_' + slug);
+        return slugAlts.some(function (s) { return its.includes('classmod_' + s); });
       });
       if (row && row.familyId != null) return row.familyId;
 
@@ -4425,8 +4477,78 @@ function getAllParts(){
     if (/(^|[._])action_skill_.*tier_/i.test(code)) return true;
     if (/(^|[._])capstone_.*tier_/i.test(code)) return true;
     if (/\bskill\s*test\b/i.test(nm) || /_skill_test\b/i.test(code) || /skilltest\b/i.test(nn)) return true;
+    /* Unreleased / unnamed legendary stubs (no inv_name_part marketing name). */
+    if (stxIsClassModUnnamedLegendaryStub(p)) return true;
     return false;
   }
+
+  /**
+   * Legendary class-mod rows that only have internal codenames (Raid3/Raid4/Harmonica)
+   * and no player-facing name yet — hide from builders so lists show real names only.
+   */
+  function stxIsClassModUnnamedLegendaryStub(p){
+    if (!p) return false;
+    const code = String(normCode(p.code || p.spawnCode || '') || '').toLowerCase();
+    if (/classmod_/.test(code) && /\.(?:leg_body_|comp_05_legendary_)(raid3|raid4|harmonica)(?:["']|$)/.test(code)) return true;
+    const nm = String((p.name || p.legendaryName || p.displayName || '') || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[\s_-]+/g, '');
+    if (!/^(raid3|raid4|harmonica)$/.test(nm)) return false;
+    /* Name-only stubs: hide when spawn is missing/token-only or also unnamed. */
+    if (!code || /\{/.test(code)) return true;
+    if (/(raid3|raid4|harmonica)/.test(code)) return true;
+    return false;
+  }
+  try { window.stxIsClassModUnnamedLegendaryStub = stxIsClassModUnnamedLegendaryStub; } catch (_) {}
+
+  /** Known DLC / raid legendary class-mod display names (spawn → in-game name). */
+  const STX_CLASSMOD_DLC_DISPLAY_BY_SPAWN = {
+    'classmod_dark_siren.leg_body_cowbell': 'Configuration',
+    'classmod_dark_siren.comp_05_legendary_cowbell': 'Configuration',
+    'classmod_dark_siren.leg_body_raid2': 'Grim Sister',
+    'classmod_dark_siren.comp_05_legendary_raid2': 'Grim Sister',
+    'classmod_dark_siren.leg_body_tuba': 'Living Weapon',
+    'classmod_dark_siren.comp_05_legendary_tuba': 'Living Weapon',
+    'classmod_exo_soldier.leg_body_cowbell': 'Reaparición',
+    'classmod_exo_soldier.comp_05_legendary_cowbell': 'Reaparición',
+    'classmod_exo_soldier.leg_body_raid2': 'Bombastic',
+    'classmod_exo_soldier.comp_05_legendary_raid2': 'Bombastic',
+    'classmod_exo_soldier.leg_body_tuba': 'Power-Puncher',
+    'classmod_exo_soldier.comp_05_legendary_tuba': 'Power-Puncher',
+    'classmod_gravitar.leg_body_cowbell': 'Phlebotomist',
+    'classmod_gravitar.comp_05_legendary_cowbell': 'Phlebotomist',
+    'classmod_gravitar.leg_body_raid2': 'Plasmaphile',
+    'classmod_gravitar.comp_05_legendary_raid2': 'Plasmaphile',
+    'classmod_gravitar.leg_body_tuba': 'Chirurgeon',
+    'classmod_gravitar.comp_05_legendary_tuba': 'Chirurgeon',
+    'classmod_paladin.leg_body_cowbell': 'Tempest',
+    'classmod_paladin.comp_05_legendary_cowbell': 'Tempest',
+    'classmod_paladin.leg_body_raid2': 'Artificer',
+    'classmod_paladin.comp_05_legendary_raid2': 'Artificer',
+    'classmod_paladin.leg_body_tuba': 'Damned',
+    'classmod_paladin.comp_05_legendary_tuba': 'Damned',
+    'classmod_robodealer.leg_body_raid2': 'Prestidigitator',
+    'classmod_robodealer.comp_05_legendary_raid2': 'Prestidigitator',
+    'classmod_robodealer.leg_body_tuba': 'Trainer',
+    'classmod_robodealer.comp_05_legendary_tuba': 'Trainer'
+  };
+
+  /** Resolve player-facing class-mod part name (never Raid3 / Harmonica stubs). */
+  function stxResolveClassModPartDisplayName(p){
+    if (!p) return '';
+    const code = String(normCode(p.code || p.spawnCode || '') || '').toLowerCase();
+    if (STX_CLASSMOD_DLC_DISPLAY_BY_SPAWN[code]) return STX_CLASSMOD_DLC_DISPLAY_BY_SPAWN[code];
+    let nm = String((p.name || p.legendaryName || p.displayName || '') || '').trim();
+    nm = nm.replace(/^part_|^comp_/i, '').replace(/_/g, ' ').trim();
+    const nmKey = nm.toLowerCase().replace(/[\s_-]+/g, '');
+    if (/^(raid\d+|harmonica|cowbell|tuba|dlc\d+|legbody.*)$/i.test(nmKey) || /^raid\s*\d+$/i.test(nm)) {
+      /* Mapped spawn already checked; leave blank rather than show internal slug. */
+      return '';
+    }
+    return nm;
+  }
+  try { window.stxResolveClassModPartDisplayName = stxResolveClassModPartDisplayName; } catch (_) {}
 
   /** Class-mod body rows (`classmod_paladin.body_01`, `leg_body_*`) often ship with empty `partType` in the dataset. */
   function stxIsClassModBodyPoolCode(code){
@@ -4971,7 +5093,8 @@ function getAllParts(){
           }
           const want = String(partType || '');
           // Only scope class-specific pools. Perks (family 234) are universal and must not be filtered by class.
-          const classScoped = (want === 'Body' || want === 'Name+Skin' || want === 'Rarity' || want === 'Skill');
+          // Legendary main/prefix uses partType '' (leg_body_*) — still class-scoped.
+          const classScoped = (want === 'Body' || want === '' || want === 'Name+Skin' || want === 'Rarity' || want === 'Skill');
           if (classScoped && Number.isFinite(pfam) && pfam !== Number(fam)) return false;
         }
       }
@@ -4991,13 +5114,20 @@ function getAllParts(){
           const ptNorm = ptL.toLowerCase();
           const codeL = String(code||'').toLowerCase();
 
-          if (wantNorm === 'body'){
+          if (wantNorm === 'body' || wantNorm === ''){
             const isBody = (ptNorm === 'body');
             const isLegBody = codeL.includes('leg_body_');
             const isBodyCode = stxIsClassModBodyPoolCode(code);
-            if (!(isBody || isLegBody || isBodyCode)) return false;
+            /* Legendary main/prefix pool uses partType '' — DLC/raid rows often ship as partType Body. */
+            if (wantNorm === '') {
+              if (!isLegBody) return false;
+            } else if (!(isBody || isLegBody || isBodyCode)) {
+              return false;
+            }
           } else if (wantNorm === 'name+skin'){
-            if (!ptNorm.startsWith('name+skin')) return false;
+            if (ptNorm.startsWith('name+skin')) { /* ok */ }
+            else if (codeL.includes('leg_body_')) { /* DLC/raid legendary names tagged Body */ }
+            else return false;
           } else if (wantNorm === 'skill'){
             if (ptNorm !== 'skill') return false;
           } else if (wantNorm === 'perk'){
@@ -5460,7 +5590,12 @@ function getAllParts(){
 
   /** Vault-hunter / class-mod family names — never show in non–Class Mod manufacturer lists. */
   const STX_CLASS_MOD_ONLY_MANUFACTURERS = new Set([
-    'siren', 'paladin', 'exo soldier', 'exosoldier', 'gravitar', 'robodealer', 'c4sh', 'universal'
+    'siren', 'dark siren', 'darksiren', 'vex',
+    'paladin', 'amon', 'forge knight',
+    'exo soldier', 'exosoldier', 'exo-soldier', 'rafa',
+    'gravitar', 'harlowe',
+    'robodealer', 'robo dealer', 'c4sh',
+    'universal', 'class mod', 'classmod', 'characters'
   ]);
 
   const __mfrHasPartsCache = new Map();
@@ -5532,12 +5667,21 @@ function getAllParts(){
         ).map(m => (/^c4sh$/i.test(m) || /^robodealer$/i.test(m)) ? 'Robodealer' : m);
         mans = unique(mans).sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
       
-      // Guard against mis-tagged manufacturer values like "characters"
-      mans = mans.filter(x => String(x).trim().toLowerCase() !== 'characters');
+      // Guard against mis-tagged / pseudo manufacturer values (characters, Class Mod, etc.)
+      mans = mans.filter(x => {
+        const lo = String(x || '').trim().toLowerCase();
+        return lo && lo !== 'characters' && lo !== 'class mod' && lo !== 'classmod' && lo !== 'universal';
+      });
       const __cmFallback = ['Siren','Paladin','Exo Soldier','Gravitar','Robodealer'];
       // If the sheet/dataset ever fails to expose the classmod families, use the known set.
       if (!mans.length || !__cmFallback.some(v => mans.includes(v))) {
         mans = __cmFallback.slice();
+      } else {
+        // Ensure the five vault hunters are always present even when extract only ships aliases.
+        for (let i = 0; i < __cmFallback.length; i++) {
+          if (!mans.includes(__cmFallback[i])) mans.push(__cmFallback[i]);
+        }
+        mans = unique(mans).sort((a,b)=>String(a).localeCompare(String(b), undefined, {numeric:true}));
       }
 }catch(_e){ mans = []; }
     } else {
@@ -5695,7 +5839,12 @@ function getAllParts(){
 
     if (isClassMod){
       // Display BL4 character names while keeping internal STX mapping (familyId) intact.
-      const DISP = {'Siren':'Vex','Paladin':'Amon','Exo Soldier':'Rafa','Gravitar':'Harlowe','Robodealer':'C4sh','C4sh':'C4sh'};
+      const DISP = {'Siren':'Vex','Dark Siren':'Vex','Paladin':'Amon','Exo Soldier':'Rafa','Gravitar':'Harlowe','Robodealer':'C4sh','C4sh':'C4sh'};
+      // Normalize any leftover Dark Siren / display-name selection onto the canonical internal value.
+      try {
+        const canonMan = stxCanonicalizeManufacturerDisplayName(state.manufacturer);
+        if (canonMan && mans.includes(canonMan)) state.manufacturer = canonMan;
+      } catch (_e) {}
       const opts = mans.map(v=>({value:v, label:(DISP[v] || v)}));
       setSelectOptions($('manufacturer'), opts, {
         placeholder: 'Select character...',
@@ -6095,8 +6244,26 @@ function refreshMainPartSync(){
 
 if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const fam = classModFamilyIdForCharacter(man);
-      if (fam != null){
-        partsList = partsList.filter(p => Number(p.familyId ?? p.family) === Number(fam));
+      let slugPrefix = '';
+      try {
+        const key = classModKeyForCharacter(man);
+        if (key === 'vex') slugPrefix = 'classmod_dark_siren.';
+        else if (key === 'amon') slugPrefix = 'classmod_paladin.';
+        else if (key === 'rafa') slugPrefix = 'classmod_exo_soldier.';
+        else if (key === 'harlowe') slugPrefix = 'classmod_gravitar.';
+        else if (key === 'c4sh') slugPrefix = 'classmod_robodealer.';
+      } catch (_e) {}
+      if (fam != null || slugPrefix){
+        partsList = partsList.filter(p => {
+          const pf = Number(p && (p.familyId ?? p.family));
+          if (fam != null && Number.isFinite(pf) && pf === Number(fam)) return true;
+          if (slugPrefix) {
+            const c = String(normCode(p && p.code || '') || '').toLowerCase();
+            if (c.indexOf(slugPrefix) === 0) return true;
+          }
+          /* Keep family-less DLC rows only when they clearly belong to this VH slug. */
+          return false;
+        });
       }
     }
 
@@ -6351,7 +6518,17 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       placeholder: mainPlaceholder,
       groupBy: useRarityTierGroups ? ((p) => stxRarityOptgroupLabelFromPart(p, man)) : null,
       getLabel: dropdownLabelForMainPartList,
-      getTitle: lightMainPartOpts ? null : ((p)=> dropdownLabelForPart(p)),
+      getTitle: lightMainPartOpts ? null : ((p)=>{
+        let tip = '';
+        try { tip = String(dropdownLabelForPart(p) || '').trim(); } catch (_e) {}
+        if (String(state.itemType || '').trim() === 'Class Mod'){
+          try {
+            const code = String(normCode(p && p.code) || '').trim();
+            if (code && tip.indexOf(code) === -1) tip = tip ? (tip + ' | ' + code) : code;
+          } catch (_e) {}
+        }
+        return tip;
+      }),
       getValue: (p)=>String((p && p.__mainOptKey) ? p.__mainOptKey : ''),
       appendIdRawToLabel: !lightMainPartOpts,
       decorateOption(opt, p){
@@ -7117,6 +7294,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       if (category === 'Class Mod' && schemaItem && schemaItem.partType === 'Name+Skin'){
         // Keep Prefix Part aligned with the main page classmod name list (legacy per-class pools).
         const legacyNameOpts = getLegacyClassModNameParts(state.manufacturer)
+          .filter((p)=>!stxIsBrokenClassmodDatasetPlaceholderPart(p))
           .sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
         if (legacyNameOpts.length > rawOpts.length) rawOpts = legacyNameOpts;
         if (rawOpts.length <= 1){
@@ -7130,6 +7308,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
           if (retry.length > rawOpts.length) rawOpts = retry;
         }
+        rawOpts = (rawOpts || []).filter((p)=>!stxIsBrokenClassmodDatasetPlaceholderPart(p));
       }
       if (category === 'Class Mod' && schemaItem && schemaItem.partType === 'Skill'){
         // Match main classmod builder: class-specific skill pool from the selected character.
@@ -7159,7 +7338,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           const aliases = [];
           try {
             const key = classModKeyForCharacter(state.manufacturer);
-            if (key === 'vex') aliases.push('Siren', 'Vex');
+            if (key === 'vex') aliases.push('Siren', 'Vex', 'Dark Siren');
             else if (key === 'amon') aliases.push('Paladin', 'Amon');
             else if (key === 'rafa') aliases.push('Exo Soldier', 'Rafa');
             else if (key === 'harlowe') aliases.push('Gravitar', 'Harlowe');
@@ -8101,19 +8280,35 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         const core = stxEnhancementCoreEffectText(p);
         if (core) return core;
       }
-      if (typeof window.partEffectDescForDropdown === 'function'){
-        try{
-          const d = String(window.partEffectDescForDropdown(p) || '').trim();
-          if (d) return d;
-        }catch(_e){}
-      }
-      if (typeof window.partTooltipText === 'function'){
+      let tip = '';
+      /* Class Mod: prefer full part tooltip (name + numeric id + spawn + stats). */
+      if (category === 'Class Mod' && typeof window.partTooltipText === 'function'){
         try{
           const t = String(window.partTooltipText(p) || '').trim();
-          if (t) return t;
+          if (t) tip = t;
         }catch(_e){}
       }
-      return dropdownLabelForPart(p);
+      if (!tip && typeof window.partEffectDescForDropdown === 'function'){
+        try{
+          const d = String(window.partEffectDescForDropdown(p) || '').trim();
+          if (d) tip = d;
+        }catch(_e){}
+      }
+      if (!tip && typeof window.partTooltipText === 'function'){
+        try{
+          const t = String(window.partTooltipText(p) || '').trim();
+          if (t) tip = t;
+        }catch(_e){}
+      }
+      if (!tip) tip = dropdownLabelForPart(p);
+      /* Class Mod: spawn is omitted from the compact label — keep it on hover. */
+      if (category === 'Class Mod'){
+        try{
+          const code = String(normCode(p && p.code) || '').trim();
+          if (code && tip.indexOf(code) === -1) tip = tip ? (tip + ' | ' + code) : code;
+        }catch(_e){}
+      }
+      return tip;
     }
     setSelectOptions(sel, opts, {
       placeholder: stxSimpleSlotPlaceholder(schemaItem, useQtyAddSlot),
@@ -11274,38 +11469,24 @@ function computeFullDeserializedCode(){
       $('outList').value = partsListValue;
       const lastTarget = String(window.__CC_LAST_CODE_TARGET || '').trim();
       const simpleActive = typeof stxSimpleBuilderHasActiveBuild === 'function' && stxSimpleBuilderHasActiveBuild();
-      const writeSimpleOut = $('outCode') && (
+      const writeSimpleOut = (
         simpleActive ||
         ((runForce || lastTarget === 'simple') && lastTarget !== 'guided')
       );
       if (writeSimpleOut) {
-        $('outCode').value = code;
-        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        writeSharedItemCode({
+          deser: code,
+          source: 'simple',
+          force: !!runForce || !!window.__CC_BUILDER_HANDOFF
+        });
         try {
           const outEl = $('outCode');
           if (outEl) outEl.dispatchEvent(new Event('input', { bubbles: true }));
         } catch (_) {}
       }
-      try{
-        const b85El = $('outCodeB85');
-        const showB85 = b85El && lastTarget !== 'guided' && (runForce || lastTarget === 'simple');
-        if (showB85) {
-          const b85Code = code;
-          if (window.__stxB85RefreshTimer) clearTimeout(window.__stxB85RefreshTimer);
-          window.__stxB85RefreshTimer = setTimeout(function () {
-            window.__stxB85RefreshTimer = 0;
-            try {
-              const b85 = (b85Code && typeof window.serializeToBase85 === 'function')
-                ? String(window.serializeToBase85(b85Code, undefined, true) || '').trim()
-                : '';
-              if ($('outCodeB85')) $('outCodeB85').value = b85 || '';
-            } catch (_e3) {
-              try { if ($('outCodeB85')) $('outCodeB85').value = ''; } catch (_e4) {}
-            }
-          }, runForce ? 0 : 80);
-        }
-      }catch(_e){ try{ if ($('outCodeB85')) $('outCodeB85').value = ''; }catch(_e2){} }
-      if (!runForce && lastTarget !== 'guided') window.__CC_LAST_CODE_TARGET = 'simple';
+      if (!runForce && lastTarget !== 'guided') {
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+      }
       $('outJson').value = JSON.stringify(json, null, 2);
       try {
         if (typeof window.refreshImportedInspector === 'function' && !window.__CC_IMPORT_IN_PROGRESS) {
@@ -11350,6 +11531,178 @@ function computeFullDeserializedCode(){
       window.__IMPORTED_BASE_FAMILY_ID = null;
     }catch(_){}
   }
+
+  /**
+   * Best live deserialized serial across Simple mirror + shared Generated Item Code panel.
+   */
+  function getSharedDeserialized(){
+    let gv = '';
+    let ov = '';
+    try {
+      const gDes = document.getElementById('guidedOutputDeserialized');
+      gv = gDes ? String(gDes.value || '').trim() : '';
+    } catch (_) {}
+    try {
+      const out = $('outCode');
+      ov = out ? String(out.value || '').trim() : '';
+    } catch (_) {}
+    const gLive = gv.indexOf('||') >= 0;
+    const oLive = ov.indexOf('||') >= 0;
+    const last = String(window.__CC_LAST_CODE_TARGET || '').trim();
+    const simpleActive = typeof stxSimpleBuilderHasActiveBuild === 'function' && stxSimpleBuilderHasActiveBuild();
+    if (oLive && last !== 'guided' && (simpleActive || last === 'simple')) {
+      if (!gLive || ov.length >= gv.length) return ov;
+    }
+    if (gLive && last === 'guided') return gv;
+    if (gLive && (!oLive || gv.length >= ov.length)) return gv;
+    if (oLive) return ov;
+    return gv || ov || '';
+  }
+  try { window.getSharedDeserialized = getSharedDeserialized; } catch (_) {}
+
+  /**
+   * Write deserialized (+ optional base85) to the shared panel and Simple mirror IDs.
+   * opts: { deser, b85, source: 'simple'|'guided', skipB85, force, allowEmpty }
+   */
+  function writeSharedItemCode(opts){
+    opts = opts || {};
+    if (window.__ccIsHydrating && !opts.force) return false;
+    if (window.__CC_IMPORT_IN_PROGRESS && !opts.force && !window.__CC_BUILDER_HANDOFF) return false;
+
+    const deser = String(opts.deser != null ? opts.deser : '').trim();
+    const source = (opts.source === 'guided') ? 'guided' : 'simple';
+    const outEl = $('outCode');
+    const gDes = document.getElementById('guidedOutputDeserialized');
+    const outB85 = $('outCodeB85');
+    const gSer = document.getElementById('guidedOutputSerial');
+
+    if (gDes && !opts.force && deser) {
+      const existing = String(gDes.value || '').trim();
+      if (gDes.__ccUserTailEdit && existing.indexOf('||') >= 0 && existing.length > deser.length + 15) {
+        if (outEl && existing) outEl.value = existing;
+        try { window.__CC_LAST_CODE_TARGET = source; } catch (_) {}
+        return false;
+      }
+      if (gDes.__ccImportedValue && existing === String(gDes.__ccImportedValue).trim()
+          && existing.indexOf('||') >= 0 && existing.length > deser.length + 5) {
+        if (outEl && existing) outEl.value = existing;
+        try { window.__CC_LAST_CODE_TARGET = source; } catch (_) {}
+        return false;
+      }
+    }
+
+    if (deser || opts.allowEmpty) {
+      if (outEl) outEl.value = deser;
+      if (gDes) gDes.value = deser;
+    }
+
+    try { window.__CC_LAST_CODE_TARGET = source; } catch (_) {}
+
+    const providedB85 = opts.b85 != null ? String(opts.b85).trim() : '';
+    if (providedB85) {
+      if (outB85) outB85.value = providedB85;
+      if (gSer) {
+        gSer.value = providedB85;
+        gSer.__ccImportedValue = providedB85;
+      }
+    } else if (!opts.skipB85 && deser && deser.indexOf('||') >= 0 && typeof window.serializeToBase85 === 'function') {
+      const deserForB85 = deser;
+      const applyB85 = function (packed) {
+        const b85 = String(packed || '').trim();
+        if (!b85) return;
+        try { if ($('outCodeB85')) $('outCodeB85').value = b85; } catch (_) {}
+        try {
+          const gs = document.getElementById('guidedOutputSerial');
+          if (gs) {
+            gs.value = b85;
+            gs.__ccImportedValue = b85;
+          }
+        } catch (_) {}
+        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+      };
+      const weight = (typeof window.ccDeserializedPayloadWeight === 'function')
+        ? window.ccDeserializedPayloadWeight(deserForB85)
+        : { heavy: deserForB85.length > 2800 };
+      try {
+        if (window.__stxB85RefreshTimer) clearTimeout(window.__stxB85RefreshTimer);
+      } catch (_) {}
+      const packDelay = opts.force ? 0 : (weight.heavy ? 0 : 80);
+      window.__stxB85RefreshTimer = setTimeout(function () {
+        window.__stxB85RefreshTimer = 0;
+        try {
+          if (typeof window.ccSerializeToBase85Async === 'function' && weight.heavy) {
+            if (gSer) gSer.value = '…';
+            if (outB85) outB85.value = '…';
+            window.ccSerializeToBase85Async(deserForB85, applyB85);
+          } else {
+            applyB85(window.serializeToBase85(deserForB85, undefined, true));
+          }
+        } catch (_) {}
+      }, packDelay);
+    }
+
+    try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    return true;
+  }
+  try { window.writeSharedItemCode = writeSharedItemCode; } catch (_) {}
+
+  /**
+   * Continue the current item when switching Simple ↔ Guided.
+   * fromMode/toMode: 'simple' | 'guided'. No-op when there is no live serial.
+   */
+  function __ccHandoffBuilderMode(fromMode, toMode){
+    toMode = (toMode === 'guided') ? 'guided' : 'simple';
+    if (window.__CC_IMPORT_IN_PROGRESS || window.__ccIsHydrating) return;
+    const deser = getSharedDeserialized();
+    if (!deser || deser.indexOf('||') < 0) {
+      try { window.__CC_LAST_CODE_TARGET = toMode; } catch (_) {}
+      return;
+    }
+
+    window.__CC_BUILDER_HANDOFF = true;
+    try {
+      writeSharedItemCode({ deser: deser, source: toMode, force: true });
+
+      if (toMode === 'guided') {
+        try { window.__CC_LAST_CODE_TARGET = 'guided'; } catch (_) {}
+        try {
+          const gDes = document.getElementById('guidedOutputDeserialized');
+          if (gDes) {
+            gDes.value = deser;
+            gDes.__ccImportedValue = deser;
+            gDes.__ccUserTailEdit = false;
+          }
+        } catch (_) {}
+        try {
+          if (stxSimpleBuilderHasActiveBuild() && typeof window.__ccHydrateGuidedSlotsFromSimpleState === 'function') {
+            window.__ccHydrateGuidedSlotsFromSimpleState();
+          } else if (typeof window.__ccHydrateGuidedSlotSelectsFromSerial === 'function') {
+            window.__ccHydrateGuidedSlotSelectsFromSerial(deser);
+          }
+        } catch (_) {}
+        try { if (typeof window.syncGuidedVisibility === 'function') window.syncGuidedVisibility(); } catch (_) {}
+        try {
+          if (typeof window.syncGuidedFloatingOutputFromDeser === 'function') {
+            window.syncGuidedFloatingOutputFromDeser();
+          }
+        } catch (_) {}
+      } else {
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        try {
+          if (typeof window.importTokens === 'function') {
+            /* 'simple' keeps Guided fields; shared panel already mirrored. */
+            window.importTokens(deser, 'simple');
+          }
+        } catch (_) {}
+      }
+    } finally {
+      setTimeout(function () {
+        try { window.__CC_BUILDER_HANDOFF = false; } catch (_) {}
+      }, 280);
+    }
+  }
+  try { window.__ccHandoffBuilderMode = __ccHandoffBuilderMode; } catch (_) {}
 
   /**
    * Clear every visible generated-code surface when starting a new item
@@ -11728,6 +12081,25 @@ function resetAll(){
       if (!deser){
         try{ deser = String(($('importBox') && $('importBox').value) || '').trim(); }catch(__2){ deser = ''; }
       }
+      if (!deser || deser.indexOf('||') < 0) {
+        try {
+          var gExisting = guidedDeserEl ? String(guidedDeserEl.value || '').trim() : '';
+          if (gExisting.indexOf('||') >= 0) deser = gExisting;
+        } catch (_) {}
+      }
+
+      /* Shared Generated Item Code panel + both builder mirrors — force so import isn't blocked. */
+      if (deser && deser.indexOf('||') >= 0) {
+        try {
+          var src = (targetBuilder === 'simple') ? 'simple' : 'guided';
+          writeSharedItemCode({ deser: deser, source: src, force: true });
+        } catch (_) {}
+        try {
+          var impBoxShared = document.getElementById('importBox');
+          if (impBoxShared && String(impBoxShared.value || '').trim() !== deser) impBoxShared.value = deser;
+        } catch (_) {}
+        try { if (typeof window.__ipiInvalidateSerialCache === 'function') window.__ipiInvalidateSerialCache(); } catch (_) {}
+      }
       
   if ((targetBuilder === 'guided' || targetBuilder === 'both') && guidedDeserEl && deser && deser.indexOf('||') >= 0) {
     guidedDeserEl.value = deser;
@@ -11744,6 +12116,9 @@ function resetAll(){
         if (!guidedSerialEl || !packed) return;
         guidedSerialEl.value = String(packed).trim();
         guidedSerialEl.__ccImportedValue = String(packed).trim();
+        try {
+          if (outB85El) outB85El.value = String(packed).trim();
+        } catch (_) {}
       };
       var weight = (typeof window.ccDeserializedPayloadWeight === 'function')
         ? window.ccDeserializedPayloadWeight(deserForB85)
@@ -11752,6 +12127,7 @@ function resetAll(){
         try {
           if (typeof window.ccSerializeToBase85Async === 'function' && weight.heavy) {
             guidedSerialEl.value = '…';
+            if (outB85El) outB85El.value = '…';
             window.ccSerializeToBase85Async(deserForB85, applyB85);
           } else {
             applyB85(window.serializeToBase85(deserForB85, undefined, true));
@@ -11767,10 +12143,9 @@ function resetAll(){
     }
   }
   
-  // If only targeting guided, ensure simple output doesn't look like it was also updated
-  if (targetBuilder === 'guided') {
-    if (outEl) outEl.value = '';
-    if (outB85El) outB85El.value = '';
+  // Keep Simple #outCode/#outCodeB85 as hidden mirrors of the shared panel (do not blank on guided import).
+  if ((targetBuilder === 'guided' || targetBuilder === 'both') && outEl && deser && deser.indexOf('||') >= 0) {
+    outEl.value = deser;
   }
 
       var runHydrate = function(){
@@ -13718,6 +14093,8 @@ function resetAll(){
       window.stxIsBrokenClassmodDatasetPlaceholderPart = stxIsBrokenClassmodDatasetPlaceholderPart;
       window.getLegacyClassModNameParts = getLegacyClassModNameParts;
       window.getLegacyClassModSkillParts = getLegacyClassModSkillParts;
+      window.stxInvalidateSimpleBuilderPartCaches = stxInvalidateSimpleBuilderPartCaches;
+      window.stxRefreshBuilderAfterDatasetGrowth = stxRefreshBuilderAfterDatasetGrowth;
       window.importTokens = importTokens;
       window.refreshOutputs = refreshOutputs;
       window.isSkinTokenCandidate = isSkinTokenCandidate;
@@ -13816,6 +14193,7 @@ function resetAll(){
         };
         window.addEventListener('stx:deferred-core-ready', onDatasetGrowth);
         window.addEventListener('stx:full-scripts-ready', onDatasetGrowth);
+        window.addEventListener('stx:dataset-growth', onDatasetGrowth);
         /* Deferred may have finished before Simple finished booting — refresh once if parts already grew. */
         try {
           const n = (window.STX_DATASET && window.STX_DATASET.ALL_PARTS && window.STX_DATASET.ALL_PARTS.length) || 0;

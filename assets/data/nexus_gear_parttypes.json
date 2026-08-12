@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "totalRootsScanned": 236,
-    "totalRootsKept": 142
+    "totalRootsScanned": 159,
+    "totalRootsKept": 135
   },
   "roots": [
     {
@@ -60,14 +60,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {
-        "barrel": [
-          "part_barrel_02_DiscJockey",
-          "part_barrel_01_Streamer",
-          "part_barrel_02_Draupner",
-          "part_barrel_02_jetset"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "bor_repair_kit",
@@ -77,7 +70,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "primary_augment": [
-          "part_augment_unique_hugger",
           "part_augment_unique_augmenter"
         ],
         "secondary_augment": [
@@ -140,20 +132,7 @@
         "endgame",
         "unique"
       ],
-      "slotAllowlist": {
-        "body": [
-          "part_body_energy_firewall",
-          "part_body_energy_lightning",
-          "part_body_energy_Watts4Dinner",
-          "part_body_energy_OverSwarm"
-        ],
-        "firmware": [
-          "part_firmware_god_killer"
-        ],
-        "Element": [
-          "part_shock"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "bor_sm",
@@ -238,30 +217,7 @@
       "parttypes": [],
       "slotAllowlist": {
         "payload": [
-          "part_payload_unique_rubber",
-          "part_payload_unique_transmission",
-          "part_payload_unique_pellet",
           "part_payload_unique_buoy"
-        ],
-        "element": [
-          "part_corrosive",
-          "part_cryo",
-          "part_fire",
-          "part_radiation",
-          "part_shock"
-        ],
-        "firmware": [
-          "part_firmware_god_killer"
-        ],
-        "stat_augment": [
-          "part_stat_01_extra_charge",
-          "part_stat_02_cooldown_reduction",
-          "part_stat_03_damage",
-          "part_stat_04_radius",
-          "part_stat_05_elemental_power",
-          "part_stat_07_nuke",
-          "part_stat_08_force",
-          "part_stat_09_transfusion"
         ]
       }
     },
@@ -290,10 +246,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "class_mod_body": [
-          "leg_body_cowbell",
-          "leg_body_raid2",
-          "leg_body_tuba",
-          "leg_body_raid1",
           "leg_body_01",
           "leg_body_02",
           "leg_body_03",
@@ -302,10 +254,6 @@
           "leg_body_06"
         ],
         "stat_group1": [
-          "stat_skill_cooldown_rate",
-          "stat_skill_duration",
-          "stat_speed",
-          "stat_criticalhitchance_skill",
           "stat_ordnance_damage",
           "statspecial_attunement_duration",
           "stat_sniper_damage",
@@ -323,10 +271,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "class_mod_body": [
-          "leg_body_cowbell",
-          "leg_body_raid2",
-          "leg_body_tuba",
-          "leg_body_raid1",
           "leg_body_01",
           "leg_body_02",
           "leg_body_03",
@@ -335,13 +279,11 @@
           "leg_body_06"
         ],
         "stat_group1": [
-          "stat_melee_damage",
-          "statspecial_gliding_damage",
-          "stat_ordnance_damage",
-          "statspecial_movementspeed",
           "stat_skill_cooldown_rate",
+          "stat_ordnance_damage",
           "stat_skill_duration",
           "stat_skill_damage",
+          "stat_melee_damage",
           "Stat_Weapon_Damage"
         ]
       }
@@ -354,10 +296,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "class_mod_body": [
-          "leg_body_cowbell",
-          "leg_body_raid2",
-          "leg_body_tuba",
-          "leg_body_raid1",
           "leg_body_01",
           "leg_body_02",
           "leg_body_03",
@@ -366,10 +304,6 @@
           "leg_body_06"
         ],
         "stat_group1": [
-          "stat_statuseffect_damage",
-          "stat_skill_cooldown_rate",
-          "stat_actionskill_damage",
-          "stat_ordnance_damage",
           "statspecial_puddle_damage",
           "stat_statuseffect_chance",
           "stat_skill_duration",
@@ -387,10 +321,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "class_mod_body": [
-          "leg_body_cowbell",
-          "leg_body_raid2",
-          "leg_body_tuba",
-          "leg_body_raid1",
           "leg_body_01",
           "leg_body_02",
           "leg_body_03",
@@ -399,48 +329,12 @@
           "leg_body_06"
         ],
         "stat_group1": [
-          "stat_criticalhitchance_skill",
-          "statspecial_ricochet_damage",
-          "stat_skill_cooldown_rate",
-          "stat_criticalhitchance_gun",
           "statspecial_incendiary_damage",
           "stat_skill_damage",
           "statspecial_forgedrone_duration",
           "statspecial_cryo_damage",
           "statspecial_detonation_damage",
           "statspecial_forgeskill_damage"
-        ]
-      }
-    },
-    {
-      "rootKey": "classmod_robodealer",
-      "inv": "classmod_robodealer",
-      "baseType": "inv'ClassMod'",
-      "typeId": null,
-      "parttypes": [],
-      "slotAllowlist": {
-        "class_mod_body": [
-          "leg_body_01",
-          "leg_body_02",
-          "leg_body_03",
-          "leg_body_04",
-          "leg_body_05",
-          "leg_body_06",
-          "leg_body_dlc1",
-          "leg_body_raid1",
-          "leg_body_raid2",
-          "leg_body_tuba"
-        ],
-        "stat_group1": [
-          "stat_actionskill_damage",
-          "stat_skill_cooldown_rate",
-          "stat_crit_damage",
-          "stat_ordnance_cooldown",
-          "stat_reload_speed",
-          "stat_all_damage",
-          "stat_fire_rate",
-          "stat_ordnance_damage",
-          "stat_criticalhitchance_gun"
         ]
       }
     },
@@ -509,30 +403,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "payload": [
-          "part_payload_Axe",
-          "part_payload_fuse",
-          "part_payload_pressurecooker"
-        ],
-        "stat_augment": [
-          "part_stat_01_extra_charge",
-          "part_stat_02_cooldown_reduction",
-          "part_stat_03_damage",
-          "part_stat_06_crit_chance",
-          "part_stat_08_force",
-          "part_stat_04_jak_crit_damage",
-          "part_stat_05_jak_oversized"
-        ],
-        "element": [
-          "part_normal"
-        ],
-        "payload_augment": [
-          "part_04_artillery_02_ricochet",
-          "part_04_artillery_04_maglock",
-          "part_04_artillery_05_mortar_strike"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "dad_ps",
@@ -568,7 +439,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "primary_augment": [
-          "part_augment_unique_healthraiser",
           "part_augment_unique_pacemaker"
         ]
       }
@@ -606,67 +476,7 @@
       "baseType": "inv'energy_shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "body": [
-          "part_body_angel",
-          "part_unique_SuperSoldier",
-          "part_body_honeybadger"
-        ],
-        "primary_augment": [
-          "part_eng_vagabond_primary",
-          "part_eng_shield_booster_primary",
-          "part_eng_berserker_primary",
-          "part_eng_siphon_primary",
-          "part_eng_trigger_happy_primary",
-          "part_eng_nova_primary",
-          "part_eng_fleeting_primary",
-          "part_eng_brimming_primary",
-          "part_eng_recharge_rate_primary",
-          "part_eng_recharge_delay_primary",
-          "part_unv_utility_primary",
-          "part_unv_sturdy_primary",
-          "part_unv_spike_primary",
-          "part_unv_resistant_primary",
-          "part_unv_reflect_primary",
-          "part_unv_power_booster_primary",
-          "part_unv_pinpoint_primary",
-          "part_unv_overshield_booster_primary",
-          "part_unv_mag_refresh_booster_primary",
-          "part_unv_health_booster_primary",
-          "part_unv_healthy_primary",
-          "part_unv_evasive_primary",
-          "part_unv_capacity_primary",
-          "part_unv_adaptive_primary",
-          "part_unv_absorb_primary"
-        ],
-        "secondary_augment": [
-          "part_eng_vagabond_secondary",
-          "part_eng_shield_booster_secondary",
-          "part_eng_berserker_secondary",
-          "part_eng_siphon_secondary",
-          "part_eng_trigger_happy_secondary",
-          "part_eng_nova_secondary",
-          "part_eng_fleeting_secondary",
-          "part_eng_brimming_secondary",
-          "part_eng_recharge_rate_secondary",
-          "part_eng_recharge_delay_secondary",
-          "part_unv_utility_secondary",
-          "part_unv_sturdy_secondary",
-          "part_unv_spike_secondary",
-          "part_unv_resistant_secondary",
-          "part_unv_reflect_secondary",
-          "part_unv_power_booster_secondary",
-          "part_unv_pinpoint_secondary",
-          "part_unv_overshield_booster_secondary",
-          "part_unv_mag_refresh_booster_secondary",
-          "part_unv_health_booster_secondary",
-          "part_unv_healthy_secondary",
-          "part_unv_evasive_secondary",
-          "part_unv_capacity_secondary",
-          "part_unv_adaptive_secondary",
-          "part_unv_absorb_secondary"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "dad_sm",
@@ -770,6 +580,24 @@
       "slotAllowlist": {}
     },
     {
+      "rootKey": "grenade_gadget",
+      "inv": "grenade_gadget",
+      "baseType": "inv'Gadget'",
+      "typeId": null,
+      "parttypes": [
+        "body",
+        "element",
+        "payload",
+        "payload_augment",
+        "stat_augment",
+        "firmware",
+        "endgame",
+        "pearl_elem",
+        "pearl_stat"
+      ],
+      "slotAllowlist": {}
+    },
+    {
       "rootKey": "heavy_weapon_gadget",
       "inv": "heavy_weapon_gadget",
       "baseType": "inv'Weapon'",
@@ -792,14 +620,6 @@
           "Part_Body_05_Legendary"
         ]
       }
-    },
-    {
-      "rootKey": "inv_contractitem_scavgrenade",
-      "inv": "Inv_ContractItem_ScavGrenade",
-      "baseType": "inv'mission_pickup'",
-      "typeId": null,
-      "parttypes": [],
-      "slotAllowlist": {}
     },
     {
       "rootKey": "invdef_pickup_firstrepkit_intro",
@@ -857,35 +677,13 @@
       "parttypes": [],
       "slotAllowlist": {
         "payload": [
-          "part_ShoKunai",
-          "part_Bismuth_Corrosive",
-          "part_Bismuth_Cryo",
-          "part_Bismuth_Fire",
-          "part_Bismuth_Radiation",
-          "part_Bismuth_Shock",
           "part_spinning_blade"
-        ],
-        "element": [
-          "part_normal",
-          "part_corrosive",
-          "part_cryo",
-          "part_fire",
-          "part_radiation",
-          "part_shock"
-        ],
-        "stat_augment": [
-          "part_stat_02_cooldown_reduction",
-          "part_stat_03_damage",
-          "part_stat_06_crit_chance",
-          "part_stat_08_force",
-          "part_stat_04_jak_crit_damage",
-          "part_stat_05_jak_oversized"
-        ],
-        "body": [
-          "part_jak_Bismuth"
         ],
         "payload_augment": [
           "part_07_damage_amp_02_suppressor"
+        ],
+        "stat_augment": [
+          "part_stat_05_jak_oversized"
         ]
       }
     },
@@ -919,17 +717,7 @@
       "baseType": "inv'repair_kit'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "primary_augment": [
-          "part_augment_unique_Defibrillator",
-          "part_augment_unique_Vitae"
-        ],
-        "payload": [
-          "part_payload_small",
-          "part_payload_medium",
-          "part_payload_large"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "jak_sg",
@@ -965,50 +753,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "body": [
-          "part_body_barrelAged",
-          "part_body_armor_OnionLayeredGuard"
-        ],
-        "primary_augment": [
-          "part_unv_reflect_primary",
-          "part_unv_absorb_primary",
-          "part_unv_adaptive_primary",
-          "part_unv_capacity_primary",
-          "part_unv_utility_primary",
-          "part_unv_turtle_primary",
-          "part_unv_sturdy_primary",
-          "part_unv_resistant_primary",
-          "part_unv_evasive_primary",
-          "part_unv_spike_primary",
-          "part_unv_pinpoint_primary",
-          "part_ra_nova_segment_primary",
-          "part_ra_missile_swarm_primary",
-          "part_ra_spunky_primary",
-          "part_ra_knockback_primary",
-          "part_ra_heavy_plating_primary",
-          "part_ra_flanking_primary"
-        ],
-        "secondary_augment": [
-          "part_unv_utility_secondary",
-          "part_unv_turtle_secondary",
-          "part_unv_sturdy_secondary",
-          "part_unv_spike_secondary",
-          "part_unv_resistant_secondary",
-          "part_unv_reflect_secondary",
-          "part_unv_pinpoint_secondary",
-          "part_unv_evasive_secondary",
-          "part_unv_capacity_secondary",
-          "part_unv_adaptive_secondary",
-          "part_unv_absorb_secondary",
-          "part_ra_nova_segment_secondary",
-          "part_ra_missile_swarm_secondary",
-          "part_ra_spunky_secondary",
-          "part_ra_knockback_secondary",
-          "part_ra_heavy_plating_secondary",
-          "part_ra_flanking_secondary"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "jak_sr",
@@ -1076,12 +821,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "payload": [
-          "part_disco_disc",
-          "part_recursive"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "mal_hw",
@@ -1100,24 +840,7 @@
         "pearl_elem",
         "pearl_stat"
       ],
-      "slotAllowlist": {
-        "barrel": [
-          "part_barrel_02_BottledLightning",
-          "part_barrel_02_GammaVoid",
-          "part_barrel_02_Barrel",
-          "part_barrel_01_Ichor"
-        ],
-        "body_ele": [
-          "part_shock",
-          "part_radiation",
-          "part_fire"
-        ],
-        "body_acc": [
-          "part_body_b",
-          "part_body_c",
-          "part_body_d"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "mal_repair_kit",
@@ -1127,37 +850,7 @@
       "parttypes": [],
       "slotAllowlist": {
         "primary_augment": [
-          "part_aug_d_AoE_Heal",
-          "part_aug_D_Elemental_Resist",
-          "part_aug_d_Overshield",
-          "part_aug_D_Elemental_Immunity",
-          "part_aug_d_HealthBurst",
-          "part_aug_D_ShieldCharge",
-          "part_aug_d_Lifesteal",
-          "part_aug_D_Dmg_Reduction_On_Use",
-          "part_aug_u_rep_kit_duration",
-          "part_aug_u_AllDmg_on_use",
-          "part_aug_u_askill_cooldown_on_use",
-          "part_aug_o_elemental_dmg_on_use",
-          "part_aug_o_SplashDmg_on_use",
-          "part_aug_o_reload_speed_on_use",
-          "part_aug_o_nova_blast_on_use",
-          "part_aug_u_move_speed_on_use",
-          "part_aug_u_gadget_cooldown_on_use",
-          "part_aug_o_melee_boost_on_use",
-          "part_aug_d_increased_healing",
-          "part_aug_o_fire_rate_on_use",
-          "part_aug_o_elemental_ground_splat",
-          "part_aug_o_amp_next_shot",
-          "part_aug_u_rep_kit_cd_reduction",
           "part_augment_unique_BloodAnalyzer"
-        ],
-        "secondary_augment": [
-          "part_aug_unique_GeigerRoid_Corrosive_sec",
-          "part_aug_unique_GeigerRoid_Cryo_sec",
-          "part_aug_unique_GeigerRoid_Fire_sec",
-          "part_aug_unique_GeigerRoid_Radiation_sec",
-          "part_aug_unique_GeigerRoid_Shock_sec"
         ]
       }
     },
@@ -1197,13 +890,11 @@
       "parttypes": [],
       "slotAllowlist": {
         "unique": [
-          "part_unique_momento",
-          "part_unique_elpisstar",
           "part_unique_supernova"
         ],
         "primary_augment": [
-          "part_eng_berserker_primary",
           "part_eng_vagabond_primary",
+          "part_eng_berserker_primary",
           "part_eng_siphon_primary",
           "part_eng_fleeting_primary",
           "part_eng_brimming_primary",
@@ -1338,21 +1029,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "payload": [
-          "part_aggrovator",
-          "part_01_mirv",
-          "part_skully"
-        ],
-        "stat_augment": [
-          "part_stat_02_cooldown_reduction",
-          "part_stat_03_damage",
-          "part_stat_04_radius"
-        ],
-        "payload_augment": [
-          "part_01_mirv_05_swarm"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ord_ps",
@@ -1386,32 +1063,7 @@
       "baseType": "inv'repair_kit'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "primary_augment": [
-          "part_augment_unique_TripleBypass",
-          "part_augment_unique_paleblood"
-        ],
-        "secondary_augment": [
-          "part_aug_D_Elemental_Resist_sec",
-          "part_aug_D_Elemental_Immunity_sec",
-          "part_aug_D_ShieldCharge_sec",
-          "part_aug_d_Lifesteal_sec",
-          "part_aug_D_Dmg_Reduction_On_Use_sec",
-          "part_aug_u_AllDmg_on_use_sec",
-          "part_aug_u_askill_cooldown_on_use_sec",
-          "part_aug_o_elemental_dmg_on_use_sec",
-          "part_aug_o_SplashDmg_on_use_sec",
-          "part_aug_o_reload_speed_on_use_sec",
-          "part_aug_o_nova_blast_on_use_sec",
-          "part_aug_u_move_speed_on_use_sec",
-          "part_aug_u_gadget_cooldown_on_use_sec",
-          "part_aug_o_melee_boost_on_use_sec",
-          "part_aug_o_fire_rate_on_use_sec",
-          "part_aug_o_elemental_ground_splat_sec",
-          "part_aug_o_amp_next_shot_sec",
-          "part_aug_u_rep_kit_cd_reduction_sec"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ord_shield",
@@ -1420,55 +1072,40 @@
       "typeId": null,
       "parttypes": [],
       "slotAllowlist": {
-        "body": [
-          "part_body_energy_ProteanCell",
-          "part_body_energy_collector"
-        ],
-        "element": [
-          "part_shock"
+        "unique": [
+          "part_unique_cindershelly"
         ],
         "primary_augment": [
-          "part_eng_nova_primary",
-          "part_eng_amp_primary",
-          "part_eng_shield_booster_primary",
-          "part_eng_recharge_delay_primary",
-          "part_eng_recharge_rate_primary",
-          "part_eng_fleeting_primary",
-          "part_eng_berserker_primary",
           "part_eng_vagabond_primary",
+          "part_eng_berserker_primary",
+          "part_eng_trigger_happy_primary",
+          "part_eng_fleeting_primary",
+          "part_eng_brimming_primary",
+          "part_eng_amp_primary",
           "part_unv_utility_primary",
-          "part_unv_sturdy_primary",
+          "part_unv_pinpoint_primary",
           "part_unv_spike_primary",
           "part_unv_resistant_primary",
-          "part_unv_reflect_primary",
-          "part_unv_healthy_primary",
-          "part_unv_evasive_primary",
-          "part_eng_trigger_happy_primary",
-          "part_eng_brimming_primary",
-          "part_unv_pinpoint_primary",
           "part_unv_absorb_primary",
           "part_unv_adaptive_primary",
-          "part_unv_capacity_primary"
+          "part_unv_capacity_primary",
+          "part_unv_reflect_primary"
         ],
         "secondary_augment": [
-          "part_eng_berserker_secondary",
-          "part_unv_capacity_secondary",
-          "part_unv_adaptive_secondary",
-          "part_unv_absorb_secondary",
-          "part_unv_turtle_secondary",
-          "part_unv_resistant_secondary",
-          "part_unv_spike_secondary",
           "part_eng_vagabond_secondary",
+          "part_eng_berserker_secondary",
           "part_eng_trigger_happy_secondary",
           "part_eng_fleeting_secondary",
           "part_eng_brimming_secondary",
           "part_eng_amp_secondary",
           "part_unv_utility_secondary",
           "part_unv_pinpoint_secondary",
+          "part_unv_spike_secondary",
+          "part_unv_resistant_secondary",
+          "part_unv_absorb_secondary",
+          "part_unv_adaptive_secondary",
+          "part_unv_capacity_secondary",
           "part_unv_reflect_secondary"
-        ],
-        "unique": [
-          "part_unique_cindershelly"
         ]
       }
     },
@@ -1639,25 +1276,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "payload": [
-          "part_FaultyDetonator",
-          "part_PredatorDrone",
-          "part_Ordinance",
-          "part_urchin"
-        ],
-        "stat_augment": [
-          "part_stat_02_cooldown_reduction",
-          "part_stat_03_damage",
-          "part_stat_04_radius",
-          "part_stat_05_elemental_power",
-          "part_stat_06_crit_chance",
-          "part_stat_07_nuke",
-          "part_stat_08_force",
-          "part_stat_09_transfusion",
-          "part_stat_01_extra_charge"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ted_ps",
@@ -1742,18 +1361,7 @@
         "endgame",
         "unique"
       ],
-      "slotAllowlist": {
-        "body": [
-          "part_body_ShieldBoi",
-          "part_body_timekeeper",
-          "part_body_Hopscotch",
-          "part_body_PocketBuddies"
-        ],
-        "element": [
-          "part_corrosive",
-          "part_normal"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "ted_terminal_barrier",
@@ -1864,19 +1472,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "element": [
-          "part_fire",
-          "part_normal"
-        ],
-        "payload": [
-          "payload_firepot"
-        ],
-        "body": [
-          "part_tor_slippy",
-          "body_flare"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "tor_hw",
@@ -1896,10 +1492,6 @@
       ],
       "slotAllowlist": {
         "barrel": [
-          "part_barrel_01_TED_SG_HeavyTurret",
-          "part_barrel_Javelin",
-          "part_barrel_DahlFather",
-          "part_barrel_Loiter",
           "part_unique_barrel_02_ravenfire",
           "part_unique_barrel_01_sidewinder"
         ],
@@ -1989,39 +1581,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "body": [
-          "part_body_armor_compleat"
-        ],
-        "unique": [
-          "part_unique_firewerks",
-          "part_unique_hydrowerks"
-        ],
-        "primary_augment": [
-          "part_ra_missile_swarm_primary",
-          "part_ra_armor_strength_primary",
-          "part_ra_armor_segment_primary",
-          "part_ra_nova_segment_primary",
-          "part_ra_knockback_primary",
-          "part_ra_scavenger_primary",
-          "part_ra_reinforced_primary",
-          "part_ra_spunky_primary",
-          "part_ra_positive_reinforcement_primary",
-          "part_ra_heavy_plating_primary",
-          "part_ra_flanking_primary",
-          "part_unv_utility_primary",
-          "part_unv_turtle_primary",
-          "part_unv_sturdy_primary",
-          "part_unv_spike_primary",
-          "part_unv_resistant_primary",
-          "part_unv_reflect_primary",
-          "part_unv_healthy_primary",
-          "part_unv_evasive_primary",
-          "part_unv_capacity_primary",
-          "part_unv_adaptive_primary",
-          "part_unv_absorb_primary"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "tor_terminal_combat",
@@ -2246,15 +1806,7 @@
       "baseType": "inv'grenade_gadget'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "payload": [
-          "part_Blockbuster",
-          "part_Barb"
-        ],
-        "body": [
-          "part_vla_Waterfall"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "vla_hw",
@@ -2275,15 +1827,7 @@
       ],
       "slotAllowlist": {
         "barrel": [
-          "part_barrel_02_Splatoon",
-          "part_barrel_02_Flak",
           "part_unique_barrel_01_atlinggun"
-        ],
-        "body_acc": [
-          "part_body_d"
-        ],
-        "barrel_acc": [
-          "part_barrel_02_b"
         ]
       }
     },
@@ -2295,7 +1839,6 @@
       "parttypes": [],
       "slotAllowlist": {
         "primary_augment": [
-          "part_augment_unique_BloodIron",
           "part_augment_unique_AdrenalinePump"
         ]
       }
@@ -2306,29 +1849,7 @@
       "baseType": "inv'Armor_Shield'",
       "typeId": null,
       "parttypes": [],
-      "slotAllowlist": {
-        "body": [
-          "part_body_armor_HeavyWeight",
-          "part_body_armor_Hoarder",
-          "part_body_armor_undershield"
-        ],
-        "primary_augment": [
-          "part_ra_spunky_primary",
-          "part_ra_missile_swarm_primary",
-          "part_ra_nova_segment_primary",
-          "part_ra_knockback_primary",
-          "part_ra_flanking_primary",
-          "part_ra_scavenger_primary"
-        ],
-        "secondary_augment": [
-          "part_ra_spunky_secondary",
-          "part_ra_missile_swarm_secondary",
-          "part_ra_nova_segment_secondary",
-          "part_ra_knockback_secondary",
-          "part_ra_flanking_secondary",
-          "part_unv_absorb_secondary"
-        ]
-      }
+      "slotAllowlist": {}
     },
     {
       "rootKey": "vla_sm",
@@ -2413,6 +1934,14 @@
       "slotAllowlist": null
     },
     {
+      "rootKey": "weapon_ai_custombase",
+      "inv": "Weapon_AI_CustomBase",
+      "baseType": "inv'Weapon'",
+      "typeId": null,
+      "parttypes": [],
+      "slotAllowlist": null
+    },
+    {
       "rootKey": "weapon_ar",
       "inv": "Weapon_AR",
       "baseType": "inv'Weapon'",
@@ -2432,8 +1961,8 @@
       "slotAllowlist": null
     },
     {
-      "rootKey": "weapon_dahlgrunt_crashflamer",
-      "inv": "Weapon_DahlGrunt_CrashFlamer",
+      "rootKey": "weapon_dahlmech_emp",
+      "inv": "Weapon_DahlMech_EMP",
       "baseType": "inv'Weapon_AI_CustomBase'",
       "typeId": null,
       "parttypes": [
@@ -2443,81 +1972,15 @@
       "slotAllowlist": null
     },
     {
-      "rootKey": "weapon_dahlgrunt_laserrifle",
-      "inv": "Weapon_DahlGrunt_LaserRifle",
+      "rootKey": "weapon_dahlmech_energygun",
+      "inv": "Weapon_DahlMech_EnergyGun",
       "baseType": "inv'Weapon_AI_CustomBase'",
       "typeId": null,
       "parttypes": [
-        "body",
+        "Body",
         "body_ele"
       ],
       "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlgrunt_shoulderlaserrifle",
-      "inv": "Weapon_DahlGrunt_ShoulderLaserRifle",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlgrunt_sprayer",
-      "inv": "Weapon_DahlGrunt_Sprayer",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_chaingun",
-      "inv": "Weapon_DahlMech_Chaingun",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_flamespitter",
-      "inv": "Weapon_DahlMech_FlameSpitter",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_flamespitterunderbarrel",
-      "inv": "Weapon_DahlMech_FlameSpitterUnderbarrel",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_dahlmech_grenadelauncher",
-      "inv": "Weapon_DahlMech_GrenadeLauncher",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": {}
     },
     {
       "rootKey": "weapon_gadget_turret",
@@ -2694,17 +2157,6 @@
     {
       "rootKey": "weapon_turret_chaingun",
       "inv": "Weapon_Turret_Chaingun",
-      "baseType": "inv'Weapon_AI_CustomBase'",
-      "typeId": null,
-      "parttypes": [
-        "body",
-        "body_ele"
-      ],
-      "slotAllowlist": null
-    },
-    {
-      "rootKey": "weapon_turret_dahlchaingun",
-      "inv": "Weapon_Turret_DahlChaingun",
       "baseType": "inv'Weapon_AI_CustomBase'",
       "typeId": null,
       "parttypes": [

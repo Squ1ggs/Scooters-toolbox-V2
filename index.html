@@ -2704,6 +2704,10 @@
     html.stx-builder-mode-guided #stxDockBlock {
       margin-bottom: 0;
     }
+    /* Simple nested serial boxes stay in DOM for ID compat; shared panel is the visible surface. */
+    .stx-simple-code-mirror {
+      display: none !important;
+    }
     .stxDockDetails {
       margin: 12px 0 18px;
       border: 1px solid var(--bg-panel-border);
@@ -4364,7 +4368,7 @@
   } catch (_) {}
 })();
 </script>
-<script src="./assets/js/cc-deferred-scripts.js?v=77m"></script>
+<script src="./assets/js/cc-deferred-scripts.js?v=77n"></script>
 <div class="app-shell">
 <header class="header-bar">
 <img alt="" class="header-icon" height="48" src="./assets/favicon.ico" width="48"/>
@@ -4759,20 +4763,21 @@
 <div id="builderEmpty" style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">Pick a Rarity ID Part to open the builder.</div>
 <div id="builder" style="min-height:60px;"></div>
 <div style="margin-top:14px;">
+<div class="stx-simple-code-mirror" aria-hidden="true">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
 <label for="outCode">Simple Builder Generated Code</label>
 <div style="display:flex;gap:8px;align-items:center;">
 <button class="btn" id="btnCopyCode" style="padding:4px 10px;font-size:12px;" title="Copy code to clipboard" type="button">Copy</button>
-<button class="btn" id="btnCopyCodeB85" style="padding:4px 10px;font-size:12px;" title="Copy BL-base85 to clipboard" type="button">Copy Base85</button>
+<button class="btn" id="btnCopyCodeB85" style="padding:4px 10px;font-size:12px;" title="Copy Base85 to clipboard" type="button">Copy Base85</button>
 </div>
 </div>
-<textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4" spellcheck="false"></textarea>
+<textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4" spellcheck="false" tabindex="-1"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeCharCount">0</span> characters</div>
-</div>
 <div style="margin-top:8px;">
 <label for="outCodeB85">Simple Builder Serial (BL-base85)</label>
-<textarea class="editor-output-code" id="outCodeB85" name="outCodeB85" placeholder="—" rows="2" readonly="" spellcheck="false"></textarea>
+<textarea class="editor-output-code" id="outCodeB85" name="outCodeB85" placeholder="—" rows="2" readonly="" spellcheck="false" tabindex="-1"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeB85CharCount">0</span> characters</div>
+</div>
 </div>
 <div style="margin-top:8px;">
 <label for="outList">Parts List</label>
@@ -5178,7 +5183,7 @@
 </div>
 <div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Guided Builder Generated Code (Deserialized)</label>
+<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Generated Code (Deserialized)</label>
 <button class="btn" id="btnCopyGuidedDeser" style="padding:2px 8px;font-size:11px;" title="Copy deserialized" type="button">Copy</button>
 </div>
 <textarea class="editor-output-code" id="guidedOutputDeserialized" name="guidedOutputDeserialized" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below" spellcheck="false"></textarea>
@@ -6327,6 +6332,8 @@
           return 'simple';
         }
         function applyMode(mode, opts) {
+          opts = opts || {};
+          var prevMode = document.documentElement.classList.contains('stx-builder-mode-guided') ? 'guided' : 'simple';
           mode = (mode === 'guided') ? 'guided' : 'simple';
           var root = document.documentElement;
           root.classList.remove('stx-builder-mode-simple', 'stx-builder-mode-guided');
@@ -6346,6 +6353,13 @@
           }
           try { localStorage.setItem(STORAGE_KEY, mode); } catch (_) {}
           try { window.__CC_BUILDER_UI_MODE = mode; } catch (_) {}
+          if (opts.handoff && prevMode !== mode && typeof window.__ccHandoffBuilderMode === 'function') {
+            try {
+              setTimeout(function () {
+                try { window.__ccHandoffBuilderMode(prevMode, mode); } catch (_) {}
+              }, 40);
+            } catch (_) {}
+          }
           if (opts && opts.scroll && guided && mode === 'guided') {
             try { guided.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
           }
@@ -6354,7 +6368,9 @@
           }
         }
         window.__ccSetBuilderUiMode = function (mode, opts) {
-          applyMode(mode, opts || {});
+          opts = opts || {};
+          if (opts.handoff == null && opts.scroll) opts.handoff = true;
+          applyMode(mode, opts);
         };
         window.__ccGetBuilderUiMode = function () {
           return document.documentElement.classList.contains('stx-builder-mode-guided') ? 'guided' : 'simple';
@@ -6362,9 +6378,9 @@
         btn.addEventListener('click', function (ev) {
           ev.preventDefault();
           var next = (window.__ccGetBuilderUiMode() === 'guided') ? 'simple' : 'guided';
-          applyMode(next, { scroll: true });
+          applyMode(next, { scroll: true, handoff: true });
         });
-        applyMode(readStoredMode(), { scroll: false });
+        applyMode(readStoredMode(), { scroll: false, handoff: false });
       }
 
       function initScrollToSections() {

@@ -120,7 +120,34 @@
     if (!idRaw && part.id != null) idRaw = String(part.id);
     var name = q(part.name || part.legendaryName || part.label || '');
     var code = q((part.code || part.spawnCode || part.importCode || '').replace(/^"+|"+$/g, ''));
+    var isClassMod =
+      /class\s*mod/i.test(q(part.category)) ||
+      /class\s*mod/i.test(q(part.itemType)) ||
+      /(^|[._])classmod_/i.test(code) ||
+      /_classmod\./i.test(code);
+    if (isClassMod && typeof window.stxResolveClassModPartDisplayName === 'function') {
+      try {
+        var cm = q(window.stxResolveClassModPartDisplayName(part));
+        if (cm) name = cm;
+      } catch (_) {}
+    }
     var stats = shortStats(part);
+    if (isClassMod) {
+      try {
+        var fullEf = q(part.effects != null ? part.effects : (part.effect || part.effects_text));
+        var fullSt = q(part.stats != null ? part.stats : part.stats_text).replace(/\s+/g, ' ');
+        var deep = '';
+        if (typeof window.formatPartStatsSummary === 'function') {
+          deep = q(window.formatPartStatsSummary(part, 12));
+        }
+        if (!deep) deep = formatPartsStatsData(part);
+        var chunks = [];
+        if (fullEf && fullEf.toLowerCase() !== String(name || '').toLowerCase()) chunks.push(fullEf);
+        if (fullSt && fullSt.toLowerCase() !== String(name || '').toLowerCase() && fullSt !== fullEf) chunks.push(fullSt);
+        if (deep && chunks.indexOf(deep) === -1) chunks.push(deep);
+        if (chunks.length) stats = chunks.join(' · ');
+      } catch (_) {}
+    }
     var parts = [];
     if (idRaw) parts.push('Numeric ID: ' + idRaw);
     if (code) parts.push('Spawn ID: ' + code);

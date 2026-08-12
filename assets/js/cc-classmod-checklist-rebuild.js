@@ -903,7 +903,7 @@
   var CHAR_ALIAS = { vex: 'vex', siren: 'vex', 'dark siren': 'vex', darksiren: 'vex', amon: 'amon', paladin: 'amon', rafa: 'rafa', 'exo soldier': 'rafa', 'exo-soldier': 'rafa', exosoldier: 'rafa', harlowe: 'harlowe', gravitar: 'harlowe', c4sh: 'c4sh', robodealer: 'c4sh', universal: 'universal' };
   var KEY_TO_DISPLAY = { vex: 'Vex', amon: 'Amon', rafa: 'Rafa', harlowe: 'Harlowe', c4sh: 'C4sh', universal: 'Universal' };
   var DISPLAY_TO_MAN = { Vex: 'Siren', Amon: 'Paladin', Rafa: 'Exo Soldier', Harlowe: 'Gravitar', C4sh: 'Robodealer', Universal: 'Universal' };
-  var MAN_TO_DISPLAY = { 'Siren': 'Vex', 'Paladin': 'Amon', 'Exo Soldier': 'Rafa', 'Gravitar': 'Harlowe', 'Robodealer': 'C4sh', 'C4sh': 'C4sh', 'Universal': 'Universal' };
+  var MAN_TO_DISPLAY = { 'Siren': 'Vex', 'Dark Siren': 'Vex', 'Paladin': 'Amon', 'Exo Soldier': 'Rafa', 'Gravitar': 'Harlowe', 'Robodealer': 'C4sh', 'C4sh': 'C4sh', 'Universal': 'Universal' };
 
   /** Per-class rarity IDs (family:rarityId). Non-legendary tiers only. */
   var RARITY_BY_CLASS = {
@@ -925,6 +925,55 @@
     Amon: { 10: 25, 11: 24, 12: 23, 13: 22, 14: 21, 15: 20 },
     Rafa: { 10: 26, 11: 25, 12: 24, 13: 23, 14: 22, 15: 21 },
     Harlowe: { 10: 26, 11: 25, 12: 24, 13: 23, 14: 22, 15: 21 }
+  };
+
+  /** DLC / post-base legendary name body → rarity comp itemId (same vault-hunter family). */
+  var LEGENDARY_DLC_NAME_TO_RARITY = {
+    Vex: { 538: 539 /* cowbell */, 544: 545 /* raid2 */, 546: 547 /* tuba */ },
+    Amon: { 538: 539, 544: 545, 546: 547 },
+    Rafa: { 540: 541 /* raid1 */, 542: 543 /* cowbell */, 546: 547 /* raid2 */, 548: 549 /* tuba */ },
+    Harlowe: { 540: 541 /* raid1 */, 542: 543 /* cowbell */, 546: 547 /* raid2 */, 548: 549 /* tuba */ }
+  };
+
+  var MAN_TO_CLASSMOD_SLUG = {
+    Siren: 'classmod_dark_siren',
+    Paladin: 'classmod_paladin',
+    'Exo Soldier': 'classmod_exo_soldier',
+    Gravitar: 'classmod_gravitar',
+    Robodealer: 'classmod_robodealer',
+    C4sh: 'classmod_robodealer'
+  };
+
+  /** Cowbell / Mandolin / raid DLC display names when extract still ships the internal slug. */
+  var CLASSMOD_DLC_DISPLAY_BY_SPAWN = {
+    'classmod_dark_siren.leg_body_cowbell': 'Configuration',
+    'classmod_dark_siren.comp_05_legendary_cowbell': 'Configuration',
+    'classmod_dark_siren.leg_body_raid2': 'Grim Sister',
+    'classmod_dark_siren.comp_05_legendary_raid2': 'Grim Sister',
+    'classmod_dark_siren.leg_body_tuba': 'Living Weapon',
+    'classmod_dark_siren.comp_05_legendary_tuba': 'Living Weapon',
+    'classmod_exo_soldier.leg_body_cowbell': 'Reaparición',
+    'classmod_exo_soldier.comp_05_legendary_cowbell': 'Reaparición',
+    'classmod_exo_soldier.leg_body_raid2': 'Bombastic',
+    'classmod_exo_soldier.comp_05_legendary_raid2': 'Bombastic',
+    'classmod_exo_soldier.leg_body_tuba': 'Power-Puncher',
+    'classmod_exo_soldier.comp_05_legendary_tuba': 'Power-Puncher',
+    'classmod_gravitar.leg_body_cowbell': 'Phlebotomist',
+    'classmod_gravitar.comp_05_legendary_cowbell': 'Phlebotomist',
+    'classmod_gravitar.leg_body_raid2': 'Plasmaphile',
+    'classmod_gravitar.comp_05_legendary_raid2': 'Plasmaphile',
+    'classmod_gravitar.leg_body_tuba': 'Chirurgeon',
+    'classmod_gravitar.comp_05_legendary_tuba': 'Chirurgeon',
+    'classmod_paladin.leg_body_cowbell': 'Tempest',
+    'classmod_paladin.comp_05_legendary_cowbell': 'Tempest',
+    'classmod_paladin.leg_body_raid2': 'Artificer',
+    'classmod_paladin.comp_05_legendary_raid2': 'Artificer',
+    'classmod_paladin.leg_body_tuba': 'Damned',
+    'classmod_paladin.comp_05_legendary_tuba': 'Damned',
+    'classmod_robodealer.leg_body_raid2': 'Prestidigitator',
+    'classmod_robodealer.comp_05_legendary_raid2': 'Prestidigitator',
+    'classmod_robodealer.leg_body_tuba': 'Trainer',
+    'classmod_robodealer.comp_05_legendary_tuba': 'Trainer'
   };
 
   /** Comp_Rarity display names for C4sh (Robodealer) when STX/name parts omit them. Source: community reference list (item id within family 404). */
@@ -963,6 +1012,33 @@
     return '';
   }
 
+  function normPartSpawnCode(part) {
+    return String((part && part.code) || '')
+      .replace(/^"+|"+$/g, '')
+      .replace(/^\\"|\\"$/g, '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function displayNameForClassModPart(part) {
+    var code = normPartSpawnCode(part);
+    if (CLASSMOD_DLC_DISPLAY_BY_SPAWN[code]) return CLASSMOD_DLC_DISPLAY_BY_SPAWN[code];
+    if (typeof window.stxResolveClassModPartDisplayName === 'function') {
+      try {
+        var resolved = String(window.stxResolveClassModPartDisplayName(part) || '').trim();
+        if (resolved) return resolved;
+      } catch (_) {}
+    }
+    var nm = String((part && (part.name || part.legendaryName)) || '').trim();
+    if (/^cowbell$/i.test(nm) && /classmod_gravitar/.test(code)) return 'Phlebotomist';
+    if (/^cowbell$/i.test(nm) && /classmod_dark_siren/.test(code)) return 'Configuration';
+    if (/^cowbell$/i.test(nm) && /classmod_exo_soldier/.test(code)) return 'Reaparición';
+    if (/^cowbell$/i.test(nm) && /classmod_paladin/.test(code)) return 'Tempest';
+    if (/^(raid\s*\d+|raid\d+|harmonica)$/i.test(nm.replace(/[\s_-]+/g, ' ').trim())) return '';
+    return nm;
+  }
+  try { window.stxClassModDisplayNameForPart = displayNameForClassModPart; } catch (_) {}
+
   function getClassModNameParts(charName) {
     var getNames = typeof window.getLegacyClassModNameParts === 'function' ? window.getLegacyClassModNameParts : null;
     var filterParts = typeof window.filterPartsForGuided === 'function' ? window.filterPartsForGuided : null;
@@ -974,7 +1050,46 @@
     if (!parts.length && filterParts) {
       parts = filterParts({ category: 'Class Mod', manufacturer: man, partType: 'Name+Skin' }) || [];
     }
-    return Array.isArray(parts) ? parts.slice() : [];
+
+    /* Dataset leg_body_* rows (raid/cowbell/tuba/…) are legendary names but often partType Body. */
+    var slug = MAN_TO_CLASSMOD_SLUG[man] || '';
+    var all = (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS)) ? window.STX_DATASET.ALL_PARTS : [];
+    var have = new Set();
+    for (var i = 0; i < parts.length; i++) {
+      var id0 = getNumericItemId(parts[i]);
+      if (Number.isFinite(id0)) have.add(id0);
+      var c0 = normPartSpawnCode(parts[i]);
+      if (c0) have.add(c0);
+    }
+    if (slug && all.length) {
+      for (var j = 0; j < all.length; j++) {
+        var p = all[j];
+        if (isBrokenClassmodPlaceholderPart(p)) continue;
+        var code = normPartSpawnCode(p);
+        if (!code || code.indexOf(slug + '.leg_body_') !== 0) continue;
+        var id = getNumericItemId(p);
+        if ((Number.isFinite(id) && have.has(id)) || have.has(code)) continue;
+        var human = displayNameForClassModPart(p);
+        if (!human) continue; /* unnamed raid3/harmonica stubs — omit until real names exist */
+        var enriched = Object.assign({}, p, {
+          partType: 'Name+Skin',
+          name: human
+        });
+        parts.push(enriched);
+        if (Number.isFinite(id)) have.add(id);
+        have.add(code);
+      }
+    }
+
+    for (var k = 0; k < parts.length; k++) {
+      var dn = displayNameForClassModPart(parts[k]);
+      if (dn && dn !== String((parts[k] && parts[k].name) || '').trim()) {
+        parts[k] = Object.assign({}, parts[k], { name: dn });
+      }
+    }
+    return Array.isArray(parts)
+      ? parts.filter(function (p) { return !isBrokenClassmodPlaceholderPart(p); })
+      : [];
   }
 
   function getNumericItemId(part) {
@@ -1006,6 +1121,7 @@
     var rows = Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : [];
     var man = getClassModManufacturerName(charName);
     var manNorm = String(man || '').trim().toLowerCase();
+    var slug = String(MAN_TO_CLASSMOD_SLUG[man] || '').toLowerCase();
     var fam = resolveClassModFamilyIdForCharacter(charName);
     var nameLookup = getClassModNameLookup(charName);
     var out = rows.filter(function (row) {
@@ -1013,7 +1129,10 @@
       var itemType = String((row && row.itemType) || '').trim();
       var itemTypeString = String((row && row.itemTypeString) || '').trim().toLowerCase();
       if (itemType !== 'Class Mod' && !/classmod|class\s*mod/i.test(itemTypeString)) return false;
-      return String((row && row.manufacturer) || '').trim().toLowerCase() === manNorm;
+      var rowMan = String((row && row.manufacturer) || '').trim().toLowerCase();
+      if (rowMan === manNorm) return true;
+      if (slug && itemTypeString.indexOf(slug) !== -1) return true;
+      return false;
     }).map(function (row) {
       var itemId = Number(row && row.itemId);
       var rowFam = Number((row && row.familyId) != null ? row.familyId : fam);
@@ -1025,6 +1144,9 @@
       var legendaryName = '';
       if (tier === 'legendary') {
         legendaryName = String((row && row.legendaryName) || '').trim();
+        var its = String((row && row.itemTypeString) || '').trim().toLowerCase();
+        if (CLASSMOD_DLC_DISPLAY_BY_SPAWN[its]) legendaryName = CLASSMOD_DLC_DISPLAY_BY_SPAWN[its];
+        else if (/^cowbell$/i.test(legendaryName) && /gravitar/.test(its)) legendaryName = 'Phlebotomist';
         if (!legendaryName && nameEntry && nameEntry.legendary) {
           legendaryName = String(nameEntry.name || '').trim();
         }
@@ -1218,7 +1340,15 @@
     var guidedOut = byId('guidedOutputDeserialized');
     if (guidedOut) guidedOut.value = code;
     if (outCode) outCode.value = code;
-    try { window.__CC_LAST_CODE_TARGET = guidedOut ? 'guided' : 'simple'; } catch (_) {}
+    try {
+      if (typeof window.writeSharedItemCode === 'function') {
+        window.writeSharedItemCode({ deser: code, source: guidedOut ? 'guided' : 'simple', skipB85: false, force: true });
+      } else {
+        window.__CC_LAST_CODE_TARGET = guidedOut ? 'guided' : 'simple';
+      }
+    } catch (_) {
+      try { window.__CC_LAST_CODE_TARGET = guidedOut ? 'guided' : 'simple'; } catch (_t) {}
+    }
     try { if (typeof window.refreshGuidedOutputPreview === 'function') window.refreshGuidedOutputPreview(); } catch (_) {}
     try { if (typeof window.refreshBuildStatsCore === 'function') window.refreshBuildStatsCore(); } catch (_) {}
     try { if (typeof window.refreshImportedInspector === 'function') window.refreshImportedInspector(); } catch (_) {}
@@ -1307,6 +1437,8 @@
     if (/^action\s+skill\b/i.test(nm) && /\btier\s*\d+/i.test(nm)) return true;
     if (/^capstone\b/i.test(nm) && /\btier\s*\d+/i.test(nm)) return true;
     if (/(^|[._])passive_(blue|green|red|white|purple)(_|\d)/i.test(code)) return true;
+    if (/\.(?:leg_body_|comp_05_legendary_)(raid3|raid4|harmonica)(?:["']|$)/i.test(code)) return true;
+    if (/^(raid\s*\d+|raid\d+|harmonica)$/i.test(nm.replace(/[\s_-]+/g, ' ').trim())) return true;
     return false;
   }
 
@@ -1339,11 +1471,21 @@
   function isLegendaryNamePart(p) {
     var kind = String((p && (p.kind || p.partType)) || '').trim().toLowerCase();
     if (kind.indexOf('leg effect') !== -1) return true;
+    var code = normPartSpawnCode(p);
+    if (/\.leg_body_/i.test(code) || /^leg_body_/i.test(code)) return true;
     var id = p && (p.id != null ? Number(p.id) : null);
-    if (Number.isFinite(id)) return id >= 10 && id <= 15;
+    if (Number.isFinite(id)) {
+      if (id >= 10 && id <= 15) return true;
+      /* DLC / raid legendary name bodies use high serial ids (5xx). */
+      if (id >= 500) return true;
+    }
     var raw = String((p && (p.idRaw || p.idraw)) || '').trim();
     var m = raw.match(/:\s*(\d+)$/);
-    if (m) { var n = Number(m[1]); return n >= 10 && n <= 15; }
+    if (m) {
+      var n = Number(m[1]);
+      if (n >= 10 && n <= 15) return true;
+      if (n >= 500) return true;
+    }
     return false;
   }
 
@@ -1366,18 +1508,21 @@
     var getNames = typeof window.getLegacyClassModNameParts === 'function' ? window.getLegacyClassModNameParts : null;
     var filterParts = typeof window.filterPartsForGuided === 'function' ? window.filterPartsForGuided : null;
     var man = DISPLAY_TO_MAN[cls] || cls;
-    var parts = [];
-    if (getNames) parts = getNames(man);
+    var parts = getClassModNameParts(cls);
+    if (!parts.length && getNames) parts = getNames(man);
     if (!parts.length && filterParts) {
       parts = filterParts({ category: 'Class Mod', manufacturer: man, partType: 'Name+Skin' }) || [];
     }
     var filtered = parts.filter(function (p) {
+      if (isBrokenClassmodPlaceholderPart(p)) return false;
+      var human = displayNameForClassModPart(p);
+      if (!human && isLegendaryNamePart(p)) return false;
       var leg = isLegendaryNamePart(p);
       return leg === isLeg;
     });
     filtered.sort(function (a, b) {
-      var na = String((a && a.name) || '').trim();
-      var nb = String((b && b.name) || '').trim();
+      var na = displayNameForClassModPart(a) || String((a && a.name) || '').trim();
+      var nb = displayNameForClassModPart(b) || String((b && b.name) || '').trim();
       return na.localeCompare(nb, undefined, { sensitivity: 'base' });
     });
     var preserveTok = String(sel.value || '').trim();
@@ -1390,8 +1535,18 @@
       var opt = document.createElement('option');
       var tok = partCodeOf(p);
       opt.value = tok;
-      var human = String((p && p.name) || '').trim();
-      opt.textContent = human ? (tok + ' - ' + human) : (tok || '—');
+      var human = displayNameForClassModPart(p) || String((p && p.name) || '').trim();
+      var idTok = '';
+      try {
+        var idRaw = String((p && (p.idRaw || p.idraw)) || '').trim();
+        if (/^\d+\s*:\s*\d+$/.test(idRaw)) {
+          var bits = idRaw.split(':');
+          idTok = '{' + String(bits[0]).trim() + ':' + String(bits[1]).trim() + '}';
+        } else if (idRaw) idTok = idRaw;
+      } catch (_) {}
+      if (human && idTok) opt.textContent = human + ' · ' + idTok;
+      else if (human) opt.textContent = human;
+      else opt.textContent = tok || '—';
       if (typeof window.partTooltipText === 'function') { var t = window.partTooltipText(p); if (t) opt.title = t; }
       sel.appendChild(opt);
     });
@@ -1439,36 +1594,60 @@
       };
     }
 
-    /* Legendary: rarity row itemId must match the selected leg-effect code (10–15), not the first STX legendary row. */
+    /* Legendary: rarity row itemId must match the selected leg-effect / DLC name body. */
     if (String(tier).toLowerCase() === 'legendary') {
       var nameCode = null;
+      var nameSpawn = '';
       var nameSel0 = byId('cmNameSelect');
       if (nameSel0 && nameSel0.value) {
         var pp0 = parseFamilyItemToken(String(nameSel0.value).trim());
-        if (pp0 && Number.isFinite(pp0.itemId) && pp0.itemId >= 10 && pp0.itemId <= 15) nameCode = pp0.itemId;
+        if (pp0 && Number.isFinite(pp0.itemId)) nameCode = pp0.itemId;
+        nameSpawn = String(nameSel0.value || '').replace(/^"+|"+$/g, '').trim().toLowerCase();
       }
       if (nameCode == null) {
         var st0 = getState();
         if (st0 && st0.slots && st0.slots.namePart) {
           var nid = getNumericItemId(st0.slots.namePart);
-          if (Number.isFinite(nid) && nid >= 10 && nid <= 15) nameCode = nid;
+          if (Number.isFinite(nid)) nameCode = nid;
+          if (!nameSpawn) nameSpawn = normPartSpawnCode(st0.slots.namePart);
         }
       }
-      if (nameCode != null) {
+      var legRid = null;
+      if (nameCode != null && nameCode >= 10 && nameCode <= 15) {
         var byName = LEGENDARY_RARITY_ITEM_BY_NAME_CODE[cls];
-        var legRid = byName && Number.isFinite(Number(byName[nameCode])) ? Number(byName[nameCode]) : null;
-        if (Number.isFinite(legRid)) {
-          var famL = resolveClassModFamilyIdForCharacter(cls);
-          if (Number.isFinite(Number(famL))) {
-            entry = {
-              code: '{' + Number(famL) + ':' + legRid + '}',
-              familyId: Number(famL),
-              itemId: legRid,
-              tierLabel: 'Legendary',
-              legendaryName: String((entry && entry.legendaryName) || '').trim(),
-              row: entry && entry.row
-            };
+        if (byName && Number.isFinite(Number(byName[nameCode]))) legRid = Number(byName[nameCode]);
+      }
+      if (!Number.isFinite(legRid) && nameCode != null) {
+        var dlcMap = LEGENDARY_DLC_NAME_TO_RARITY[cls];
+        if (dlcMap && Number.isFinite(Number(dlcMap[nameCode]))) legRid = Number(dlcMap[nameCode]);
+      }
+      if (!Number.isFinite(legRid) && nameSpawn) {
+        var bodyTail = (nameSpawn.match(/leg_body_([a-z0-9_]+)/i) || [])[1] || '';
+        if (bodyTail) {
+          var want = 'comp_05_legendary_' + bodyTail.toLowerCase();
+          var legs = getClassModRarityEntries(cls).filter(function (x) { return x && x.tier === 'legendary'; });
+          for (var li = 0; li < legs.length; li++) {
+            var its = String((legs[li].row && legs[li].row.itemTypeString) || legs[li].code || '').toLowerCase();
+            if (its.indexOf(want) !== -1) {
+              legRid = Number(legs[li].itemId);
+              break;
+            }
           }
+        }
+      }
+      if (Number.isFinite(legRid)) {
+        var famL = resolveClassModFamilyIdForCharacter(cls);
+        if (Number.isFinite(Number(famL))) {
+          var legName = String((entry && entry.legendaryName) || '').trim();
+          if (nameSpawn && CLASSMOD_DLC_DISPLAY_BY_SPAWN[nameSpawn]) legName = CLASSMOD_DLC_DISPLAY_BY_SPAWN[nameSpawn];
+          entry = {
+            code: '{' + Number(famL) + ':' + legRid + '}',
+            familyId: Number(famL),
+            itemId: legRid,
+            tierLabel: 'Legendary',
+            legendaryName: legName,
+            row: entry && entry.row
+          };
         }
       }
     }
@@ -1497,17 +1676,12 @@
     }
     var code = nameSel && nameSel.value ? String(nameSel.value).trim() : '';
     if (code) {
-      var getNames = typeof window.getLegacyClassModNameParts === 'function' ? window.getLegacyClassModNameParts : null;
-      var filterParts = typeof window.filterPartsForGuided === 'function' ? window.filterPartsForGuided : null;
       var cls = getDisplayClassForRarity();
-      var man = DISPLAY_TO_MAN[cls] || cls;
-      var parts = [];
-      if (getNames) parts = getNames(man);
-      if (!parts.length && filterParts) parts = filterParts({ category: 'Class Mod', manufacturer: man, partType: 'Name+Skin' }) || [];
+      var parts = getClassModNameParts(cls);
       var part = parts.find(function (p) { return partCodeOf(p) === code; });
       if (part) {
         if (!state.slots) state.slots = {};
-        state.slots.namePart = part;
+        state.slots.namePart = Object.assign({}, part, { name: displayNameForClassModPart(part) || part.name });
       } else {
         if (state.slots) state.slots.namePart = { code: code, idRaw: code.replace(/[{}]/g, ''), name: code };
       }

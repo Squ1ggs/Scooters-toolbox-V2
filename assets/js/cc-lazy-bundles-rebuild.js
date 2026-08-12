@@ -324,10 +324,21 @@
         setTimeout(run, 4000);
       }
     }
+    function preloadPartsStatsIdle() {
+      if (window.PARTS_STATS_DATA) return;
+      var run = function () { ensurePartsStatsData(); };
+      if (typeof window.stxScheduleIdle === 'function') {
+        window.stxScheduleIdle(run, 5500);
+      } else {
+        setTimeout(run, 3000);
+      }
+    }
     if (typeof window.stxWhenSplashDismissed === 'function') {
       window.stxWhenSplashDismissed(preloadLootReferenceIdle);
+      window.stxWhenSplashDismissed(preloadPartsStatsIdle);
     } else {
       preloadLootReferenceIdle();
+      preloadPartsStatsIdle();
     }
 
     var serialIn = document.getElementById('serialSearchInput');

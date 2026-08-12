@@ -13,7 +13,9 @@
       [7, "Alchemist", "Name+Skin"], [8, "Commander", "Name+Skin"], [9, "Hunter", "Name+Skin"],
       [10, "Technomancer", "Name+Skin+Leg Effect"], [11, "Avatar", "Name+Skin+Leg Effect"],
       [12, "Undead Eye", "Name+Skin+Leg Effect"], [13, "Kindread Spirits", "Name+Skin+Leg Effect"],
-      [14, "Illusionist", "Name+Skin+Leg Effect"], [15, "Teen Witch", "Name+Skin+Leg Effect"]
+      [14, "Illusionist", "Name+Skin+Leg Effect"], [15, "Teen Witch", "Name+Skin+Leg Effect"],
+      [538, "Configuration", "Name+Skin+Leg Effect"], [544, "Grim Sister", "Name+Skin+Leg Effect"],
+      [546, "Living Weapon", "Name+Skin+Leg Effect"]
     ],
     amon: [
       [1, "Brawler", "Name+Skin"], [2, "Grenadier", "Name+Skin"], [3, "Icebringer", "Name+Skin"],
@@ -21,7 +23,9 @@
       [7, "Commando", "Name+Skin"], [8, "Cyborg", "Name+Skin"], [9, "Outlaw", "Name+Skin"],
       [10, "Furnace", "Name+Skin+Leg Effect"], [11, "Elementalist", "Name+Skin+Leg Effect"],
       [12, "Blacksmith", "Name+Skin+Leg Effect"], [13, "Shatterwight", "Name+Skin+Leg Effect"],
-      [14, "Viking", "Name+Skin+Leg Effect"], [15, "Forge Master", "Name+Skin+Leg Effect"]
+      [14, "Viking", "Name+Skin+Leg Effect"], [15, "Forge Master", "Name+Skin+Leg Effect"],
+      [538, "Tempest", "Name+Skin+Leg Effect"], [544, "Artificer", "Name+Skin+Leg Effect"],
+      [546, "Damned", "Name+Skin+Leg Effect"]
     ],
     rafa: [
       [1, "Genio", "Name+Skin"], [2, "Soldado", "Name+Skin"], [3, "Demolitionist", "Name+Skin"],
@@ -29,7 +33,9 @@
       [7, "Trooper", "Name+Skin"], [8, "Tanker", "Name+Skin"], [9, "Practitioner", "Name+Skin"],
       [10, "Dancer", "Name+Skin+Leg Effect"], [11, "Filantropo", "Name+Skin+Leg Effect"],
       [12, "Instigator", "Name+Skin+Leg Effect"], [13, "Buster", "Name+Skin+Leg Effect"],
-      [14, "Esgrimidor", "Name+Skin+Leg Effect"], [15, "Grenazerker", "Name+Skin+Leg Effect"]
+      [14, "Esgrimidor", "Name+Skin+Leg Effect"], [15, "Grenazerker", "Name+Skin+Leg Effect"],
+      [540, "Trooper", "Name+Skin+Leg Effect"], [542, "Reaparición", "Name+Skin+Leg Effect"],
+      [546, "Bombastic", "Name+Skin+Leg Effect"], [548, "Power-Puncher", "Name+Skin+Leg Effect"]
     ],
     harlowe: [
       [1, "Chemist", "Name+Skin"], [2, "Assistant", "Name+Skin"], [3, "Physicist", "Name+Skin"],
@@ -37,7 +43,9 @@
       [7, "Bookworm", "Name+Skin"], [8, "Radiologist", "Name+Skin"], [9, "Savant", "Name+Skin"],
       [10, "Bio Robot", "Name+Skin+Leg Effect"], [11, "Reactor", "Name+Skin+Leg Effect"],
       [12, "Generator", "Name+Skin+Leg Effect"], [13, "Driver", "Name+Skin+Leg Effect"],
-      [14, "Skeptic", "Name+Skin+Leg Effect"], [15, "Scientist", "Name+Skin+Leg Effect"]
+      [14, "Skeptic", "Name+Skin+Leg Effect"], [15, "Scientist", "Name+Skin+Leg Effect"],
+      [540, "Trooper", "Name+Skin+Leg Effect"], [542, "Phlebotomist", "Name+Skin+Leg Effect"],
+      [546, "Plasmaphile", "Name+Skin+Leg Effect"], [548, "Chirurgeon", "Name+Skin+Leg Effect"]
     ],
     /* C4sh (Robodealer): C4sh class mod names + legendary bodies + skill perks */
     c4sh: [
@@ -151,7 +159,8 @@
       [521, "Vigorish", "Skill"], [522, "Dealer's Bluff", "Skill"], [524, "Ace in the Hole", "Skill"], [525, "Around the Corner", "Skill"],
       [527, "House Edge", "Skill"], [528, "C4SH Game", "Skill"], [529, "No Limit", "Skill"], [530, "Ante Up", "Skill"],
       [531, "Kill Button", "Skill"], [532, "Payout", "Skill"], [533, "Boom or Bust", "Skill"], [534, "Tender Hearts", "Skill"],
-      [535, "Card Sharp", "Skill"], [536, "Hot Streak", "Skill"], [538, "Hooligan", "Name+Skin+Leg Effect"]
+      [535, "Card Sharp", "Skill"], [536, "Hot Streak", "Skill"], [538, "Hooligan", "Name+Skin+Leg Effect"],
+      [543, "Prestidigitator", "Name+Skin+Leg Effect"], [545, "Trainer", "Name+Skin+Leg Effect"]
     ]
   };
 })();

@@ -9,13 +9,21 @@
     './assets/data/stx_dataset.js',
     './assets/data/stx_rarities.js',
     './assets/data/stx_rarities_extract.js',
+    /* DLC/raid legendary classmod bodies (Phlebotomist, etc.) — needed before Simple Builder paints. */
+    './assets/data/stx_editor_extract.js',
     './assets/data/legacy_classmod_names.js',
-    './assets/js/stx-simple-builder-core.js?v=77j',
+    './assets/js/stx-simple-builder-core.js?v=77m',
     './assets/js/cc-custom-select-rebuild.js'
   ];
 
   var DEFERRED_CORE_SCRIPTS = [
-    './assets/data/stx_editor_extract.js',
+    /* Nexus gap / raid / pearl supplements — parity with Guided + embed pages. */
+    './assets/data/stx_dataset_supplement.js',
+    './assets/data/stx_raid2_supplement.js',
+    './assets/data/stx_nexus_gap_supplement.js',
+    './assets/data/stx_rarities_supplement_patch.js',
+    './assets/data/stx_rarities_raid2_patch.js',
+    './assets/data/stx_rarities_community_pearl_patch.js',
     './assets/data/stx_dataset_repkit_label_patch.js',
     './assets/data/part_display_overrides.js',
     './assets/data/inv_comp_tag_data.js',

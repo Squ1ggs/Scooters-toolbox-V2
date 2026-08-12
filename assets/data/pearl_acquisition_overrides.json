@@ -1,0 +1,42 @@
+{
+  "notes": [
+    "Curated dedicated pearl drops when NCS ItemPoolList wiring is missing from the export or world_criteria is inferred incorrectly.",
+    "Export dedicated (ItemPoolList inv handle) always wins over these when present."
+  ],
+  "by_slug": {
+    "crazedearl": {
+      "acquisition_kind": "dedicated",
+      "itempool_lists": ["ItemPoolList_Raid2_CrazyEarl"],
+      "drop_source": "Crazy Earl",
+      "dedicated_drop": true,
+      "world_drop": false,
+      "raid_drop": false
+    },
+    "jailbroken": {
+      "acquisition_kind": "dedicated",
+      "itempool_lists": ["ItemPoolList_Raid2_Subjugator"],
+      "drop_source": "Subjugator",
+      "dedicated_drop": true,
+      "world_drop": false,
+      "raid_drop": true,
+      "dlc": "Raid 2"
+    },
+    "soulsurvivor": {
+      "acquisition_kind": "dedicated",
+      "itempool_lists": ["ItemPoolList_DroneCaptain"],
+      "drop_source": "Drone Captain",
+      "dedicated_drop": true,
+      "world_drop": false,
+      "raid_drop": false
+    },
+    "crowsourced": {
+      "acquisition_kind": "dedicated",
+      "itempool_lists": ["ItemPoolList_DahlFather"],
+      "drop_source": "Dahl Father",
+      "dedicated_drop": true,
+      "world_drop": false,
+      "raid_drop": false,
+      "dlc": "Cowbell"
+    }
+  }
+}

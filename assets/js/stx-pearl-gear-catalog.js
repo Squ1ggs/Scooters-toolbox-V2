@@ -2,7 +2,7 @@
   'use strict';
   window.STX_PEARL_GEAR_CATALOG = {
   "version": "Raid 2 (May 2026)",
-  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
+  "source": "Borderlands 4 Gear Database (PDF/DOCX) + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync + Nexus export sync",
   "byNorm": {
     "jailbroken": {
       "name": "Jail-Broken Gatling",
@@ -495,14 +495,14 @@
     "burrow": {
       "name": "burrow",
       "isPearlescent": true,
-      "weaponType": "",
-      "manufacturer": "",
+      "weaponType": "Sniper Rifle",
+      "manufacturer": "Jakobs",
       "redText": "",
       "ability": "",
       "source": "",
       "status": "export_synced",
       "notes": "Export-synced pearl (rarity_06_pearlescent).",
-      "expectedInv": "",
+      "expectedInv": "jak_sr",
       "spawnTokens": [
         "burrow"
       ]

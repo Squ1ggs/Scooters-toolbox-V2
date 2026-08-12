@@ -206,7 +206,13 @@
     else opt.removeAttribute('data-cc-part-desc-sub');
 
     var raw = normCode(p);
-    if (raw) opt.setAttribute('data-cc-spawn-sub', raw);
+    var isClassModPart =
+      /class\s*mod/i.test(q(p.category)) ||
+      /class\s*mod/i.test(q(p.itemType)) ||
+      /(^|[._])classmod_/i.test(raw) ||
+      /_classmod\./i.test(raw);
+    /* Class Mod: keep spawn on hover (title) only — secondary spawn lines crowd the small Simple Builder list. */
+    if (raw && !isClassModPart) opt.setAttribute('data-cc-spawn-sub', raw);
     else opt.removeAttribute('data-cc-spawn-sub');
 
     if (ctx.allowLegendaryTone === false) {
@@ -259,6 +265,23 @@
     var pt = q(p.partType);
     var ptLo = pt.toLowerCase();
     var isRarity = ptLo === 'rarity' || /\.comp_0[1-6]_/i.test(raw) || /\.part_rarity\b/i.test(raw);
+    var isClassMod =
+      /class\s*mod/i.test(q(p.category)) ||
+      /class\s*mod/i.test(q(p.itemType)) ||
+      /(^|[._])classmod_/i.test(raw) ||
+      /_classmod\./i.test(raw);
+    if (isClassMod && typeof window.stxResolveClassModPartDisplayName === 'function') {
+      try {
+        var cmName = q(window.stxResolveClassModPartDisplayName(p));
+        if (cmName) name = cmName;
+        else if (typeof window.stxIsClassModUnnamedLegendaryStub === 'function'
+          && window.stxIsClassModUnnamedLegendaryStub(p)) {
+          name = '';
+        } else if (/^(raid\s*\d+|raid\d+|harmonica|cowbell|tuba)$/i.test(name.replace(/[\s_-]+/g, ' ').trim())) {
+          name = '';
+        }
+      } catch (_) {}
+    }
     if (isRarity && typeof window.stxStripRarityIdSkinDisplaySuffix === 'function') {
       name = window.stxStripRarityIdSkinDisplaySuffix(name) || name;
     }
@@ -274,7 +297,19 @@
     var ef = q(p.effects || p.effect).replace(/\s+/g, ' ').trim();
 
     var bits = [];
-    if (isRarity) {
+    if (isClassMod && !isRarity) {
+      try {
+        if (typeof window.stxIsClassModUnnamedLegendaryStub === 'function'
+          && window.stxIsClassModUnnamedLegendaryStub(p)) {
+          return idTok || '-';
+        }
+      } catch (_) {}
+      /* Compact Class Mod rows: in-game name + id. Spawn stays on hover. */
+      if (name && !/^(raid\s*\d+|harmonica|cowbell|tuba|leg body\b)/i.test(name)) bits.push(name);
+      else if (spawn && !/^(leg body|raid\s*\d+|harmonica)\b/i.test(spawn)) bits.push(spawn);
+      if (idTok) bits.push(idTok);
+      if (!bits.length && raw && !/raid[34]|harmonica/i.test(raw)) bits.push(raw);
+    } else if (isRarity) {
       if (name) bits.push(name);
       if (idTok) bits.push(idTok);
     } else {
