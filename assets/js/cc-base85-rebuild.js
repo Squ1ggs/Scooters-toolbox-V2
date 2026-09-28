@@ -48,7 +48,16 @@
   function customBase85Decode(data) {
     data = String(data || '');
     if (data.charAt(0) === '@' && (data.charAt(1) === 'U' || data.charAt(1) === 'u')) data = data.slice(2);
+    data = data.replace(/\s+/g, '');
     data = data.replace(/\//g, '|');
+    if (!data) return new Uint8Array(0);
+    for (var ci = 0; ci < data.length; ci++) {
+      var ch = data.charCodeAt(ci);
+      var ix = ch < 128 ? B85_CHAR_IDX[ch] : -1;
+      if (ix < 0) {
+        throw new Error('Invalid Base85 character at index ' + ci);
+      }
+    }
     var padLen = (5 - (data.length % 5)) % 5;
     var lastChar = CUSTOM_B85_ALPHABET.charAt(CUSTOM_B85_ALPHABET.length - 1);
     if (padLen) {
@@ -62,7 +71,7 @@
       for (var j = 0; j < 5; j++) {
         var code = data.charCodeAt(i + j);
         var idx = code < 128 ? B85_CHAR_IDX[code] : -1;
-        if (idx < 0) idx = 0;
+        if (idx < 0) throw new Error('Invalid Base85 character');
         acc = acc * 85 + idx;
       }
       out[o++] = (acc >>> 24) & 0xff;
@@ -75,6 +84,57 @@
     for (var m = 0; m < usable; m++) mirrored[m] = BIT_REVERSE8[out[m]];
     return mirrored;
   }
+
+  /** True when `s` is a safe BL4 `@U…` custom-Base85 serial (no deser markers / non-alphabet).
+   *  `{`, `|`, `}` are in the BL4 alphabet — never reject those. Stored form uses `/` for `|`. */
+  function ccIsValidStoredBase85(s) {
+    var t = String(s || '').trim().replace(/^["']|["']$/g, '');
+    if (!t) return false;
+    if (t === '…' || t === '—' || t === '-' || t === '…') return false;
+    if (t.indexOf('@U') !== 0 && t.indexOf('@u') !== 0) return false;
+    if (t.length < 10) return false;
+    /* Deserialized leftovers — not Base85. `{` is a legal alphabet char and must pass. */
+    if (t.indexOf(',') >= 0 || t.indexOf('||') >= 0 || t.indexOf(' ') >= 0) return false;
+    var body = t.slice(2).replace(/\//g, '|');
+    if (!body) return false;
+    for (var i = 0; i < body.length; i++) {
+      var c = body.charCodeAt(i);
+      if (c >= 128 || B85_CHAR_IDX[c] < 0) return false;
+    }
+    return true;
+  }
+  window.ccIsValidStoredBase85 = ccIsValidStoredBase85;
+
+  /**
+   * Reject truncated / header-only @U when deserialized payload is clearly larger.
+   * Prevents sticky short packs (e.g. type-select header) from surviving a full part build.
+   * Thresholds stay conservative so real full packs are not false-rejected.
+   */
+  function ccBase85PlausibleForDeser(b85, deser) {
+    var t = String(b85 || '').trim();
+    if (!ccIsValidStoredBase85(t)) return false;
+    var d = String(deser || '').trim();
+    if (!d || d.indexOf('||') < 0) return true;
+    var w = deserializedPayloadWeight(d);
+    var dbl = d.indexOf('||');
+    var tail = d.slice(dbl + 2);
+    var partCount = (tail.match(/\{/g) || []).length;
+    var listVals = (w && typeof w.listValues === 'number') ? w.listValues : 0;
+    /* Header-only / tiny tails — short @U is expected. */
+    if (partCount <= 2 && listVals < 8 && d.length < 180) return true;
+    /*
+     * Floor only — a packed classmod @U is hundreds+ chars; a ~30-char header stub must not pass.
+     * Keep floors low enough that legitimate full packs always clear them.
+     */
+    var minLen = 24;
+    if (partCount > 5 || listVals > 10 || d.length > 400) {
+      minLen = Math.max(40, 24 + Math.min(partCount, 80) + Math.min(Math.floor(listVals / 3), 40));
+    }
+    if (partCount > 40 || listVals > 30 || d.length > 1200) minLen = Math.max(minLen, 80);
+    if (partCount > 100 || listVals > 60 || d.length > 2500) minLen = Math.max(minLen, 120);
+    return t.length >= minLen;
+  }
+  window.ccBase85PlausibleForDeser = ccBase85PlausibleForDeser;
 
   function bytesToCustomB85(data) {
     var padLen = (4 - (data.length % 4)) % 4;
@@ -288,7 +348,7 @@
     return {
       len: s.length,
       listValues: listValues,
-      heavy: s.length > 2800 || listValues > 80,
+      heavy: s.length > 12000 || listValues > 400,
     };
   }
 
@@ -390,7 +450,7 @@
       bytes = customBase85Decode(b85);
     } catch (e) {
       console.warn('Failed to base85-decode:', e);
-      return b85;
+      return '';
     }
     try {
       var maxBits = null;
@@ -420,16 +480,26 @@
     deser = ensureDoublePipeBeforeTailText(deser);
     if (!deser) return '';
     var cached = cachedBase85ForDeserialized(deser);
-    if (cached) return cached;
+    if (cached) {
+      if (typeof ccBase85PlausibleForDeser !== 'function' || ccBase85PlausibleForDeser(cached, deser)) return cached;
+    }
     var alreadyU = String(deser).trim();
     if (/^@U/i.test(alreadyU)) {
       alreadyU = alreadyU.indexOf('@U') === 0 ? alreadyU : ('@U' + alreadyU.replace(/^@U/i, ''));
       if (alreadyU.length >= 10 && alreadyU.indexOf(',') < 0 && alreadyU.indexOf('||') < 0) return alreadyU;
     }
+    function packOk(p) {
+      p = String(p || '').trim();
+      if (!p || p.indexOf('@U') !== 0) return '';
+      if (typeof ccIsValidStoredBase85 === 'function' && !ccIsValidStoredBase85(p)) return '';
+      return p;
+    }
+    var nicnlPacked = '';
     try {
       if (typeof window.__stxNicnlPackDeserialized === 'function') {
-        var packed = window.__stxNicnlPackDeserialized(deser);
-        if (packed && packed.indexOf('@U') === 0 && packed.length > 6) return packed;
+        try {
+          nicnlPacked = packOk(window.__stxNicnlPackDeserialized(deser));
+        } catch (_) { nicnlPacked = ''; }
       }
       var bits = deserializedToBitstream(deser);
       var bitsLen = bits.length;
@@ -442,13 +512,17 @@
         } catch (_) {}
       }
       var b85 = bytesToCustomB85(mirrored);
-      if (!b85) return '';
-      b85 = String(b85).replace(/\|/g, '/');
-      return '@U' + b85;
+      var bitPacked = '';
+      if (b85) {
+        bitPacked = packOk('@U' + String(b85).replace(/\|/g, '/'));
+      }
+      /* Prefer the longer valid pack so a header-only nicnl stub cannot beat a full bitstream. */
+      if (nicnlPacked && bitPacked) return nicnlPacked.length >= bitPacked.length ? nicnlPacked : bitPacked;
+      return nicnlPacked || bitPacked;
     } catch (e) {
       console.warn('Failed to serialize to base85:', e);
       try { if (window.__ccStxRoundtrip) delete window.__ccStxRoundtrip; } catch (_) {}
-      return '';
+      return nicnlPacked || '';
     }
   }
 
@@ -491,24 +565,31 @@
 
   function emitPartTokenBits(bits, braceTok) {
     var tok = String(braceTok || '').trim();
-    var m = tok.slice(1, -1).match(/^(\d+)(?::(\d+))?(?::\[([^\]]*)\])?$/);
-    if (!m) return bits;
+    var inner = tok.charAt(0) === '{' && tok.charAt(tok.length - 1) === '}' ? tok.slice(1, -1).trim() : tok;
+    /* List form MUST be matched before `:digits` — `{234:[33 16]}` would otherwise
+       take `:33` as an int subtype and drop the whole token. */
+    var listM = inner.match(/^(\d+)\s*:\s*\[([^\]]*)\]\s*$/);
+    var intM = !listM ? inner.match(/^(\d+)\s*:\s*(\d+)\s*$/) : null;
+    var simpleM = (!listM && !intM) ? inner.match(/^(\d+)\s*$/) : null;
+    if (!listM && !intM && !simpleM) return bits;
     bits += '101';
-    bits = writeVarint(bits, parseInt(m[1], 10));
-    if (m[2] != null) {
-      bits += '1';
-      bits = writeVarint(bits, parseInt(m[2], 10));
-      bits += '000';
-    } else if (m[3] != null) {
+    if (listM) {
+      bits = writeVarint(bits, parseInt(listM[1], 10));
       bits += '001';
       bits += '01';
-      var vals = (m[3] || '').match(/\d+/g) || [];
+      var vals = (listM[2] || '').match(/\d+/g) || [];
       for (var v = 0; v < vals.length; v++) {
         bits += '100';
         bits = writeVarint(bits, parseInt(vals[v], 10));
       }
       bits += '00';
+    } else if (intM) {
+      bits = writeVarint(bits, parseInt(intM[1], 10));
+      bits += '1';
+      bits = writeVarint(bits, parseInt(intM[2], 10));
+      bits += '000';
     } else {
+      bits = writeVarint(bits, parseInt(simpleM[1], 10));
       bits += '010';
     }
     return bits;

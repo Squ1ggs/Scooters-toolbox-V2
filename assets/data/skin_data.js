@@ -651,4 +651,62 @@ var EXTRA_SKINS = [
     "Custom Mixes": []
   });
   publishExtraNumericSkins();
+
+  /**
+   * Cosmetics_Weapon_Mat* are profile unlock IDs — item serials use Skin customization (`c`):
+   * Mat01–70 → |"c",N| ; Mat71+ / Shiny → "c" "Cosmetics_Weapon_…"
+   * Same mapping BE uses under Skin customization (`c`).
+   */
+  function publishSpawnSkinCamoMap() {
+    try {
+      var map = Object.create(null);
+      var byName = Object.create(null);
+      var i, row, name, code, key, label, prefix, mat, cId;
+      for (i = 0; i < CAMO_TOKENS.length; i++) {
+        row = CAMO_TOKENS[i];
+        if (!row) continue;
+        name = String(row.name || '').trim().toLowerCase();
+        code = String(row.code || '').trim();
+        if (name && code) byName[name] = code;
+      }
+      for (i = 0; i < SPAWN_SKINS.length; i++) {
+        row = SPAWN_SKINS[i];
+        if (!row) continue;
+        key = String(row.value || row.code || '').trim();
+        if (!/^Cosmetics_Weapon_/i.test(key)) continue;
+        label = String(row.label || row.name || '').trim();
+        prefix = label;
+        var dash = label.indexOf(' - ');
+        if (dash > 0) prefix = label.slice(0, dash).trim();
+        code = '';
+        if (prefix && byName[prefix.toLowerCase()]) code = byName[prefix.toLowerCase()];
+        if (!code && label && byName[label.toLowerCase()]) code = byName[label.toLowerCase()];
+        mat = key.match(/Mat_?0*(\d+)/i);
+        if (!code && mat) {
+          var n = Number(mat[1]);
+          if (n >= 1 && n <= 39) {
+            cId = 111 - n;
+            code = '|"c",' + cId + '|';
+          } else if (n >= 40 && n <= 70) {
+            /* Mat40=116 … Mat70=146 (catalog / CAMO_TOKENS) */
+            cId = 76 + n; /* 40→116 … 70→146 */
+            code = '|"c",' + cId + '|';
+          } else if (n >= 71) {
+            code = '"c" "' + key + '"';
+          }
+        }
+        if (!code && /Shiny_/i.test(key)) {
+          code = '"c" "' + key + '"';
+        }
+        if (code) map[key] = code;
+        map[key.toLowerCase()] = code;
+      }
+      window.__CC_SPAWN_SKIN_CAMO_MAP = map;
+      return map;
+    } catch (_) {
+      window.__CC_SPAWN_SKIN_CAMO_MAP = window.__CC_SPAWN_SKIN_CAMO_MAP || Object.create(null);
+      return window.__CC_SPAWN_SKIN_CAMO_MAP;
+    }
+  }
+  publishSpawnSkinCamoMap();
 })();

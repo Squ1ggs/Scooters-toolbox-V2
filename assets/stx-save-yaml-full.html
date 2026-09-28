@@ -646,12 +646,18 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML here, use Load YAML / .sav above, or drag-drop a .yaml / .yml / .sav file (decrypts .sav into this editor)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;"></textarea>
 <div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
+<div id="yaml-items-count-top" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.9em;line-height:1.4;color:#b8e6f0;background:rgba(0,30,50,0.4);border:1px solid rgba(0,200,255,0.3);">Items in this save: <strong id="yaml-serial-count-top" style="color:#00f3ff;">0</strong><span id="yaml-serials-source-badge-top" style="font-weight:600;opacity:0.9;margin-left:6px;"></span></div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
 <div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
 <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
 <div>
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
 <input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+<button class="btn btn-Firmware" data-action="apply-stats" data-requires="character" style="flex: 1; min-width: 140px;" type="button">Apply Stats Changes</button>
+<button class="btn btn-primary" id="saveYAMLToSAVBtnTop" style="flex: 1; min-width: 120px;" type="button">Save YAML</button>
+<button class="btn btn-primary primary-save-gradient pinkblue-convert-btn" id="convertYAMLToSAVBtnTop" style="flex: 1; min-width: 140px;" type="button">Convert to .sav</button>
+</div>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
 <button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="Paladin" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_paladin.png"/><span>Set Amon (Forge Knight)</span></button>
 <button class="btn btn-Firmware stx-vh-btn" data-action="set-character" data-requires="character" data-value="DarkSiren" style="flex: 1; min-width: 160px;" type="button"><img alt="" class="stx-vh-btn__icon" decoding="async" loading="lazy" src="./img/vault-hunters/player_class_dark_siren.png"/><span>Set Vex (Siren)</span></button>
@@ -1145,14 +1151,14 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="js/cc-preset-data-rebuild.js"></script>
 <script src="js/cc-base85-rebuild.js"></script>
 <script src="js/stx-nicnl-serial-pack.js"></script>
-<script src="js/cc-sav-crypto-rebuild.js"></script>
-<script src="js/cc-yaml-save-rebuild.js?v=77r"></script>
+<script src="js/cc-sav-crypto-rebuild.js?v=77v"></script>
+<script src="js/cc-yaml-save-rebuild.js?v=77x"></script>
 <script src="js/cc-preset-rebuild.js"></script>
 <script src="js/cc-stx-decoder-bridge.js?v=77r"></script>
 <script src="js/cc-yaml-extras-rebuild.js"></script>
 <script src="js/cc-missions-rebuild.js"></script>
 <script src="js/cc-profile-progression-tools-rebuild.js"></script>
-<script src="js/cc-yaml-drawer-wiring-rebuild.js"></script>
+<script src="js/cc-yaml-drawer-wiring-rebuild.js?v=77x"></script>
 <script src="js/cc-build-stats-rebuild.js?v=77j"></script>
 <script src="js/rebuild-presets-random.js?v=77m"></script>
 <script>
@@ -1205,6 +1211,8 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
   wireBtn('convertSAVToYAMLBtn', 'convertSAVToYAML');
   wireBtn('convertYAMLToSAVBtn', 'convertYAMLToSAV');
   wireBtn('saveYAMLToSAVBtn', 'saveYAMLToSAV');
+  wireBtn('convertYAMLToSAVBtnTop', 'convertYAMLToSAV');
+  wireBtn('saveYAMLToSAVBtnTop', 'saveYAMLToSAV');
   var back = byId('goBackFromYAMLBtn');
   if (back) {
     back.textContent = 'Open full toolbox';

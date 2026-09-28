@@ -920,6 +920,7 @@
       default: return true;
     }
   }
+  try { window.weaponPartMatchesNcsSlot = weaponPartMatchesNcsSlot; } catch (_e) {}
 
   const SIMPLE_SCHEMA_BY_CATEGORY = {
     /* Shield: first identity slot is Base (not weapon Body). Keys stay `body` for slot state. */
@@ -1052,6 +1053,70 @@
     return hit === pref;
   }
 
+  /**
+   * Shield NCS dep tables. Base uses `body` only.
+   * Maliwan/Order/Torgue `unique` parts are not bodies (Daedalus Supersoldier is a body).
+   */
+  const STX_SHIELD_NCS_BODY_TAILS = {
+    bor_shield: ['part_body_energy', 'part_body_energy_firewall', 'part_body_energy_lightning', 'part_body_energy_watts4dinner', 'part_body_energy_overswarm'],
+    dad_shield: ['part_body_energy', 'part_body_angel', 'part_unique_supersoldier', 'part_body_honeybadger'],
+    jak_shield: ['part_body_armor', 'part_body_armor_onionlayeredguard', 'part_body_barrelaged', 'part_body_armor_exfoliatrix'],
+    mal_shield: ['part_body_energy'],
+    ord_shield: ['part_body_energy', 'part_body_energy_proteancell', 'part_body_energy_collector'],
+    ted_shield: ['part_body_armor', 'part_body_shieldboi', 'part_body_timekeeper', 'part_body_hopscotch', 'part_body_pocketbuddies'],
+    tor_shield: ['part_body_armor', 'part_body_armor_compleat'],
+    vla_shield: ['part_body_armor', 'part_body_armor_heavyweight', 'part_body_armor_hoarder', 'part_body_armor_undershield']
+  };
+  const STX_SHIELD_NCS_UNIQUE_TAILS = {
+    mal_shield: ['part_unique_supernova', 'part_unique_momento', 'part_unique_elpisstar'],
+    ord_shield: ['part_unique_cindershelly'],
+    tor_shield: ['part_unique_firewerks', 'part_unique_hydrowerks']
+  };
+
+  function stxShieldInvTail(normLo){
+    const c = String(normLo || '').toLowerCase();
+    const m = c.match(/^([a-z0-9]+_shield)\.([a-z0-9_]+)$/);
+    if (!m) return null;
+    return { inv: m[1], tail: m[2] };
+  }
+  function stxIsShieldBodyPoolRowCode(normLo){
+    const hit = stxShieldInvTail(normLo);
+    if (!hit) return false;
+    const tails = STX_SHIELD_NCS_BODY_TAILS[hit.inv];
+    return !!(tails && tails.indexOf(hit.tail) !== -1);
+  }
+  function stxIsShieldUniquePoolRowCode(normLo){
+    const hit = stxShieldInvTail(normLo);
+    if (!hit) return false;
+    const tails = STX_SHIELD_NCS_UNIQUE_TAILS[hit.inv];
+    return !!(tails && tails.indexOf(hit.tail) !== -1);
+  }
+
+  /** Shield Base row to pin for the selected rarity (`part_body_timekeeper` for Timekeeper). */
+  function stxShieldRarityPinnedBodyCode(parts, rarityPart, wantMan){
+    const suffix = stxGrenadeRarityBodySuffixFromPart(rarityPart);
+    const pref = stxShieldSpawnPrefixForUiManufacturer(wantMan);
+    const list = Array.isArray(parts) ? parts : [];
+    if (suffix && pref) {
+      for (let i = 0; i < list.length; i++) {
+        const c = String(normCode(list[i] && list[i].code || '') || '').toLowerCase();
+        if (c.indexOf(pref + '.') !== 0) continue;
+        if (!stxIsShieldBodyPoolRowCode(c)) continue;
+        if (stxGrenadeBodyCodeMatchesRaritySuffix(c, suffix)) return c;
+      }
+    }
+    if (pref) {
+      const energy = pref + '.part_body_energy';
+      const armor = pref + '.part_body_armor';
+      for (let j = 0; j < list.length; j++) {
+        const c2 = String(normCode(list[j] && list[j].code || '') || '').toLowerCase();
+        if (c2 === energy || c2 === armor) return c2;
+      }
+    }
+    return '';
+  }
+  try { window.stxShieldRarityPinnedBodyCode = stxShieldRarityPinnedBodyCode; } catch (_eShPin) {}
+
   /** `wantMan` is normalized lowercase (e.g. from `String(man).trim().toLowerCase()`). */
   function stxGrenadeSpawnPrefixForUiManufacturer(wantMan){
     const m = String(wantMan || '').trim().toLowerCase();
@@ -1111,17 +1176,251 @@
     return /(^|[^a-z0-9])(?:borg|bor|cov|dad|jak|mal|ord|ted|tor|vla)_grenade_gadget\.part_(?:borg|dad|jak|mal|ord|ted|tor|vla|cov)($|[^a-z0-9])/.test(c);
   }
 
-  /** Any manufacturer-scoped grenade body row acceptable for the simple Body slot (identity + variants, not element/stat/payload/comp). */
-  function stxIsGrenadeBodyPoolRowCode(normLo){
+  /**
+   * Skin-only "rarity" rows (`ORD.part_rarity` / "UAV Skin") — not real inv_comp rarity ids.
+   * Must never drive header family or sit first after `||` (breaks grenade spawns).
+   */
+  function stxIsGrenadeSkinRarityPart(p){
+    if (!p) return false;
+    const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    if (!c) return false;
+    if (c === 'ord.part_rarity' || /(^|[._])part_rarity$/.test(c)) return true;
+    if (/\.comp_0[1-6]_/.test(c)) return false;
+    const blob = String((p.stats || '') + ' ' + (p.dataNote || '') + ' ' + (p.name || '') + ' ' + (p.effects || '')).toLowerCase();
+    if (blob.indexOf('can be used for skin') !== -1) return true;
+    if (/\bskin\b/.test(blob) && String(p.partType || '').trim().toLowerCase() === 'rarity') return true;
+    return false;
+  }
+  try { window.stxIsGrenadeSkinRarityPart = stxIsGrenadeSkinRarityPart; } catch (_e) {}
+
+  /** Legendary/epic/pearl suffix from rarity-id spawn (`comp_05_legendary_PredatorDrone` → `predatordrone`). */
+  function stxGrenadeRarityBodySuffixFromPart(p){
+    const c = String(normCode(p && (p.code || p.spawnCode || p.importCode) || '') || '').toLowerCase();
+    if (!c) return '';
+    let m = c.match(/\.comp_05_legendary_([a-z0-9_]+)/);
+    if (m) return m[1];
+    m = c.match(/\.comp_06_pearlescent_([a-z0-9_]+)/);
+    if (m) return m[1];
+    m = c.match(/\.comp_04_epic_([a-z0-9_]+)/);
+    if (m) return m[1];
+    return '';
+  }
+  try { window.stxGrenadeRarityBodySuffixFromPart = stxGrenadeRarityBodySuffixFromPart; } catch (_e) {}
+
+  function stxGrenadeBodyCodeMatchesRaritySuffix(codeNormLo, suffix){
+    const suf = String(suffix || '').trim().toLowerCase();
+    if (!suf) return false;
+    const c = String(codeNormLo || '').toLowerCase();
+    if (c.indexOf('.part_' + suf) !== -1) return true;
+    const tail = c.split('.').pop() || '';
+    return tail === suf || tail === ('part_' + suf) || tail.slice(-(suf.length + 1)) === ('_' + suf);
+  }
+  try { window.stxGrenadeBodyCodeMatchesRaritySuffix = stxGrenadeBodyCodeMatchesRaritySuffix; } catch (_e) {}
+
+  /**
+   * Body to pin/highlight for the selected rarity: named body (`part_tor_slippy` for Slippy)
+   * when one exists, otherwise this manufacturer's identity body.
+   */
+  function stxGrenadeRarityPinnedBodyCode(parts, rarityPart, wantMan){
+    const suffix = stxGrenadeRarityBodySuffixFromPart(rarityPart);
+    const man = String(wantMan || '').trim().toLowerCase();
+    const spawn = stxGrenadeSpawnPrefixForUiManufacturer(man);
+    let identity = '';
+    if (spawn) {
+      const sm = spawn.match(/^([a-z0-9]+)_grenade_gadget$/);
+      if (sm) identity = (spawn + '.part_' + sm[1]).toLowerCase();
+    }
+    const list = Array.isArray(parts) ? parts : [];
+    if (suffix) {
+      for (let i = 0; i < list.length; i++) {
+        const c = String(normCode(list[i] && list[i].code || '') || '').toLowerCase();
+        if (!stxGrenadeBodyCodeMatchesRaritySuffix(c, suffix)) continue;
+        if (man && !stxGrenadeGadgetRowMatchesSelectedManufacturer(c, man)) continue;
+        return c;
+      }
+    }
+    return identity;
+  }
+  try { window.stxGrenadeRarityPinnedBodyCode = stxGrenadeRarityPinnedBodyCode; } catch (_ePin) {}
+
+  /**
+   * Sort grenade Body dropdown: rarity-matched variant first, then manufacturer identity,
+   * then other selected-mfr bodies, then remaining (all manufacturers still listed).
+   */
+  function stxSortGrenadeBodyOptionsForRarity(parts, rarityPart, wantMan){
+    const arr = Array.isArray(parts) ? parts.slice() : [];
+    if (!arr.length) return arr;
+    const pinned = stxGrenadeRarityPinnedBodyCode(arr, rarityPart, wantMan);
+    const suffix = stxGrenadeRarityBodySuffixFromPart(rarityPart);
+    const man = String(wantMan || '').trim().toLowerCase();
+    const spawn = stxGrenadeSpawnPrefixForUiManufacturer(man);
+    let identity = '';
+    if (spawn) {
+      const sm = spawn.match(/^([a-z0-9]+)_grenade_gadget$/);
+      if (sm) identity = (spawn + '.part_' + sm[1]).toLowerCase();
+    }
+    const rank = (p)=>{
+      const c = String(normCode(p && p.code || '') || '').toLowerCase();
+      if (pinned && c === pinned) return 0;
+      if (suffix && stxGrenadeBodyCodeMatchesRaritySuffix(c, suffix)) return 1;
+      if (identity && c === identity) return 2;
+      if (man && stxGrenadeGadgetRowMatchesSelectedManufacturer(c, man)) {
+        return stxIsGrenadeManufacturerIdentityBodyCode(c) ? 3 : 4;
+      }
+      return 5;
+    };
+    arr.sort((a, b)=>{
+      const d = rank(a) - rank(b);
+      if (d) return d;
+      return displayForPart(a).localeCompare(displayForPart(b), undefined, { numeric: true, sensitivity: 'base' });
+    });
+    return arr;
+  }
+  try { window.stxSortGrenadeBodyOptionsForRarity = stxSortGrenadeBodyOptionsForRarity; } catch (_e) {}
+
+  /** Named rarity suffix for weapon barrels (`comp_05_legendary_Eigenburst` → `eigenburst`). */
+  function stxRarityBarrelSuffixFromPart(rarityPart){
+    const fromGrenadeHelper = stxGrenadeRarityBodySuffixFromPart(rarityPart);
+    if (fromGrenadeHelper) return fromGrenadeHelper;
+    const tok = stxBarrelPearlLegendTokenFromPart(rarityPart);
+    return tok ? String(tok).toLowerCase() : '';
+  }
+  try { window.stxRarityBarrelSuffixFromPart = stxRarityBarrelSuffixFromPart; } catch (_e) {}
+
+  function stxCumulativeUnderscorePrefixes(fam){
+    const parts = String(fam || '').toLowerCase().split('_').filter(Boolean);
+    const out = [];
+    for (let i = 1; i <= parts.length; i++) out.push(parts.slice(0, i).join('_'));
+    return out;
+  }
+
+  /** True when `part_barrel_##_<tail>` belongs to `comp_05_legendary_<fam>` (Legit-style prefix match). */
+  function stxWeaponBarrelCodeMatchesRaritySuffix(codeNormLo, suffix){
+    const suf = String(suffix || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (!suf) return false;
+    const c = String(codeNormLo || '').toLowerCase();
+    const mb = c.match(/part_barrel_\d+_([a-z0-9_]+)$/);
+    if (!mb) return false;
+    const tail = String(mb[1] || '').toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (!tail) return false;
+    if (tail === suf) return true;
+    const allowed = stxCumulativeUnderscorePrefixes(suf);
+    if (allowed.indexOf(tail) >= 0) return true;
+    /* Also allow barrel tails that start with the rarity fam token. */
+    if (tail.indexOf(suf) === 0 && (tail.length === suf.length || tail.charAt(suf.length) === '_')) return true;
+    return false;
+  }
+  try { window.stxWeaponBarrelCodeMatchesRaritySuffix = stxWeaponBarrelCodeMatchesRaritySuffix; } catch (_e) {}
+
+  function stxWeaponRarityPinnedBarrelCode(parts, rarityPart){
+    const suffix = stxRarityBarrelSuffixFromPart(rarityPart);
+    if (!suffix) return '';
+    const list = Array.isArray(parts) ? parts : [];
+    for (let i = 0; i < list.length; i++) {
+      const c = String(normCode(list[i] && list[i].code || '') || '').toLowerCase();
+      if (stxWeaponBarrelCodeMatchesRaritySuffix(c, suffix)) return c;
+    }
+    return '';
+  }
+  try { window.stxWeaponRarityPinnedBarrelCode = stxWeaponRarityPinnedBarrelCode; } catch (_e) {}
+
+  /** Sort weapon Barrel dropdown: rarity-matched named barrel first, then remaining. */
+  function stxSortWeaponBarrelOptionsForRarity(parts, rarityPart){
+    const arr = Array.isArray(parts) ? parts.slice() : [];
+    if (!arr.length) return arr;
+    const pinned = stxWeaponRarityPinnedBarrelCode(arr, rarityPart);
+    const suffix = stxRarityBarrelSuffixFromPart(rarityPart);
+    if (!suffix && !pinned) return arr;
+    const rank = (p)=>{
+      const c = String(normCode(p && p.code || '') || '').toLowerCase();
+      if (pinned && c === pinned) return 0;
+      if (suffix && stxWeaponBarrelCodeMatchesRaritySuffix(c, suffix)) return 1;
+      return 2;
+    };
+    arr.sort((a, b)=>{
+      const d = rank(a) - rank(b);
+      if (d) return d;
+      return displayForPart(a).localeCompare(displayForPart(b), undefined, { numeric: true, sensitivity: 'base' });
+    });
+    return arr;
+  }
+  try { window.stxSortWeaponBarrelOptionsForRarity = stxSortWeaponBarrelOptionsForRarity; } catch (_e) {}
+
+  /** Collect NCS grenade body-slot rows (all manufacturers) for Body dropdowns. */
+  function stxCollectAllGrenadeBodyParts(){
+    const all = getAllParts();
+    const out = [];
+    const seen = Object.create(null);
+    for (let i = 0; i < all.length; i++){
+      const p = all[i];
+      if (!p) continue;
+      const c = String(normCode(p.code || '') || '').toLowerCase();
+      if (!stxIsGrenadeBodyPoolRowCode(c)) continue;
+      if (stxIsGrenadeSkinRarityPart(p)) continue;
+      const key = String((p.idRaw != null ? p.idRaw : '') || c);
+      if (seen[key]) continue;
+      seen[key] = 1;
+      out.push(p);
+    }
+    return out;
+  }
+  try { window.stxCollectAllGrenadeBodyParts = stxCollectAllGrenadeBodyParts; } catch (_e) {}
+
+  /**
+   * Grenade part tails by NCS dep table (`Nexus-Data-inv*.json` on each `*_grenade_gadget`).
+   * Body is only that table — divider/seeker/repeater and named uniques are payload or payload_augment.
+   */
+  const STX_GRENADE_NCS_SLOT_TAILS = {
+    body: {
+      borg_grenade_gadget: ['part_borg'],
+      dad_grenade_gadget: ['part_dad'],
+      jak_grenade_gadget: ['part_jak', 'part_jak_bismuth'],
+      mal_grenade_gadget: ['part_mal'],
+      ord_grenade_gadget: ['part_ord', 'part_ord_alignment'],
+      ted_grenade_gadget: ['part_ted'],
+      tor_grenade_gadget: ['part_tor', 'part_tor_slippy', 'body_flare'],
+      vla_grenade_gadget: ['part_vla', 'part_vla_waterfall']
+    },
+    payload: {
+      borg_grenade_gadget: ['part_02_divider_borg', 'part_payload_unique_rubber', 'part_payload_unique_transmission', 'part_payload_unique_pellet', 'part_payload_unique_buoy'],
+      dad_grenade_gadget: ['part_payload_axe', 'part_payload_fuse', 'part_payload_pressurecooker'],
+      grenade_gadget: ['part_01_mirv', 'part_02_divider', 'part_03_spring', 'part_04_artillery', 'part_05_singularity', 'part_06_lingering_corrosive', 'part_06_lingering_cryo', 'part_06_lingering_fire', 'part_06_lingering_radiation', 'part_06_lingering_shock', 'part_07_damage_amp', 'part_01_mirv_brudder'],
+      jak_grenade_gadget: ['part_02_divider_jak', 'part_shokunai', 'part_bismuth_corrosive', 'part_bismuth_cryo', 'part_bismuth_fire', 'part_bismuth_radiation', 'part_bismuth_shock', 'part_spinning_blade'],
+      mal_grenade_gadget: ['part_02_divider_maliwan', 'part_disco_disc', 'part_recursive', 'part_brudder'],
+      ord_grenade_gadget: ['part_aggrovator', 'part_alignment', 'part_skully'],
+      ted_grenade_gadget: ['part_faultydetonator', 'part_predatordrone', 'part_ordinance', 'part_urchin'],
+      tor_grenade_gadget: ['payload_firepot', 'part_payload_firepot'],
+      vla_grenade_gadget: ['part_blockbuster', 'part_barb']
+    },
+    payload_augment: {
+      borg_grenade_gadget: ['part_02_divider_02_seeker_borg', 'part_02_divider_04_repeater_borg'],
+      grenade_gadget: ['part_01_mirv_01_children', 'part_01_mirv_02_bouncer', 'part_01_mirv_03_micro_mirv', 'part_01_mirv_04_spring', 'part_02_divider_01_children', 'part_02_divider_02_seeker', 'part_02_divider_03_singularity', 'part_02_divider_04_repeater', 'part_02_divider_05_spring', 'part_03_spring_01_additional_bounce', 'part_03_spring_02_apex', 'part_03_spring_03_compound', 'part_03_spring_04_bouncer', 'part_03_spring_05_spawning', 'part_04_artillery_01_duration', 'part_04_artillery_02_ricochet', 'part_04_artillery_03_micro_missiles', 'part_04_artillery_04_maglock', 'part_04_artillery_05_mortar_strike', 'part_05_singularity_01_duration', 'part_05_singularity_02_lingering', 'part_05_singularity_03_collapsing', 'part_05_singularity_04_repulsor', 'part_06_lingering_01_duration_bursts', 'part_06_lingering_01_duration_bursts_cryo', 'part_06_lingering_02_pulse', 'part_06_lingering_03_splat_pack', 'part_06_lingering_04_fracture', 'part_06_lingering_05_alchemic', 'part_07_damage_amp_01_bouncing', 'part_07_damage_amp_02_suppressor', 'part_07_damage_amp_03_penetrator'],
+      jak_grenade_gadget: ['part_02_divider_02_seeker_jak', 'part_02_divider_04_repeater_jak'],
+      mal_grenade_gadget: ['part_02_divider_02_seeker_mal', 'part_02_divider_04_repeater_mal'],
+      ord_grenade_gadget: ['part_01_mirv_05_swarm']
+    }
+  };
+
+  function stxGrenadeCodeMatchesNcsSlot(normLo, slotName){
     const c = String(normLo || '').toLowerCase();
-    const m = c.match(/^([a-z0-9]+)_grenade_gadget\.part_([a-z0-9_]+)/);
+    const m = c.match(/^([a-z0-9]+_grenade_gadget|grenade_gadget)\.([a-z0-9_]+)$/);
     if (!m) return false;
-    if (c.indexOf('.part_payload_') !== -1) return false;
-    if (c.indexOf('.comp_') !== -1) return false;
-    if (/\.part_(corrosive|cryo|fire|radiation|shock)\b/.test(c)) return false;
-    if (/grenade_gadget\.part_stat_/.test(c)) return false;
-    if (/part_firmware/.test(c)) return false;
-    return true;
+    const tails = STX_GRENADE_NCS_SLOT_TAILS[slotName] && STX_GRENADE_NCS_SLOT_TAILS[slotName][m[1]];
+    if (!tails) return false;
+    return tails.indexOf(m[2]) !== -1;
+  }
+
+  /** NCS `body` dep table only (identity + the few body variants). */
+  function stxIsGrenadeBodyPoolRowCode(normLo){
+    return stxGrenadeCodeMatchesNcsSlot(normLo, 'body');
+  }
+
+  function stxIsGrenadePayloadPoolRowCode(normLo){
+    return stxGrenadeCodeMatchesNcsSlot(normLo, 'payload');
+  }
+
+  function stxIsGrenadePayloadAugmentPoolRowCode(normLo){
+    return stxGrenadeCodeMatchesNcsSlot(normLo, 'payload_augment');
   }
 
   function stxSortGrenadeBodySelections(parts){
@@ -3000,6 +3299,75 @@ function getAllParts(){
     }
   }
 
+  /** On-disk stems under `assets/img/classmod-firmware/` (no .png). */
+  const STX_FIRMWARE_ICON_STEMS = {
+    actionfist: 1, activefire: 1, airstrike: 1, atlasex: 1, atlasinfinium: 1, baker: 1,
+    bulletstospare: 1, daedyo: 1, deadeye: 1, gadgetahoy: 1, getthrowd: 1, godkiller: 1,
+    goojfc: 1, heatingup: 1, highcaliber: 1, jacked: 1, lifeblood: 1, oscarmike: 1,
+    reelbigfist: 1, riskyboots: 1, rubberbandman: 1, skillcraft: 1, trickshot: 1
+  };
+  const STX_FIRMWARE_ICON_FALLBACK = './assets/img/classmod-firmware/jacked.png';
+  const STX_FIRMWARE_ICON_BASE = './assets/img/classmod-firmware/';
+  const STX_DLC_FIRMWARE_ICON_BASE = './assets/img/dlc-firmware/';
+
+  /** Map dataset / label stems → on-disk firmware icon stem. */
+  function stxNormalizeFirmwareIconStem(raw){
+    let fw = stxFoldDiacriticsForPerkIconKey(String(raw || ''))
+      .toLowerCase()
+      .replace(/&/g, 'and')
+      .replace(/['’]/g, '')
+      .replace(/[^a-z0-9_]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '');
+    if (!fw) return '';
+    /* Drop noise prefixes/suffixes from labels like "Firmware Active Fire" / "Active Fire Firmware". */
+    fw = fw.replace(/^(part_)?firmware_?/g, '').replace(/_?firmware$/g, '').replace(/_?passive_?/g, '');
+    fw = fw.replace(/_/g, '');
+    if (!fw) return '';
+    if (fw === 'atlasinfinum' || fw === 'atlasinfiniumm' || fw === 'atlasinfimum') fw = 'atlasinfinium';
+    if (fw === 'daeddyo' || fw === 'deaddyo' || fw === 'daeddy') fw = 'daedyo';
+    if (fw === 'bulletspare' || fw === 'bulletstospare') fw = 'bulletstospare';
+    if (fw === 'getthrowin' || fw === 'getthrowing' || fw === 'getthrowd') fw = 'getthrowd';
+    if (fw === 'godkillers') fw = 'godkiller';
+    if (fw === 'gadgetahoy') fw = 'gadgetahoy';
+    if (fw === 'reelbigfists') fw = 'reelbigfist';
+    if (fw === 'rubberband') fw = 'rubberbandman';
+    if (fw === 'oscarmikes') fw = 'oscarmike';
+    if (fw === 'highcalibre' || fw === 'highcalibur') fw = 'highcaliber';
+    if (fw === 'heating') fw = 'heatingup';
+    if (fw === 'actionfists') fw = 'actionfist';
+    return fw;
+  }
+
+  /**
+   * Resolve a firmware chip icon from spawn code and/or display name.
+   * Newer rows often have empty names or "Firmware …" labels — always prefer `part_firmware_*` stem.
+   */
+  function stxResolveFirmwareIconUrl(p){
+    const code = String((p && (p.code || p.spawnCode || p.importCode)) || '').toLowerCase();
+    const nameBlob = String((p && (p.name || p.legendaryName || p.effects || p.effect || p.label)) || '');
+    const candidates = [];
+    const codeStem = code.match(/part_firmware_([a-z0-9_]+)/i);
+    if (codeStem && codeStem[1]) candidates.push(codeStem[1]);
+    if (nameBlob) candidates.push(nameBlob);
+    /* Also try raw code slug without path. */
+    const bare = code.replace(/^.*\./, '').replace(/^part_firmware_?/i, '');
+    if (bare && bare !== code) candidates.push(bare);
+
+    for (let i = 0; i < candidates.length; i++) {
+      const stem = stxNormalizeFirmwareIconStem(candidates[i]);
+      if (!stem) continue;
+      if (STX_FIRMWARE_ICON_STEMS[stem]) return STX_FIRMWARE_ICON_BASE + stem + '.png';
+      /* DLC alternate art when present (active fire / skillcraft). */
+      if (stem === 'activefire') return STX_FIRMWARE_ICON_BASE + 'activefire.png';
+      if (stem === 'skillcraft') return STX_FIRMWARE_ICON_BASE + 'skillcraft.png';
+    }
+    /* Known newer firmwares without dedicated art yet — still show a chip, not a blank. */
+    return STX_FIRMWARE_ICON_FALLBACK;
+  }
+  try { window.stxResolveFirmwareIconUrl = stxResolveFirmwareIconUrl; } catch (_e) {}
+  try { window.stxNormalizeFirmwareIconStem = stxNormalizeFirmwareIconStem; } catch (_e) {}
+
   /**
    * Perk art files omit the "Vex - " / "Harlowe - " prefix; `vexchanneling` → `channeling`.
    * Longest prefixes first so `c4sh` wins over substring collisions.
@@ -3582,6 +3950,16 @@ function getAllParts(){
       .replace(/&/g, 'and')
       .replace(/[^a-z0-9]+/g, '')
       .trim();
+
+    /* Firmware before empty-name bail-out — many newer firmware rows have blank/odd names. */
+    const looksFirmware = (pt.indexOf('firmware') !== -1 || code.indexOf('firmware') !== -1
+      || /part_firmware|\.part_firmware/i.test(codeNormLo)
+      || schemaKeyLo === 'firmware' || schemaKeyLo === 'firmware246'
+      || nsSlot === 'firmware');
+    if (looksFirmware) {
+      return stxResolveFirmwareIconUrl(p);
+    }
+
     if (!s){
       if (String(cat || catRaw || '').trim() === 'Enhancement' && schemaKeyLo){
         const augChip = ()=> stxPearlPipUrlInsteadOfLegendaryAug(STX_CC_LEGENDARY_AUG_BASE + 'ico_legendary_aug_classmod.png');
@@ -3603,18 +3981,7 @@ function getAllParts(){
       return null;
     }
 
-    // 2. Firmware: shared firmware chips are more accurate than category chips for Shield/Repkit/etc.
-    if (pt.indexOf('firmware') !== -1 || code.indexOf('firmware') !== -1){
-      let fw = s;
-      if (fw === 'atlasinfinum' || fw === 'atlasinfiniumm') fw = 'atlasinfinium';
-      if (fw === 'daeddyo') fw = 'daedyo';
-      if (fw === 'deaddyo') fw = 'daedyo';
-      if (fw === 'bulletspare') fw = 'bulletstospare';
-      if (fw === 'getthrowin') fw = 'getthrowd';
-      if (fw === 'firmwareactivefire' || fw === 'activefire') fw = 'activefire';
-      if (fw === 'firmwareskillcraft' || fw === 'skillcraft') fw = 'skillcraft';
-      return './assets/img/classmod-firmware/' + fw + '.png';
-    }
+    // Firmware icons are resolved earlier (before empty-name bail-out).
 
     // 3. Perk / skill / universal / secondary (all class-mod pickers + Character/Repkit perks)
     if (perkishSchema || perkishDataset || pt.indexOf('perk') !== -1 || pt.indexOf('modifier') !== -1 || its.indexOf('perk') !== -1){
@@ -3718,6 +4085,11 @@ function getAllParts(){
     opt.removeAttribute('data-cc-icon-alt');
     if (typeof iconUrl === 'string' && iconUrl.indexOf('./assets/img/classmod-perks/') === 0){
       opt.setAttribute('data-cc-icon-alt', iconUrl.replace('/classmod-perks/', '/classmod-passive/'));
+    } else if (typeof iconUrl === 'string' && iconUrl.indexOf('./assets/img/classmod-firmware/') === 0){
+      /* If a newer firmware stem 404s, fall back to a known chip instead of a blank. */
+      opt.setAttribute('data-cc-icon-alt', STX_FIRMWARE_ICON_FALLBACK);
+    } else if (typeof iconUrl === 'string' && iconUrl.indexOf('./assets/img/dlc-firmware/') === 0){
+      opt.setAttribute('data-cc-icon-alt', STX_FIRMWARE_ICON_FALLBACK);
     }
   }
 
@@ -3807,6 +4179,7 @@ function getAllParts(){
     opt.removeAttribute('data-cc-icon');
     opt.removeAttribute('data-cc-icon-filter');
     opt.removeAttribute('data-cc-icon-alt');
+    opt.removeAttribute('data-cc-grenade-rarity-match');
     const iconUrl = stxResolvePartIconUrl(p, schemaItem, category);
     if (iconUrl) stxSetOptionDataCcIconFromUrl(opt, iconUrl);
     if (typeof window.stxApplyPartDropdownMeta === 'function') {
@@ -3831,6 +4204,26 @@ function getAllParts(){
       stxIsClassModBodyPoolCode(p.code || p.spawnCode || '')
     )) {
       stxApplyClassModBodyLegendaryIconFilter(opt, p);
+    }
+    /* Grenade Body: highlight the variant that matches the selected rarity id. */
+    if (String(category || '').trim() === 'Grenade' && String(schemaItem.key || '') === 'body') {
+      try {
+        const rp0 = state.mainPart && String(state.mainPart.partType || '').trim().toLowerCase() === 'rarity'
+          ? state.mainPart
+          : (state.slots && state.slots.rarity);
+        const rp = Array.isArray(rp0) ? rp0[0] : rp0;
+        const suf = stxGrenadeRarityBodySuffixFromPart(rp);
+        const c = String(normCode(p.code || '') || '').toLowerCase();
+        if (suf && stxGrenadeBodyCodeMatchesRaritySuffix(c, suf)) {
+          opt.setAttribute('data-cc-grenade-rarity-match', '1');
+          opt.setAttribute('data-cc-primary-tone', 'legendary');
+          const base = String(opt.textContent || opt.label || '').trim();
+          if (base && base.indexOf('★') !== 0) {
+            opt.textContent = '★ ' + base;
+            try { opt.setAttribute('data-base-label', '★ ' + base); } catch (_e) {}
+          }
+        }
+      } catch (_e) {}
     }
   }
 
@@ -3900,6 +4293,11 @@ function getAllParts(){
       // Class Mod: treat Dark Siren ≡ Siren ≡ Vex (and peers) so extract + live sheet rows both match.
       if (isClassModCtx && manCmKey) {
         return stxCanonicalClassModManufacturerKey(rm) === manCmKey;
+      }
+      /* Nexus grenade rarity rows often ship manufacturer "Weapon"; match via spawn prefix instead. */
+      if ((wantType === 'Grenade' || catUi === 'Grenade' || cat === 'Grenade') && manL) {
+        const blob = String((r && (r.itemTypeString || r.code)) || '').toLowerCase();
+        if (blob && stxGrenadeGadgetRowMatchesSelectedManufacturer(blob, manL)) return true;
       }
       return false;
     });
@@ -4105,6 +4503,15 @@ function getAllParts(){
       }
     } catch (_) {}
 
+    /* Prefer the Guided Rarity ID dropdown (same role as Simple #mainPart) so grenade/repkit
+       headers match the selected rarity family instead of an arbitrary STX_RARITIES row. */
+    let selectedRarityPart = null;
+    try {
+      if (typeof window.__ccGetSelectedGuidedRarityPart === 'function') {
+        selectedRarityPart = window.__ccGetSelectedGuidedRarityPart();
+      }
+    } catch (_) {}
+
     const rows = getRarityRowsForCurrentContext();
     const pick = rows.find(r => !String(r && r.legendaryName || '').trim()) || rows[0] || null;
     
@@ -4122,10 +4529,14 @@ function getAllParts(){
       (buybackEl && buybackEl.checked)
     );
     
+    const selFam = selectedRarityPart ? partFamilyIdOf(selectedRarityPart) : null;
+    const selItem = selectedRarityPart ? partItemIdOf(selectedRarityPart) : null;
+
     // Prioritize preserved familyId if it belongs to the current manufacturer/type context.
     // (We check if it exists in 'rows' to be safe, but allow it if rows are somehow broken).
-    let familyId = (pick && Number.isFinite(Number(pick.familyId))) ? Number(pick.familyId) : 1;
-    if (preservedFamilyId != null) {
+    let familyId = Number.isFinite(selFam) ? Number(selFam)
+      : ((pick && Number.isFinite(Number(pick.familyId))) ? Number(pick.familyId) : 1);
+    if (!Number.isFinite(selFam) && preservedFamilyId != null) {
        // If the preserved ID matches ANY row in the current context, definitely use it.
        if (rows.some(r => Number(r.familyId || r.family) === preservedFamilyId)) {
           familyId = preservedFamilyId;
@@ -4135,7 +4546,8 @@ function getAllParts(){
        }
     }
 
-    const itemId = (pick && Number.isFinite(Number(pick.itemId))) ? Number(pick.itemId) : 0;
+    const itemId = Number.isFinite(selItem) ? Number(selItem)
+      : ((pick && Number.isFinite(Number(pick.itemId))) ? Number(pick.itemId) : 0);
     const seedBase = { familyId: familyId, itemId: itemId };
     
     let header = `${familyId}, 0, 1, ${level}|`;
@@ -5364,6 +5776,22 @@ function getAllParts(){
         } else if (String(category||'') === 'Grenade' && (String(partType||'').trim().toLowerCase() === 'body' || String(partType||'').trim().toLowerCase() === 'base')) {
           const codeL = String(normCode(code)||'').toLowerCase();
           if (!stxIsGrenadeBodyPoolRowCode(codeL)) return false;
+        } else if (String(category||'') === 'Grenade' && String(partType||'').trim().toLowerCase() === 'payload') {
+          const codeL = String(normCode(code)||'').toLowerCase();
+          const ptL = String(pt||'').trim().toLowerCase();
+          if (!(ptL === 'payload' || stxIsGrenadePayloadPoolRowCode(codeL))) return false;
+        } else if (String(category||'') === 'Grenade' && String(partType||'').trim().toLowerCase() === 'augment') {
+          const codeL = String(normCode(code)||'').toLowerCase();
+          const ptL = String(pt||'').trim().toLowerCase();
+          if (!(ptL === 'augment' || stxIsGrenadePayloadAugmentPoolRowCode(codeL))) return false;
+        } else if (String(category||'') === 'Grenade' && String(partType||'').trim().toLowerCase() === 'rarity') {
+          /* Exclude ORD.part_rarity / "UAV Skin" rows — they are skins, not inv_comp rarity ids. */
+          if (stxIsGrenadeSkinRarityPart(p)) return false;
+          const codeL = String(normCode(code)||'').toLowerCase();
+          const ptL = String(pt||'').trim().toLowerCase();
+          const isComp = /\.comp_0[1-6]_/.test(codeL) || /(?:^|[._])comp_0[1-6]_/.test(codeL);
+          if (!(isComp || ptL === 'rarity')) return false;
+          if (!isComp) return false;
         } else if (String(category||'') === 'Repkit' && String(partType||'').trim().toLowerCase() === 'payload') {
           // Repkit payload size parts often ship with an empty `partType` in the dataset.
           // Match the known payload-size pool by code prefix.
@@ -5374,6 +5802,8 @@ function getAllParts(){
           const ptL = String(pt||'').trim().toLowerCase();
           const isAugCode = /repair_kit\.part_aug_/.test(codeNorm);
           if (!(isAugCode || ptL === 'augment')) return false;
+          /* Resist / immunity / nova / splat have their own slots. */
+          if (/resist|immunity|nova|splat/.test(codeNorm)) return false;
         } else if (String(category||'') === 'Repkit' && String(partType||'').trim().toLowerCase() === 'element') {
           // Repkit element rows are inconsistently tagged (often empty partType, sometimes "Cryo").
           const codeNorm = String(normCode(code) || '').toLowerCase();
@@ -5385,6 +5815,12 @@ function getAllParts(){
           const codeNorm = String(normCode(code) || '').toLowerCase();
           const ptL = String(pt||'').trim().toLowerCase();
           if (!((ptL === 'element') || stxIsDatasetGrenadeElementCode(codeNorm))) return false;
+        } else if (String(category||'') === 'Shield' && String(partType||'').trim().toLowerCase() === 'body') {
+          const codeL = String(normCode(code)||'').toLowerCase();
+          if (!stxIsShieldBodyPoolRowCode(codeL)) return false;
+        } else if (String(category||'') === 'Shield' && String(partType||'').trim().toLowerCase() === 'shieldunique') {
+          const codeL = String(normCode(code)||'').toLowerCase();
+          if (!stxIsShieldUniquePoolRowCode(codeL)) return false;
         } else if (String(category||'') === 'Shield' && String(partType||'').trim() === 'TypeID1Element'){
           const codeNorm = String(normCode(code) || '').toLowerCase();
           if (String(p.category || '').trim() !== 'Shield') return false;
@@ -5476,6 +5912,10 @@ function getAllParts(){
           const codeL = String(normCode(code) || '').toLowerCase();
           const ptL = String(pt||'').trim().toLowerCase();
           if (!(ptL === 'firmware' || /part_firmware|\.part_firmware/i.test(codeL))) return false;
+        } else if (String(category||'') === 'Grenade' && String(partType||'').trim() === '') {
+          const codeL = String(normCode(code) || '').toLowerCase();
+          if (stxIsGrenadeBodyPoolRowCode(codeL) || stxIsGrenadePayloadPoolRowCode(codeL) || stxIsGrenadePayloadAugmentPoolRowCode(codeL)) return false;
+          if (String(p.partType||'').trim() !== '') return false;
         } else {
           if (String(p.partType||'').trim().toLowerCase() !== String(partType||'').trim().toLowerCase()) return false;
         }
@@ -7633,11 +8073,30 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           const c = String(normCode(p && p.code || '') || '').toLowerCase();
           const pt = String((p && p.partType) || '').trim().toLowerCase();
           if (pt === 'firmware' || /part_firmware|\.part_firmware/.test(c)) return false;
-          if (pt === 'payload' || /\.part_payload_/.test(c)) return false;
+          if (pt === 'payload' || /\.part_payload_/.test(c) || stxIsGrenadePayloadPoolRowCode(c)) return false;
+          if (pt === 'augment' || stxIsGrenadePayloadAugmentPoolRowCode(c)) return false;
+          if (stxIsGrenadeBodyPoolRowCode(c)) return false;
           if (/grenade_gadget\.part_stat_/.test(c)) return false;
           if (/(?:^|[._])comp_0[0-9]_/.test(c) || /\.comp_/.test(c)) return false;
           return true;
         }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
+      }
+      if (category === 'Grenade' && schemaItem && schemaItem.key === 'body'){
+        /* Body slot: every grenade body part (all manufacturers). Rarity-matched body stays at the top. */
+        const allBodies = stxCollectAllGrenadeBodyParts();
+        if (allBodies.length) rawOpts = allBodies;
+        const rarityPart = state.mainPart && String(state.mainPart.partType || '').trim().toLowerCase() === 'rarity'
+          ? state.mainPart
+          : (state.slots && state.slots.rarity) || null;
+        const rp = Array.isArray(rarityPart) ? rarityPart[0] : rarityPart;
+        rawOpts = stxSortGrenadeBodyOptionsForRarity(rawOpts || [], rp, state.manufacturer);
+      }
+      if ((category === 'Weapon' || category === 'Heavy' || category === 'Heavy Weapon') && schemaItem && schemaItem.key === 'barrel'){
+        const rarityPartB = state.mainPart && String(state.mainPart.partType || '').trim().toLowerCase() === 'rarity'
+          ? state.mainPart
+          : (state.slots && state.slots.rarity) || null;
+        const rpB = Array.isArray(rarityPartB) ? rarityPartB[0] : rarityPartB;
+        rawOpts = stxSortWeaponBarrelOptionsForRarity(rawOpts || [], rpB);
       }
       if (category === 'Weapon' && schemaItem && String(schemaItem.key || '') === 'secondaryEle'){
         // Always keep Maliwan dual-element switches available (works on non-Maliwan guns too).
@@ -7786,21 +8245,15 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           if (pf === 246 || pf === 237 || pf === 248) return false;
           if (isRarityPart || isPerk || isFirmware) return false;
           if (Number.isFinite(selectedFam) && pf !== selectedFam) return false;
-          return true;
+          return stxIsShieldBodyPoolRowCode(codeNorm);
         }
 
         if (slotKey === 'bodyLegendary'){
           if (!Number.isFinite(pf)) return false;
           if (pf === 246 || pf === 237 || pf === 248) return false;
           if (isRarityPart || isPerk || isFirmware) return false;
-          // Legendary shield bodies/uniques are manufacturer-scoped (same TypeID as the selected shield family).
           if (Number.isFinite(selectedFam) && pf !== selectedFam) return false;
-          const bodySel = state.slots && state.slots.body;
-          if (bodySel){
-            const bc = String(normCode(bodySel.code || '') || '').toLowerCase();
-            if (bc && codeNorm && bc === codeNorm) return false;
-          }
-          return true;
+          return stxIsShieldUniquePoolRowCode(codeNorm);
         }
 
         if (slotKey === 'resistance'){
@@ -7848,6 +8301,18 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         }
         return true;
       });
+
+      if ((schemaItem.key === 'body' || schemaItem.key === 'mainBody') && rawOpts && rawOpts.length) {
+        const pinnedShield = stxShieldRarityPinnedBodyCode(rawOpts, state.mainPart, state.manufacturer);
+        rawOpts = rawOpts.slice().sort((a, b)=>{
+          const ca = String(normCode(a && a.code || '') || '').toLowerCase();
+          const cb = String(normCode(b && b.code || '') || '').toLowerCase();
+          const ra = pinnedShield && ca === pinnedShield ? 0 : 1;
+          const rb = pinnedShield && cb === pinnedShield ? 0 : 1;
+          if (ra !== rb) return ra - rb;
+          return displayForPart(a).localeCompare(displayForPart(b), undefined, { numeric: true, sensitivity: 'base' });
+        });
+      }
 
       const slotKeyShieldExtras = String(schemaItem && schemaItem.key || '');
       if (slotKeyShieldExtras === 'pearlElem246'){
@@ -8555,7 +9020,25 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     }
     const barrelSlot = isBarrelFamilySchemaSlot(schemaItem, category);
     const raritySlot = String(schemaItem.partType || '').trim().toLowerCase() === 'rarity';
-    const getLabelPick = barrelSlot ? barrelFamilyDropdownLabelCompact : dropdownLabelCompactForPart;
+    const baseLabelPick = barrelSlot ? barrelFamilyDropdownLabelCompact : dropdownLabelCompactForPart;
+    const grenadePinnedBody = (category === 'Grenade' && schemaItem.key === 'body')
+      ? stxGrenadeRarityPinnedBodyCode(opts, state.mainPart, state.manufacturer)
+      : '';
+    const shieldPinnedBody = (category === 'Shield' && (schemaItem.key === 'body' || schemaItem.key === 'mainBody'))
+      ? stxShieldRarityPinnedBodyCode(opts, state.mainPart, state.manufacturer)
+      : '';
+    const weaponPinnedBarrel = ((category === 'Weapon' || category === 'Heavy' || category === 'Heavy Weapon') && schemaItem.key === 'barrel')
+      ? stxWeaponRarityPinnedBarrelCode(opts, state.mainPart)
+      : '';
+    const pinnedBodyCode = grenadePinnedBody || shieldPinnedBody || weaponPinnedBarrel;
+    const getLabelPick = (p)=>{
+      let line = baseLabelPick(p);
+      if (pinnedBodyCode) {
+        const c = String(normCode(p && p.code || '') || '').toLowerCase();
+        if (c === pinnedBodyCode && String(line).indexOf('★') !== 0) line = '★ ' + line;
+      }
+      return line;
+    };
     function simpleSlotOptionTitle(p){
       if (barrelSlot) return barrelFamilyOptionTitle(p);
       if (category === 'Enhancement' && schemaItem.key === 'core'){
@@ -8661,52 +9144,60 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }
       partPreview.innerHTML = barrelish ? formatBarrelFamilyPartPreviewHtml(p) : formatPartPreviewHtml(p);
     }
-    sel.addEventListener('change', syncPartPreview);
+    sel.addEventListener('change', ()=>{
+      syncPartPreview();
+      if (window.__ccIsHydrating) return;
+      const key = sel.value;
+      if (!key) return;
+      const part = partByOptionKey.get(key);
+      if (!part) return;
+      const existing = state.slots[schemaItem.key];
+      const hasExisting = Array.isArray(existing) ? existing.length > 0 : !!existing;
+      const isBodySlot = schemaItem.key === 'body' || schemaItem.key === 'mainBody' || schemaItem.key === 'base' || schemaItem.key === 'core';
+      const isRaritySlot = schemaItem.key === 'rarity';
+      /* First pick auto-applies. Later picks wait for Add (modders stack via Add). Body/core/rarity replace on select. */
+      if (hasExisting && !isBodySlot && !isRaritySlot) return;
+      clearImportedOutputLock(true);
+      state.slots[schemaItem.key] = part;
+      try {
+        sel.__ccAutoAppliedTok = (typeof tokenForPart === 'function') ? String(tokenForPart(part) || '').trim() : '';
+        sel.__ccAutoAppliedAt = Date.now();
+      } catch (_) {}
+      state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
+      state.__simpleSlotDropdownSelections[schemaItem.key] = key;
+      renderPicked();
+      refreshOutputs(true);
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+    });
     syncPartPreview();
     slot.appendChild(partPreview);
 
     const addBtn = document.createElement('button');
     addBtn.type = 'button';
-    addBtn.textContent = useQtyAddSlot || schemaItem.multi ? 'Add' : 'Set';
+    addBtn.textContent = 'Add';
     addBtn.className = 'primary';
     addBtn.style.marginTop = useQtyAddSlot ? '0' : '8px';
 
     let qtyInput = null;
-    if (useQtyAddSlot){
-      qtyInput = document.createElement('input');
-      qtyInput.type = 'number';
-      qtyInput.id = 'stx-qty-' + (schemaItem.key || 'shield');
-      qtyInput.name = `qty_${schemaItem.key}`;
-      qtyInput.min = '1';
-      qtyInput.step = '1';
-      qtyInput.value = '1';
-      qtyInput.inputMode = 'numeric';
-      qtyInput.setAttribute('aria-label', 'Quantity');
-      qtyInput.style.width = '72px';
-      qtyInput.style.padding = '9px 10px';
-      qtyInput.style.borderRadius = '10px';
-      qtyInput.style.border = '1px solid rgba(255,255,255,0.16)';
-      qtyInput.style.background = '#0b0f18';
-      qtyInput.style.color = '#d8ffff';
-      qtyInput.style.fontWeight = '700';
-    } else if (schemaItem.multi){
-      qtyInput = document.createElement('input');
-      qtyInput.type = 'number';
-      qtyInput.id = 'stx-qty-' + (schemaItem.key || 'multi');
-      qtyInput.name = `qty_${schemaItem.key}`;
-      qtyInput.min = '1';
-      qtyInput.step = '1';
-      qtyInput.value = '1';
-      qtyInput.inputMode = 'numeric';
-      qtyInput.setAttribute('aria-label', 'Quantity');
-      qtyInput.style.width = '72px';
-      qtyInput.style.padding = '9px 10px';
-      qtyInput.style.borderRadius = '10px';
-      qtyInput.style.border = '1px solid rgba(255,255,255,0.16)';
-      qtyInput.style.background = '#0b0f18';
-      qtyInput.style.color = '#d8ffff';
-      qtyInput.style.fontWeight = '700';
-    }
+    /* Every Add row gets a Qty so stacking 3 / another 3 is obvious. */
+    qtyInput = document.createElement('input');
+    qtyInput.type = 'number';
+    qtyInput.id = 'stx-qty-' + (schemaItem.key || 'part');
+    qtyInput.name = `qty_${schemaItem.key}`;
+    qtyInput.min = '1';
+    qtyInput.max = '999';
+    qtyInput.step = '1';
+    qtyInput.value = '1';
+    qtyInput.inputMode = 'numeric';
+    qtyInput.setAttribute('aria-label', 'Quantity to add');
+    qtyInput.title = 'How many copies to add';
+    qtyInput.style.width = '64px';
+    qtyInput.style.padding = '9px 10px';
+    qtyInput.style.borderRadius = '10px';
+    qtyInput.style.border = '1px solid rgba(255,255,255,0.16)';
+    qtyInput.style.background = '#0b0f18';
+    qtyInput.style.color = '#d8ffff';
+    qtyInput.style.fontWeight = '700';
     let swapPerkInput = null;
     if (isShieldBodyLegendarySlot){
       swapPerkInput = document.createElement('input');
@@ -8728,19 +9219,24 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
             return;
           }
         }
-        refreshOutputs();
+        refreshOutputs(true);
       });
     }
 
     addBtn.addEventListener('click', ()=>{
-      clearImportedOutputLock();
+      /* User Add must always win over import pins / in-progress flags. */
+      clearImportedOutputLock(true);
+      try { window.__LOCK_IMPORTED_OUTPUT = false; window.__LAST_IMPORTED_DESERIALIZED = null; } catch (_) {}
       const key = sel.value;
       if (!key) return;
       const part = partByOptionKey.get(key);
       if (!part) return;
-      const count = qtyInput ? Math.max(1, Number(qtyInput.value || 1) || 1) : 1;
+      const count = Math.max(1, Math.min(999, Number(qtyInput && qtyInput.value || 1) || 1));
+      const isRaritySlot = schemaItem.key === 'rarity';
+      /* Rarity stays single-replace. Every other Add stacks — including Select+Add of the same part. */
+      const stacksOnAdd = !isRaritySlot;
 
-      if (schemaItem.multi){
+      if (stacksOnAdd){
         const swapBodyLegendary = (isShieldBodyLegendarySlot && !!state.swapBodyLegendary);
         const arr = Array.isArray(state.slots[schemaItem.key])
           ? state.slots[schemaItem.key].slice()
@@ -8749,40 +9245,42 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           const orders = stxNextImportOrders(arr, 1);
           state.slots[schemaItem.key] = [stxClonePartWithImportOrder(part, orders[0])];
         } else {
+          try { sel.__ccAutoAppliedTok = ''; sel.__ccAutoAppliedAt = 0; } catch (_) {}
           const orders = stxNextImportOrders(arr, count);
           for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
           state.slots[schemaItem.key] = arr;
         }
       } else {
-        const existing = state.slots[schemaItem.key];
-        if (existing){
-          const arr = Array.isArray(existing) ? existing.slice() : [existing];
-          const orders = stxNextImportOrders(arr, count);
-          for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
-          state.slots[schemaItem.key] = arr;
-        } else {
-          if (count > 1){
-            const orders = stxNextImportOrders([], count);
-            const arr = [];
-            for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
-            state.slots[schemaItem.key] = arr;
-          } else {
-            state.slots[schemaItem.key] = part;
-          }
-        }
+        state.slots[schemaItem.key] = part;
       }
       state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
       state.__simpleSlotDropdownSelections[schemaItem.key] = key;
-      // Avoid rebuilding the entire builder UI; keep it responsive while ensuring output is serialized.
+      try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
       renderPicked();
-      refreshOutputs();
+      refreshOutputs(true);
+      try {
+        /* Immediate sync — do not wait solely on rAF if lock previously pinned output. */
+        const codeNow = (typeof computeFullDeserializedCode === 'function') ? String(computeFullDeserializedCode() || '').trim() : '';
+        if (codeNow && codeNow.indexOf('||') >= 0 && typeof writeSharedItemCode === 'function') {
+          writeSharedItemCode({ deser: codeNow, source: 'simple', force: true });
+        }
+      } catch (_) {}
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
     });
 
-    if (useQtyAddSlot && qtyInput){
+    {
       const actionRow = document.createElement('div');
       actionRow.className = 'row';
       actionRow.style.marginTop = '8px';
+      actionRow.style.display = 'flex';
       actionRow.style.alignItems = 'center';
+      actionRow.style.gap = '8px';
+      actionRow.style.flexWrap = 'wrap';
+      const ql = document.createElement('span');
+      ql.className = 'small';
+      ql.style.color = 'rgba(200,230,255,0.85)';
+      ql.textContent = 'Qty';
+      actionRow.appendChild(ql);
       actionRow.appendChild(qtyInput);
       actionRow.appendChild(addBtn);
       slot.appendChild(actionRow);
@@ -8806,24 +9304,6 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         swapRow.appendChild(swapText);
         slot.appendChild(swapRow);
       }
-    } else if (schemaItem.multi && qtyInput){
-      const actionRow = document.createElement('div');
-      actionRow.className = 'row';
-      actionRow.style.marginTop = '8px';
-      actionRow.style.display = 'flex';
-      actionRow.style.alignItems = 'center';
-      actionRow.style.gap = '8px';
-      actionRow.style.flexWrap = 'wrap';
-      const ql = document.createElement('span');
-      ql.className = 'small';
-      ql.style.color = 'rgba(200,230,255,0.85)';
-      ql.textContent = 'Qty';
-      actionRow.appendChild(ql);
-      actionRow.appendChild(qtyInput);
-      actionRow.appendChild(addBtn);
-      slot.appendChild(actionRow);
-    } else {
-      slot.appendChild(addBtn);
     }
     renderPicked();
     slot.appendChild(picked);
@@ -8919,22 +9399,60 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     addBtn.type='button';
     addBtn.className='primary';
     addBtn.textContent='Add';
-    addBtn.style.width='100%';
+    addBtn.style.flex = '1';
+    addBtn.style.minWidth = '72px';
+
+    const elemQty = document.createElement('input');
+    elemQty.type = 'number';
+    elemQty.id = 'stx-qty-element-stack';
+    elemQty.name = 'qty_element_stack';
+    elemQty.min = '1';
+    elemQty.max = '999';
+    elemQty.step = '1';
+    elemQty.value = '1';
+    elemQty.inputMode = 'numeric';
+    elemQty.setAttribute('aria-label', 'Element stack quantity');
+    elemQty.title = 'How many copies to stack (packs as {1:[13 13]})';
+    elemQty.style.width = '64px';
+    elemQty.style.padding = '9px 10px';
+    elemQty.style.borderRadius = '10px';
+    elemQty.style.border = '1px solid rgba(255,255,255,0.16)';
+    elemQty.style.background = '#0b0f18';
+    elemQty.style.color = '#d8ffff';
+    elemQty.style.fontWeight = '700';
+
     addBtn.addEventListener('click', ()=>{
       const v = addSel.value;
       if (!v) return;
+      const count = Math.max(1, Math.min(999, Number(elemQty.value || 1) || 1));
       state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
       state.__simpleSlotDropdownSelections.__elementStack = v;
-      state.elementStack.push(v);
+      if (!state.primaryElement || state.primaryElement === 'None') {
+        state.primaryElement = v;
+        for (let i = 1; i < count; i++) state.elementStack.push(v);
+      } else {
+        for (let i = 0; i < count; i++) state.elementStack.push(v);
+      }
       stxSyncDualElementMaliwanSwitch();
+      try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
       refreshBuilder();
+      try {
+        refreshOutputs(true);
+        if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true);
+      } catch (_) {}
     });
     if (state.__simpleSlotDropdownSelections && state.__simpleSlotDropdownSelections.__elementStack) {
       const lastElementAdd = state.__simpleSlotDropdownSelections.__elementStack;
       if (Array.from(addSel.options).some(o => o.value === lastElementAdd)) addSel.value = lastElementAdd;
     }
 
+    const qtyLbl = document.createElement('span');
+    qtyLbl.className = 'small';
+    qtyLbl.style.color = 'rgba(200,230,255,0.85)';
+    qtyLbl.textContent = 'Qty';
     row.appendChild(addSel);
+    row.appendChild(qtyLbl);
+    row.appendChild(elemQty);
     row.appendChild(addBtn);
 
     const picked = document.createElement('div');
@@ -9285,6 +9803,44 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     // For all other item types, emit in a stable slot order:
     // main part first, then schema slots in schema order, then any extra slots.
     if (cat === 'Weapon') {
+      /* Soft-fill rarity-matched named barrel when barrel slot is empty (do not overwrite user pick). */
+      (function stxSoftFillWeaponBarrelForRarity(){
+        try {
+          if (state.slots && state.slots.barrel) return;
+          const rp = state.mainPart;
+          if (!rp || String(rp.partType || '').trim().toLowerCase() !== 'rarity') return;
+          const suffix = stxRarityBarrelSuffixFromPart(rp);
+          if (!suffix) return;
+          const all = getAllParts();
+          const man = String(state.manufacturer || '').trim().toLowerCase();
+          const wt = String(state.weaponType || '').trim().toLowerCase();
+          let pick = null;
+          for (let i = 0; i < all.length; i++) {
+            const p = all[i];
+            if (!p) continue;
+            const pt = String(p.partType || '').trim().toLowerCase();
+            if (pt && pt !== 'barrel') continue;
+            const c = String(normCode(p.code || '') || '').toLowerCase();
+            if (!stxWeaponBarrelCodeMatchesRaritySuffix(c, suffix)) continue;
+            if (typeof window.stxWeaponSlotPartMatch === 'function' && !window.stxWeaponSlotPartMatch('barrel', p)) continue;
+            if (man) {
+              const pm = String(p.manufacturer || '').trim().toLowerCase();
+              if (pm && pm !== man && pm.indexOf(man) < 0 && man.indexOf(pm) < 0) continue;
+            }
+            if (wt) {
+              const pwt = String(p.weaponType || p.itemType || '').trim().toLowerCase();
+              if (pwt && pwt !== wt && pwt !== 'weapon' && pwt.indexOf(wt) < 0) continue;
+            }
+            pick = p;
+            break;
+          }
+          if (pick) {
+            if (!state.slots || typeof state.slots !== 'object') state.slots = {};
+            state.slots.barrel = pick;
+          }
+        } catch (_e) {}
+      })();
+
       const schema = getActiveWeaponSlotSchema() || [];
       const schemaKeys = schema.map(s => String(s && s.key || '')).filter(Boolean);
       const seen = new Set();
@@ -9552,12 +10108,13 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           else if (m6) suffix = m6[1];
           else if (m4) suffix = m4[1];
           if (suffix){
-            const want = (spawn + '.part_' + suffix).toLowerCase();
             for (let i = 0; i < all.length; i++){
               const p = all[i];
               if (!p) continue;
               const pc = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
-              if (pc !== want) continue;
+              if (pc.indexOf(spawn + '.') !== 0) continue;
+              if (!stxIsGrenadeBodyPoolRowCode(pc)) continue;
+              if (!stxGrenadeBodyCodeMatchesRaritySuffix(pc, suffix)) continue;
               if (Number.isFinite(baseFam)) {
                 const pf = Number(p.family ?? p.familyId);
                 if (Number.isFinite(pf) && pf !== baseFam) continue;
@@ -9705,18 +10262,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }
       const restKeys = Object.keys(state.slots).filter(k => !schemaKeys.includes(k));
       for (const k of restKeys) pushVal(state.slots[k]);
-      const seq = out.filter(Boolean);
-      const collapsed = [];
-      let prevTok = null;
-      for (let i = 0; i < seq.length; i++){
-        const p = seq[i];
-        let t = '';
-        try { t = String(tokenForPart(p) || '').trim(); } catch (_e) {}
-        if (t && t === prevTok) continue;
-        collapsed.push(p);
-        prevTok = t || prevTok;
-      }
-      return collapsed;
+      /* Keep intentional stacks (qty Add) — do not collapse consecutive identical tokens. */
+      return out.filter(Boolean);
     }
 
     if (cat === 'Gadget'){
@@ -9998,27 +10545,34 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       const mc = manualSw ? String(normCode(manualSw.code || '') || '').toLowerCase() : '';
       const hasManualSwitch = mc.includes('part_secondary_elem') && mc.includes('_mal');
 
-      const pushTok = (tok, o)=>{
+      const pushTok = (tok, o, allowDup)=>{
         const s = String(tok || '').trim();
         if (!s || s === '[object Object]') return;
-        if (finalItems.some(fi => String(fi.tok) === s)) return;
+        /* Element stacks must keep duplicate `{1:13}` copies — packing turns them into `{1:[13 13]}`. */
+        if (!allowDup && finalItems.some(fi => String(fi.tok) === s)) return;
         finalItems.push({ tok: s, order: o });
       };
 
-      if (primObj && primObj.code) pushTok(primObj.code, ord++);
+      if (primObj && primObj.code) pushTok(primObj.code, ord++, true);
       if (stack.length && state.dualElementUseMaliwanSwitch && prim !== 'None' && !hasManualSwitch){
         const sw = stxFindMaliwanDualSwitchPart(prim, stack[0]);
         if (sw){
           const st = tokenForPart(sw);
-          if (st) pushTok(st, ord++);
+          if (st) pushTok(st, ord++, false);
         }
       }
       for (const e of stack){
         const eo = ELEMENTS.find(x=>x.key===e);
-        if (eo && eo.code) pushTok(eo.code, ord++);
+        if (eo && eo.code) pushTok(eo.code, ord++, true);
       }
 
       const sc = getSelectedWeaponSkinAndCamo();
+      if (sc && sc.spawnToken) {
+        const sSpawn = String(sc.spawnToken);
+        if (!finalItems.some(fi => String(fi.tok) === sSpawn || unquoteWrappedValue(fi.tok) === unquoteWrappedValue(sSpawn))) {
+          finalItems.push({ tok: sSpawn, order: extraBase + 90000 });
+        }
+      }
       if (sc && sc.camoToken) {
         const sCamo = String(sc.camoToken);
         if (!finalItems.some(fi => String(fi.tok) === sCamo)) {
@@ -10071,6 +10625,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     const scJson = (cat === 'Weapon') ? getSelectedWeaponSkinAndCamo() : null;
     if (scJson){
       if (scJson.skinRaw) jsonObj.skin = scJson.skinRaw;
+      if (scJson.spawnToken) jsonObj.skinSpawnToken = String(scJson.spawnToken || '').trim();
       if (Number.isFinite(scJson.rarityId)) jsonObj.skinRarityId = Number(scJson.rarityId);
       if (scJson.rarityToken) jsonObj.skinRarityToken = String(scJson.rarityToken || '').trim();
       if (scJson.camoToken) jsonObj.camo = scJson.camoToken;
@@ -10172,6 +10727,42 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
    * Important: this only compresses *consecutive* runs so we preserve order relative to other families
    * (matches examples like `{243:[106 100]} {6} {243:[75 ...]}`).
    */
+  /**
+   * Pack consecutive weapon TypeID-1 element tokens into `{1:[13 13]}` form.
+   * Keeps non-element tokens (e.g. Maliwan switch spawn codes) in place as separators.
+   */
+  function stxPackWeaponElementTokens(tokens){
+    const src = Array.isArray(tokens) ? tokens : [];
+    const out = [];
+    let pending = [];
+    const flush = ()=>{
+      if (!pending.length) return;
+      if (pending.length === 1) out.push(`{1:${pending[0]}}`);
+      else out.push(`{1:[${pending.join(' ')}]}`);
+      pending = [];
+    };
+    for (let i = 0; i < src.length; i++) {
+      const t = String(src[i] || '').trim();
+      if (!t) continue;
+      const m = t.match(/^\{\s*1\s*:\s*(\d+)\s*\}$/);
+      if (m) {
+        pending.push(Number(m[1]));
+        continue;
+      }
+      const packed = t.match(/^\{\s*1\s*:\s*\[([^\]]+)\]\s*\}$/);
+      if (packed) {
+        const ids = String(packed[1] || '').match(/\d+/g) || [];
+        for (let j = 0; j < ids.length; j++) pending.push(Number(ids[j]));
+        continue;
+      }
+      flush();
+      out.push(t);
+    }
+    flush();
+    return out;
+  }
+  try { window.stxPackWeaponElementTokens = stxPackWeaponElementTokens; } catch (_) {}
+
   function compressConsecutiveFamilyRefs(tokens){
     const src = Array.isArray(tokens) ? tokens : [];
     const out = [];
@@ -10349,8 +10940,48 @@ function randSeed(){
     const m = s.match(/^\|\s*["']?c["']?\s*,\s*(\d+)\s*\|$/i)
       || s.match(/^["']?c["']?\s*,\s*(\d+)$/i);
     if (!m) return '';
-    return `|"c",${Number(m[1])}|`;
+    const id = Number(m[1]);
+    /* Camo id 0 is invalid junk (shows up as broken `):0`-like tails). */
+    if (!Number.isFinite(id) || id <= 0) return '';
+    return `|"c",${id}|`;
   }
+
+  /**
+   * Resolve a skin/camo dropdown value to a serial-safe token.
+   * Returns '' if the value is junk/unresolved Cosmetics (caller should skip).
+   * Returns null if the value is a normal part token (leave unchanged).
+   */
+  function stxResolveSkinOrCamoTokenForSerial(valueRaw, optionEl){
+    const raw = String(valueRaw || '').trim();
+    if (!raw) return '';
+    const camo = canonicalCamoToken(raw);
+    if (camo) return camo;
+    if (isCamoLiteralSyntax(raw) || isCamoTokenSyntax(raw)) return '';
+    const unq = unquoteWrappedValue(raw);
+    /* Skin (optional) Cosmetics spawn names → Skin customization (`c`), not bare quoted names. */
+    if (/^Cosmetics_Weapon_/i.test(unq)) {
+      try {
+        const r = (typeof resolveCosmeticWeaponSkinSerial === 'function')
+          ? resolveCosmeticWeaponSkinSerial(unq)
+          : null;
+        if (r && r.camoToken) return r.camoToken;
+        if (r && r.stringCamo) return r.stringCamo;
+        if (r && r.skinCode) return r.skinCode;
+      } catch (_) {}
+      return '';
+    }
+    const skinTok = extractSkinRarityToken(raw, optionEl || null);
+    if (skinTok) {
+      /* Reject bare `{0}` / `{fam:0}` garbage. */
+      if (/^\{\s*\d+\s*:\s*0\s*\}$/.test(skinTok) || /^\{\s*0\s*\}$/.test(skinTok)) return '';
+      return skinTok;
+    }
+    /* Malformed fragments like `):0` / `,0|` after broken camo quoting. */
+    if (/^[):,\s|]*0\|?$/.test(unq) || /^["']?c["']?\s*,\s*0\|?$/i.test(unq)) return '';
+    if (/^\{\s*\d+\s*(?::\s*(?:\d+|\[[^\]]*\]))?\s*\}$/.test(unq)) return unq;
+    return null;
+  }
+  try { window.stxResolveSkinOrCamoTokenForSerial = stxResolveSkinOrCamoTokenForSerial; } catch (_) {}
 
   function isSkinTokenCandidate(value){
     const s = String(value || '').trim();
@@ -10429,7 +11060,7 @@ function randSeed(){
 
   function resolveSpawnSkinRarityId(raw){
     const key = unquoteWrappedValue(raw);
-    if (!/^Cosmetics_Weapon_/i.test(key)) return null;
+    if (!key) return null;
     const cacheKey = `__spawnSkinRid__${key}`;
     try{
       if (Object.prototype.hasOwnProperty.call(window, cacheKey)){
@@ -10439,6 +11070,7 @@ function randSeed(){
     }catch(_){}
 
     let resolved = null;
+    const isCosmetic = /^Cosmetics_Weapon_/i.test(key);
 
     try{
       let part = null;
@@ -10460,7 +11092,43 @@ function randSeed(){
       }catch(_){}
     }
 
+    /* Alphabetic spawn skins: match SPAWN_SKINS / SKINS by value or display name → numeric id. */
     if (!Number.isFinite(resolved)){
+      try{
+        const lists = [];
+        const spawn = (window.parent && window.parent.SPAWN_SKINS) ? window.parent.SPAWN_SKINS : (window.SPAWN_SKINS || []);
+        if (Array.isArray(spawn)) lists.push(spawn);
+        const skinsObj = (window.parent && window.parent.SKINS) ? window.parent.SKINS : (window.SKINS || {});
+        if (skinsObj && typeof skinsObj === 'object') {
+          for (const cat of Object.keys(skinsObj)) {
+            if (Array.isArray(skinsObj[cat])) lists.push(skinsObj[cat]);
+          }
+        }
+        const keyLo = key.toLowerCase();
+        for (let li = 0; li < lists.length && !Number.isFinite(resolved); li++) {
+          const arr = lists[li];
+          for (let i = 0; i < arr.length; i++) {
+            const s = arr[i];
+            if (!s) continue;
+            const v = String(s.value || s.code || (Array.isArray(s) ? s[0] : '') || '').trim();
+            const n = String(s.label || s.name || (Array.isArray(s) ? s[1] : '') || '').trim();
+            const vLo = v.toLowerCase();
+            const nLo = n.toLowerCase();
+            if (vLo !== keyLo && nLo !== keyLo && (!isCosmetic || vLo !== keyLo)) continue;
+            const sid = Number(s.skinId || s.itemId || s.id || s.partId || s.rarityId);
+            if (Number.isFinite(sid) && sid > 0) { resolved = sid; break; }
+            const idRaw = String(s.idRaw || s.idraw || '').trim();
+            const rid = parseItemIdFromIdRawText(idRaw);
+            if (Number.isFinite(rid) && rid > 0) { resolved = rid; break; }
+            const brace = String(v).match(/^\{\s*(?:\d+\s*:\s*)?(\d+)\s*\}$/);
+            if (brace) { resolved = Number(brace[1]); break; }
+            /* Never treat Mat## as a rarity/skin id — Cosmetics_Weapon_Mat* are spawn names, not {Mat#}. */
+          }
+        }
+      }catch(_){}
+    }
+
+    if (!Number.isFinite(resolved) && !isCosmetic){
       try{
         const arr = Array.isArray(window.ALL_PARTS) ? window.ALL_PARTS
           : (window.STX_DATASET && Array.isArray(window.STX_DATASET.ALL_PARTS) ? window.STX_DATASET.ALL_PARTS : []);
@@ -10472,7 +11140,8 @@ function randSeed(){
             String(p.spawnCode || '').trim(),
             String(p.spawn_id || '').trim(),
             String(p.partString || '').trim(),
-            String(p.partCode || '').trim()
+            String(p.partCode || '').trim(),
+            String(p.name || '').trim()
           ];
           const match = vals.some(v => String(v || '').toLowerCase() === lk);
           if (!match) continue;
@@ -10518,6 +11187,16 @@ function randSeed(){
     const spawnHit = resolveSpawnSkinRarityId(raw);
     if (Number.isFinite(spawnHit)) return Number(spawnHit);
 
+    /* Alphabetic dropdown labels (spawn-name skins) — resolve by display name too. */
+    if (text) {
+      const byLabel = resolveSpawnSkinRarityId(text);
+      if (Number.isFinite(byLabel)) return Number(byLabel);
+    }
+    if (base) {
+      const byBase = resolveSpawnSkinRarityId(base);
+      if (Number.isFinite(byBase)) return Number(byBase);
+    }
+
     return null;
   }
 
@@ -10526,8 +11205,21 @@ function randSeed(){
     if (!raw) return '';
     if (isCamoLiteralSyntax(raw)) return '';
     const spawnRaw = unquoteWrappedValue(raw);
+    /* Cosmetics spawn names are Skin (optional) string tokens — not rarity braces and not camo `c`. */
     if (/^Cosmetics_Weapon_/i.test(spawnRaw)){
-      return `"${String(spawnRaw).replace(/"/g, '\\"')}"`;
+      try{
+        const ds = optionEl && optionEl.dataset ? optionEl.dataset : null;
+        const idRaw = String((ds && (ds.idRaw || ds.idraw || ds.skinIdRaw || ds.skinidraw)) || '').trim();
+        const opaqueDs = canonicalizeSkinBraceToken(idRaw.indexOf('{') === 0 ? idRaw : (idRaw ? `{${idRaw}}` : ''));
+        if (opaqueDs) return opaqueDs;
+        const pairDs = parseFamilyItemPair(idRaw);
+        if (pairDs) return tokenFromPair(pairDs, null);
+        const famRaw = String((ds && (ds.family || ds.familyId || ds.ccFamily)) || '').trim();
+        const sidRaw = String((ds && (ds.skinId || ds.skinid || ds.itemId || ds.itemid || ds.id || ds.partId)) || '').trim();
+        if (/^\d+$/.test(famRaw) && /^\d+$/.test(sidRaw)) return `{${Number(famRaw)}:${Number(sidRaw)}}`;
+        if (/^\d+$/.test(sidRaw)) return `{${Number(sidRaw)}}`;
+      }catch(_){}
+      return '';
     }
 
     // Mixer / numeric skins: keep `{fam:id}` and stacked `{fam:[id1 id2]}` intact.
@@ -10569,9 +11261,33 @@ function randSeed(){
     }catch(_){}
 
     const rid = extractSkinRarityId(raw, optionEl);
-    if (Number.isFinite(rid)) return `{${Number(rid)}}`;
+    if (Number.isFinite(rid) && Number(rid) > 0) return `{${Number(rid)}}`;
+    /* Alphabetic spawn / display-name skins (not C-code camo): resolve via label / SPAWN_SKINS. */
+    try {
+      const text = String(optionEl && (optionEl.textContent || optionEl.label) || '').trim();
+      if (text && !/^Cosmetics_Weapon_/i.test(spawnRaw)) {
+        const byName = resolveSpawnSkinRarityId(text);
+        if (Number.isFinite(byName) && byName > 0) return `{${Number(byName)}}`;
+      }
+    } catch (_) {}
     return '';
   }
+
+  /**
+   * Preserve valid Cosmetics string tokens (incl. `"c" "Cosmetics_*"` phosphene/mat tails).
+   * Only strips orphan bare Cosmetics that sit where a part brace should be when paired with
+   * a broken Mat→rarity rewrite — otherwise leave the serial intact for Base85 TOK_STRING.
+   * Returns { serial, changed, unresolved[] }.
+   */
+  function stxSanitizeCosmeticSpawnTokensInSerial(fullSerial, fallbackFamily){
+    const full = String(fullSerial || '').trim();
+    if (!full) return { serial: '', changed: false, unresolved: [] };
+    /* Do not rewrite Cosmetics — Skin (optional) / phosphene string tokens are valid TOK_STRING.
+       Earlier Mat##→{n} conversion corrupted imports and blocked Base85. */
+    void fallbackFamily;
+    return { serial: full, changed: false, unresolved: [] };
+  }
+  try { window.stxSanitizeCosmeticSpawnTokensInSerial = stxSanitizeCosmeticSpawnTokensInSerial; } catch (_) {}
 
   function forceFamilyOnRarityToken(tokenRaw, fallbackFamily){
     const s = String(tokenRaw || '').trim();
@@ -10584,6 +11300,182 @@ function randSeed(){
     return tokenFromPair(pair, fallbackFamily);
   }
 
+  /**
+   * Cosmetics_Weapon_* → serial skin/camo form used by BE "Skin customization (`c`)".
+   * Mat skins are NOT rarity braces and NOT bare quoted spawn names after ||.
+   * Returns { camoToken, stringCamo, skinCode } — prefer camoToken (|"c",N|) when set.
+   */
+  function resolveCosmeticWeaponSkinSerial(raw){
+    const key = unquoteWrappedValue(raw);
+    if (!key || !/^Cosmetics_Weapon_/i.test(key)) {
+      return { camoToken: '', stringCamo: '', skinCode: '' };
+    }
+    let camoToken = '';
+    let stringCamo = '';
+    let skinCode = '';
+
+    try {
+      const map = (window.parent && window.parent.__CC_SPAWN_SKIN_CAMO_MAP)
+        ? window.parent.__CC_SPAWN_SKIN_CAMO_MAP
+        : (window.__CC_SPAWN_SKIN_CAMO_MAP || null);
+      const hit = map && (map[key] || map[key.toLowerCase()]);
+      if (hit) {
+        const h = String(hit).trim();
+        const c = canonicalCamoToken(h);
+        if (c) camoToken = c;
+        else if (/^["']?c["']?\s+"/i.test(h) || /^"c"\s+"/i.test(h)) stringCamo = h.replace(/^'+|'+$/g, '');
+      }
+    } catch (_) {}
+
+    if (!camoToken && !stringCamo) {
+      try {
+        const data = (window.parent && window.parent.SKIN_LIST_DATA) ? window.parent.SKIN_LIST_DATA : window.SKIN_LIST_DATA;
+        const skins = data && Array.isArray(data.skins) ? data.skins : [];
+        const lk = key.toLowerCase();
+        for (let i = 0; i < skins.length; i++) {
+          const row = skins[i];
+          if (!row) continue;
+          const id = String(row.id || row.cosmetic || '').trim();
+          if (id.toLowerCase() !== lk) continue;
+          const ct = String(row.camo_token || '').trim();
+          const sc = String(row.skin_code || '').trim();
+          if (sc && isStackedOrFamilySkinBrace(sc)) skinCode = sc.replace(/\s+/g, ' ');
+          if (ct) {
+            const c = canonicalCamoToken(ct);
+            if (c) camoToken = c;
+            else if (/^["']?c["']?\s+"/i.test(ct) || /Cosmetics_Weapon_/i.test(ct)) {
+              stringCamo = ct.replace(/^"+|"+$/g, '').indexOf('"') >= 0 ? ct : `"c" "${key}"`;
+            }
+          }
+          break;
+        }
+      } catch (_) {}
+    }
+
+    if (!camoToken && !stringCamo) {
+      try {
+        const spawn = (window.parent && window.parent.SPAWN_SKINS) ? window.parent.SPAWN_SKINS : (window.SPAWN_SKINS || []);
+        const camos = (window.parent && window.parent.CAMO_TOKENS) ? window.parent.CAMO_TOKENS : (window.CAMO_TOKENS || []);
+        const lk = key.toLowerCase();
+        let label = '';
+        for (let i = 0; i < spawn.length; i++) {
+          const s = spawn[i];
+          if (!s) continue;
+          const v = String(s.value || s.code || '').trim();
+          if (v.toLowerCase() !== lk) continue;
+          label = String(s.label || s.name || '').trim();
+          break;
+        }
+        if (label) {
+          const prefix = label.indexOf(' - ') > 0 ? label.slice(0, label.indexOf(' - ')).trim() : label;
+          const pLo = prefix.toLowerCase();
+          const lLo = label.toLowerCase();
+          for (let j = 0; j < camos.length; j++) {
+            const n = String((camos[j] && camos[j].name) || '').trim().toLowerCase();
+            if (n && (n === pLo || n === lLo)) {
+              camoToken = canonicalCamoToken(camos[j].code) || '';
+              break;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
+    if (!camoToken && !stringCamo) {
+      const mat = key.match(/Mat_?0*(\d+)/i);
+      if (mat) {
+        const n = Number(mat[1]);
+        if (n >= 1 && n <= 39) camoToken = `|"c",${111 - n}|`;
+        else if (n >= 40 && n <= 70) camoToken = `|"c",${76 + n}|`;
+        else if (n >= 71) stringCamo = `"c" "${key}"`;
+      } else if (/Shiny_/i.test(key)) {
+        stringCamo = `"c" "${key}"`;
+      }
+    }
+
+    return {
+      camoToken: String(camoToken || '').trim(),
+      stringCamo: String(stringCamo || '').trim(),
+      skinCode: String(skinCode || '').trim()
+    };
+  }
+  try { window.resolveCosmeticWeaponSkinSerial = resolveCosmeticWeaponSkinSerial; } catch (_) {}
+
+  /**
+   * Inject Skin brace / Camo (`c`) from the Simple dropdowns into an existing || serial.
+   * Used when the live serial is frozen (__fullDeserialized) or rebuild would drop the selection.
+   * Order after ||: [pearl?] rarity, Skin brace, …parts…, spawn, camo.
+   */
+  function stxOverlaySkinCamoOnDeserialized(fullSerial, scIn){
+    const full = String(fullSerial || '').trim();
+    const dbl = full.indexOf('||');
+    if (dbl < 0) return full;
+    const sc = scIn || getSelectedWeaponSkinAndCamo();
+    if (!sc) return full;
+    const skinBrace = String(sc.rarityToken || '').trim();
+    const camoTok = String(sc.camoToken || '').trim();
+    const spawnTok = String(sc.spawnToken || '').trim();
+    if (!skinBrace && !camoTok && !spawnTok) return full;
+
+    const head = full.slice(0, dbl + 2).replace(/\s+$/, '');
+    const toks = (typeof parseImportTokenList === 'function')
+      ? parseImportTokenList(full)
+      : [];
+    const skinNorm = skinBrace.replace(/\s+/g, '');
+    const skinIsMix = !!(skinBrace && /^\{\s*\d+\s*:\s*\[/.test(skinBrace));
+    const isSimpleBrace = (t)=>/^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t) || /^\{\s*\d+\s*\}$/.test(t);
+    const isElemBrace = (t)=>/^\{\s*1\s*:\s*\d+\s*\}$/.test(t);
+    const out = [];
+    for (let i = 0; i < toks.length; i++) {
+      const t = String(toks[i] || '').trim();
+      if (!t) continue;
+      if (camoTok && canonicalCamoToken(t)) continue;
+      if (spawnTok && (/^"c"\s+"/i.test(t) || /^Cosmetics_Weapon_/i.test(unquoteWrappedValue(t)))) continue;
+      if (skinBrace && t.replace(/\s+/g, '') === skinNorm) continue;
+      /* Drop prior skin-stack mixes when applying a new Skin brace / mix. */
+      if (skinBrace && /^\{\s*\d+\s*:\s*\[/.test(t) && !/^\{\s*1\s*:/.test(t)) continue;
+      out.push(t);
+    }
+    if (skinBrace) {
+      if (skinIsMix) {
+        /* Stacked mixes own the rarity slot — lead the tail (after an optional pearl). */
+        let mixAt = 0;
+        if (out.length && isSimpleBrace(out[0]) && !isElemBrace(out[0])) {
+          const m0 = String(out[0]).match(/^\{\s*\d+\s*:\s*(\d+)\s*\}$/) || String(out[0]).match(/^\{\s*(\d+)\s*\}$/);
+          const id0 = m0 ? Number(m0[1]) : NaN;
+          const looksPearl = (Number.isFinite(id0) && id0 >= 51 && id0 <= 60)
+            || String(out[0]).replace(/\s+/g, '') === '{11:90}'
+            || String(out[0]).replace(/\s+/g, '') === '{7:54}';
+          if (looksPearl) mixAt = 1;
+        }
+        const replaceRarity = mixAt < out.length && isSimpleBrace(out[mixAt]) && !isElemBrace(out[mixAt]);
+        out.splice(mixAt, replaceRarity ? 1 : 0, skinBrace);
+      } else {
+        /* Additive `{fam:id}`: insert after rarity, or after pearl+rarity when pearl leads. */
+        let insertAt = 0;
+        if (out.length && isSimpleBrace(out[0]) && !isElemBrace(out[0])) {
+          const m0 = String(out[0]).match(/^\{\s*\d+\s*:\s*(\d+)\s*\}$/) || String(out[0]).match(/^\{\s*(\d+)\s*\}$/);
+          const id0 = m0 ? Number(m0[1]) : NaN;
+          const looksPearl = (Number.isFinite(id0) && id0 >= 51 && id0 <= 60)
+            || String(out[0]).replace(/\s+/g, '') === '{11:90}'
+            || String(out[0]).replace(/\s+/g, '') === '{7:54}';
+          if (looksPearl && out.length > 1 && isSimpleBrace(out[1]) && !isElemBrace(out[1])) {
+            insertAt = 2; /* pearl, rarity, ← skin */
+          } else {
+            insertAt = 1; /* rarity, ← skin */
+          }
+        }
+        out.splice(insertAt, 0, skinBrace);
+      }
+    }
+    if (spawnTok) out.push(spawnTok);
+    if (camoTok) out.push(camoTok);
+    let tail = out.join(' ').trim();
+    if (tail && !/\|\s*$/.test(tail)) tail += '|';
+    return head + (tail ? ' ' + tail : '');
+  }
+  try { window.stxOverlaySkinCamoOnDeserialized = stxOverlaySkinCamoOnDeserialized; } catch (_) {}
+
   function getSelectedWeaponSkinAndCamo(){
     const skinSel = $('skinSelect');
     const camoSel = $('camoSelect');
@@ -10591,12 +11483,35 @@ function randSeed(){
     const skinOpt = (skinSel && skinSel.selectedOptions && skinSel.selectedOptions[0]) ? skinSel.selectedOptions[0] : null;
     const camoRaw = String((camoSel && camoSel.value) || '').trim();
 
-    const rarityId = extractSkinRarityId(skinRaw, skinOpt);
-    const rarityToken = extractSkinRarityToken(skinRaw, skinOpt);
-    let camoToken = canonicalCamoToken(camoRaw);
+    const spawnKey = unquoteWrappedValue(skinRaw);
+    let spawnToken = '';
+    let cosmeticCamo = '';
+    let cosmeticStringCamo = '';
+    let cosmeticSkinCode = '';
+    if (/^Cosmetics_Weapon_/i.test(spawnKey)) {
+      const resolved = resolveCosmeticWeaponSkinSerial(spawnKey);
+      cosmeticCamo = resolved.camoToken || '';
+      cosmeticStringCamo = resolved.stringCamo || '';
+      cosmeticSkinCode = resolved.skinCode || '';
+      /* Only keep a quoted spawn if we could not map to `c` form (should be rare). */
+      if (!cosmeticCamo && !cosmeticStringCamo) spawnToken = `"${spawnKey}"`;
+    }
+    const rarityId = (cosmeticCamo || cosmeticStringCamo || spawnToken)
+      ? (cosmeticSkinCode ? extractSkinRarityId(cosmeticSkinCode, null) : null)
+      : extractSkinRarityId(skinRaw, skinOpt);
+    let rarityToken = (cosmeticCamo || cosmeticStringCamo || spawnToken)
+      ? (cosmeticSkinCode || '')
+      : extractSkinRarityToken(skinRaw, skinOpt);
+    /* Skin (optional) Cosmetics win over Camo dropdown when they resolve to `c`. */
+    let camoToken = cosmeticCamo || canonicalCamoToken(camoRaw);
+    if (!camoToken && cosmeticStringCamo) {
+      /* string form lives in spawnToken slot for tail assembly */
+      spawnToken = cosmeticStringCamo;
+    }
     return {
       skinRaw,
       camoRaw,
+      spawnToken,
       rarityId: Number.isFinite(rarityId) ? Number(rarityId) : null,
       rarityToken: String(rarityToken || '').trim(),
       camoToken: String(camoToken || '').trim()
@@ -10649,11 +11564,17 @@ function randSeed(){
   }
 
   function syncMainPartFromSkinSelection(){
-    if (String(state.itemType || '').trim() !== 'Weapon') return false;
+    const it = String(state.itemType || '').trim();
+    if (it !== 'Weapon' && !stxSimpleBuilderItemTypeIsHeavyUi(it)) return false;
     const mainSel = $('mainPart');
     if (!mainSel) return false;
 
     const skinSel = getSelectedWeaponSkinAndCamo();
+    const skinTok = String((skinSel && skinSel.rarityToken) || '').trim();
+    /* Single `{fam:id}` Skin brace is additive after rarity — never rewrite mainPart/rarity.
+       Only stacked mixes `{fam:[id1 id2…]}` own the rarity slot. */
+    if (!skinTok || !/^\{\s*\d+\s*:\s*\[/.test(skinTok)) return false;
+
     const rid = Number(skinSel && skinSel.rarityId);
     if (!Number.isFinite(rid)) return false;
 
@@ -10666,7 +11587,7 @@ function randSeed(){
     if (!mapReady) return false;
 
     let famHint = null;
-    const parsed = parseFamilyItemPair(skinSel && skinSel.rarityToken);
+    const parsed = parseFamilyItemPair(skinTok);
     if (parsed && Number.isFinite(Number(parsed.family))) famHint = Number(parsed.family);
     if (!Number.isFinite(famHint)){
       const base = getSelectedBaseItem();
@@ -10685,7 +11606,7 @@ function randSeed(){
     }
 
     if (!Array.from(mainSel.options || []).some(o => String(o.value || '').trim() === String(targetKey))) return false;
-    // Soft-apply skin rarity onto mainPart — do NOT dispatch `change` (that wipes slots/extras + imported serial).
+    // Soft-apply stacked-mix rarity onto mainPart — do NOT dispatch `change` (that wipes slots/extras + imported serial).
     mainSel.value = String(targetKey);
     try {
       const map = state && state.__mainPartByOptionKey;
@@ -10740,7 +11661,7 @@ function randSeed(){
         const m = token.match(/\|\s*["']?c["']?\s*,\s*(\d+)\s*\|/i);
         label = m ? `Camo ${m[1]}` : 'Camo';
       }
-      if (!/\[token\]/i.test(label)) label += ' [token]';
+      if (label.indexOf(token) < 0) label = `${label} · ${token}`;
       keep.push({ value: token, label });
     };
 
@@ -10789,6 +11710,32 @@ function randSeed(){
               push(v, l);
             }
           }
+        }
+      }
+    }catch(_){}
+
+    /* Named weapon mats from SPAWN→camo map (Snowfall, Afterburn, …). */
+    try{
+      const map = (window.parent && window.parent.__CC_SPAWN_SKIN_CAMO_MAP)
+        ? window.parent.__CC_SPAWN_SKIN_CAMO_MAP
+        : (window.__CC_SPAWN_SKIN_CAMO_MAP || {});
+      const spawn = (window.parent && window.parent.SPAWN_SKINS) ? window.parent.SPAWN_SKINS : (window.SPAWN_SKINS || []);
+      if (Array.isArray(spawn)) {
+        for (const s of spawn) {
+          if (!s) continue;
+          const v = String(s.value || s.code || '').trim();
+          if (!/^Cosmetics_Weapon_Mat/i.test(v)) continue;
+          const tok = String(map[v] || map[v.toLowerCase()] || '').trim();
+          if (!tok) continue;
+          const lbl = String(s.label || s.name || '').trim();
+          push(tok, lbl || tok);
+        }
+      }
+      const camos = (window.parent && window.parent.CAMO_TOKENS) ? window.parent.CAMO_TOKENS : (window.CAMO_TOKENS || []);
+      if (Array.isArray(camos)) {
+        for (const nc of camos) {
+          if (!nc || !nc.code) continue;
+          push(nc.code, String(nc.name || '').trim() || nc.code);
         }
       }
     }catch(_){}
@@ -10908,7 +11855,9 @@ function randSeed(){
       const key = v.toLowerCase();
       if (seen.has(key)) return;
       seen.add(key);
-      const sid = extractSkinRarityId(v, null);
+      let sid = extractSkinRarityId(v, null);
+      if (!Number.isFinite(sid)) sid = resolveSpawnSkinRarityId(v);
+      if (!Number.isFinite(sid) && l) sid = resolveSpawnSkinRarityId(l);
       const bucket = grouped[groupKey] || grouped.numeric;
       bucket.push({ value: v, label: l, skinId: Number.isFinite(sid) ? Number(sid) : null });
     };
@@ -10916,9 +11865,13 @@ function randSeed(){
       const raw = String(valueRaw || '').trim();
       if (!raw) return;
       if (isCamoLiteralSyntax(raw)) return; // camo tokens live in camoSelect only
+      /* Cosmetics_Weapon_* are profile unlock IDs — not Skin (optional) item options. */
+      if (/^Cosmetics_Weapon_/i.test(unquoteWrappedValue(raw))) return;
       const label = String(labelRaw || '').trim();
+      if (hasSpawnCode(label, raw) && !/^\{\s*\d+\s*:/.test(raw)) return;
       const cleaned = cleanSkinLabel(label || raw, raw);
       const group = classifyGroup(raw, label || cleaned);
+      if (group === 'spawn' || group === 'phosphene') return;
       pushEntry(raw, cleaned || raw, group);
     };
 
@@ -10944,19 +11897,7 @@ function randSeed(){
       }
     }catch(_){}
 
-    // SPAWN_SKINS: spawn-id and phosphene skins when no parent select (standalone rebuild)
-    try{
-      const spawnList = (window.parent && window.parent.SPAWN_SKINS) ? window.parent.SPAWN_SKINS : (window.SPAWN_SKINS || []);
-      if (Array.isArray(spawnList)){
-        for (const s of spawnList){
-          if (!s) continue;
-          const v = String(s.value || s.code || '').trim();
-          const l = String(s.label || s.name || '').trim();
-          if (v) addFromRaw(v, l);
-        }
-      }
-    }catch(_){}
-
+    /* Do not load SPAWN_SKINS into Skin (optional) — Mat/Shiny Cosmetics go on Camo as |"c",N|. */
     const skipSkinsCatalog = !!(opts && opts.skipSkinsCatalog);
     const curRaw = String(sel.value || '').trim();
     const cur = canonicalSkinToken(curRaw, true, true) || curRaw;
@@ -10998,8 +11939,11 @@ function randSeed(){
         }
       };
       const finishSkinDom = ()=>{
-        if (curRaw && Array.from(sel.options).some(o=>o.value===curRaw)) sel.value = curRaw;
-        else if (cur && Array.from(sel.options).some(o=>o.value===cur)) sel.value = cur;
+        /* Drop leftover Cosmetics_Weapon_* selections — those are Camo options now. */
+        let want = curRaw;
+        if (/^Cosmetics_Weapon_/i.test(unquoteWrappedValue(want))) want = '';
+        if (want && Array.from(sel.options).some(o=>o.value===want)) sel.value = want;
+        else if (cur && !/^Cosmetics_Weapon_/i.test(unquoteWrappedValue(cur)) && Array.from(sel.options).some(o=>o.value===cur)) sel.value = cur;
         else sel.value = '';
         syncCamoOptionsFromParent({ skipTooltips: skipTooltips, skipSkinsCatalog: skipSkinsCatalog });
         if (tokenTransfer && $('camoSelect') && Array.from(($('camoSelect').options || [])).some(o => String(o.value || '').trim() === tokenTransfer)){
@@ -11012,12 +11956,8 @@ function randSeed(){
         } catch (_) {}
         if (opts && typeof opts.onDone === 'function') opts.onDone();
       };
-      appendGroup('Spawn-ID Skins', grouped.spawn, ()=>{
-        appendGroup('Custom Mixes', grouped.mixes, ()=>{
-          appendGroup('Numeric ID Skins', grouped.numeric, ()=>{
-            appendGroup('Phosphene / Shiny', grouped.phosphene, finishSkinDom);
-          });
-        });
+      appendGroup('Custom Mixes', grouped.mixes, ()=>{
+        appendGroup('Numeric ID Skins', grouped.numeric, finishSkinDom);
       });
     }
 
@@ -11080,7 +12020,14 @@ function randSeed(){
   
 function computeFullDeserializedCode(){
   if (state.mainPart && state.mainPart.__fullDeserialized){
-    return String(state.mainPart.__fullDeserialized).trim();
+    let frozen = String(state.mainPart.__fullDeserialized).trim();
+    try {
+      const scFrozen = getSelectedWeaponSkinAndCamo();
+      if (scFrozen && (scFrozen.rarityToken || scFrozen.camoToken || scFrozen.spawnToken || scFrozen.skinRaw || scFrozen.camoRaw)) {
+        frozen = stxOverlaySkinCamoOnDeserialized(frozen, scFrozen);
+      }
+    } catch (_) {}
+    return frozen;
   }
   const guided = getGuidedContext();
   const useGuided = guided && guided.itemType;
@@ -11152,15 +12099,23 @@ function computeFullDeserializedCode(){
     }
   const isWeapon = (state.itemType === 'Weapon') || stxSimpleBuilderItemTypeIsHeavyUi(state.itemType) || (state.detectedCategory === 'Weapon');
   const weaponSkinSelection = isWeapon ? getSelectedWeaponSkinAndCamo() : null;
-  let skinRarityToken = (weaponSkinSelection && weaponSkinSelection.rarityToken)
-    ? forceFamilyOnRarityToken(weaponSkinSelection.rarityToken, baseFamilyId)
-    : '';
-  const skinIsStackedMix = !!(skinRarityToken && /^\{\s*\d+\s*:\s*\[/.test(skinRarityToken));
-  if (weaponSkinSelection && Number.isFinite(weaponSkinSelection.rarityId) && !skinIsStackedMix){
+  /* Skin brace from dropdown — keep separate from rarity so selecting a skin ADDS it, not only replaces rarity. */
+  let skinBraceTok = '';
+  if (weaponSkinSelection && weaponSkinSelection.rarityToken) {
+    skinBraceTok = String(forceFamilyOnRarityToken(weaponSkinSelection.rarityToken, baseFamilyId) || '').trim();
+    if (!skinBraceTok) skinBraceTok = String(weaponSkinSelection.rarityToken || '').trim();
+  }
+  const skinIsStackedMix = !!(skinBraceTok && /^\{\s*\d+\s*:\s*\[/.test(skinBraceTok));
+  /* Stacked mixes own the rarity slot; single {fam:id} skins append after rarity. */
+  let skinRarityToken = '';
+  if (skinIsStackedMix) {
+    skinRarityToken = skinBraceTok;
+    skinBraceTok = '';
+  }
+  if (weaponSkinSelection && Number.isFinite(weaponSkinSelection.rarityId) && Number(weaponSkinSelection.rarityId) > 0 && skinIsStackedMix){
     const skinRid = Number(weaponSkinSelection.rarityId);
     rarityItemId = skinRid;
     if (!String(skinRarityToken || '').trim()){
-      // Numeric skin selections without explicit family metadata must still serialize as {family:id}.
       skinRarityToken = tokenFromPair({ family: baseFamilyId, itemId: skinRid }, baseFamilyId);
     } else {
       skinRarityToken = forceFamilyOnRarityToken(skinRarityToken, baseFamilyId);
@@ -11189,6 +12144,14 @@ function computeFullDeserializedCode(){
   } else if (canonicalizeSkinBraceToken(rarityTokRaw)){
     rarityTok = canonicalizeSkinBraceToken(rarityTokRaw);
   }
+  if (skinBraceTok) {
+    const opaqueSkin = canonicalizeSkinBraceToken(skinBraceTok) || skinBraceTok;
+    skinBraceTok = opaqueSkin;
+    /* Don't duplicate if skin brace is already the rarity token. */
+    if (rarityTok && rarityTok.replace(/\s+/g, '') === skinBraceTok.replace(/\s+/g, '')) {
+      skinBraceTok = '';
+    }
+  }
   const __rarityTokN = String(rarityTok || '').replace(/\s+/g,'').trim();
   const isSameAsSelectedRarityToken = (tok)=>{
     if (!__rarityTokN) return false;
@@ -11209,25 +12172,41 @@ function computeFullDeserializedCode(){
   if (isWeapon){
     const isElement = (t)=>/^\{\s*1\s*:\s*\d+\s*\}$/.test(t);
     const isSkin = (t)=>isSkinTokenCandidate(t);
+    const spawnTokEarly = (weaponSkinSelection && weaponSkinSelection.spawnToken)
+      ? String(weaponSkinSelection.spawnToken || '').trim()
+      : '';
 
     const bracketTokens = [];
     const gunTokens = [];
     const camoTokens = [];
     const elements = [];
+    const preservedSpawn = [];
 
     for (const t of outputTokens){
       if (!t) continue;
       if (isSameAsSelectedRarityToken(t)) continue;
       
       const sT = String(t).trim();
+      if (skinBraceTok && sT.replace(/\s+/g, '') === skinBraceTok.replace(/\s+/g, '')) continue;
       if (isSkin(sT)) {
         const ct = canonicalCamoToken(sT);
         if (ct) {
           camoTokens.push(ct);
           continue;
         }
-        // Drop legacy/extra skin rarity tokens from the parts tail.
-        // The active skin dropdown is the single source of truth.
+        const unqSkin = unquoteWrappedValue(sT);
+        if (/^Cosmetics_Weapon_/i.test(unqSkin)) {
+          /* Map imported Cosmetics names to `c` form; do not keep bare spawn strings. */
+          if (!spawnTokEarly) {
+            try {
+              const r = resolveCosmeticWeaponSkinSerial(unqSkin);
+              if (r && r.camoToken) camoTokens.push(r.camoToken);
+              else if (r && r.stringCamo) preservedSpawn.push(r.stringCamo);
+            } catch (_) {}
+          }
+          continue;
+        }
+        // Drop legacy/extra skin rarity braces — active Skin dropdown is source of truth.
         continue;
       }
       if (isElement(sT)) { elements.push(sT); continue; }
@@ -11237,7 +12216,8 @@ function computeFullDeserializedCode(){
       else gunTokens.push(sT);
     }
 
-    // Optional camo token from dedicated camo dropdown (or token-form skin selection).
+    // Optional Skin (optional) spawn string + Camo (optional) `|"c",N|` — separate controls.
+    const spawnTok = spawnTokEarly || (preservedSpawn.length ? preservedSpawn[preservedSpawn.length - 1] : '');
     if (weaponSkinSelection && weaponSkinSelection.camoToken){
       camoTokens.push(String(weaponSkinSelection.camoToken || '').trim());
     }
@@ -11268,22 +12248,38 @@ function computeFullDeserializedCode(){
     const __bracketNorm = normalizeIdTokensForBaseFamilyWithPrefs(bracketTokens, baseFamilyId);
     const __bracket = compressConsecutiveFamilyRefs(__bracketNorm);
 
-    // Order of components after ||: Rarity (Skin), then Parts, then Elements, then Camos.
+    // Order: Rarity, Skin brace, spawn/`c` string, Parts, Elements, Camo `|"c",N|`.
     const partsSection = [...__bracket, ...gunTokens.map(quoteIfGunPart)]
       .filter(Boolean)
       .join(' ')
       .trim();
     
-    const elementsStr = elements.filter(Boolean).join(' ').trim();
+    /* Pack stacked elements → `{1:[13 13]}` (never emit a lone `,{1:13}`). */
+    const elementsPacked = stxPackWeaponElementTokens(elements.filter(Boolean));
+    const elementsStr = elementsPacked.join(' ').trim();
     
     // Construct the tail parts in specific order
-    let tailParts = [rarityTok, partsSection, elementsStr, skinTok].filter(Boolean);
+    let tailParts = [rarityTok, skinBraceTok, spawnTok, partsSection, elementsStr, skinTok].filter(Boolean);
     // Dedup rarity if already in partsSection (bracketed or gunTokens)
     if (rarityTok) {
        const cleanRarityTok = rarityTok.trim();
        if (partsSection.includes(cleanRarityTok)) {
-          tailParts = [partsSection, elementsStr, skinTok].filter(Boolean);
+          tailParts = [skinBraceTok, partsSection, elementsStr, skinTok].filter(Boolean);
        }
+    }
+    if (skinBraceTok) {
+      const cleanSkin = skinBraceTok.trim();
+      const withoutDupSkin = [];
+      let skinOnce = false;
+      for (let ti = 0; ti < tailParts.length; ti++) {
+        const tp = String(tailParts[ti] || '').trim();
+        if (tp === cleanSkin) {
+          if (skinOnce) continue;
+          skinOnce = true;
+        }
+        withoutDupSkin.push(tailParts[ti]);
+      }
+      tailParts = withoutDupSkin;
     }
     if (isStxSimplePearlOverrideChecked()){
       const pr = stxPickPearlOverrideBraceToken(baseFamilyId, true);
@@ -11598,15 +12594,12 @@ function computeFullDeserializedCode(){
     if (!state.slots || typeof state.slots !== 'object') state.slots = {};
 
     const multi = !!(schemaItem.multi || key === 'additionalParts' || key === 'legendary');
-    if (multi) {
+    const forceStack = !!(o.forceStack || o.stackDuplicates);
+    if (multi || forceStack) {
       const arr = Array.isArray(state.slots[key]) ? state.slots[key].slice() : (state.slots[key] ? [state.slots[key]] : []);
-      const tok = tokenForPart(part);
-      if (tok && arr.some(x => tokenForPart(x) === tok)) {
-        /* already present — still count as handled */
-      } else {
-        arr.push(part);
-        state.slots[key] = arr;
-      }
+      /* Always append on stack — same part qty 3 then another 3 must accumulate. */
+      arr.push(stxClonePartWithImportOrder(part, (stxNextImportOrders(arr, 1)[0])));
+      state.slots[key] = arr;
     } else {
       state.slots[key] = part;
     }
@@ -11670,7 +12663,7 @@ function computeFullDeserializedCode(){
     if (resolved) {
       let placed = 0;
       for (let qi = 0; qi < n; qi++) {
-        if (stxTryPlacePartInBestSlot(resolved, { skipRefresh: qi < n - 1 })) placed++;
+        if (stxTryPlacePartInBestSlot(resolved, { skipRefresh: qi < n - 1, forceStack: n > 1 })) placed++;
         else break;
       }
       if (placed === n) return true;
@@ -11823,8 +12816,9 @@ function computeFullDeserializedCode(){
   }
 
 
-  function clearImportedOutputLock(){
-    if (window.__CC_IMPORT_IN_PROGRESS) return;
+  /** Clear import pin so rebuilds use live slots. Pass true on explicit user Add/select edits. */
+  function clearImportedOutputLock(force){
+    if (!force && window.__CC_IMPORT_IN_PROGRESS) return;
     try{
       window.__LOCK_IMPORTED_OUTPUT = false;
       window.__ccImportedValue = null;
@@ -11876,6 +12870,545 @@ function computeFullDeserializedCode(){
   try { window.getSharedDeserialized = getSharedDeserialized; } catch (_) {}
 
   /**
+   * Preflight before Base85 convert: hard-fail absurd stacks only.
+   * Cosmetics_Weapon string tokens are valid TOK_STRING (Skin optional / phosphene) — do not block convert.
+   * Soft-warn named-legendary rarity with wrong-family named barrel.
+   */
+  function stxPreflightDeserializedForConvert(deserRaw){
+    const deser = String(deserRaw || '').trim();
+    const hardFails = [];
+    const warnings = [];
+    if (!deser || deser.indexOf('||') < 0) {
+      return { ok: false, hardFails: ['Missing deserialized || payload'], warnings: warnings };
+    }
+    if (/"\s*Cosmetics_Weapon_/i.test(deser) || /(?:^|[\s|])Cosmetics_Weapon_/i.test(deser)) {
+      warnings.push('Cosmetics_Weapon string token present (Skin optional / phosphene) — convert allowed');
+    }
+    const dbl = deser.indexOf('||');
+    const tail = deser.slice(dbl + 2);
+    const toks = parseImportTokenList(tail);
+    const famCounts = Object.create(null);
+    let raritySuffix = '';
+    try {
+      if (state && state.mainPart) raritySuffix = stxRarityBarrelSuffixFromPart(state.mainPart) || '';
+    } catch (_) {}
+    let namedBarrelMismatch = false;
+    for (let i = 0; i < toks.length; i++) {
+      const t = String(toks[i] || '').trim();
+      const unq = t.replace(/^"+|"+$/g, '');
+      const packed = t.match(/^\{\s*(\d+)\s*:\s*\[([^\]]+)\]\s*\}$/);
+      if (packed) {
+        const fam = packed[1];
+        const ids = String(packed[2] || '').match(/\d+/g) || [];
+        famCounts[fam] = (famCounts[fam] || 0) + ids.length;
+        continue;
+      }
+      const pair = t.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+      if (pair) {
+        famCounts[pair[1]] = (famCounts[pair[1]] || 0) + 1;
+      }
+      if (raritySuffix) {
+        try {
+          const part = (typeof tryResolveToken === 'function') ? tryResolveToken(t) : null;
+          const code = part ? String(normCode(part.code || '') || '').toLowerCase() : '';
+          if (/part_barrel_\d+_[a-z0-9_]+$/.test(code) && !stxWeaponBarrelCodeMatchesRaritySuffix(code, raritySuffix)) {
+            namedBarrelMismatch = true;
+          }
+        } catch (_) {}
+      }
+      void unq;
+    }
+    for (const fam in famCounts) {
+      /* Modded class mods / packed stacks routinely exceed ~80 ids — only block truly absurd sizes. */
+      if (famCounts[fam] >= 2500) {
+        hardFails.push('Absurd part stack size for family ' + fam + ' (' + famCounts[fam] + ')');
+      } else if (famCounts[fam] >= 400) {
+        warnings.push('Large stack for family ' + fam + ' (' + famCounts[fam] + ') — convert still allowed');
+      }
+    }
+    if (namedBarrelMismatch) {
+      warnings.push('Named legendary rarity with a barrel that does not match that rarity family');
+    }
+    try {
+      window.__ccLastSerialPreflight = { hardFails: hardFails.slice(), warnings: warnings.slice() };
+    } catch (_) {}
+    return { ok: hardFails.length === 0, hardFails: hardFails, warnings: warnings };
+  }
+  try { window.stxPreflightDeserializedForConvert = stxPreflightDeserializedForConvert; } catch (_) {}
+
+  /**
+   * Strip serial junk that breaks spawn (broken camo fragments, unresolved cosmetics leftovers).
+   * Does NOT de-mod or force legit pools — spawn-safety only.
+   */
+  function stxStripSpawnUnsafeJunkTokens(fullSerial){
+    const full = String(fullSerial || '').trim();
+    const dbl = full.indexOf('||');
+    if (dbl < 0) return { serial: full, changed: false };
+    const head = full.slice(0, dbl + 2).replace(/\s+$/, '');
+    let tail = full.slice(dbl + 2).trim();
+    let changed = false;
+    /* Remove duplicated header pasted into the tail (e.g. `279 1 70| 2 1259|| {12}…`). */
+    const dupHead = tail.match(/^(\d[\d\s|,]*)\|\|\s*/);
+    if (dupHead) {
+      tail = tail.slice(dupHead[0].length).trim();
+      changed = true;
+    } else {
+      /* Loose: `279 1 70| 2 1259` then braces (no second ||). */
+      const looseHead = tail.match(/^(\d+(?:\s*[,\s]\s*\d+){1,8}\s*\|\s*\d+(?:\s*,\s*\d+)?)\s+/);
+      if (looseHead && /\{/.test(tail.slice(looseHead[0].length))) {
+        tail = tail.slice(looseHead[0].length).trim();
+        changed = true;
+      }
+    }
+    /* Tokenize ONLY the cleaned tail — never re-feed header digits into the part list. */
+    const toks = (typeof parseImportTokenList === 'function')
+      ? parseImportTokenList(head + (tail ? ' ' + tail : ''))
+      : [];
+    const kept = [];
+    for (let i = 0; i < toks.length; i++) {
+      const t = String(toks[i] || '').trim();
+      if (!t) { changed = true; continue; }
+      const unq = t.replace(/^"+|"+$/g, '');
+      /* Keep Cosmetics_Weapon string tokens; only strip broken camo / zero junk. */
+      if (/^[):,\s|]+0\|?$/.test(unq) || /^["']?c["']?\s*,\s*0\|?$/i.test(unq)) { changed = true; continue; }
+      if (/^\|\s*["']?c["']?\s*,\s*0\s*\|$/i.test(t)) { changed = true; continue; }
+      if (/^\{\s*\d+\s*:\s*0\s*\}$/.test(t) || /^\{\s*0\s*\}$/.test(t)) { changed = true; continue; }
+      if (/^\):?\d+$/.test(unq) || /^,\d+\|$/.test(unq)) { changed = true; continue; }
+      if (/^\d+\|$/.test(unq)) { changed = true; continue; }
+      /* Bare header leftovers that are not brace / quoted parts. */
+      if (/^\d+$/.test(unq) && !/^\{/.test(t)) { changed = true; continue; }
+      kept.push(t);
+    }
+    if (!changed && kept.length === toks.length) return { serial: full, changed: false };
+    return { serial: head + (kept.length ? ' ' + kept.join(' ') : ''), changed: true };
+  }
+  try { window.stxStripSpawnUnsafeJunkTokens = stxStripSpawnUnsafeJunkTokens; } catch (_) {}
+
+  /**
+   * Move the first rarity part token to the front of the || tail (spawn-order repair only).
+   */
+  function stxReorderRarityTokenFirstInSerial(fullSerial){
+    const full = String(fullSerial || '').trim();
+    const dbl = full.indexOf('||');
+    if (dbl < 0) return { serial: full, changed: false };
+    const head = full.slice(0, dbl + 2).replace(/\s+$/, '');
+    const toks = (typeof parseImportTokenList === 'function') ? parseImportTokenList(full) : [];
+    if (!toks.length) return { serial: full, changed: false };
+    let rarityIdx = -1;
+    for (let i = 0; i < toks.length; i++) {
+      try {
+        const part = (typeof tryResolveToken === 'function') ? tryResolveToken(toks[i]) : null;
+        if (part && String(part.partType || '').trim().toLowerCase() === 'rarity') {
+          rarityIdx = i;
+          break;
+        }
+      } catch (_) {}
+    }
+    if (rarityIdx < 0 || rarityIdx === 0) return { serial: full, changed: false };
+    const rarityTok = toks.splice(rarityIdx, 1)[0];
+    toks.unshift(rarityTok);
+    return { serial: head + ' ' + toks.join(' '), changed: true };
+  }
+  try { window.stxReorderRarityTokenFirstInSerial = stxReorderRarityTokenFirstInSerial; } catch (_) {}
+
+  /**
+   * Shared Ready / Modded / Needs fix chip on Generated Item Code + floating panel.
+   * Modding-first: warnings still convert; hardFails block convert.
+   */
+  function stxUpdateSerialHealthUi(deserRaw){
+    let deser = String(deserRaw != null ? deserRaw : '').trim();
+    if (!deser) {
+      try { deser = String((typeof getSharedDeserialized === 'function') ? getSharedDeserialized() : '').trim(); } catch (_) { deser = ''; }
+    }
+    const chipIds = ['ccSerialHealthChip', 'ccSerialHealthChipFloat'];
+    const msgIds = ['ccSerialHealthMsg', 'ccSerialHealthMsgFloat'];
+    const fixIds = ['ccFixItemSerialBtn', 'ccFixItemSerialBtnFloat'];
+    const setAll = (chipText, chipMod, msg, showFix) => {
+      for (let i = 0; i < chipIds.length; i++) {
+        const chip = document.getElementById(chipIds[i]);
+        if (!chip) continue;
+        chip.textContent = chipText;
+        chip.className = 'cc-serial-health__chip cc-serial-health__chip--' + chipMod;
+      }
+      for (let j = 0; j < msgIds.length; j++) {
+        const msgEl = document.getElementById(msgIds[j]);
+        if (msgEl) msgEl.textContent = msg;
+      }
+      for (let k = 0; k < fixIds.length; k++) {
+        const btn = document.getElementById(fixIds[k]);
+        if (btn) btn.hidden = !showFix;
+      }
+    };
+    if (!deser || deser.indexOf('||') < 0) {
+      setAll('No item', 'idle', 'Build or paste a serial to see convert health.', false);
+      return { status: 'idle' };
+    }
+    const pre = stxPreflightDeserializedForConvert(deser);
+    if (!pre.ok) {
+      const detail = (pre.hardFails && pre.hardFails[0]) ? pre.hardFails[0] : 'Serial will not convert safely';
+      setAll('Needs fix', 'blocked', detail, true);
+      return { status: 'blocked', pre: pre };
+    }
+    if (pre.warnings && pre.warnings.length) {
+      setAll('Modded', 'modded', pre.warnings[0] + ' — convert still allowed (Quick fix will not de-mod).', true);
+      return { status: 'modded', pre: pre };
+    }
+    setAll('Ready', 'ok', 'Looks convert-safe. Modded parts are fine; Quick fix only repairs spawn junk.', false);
+    return { status: 'ok', pre: pre };
+  }
+  try { window.stxUpdateSerialHealthUi = stxUpdateSerialHealthUi; } catch (_) {}
+
+  /**
+   * Quick fix: spawn-safe repair only — sanitize cosmetics, strip junk / duplicated headers, rarity-first, re-pack.
+   * Does NOT pin barrels, strip stacks, or force legit pools.
+   */
+  function stxFixCurrentItemSerial(){
+    let deser = '';
+    try { deser = String((typeof getSharedDeserialized === 'function') ? getSharedDeserialized() : '').trim(); } catch (_) {}
+    if (!deser || deser.indexOf('||') < 0) {
+      try {
+        const fl = document.getElementById('floating-output-code');
+        const fv = fl ? String(fl.value || '').trim() : '';
+        if (fv.indexOf('||') >= 0) deser = fv;
+      } catch (_) {}
+    }
+    if (!deser || deser.indexOf('||') < 0) {
+      stxUpdateSerialHealthUi('');
+      return { ok: false, reason: 'no-serial' };
+    }
+
+    /* Prefer the longest valid || serial if panels diverged. */
+    try {
+      const candidates = [];
+      const pushC = (v) => {
+        const s = String(v || '').trim();
+        if (s && s.indexOf('||') >= 0) candidates.push(s);
+      };
+      pushC(deser);
+      try { pushC(document.getElementById('guidedOutputDeserialized') && document.getElementById('guidedOutputDeserialized').value); } catch (_) {}
+      try { pushC($('outCode') && $('outCode').value); } catch (_) {}
+      try { pushC(document.getElementById('floating-output-code') && document.getElementById('floating-output-code').value); } catch (_) {}
+      candidates.sort((a, b) => b.length - a.length);
+      if (candidates[0]) deser = candidates[0];
+    } catch (_) {}
+
+    let changed = false;
+    try {
+      const san = stxSanitizeCosmeticSpawnTokensInSerial(deser);
+      if (san && san.changed && san.serial) {
+        deser = String(san.serial).trim();
+        changed = true;
+        if (Array.isArray(san.unresolved) && san.unresolved.length) {
+          try { window.__ccSkinUnresolvedCosmetic = san.unresolved[0]; } catch (_) {}
+        }
+      }
+    } catch (_) {}
+
+    try {
+      const junk = stxStripSpawnUnsafeJunkTokens(deser);
+      if (junk && junk.changed && junk.serial) {
+        deser = String(junk.serial).trim();
+        changed = true;
+      }
+    } catch (_) {}
+
+    /* Only reorder when tail has braces — never rewrite a header-only / mangled serial. */
+    try {
+      const dbl = deser.indexOf('||');
+      const tail = dbl >= 0 ? deser.slice(dbl + 2) : '';
+      if (/\{/.test(tail)) {
+        const ord = stxReorderRarityTokenFirstInSerial(deser);
+        if (ord && ord.changed && ord.serial && ord.serial.indexOf('||') >= 0) {
+          const ot = ord.serial.slice(ord.serial.indexOf('||') + 2);
+          /* Guard: reordered result must not reintroduce a second || header blob. */
+          if ((ot.match(/\|\|/g) || []).length === 0) {
+            deser = String(ord.serial).trim();
+            changed = true;
+          }
+        }
+      }
+    } catch (_) {}
+
+    const source = (window.__CC_LAST_CODE_TARGET === 'guided') ? 'guided' : 'simple';
+    try {
+      writeSharedItemCode({ deser: deser, source: source, force: true });
+    } catch (_) {}
+
+    const health = stxUpdateSerialHealthUi(deser);
+    try {
+      const banner = document.getElementById('dsStatus');
+      if (banner) {
+        if (health && health.status === 'blocked') banner.textContent = 'Quick fix incomplete: ' + ((health.pre && health.pre.hardFails && health.pre.hardFails[0]) || 'still blocked');
+        else if (changed) banner.textContent = 'Quick fix applied (spawn-safe only — modded stacks kept)';
+        else banner.textContent = 'Nothing to quick-fix (or already clean)';
+      }
+    } catch (_) {}
+    return { ok: !(health && health.status === 'blocked'), changed: changed, health: health };
+  }
+  try { window.stxFixCurrentItemSerial = stxFixCurrentItemSerial; } catch (_) {}
+
+  function stxApplyValidBase85ToSerialFields(packed, outB85El, gSerEl, deserForPlausibility){
+    const b85 = String(packed || '').trim();
+    const valid = (typeof window.ccIsValidStoredBase85 === 'function')
+      ? window.ccIsValidStoredBase85(b85)
+      : !!(b85 && b85.indexOf('@U') === 0 && b85.indexOf(',') < 0 && b85.indexOf('||') < 0 && b85.length >= 10);
+    if (!valid) return false;
+    if (deserForPlausibility != null && String(deserForPlausibility).trim()
+        && typeof window.ccBase85PlausibleForDeser === 'function'
+        && !window.ccBase85PlausibleForDeser(b85, deserForPlausibility)) {
+      return false;
+    }
+    try { if (outB85El) outB85El.value = b85; } catch (_) {}
+    try {
+      if (gSerEl) {
+        gSerEl.value = b85;
+        gSerEl.__ccImportedValue = b85;
+      }
+    } catch (_) {}
+    try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    return true;
+  }
+
+  function stxClearImplausibleSerialFields(deser, outB85El, gSerEl){
+    const d = String(deser || '').trim();
+    const outB85 = (outB85El != null) ? outB85El : $('outCodeB85');
+    const gSer = (gSerEl != null) ? gSerEl : document.getElementById('guidedOutputSerial');
+    const cur = String((gSer && gSer.value) || (outB85 && outB85.value) || '').trim();
+    if (!cur) return false;
+    if (typeof window.ccBase85PlausibleForDeser !== 'function') return false;
+    if (window.ccBase85PlausibleForDeser(cur, d)) return false;
+    try { if (outB85) outB85.value = ''; } catch (_) {}
+    try {
+      if (gSer) {
+        gSer.value = '';
+        /* Keep imported lock only for plausible packs. */
+        if (gSer.__ccImportedValue && !window.ccBase85PlausibleForDeser(String(gSer.__ccImportedValue), d)) {
+          gSer.__ccImportedValue = null;
+        }
+      }
+    } catch (_) {}
+    return true;
+  }
+
+  /**
+   * Local packer used by auto-fill — same strength as Convert's localBest:
+   * normalize → ensureBase85SerialForYamlSave → serializeToBase85 (raw + normalized).
+   * Rejects alphabet-valid but truncated packs (header-only @U for huge deser).
+   */
+  function stxPackDeserializedToBase85Local(deserRaw){
+    const deser = String(deserRaw || '').trim();
+    if (!deser || deser.indexOf('||') < 0) return '';
+    const isAcceptable = (b)=>{
+      const t = String(b || '').trim();
+      if (!t) return false;
+      if (typeof window.ccIsValidStoredBase85 === 'function') {
+        if (!window.ccIsValidStoredBase85(t)) return false;
+      } else if (!(t.indexOf('@U') === 0 && t.indexOf(',') < 0 && t.indexOf('||') < 0 && t.length >= 10)) {
+        return false;
+      }
+      if (typeof window.ccBase85PlausibleForDeser === 'function'
+          && !window.ccBase85PlausibleForDeser(t, deser)) {
+        return false;
+      }
+      return true;
+    };
+    let norm = deser;
+    if (typeof window.__stxNormalizeDeserializedInput === 'function') {
+      try {
+        const n = window.__stxNormalizeDeserializedInput(deser);
+        if (n) norm = String(n).trim();
+      } catch (_) {}
+    }
+    if (typeof window.ensureBase85SerialForYamlSave === 'function') {
+      try {
+        let packed = window.ensureBase85SerialForYamlSave(deser);
+        if (isAcceptable(packed)) return String(packed).trim();
+        if (norm && norm !== deser) {
+          packed = window.ensureBase85SerialForYamlSave(norm);
+          if (isAcceptable(packed)) return String(packed).trim();
+        }
+      } catch (_) {}
+    }
+    if (typeof window.serializeToBase85 === 'function') {
+      try {
+        let packed = window.serializeToBase85(deser, undefined, true);
+        if (isAcceptable(packed)) return String(packed).trim();
+        if (norm && norm !== deser) {
+          packed = window.serializeToBase85(norm, undefined, true);
+          if (isAcceptable(packed)) return String(packed).trim();
+        }
+      } catch (_) {}
+    }
+    return '';
+  }
+  try { window.stxPackDeserializedToBase85Local = stxPackDeserializedToBase85Local; } catch (_) {}
+
+  /**
+   * Best-effort pack for auto-fill: local first, then shared Convert helper / remote.
+   * Returns a Promise<string> of a valid+plausible @U or ''.
+   */
+  function stxPackDeserializedToBase85BestEffort(deserRaw){
+    const deser = String(deserRaw || '').trim();
+    if (!deser || deser.indexOf('||') < 0) return Promise.resolve('');
+    try {
+      const pre = (typeof stxPreflightDeserializedForConvert === 'function')
+        ? stxPreflightDeserializedForConvert(deser)
+        : { ok: true };
+      if (pre && pre.ok === false) return Promise.resolve('');
+    } catch (_) {}
+    const accept = (packed)=>{
+      const t = String(packed || '').trim();
+      if (!t) return '';
+      if (typeof window.ccIsValidStoredBase85 === 'function') {
+        if (!window.ccIsValidStoredBase85(t)) return '';
+      } else if (!(t.indexOf('@U') === 0 && t.length >= 10)) {
+        return '';
+      }
+      if (typeof window.ccBase85PlausibleForDeser === 'function'
+          && !window.ccBase85PlausibleForDeser(t, deser)) {
+        return '';
+      }
+      return t;
+    };
+    const localHit = stxPackDeserializedToBase85Local(deser);
+    if (localHit) return Promise.resolve(localHit);
+    if (typeof window.serializeDeserializedToBase85BestEffort === 'function') {
+      return Promise.resolve(window.serializeDeserializedToBase85BestEffort(deser)).then(function (packed) {
+        return accept(packed);
+      }).catch(function () { return ''; });
+    }
+    if (typeof window.ccSerializeDeserializedRemote === 'function') {
+      return window.ccSerializeDeserializedRemote(deser, { timeoutMs: 900 }).then(function (remote) {
+        return accept(remote);
+      }).catch(function () { return ''; });
+    }
+    return Promise.resolve('');
+  }
+  try { window.stxPackDeserializedToBase85BestEffort = stxPackDeserializedToBase85BestEffort; } catch (_) {}
+
+  /**
+   * Auto-fill Serial (BL-base85) from deserialized. Used on import + shared writes.
+   * Retries after deferred Base85 scripts load when packer is not ready yet.
+   * Uses a generation token so a late header-only pack cannot overwrite a newer full pack.
+   */
+  function stxFillSerialBase85FromDeser(deserRaw, opts){
+    opts = opts || {};
+    const deser = String(deserRaw || '').trim();
+    if (!deser || deser.indexOf('||') < 0) return false;
+    const outB85 = (opts.outB85El != null) ? opts.outB85El : $('outCodeB85');
+    const gSer = (opts.gSerEl != null) ? opts.gSerEl : document.getElementById('guidedOutputSerial');
+    try { window.__stxB85PackGen = (Number(window.__stxB85PackGen) || 0) + 1; } catch (_) {}
+    let packGen = 0;
+    try { packGen = Number(window.__stxB85PackGen) || 0; } catch (_) { packGen = 0; }
+    try { window.__stxPendingB85Deser = deser; } catch (_) {}
+    stxClearImplausibleSerialFields(deser, outB85, gSer);
+
+    const applyPacked = (packed)=>{
+      try {
+        if (packGen !== Number(window.__stxB85PackGen)) return false;
+        const pending = String(window.__stxPendingB85Deser || '').trim();
+        if (pending && pending !== deser) return false;
+      } catch (_) {}
+      if (!stxApplyValidBase85ToSerialFields(packed, outB85, gSer, deser)) return false;
+      try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      return true;
+    };
+
+    const tryPackNow = ()=>{
+      if (typeof window.serializeToBase85 !== 'function'
+          && typeof window.ensureBase85SerialForYamlSave !== 'function'
+          && typeof window.serializeDeserializedToBase85BestEffort !== 'function') {
+        return false;
+      }
+      try {
+        const pre = (typeof stxPreflightDeserializedForConvert === 'function')
+          ? stxPreflightDeserializedForConvert(deser)
+          : { ok: true };
+        if (pre && pre.ok === false) return true; /* don't keep retrying a blocked serial */
+        const localHit = stxPackDeserializedToBase85Local(deser);
+        if (localHit) return applyPacked(localHit);
+        const weight = (typeof window.ccDeserializedPayloadWeight === 'function')
+          ? window.ccDeserializedPayloadWeight(deser)
+          : { heavy: deser.length > 12000 };
+        /* Local miss — async best-effort (normalize / remote) same as floating Convert. */
+        try { if (gSer) gSer.setAttribute('aria-busy', 'true'); } catch (_) {}
+        const runBest = function () {
+          stxPackDeserializedToBase85BestEffort(deser).then(function (packed) {
+            try { if (gSer && packGen === Number(window.__stxB85PackGen)) gSer.removeAttribute('aria-busy'); } catch (_) {}
+            applyPacked(packed);
+          }).catch(function () {
+            try { if (gSer && packGen === Number(window.__stxB85PackGen)) gSer.removeAttribute('aria-busy'); } catch (_) {}
+          });
+        };
+        if (weight.heavy) setTimeout(runBest, 0);
+        else runBest();
+        return true;
+      } catch (_) {
+        return false;
+      }
+    };
+
+    if (tryPackNow()) return true;
+
+    const flushPending = ()=>{
+      let pending = '';
+      try { pending = String(window.__stxPendingB85Deser || '').trim(); } catch (_) {}
+      if (!pending) pending = deser;
+      if (!pending || pending.indexOf('||') < 0) return;
+      if (typeof window.serializeToBase85 !== 'function'
+          && typeof window.ensureBase85SerialForYamlSave !== 'function') return;
+      try {
+        if (packGen !== Number(window.__stxB85PackGen)) return;
+      } catch (_) {}
+      try {
+        const pre = (typeof stxPreflightDeserializedForConvert === 'function')
+          ? stxPreflightDeserializedForConvert(pending)
+          : { ok: true };
+        if (pre && pre.ok === false) {
+          try { window.__stxPendingB85Deser = ''; } catch (_) {}
+          return;
+        }
+        stxPackDeserializedToBase85BestEffort(pending).then(function (packed) {
+          if (applyPacked(packed)) {
+            try { window.__stxPendingB85Deser = ''; } catch (_) {}
+          }
+        }).catch(function () {});
+      } catch (_) {}
+    };
+
+    try {
+      if (typeof window.stxEnsureDeferredCore === 'function') {
+        Promise.resolve(window.stxEnsureDeferredCore()).then(flushPending).catch(function () {});
+      }
+    } catch (_) {}
+    try {
+      if (typeof window.stxEnsureFullAppScripts === 'function') {
+        Promise.resolve(window.stxEnsureFullAppScripts()).then(flushPending).catch(function () {});
+      }
+    } catch (_) {}
+    try {
+      window.addEventListener('stx:deferred-core-ready', flushPending, { once: true });
+    } catch (_) {}
+    try {
+      window.addEventListener('stx:full-scripts-ready', flushPending, { once: true });
+    } catch (_) {}
+    /* Fallback poll — Base85 may land between events. */
+    let polls = 0;
+    const pollId = setInterval(function () {
+      polls++;
+      if (typeof window.serializeToBase85 === 'function'
+          || typeof window.ensureBase85SerialForYamlSave === 'function') {
+        clearInterval(pollId);
+        flushPending();
+      } else if (polls >= 40) {
+        clearInterval(pollId);
+      }
+    }, 100);
+    return false;
+  }
+  try { window.stxFillSerialBase85FromDeser = stxFillSerialBase85FromDeser; } catch (_) {}
+
+  /**
    * Write deserialized (+ optional base85) to the shared panel and Simple mirror IDs.
    * opts: { deser, b85, source: 'simple'|'guided', skipB85, force, allowEmpty }
    */
@@ -11884,12 +13417,33 @@ function computeFullDeserializedCode(){
     if (window.__ccIsHydrating && !opts.force) return false;
     if (window.__CC_IMPORT_IN_PROGRESS && !opts.force && !window.__CC_BUILDER_HANDOFF) return false;
 
-    const deser = String(opts.deser != null ? opts.deser : '').trim();
+    let deser = String(opts.deser != null ? opts.deser : '').trim();
+    try {
+      const san = stxSanitizeCosmeticSpawnTokensInSerial(deser);
+      if (san && san.changed && san.serial) deser = String(san.serial).trim();
+    } catch (_) {}
     const source = (opts.source === 'guided') ? 'guided' : 'simple';
     const outEl = $('outCode');
     const gDes = document.getElementById('guidedOutputDeserialized');
     const outB85 = $('outCodeB85');
     const gSer = document.getElementById('guidedOutputSerial');
+    /* Never treat a header-only / truncated @U as a fallback once deser has a real part tail. */
+    const prevValidB85 = (()=>{
+      try {
+        const cur = String((gSer && gSer.value) || (outB85 && outB85.value) || '').trim();
+        if (typeof window.ccIsValidStoredBase85 === 'function' && !window.ccIsValidStoredBase85(cur)) return '';
+        if (typeof window.ccIsValidStoredBase85 !== 'function'
+            && !(cur && cur.indexOf('@U') === 0 && cur.length >= 10)) return '';
+        if (deser && deser.indexOf('||') >= 0
+            && typeof window.ccBase85PlausibleForDeser === 'function'
+            && !window.ccBase85PlausibleForDeser(cur, deser)) {
+          return '';
+        }
+        return cur;
+      } catch (_) {}
+      return '';
+    })();
+    try { stxClearImplausibleSerialFields(deser, outB85, gSer); } catch (_) {}
 
     if (gDes && !opts.force && deser) {
       const existing = String(gDes.value || '').trim();
@@ -11915,49 +13469,93 @@ function computeFullDeserializedCode(){
 
     const providedB85 = opts.b85 != null ? String(opts.b85).trim() : '';
     if (providedB85) {
-      if (outB85) outB85.value = providedB85;
-      if (gSer) {
-        gSer.value = providedB85;
-        gSer.__ccImportedValue = providedB85;
+      if (!stxApplyValidBase85ToSerialFields(providedB85, outB85, gSer, deser) && prevValidB85) {
+        stxApplyValidBase85ToSerialFields(prevValidB85, outB85, gSer, deser);
       }
-    } else if (!opts.skipB85 && deser && deser.indexOf('||') >= 0 && typeof window.serializeToBase85 === 'function') {
-      const deserForB85 = deser;
-      const applyB85 = function (packed) {
-        const b85 = String(packed || '').trim();
-        if (!b85) return;
-        try { if ($('outCodeB85')) $('outCodeB85').value = b85; } catch (_) {}
-        try {
-          const gs = document.getElementById('guidedOutputSerial');
-          if (gs) {
-            gs.value = b85;
-            gs.__ccImportedValue = b85;
+    } else if (!opts.skipB85 && deser && deser.indexOf('||') >= 0) {
+      const packerReady = (typeof window.serializeToBase85 === 'function')
+        || (typeof window.ensureBase85SerialForYamlSave === 'function')
+        || (typeof window.serializeDeserializedToBase85BestEffort === 'function');
+      if (packerReady) {
+        const pre = stxPreflightDeserializedForConvert(deser);
+        if (!pre.ok) {
+          try {
+            const banner = document.getElementById('ccSerialPreflightWarn') || document.getElementById('dsStatus');
+            if (banner) banner.textContent = 'Convert blocked: ' + (pre.hardFails[0] || 'invalid serial');
+          } catch (_) {}
+          /* Do not re-apply a short sticky serial when convert is blocked for a large item. */
+          if (prevValidB85) stxApplyValidBase85ToSerialFields(prevValidB85, outB85, gSer, deser);
+          try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+          try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+          try { stxUpdateSerialHealthUi(deser); } catch (_) {}
+          return true;
+        }
+        if (pre.warnings && pre.warnings.length) {
+          try {
+            const banner = document.getElementById('ccSerialPreflightWarn') || document.getElementById('dsStatus');
+            if (banner) banner.textContent = pre.warnings[0];
+          } catch (_) {}
+        }
+        const deserForB85 = deser;
+        try { window.__stxB85PackGen = (Number(window.__stxB85PackGen) || 0) + 1; } catch (_) {}
+        let packGen = 0;
+        try { packGen = Number(window.__stxB85PackGen) || 0; } catch (_) { packGen = 0; }
+        try { window.__stxPendingB85Deser = deserForB85; } catch (_) {}
+        const applyB85 = function (packed) {
+          try {
+            if (gSer) {
+              gSer.removeAttribute('aria-busy');
+              if (gSer.placeholder === 'Packing…') gSer.placeholder = '—';
+            }
+            if (outB85 && outB85.placeholder === 'Packing…') outB85.placeholder = '—';
+          } catch (_) {}
+          try {
+            if (packGen !== Number(window.__stxB85PackGen)) return;
+            const pending = String(window.__stxPendingB85Deser || '').trim();
+            if (pending && pending !== deserForB85) return;
+          } catch (_) {}
+          if (!stxApplyValidBase85ToSerialFields(packed, outB85, gSer, deserForB85)) {
+            /* Prefer blank Serial over a truncated header-only @U for this deser. */
+            if (prevValidB85) stxApplyValidBase85ToSerialFields(prevValidB85, outB85, gSer, deserForB85);
           }
-        } catch (_) {}
-        try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
-      };
-      const weight = (typeof window.ccDeserializedPayloadWeight === 'function')
-        ? window.ccDeserializedPayloadWeight(deserForB85)
-        : { heavy: deserForB85.length > 2800 };
-      try {
-        if (window.__stxB85RefreshTimer) clearTimeout(window.__stxB85RefreshTimer);
-      } catch (_) {}
-      const packDelay = opts.force ? 0 : (weight.heavy ? 0 : 80);
-      window.__stxB85RefreshTimer = setTimeout(function () {
-        window.__stxB85RefreshTimer = 0;
+        };
+        const weight = (typeof window.ccDeserializedPayloadWeight === 'function')
+          ? window.ccDeserializedPayloadWeight(deserForB85)
+          : { heavy: deserForB85.length > 12000 };
         try {
-          if (typeof window.ccSerializeToBase85Async === 'function' && weight.heavy) {
-            if (gSer) gSer.value = '…';
-            if (outB85) outB85.value = '…';
-            window.ccSerializeToBase85Async(deserForB85, applyB85);
-          } else {
-            applyB85(window.serializeToBase85(deserForB85, undefined, true));
-          }
+          if (window.__stxB85RefreshTimer) clearTimeout(window.__stxB85RefreshTimer);
         } catch (_) {}
-      }, packDelay);
+        const packDelay = opts.force ? 0 : (weight.heavy ? 0 : 80);
+        window.__stxB85RefreshTimer = setTimeout(function () {
+          window.__stxB85RefreshTimer = 0;
+          try {
+            if (packGen !== Number(window.__stxB85PackGen)) return;
+          } catch (_) {}
+          try {
+            if (gSer) {
+              gSer.setAttribute('aria-busy', 'true');
+              if (!prevValidB85) gSer.placeholder = 'Packing…';
+            }
+            if (outB85 && !prevValidB85) outB85.placeholder = 'Packing…';
+            /* Same path as floating Convert: local normalize/ensure, then best-effort/remote. */
+            stxPackDeserializedToBase85BestEffort(deserForB85).then(function (packed) {
+              applyB85(packed);
+            }).catch(function () {
+              applyB85('');
+            });
+          } catch (_) {
+            applyB85('');
+          }
+        }, packDelay);
+      } else {
+        /* Packer not loaded yet (deferred) — queue fill so Serial is not left blank after import. */
+        stxFillSerialBase85FromDeser(deser, { outB85El: outB85, gSerEl: gSer });
+      }
     }
 
     try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
     try { if (typeof window.__ccSyncCodeCharCounts === 'function') window.__ccSyncCodeCharCounts(); } catch (_) {}
+    try { stxUpdateSerialHealthUi(deser); } catch (_) {}
     return true;
   }
   try { window.writeSharedItemCode = writeSharedItemCode; } catch (_) {}
@@ -12407,7 +14005,7 @@ function resetAll(){
       if (deser && deser.indexOf('||') >= 0) {
         try {
           var src = (targetBuilder === 'simple') ? 'simple' : 'guided';
-          writeSharedItemCode({ deser: deser, source: src, force: true });
+          writeSharedItemCode({ deser: deser, source: src, force: true, skipB85: false });
         } catch (_) {}
         try {
           var impBoxShared = document.getElementById('importBox');
@@ -12416,46 +14014,19 @@ function resetAll(){
         try { if (typeof window.__ipiInvalidateSerialCache === 'function') window.__ipiInvalidateSerialCache(); } catch (_) {}
       }
       
-  if ((targetBuilder === 'guided' || targetBuilder === 'both') && guidedDeserEl && deser && deser.indexOf('||') >= 0) {
-    guidedDeserEl.value = deser;
-    guidedDeserEl.__ccImportedValue = deser;
-    guidedDeserEl.__ccUserTailEdit = false;
+  if ((targetBuilder === 'guided' || targetBuilder === 'both' || targetBuilder === 'simple') && guidedDeserEl && deser && deser.indexOf('||') >= 0) {
+    if (targetBuilder === 'guided' || targetBuilder === 'both') {
+      guidedDeserEl.value = deser;
+      guidedDeserEl.__ccImportedValue = deser;
+      guidedDeserEl.__ccUserTailEdit = false;
+    }
     try {
       var impBox = document.getElementById('importBox');
       if (impBox && String(impBox.value || '').trim() !== deser) impBox.value = deser;
     } catch (_) {}
     try { if (typeof window.__ipiInvalidateSerialCache === 'function') window.__ipiInvalidateSerialCache(); } catch (_) {}
-    if (guidedSerialEl && typeof window.serializeToBase85 === 'function') {
-      var deserForB85 = deser;
-      var applyB85 = function (packed) {
-        if (!guidedSerialEl || !packed) return;
-        guidedSerialEl.value = String(packed).trim();
-        guidedSerialEl.__ccImportedValue = String(packed).trim();
-        try {
-          if (outB85El) outB85El.value = String(packed).trim();
-        } catch (_) {}
-      };
-      var weight = (typeof window.ccDeserializedPayloadWeight === 'function')
-        ? window.ccDeserializedPayloadWeight(deserForB85)
-        : { heavy: deserForB85.length > 2800 };
-      var pack = function () {
-        try {
-          if (typeof window.ccSerializeToBase85Async === 'function' && weight.heavy) {
-            guidedSerialEl.value = '…';
-            if (outB85El) outB85El.value = '…';
-            window.ccSerializeToBase85Async(deserForB85, applyB85);
-          } else {
-            applyB85(window.serializeToBase85(deserForB85, undefined, true));
-          }
-        } catch (_) {}
-      };
-      if (window.__CC_IMPORT_HEAVY || weight.heavy) {
-        guidedSerialEl.value = '…';
-        setTimeout(pack, weight.heavy ? 0 : 80);
-      } else {
-        pack();
-      }
-    }
+    /* Always auto-fill Serial (BL-base85) on import — wait for packer if still loading. */
+    stxFillSerialBase85FromDeser(deser, { outB85El: outB85El, gSerEl: guidedSerialEl });
   }
   
   // Keep Simple #outCode/#outCodeB85 as hidden mirrors of the shared panel (do not blank on guided import).
@@ -12618,9 +14189,17 @@ function resetAll(){
 
   function parseImportTokenList(raw){
     let s = String(raw || '').trim();
+    try {
+      const san = stxSanitizeCosmeticSpawnTokensInSerial(s);
+      if (san && san.changed && san.serial) s = String(san.serial).trim();
+      if (san && Array.isArray(san.unresolved) && san.unresolved.length) {
+        try { window.__ccSkinUnresolvedCosmetic = san.unresolved[0]; } catch (_) {}
+      }
+    } catch (_) {}
+    /* Only tokenize the || tail — never the header (`279, 0, 1, 70| 2, 1259`). */
     const di = s.indexOf('||');
-    if (di >= 0){
-      s = s.slice(0, di + 2) + stxNormalizeTruncatedPackedBracketTail(s.slice(di + 2));
+    if (di >= 0) {
+      s = stxNormalizeTruncatedPackedBracketTail(s.slice(di + 2));
     } else {
       s = stxNormalizeTruncatedPackedBracketTail(s);
     }
@@ -12632,6 +14211,9 @@ function resetAll(){
       const tok = String(m[0] || '').trim();
       if (!tok) continue;
       if (tok === '|' || tok === '||') continue;
+      /* Keep Cosmetics_Weapon string tokens — Skin (optional) / phosphene TOK_STRING. */
+      /* Header fragments that leaked into a bad paste (bare flags / seeds). */
+      if (/^\d+\|$/.test(tok) || tok === '0') continue;
       out.push(tok);
     }
     return out;
@@ -12952,24 +14534,30 @@ function resetAll(){
         guidedSerialEl.value = b85Original;
         guidedSerialEl.__ccImportedValue = b85Original;
       } else {
-        guidedSerialEl.value = '…';
+        try { guidedSerialEl.setAttribute('aria-busy', 'true'); } catch (_) {}
         const fullCopy = full;
         const packHeavy = function () {
           try {
             if (typeof window.ccSerializeToBase85Async === 'function') {
               window.ccSerializeToBase85Async(fullCopy, function (b85) {
+                try { guidedSerialEl.removeAttribute('aria-busy'); } catch (_) {}
                 if (!guidedSerialEl || !b85) return;
+                if (typeof window.ccIsValidStoredBase85 === 'function' && !window.ccIsValidStoredBase85(b85)) return;
                 guidedSerialEl.value = String(b85).trim();
                 guidedSerialEl.__ccImportedValue = String(b85).trim();
               });
             } else if (typeof window.serializeToBase85 === 'function') {
               const b85 = window.serializeToBase85(fullCopy, undefined, true);
+              try { guidedSerialEl.removeAttribute('aria-busy'); } catch (_) {}
               if (b85) {
+                if (typeof window.ccIsValidStoredBase85 === 'function' && !window.ccIsValidStoredBase85(b85)) return;
                 guidedSerialEl.value = String(b85).trim();
                 guidedSerialEl.__ccImportedValue = String(b85).trim();
               }
             }
-          } catch (_) {}
+          } catch (_) {
+            try { guidedSerialEl.removeAttribute('aria-busy'); } catch (_e) {}
+          }
         };
         setTimeout(packHeavy, 0);
       }
@@ -13016,6 +14604,9 @@ function resetAll(){
     const rawLooksPacked = (raw.indexOf('@u') === 0 || raw.indexOf('@U') === 0 || (raw.indexOf('||') < 0 && raw.indexOf('{') < 0 && raw.length > 20));
     if (rawLooksPacked) importedB85Original = raw;
     window.__CC_IMPORT_IN_PROGRESS = true;
+    try {
+      if (typeof window.stxEnsureDeferredCore === 'function') window.stxEnsureDeferredCore();
+    } catch (_) {}
     const finishImport = (heavy)=>{
       setTimeout(function () { window.__CC_IMPORT_IN_PROGRESS = false; }, heavy ? 650 : 220);
     };
@@ -13536,7 +15127,6 @@ function resetAll(){
       };
 
       if (cat === 'Shield'){
-        const mainFam = partFamilyIdOf(state.mainPart || null);
         const elementTokens = state.extras.filter(e => e && e.type === 'element');
         const pickShieldSlot = (p) => {
           const pf = partFamilyIdOf(p);
@@ -13576,13 +15166,10 @@ function resetAll(){
             return slotByKey.get('resistance') || null;
           }
 
-          if (Number.isFinite(mainFam) && Number.isFinite(pf) && pf === mainFam){
+          if (stxIsShieldUniquePoolRowCode(codeNorm)) return slotByKey.get('bodyLegendary') || null;
+          if (stxIsShieldBodyPoolRowCode(codeNorm)) {
             if (!state.slots.body && !state.slots.mainBody) return slotByKey.get('body') || slotByKey.get('mainBody') || null;
-            return slotByKey.get('bodyLegendary') || null;
-          }
-          if (Number.isFinite(pf) && pf !== 237 && pf !== 246 && pf !== 248){
-            if (!state.slots.body && !state.slots.mainBody) return slotByKey.get('body') || slotByKey.get('mainBody') || null;
-            return slotByKey.get('bodyLegendary') || null;
+            return null;
           }
           return null;
         };
@@ -13690,6 +15277,8 @@ function resetAll(){
         const pickGrenadeByCode = (p)=>{
           const c = String(normCode(p && p.code) || '').toLowerCase();
           if (/grenade_gadget\.part_stat_/.test(c)) return slotByKey.get('grenadeKitStats') || null;
+          if (stxIsGrenadePayloadAugmentPoolRowCode(c)) return slotByKey.get('augment') || null;
+          if (stxIsGrenadePayloadPoolRowCode(c)) return slotByKey.get('payload') || null;
           if (stxIsGrenadeBodyPoolRowCode(c)) return slotByKey.get('body') || null;
           if (weaponPearlElemPartMatch(p)) return slotByKey.get('pearlElem') || null;
           if (weaponPearlStatPartMatch(p)) return slotByKey.get('pearlStat') || null;
@@ -13944,7 +15533,14 @@ function resetAll(){
       let skinCamoSyncTimer = 0;
       const skinSyncDebounceMs = stxPerfLiteUi() ? 320 : 140;
       const resyncSkinCamo = (opts)=>{
+        const saveBusy = typeof window.stxSaveYamlUiBusy === 'function' && window.stxSaveYamlUiBusy();
         if (opts && opts.immediate) {
+          if (saveBusy) {
+            /* Large-save extract owns the main thread — retry after it settles. */
+            if (skinCamoSyncTimer) clearTimeout(skinCamoSyncTimer);
+            skinCamoSyncTimer = setTimeout(() => { skinCamoSyncTimer = 0; resyncSkinCamo(opts); }, 1200);
+            return;
+          }
           if (skinCamoSyncTimer) { clearTimeout(skinCamoSyncTimer); skinCamoSyncTimer = 0; }
           const runSync = ()=>{
             try{
@@ -13959,15 +15555,20 @@ function resetAll(){
           return;
         }
         if (skinCamoSyncTimer) clearTimeout(skinCamoSyncTimer);
+        const delay = saveBusy ? Math.max(skinSyncDebounceMs, 1800) : skinSyncDebounceMs;
         skinCamoSyncTimer = setTimeout(() => {
           skinCamoSyncTimer = 0;
+          if (typeof window.stxSaveYamlUiBusy === 'function' && window.stxSaveYamlUiBusy()) {
+            resyncSkinCamo(opts);
+            return;
+          }
           try{
             syncSkinOptionsFromParent({
               skipTooltips: !(opts && opts.withTooltips),
               onDone: () => {}
             });
           }catch(_){}
-        }, skinSyncDebounceMs);
+        }, delay);
       };
       const observeSourceSelect = (docObj, id)=>{
         try{
@@ -13999,10 +15600,41 @@ function resetAll(){
       try { window.__stxArmSkinCamoSync = armInitialSkinSync; } catch (_) {}
 
       $('skinSelect').addEventListener('change', ()=>{
-        const synced = syncMainPartFromSkinSelection();
-        if (!synced) refreshOutputs();
+        clearImportedOutputLock(true);
+        try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
+        try {
+          const gDes = document.getElementById('guidedOutputDeserialized');
+          if (gDes) {
+            gDes.__ccUserTailEdit = false;
+            /* Allow Skin brace to rewrite a longer imported mirror. */
+            if (gDes.__ccImportedValue) gDes.__ccImportedValue = null;
+          }
+        } catch (_) {}
+        /* Stacked mixes may soft-pin rarity; single `{fam:id}` skins never rewrite rarity. */
+        syncMainPartFromSkinSelection();
+        try {
+          const sc = getSelectedWeaponSkinAndCamo();
+          let codeNow = (typeof computeFullDeserializedCode === 'function') ? String(computeFullDeserializedCode() || '').trim() : '';
+          const live = (typeof getSharedDeserialized === 'function') ? String(getSharedDeserialized() || '').trim() : '';
+          const skinNorm = sc && sc.rarityToken ? String(sc.rarityToken).replace(/\s+/g, '') : '';
+          const rebuildHasSkin = !!(skinNorm && codeNow.replace(/\s+/g, '').indexOf(skinNorm) >= 0);
+          /* If rebuild dropped the brace (frozen/partial state), patch the longest live || serial. */
+          if (sc && (sc.rarityToken || sc.camoToken || sc.spawnToken) && !rebuildHasSkin && live.indexOf('||') >= 0) {
+            const patched = stxOverlaySkinCamoOnDeserialized(live, sc);
+            if (patched && patched.indexOf('||') >= 0) codeNow = patched;
+          }
+          if (codeNow && codeNow.indexOf('||') >= 0 && typeof writeSharedItemCode === 'function') {
+            writeSharedItemCode({ deser: codeNow, source: 'simple', force: true });
+          }
+        } catch (_) {}
+        refreshOutputs(true);
+        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
       });
-      if ($('camoSelect')) $('camoSelect').addEventListener('change', ()=>refreshOutputs());
+      if ($('camoSelect')) $('camoSelect').addEventListener('change', ()=>{
+        clearImportedOutputLock(true);
+        refreshOutputs(true);
+        try { if (typeof window.syncFloatingOutput === 'function') window.syncFloatingOutput(true); } catch (_) {}
+      });
 
       const lazyArm = ()=>{ armInitialSkinSync(); };
       $('skinSelect').addEventListener('focus', lazyArm, { once: true, passive: true });
@@ -14366,6 +15998,10 @@ function resetAll(){
         });
       }
       const refreshAfterDeferred = () => {
+        if (typeof window.stxSaveYamlUiBusy === 'function' && window.stxSaveYamlUiBusy()) {
+          setTimeout(refreshAfterDeferred, 1500);
+          return;
+        }
         try { updateSimplePresets(); } catch (_) {}
         try { stxRefreshBuilderAfterDatasetGrowth(); } catch (_) {}
       };
@@ -14528,6 +16164,10 @@ function resetAll(){
       if (!window.__stxSimpleDatasetGrowthHooked) {
         window.__stxSimpleDatasetGrowthHooked = true;
         const onDatasetGrowth = () => {
+          if (typeof window.stxSaveYamlUiBusy === 'function' && window.stxSaveYamlUiBusy()) {
+            setTimeout(onDatasetGrowth, 1500);
+            return;
+          }
           try { stxRefreshBuilderAfterDatasetGrowth(); } catch (_e) {}
         };
         window.addEventListener('stx:deferred-core-ready', onDatasetGrowth);

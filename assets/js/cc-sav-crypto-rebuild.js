@@ -655,16 +655,19 @@
       var downloadName = getNextStbxFilename('yaml', rawYaml);
       var ta = document.getElementById('yamlInput') || document.getElementById('fullYamlInput');
       if (ta) ta.value = rawYaml;
+      if (typeof window.invalidateYamlParseCache === 'function') window.invalidateYamlParseCache();
       // Paint YAML first; serial name-decode runs in the background (can be slow on file://).
       if (statusDiv) {
         statusDiv.textContent = 'YAML ready — loading inventory list (names decode in background)…';
         statusDiv.style.color = '#4caf50';
       }
       if (typeof window.scheduleParseYAMLBackpack === 'function') window.scheduleParseYAMLBackpack(350);
-      /* Full YAML object parse is heavy — never block decrypt on syncYamlToFields. */
-      if (typeof window.scheduleSyncYamlToFields === 'function') window.scheduleSyncYamlToFields();
-      else if (typeof window.syncYamlToFields === 'function') {
-        setTimeout(function () { try { window.syncYamlToFields(); } catch (_) {} }, 400);
+      /* Defer field sync until after inventory extract (parseYAMLBackpack schedules it when done).
+         Only kick a late fallback here for tiny saves that finish extract before the schedule. */
+      if (typeof window.scheduleSyncYamlToFields === 'function') {
+        window.scheduleSyncYamlToFields(Math.max(1200, (rawYaml && rawYaml.length > 500000) ? 2400 : 1200));
+      } else if (typeof window.syncYamlToFields === 'function') {
+        setTimeout(function () { try { window.syncYamlToFields(); } catch (_) {} }, 1500);
       }
       if (typeof window.__updatePresetButtonsAvailability === 'function') window.__updatePresetButtonsAvailability();
       if (typeof window.__ccRenderRuntimeStatus === 'function') window.__ccRenderRuntimeStatus();
@@ -741,20 +744,33 @@
     }
   };
 
+  function downloadBytesAsFile(fileName, bytesOrBlob, mimeType) {
+    var blob = bytesOrBlob instanceof Blob
+      ? bytesOrBlob
+      : new Blob([bytesOrBlob], { type: mimeType || 'application/octet-stream' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    a.rel = 'noopener';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      try { document.body.removeChild(a); } catch (_) {}
+      try { URL.revokeObjectURL(url); } catch (_) {}
+    }, 1500);
+    return true;
+  }
+
   window.saveYAMLToSAV = function () {
     try {
       var yamlTa = document.getElementById('yamlInput') || document.getElementById('fullYamlInput') || document.querySelector('textarea[id*="yaml"]');
       var yamlDataStr = (yamlTa && yamlTa.value ? yamlTa.value : '').trim();
       if (!yamlDataStr) return alert('No YAML in the editor to save.');
       var fileName = getNextStbxFilename('yaml', yamlDataStr);
-      var blob = new Blob([yamlDataStr], { type: 'text/yaml' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
+      downloadBytesAsFile(fileName, yamlDataStr, 'text/yaml;charset=utf-8');
+      alert('YAML saved: ' + fileName);
     } catch (e) {
       console.error('saveYAMLToSAV failed:', e);
       alert('Save YAML failed: ' + (e && e.message ? e.message : e));
@@ -777,12 +793,23 @@
         alert('Invalid account ID. Please enter SteamID64 decimal or a supported hex ID.');
         return;
       }
+      /* Ensure form fields (name/level/cash/etc.) are written into the textarea before encrypt. */
+      try {
+        if (typeof window.applyYAMLStatsChanges === 'function') {
+          window.applyYAMLStatsChanges();
+        }
+      } catch (applyErr) {
+        console.warn('applyYAMLStatsChanges before convert failed', applyErr);
+      }
       var yamlTa = document.getElementById('yamlInput') || document.getElementById('fullYamlInput') || document.querySelector('textarea[id*="yaml"]');
       var yamlDataStr = (yamlTa && yamlTa.value ? yamlTa.value : '').trim();
       if (!yamlDataStr) return alert('No YAML found in the editor to convert.');
+      /* Sanitize a copy for encrypt — do not clobber the editor textarea. */
       if (typeof window.sanitizeYamlForParse === 'function') {
         yamlDataStr = window.sanitizeYamlForParse(yamlDataStr);
-        if (yamlTa) yamlTa.value = yamlDataStr;
+      }
+      if (!yamlDataStr || !String(yamlDataStr).trim()) {
+        return alert('YAML became empty after sanitize — convert aborted.');
       }
       var enc = new TextEncoder();
       var yamlBytes = enc.encode(yamlDataStr);
@@ -801,17 +828,13 @@
       var dataWA = uint8ArrayToWordArray(padded);
       var cipherParams = CryptoJS.AES.encrypt(dataWA, keyWA, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.NoPadding });
       var cipherU8 = wordArrayToUint8Array(cipherParams.ciphertext);
+      if (!cipherU8 || !cipherU8.length) {
+        return alert('Encrypt produced an empty .sav — check Account ID and YAML contents.');
+      }
       var fileName = getNextStbxFilename('sav', yamlDataStr);
-      var blob = new Blob([cipherU8], { type: 'application/octet-stream' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
+      downloadBytesAsFile(fileName, cipherU8, 'application/octet-stream');
       persistSteamId(steamid);
-      alert('.sav file generated: ' + fileName);
+      alert('.sav file generated: ' + fileName + ' (' + cipherU8.length + ' bytes)');
     } catch (e) {
       console.error('convertYAMLToSAV error', e);
       alert('Error generating .sav: ' + (e && e.message ? e.message : e));

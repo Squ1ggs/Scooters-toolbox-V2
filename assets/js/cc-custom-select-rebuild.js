@@ -310,6 +310,7 @@
       if (!im || !o) return;
       var alt = iconAltSrcForOption(o);
       var triedAlt = false;
+      var triedGeneric = false;
       im.addEventListener('load', function onIconOk() {
         try {
           im.style.visibility = '';
@@ -321,6 +322,19 @@
           triedAlt = true;
           im.src = alt;
           return;
+        }
+        /* Last resort: keep a chip visible for firmware / perk misses instead of a blank gap. */
+        if (!triedGeneric) {
+          triedGeneric = true;
+          var src0 = iconSrcForOption(o);
+          if (/classmod-firmware|dlc-firmware/i.test(src0) || /part_firmware/i.test(String(o.value || '') + String(o.textContent || ''))) {
+            im.src = './assets/img/classmod-firmware/jacked.png';
+            return;
+          }
+          if (/classmod-perks|classmod-passive/i.test(src0)) {
+            im.src = './assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png';
+            return;
+          }
         }
         try {
           im.style.visibility = 'hidden';

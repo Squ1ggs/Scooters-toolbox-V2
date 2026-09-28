@@ -1,14 +1,42 @@
 (function () {
   'use strict';
   window.YAML_SAVE_CATALOG = {
-  "generated": "2026-08-04T20:44:21.318Z",
+  "generated": "2026-09-16T10:07:05.914Z",
   "nexusDir": "references/bl4_toolbox_export/ncs/json",
   "shiny_gear": [
+    {
+      "key": "shiny_abyss",
+      "cosmetic": "Cosmetics_Weapon_Shiny_abyss",
+      "unlockable": "Unlockable_Weapons.Shiny_abyss",
+      "label": "Phosphene — Abyss",
+      "idRaw": "23:61",
+      "comp": "BOR_SR.comp_05_legendary_abyss",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
+      "key": "shiny_accretion",
+      "cosmetic": "Cosmetics_Weapon_Shiny_accretion",
+      "unlockable": "Unlockable_Weapons.Shiny_accretion",
+      "label": "Phosphene — Accretion"
+    },
+    {
+      "key": "shiny_aerodramatic",
+      "cosmetic": "Cosmetics_Weapon_Shiny_AeroDramatic",
+      "unlockable": "Unlockable_Weapons.Shiny_AeroDramatic",
+      "label": "Phosphene — aerodramatic"
+    },
     {
       "key": "shiny_anarchy",
       "cosmetic": "Cosmetics_Weapon_Shiny_anarchy",
       "unlockable": "Unlockable_Weapons.Shiny_anarchy",
       "label": "Phosphene — Anarchy"
+    },
+    {
+      "key": "shiny_arctic",
+      "cosmetic": "Cosmetics_Weapon_Shiny_arctic",
+      "unlockable": "Unlockable_Weapons.Shiny_arctic",
+      "label": "Phosphene — Arctic"
     },
     {
       "key": "shiny_asher",
@@ -17,10 +45,28 @@
       "label": "Phosphene — Asher's Rise"
     },
     {
+      "key": "shiny_assembler",
+      "cosmetic": "Cosmetics_Weapon_Shiny_assembler",
+      "unlockable": "Unlockable_Weapons.Shiny_reminisce",
+      "label": "Phosphene — Assembler"
+    },
+    {
       "key": "shiny_atlien",
       "cosmetic": "Cosmetics_Weapon_Shiny_ATLien",
       "unlockable": "Unlockable_Weapons.Shiny_ATLien",
       "label": "Phosphene — Budget Deity"
+    },
+    {
+      "key": "shiny_aura",
+      "cosmetic": "Cosmetics_Weapon_Shiny_aura",
+      "unlockable": "Unlockable_Weapons.Shiny_aura",
+      "label": "Phosphene — Aura"
+    },
+    {
+      "key": "shiny_avarice",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Avarice",
+      "unlockable": "Unlockable_Weapons.Shiny_Avarice",
+      "label": "Phosphene — Avarice"
     },
     {
       "key": "shiny_ballista",
@@ -29,10 +75,26 @@
       "label": "Phosphene — Borstel Ballista"
     },
     {
+      "key": "shiny_barrel",
+      "cosmetic": "Cosmetics_Weapon_Shiny_barrel",
+      "unlockable": "Unlockable_Weapons.Shiny_barrel",
+      "label": "Phosphene — Cooper Duper",
+      "idRaw": "289:29",
+      "comp": "MAL_HW.comp_05_legendary_barrel",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_beegun",
       "cosmetic": "Cosmetics_Weapon_Shiny_BeeGun",
       "unlockable": "Unlockable_Weapons.Shiny_BeeGun",
       "label": "Phosphene — Birt's Bees"
+    },
+    {
+      "key": "shiny_blackout",
+      "cosmetic": "Cosmetics_Weapon_Shiny_blackout",
+      "unlockable": "Unlockable_Weapons.Shiny_blackout",
+      "label": "Phosphene — Blackout"
     },
     {
       "key": "shiny_bloodstarved",
@@ -65,6 +127,12 @@
       "label": "Phosphene — Hardpoint"
     },
     {
+      "key": "shiny_brickhouse",
+      "cosmetic": "Cosmetics_Weapon_Shiny_brickhouse",
+      "unlockable": "Unlockable_Weapons.Shiny_brickhouse",
+      "label": "Phosphene — Brickhouse"
+    },
+    {
       "key": "shiny_bubbles",
       "cosmetic": "Cosmetics_Weapon_Shiny_bubbles",
       "unlockable": "Unlockable_Weapons.Shiny_bubbles",
@@ -83,10 +151,28 @@
       "label": "Phosphene — Bully"
     },
     {
+      "key": "shiny_burrow",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Burrow",
+      "unlockable": "Unlockable_Weapons.Shiny_Burrow",
+      "label": "Phosphene — burrow"
+    },
+    {
+      "key": "shiny_cannonbrawl",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Cannonbrawl",
+      "unlockable": "Unlockable_Weapons.Shiny_cannonbrawl",
+      "label": "Phosphene — Swan Song"
+    },
+    {
       "key": "shiny_chuck",
       "cosmetic": "Cosmetics_Weapon_Shiny_Chuck",
       "unlockable": "Unlockable_Weapons.Shiny_Chuck",
       "label": "Phosphene — Chuck"
+    },
+    {
+      "key": "shiny_clarity",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Clarity",
+      "unlockable": "Unlockable_Weapons.Shiny_Clarity",
+      "label": "Phosphene — Clarity"
     },
     {
       "key": "shiny_coldshoulder",
@@ -107,10 +193,33 @@
       "label": "Phosphene — Complex Root"
     },
     {
+      "key": "shiny_constable",
+      "cosmetic": null,
+      "unlockable": null,
+      "label": "Pearlescent — Constable",
+      "idRaw": "9:101",
+      "comp": "JAK_SG.comp_06_pearl_constable",
+      "pearl": true,
+      "variant": "pearl",
+      "note": "Pearlescent comp (comp_06_pearl_*) — counts as shiny variant"
+    },
+    {
       "key": "shiny_convergence",
       "cosmetic": "Cosmetics_Weapon_Shiny_convergence",
       "unlockable": "Unlockable_Weapons.Shiny_convergence",
       "label": "Phosphene — Convergence"
+    },
+    {
+      "key": "shiny_cormano",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Cormano",
+      "unlockable": "Unlockable_Weapons.Shiny_Cormano",
+      "label": "Phosphene — Cormano"
+    },
+    {
+      "key": "shiny_crazedearl",
+      "cosmetic": "Cosmetics_Weapon_Shiny_crazedEarl",
+      "unlockable": "Unlockable_Weapons.Shiny_CrazedEarl",
+      "label": "Phosphene — Crazed Earl"
     },
     {
       "key": "shiny_crowdsourced",
@@ -119,10 +228,42 @@
       "label": "Phosphene — Midnight Defiance (Vladof SR; not Crow-Sourced AR)"
     },
     {
+      "key": "shiny_crowsourced",
+      "cosmetic": "Cosmetics_Weapon_Shiny_crowsourced",
+      "unlockable": "Unlockable_Weapons.Shiny_crowsourced",
+      "label": "Phosphene — Crow-Sourced",
+      "idRaw": "15:77",
+      "comp": "ORD_AR.comp_05_legendary_crowsourced",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
+      "key": "shiny_dahlfather",
+      "cosmetic": "Cosmetics_Weapon_Shiny_dahlfather",
+      "unlockable": "Unlockable_Weapons.Shiny_dahlfather",
+      "label": "Phosphene — Heimdahl",
+      "idRaw": "273:43",
+      "comp": "TOR_HW.comp_05_legendary_dahlfather",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_demo",
       "cosmetic": "Cosmetics_Weapon_Shiny_Demo",
       "unlockable": "Unlockable_Weapons.Shiny_Demo",
       "label": "Phosphene — Hair Trigger (legendary; not pearl)"
+    },
+    {
+      "key": "shiny_devourer",
+      "cosmetic": "Cosmetics_Weapon_Shiny_devourer",
+      "unlockable": "Unlockable_Weapons.Shiny_rainmaker",
+      "label": "Phosphene — Devourer"
+    },
+    {
+      "key": "shiny_discybusiness",
+      "cosmetic": "Cosmetics_Weapon_Shiny_DiscyBusiness",
+      "unlockable": "Unlockable_Weapons.Shiny_DiscyBusiness",
+      "label": "Phosphene — Discy Business"
     },
     {
       "key": "shiny_dividedfocus",
@@ -137,10 +278,44 @@
       "label": "Phosphene — Doeshot"
     },
     {
+      "key": "shiny_draupner",
+      "cosmetic": "Cosmetics_Weapon_Shiny_draupner",
+      "unlockable": "Unlockable_Weapons.Shiny_draupner",
+      "label": "Phosphene — Draupner",
+      "idRaw": "275:38",
+      "comp": "BOR_HW.comp_05_legendary_draupner",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_dualdamage",
       "cosmetic": "Cosmetics_Weapon_Shiny_DualDamage",
       "unlockable": "Unlockable_Weapons.Shiny_DualDamage",
       "label": "Phosphene — Aegon's Dream"
+    },
+    {
+      "key": "shiny_earlyexcess",
+      "cosmetic": "Cosmetics_Weapon_Shiny_EarlyExcess",
+      "unlockable": "Unlockable_Weapons.Shiny_EarlyExcess",
+      "label": "Phosphene — Earlyexcess"
+    },
+    {
+      "key": "shiny_enumeration",
+      "cosmetic": "Cosmetics_Weapon_Shiny_enumeration",
+      "unlockable": "Unlockable_Weapons.Shiny_enumeration",
+      "label": "Phosphene — Enumeration"
+    },
+    {
+      "key": "shiny_exhibition",
+      "cosmetic": "Cosmetics_Weapon_Shiny_exhibition",
+      "unlockable": "Unlockable_Weapons.Shiny_exhibition",
+      "label": "Phosphene — Exhibition"
+    },
+    {
+      "key": "shiny_extinction",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Extinction",
+      "unlockable": "Unlockable_Weapons.Shiny_Extinction",
+      "label": "Phosphene — Extinction"
     },
     {
       "key": "shiny_falke",
@@ -167,10 +342,32 @@
       "label": "Phosphene — Fisheye"
     },
     {
+      "key": "shiny_fishward",
+      "cosmetic": "Cosmetics_Weapon_Shiny_fishward",
+      "unlockable": "Unlockable_Weapons.Shiny_fishward",
+      "label": "Phosphene — Fishward"
+    },
+    {
+      "key": "shiny_flak",
+      "cosmetic": "Cosmetics_Weapon_Shiny_flak",
+      "unlockable": "Unlockable_Weapons.Shiny_flak",
+      "label": "Phosphene — Flak Cannon",
+      "idRaw": "282:31",
+      "comp": "VLA_HW.comp_05_legendary_flak",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_flashcyclone",
       "cosmetic": "Cosmetics_Weapon_Shiny_FlashCyclone",
-      "unlockable": "Unlockable_Weapons.Shiny_FlashCyclone",
+      "unlockable": "Unlockable_Weapons.Shiny_flashcyclone",
       "label": "Phosphene — Flashcyclone"
+    },
+    {
+      "key": "shiny_flashfuel",
+      "cosmetic": "Cosmetics_Weapon_Shiny_FlashFuel",
+      "unlockable": "Unlockable_Weapons.Shiny_FlashFuel",
+      "label": "Phosphene — Flashfuel"
     },
     {
       "key": "shiny_fleabag",
@@ -183,6 +380,12 @@
       "cosmetic": "Cosmetics_Weapon_Shiny_follower",
       "unlockable": "Unlockable_Weapons.Shiny_follower",
       "label": "Phosphene — Follower"
+    },
+    {
+      "key": "shiny_fourier",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Fourier",
+      "unlockable": "Unlockable_Weapons.Shiny_Fourier",
+      "label": "Phosphene — Fourier"
     },
     {
       "key": "shiny_gmr",
@@ -203,10 +406,32 @@
       "label": "Phosphene — Golden God"
     },
     {
+      "key": "shiny_gomie",
+      "cosmetic": "Cosmetics_Weapon_Shiny_gomie",
+      "unlockable": "Unlockable_Weapons.Shiny_gomie",
+      "label": "Phosphene — Gomie",
+      "idRaw": "27:81",
+      "comp": "JAK_AR.comp_05_legendary_gomie",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_goremaster",
       "cosmetic": "Cosmetics_Weapon_Shiny_GoreMaster",
       "unlockable": "Unlockable_Weapons.Shiny_GoreMaster",
       "label": "Phosphene — Goremaster"
+    },
+    {
+      "key": "shiny_handfrag",
+      "cosmetic": "Cosmetics_Weapon_Shiny_handfrag",
+      "unlockable": "Unlockable_Weapons.Shiny_handfrag",
+      "label": "Phosphene — Handfrag"
+    },
+    {
+      "key": "shiny_harddark",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HardDark",
+      "unlockable": "Unlockable_Weapons.Shiny_HardDark",
+      "label": "Phosphene — Hard Dark"
     },
     {
       "key": "shiny_heartgun",
@@ -239,16 +464,88 @@
       "label": "Phosphene — Hemorrhage"
     },
     {
+      "key": "shiny_herald",
+      "cosmetic": null,
+      "unlockable": null,
+      "label": "Pearlescent — Herald",
+      "idRaw": "6:85",
+      "comp": "TOR_PS.comp_06_pearl_herald",
+      "pearl": true,
+      "variant": "pearl",
+      "note": "Pearlescent comp (comp_06_pearl_*) — counts as shiny variant"
+    },
+    {
+      "key": "shiny_hippogun",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HippoGun",
+      "unlockable": "Unlockable_Weapons.Shiny_Hippogun",
+      "label": "Phosphene — Hippogun"
+    },
+    {
+      "key": "shiny_hotmod",
+      "cosmetic": "Cosmetics_Weapon_Shiny_HotMod",
+      "unlockable": "Unlockable_Weapons.Shiny_HotMod",
+      "label": "Phosphene — Hotmod"
+    },
+    {
+      "key": "shiny_ichor",
+      "cosmetic": "Cosmetics_Weapon_Shiny_ichor",
+      "unlockable": "Unlockable_Weapons.Shiny_ichor",
+      "label": "Phosphene — Ichor",
+      "idRaw": "289:28",
+      "comp": "MAL_HW.comp_05_legendary_ichor",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
+      "key": "shiny_infection",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Infection",
+      "unlockable": "Unlockable_Weapons.Shiny_Infection",
+      "label": "Phosphene — Infection"
+    },
+    {
       "key": "shiny_inscriber",
       "cosmetic": "Cosmetics_Weapon_Shiny_Inscriber",
       "unlockable": "Unlockable_Weapons.Shiny_Inscriber",
       "label": "Phosphene — Inscriber"
     },
     {
+      "key": "shiny_ishmael",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Ishmael",
+      "unlockable": "Unlockable_Weapons.Shiny_Ishmael",
+      "label": "Phosphene — Ishmael"
+    },
+    {
+      "key": "shiny_jailbroken",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Jailbroken",
+      "unlockable": "Unlockable_Weapons.Shiny_Jailbroken",
+      "label": "Phosphene — Jail-Broken Gatling"
+    },
+    {
+      "key": "shiny_juliet",
+      "cosmetic": null,
+      "unlockable": null,
+      "label": "Pearlescent — Juliet's Sparkle",
+      "idRaw": "21:90",
+      "comp": "MAL_SM.comp_06_pearl_juliet",
+      "pearl": true,
+      "variant": "pearl",
+      "note": "Pearlescent comp (comp_06_pearl_*) — counts as shiny variant"
+    },
+    {
       "key": "shiny_kaleidosplode",
       "cosmetic": "Cosmetics_Weapon_Shiny_Kaleidosplode",
       "unlockable": "Unlockable_Weapons.Shiny_Kaleidosplode",
       "label": "Phosphene — Kaleidosplode"
+    },
+    {
+      "key": "shiny_kaos",
+      "cosmetic": "Cosmetics_Weapon_Shiny_kaos",
+      "unlockable": "Unlockable_Weapons.Shiny_kaos",
+      "label": "Phosphene — kaos",
+      "idRaw": "13:91",
+      "comp": "DAD_AR.comp_05_legendary_kaos",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_kaoson",
@@ -283,7 +580,7 @@
     {
       "key": "shiny_laserdisc",
       "cosmetic": "Cosmetics_Weapon_Shiny_LaserDisc",
-      "unlockable": "Unlockable_Weapons.Shiny_LaserDisc",
+      "unlockable": "Unlockable_Weapons.Shiny_laserdisc",
       "label": "Phosphene — LaserDisc"
     },
     {
@@ -291,6 +588,12 @@
       "cosmetic": "Cosmetics_Weapon_Shiny_LeadBalloon",
       "unlockable": "Unlockable_Weapons.Shiny_LeadBalloon",
       "label": "Phosphene — Lead Balloon"
+    },
+    {
+      "key": "shiny_lightgun",
+      "cosmetic": "Cosmetics_Weapon_Shiny_LightGun",
+      "unlockable": "Unlockable_Weapons.Shiny_LightGun",
+      "label": "Phosphene — Light Gun"
     },
     {
       "key": "shiny_linebacker",
@@ -311,6 +614,25 @@
       "label": "Phosphene — Lockjaw"
     },
     {
+      "key": "shiny_locust",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Locust",
+      "unlockable": "Unlockable_Weapons.Shiny_Locust",
+      "label": "Pearlescent — Parasite",
+      "pearl": true,
+      "comp": "VLA_SM.comp_06_pearl_locust",
+      "idRaw": "22:101"
+    },
+    {
+      "key": "shiny_loiter",
+      "cosmetic": "Cosmetics_Weapon_Shiny_loiter",
+      "unlockable": "Unlockable_Weapons.Shiny_loiter",
+      "label": "Phosphene — Loiter Sploiter",
+      "idRaw": "273:45",
+      "comp": "TOR_HW.comp_05_legendary_loiter",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_lucian",
       "cosmetic": "Cosmetics_Weapon_Shiny_Lucian",
       "unlockable": "Unlockable_Weapons.Shiny_Lucian",
@@ -329,10 +651,22 @@
       "label": "Phosphene — Luty Madlad"
     },
     {
+      "key": "shiny_manifest",
+      "cosmetic": "Cosmetics_Weapon_Shiny_manifest",
+      "unlockable": "Unlockable_Weapons.Shiny_manifest",
+      "label": "Phosphene — Manifest"
+    },
+    {
       "key": "shiny_mantra",
       "cosmetic": "Cosmetics_Weapon_Shiny_mantra",
       "unlockable": "Unlockable_Weapons.Shiny_mantra",
       "label": "Phosphene — Mantra"
+    },
+    {
+      "key": "shiny_mercredi",
+      "cosmetic": "Cosmetics_Weapon_Shiny_mercredi",
+      "unlockable": "Unlockable_Weapons.Shiny_mercredi",
+      "label": "Phosphene — Hard Dark"
     },
     {
       "key": "shiny_mercury",
@@ -377,6 +711,34 @@
       "label": "Phosphene — Onslaught"
     },
     {
+      "key": "shiny_outback",
+      "cosmetic": "Cosmetics_Weapon_Shiny_outback",
+      "unlockable": "Unlockable_Weapons.Shiny_outback",
+      "label": "Phosphene — Outback"
+    },
+    {
+      "key": "shiny_patience",
+      "cosmetic": "Cosmetics_Weapon_Shiny_patience",
+      "unlockable": "Unlockable_Weapons.Shiny_patience",
+      "label": "Phosphene — Virtue",
+      "idRaw": "4:89",
+      "comp": "ORD_PS.comp_05_legendary_patience",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
+      "key": "shiny_pchonk",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Pchonk",
+      "unlockable": "Unlockable_Weapons.Shiny_PChonk",
+      "label": "Phosphene — pchonk"
+    },
+    {
+      "key": "shiny_petanque",
+      "cosmetic": "Cosmetics_Weapon_Shiny_petanque",
+      "unlockable": "Unlockable_Weapons.Shiny_petanque",
+      "label": "Phosphene — Petanque"
+    },
+    {
       "key": "shiny_phantom_flame",
       "cosmetic": "Cosmetics_Weapon_Shiny_Phantom_Flame",
       "unlockable": "Unlockable_Weapons.Shiny_Phantom_Flame",
@@ -389,16 +751,38 @@
       "label": "Phosphene — Plasma Coil"
     },
     {
+      "key": "shiny_plumbbob",
+      "cosmetic": "Cosmetics_Weapon_Shiny_PlumbBob",
+      "unlockable": "Unlockable_Weapons.Shiny_PlumbBob",
+      "label": "Phosphene — Plumbbob"
+    },
+    {
       "key": "shiny_potatothrower",
       "cosmetic": "Cosmetics_Weapon_Shiny_PotatoThrower",
       "unlockable": "Unlockable_Weapons.Shiny_PotatoThrower",
       "label": "Phosphene — Potato Thrower IV"
     },
     {
+      "key": "shiny_pragmate",
+      "cosmetic": "Cosmetics_Weapon_Shiny_pragmate",
+      "unlockable": "Unlockable_Weapons.Shiny_pragmate",
+      "label": "Phosphene — Pragmate"
+    },
+    {
       "key": "shiny_prince",
       "cosmetic": "Cosmetics_Weapon_Shiny_Prince",
       "unlockable": "Unlockable_Weapons.Shiny_Prince",
       "label": "Phosphene — Prince Harming"
+    },
+    {
+      "key": "shiny_quattro",
+      "cosmetic": "Cosmetics_Weapon_Shiny_quattro",
+      "unlockable": "Unlockable_Weapons.Shiny_quattro",
+      "label": "Phosphene — quattro",
+      "idRaw": "282:33",
+      "comp": "VLA_HW.comp_05_legendary_quattro",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_queensrest",
@@ -411,6 +795,16 @@
       "cosmetic": "Cosmetics_Weapon_Shiny_QuickDraw",
       "unlockable": "Unlockable_Weapons.Shiny_QuickDraw",
       "label": "Phosphene — San Saba Songbird"
+    },
+    {
+      "key": "shiny_raiden",
+      "cosmetic": "Cosmetics_Weapon_Shiny_raiden",
+      "unlockable": "Unlockable_Weapons.Shiny_raiden",
+      "label": "Phosphene — Raiden",
+      "idRaw": "20:70",
+      "comp": "DAD_SM.comp_05_legendary_raiden",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
     },
     {
       "key": "shiny_rainbowvomit",
@@ -431,10 +825,28 @@
       "label": "Phosphene — Rangefinder"
     },
     {
+      "key": "shiny_relay",
+      "cosmetic": "Cosmetics_Weapon_Shiny_relay",
+      "unlockable": "Unlockable_Weapons.Shiny_relay",
+      "label": "Phosphene — relay"
+    },
+    {
       "key": "shiny_reminisce",
       "cosmetic": "Cosmetics_Weapon_Shiny_reminisce",
       "unlockable": "Unlockable_Weapons.Shiny_reminisce",
       "label": "Phosphene — Reminisce"
+    },
+    {
+      "key": "shiny_rhythm",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Rhythm",
+      "unlockable": "Unlockable_Weapons.Shiny_Rhythm",
+      "label": "Phosphene — Rhythm"
+    },
+    {
+      "key": "shiny_ripple",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Ripple",
+      "unlockable": "Unlockable_Weapons.Shiny_Ripple",
+      "label": "Phosphene — Ripple"
     },
     {
       "key": "shiny_roach",
@@ -509,10 +921,45 @@
       "label": "Phosphene — Shammy"
     },
     {
+      "key": "shiny_shardenfreude",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Shardenfreude",
+      "unlockable": "Unlockable_Weapons.Shiny_Shardenfreude",
+      "label": "Phosphene — Shardenfreude"
+    },
+    {
+      "key": "shiny_sharkbait",
+      "cosmetic": null,
+      "unlockable": null,
+      "label": "Pearlescent — Sharkbait",
+      "idRaw": "11:90",
+      "comp": "TED_SG.comp_06_pearl_sharkbait",
+      "pearl": true,
+      "variant": "pearl",
+      "note": "Pearlescent comp (comp_06_pearl_*) — counts as shiny variant"
+    },
+    {
+      "key": "shiny_shoals",
+      "cosmetic": "Cosmetics_Weapon_Shiny_shoals",
+      "unlockable": "Unlockable_Weapons.Shiny_shoals",
+      "label": "Phosphene — Shoals"
+    },
+    {
       "key": "shiny_sideshow",
       "cosmetic": "Cosmetics_Weapon_Shiny_Sideshow",
       "unlockable": "Unlockable_Weapons.Shiny_Sideshow",
       "label": "Phosphene — Sideshow"
+    },
+    {
+      "key": "shiny_silversliver",
+      "cosmetic": "Cosmetics_Weapon_Shiny_silversliver",
+      "unlockable": "Unlockable_Weapons.Shiny_silversliver",
+      "label": "Phosphene — Silversliver"
+    },
+    {
+      "key": "shiny_sledge",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Sledge",
+      "unlockable": "Unlockable_Weapons.Shiny_Sledge",
+      "label": "Phosphene — Sledge"
     },
     {
       "key": "shiny_slugger",
@@ -537,6 +984,12 @@
       "cosmetic": "Cosmetics_Weapon_Shiny_star_helix",
       "unlockable": "Unlockable_Weapons.Shiny_star_helix",
       "label": "Phosphene — Star Helix"
+    },
+    {
+      "key": "shiny_stealth",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Stealth",
+      "unlockable": "Unlockable_Weapons.Shiny_Stealth",
+      "label": "Phosphene — Stealth"
     },
     {
       "key": "shiny_stopgap",
@@ -569,10 +1022,42 @@
       "label": "Phosphene — Symmetry"
     },
     {
+      "key": "shiny_tankbuster",
+      "cosmetic": "Cosmetics_Weapon_Shiny_tankbuster",
+      "unlockable": "Unlockable_Weapons.Shiny_tankbuster",
+      "label": "Phosphene — Tankbuster"
+    },
+    {
+      "key": "shiny_temper",
+      "cosmetic": "Cosmetics_Weapon_Shiny_temper",
+      "unlockable": "Unlockable_Weapons.Shiny_temper",
+      "label": "Phosphene — Solar Temper",
+      "idRaw": "26:84",
+      "comp": "ORD_SR.comp_05_legendary_temper",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
+      "key": "shiny_testament",
+      "cosmetic": "Cosmetics_Weapon_Shiny_testament",
+      "unlockable": "Unlockable_Weapons.Shiny_testament",
+      "label": "Phosphene — Divided Glow",
+      "idRaw": "15:81",
+      "comp": "ORD_AR.comp_05_legendary_testament",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_tkswave",
       "cosmetic": "Cosmetics_Weapon_Shiny_TKsWave",
       "unlockable": "Unlockable_Weapons.Shiny_TKsWave",
       "label": "Phosphene — T.K's Wave"
+    },
+    {
+      "key": "shiny_triplicate",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Triplicate",
+      "unlockable": "Unlockable_Weapons.Shiny_Triplicate",
+      "label": "Phosphene — Triplicate"
     },
     {
       "key": "shiny_truck",
@@ -593,10 +1078,26 @@
       "label": "Phosphene — Unstable Kor"
     },
     {
+      "key": "shiny_unstable_kor",
+      "cosmetic": "Cosmetics_Weapon_Shiny_unstable_kor",
+      "unlockable": "Unlockable_Weapons.Shiny_unstable_kor",
+      "label": "Phosphene — Unstable Kor",
+      "idRaw": "12:77",
+      "comp": "TOR_SG.comp_05_legendary_unstable_kor",
+      "inferred": true,
+      "note": "Legendary comp in Nexus inv export; no Cosmetics_Weapon_Shiny_* row in inv_custom yet"
+    },
+    {
       "key": "shiny_vamoose",
       "cosmetic": "Cosmetics_Weapon_Shiny_Vamoose",
       "unlockable": "Unlockable_Weapons.Shiny_Vamoose",
       "label": "Phosphene — Vamoose"
+    },
+    {
+      "key": "shiny_verce",
+      "cosmetic": "Cosmetics_Weapon_Shiny_Verce",
+      "unlockable": "Unlockable_Weapons.Shiny_Verce",
+      "label": "Phosphene — Verce"
     },
     {
       "key": "shiny_wf",
@@ -618,47 +1119,88 @@
     }
   ],
   "shiny_yaml_keys": [
+    "shiny_abyss",
+    "shiny_accretion",
+    "shiny_aerodramatic",
     "shiny_anarchy",
+    "shiny_arctic",
     "shiny_asher",
+    "shiny_assembler",
     "shiny_atlien",
+    "shiny_aura",
+    "shiny_avarice",
     "shiny_ballista",
+    "shiny_barrel",
     "shiny_beegun",
+    "shiny_blackout",
     "shiny_bloodstarved",
     "shiny_bod",
     "shiny_bonnieclyde",
     "shiny_boomslang",
     "shiny_breadth",
+    "shiny_brickhouse",
     "shiny_bubbles",
     "shiny_bugbear",
     "shiny_bully",
+    "shiny_burrow",
+    "shiny_cannonbrawl",
     "shiny_chuck",
+    "shiny_clarity",
     "shiny_coldshoulder",
     "shiny_commbd",
     "shiny_complex_root",
+    "shiny_constable",
     "shiny_convergence",
+    "shiny_cormano",
+    "shiny_crazedearl",
     "shiny_crowdsourced",
+    "shiny_crowsourced",
+    "shiny_dahlfather",
     "shiny_demo",
+    "shiny_devourer",
+    "shiny_discybusiness",
     "shiny_dividedfocus",
     "shiny_doeshot",
+    "shiny_draupner",
     "shiny_dualdamage",
+    "shiny_earlyexcess",
+    "shiny_enumeration",
+    "shiny_exhibition",
+    "shiny_extinction",
     "shiny_falke",
     "shiny_fearstalker",
     "shiny_finnty",
     "shiny_fisheye",
+    "shiny_fishward",
+    "shiny_flak",
     "shiny_flashcyclone",
+    "shiny_flashfuel",
     "shiny_fleabag",
     "shiny_follower",
+    "shiny_fourier",
     "shiny_gmr",
     "shiny_goalkeeper",
     "shiny_goldengod",
+    "shiny_gomie",
     "shiny_goremaster",
+    "shiny_handfrag",
+    "shiny_harddark",
     "shiny_heartgun",
     "shiny_heavyturret",
     "shiny_hellfire",
     "shiny_hellwalker",
     "shiny_hemorrhage",
+    "shiny_herald",
+    "shiny_hippogun",
+    "shiny_hotmod",
+    "shiny_ichor",
+    "shiny_infection",
     "shiny_inscriber",
+    "shiny_ishmael",
+    "shiny_jailbroken",
+    "shiny_juliet",
     "shiny_kaleidosplode",
+    "shiny_kaos",
     "shiny_kaoson",
     "shiny_katagawa",
     "shiny_kickballer",
@@ -666,13 +1208,18 @@
     "shiny_lasercutter",
     "shiny_laserdisc",
     "shiny_leadballoon",
+    "shiny_lightgun",
     "shiny_linebacker",
     "shiny_loarmaster",
     "shiny_lockjaw",
+    "shiny_locust",
+    "shiny_loiter",
     "shiny_lucian",
     "shiny_lumberjack",
     "shiny_luty",
+    "shiny_manifest",
     "shiny_mantra",
+    "shiny_mercredi",
     "shiny_mercury",
     "shiny_misslaser",
     "shiny_murder",
@@ -680,16 +1227,27 @@
     "shiny_ohmigot",
     "shiny_om",
     "shiny_onslaught",
+    "shiny_outback",
+    "shiny_patience",
+    "shiny_pchonk",
+    "shiny_petanque",
     "shiny_phantom_flame",
     "shiny_plasmacoil",
+    "shiny_plumbbob",
     "shiny_potatothrower",
+    "shiny_pragmate",
     "shiny_prince",
+    "shiny_quattro",
     "shiny_queensrest",
     "shiny_quickdraw",
+    "shiny_raiden",
     "shiny_rainbowvomit",
     "shiny_rainmaker",
     "shiny_rangefinder",
+    "shiny_relay",
     "shiny_reminisce",
+    "shiny_rhythm",
+    "shiny_ripple",
     "shiny_roach",
     "shiny_rocketreload",
     "shiny_roil",
@@ -702,21 +1260,33 @@
     "shiny_seventh_sense",
     "shiny_shalashaska",
     "shiny_shammy",
+    "shiny_shardenfreude",
+    "shiny_sharkbait",
+    "shiny_shoals",
     "shiny_sideshow",
+    "shiny_silversliver",
+    "shiny_sledge",
     "shiny_slugger",
     "shiny_songbird",
     "shiny_soulsurvivor",
     "shiny_star_helix",
+    "shiny_stealth",
     "shiny_stopgap",
     "shiny_stray",
     "shiny_sunspot",
     "shiny_sweet_embrace",
     "shiny_symmetry",
+    "shiny_tankbuster",
+    "shiny_temper",
+    "shiny_testament",
     "shiny_tkswave",
+    "shiny_triplicate",
     "shiny_truck",
     "shiny_ultimate",
     "shiny_unstable",
+    "shiny_unstable_kor",
     "shiny_vamoose",
+    "shiny_verce",
     "shiny_wf",
     "shiny_wombocombo",
     "shiny_zipgun"
@@ -1095,127 +1665,378 @@
     {
       "c": 122,
       "name": "Congratulations!",
-      "code": "|\"c\",122|"
+      "code": "|\"c\",122|",
+      "cosmetic": "Cosmetics_Weapon_Mat46_MechYeah",
+      "matNum": 46,
+      "inferred": false
     },
     {
       "c": 123,
       "name": "...Gear?!",
-      "code": "|\"c\",123|"
+      "code": "|\"c\",123|",
+      "cosmetic": "Cosmetics_Weapon_Mat47_Assault",
+      "matNum": 47,
+      "inferred": false
     },
     {
       "c": 124,
       "name": "Volt Hunter",
-      "code": "|\"c\",124|"
+      "code": "|\"c\",124|",
+      "cosmetic": "Cosmetics_Weapon_Mat48_Boltron",
+      "matNum": 48,
+      "inferred": false
     },
     {
       "c": 125,
       "name": "Beast Mode",
-      "code": "|\"c\",125|"
+      "code": "|\"c\",125|",
+      "cosmetic": "Cosmetics_Weapon_Mat49_Furboy",
+      "matNum": 49,
+      "inferred": false
     },
     {
       "c": 126,
       "name": "Kaiju Killa",
-      "code": "|\"c\",126|"
+      "code": "|\"c\",126|",
+      "cosmetic": "Cosmetics_Weapon_Mat50_SpicyIguana",
+      "matNum": 50,
+      "inferred": false
     },
     {
       "c": 127,
       "name": "Hand that Feeds",
-      "code": "|\"c\",127|"
+      "code": "|\"c\",127|",
+      "cosmetic": "Cosmetics_Weapon_Mat51_Gore",
+      "matNum": 51,
+      "inferred": false
     },
     {
       "c": 128,
       "name": "Discontent",
-      "code": "|\"c\",128|"
+      "code": "|\"c\",128|",
+      "cosmetic": "Cosmetics_Weapon_Mat52_Ghostly",
+      "matNum": 52,
+      "inferred": false
     },
     {
       "c": 129,
       "name": "Shoot What Thou Wilt",
-      "code": "|\"c\",129|"
+      "code": "|\"c\",129|",
+      "cosmetic": "Cosmetics_Weapon_Mat53_Occult",
+      "matNum": 53,
+      "inferred": false
     },
     {
       "c": 130,
       "name": "Stock and Stone",
-      "code": "|\"c\",130|"
+      "code": "|\"c\",130|",
+      "cosmetic": "Cosmetics_Weapon_Mat54_Shipwreck",
+      "matNum": 54,
+      "inferred": false
     },
     {
       "c": 131,
       "name": "Rapturous",
-      "code": "|\"c\",131|"
+      "code": "|\"c\",131|",
+      "cosmetic": "Cosmetics_Weapon_Mat55_TrappedExperiment",
+      "matNum": 55,
+      "inferred": false
     },
     {
       "c": 132,
       "name": "Waveform",
-      "code": "|\"c\",132|"
+      "code": "|\"c\",132|",
+      "cosmetic": "Cosmetics_Weapon_Mat56_DeepOcean",
+      "matNum": 56,
+      "inferred": false
     },
     {
       "c": 133,
       "name": "Martian Law",
-      "code": "|\"c\",133|"
+      "code": "|\"c\",133|",
+      "cosmetic": "Cosmetics_Weapon_Mat57_UnstableReactor",
+      "matNum": 57,
+      "inferred": false
     },
     {
       "c": 134,
       "name": "Dot Wav",
-      "code": "|\"c\",134|"
+      "code": "|\"c\",134|",
+      "cosmetic": "Cosmetics_Weapon_Mat58_KairosVice",
+      "matNum": 58,
+      "inferred": false
     },
     {
       "c": 135,
       "name": "Roller Rink",
-      "code": "|\"c\",135|"
+      "code": "|\"c\",135|",
+      "cosmetic": "Cosmetics_Weapon_Mat59_RollerRink",
+      "matNum": 59,
+      "inferred": false
     },
     {
       "c": 136,
       "name": "Night Call",
-      "code": "|\"c\",136|"
+      "code": "|\"c\",136|",
+      "cosmetic": "Cosmetics_Weapon_Mat60_NightCall",
+      "matNum": 60,
+      "inferred": false
     },
     {
       "c": 137,
       "name": "Sunset Vector",
-      "code": "|\"c\",137|"
+      "code": "|\"c\",137|",
+      "cosmetic": "Cosmetics_Weapon_Mat61_ArcVector",
+      "matNum": 61,
+      "inferred": false
     },
     {
       "c": 138,
       "name": "Tracer Bullet",
-      "code": "|\"c\",138|"
+      "code": "|\"c\",138|",
+      "cosmetic": "Cosmetics_Weapon_Mat62_TracerBullet",
+      "matNum": 62,
+      "inferred": false
     },
     {
       "c": 139,
       "name": "GoldenHoneycomb",
-      "code": "|\"c\",139|"
+      "code": "|\"c\",139|",
+      "cosmetic": "Cosmetics_Weapon_Mat63_GoldenHoneycomb",
+      "matNum": 63,
+      "inferred": false
     },
     {
       "c": 140,
       "name": "FancySometimes",
-      "code": "|\"c\",140|"
+      "code": "|\"c\",140|",
+      "cosmetic": "Cosmetics_Weapon_Mat64_FancySometimes",
+      "matNum": 64,
+      "inferred": false
     },
     {
       "c": 141,
       "name": "AcridLandscape",
-      "code": "|\"c\",141|"
+      "code": "|\"c\",141|",
+      "cosmetic": "Cosmetics_Weapon_Mat65_AcridLandscape",
+      "matNum": 65,
+      "inferred": false
     },
     {
       "c": 142,
       "name": "TechRain",
-      "code": "|\"c\",142|"
+      "code": "|\"c\",142|",
+      "cosmetic": "Cosmetics_Weapon_Mat66_TechRain",
+      "matNum": 66,
+      "inferred": false
     },
     {
       "c": 143,
       "name": "OilCamo",
-      "code": "|\"c\",143|"
+      "code": "|\"c\",143|",
+      "cosmetic": "Cosmetics_Weapon_Mat67_OilCamo",
+      "matNum": 67,
+      "inferred": false
     },
     {
       "c": 144,
       "name": "Bubbles",
-      "code": "|\"c\",144|"
+      "code": "|\"c\",144|",
+      "cosmetic": "Cosmetics_Weapon_Mat68_Bubbles",
+      "matNum": 68,
+      "inferred": false
     },
     {
       "c": 145,
       "name": "EmpireCamo",
-      "code": "|\"c\",145|"
+      "code": "|\"c\",145|",
+      "cosmetic": "Cosmetics_Weapon_Mat69_EmpireCamo",
+      "matNum": 69,
+      "inferred": false
     },
     {
       "c": 146,
       "name": "ShinyMap",
-      "code": "|\"c\",146|"
+      "code": "|\"c\",146|",
+      "cosmetic": "Cosmetics_Weapon_Mat70_ShinyMap",
+      "matNum": 70,
+      "inferred": false
+    },
+    {
+      "c": 147,
+      "name": "Corroded",
+      "code": "|\"c\",147|",
+      "cosmetic": "Cosmetics_Weapon_Mat71_Corroded",
+      "matNum": 71,
+      "inferred": true
+    },
+    {
+      "c": 148,
+      "name": "Destroyer",
+      "code": "|\"c\",148|",
+      "cosmetic": "Cosmetics_Weapon_Mat72_Destroyer",
+      "matNum": 72,
+      "inferred": true
+    },
+    {
+      "c": 149,
+      "name": "Odyssey",
+      "code": "|\"c\",149|",
+      "cosmetic": "Cosmetics_Weapon_Mat73_Odyssey",
+      "matNum": 73,
+      "inferred": true
+    },
+    {
+      "c": 150,
+      "name": "Blackhole",
+      "code": "|\"c\",150|",
+      "cosmetic": "Cosmetics_Weapon_Mat74_Blackhole",
+      "matNum": 74,
+      "inferred": true
+    },
+    {
+      "c": 151,
+      "name": "NASA",
+      "code": "|\"c\",151|",
+      "cosmetic": "Cosmetics_Weapon_Mat75_NASA",
+      "matNum": 75,
+      "inferred": true
+    },
+    {
+      "c": 152,
+      "name": "Managerial",
+      "code": "|\"c\",152|",
+      "cosmetic": "Cosmetics_Weapon_Mat76_Managerial",
+      "matNum": 76,
+      "inferred": true
+    },
+    {
+      "c": 153,
+      "name": "Jungler",
+      "code": "|\"c\",153|",
+      "cosmetic": "Cosmetics_Weapon_Mat77_Jungler",
+      "matNum": 77,
+      "inferred": true
+    },
+    {
+      "c": 154,
+      "name": "MIA Culpa",
+      "code": "|\"c\",154|",
+      "cosmetic": "Cosmetics_Weapon_Mat78_MiaCulpa",
+      "matNum": 78,
+      "inferred": true
+    },
+    {
+      "c": 155,
+      "name": "Chewed Up",
+      "code": "|\"c\",155|",
+      "cosmetic": "Cosmetics_Weapon_Mat79_ChewedUp",
+      "matNum": 79,
+      "inferred": true
+    },
+    {
+      "c": 156,
+      "name": "Electi-Fied",
+      "code": "|\"c\",156|",
+      "cosmetic": "Cosmetics_Weapon_Mat80_Electified",
+      "matNum": 80,
+      "inferred": true
+    },
+    {
+      "c": 157,
+      "name": "Harmonious",
+      "code": "|\"c\",157|",
+      "cosmetic": "Cosmetics_Weapon_Mat81_Harmonious",
+      "matNum": 81,
+      "inferred": true
+    },
+    {
+      "c": 158,
+      "name": "Local Flavor",
+      "code": "|\"c\",158|",
+      "cosmetic": "Cosmetics_Weapon_Mat82_Grasslands",
+      "matNum": 82,
+      "inferred": true
+    },
+    {
+      "c": 159,
+      "name": "Merch Line",
+      "code": "|\"c\",159|",
+      "cosmetic": "Cosmetics_Weapon_Mat83_Gravitar",
+      "matNum": 83,
+      "inferred": true
+    },
+    {
+      "c": 160,
+      "name": "Fresh Spray",
+      "code": "|\"c\",160|",
+      "cosmetic": "Cosmetics_Weapon_Mat84_ExoSoldier",
+      "matNum": 84,
+      "inferred": true
+    },
+    {
+      "c": 161,
+      "name": "Tally Them All",
+      "code": "|\"c\",161|",
+      "cosmetic": "Cosmetics_Weapon_Mat85_Paladin",
+      "matNum": 85,
+      "inferred": true
+    },
+    {
+      "c": 162,
+      "name": "Queen's Demand",
+      "code": "|\"c\",162|",
+      "cosmetic": "Cosmetics_Weapon_Mat86_Ripper",
+      "matNum": 86,
+      "inferred": true
+    },
+    {
+      "c": 163,
+      "name": "Troubled Upbringing",
+      "code": "|\"c\",163|",
+      "cosmetic": "Cosmetics_Weapon_Mat87_DarkSiren",
+      "matNum": 87,
+      "inferred": true
+    },
+    {
+      "c": 164,
+      "name": "Shatterwave",
+      "code": "|\"c\",164|",
+      "cosmetic": "Cosmetics_Weapon_Mat88_ShatterlandV1",
+      "matNum": 88,
+      "inferred": true
+    },
+    {
+      "c": 165,
+      "name": "Bad Augury",
+      "code": "|\"c\",165|",
+      "cosmetic": "Cosmetics_Weapon_Mat89_Mountain",
+      "matNum": 89,
+      "inferred": true
+    },
+    {
+      "c": 166,
+      "name": "Electric Etch",
+      "code": "|\"c\",166|",
+      "cosmetic": "Cosmetics_Weapon_Mat90_CityOrder",
+      "matNum": 90,
+      "inferred": true
+    },
+    {
+      "c": 167,
+      "name": "Wave Collapse",
+      "code": "|\"c\",167|",
+      "cosmetic": "Cosmetics_Weapon_Mat91_ShatterlandV2",
+      "matNum": 91,
+      "inferred": true
+    },
+    {
+      "c": 168,
+      "name": "Frozen Over",
+      "code": "|\"c\",168|",
+      "cosmetic": "Cosmetics_Weapon_Mat92_Stingray",
+      "matNum": 92,
+      "inferred": true
     }
   ],
   "ammo_keys": [

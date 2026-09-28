@@ -120,19 +120,22 @@
     var list = byId('withThanksList');
     if (!list) return;
     var existing = byId('tobgunName');
-    if (existing) return existing;
+    if (existing) {
+      try { existing.textContent = 'Tobgun1'; } catch (_) {}
+      return existing;
+    }
     var el = document.createElement('span');
     el.className = 'contributor-name';
     el.setAttribute('data-egg', '1');
     el.setAttribute('data-tooltip', '\uD83D\uDC40');
     el.id = 'tobgunName';
     el.title = '\uD83D\uDC40';
-    el.textContent = 'Tobgun';
+    el.textContent = 'Tobgun1';
     var kids = Array.prototype.slice.call(list.children || []);
     var inserted = false;
     for (var i = 0; i < kids.length; i++) {
       var label = String(kids[i].textContent || '').trim();
-      if (label.localeCompare('Tobgun', undefined, { sensitivity: 'base' }) > 0) {
+      if (label.localeCompare('Tobgun1', undefined, { sensitivity: 'base' }) > 0) {
         list.insertBefore(el, kids[i]);
         inserted = true;
         break;

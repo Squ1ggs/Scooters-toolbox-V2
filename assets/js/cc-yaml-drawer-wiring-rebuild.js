@@ -23,8 +23,12 @@
   function invalidateYamlParseCache() {
     __yamlParseCacheText = '';
     __yamlParseCacheData = null;
+    __yamlKindCacheText = '';
+    __yamlKindCache = 'unknown';
   }
   window.invalidateYamlParseCache = invalidateYamlParseCache;
+  var __yamlKindCacheText = '';
+  var __yamlKindCache = 'unknown';
 
   window.setYamlText = function (text) {
     invalidateYamlParseCache();
@@ -333,6 +337,13 @@
         var specExp = data.state.experience.find(function (e) { return e && String(e.type || '').toLowerCase().indexOf('special') !== -1; });
         if (specExp && specLevelEl && specExp.level != null) specLevelEl.value = String(specExp.level);
       }
+      var nameInputSync = byId('yaml-char-name');
+      if (nameInputSync && data.state && data.state.char_name != null) {
+        nameInputSync.value = String(data.state.char_name);
+      } else if (nameInputSync) {
+        var cnMatch = text.match(/(?:^|\n)\s*char_name\s*:\s*(.+)/);
+        if (cnMatch && cnMatch[1]) nameInputSync.value = String(cnMatch[1]).trim();
+      }
       if (data.progression && data.progression.point_pools && specPointsEl) {
         var sp = data.progression.point_pools.specializationtokenpool ?? data.progression.point_pools.specializationpoints ?? data.progression.point_pools.characterprogresspoints;
         if (sp != null) specPointsEl.value = String(sp);
@@ -464,22 +475,29 @@
     if (delay == null) {
       var ta = yamlTextarea();
       var len = ta && ta.value ? ta.value.length : 0;
-      /* Large banks: wait for inventory extract first, then parse off the critical path. */
-      if (len > 800000) delay = 900;
-      else if (len > 500000) delay = 650;
-      else if (len > 200000) delay = 450;
-      else if (len > 80000) delay = 300;
-      else if (len > 30000) delay = 200;
+      var nItems = (window.extractedSerials && window.extractedSerials.length) || 0;
+      /* Large banks: wait for inventory extract first; avoid overlapping heavy jsyaml.load. */
+      if (nItems > 4000 || len > 1200000) delay = 2200;
+      else if (nItems > 2000 || len > 800000) delay = 1600;
+      else if (len > 500000) delay = 1000;
+      else if (len > 200000) delay = 550;
+      else if (len > 80000) delay = 350;
+      else if (len > 30000) delay = 220;
       else delay = 120;
     }
     if (syncFieldsTimer) clearTimeout(syncFieldsTimer);
     syncFieldsTimer = setTimeout(function () {
       syncFieldsTimer = null;
       var run = function () {
+        if (window.__yamlInventoryExtracting) {
+          /* Extract still running — reschedule rather than fight for the main thread. */
+          window.scheduleSyncYamlToFields(400);
+          return;
+        }
         if (window.syncYamlToFields) window.syncYamlToFields();
       };
       if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(run);
-      else if (typeof requestIdleCallback === 'function') requestIdleCallback(function () { run(); }, { timeout: 1200 });
+      else if (typeof requestIdleCallback === 'function') requestIdleCallback(function () { run(); }, { timeout: 2000 });
       else run();
     }, delay);
   };
@@ -538,6 +556,14 @@
     var specPointsEl = byId('yaml-spec-points');
     var cashEl = byId('yaml-cash');
     var eridiumEl = byId('yaml-eridium');
+    var nameEl = byId('yaml-char-name');
+    if (nameEl && nameEl.value.trim() !== '') {
+      var kindForName = typeof detectYamlKind === 'function' ? detectYamlKind(window.getYamlText().text || '') : 'character';
+      if (kindForName !== 'profile') {
+        data.state = data.state || {};
+        data.state.char_name = nameEl.value.trim();
+      }
+    }
     if (data.state && Array.isArray(data.state.experience)) {
       for (var i = 0; i < data.state.experience.length; i++) {
         var e = data.state.experience[i];
@@ -726,32 +752,41 @@
   function detectYamlKind(text) {
     var t = String(text || '').replace(/^\uFEFF/, '');
     if (!t.trim()) return 'unknown';
-    var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
-    if (y && typeof y.load === 'function') {
-      try {
-        var sanitized = typeof window.sanitizeYamlForParse === 'function' ? window.sanitizeYamlForParse(t) : t;
-        var data = y.load(sanitized, {});
-        if (data && typeof data === 'object') {
-          var st = data.state;
-          if (st && typeof st === 'object') {
-            if (st.inventory || Array.isArray(st.experience) || st.char_guid != null || st.char_name != null || data.char_name != null) {
-              return 'character';
-            }
-          }
-          if (data.domains && data.domains.local) return 'profile';
-        }
-      } catch (_) {}
-    }
-    /** Root `state:` at line start — avoids nested `state:` under profile-only trees. */
+    if (t === __yamlKindCacheText) return __yamlKindCache;
+    /** Prefer cheap regex heuristics — full jsyaml.load on 5–8k-item profile YAML freezes the slideout. */
     var hasRootState = /^state\s*:/m.test(t);
     var hasDomains = /(^|\n)\s*domains\s*:/m.test(t);
     var hasProfileHints =
       /(^|\n)\s*profile\s*:/m.test(t) ||
       /(^|\n)\s*unlockables\s*:/m.test(t) ||
-      /profile_guid\s*:/i.test(t);
-    if (hasRootState) return 'character';
-    if (hasDomains || hasProfileHints) return 'profile';
-    return 'unknown';
+      /profile_guid\s*:/i.test(t) ||
+      /(^|\n)\s*bank\s*:/m.test(t);
+    var kind = 'unknown';
+    if (hasRootState && !hasDomains) kind = 'character';
+    else if (hasDomains || hasProfileHints) kind = 'profile';
+    else if (hasRootState) kind = 'character';
+    /* Ambiguous / tiny files only: confirm with jsyaml (never on multi‑MB banks). */
+    if (kind === 'unknown' && t.length < 200000) {
+      var y = window.jsyaml || (typeof jsyaml !== 'undefined' ? jsyaml : null);
+      if (y && typeof y.load === 'function') {
+        try {
+          var sanitized = typeof window.sanitizeYamlForParse === 'function' ? window.sanitizeYamlForParse(t) : t;
+          var data = y.load(sanitized, {});
+          if (data && typeof data === 'object') {
+            var st = data.state;
+            if (st && typeof st === 'object') {
+              if (st.inventory || Array.isArray(st.experience) || st.char_guid != null || st.char_name != null || data.char_name != null) {
+                kind = 'character';
+              }
+            }
+            if (kind === 'unknown' && data.domains && data.domains.local) kind = 'profile';
+          }
+        } catch (_) {}
+      }
+    }
+    __yamlKindCacheText = t;
+    __yamlKindCache = kind;
+    return kind;
   }
   window.detectYamlSaveKind = detectYamlKind;
   function updateButtons() {

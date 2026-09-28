@@ -78,6 +78,16 @@
     }
   };
 
+  /** True while Save/YAML is decrypting / extracting a large inventory — builder skin/catalog work should wait. */
+  window.stxSaveYamlUiBusy = function () {
+    try {
+      if (window.__yamlInventoryExtracting) return true;
+      var until = Number(window.__stxSaveYamlHeavyUntil) || 0;
+      if (until && Date.now() < until) return true;
+    } catch (_) {}
+    return false;
+  };
+
   /**
    * Open Save/YAML drawer with a clean slide: shell + body visible immediately,
    * heavy script/parse work deferred until after the transition (INP-friendly).
@@ -97,27 +107,38 @@
       var ready = typeof window.stxEnsureFullAppScripts === 'function'
         ? window.stxEnsureFullAppScripts()
         : Promise.resolve();
-      Promise.resolve(ready).then(function () {
-        try {
-          if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
-        } catch (_) {}
-        try {
-          if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
-        } catch (_) {}
-        try {
-          if (typeof window.__stxRefreshSerialSearchCatalog === 'function') window.__stxRefreshSerialSearchCatalog();
-        } catch (_) {}
+      return Promise.resolve(ready).then(function () {
+        function wireUi() {
+          try {
+            if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
+          } catch (_) {}
+          try {
+            if (typeof window.initYamlBulkDecoderHandoff === 'function') window.initYamlBulkDecoderHandoff();
+          } catch (_) {}
+          try {
+            /* Wire search/library UI now; catalog data stays lazy until idle/search. */
+            if (typeof window.initSerialSearchSection === 'function') {
+              window.initSerialSearchSection({ deferCatalog: true });
+            }
+          } catch (_) {}
+        }
+        if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(wireUi);
+        else setTimeout(wireUi, 0);
       }).catch(function () {});
     }
 
     function runDeferredOpenWork() {
-      try {
-        if (typeof window.__ccEnsureNativeMissionSelects === 'function') {
-          window.__ccEnsureNativeMissionSelects();
-        }
-      } catch (_) {}
-      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(kickSaveYamlScripts);
-      else window.setTimeout(kickSaveYamlScripts, 0);
+      /* Keep open-frame light: mission selects + scripts after a yield. */
+      if (typeof window.stxYieldToMain === 'function') {
+        window.stxYieldToMain(function () {
+          try {
+            if (typeof window.__ccEnsureNativeMissionSelects === 'function') {
+              window.__ccEnsureNativeMissionSelects();
+            }
+          } catch (_) {}
+        });
+      }
+      var scriptsReady = kickSaveYamlScripts();
       if (opts.skipParse) return;
       function runParse() {
         var ta = document.getElementById('yamlInput');
@@ -132,10 +153,17 @@
           var delay = opts.parseDelay;
           if (delay == null) delay = liteUi ? 280 : 180;
           window.scheduleParseYAMLBackpack(delay);
+        } else if (typeof window.parseYAMLBackpack === 'function') {
+          window.parseYAMLBackpack();
         }
       }
-      if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runParse);
-      else window.setTimeout(runParse, 0);
+      /* Parse only after yaml-save scripts exist — otherwise backpack stays empty. */
+      Promise.resolve(scriptsReady).then(function () {
+        if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runParse);
+        else window.setTimeout(runParse, 0);
+      }).catch(function () {
+        window.setTimeout(runParse, 50);
+      });
     }
 
     if (alreadyOpen) {
@@ -175,6 +203,24 @@
     if (drawer && drawer.classList.contains('rp-open')) window.stxCloseSaveYamlDrawer();
     else window.stxOpenSaveYamlDrawer();
   };
+
+  /* Warm full Save/YAML scripts on hover so open doesn't race an empty backpack. */
+  (function armSaveYamlScriptWarm() {
+    function bind() {
+      var tab = document.getElementById('rp-saveyaml-tab');
+      if (!tab || tab.__stxSaveYamlWarm) return;
+      tab.__stxSaveYamlWarm = true;
+      var warm = function () {
+        try {
+          if (typeof window.stxEnsureFullAppScripts === 'function') window.stxEnsureFullAppScripts();
+        } catch (_) {}
+      };
+      tab.addEventListener('pointerenter', warm, { once: true, passive: true });
+      tab.addEventListener('focus', warm, { once: true, passive: true });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, { once: true });
+    else bind();
+  })();
 
   /** Queue idle work so splash-dismiss handlers don't pile up on one frame. */
   window.stxQueueIdleWork = function (fn, delayMs) {

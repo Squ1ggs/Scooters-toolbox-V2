@@ -11,6 +11,10 @@ Free **Borderlands 4 (BL4)** tools: edit `.sav` and YAML saves, build and decode
 
 **Repo maintainers:** set the **About** box (pencil on the repo home) **Website** to `https://scooterstoolbox.com/` and topics `borderlands-4`, `bl4`, `save-editor`, `game-tools` so mobile shows the link.
 
+**Nexus Mods listing copy:** paste from [`docs/nexus-mod-description.md`](docs/nexus-mod-description.md) (official site + Discord invite only — no old mirrors).
+
+**Discord (Scooters Garage):** [https://discord.com/invite/DqetrAK2sJ](https://discord.com/invite/DqetrAK2sJ)
+
 ---
 
 ## User guide

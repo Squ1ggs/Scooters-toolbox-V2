@@ -98,24 +98,14 @@
     if (skinSel) {
       skinSel.innerHTML = '<option value="">-- None --</option>';
       try {
-        var spawn = window.SPAWN_SKINS || [];
-        var spawnGroup = [], phosGroup = [], numericGroup = [];
-        var numericSeen = {};
-        for (var i = 0; i < spawn.length; i++) {
-          var s = spawn[i];
-          if (!s || !(s.value || s.code)) continue;
-          var v = String(s.value || s.code).trim();
-          var m = v.match(/Mat\s*0*([0-9]+)/i);
-          var disp = s.label || s.name || v;
-          if (m) disp = 'Mat' + m[1] + ' - ' + disp;
-          var item = { value: v, label: disp };
-          if (/Shiny/i.test(v)) phosGroup.push(item);
-          else spawnGroup.push(item);
-        }
+        /* Cosmetics_Weapon_* Mat/Shiny names are NOT item-serial skins — they belong on Camo as |"c",N|.
+           Skin (optional) only lists numeric brace skins + custom mixes. */
         var braceRe = window.__CC_NUMERIC_SKIN_BRACE_RE;
         if (!(braceRe instanceof RegExp)) {
           braceRe = /^\{\s*\d+\s*:\s*(?:\[\s*\d+(?:\s+\d+)*\s*\]|\d+)\s*\}$/;
         }
+        var numericGroup = [];
+        var numericSeen = {};
         var extras = window.__CC_EXTRA_NUMERIC_SKINS || [];
         for (var j = 0; j < extras.length; j++) {
           var ex = extras[j];
@@ -127,7 +117,7 @@
           var k = codeTrim.toLowerCase();
           if (numericSeen[k]) continue;
           numericSeen[k] = true;
-          numericGroup.push({ value: codeTrim, label: name ? (codeTrim + ' - ' + name) : codeTrim });
+          numericGroup.push({ value: codeTrim, label: name ? (name + ' · ' + codeTrim) : codeTrim });
         }
         var SKINS = window.SKINS || {};
         for (var cat in SKINS) {
@@ -141,11 +131,10 @@
             var ck = skCode.toLowerCase();
             if (numericSeen[ck]) continue;
             numericSeen[ck] = true;
-            numericGroup.push({ value: skCode, label: (sk.name || sk.label) ? (skCode + ' - ' + (sk.name || sk.label)) : skCode });
+            var skName = sk.name || sk.label || '';
+            numericGroup.push({ value: skCode, label: skName ? (skName + ' · ' + skCode) : skCode });
           }
         }
-        appendGroup(skinSel, 'Spawn-ID Skins', spawnGroup);
-        appendGroup(skinSel, 'Phosphene / Shiny', phosGroup);
         var mixGroup = [];
         var otherNumeric = [];
         for (var ni = 0; ni < numericGroup.length; ni++) {
@@ -173,13 +162,37 @@
         }
         function toCamoToken(id) { return '|"c",' + String(id) + '|'; }
         var camoGroup = [];
+        var namedMatGroup = [];
+        var namedLegendGroup = [];
         var camoSeen = {};
-        var pushCamo = function (token, label) {
-          var k = String(token).toLowerCase();
+        var pushCamo = function (token, label, bucket) {
+          var tok = String(token || '').trim();
+          if (!tok) return;
+          var k = tok.toLowerCase();
           if (camoSeen[k]) return;
           camoSeen[k] = true;
-          camoGroup.push({ value: token, label: label || token });
+          (bucket || camoGroup).push({ value: tok, label: label || tok });
         };
+        /* Named weapon mats (Snowfall, Afterburn, …) — same Skin customization (`c`) as BE. */
+        var spawnMap = window.__CC_SPAWN_SKIN_CAMO_MAP || {};
+        var spawnList = window.SPAWN_SKINS || [];
+        for (var si = 0; si < spawnList.length; si++) {
+          var sp = spawnList[si];
+          if (!sp) continue;
+          var sv = String(sp.value || sp.code || '').trim();
+          if (!/^Cosmetics_Weapon_Mat/i.test(sv)) continue;
+          var stok = String(spawnMap[sv] || spawnMap[sv.toLowerCase()] || '').trim();
+          if (!stok || !/^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/i.test(stok)) continue;
+          var slbl = String(sp.label || sp.name || '').trim() || sv;
+          pushCamo(stok, slbl + ' · ' + stok, namedMatGroup);
+        }
+        if (window.CAMO_TOKENS && window.CAMO_TOKENS.length) {
+          for (var ni = 0; ni < window.CAMO_TOKENS.length; ni++) {
+            var nc = window.CAMO_TOKENS[ni];
+            if (!nc || !nc.code) continue;
+            pushCamo(nc.code, String(nc.name || '').trim() + ' · ' + nc.code, namedLegendGroup);
+          }
+        }
         var extras2 = window.__CC_EXTRA_NUMERIC_SKINS || [];
         for (var j2 = 0; j2 < extras2.length; j2++) {
           var ex2 = extras2[j2];
@@ -192,7 +205,7 @@
             var tid = ids[qi];
             if (!Number.isFinite(tid)) continue;
             var tok = toCamoToken(tid);
-            pushCamo(tok, label2 ? label2 + ' (' + tok + ')' : tok);
+            pushCamo(tok, label2 ? label2 + ' · ' + tok : tok, camoGroup);
           }
         }
         var SKINS2 = window.SKINS || {};
@@ -207,19 +220,13 @@
               var tid2 = ids2[qi2];
               if (!Number.isFinite(tid2)) continue;
               var tok2 = toCamoToken(tid2);
-              pushCamo(tok2, lbl2 ? lbl2 + ' (' + tok2 + ')' : tok2);
+              pushCamo(tok2, lbl2 ? lbl2 + ' · ' + tok2 : tok2, camoGroup);
             }
           }
         }
-        appendGroup(camoSel, 'Camo codes (|"c",id|)', camoGroup);
-        if (window.CAMO_TOKENS && window.CAMO_TOKENS.length) {
-          var namedCamos = [];
-          for (var ni = 0; ni < window.CAMO_TOKENS.length; ni++) {
-            var nc = window.CAMO_TOKENS[ni];
-            namedCamos.push({ value: nc.code, label: nc.name + ' (' + nc.code + ')' });
-          }
-          appendGroup(camoSel, 'Legendary Camos', namedCamos);
-        }
+        appendGroup(camoSel, 'Weapon skins (|"c",id|)', namedMatGroup);
+        appendGroup(camoSel, 'Named camos', namedLegendGroup);
+        appendGroup(camoSel, 'Other camo codes', camoGroup);
         attachSelectFullTitle(camoSel);
       } catch (_) {}
     }

@@ -30,10 +30,11 @@
   function yamlParseDelayHint(explicit) {
     if (explicit != null && explicit > 0) return explicit;
     var len = yamlTextLengthHint();
-    if (len > 500000) return 600;
-    if (len > 200000) return 400;
-    if (len > 80000) return 250;
-    if (len > 30000) return 150;
+    if (len > 1200000) return 900;
+    if (len > 500000) return 700;
+    if (len > 200000) return 450;
+    if (len > 80000) return 280;
+    if (len > 30000) return 160;
     return 80;
   }
   function yamlDecodeChunkSize(total) {
@@ -730,6 +731,73 @@
     return serials;
   }
 
+  /**
+   * Progressive extract for 5–8k banks: yield between line chunks so the slideout stays responsive.
+   * Mutates `outSerials` in place; calls onProgress(serials, done) after each chunk.
+   */
+  function extractSlotSerialsProgressive(blockSlice, baseIndent, outSerials, onProgress) {
+    var lines = String(blockSlice || '').split(/\r?\n/);
+    var CHUNK = lines.length > 12000 ? 350 : lines.length > 6000 ? 450 : 600;
+    var state = {
+      i: 0,
+      inBlock: false,
+      slotNum: null,
+      serial: '',
+      slotIdx: 0,
+      blockBase: Number.isFinite(baseIndent) ? baseIndent : 999,
+      gen: __yamlDecodeGen
+    };
+    function step() {
+      if (state.gen !== __yamlDecodeGen) return; /* superseded by a newer parse */
+      var end = Math.min(state.i + CHUNK, lines.length);
+      for (; state.i < end; state.i++) {
+        var line = lines[state.i];
+        var m = line.match(/^(\s*)(\S?)/);
+        var lineIndent = m ? m[1].length : 0;
+        var content = line.trim();
+
+        if (/^(backpack|bank)\s*:?\s*$/i.test(content) || /^(backpack|bank)\s*:\s*\{\}\s*$/i.test(content)) {
+          state.inBlock = true;
+          state.blockBase = lineIndent;
+          state.slotIdx = 0;
+          continue;
+        }
+        if (state.inBlock && content && lineIndent <= state.blockBase) {
+          state.inBlock = false;
+        }
+        if (!state.inBlock) continue;
+
+        var slotMatch = line.match(/^\s*slot_(\d+)\s*:\s*$/i) ||
+          line.match(/^\s*-\s*slot\s*:\s*(\d+)/i) ||
+          line.match(/^\s*slot\s*:\s*(\d+)/i);
+        if (slotMatch) {
+          if (state.slotNum != null) outSerials.push({ slot: state.slotNum, serial: state.serial || '' });
+          state.slotNum = parseInt(slotMatch[1], 10);
+          state.serial = '';
+        } else {
+          var dashSlot = line.match(/^\s*-\s*$/);
+          if (dashSlot && lineIndent > state.blockBase) {
+            if (state.slotNum != null) outSerials.push({ slot: state.slotNum, serial: state.serial || '' });
+            state.slotNum = state.slotIdx++;
+            state.serial = '';
+          }
+        }
+        var serialMatch = line.match(/^\s*serial\s*:\s*(.+)/i);
+        if (serialMatch && state.slotNum != null) {
+          state.serial = String(serialMatch[1]).trim().replace(/^["']|["']$/g, '');
+        }
+      }
+      var done = state.i >= lines.length;
+      if (done && state.slotNum != null) {
+        outSerials.push({ slot: state.slotNum, serial: state.serial || '' });
+        state.slotNum = null;
+      }
+      if (typeof onProgress === 'function') onProgress(outSerials, done);
+      if (!done) yamlYield(step);
+    }
+    step();
+  }
+
   function extractBackpackSerialsSimple(yamlText) {
     var region = sliceYamlNamedBlock(yamlText, 'backpack');
     if (!region.found) return [];
@@ -768,23 +836,26 @@
   function updateYamlNextSlotDisplay() {
     var slotInfo = byId('yaml-auto-slot-info');
     if (!slotInfo) return;
+    var src = window.__yamlInventorySource;
+    var list = window.extractedSerials;
+    if (Array.isArray(list) && (src === 'bank' || src === 'backpack')) {
+      if (!list.length && window.__yamlInventoryExtracting) {
+        slotInfo.textContent = 'Next available slot: … (loading inventory)';
+        return;
+      }
+      var next = computeMaxBackpackSlotFromExtracted(list) + 1;
+      slotInfo.textContent =
+        'Next available slot: ' + next + (src === 'bank' ? ' (profile bank)' : '');
+      return;
+    }
     var yamlText = getYamlText().text;
     if (!yamlText || !String(yamlText).trim()) {
       slotInfo.textContent = 'Next available slot: —';
       return;
     }
     var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
-    var lines = String(yamlText).split(/\r?\n/);
     if (kind === 'profile') {
-      if (!findBankBlock(lines)) {
-        slotInfo.textContent = 'Next available slot: — (no bank: section)';
-        return;
-      }
       slotInfo.textContent = 'Next available slot: ' + nextAvailableBankSlot(yamlText) + ' (profile bank)';
-      return;
-    }
-    if (!findBackpackBlock(lines)) {
-      slotInfo.textContent = 'Next available slot: — (no backpack: section)';
       return;
     }
     slotInfo.textContent = 'Next available slot: ' + nextAvailableBackpackSlot(yamlText);
@@ -797,7 +868,7 @@
     var outCode = byId('outCode');
     var pasteDetails = byId('rebuildPasteCodeDetails');
     var toPut = s;
-    var looksLikeBase85 = s.indexOf('||') < 0 && s.indexOf('{') < 0 && s.length > 20;
+    var looksLikeBase85 = /^@U/i.test(s) || (s.indexOf('||') < 0 && s.indexOf('{') < 0 && s.length > 20);
     if (looksLikeBase85 && typeof window.deserializeBase85 === 'function') {
       try {
         var deser = window.deserializeBase85(s);
@@ -895,8 +966,8 @@
   }
 
   function createSerialRowElement(item, idx) {
-    /* Sync local Base85 for visible rows — names show immediately; bridge only fills gaps. */
-    var meta = parseSerialMeta(item.serial);
+    /* Skip sync Base85 on paint — ensureVisibleYamlSerialsDecoded fills names for the page. */
+    var meta = parseSerialMeta(item.serial, { syncDeserialize: false });
     if (meta && meta.deserialized) {
       try {
         var cache = window.__ccDecodedSerialsCache || (window.__ccDecodedSerialsCache = {});
@@ -1038,6 +1109,14 @@
     var list = window.extractedSerials || [];
     var total = list.length;
     if (countEl) countEl.textContent = total;
+    var countTop = byId('yaml-serial-count-top');
+    if (countTop) countTop.textContent = total;
+    var badgeTop = byId('yaml-serials-source-badge-top');
+    var badgeMain = byId('yaml-serials-source-badge');
+    if (badgeTop && badgeMain) {
+      badgeTop.textContent = badgeMain.textContent || '';
+      badgeTop.title = badgeMain.title || '';
+    }
 
     var bulkHint = byId('yaml-serials-bulk-hint');
     if (bulkHint) bulkHint.style.display = total > 200 ? 'block' : 'none';
@@ -1422,6 +1501,7 @@
     if (!yamlText || !String(yamlText).trim()) {
       window.extractedSerials = [];
       window.__yamlInventorySource = '';
+      window.__yamlInventoryExtracting = false;
       window.__yamlSerialsPageIndex = 0;
       function clearUi() {
         if (typeof window.refreshBackpackUI === 'function') window.refreshBackpackUI();
@@ -1437,21 +1517,83 @@
       __yamlDecodeBusy = false;
       __yamlDecodePageKey = '';
       var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(yamlText) : 'unknown';
+      var blockName = 'backpack';
       if (kind === 'profile') {
         window.__yamlInventorySource = 'bank';
-        window.extractedSerials = extractBankSerialsSimple(yamlText);
+        blockName = 'bank';
       } else if (kind === 'character') {
         window.__yamlInventorySource = 'backpack';
-        window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+        blockName = 'backpack';
       } else {
         window.__yamlInventorySource = '';
-        window.extractedSerials = extractBackpackSerialsSimple(yamlText);
+        blockName = 'backpack';
       }
-      /* List paints immediately; only the visible page is decoded (see ensureVisibleYamlSerialsDecoded). */
-      /* In-memory inventory buffer — same array the UI uses; avoids re-scanning YAML for summaries. */
-      try { window.__ccYamlInventoryBuffer = window.extractedSerials; } catch (_) {}
-      refreshBackpackUI();
-      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+      var region = sliceYamlNamedBlock(yamlText, blockName);
+      if (!region.found && kind !== 'profile') {
+        region = sliceYamlNamedBlock(yamlText, 'bank');
+        if (region.found) {
+          window.__yamlInventorySource = 'bank';
+          blockName = 'bank';
+        }
+      }
+      var out = [];
+      window.extractedSerials = out;
+      try { window.__ccYamlInventoryBuffer = out; } catch (_) {}
+
+      function finishExtract() {
+        window.__yamlInventoryExtracting = false;
+        try {
+          var holdMs = out.length > 2000 ? 4500 : (out.length > 800 ? 2500 : 0);
+          if (holdMs) window.__stxSaveYamlHeavyUntil = Date.now() + holdMs;
+        } catch (_) {}
+        refreshBackpackUI();
+        if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+        /* Field sync after inventory is ready — avoids overlapping jsyaml.load with extract. */
+        if (typeof window.scheduleSyncYamlToFields === 'function') {
+          window.scheduleSyncYamlToFields(out.length > 2000 ? 600 : 200);
+        }
+      }
+
+      if (!region.found) {
+        window.__yamlInventoryExtracting = false;
+        finishExtract();
+        return;
+      }
+
+      var lineEstimate = (region.slice.match(/\n/g) || []).length + 1;
+      /* Small inventories: sync extract is fine. Large banks: progressive + early paint. */
+      if (lineEstimate < 800) {
+        window.__yamlInventoryExtracting = false;
+        var syncList = extractSlotSerialsFromBlockSlice(region.slice, region.baseIndent);
+        out.length = 0;
+        for (var si = 0; si < syncList.length; si++) out.push(syncList[si]);
+        finishExtract();
+        return;
+      }
+
+      window.__yamlInventoryExtracting = true;
+      try { window.__stxSaveYamlHeavyUntil = Date.now() + 12000; } catch (_) {}
+      var lastPaintCount = 0;
+      var statusEl = byId('yaml-status') || byId('sav-file-info');
+      extractSlotSerialsProgressive(region.slice, region.baseIndent, out, function (serials, done) {
+        var n = serials.length;
+        if (statusEl && (done || n - lastPaintCount >= 200 || (lastPaintCount === 0 && n >= 40))) {
+          try {
+            statusEl.style.display = 'block';
+            statusEl.textContent = done
+              ? ('Inventory loaded — ' + n + ' item(s). Names decode for the visible page only.')
+              : ('Loading inventory… ' + n + ' item(s) so far');
+            statusEl.style.color = '#4caf50';
+          } catch (_) {}
+        }
+        /* Paint as soon as we have a page worth; then every ~400 items; always on done.
+           Decode the visible page even while extract continues (only 50 rows). */
+        if (done || (lastPaintCount === 0 && n >= YAML_SERIALS_PAGE_SIZE) || n - lastPaintCount >= 400) {
+          lastPaintCount = n;
+          refreshBackpackUI({ skipDecode: false });
+          if (done) finishExtract();
+        }
+      });
     }
     if (typeof window.stxYieldToMain === 'function') window.stxYieldToMain(runParse);
     else runParse();
@@ -1531,8 +1673,11 @@
       if (t.indexOf('@U') !== 0) t = '@U' + t.replace(/^@U/i, '');
       return t;
     }
-    /** BL4 custom Base85 alphabet includes `{|}`; reject only deserialized markers (commas / ||). */
+    /** BL4 custom Base85 alphabet includes `{|}`; prefer shared alphabet gate when available. */
     function validStoredB85(t) {
+      if (typeof window.ccIsValidStoredBase85 === 'function') {
+        try { return !!window.ccIsValidStoredBase85(t); } catch (_) {}
+      }
       t = String(t || '').trim();
       if (t.indexOf('@U') !== 0) return false;
       if (t.length < 10) return false;
@@ -1553,20 +1698,21 @@
       function tryPackOne(input) {
         var d = String(input || '').trim();
         if (!d) return '';
-        if (typeof window.__stxNicnlPackDeserialized === 'function') {
-          try {
-            var pk = window.__stxNicnlPackDeserialized(d);
-            pk = (pk && String(pk).trim()) || '';
-            pk = normalizeAtU(pk);
-            if (validStoredB85(pk)) return pk;
-          } catch (_) {}
-        }
+        /* serializeToBase85 already tries nicnl + bitstream and keeps the longer valid pack. */
         if (typeof window.serializeToBase85 === 'function') {
           try {
             var b = window.serializeToBase85(d, undefined, true);
             b = (b && String(b).trim()) || '';
             b = normalizeAtU(b);
             if (validStoredB85(b)) return b;
+          } catch (_) {}
+        }
+        if (typeof window.__stxNicnlPackDeserialized === 'function') {
+          try {
+            var pk = window.__stxNicnlPackDeserialized(d);
+            pk = (pk && String(pk).trim()) || '';
+            pk = normalizeAtU(pk);
+            if (validStoredB85(pk)) return pk;
           } catch (_) {}
         }
         return '';
@@ -2506,7 +2652,9 @@
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
   };
 
-  window.initSerialSearchSection = function () {
+  window.initSerialSearchSection = function (opts) {
+    opts = opts || {};
+    var deferCatalog = !!opts.deferCatalog;
     var fileInput = byId('serialLibraryFileInput');
     var searchInput = byId('serialSearchInput');
     var resultsEl = byId('serial-search-results');
@@ -2518,9 +2666,14 @@
     var addToEditorBtn = byId('serialSearchAddToEditorBtn');
     if (!resultsEl) return;
     if (resultsEl.dataset.stxSerialSearchWired === '1') {
-      try {
-        if (typeof window.__stxRefreshSerialSearchCatalog === 'function') window.__stxRefreshSerialSearchCatalog();
-      } catch (_) {}
+      /* Already wired — keep library/results; only refresh catalog when idle and not extracting. */
+      if (!window.__yamlInventoryExtracting && typeof window.__stxRefreshSerialSearchCatalog === 'function') {
+        if (typeof window.stxScheduleIdle === 'function') {
+          window.stxScheduleIdle(function () {
+            try { window.__stxRefreshSerialSearchCatalog(); } catch (_) {}
+          }, 900);
+        }
+      }
       return;
     }
     resultsEl.dataset.stxSerialSearchWired = '1';
@@ -3019,6 +3172,15 @@
       searchInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') scheduleApplyFilter(true);
       });
+      searchInput.addEventListener('focus', function () {
+        /* First focus may preload catalog in the background without blocking save parse. */
+        if (window.__yamlInventoryExtracting) return;
+        if (typeof window.stxScheduleIdle === 'function') {
+          window.stxScheduleIdle(function () {
+            try { loadCatalogSerials(false).then(paintCatalogStatus); } catch (_) {}
+          }, 400);
+        }
+      }, { once: false });
     }
     if (selectAllBtn) selectAllBtn.addEventListener('click', function () {
       for (var s = 0; s < lastFilteredRows.length; s++) setRowSelected(lastFilteredRows[s], true);
@@ -3101,7 +3263,7 @@
         for (var i = 0; i < codes.length; i++) {
           var c = String(codes[i] || '').trim();
           if (!c) continue;
-          var looksLikeBase85 = c.indexOf('||') < 0 && c.indexOf('{') < 0 && c.length > 20;
+          var looksLikeBase85 = /^@U/i.test(c) || (c.indexOf('||') < 0 && c.indexOf('{') < 0 && c.length > 20);
           if (looksLikeBase85 && typeof window.deserializeBase85 === 'function') {
             try {
               var d = window.deserializeBase85(c);
@@ -3130,6 +3292,37 @@
       if (statusEl) statusEl.textContent = 'Imported ' + codes.length + ' serial(s) into editor.';
     });
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+    if (deferCatalog) {
+      if (statusEl) {
+        statusEl.textContent = library.length
+          ? (library.length + ' serial(s) in your list. Catalog loads in the background…')
+          : 'Serial library ready. Catalog loads in the background — or type to search.';
+      }
+      try {
+        loadPasteIntoLibraryIfEmpty();
+        if (library.length) renderResults(buildFilteredRows((searchInput && searchInput.value || '').trim().toLowerCase()));
+        else renderResults([]);
+      } catch (_) {
+        renderResults([]);
+      }
+      function loadCatalogWhenIdle() {
+        if (window.__yamlInventoryExtracting) {
+          setTimeout(loadCatalogWhenIdle, 800);
+          return;
+        }
+        if (typeof window.stxSaveYamlUiBusy === 'function' && window.stxSaveYamlUiBusy()) {
+          setTimeout(loadCatalogWhenIdle, 800);
+          return;
+        }
+        loadCatalogSerials(false).then(function () {
+          paintCatalogStatus();
+          renderResults(buildFilteredRows((searchInput && searchInput.value || '').trim().toLowerCase()));
+        }).catch(function () {});
+      }
+      if (typeof window.stxScheduleIdle === 'function') window.stxScheduleIdle(loadCatalogWhenIdle, 1200);
+      else setTimeout(loadCatalogWhenIdle, 1200);
+      return;
+    }
     if (statusEl) statusEl.textContent = 'Loading item catalog…';
     loadCatalogSerials().then(function () {
       paintCatalogStatus();
@@ -3207,10 +3400,12 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       var defer = (typeof requestIdleCallback === 'function')
-        ? function (fn) { requestIdleCallback(fn, { timeout: 2500 }); }
-        : function (fn) { setTimeout(fn, 500); };
+        ? function (fn) { requestIdleCallback(fn, { timeout: 8000 }); }
+        : function (fn) { setTimeout(fn, 2500); };
       defer(function () {
-        if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
+        if (typeof window.initSerialSearchSection === 'function') {
+          window.initSerialSearchSection({ deferCatalog: true });
+        }
         if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
         if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
         if (typeof window.initYamlDedupeSection === 'function') window.initYamlDedupeSection();
@@ -3221,10 +3416,12 @@
     });
   } else {
     var deferNow = (typeof requestIdleCallback === 'function')
-      ? function (fn) { requestIdleCallback(fn, { timeout: 2500 }); }
-      : function (fn) { setTimeout(fn, 500); };
+      ? function (fn) { requestIdleCallback(fn, { timeout: 8000 }); }
+      : function (fn) { setTimeout(fn, 2500); };
     deferNow(function () {
-      if (typeof window.initSerialSearchSection === 'function') window.initSerialSearchSection();
+      if (typeof window.initSerialSearchSection === 'function') {
+        window.initSerialSearchSection({ deferCatalog: true });
+      }
       if (typeof window.initYamlAddSerialsSection === 'function') window.initYamlAddSerialsSection();
       if (typeof window.initYamlDuplicateSection === 'function') window.initYamlDuplicateSection();
       if (typeof window.initYamlDedupeSection === 'function') window.initYamlDedupeSection();

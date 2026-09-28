@@ -8978,12 +8978,12 @@
       ],
       [
         59,
-        "Initialize",
+        "Mushroom Crowd",
         "Skill"
       ],
       [
         60,
-        "Going Ghost",
+        "notarget",
         "Skill"
       ],
       [
@@ -9003,7 +9003,7 @@
       ],
       [
         64,
-        "Plugged In",
+        "Jacked In",
         "Skill"
       ],
       [
@@ -9073,17 +9073,17 @@
       ],
       [
         81,
-        "Sharing the Pain",
+        "IDKFA",
         "Skill"
       ],
       [
         82,
-        "Peak Performance",
+        "Finisher",
         "Skill"
       ],
       [
         83,
-        "Overclocking",
+        "Overclock",
         "Skill"
       ],
       [
@@ -9093,17 +9093,17 @@
       ],
       [
         85,
-        "Irradiated",
+        "Corrupted Path",
         "Skill"
       ],
       [
         86,
-        "Hiding the Pain",
+        "IDDQD",
         "Skill"
       ],
       [
         88,
-        "Sharing Tactics",
+        "Drift Compatible",
         "Skill"
       ],
       [
@@ -9118,12 +9118,12 @@
       ],
       [
         91,
-        "Initialize",
+        "Mushroom Crowd",
         "Skill"
       ],
       [
         92,
-        "Going Ghost",
+        "notarget",
         "Skill"
       ],
       [
@@ -9143,7 +9143,7 @@
       ],
       [
         96,
-        "Plugged In",
+        "Jacked In",
         "Skill"
       ],
       [
@@ -9213,17 +9213,17 @@
       ],
       [
         113,
-        "Sharing the Pain",
+        "IDKFA",
         "Skill"
       ],
       [
         114,
-        "Peak Performance",
+        "Finisher",
         "Skill"
       ],
       [
         115,
-        "Overclocking",
+        "Overclock",
         "Skill"
       ],
       [
@@ -9233,17 +9233,17 @@
       ],
       [
         117,
-        "Irradiated",
+        "Corrupted Path",
         "Skill"
       ],
       [
         118,
-        "Hiding the Pain",
+        "IDDQD",
         "Skill"
       ],
       [
         120,
-        "Sharing Tactics",
+        "Drift Compatible",
         "Skill"
       ],
       [
@@ -9258,12 +9258,12 @@
       ],
       [
         123,
-        "Initialize",
+        "Mushroom Crowd",
         "Skill"
       ],
       [
         124,
-        "Going Ghost",
+        "notarget",
         "Skill"
       ],
       [
@@ -9283,7 +9283,7 @@
       ],
       [
         128,
-        "Plugged In",
+        "Jacked In",
         "Skill"
       ],
       [
@@ -9353,17 +9353,17 @@
       ],
       [
         145,
-        "Sharing the Pain",
+        "IDKFA",
         "Skill"
       ],
       [
         146,
-        "Peak Performance",
+        "Finisher",
         "Skill"
       ],
       [
         147,
-        "Overclocking",
+        "Overclock",
         "Skill"
       ],
       [
@@ -9373,17 +9373,17 @@
       ],
       [
         149,
-        "Irradiated",
+        "Corrupted Path",
         "Skill"
       ],
       [
         150,
-        "Hiding the Pain",
+        "IDDQD",
         "Skill"
       ],
       [
         152,
-        "Sharing Tactics",
+        "Drift Compatible",
         "Skill"
       ],
       [
@@ -9398,12 +9398,12 @@
       ],
       [
         155,
-        "Initialize",
+        "Mushroom Crowd",
         "Skill"
       ],
       [
         156,
-        "Going Ghost",
+        "notarget",
         "Skill"
       ],
       [
@@ -9423,7 +9423,7 @@
       ],
       [
         160,
-        "Plugged In",
+        "Jacked In",
         "Skill"
       ],
       [
@@ -9493,17 +9493,17 @@
       ],
       [
         177,
-        "Sharing the Pain",
+        "IDKFA",
         "Skill"
       ],
       [
         178,
-        "Peak Performance",
+        "Finisher",
         "Skill"
       ],
       [
         179,
-        "Overclocking",
+        "Overclock",
         "Skill"
       ],
       [
@@ -9513,17 +9513,17 @@
       ],
       [
         181,
-        "Irradiated",
+        "Corrupted Path",
         "Skill"
       ],
       [
         182,
-        "Hiding the Pain",
+        "IDDQD",
         "Skill"
       ],
       [
         184,
-        "Sharing Tactics",
+        "Drift Compatible",
         "Skill"
       ],
       [
@@ -9538,12 +9538,12 @@
       ],
       [
         187,
-        "Initialize",
+        "Mushroom Crowd",
         "Skill"
       ],
       [
         188,
-        "Going Ghost",
+        "notarget",
         "Skill"
       ],
       [
@@ -9563,7 +9563,7 @@
       ],
       [
         192,
-        "Plugged In",
+        "Jacked In",
         "Skill"
       ],
       [
@@ -9633,17 +9633,17 @@
       ],
       [
         209,
-        "Sharing the Pain",
+        "IDKFA",
         "Skill"
       ],
       [
         210,
-        "Peak Performance",
+        "Finisher",
         "Skill"
       ],
       [
         211,
-        "Overclocking",
+        "Overclock",
         "Skill"
       ],
       [
@@ -9653,17 +9653,17 @@
       ],
       [
         213,
-        "Hiding the Pain",
+        "IDDQD",
         "Skill"
       ],
       [
         214,
-        "Irradiated",
+        "Corrupted Path",
         "Skill"
       ],
       [
         216,
-        "Sharing Tactics",
+        "Drift Compatible",
         "Skill"
       ],
       [
@@ -9768,7 +9768,7 @@
       ],
       [
         245,
-        "No Time to Think",
+        "Neurokinetics",
         "Skill"
       ],
       [
@@ -9778,22 +9778,22 @@
       ],
       [
         247,
-        "Manipulating RNG",
+        "Perfect Execution",
         "Skill"
       ],
       [
         249,
-        "Everchanging",
+        "Intrusion",
         "Skill"
       ],
       [
         251,
-        "Deeper Connection",
+        "Fusion Friends-y",
         "Skill"
       ],
       [
         252,
-        "Empowered Wyrm",
+        "Great Wyrm",
         "Skill"
       ],
       [
@@ -9803,17 +9803,17 @@
       ],
       [
         256,
-        "Symbiosis Overflow",
+        "Host Privileges",
         "Skill"
       ],
       [
         257,
-        "FNX.bat",
+        "UUDDLRLRBAS",
         "Skill"
       ],
       [
         258,
-        "What's Your Status",
+        "Status Update",
         "Skill"
       ],
       [
@@ -9823,12 +9823,12 @@
       ],
       [
         260,
-        "I HATE YOU",
+        "IHATEYOU",
         "Skill"
       ],
       [
         262,
-        "Irradiate 'Em All",
+        "Glass 'Em!",
         "Skill"
       ],
       [
@@ -9843,7 +9843,7 @@
       ],
       [
         266,
-        "Marathon",
+        "Biathlon",
         "Skill"
       ],
       [
@@ -9863,7 +9863,7 @@
       ],
       [
         271,
-        "Refactored",
+        "Refactored Damage Formula",
         "Skill"
       ],
       [
@@ -9878,17 +9878,17 @@
       ],
       [
         274,
-        "Chip Surplus",
+        "Siliconventional Warfare",
         "Skill"
       ],
       [
         275,
-        "The Gang's All Here",
+        "Merry Bandwidth",
         "Skill"
       ],
       [
         277,
-        "Overclocked",
+        "End Process",
         "Skill"
       ],
       [
@@ -9898,17 +9898,17 @@
       ],
       [
         280,
-        "Violent Outburst",
+        "Hard Reset",
         "Skill"
       ],
       [
         281,
-        "Watch Your Step",
+        "Tripwire",
         "Skill"
       ],
       [
         283,
-        "Assault Vest",
+        "Wrap Around",
         "Skill"
       ],
       [
@@ -10018,7 +10018,7 @@
       ],
       [
         308,
-        "No Time to Think",
+        "Neurokinetics",
         "Skill"
       ],
       [
@@ -10028,22 +10028,22 @@
       ],
       [
         310,
-        "Manipulating RNG",
+        "Perfect Execution",
         "Skill"
       ],
       [
         312,
-        "Everchanging",
+        "Intrusion",
         "Skill"
       ],
       [
         314,
-        "Deeper Connection",
+        "Fusion Friends-y",
         "Skill"
       ],
       [
         315,
-        "Empowered Wyrm",
+        "Great Wyrm",
         "Skill"
       ],
       [
@@ -10053,17 +10053,17 @@
       ],
       [
         319,
-        "Symbiosis Overflow",
+        "Host Privileges",
         "Skill"
       ],
       [
         320,
-        "FNX.bat",
+        "UUDDLRLRBAS",
         "Skill"
       ],
       [
         321,
-        "What's Your Status",
+        "Status Update",
         "Skill"
       ],
       [
@@ -10073,12 +10073,12 @@
       ],
       [
         323,
-        "I HATE YOU",
+        "IHATEYOU",
         "Skill"
       ],
       [
         325,
-        "Irradiate 'Em All",
+        "Glass 'Em!",
         "Skill"
       ],
       [
@@ -10093,7 +10093,7 @@
       ],
       [
         329,
-        "Marathon",
+        "Biathlon",
         "Skill"
       ],
       [
@@ -10113,7 +10113,7 @@
       ],
       [
         334,
-        "Refactored",
+        "Refactored Damage Formula",
         "Skill"
       ],
       [
@@ -10128,17 +10128,17 @@
       ],
       [
         337,
-        "Chip Surplus",
+        "Siliconventional Warfare",
         "Skill"
       ],
       [
         338,
-        "The Gang's All Here",
+        "Merry Bandwidth",
         "Skill"
       ],
       [
         340,
-        "Overclocked",
+        "End Process",
         "Skill"
       ],
       [
@@ -10148,17 +10148,17 @@
       ],
       [
         343,
-        "Violent Outburst",
+        "Hard Reset",
         "Skill"
       ],
       [
         344,
-        "Watch Your Step",
+        "Tripwire",
         "Skill"
       ],
       [
         346,
-        "Assault Vest",
+        "Wrap Around",
         "Skill"
       ],
       [
@@ -10268,7 +10268,7 @@
       ],
       [
         371,
-        "No Time to Think",
+        "Neurokinetics",
         "Skill"
       ],
       [
@@ -10278,22 +10278,22 @@
       ],
       [
         373,
-        "Manipulating RNG",
+        "Perfect Execution",
         "Skill"
       ],
       [
         375,
-        "Everchanging",
+        "Intrusion",
         "Skill"
       ],
       [
         377,
-        "Deeper Connection",
+        "Fusion Friends-y",
         "Skill"
       ],
       [
         378,
-        "Empowered Wyrm",
+        "Great Wyrm",
         "Skill"
       ],
       [
@@ -10303,17 +10303,17 @@
       ],
       [
         382,
-        "Symbiosis Overflow",
+        "Host Privileges",
         "Skill"
       ],
       [
         383,
-        "FNX.bat",
+        "UUDDLRLRBAS",
         "Skill"
       ],
       [
         384,
-        "What's Your Status",
+        "Status Update",
         "Skill"
       ],
       [
@@ -10323,12 +10323,12 @@
       ],
       [
         386,
-        "I HATE YOU",
+        "IHATEYOU",
         "Skill"
       ],
       [
         388,
-        "Irradiate 'Em All",
+        "Glass 'Em!",
         "Skill"
       ],
       [
@@ -10343,7 +10343,7 @@
       ],
       [
         392,
-        "Marathon",
+        "Biathlon",
         "Skill"
       ],
       [
@@ -10363,7 +10363,7 @@
       ],
       [
         397,
-        "Refactored",
+        "Refactored Damage Formula",
         "Skill"
       ],
       [
@@ -10378,17 +10378,17 @@
       ],
       [
         400,
-        "Chip Surplus",
+        "Siliconventional Warfare",
         "Skill"
       ],
       [
         401,
-        "The Gang's All Here",
+        "Merry Bandwidth",
         "Skill"
       ],
       [
         403,
-        "Overclocked",
+        "End Process",
         "Skill"
       ],
       [
@@ -10398,17 +10398,17 @@
       ],
       [
         406,
-        "Violent Outburst",
+        "Hard Reset",
         "Skill"
       ],
       [
         407,
-        "Watch Your Step",
+        "Tripwire",
         "Skill"
       ],
       [
         409,
-        "Assault Vest",
+        "Wrap Around",
         "Skill"
       ],
       [
@@ -10518,7 +10518,7 @@
       ],
       [
         434,
-        "No Time to Think",
+        "Neurokinetics",
         "Skill"
       ],
       [
@@ -10528,22 +10528,22 @@
       ],
       [
         436,
-        "Manipulating RNG",
+        "Perfect Execution",
         "Skill"
       ],
       [
         438,
-        "Everchanging",
+        "Intrusion",
         "Skill"
       ],
       [
         440,
-        "Deeper Connection",
+        "Fusion Friends-y",
         "Skill"
       ],
       [
         441,
-        "Empowered Wyrm",
+        "Great Wyrm",
         "Skill"
       ],
       [
@@ -10553,17 +10553,17 @@
       ],
       [
         445,
-        "Symbiosis Overflow",
+        "Host Privileges",
         "Skill"
       ],
       [
         446,
-        "FNX.bat",
+        "UUDDLRLRBAS",
         "Skill"
       ],
       [
         447,
-        "What's Your Status",
+        "Status Update",
         "Skill"
       ],
       [
@@ -10573,12 +10573,12 @@
       ],
       [
         449,
-        "I HATE YOU",
+        "IHATEYOU",
         "Skill"
       ],
       [
         451,
-        "Irradiate 'Em All",
+        "Glass 'Em!",
         "Skill"
       ],
       [
@@ -10593,7 +10593,7 @@
       ],
       [
         455,
-        "Marathon",
+        "Biathlon",
         "Skill"
       ],
       [
@@ -10613,7 +10613,7 @@
       ],
       [
         460,
-        "Refactored",
+        "Refactored Damage Formula",
         "Skill"
       ],
       [
@@ -10628,17 +10628,17 @@
       ],
       [
         463,
-        "Chip Surplus",
+        "Siliconventional Warfare",
         "Skill"
       ],
       [
         464,
-        "The Gang's All Here",
+        "Merry Bandwidth",
         "Skill"
       ],
       [
         466,
-        "Overclocked",
+        "End Process",
         "Skill"
       ],
       [
@@ -10648,17 +10648,17 @@
       ],
       [
         469,
-        "Violent Outburst",
+        "Hard Reset",
         "Skill"
       ],
       [
         470,
-        "Watch Your Step",
+        "Tripwire",
         "Skill"
       ],
       [
         472,
-        "Assault Vest",
+        "Wrap Around",
         "Skill"
       ],
       [
@@ -10768,7 +10768,7 @@
       ],
       [
         497,
-        "No Time to Think",
+        "Neurokinetics",
         "Skill"
       ],
       [
@@ -10778,22 +10778,22 @@
       ],
       [
         499,
-        "Manipulating RNG",
+        "Perfect Execution",
         "Skill"
       ],
       [
         501,
-        "Everchanging",
+        "Intrusion",
         "Skill"
       ],
       [
         503,
-        "Deeper Connection",
+        "Fusion Friends-y",
         "Skill"
       ],
       [
         504,
-        "Empowered Wyrm",
+        "Great Wyrm",
         "Skill"
       ],
       [
@@ -10803,17 +10803,17 @@
       ],
       [
         508,
-        "Symbiosis Overflow",
+        "Host Privileges",
         "Skill"
       ],
       [
         509,
-        "FNX.bat",
+        "UUDDLRLRBAS",
         "Skill"
       ],
       [
         510,
-        "What's Your Status",
+        "Status Update",
         "Skill"
       ],
       [
@@ -10823,12 +10823,12 @@
       ],
       [
         512,
-        "I HATE YOU",
+        "IHATEYOU",
         "Skill"
       ],
       [
         514,
-        "Irradiate 'Em All",
+        "Glass 'Em!",
         "Skill"
       ],
       [
@@ -10843,7 +10843,7 @@
       ],
       [
         518,
-        "Marathon",
+        "Biathlon",
         "Skill"
       ],
       [
@@ -10863,7 +10863,7 @@
       ],
       [
         523,
-        "Refactored",
+        "Refactored Damage Formula",
         "Skill"
       ],
       [
@@ -10878,17 +10878,17 @@
       ],
       [
         526,
-        "Chip Surplus",
+        "Siliconventional Warfare",
         "Skill"
       ],
       [
         527,
-        "The Gang's All Here",
+        "Merry Bandwidth",
         "Skill"
       ],
       [
         529,
-        "Overclocked",
+        "End Process",
         "Skill"
       ],
       [
@@ -10898,17 +10898,17 @@
       ],
       [
         532,
-        "Violent Outburst",
+        "Hard Reset",
         "Skill"
       ],
       [
         533,
-        "Watch Your Step",
+        "Tripwire",
         "Skill"
       ],
       [
         535,
-        "Assault Vest",
+        "Wrap Around",
         "Skill"
       ],
       [

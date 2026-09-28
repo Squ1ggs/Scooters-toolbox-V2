@@ -3515,49 +3515,49 @@
     "name": "Gotta Go Fast",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Melee Critical Hits receive increased benefit from Disdain."
   },
   "flurry": {
     "name": "Flurry",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Dealing Melee Damage increases Loveless' Fire Rate and Reload Speed for a Duration."
   },
-  "pluggedin": {
-    "name": "Plugged In",
+  "jackedin": {
+    "name": "Jacked In",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless has increased Shield Capacity. Activating an Action Skill, Function, or Executable gives Loveless increased Shield Regeneration Rate for a Duration and her Shield begins to Regenerate immediately."
   },
   "ratiotechnique": {
     "name": "Ratio Technique",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains Critical Hit Chance with Guns and Melee Attacks.No one dies the same death."
   },
   "odium": {
     "name": "Odium",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Melee Critical Hits receive increased benefit from Disdain."
   },
   "deathbegetsdeath": {
     "name": "Death Begets Death",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless restores Action Skill Duration. Killing an enemy with Critical or Melee Damage gives double Action Skill Duration restoration.Begets Death."
   },
-  "goingghost": {
-    "name": "Going Ghost",
+  "notarget": {
+    "name": "notarget",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Stealth lasts longer. Loveless gains Movement Speed while Stealthed."
   },
-  "initialize": {
-    "name": "Initialize",
+  "mushroomcrowd": {
+    "name": "Mushroom Crowd",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Creating a Clone gives Loveless increased Gun Accuracy and Reload Speed for a Duration.Now we are become Death."
   },
   "neutralspecial": {
     "name": "Neutral Special",
@@ -3569,103 +3569,103 @@
     "name": "Footwork",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Loveless gains Lifesteal from Melee Critical Hits. When at Max Stacks, Loveless's next Melee Attack Critically Hits and consumes the Stacks.That is not a falcon!"
   },
   "targetpractice": {
     "name": "Target Practice",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Clones now target enemies and throw Mini Shurikens that deal Radiation Melee Damage."
   },
   "methodical": {
     "name": "Methodical",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Gun Damage based on her Gun's Fire Rate. The lower the Fire Rate, the greater the Bonus."
   },
-  "marathon": {
-    "name": "Marathon",
+  "biathlon": {
+    "name": "Biathlon",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Stackof Footwork.Footwork Stacks now provide Reload Speed. When at Max Stacks, Loveless' next Critical Hit with a Sniper Rifle consumes the Stacks to deal Bonus Radiation Melee Damage.I thought it was biathalon!"
   },
   "retribution": {
     "name": "Retribution",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "When a Clone dies, Loveless gains increased Gun and Critical Hit Damage for a Duration."
   },
   "infinitemurderhack": {
     "name": "Infinite Murder Hack",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Sniper Rifle Critical Hits have a chance of refunding the bullet back to your Magazine."
   },
   "killingmachine": {
     "name": "Killing Machine",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless fully restores her Function Cooldown and partially restores her Executable Cooldown."
   },
-  "refactored": {
-    "name": "Refactored",
+  "refactoreddamageformula": {
+    "name": "Refactored Damage Formula",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Sniper Rifle Damage is multiplied.We were getting sick of soup."
   },
   "thirdparty": {
     "name": "Third Party",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Action Skill Damage and Status Effect Damage.This bonus is increased for each active Clone or if Wyrm is active."
   },
   "thesweetscience": {
     "name": "The Sweet Science",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Footwork Stacks now provide Melee Damage. When at Max Stacks, enemies damaged by Loveless' Empowered Melee receive a random Status Effect."
   },
-  "chipsurplus": {
-    "name": "Chip Surplus",
+  "siliconventionalwarfare": {
+    "name": "Siliconventional Warfare",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Gun Damage based on RAM. Using Empowered Melee causes Loveless' Guns to deal Bonus Corrosive Melee Damage for a Duration."
   },
-  "thegangsallhere": {
-    "name": "The Gang's All Here",
+  "merrybandwidth": {
+    "name": "Merry Bandwidth",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless can have more active Clones."
   },
-  "overclocked": {
-    "name": "Overclocked",
+  "endprocess": {
+    "name": "End Process",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless gains a percentage of her Maximum RAM.Are you sure? Y/N"
   },
   "flowstate": {
     "name": "Flow State",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Dealing Melee Damage gives Loveless a Stack of Flow State for a Duration.Stacks give Melee Damage."
   },
-  "violentoutburst": {
-    "name": "Violent Outburst",
+  "hardreset": {
+    "name": "Hard Reset",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Action Skill and Ordnance Cooldown Rate for a Duration after using her Empowered Melee."
   },
-  "watchyourstep": {
-    "name": "Watch Your Step",
+  "tripwire": {
+    "name": "Tripwire",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Footwork Stacks now provide Ordnance Damage. When at Max Stacks, dealing Ordnance Damage deals Bonus Corrosive Melee Damage and consumes the Stacks."
   },
-  "assaultvest": {
-    "name": "Assault Vest",
+  "wraparound": {
+    "name": "Wrap Around",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Overkill Melee Damage is converted into Overshield. Loveless gains increased Melee Damage while she has Overshield."
   },
   "upload": {
     "name": "Upload",
@@ -3673,155 +3673,155 @@
     "tree": "Hack / Slash",
     "description": "Loveless' Melee Critical Hits now apply Contagion."
   },
-  "sharingtactics": {
-    "name": "Sharing Tactics",
+  "driftcompatible": {
+    "name": "Drift Compatible",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Wyrm gains Critically Hit Chance. Symbiosis Effect. Loveless & Wyrm'sCritical Hit Damage Dealt scales with the amount of SymbiosisStacks that Loveless currently has."
   },
-  "irradiated": {
-    "name": "Irradiated",
+  "corruptedpath": {
+    "name": "Corrupted Path",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increasedRadiation Damage and Irradiation Chance. Symbiosis Effect. Loveless always dealsBonus RadiationDamage. This effect scales with the amount of Symbiosis Stacks she currently has."
   },
   "antivirus": {
     "name": "Antivirus",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Kill Skill.When Loveless or Wyrm kill an enemy with Radiation Damage, Loveless gains an Overshield. Symbiosis Effect.Loveless gains increased Overshield Duration, scaling with the amount of Stacksof Symbiosis she currently has."
   },
-  "hidingthepain": {
-    "name": "Hiding the Pain",
+  "iddqd": {
+    "name": "IDDQD",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless and Wyrm gain increased Damage Reduction from all incoming damage. Symbiosis Effect.Grants Lovelessa chance to completely Negate Damage based on the amount of Symbiosis Stacks she currently has.When that effect happens, Loveless gains a StackofSymbiosis. Until it is done."
   },
-  "overclocking": {
-    "name": "Overclocking",
+  "overclock": {
+    "name": "Overclock",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless now deals increased Action Skill Damage and gains longer Action Skill Duration."
   },
-  "peakperformance": {
-    "name": "Peak Performance",
+  "finisher": {
+    "name": "Finisher",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless deals damage with a FunctionorExecutable, she gains a Finisher Stack, increasing the damage she deals with Guns.Gun Kills reset the decay timer of Finisher Stacks."
   },
-  "sharingthepain": {
-    "name": "Sharing the Pain",
+  "idkfa": {
+    "name": "IDKFA",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless takes damage from enemies, she has a chance to gain a Sharing the Pain Stack, increasing her Gun Damage for the duration. Symbiosis Effect. When Loveless gains a Sharing the Pain Stack, a Radiation Nova explodes on the enemy, dealing Radiation Damage."
   },
   "purefusion": {
     "name": "Pure Fusion",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless and Wyrm gain increased Maximum Health Capacity.Additionally, Loveless gains increased SymbiosisDuration."
   },
   "optimization": {
     "name": "Optimization",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains a chance to completely Refill her RAM when she spends it. Symbiosis Effect. When Loveless fails to completely refill her RAM, she gets a partial refill that scales with the current amount of Symbiosis Stacksshe currently has."
   },
   "criticallyacclaimed": {
     "name": "Critically Acclaimed",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Kill Skill. Critical Hit Kills by Loveless and Wyrm have a chance to refund Missing Action Skill Duration. While Wyrm is Active, Loveless also gains a StackofSymbiosis."
   },
   "storageupgrade": {
     "name": "Storage Upgrade",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased RAM-related Damage Bonuses. Symbiosis Effect. Loveless gains SymbiosisStacks when she spends RAM."
   },
-  "notimetothink": {
-    "name": "No Time to Think",
+  "neurokinetics": {
+    "name": "Neurokinetics",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless or Wyrm deal Critical Hit Damage, Loveless gains Increased Melee Damage for a duration. SymbiosisEffect.When dealing Melee Damage, Loveless gains a chance to Heal herself for a portion of the damage she dealt. The portion she gets scales with her current amount of Symbiosis Stacks. They're way above normal."
   },
   "poweroverwhelming": {
     "name": "Power Overwhelming",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless' Empowered Melee Attack gains Bonus Elemental Damage based on the Gun she currently has equipped for a duration. Double the effect if the current Gun is of the Radiation Element. Symbiosis Effect.The Damage Dealt scales with the amount of Symbiosis Stacks."
   },
-  "manipulatingrng": {
-    "name": "Manipulating RNG",
+  "perfectexecution": {
+    "name": "Perfect Execution",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains Critical Hit Chance on all Damage Dealt by Functions and Executables."
   },
-  "everchanging": {
-    "name": "Everchanging",
+  "intrusion": {
+    "name": "Intrusion",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "After dealing damage with her Empowered Melee Attack, Loveless Automatically deals Critical Hit Damage for a duration."
   },
-  "deeperconnection": {
-    "name": "Deeper Connection",
+  "fusionfriendsy": {
+    "name": "Fusion Friends-y",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased MaximumSymbiosis Stacks. Symbiosis Effect.When Loveless kills enemies she has a chance to gain Symbiosis Stacks."
   },
-  "empoweredwyrm": {
-    "name": "Empowered Wyrm",
+  "greatwyrm": {
+    "name": "Great Wyrm",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Wyrm's Basic Attacks now deal more Radiation Damage. Symbiosis Effect. The damage now also scales with the current amount of Symbiosis Stacks. May his passage cleanse the world."
   },
   "inmemoriam": {
     "name": "In Memoriam",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains more Symbiosis Stacks when she initially summons Wyrm. Additionally, when Wyrm dies, Loveless keeps a percentage of her current Symbiosis Stacksand continues benefitting from Symbiosis Effects."
   },
-  "symbiosisoverflow": {
-    "name": "Symbiosis Overflow",
+  "hostprivileges": {
+    "name": "Host Privileges",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless uses an Executable, she now spends a quantity of SymbiosisStacks, converting them into Host Privilege Stacks. Host Privilege Stacks increase the damage caused by Functions and Executables."
   },
-  "fnxbat": {
-    "name": "FNX.bat",
+  "uuddlrlrbas": {
+    "name": "UUDDLRLRBAS",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Wyrm dies by being damaged by enemies, Dead Code spawns at the location of their death. The Dead Code deals Radiation Damage in an area around it and remains for a time. Loveless and her Teammates can Shoot the Dead Code. If Loveless or her Teammates destroy the Dead Code, Wyrm respawns, restarting Malignant Construct at no cost. If the Dead Code phases out on its own, the Action Skill Cooldown starts."
   },
-  "whatsyourstatus": {
-    "name": "What's Your Status",
+  "statusupdate": {
+    "name": "Status Update",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless applies a Status Effect, Loveless gains Bonus Gun Damage from that Element for a duration. Double the effect if Irradiation is the effect applied. Symbiosis Effect.Loveless gains increased Status Effect Chance, scaling with Symbiosis Stacks. I don't want to talk about it..."
   },
   "explosivemindset": {
     "name": "Explosive Mindset",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased Ordnance Damage. Symbiosis Effect.Now also scales with the amount of Symbiosis Stacks that Lovelesscurrently has."
   },
   "ihateyou": {
-    "name": "I HATE YOU",
+    "name": "IHATEYOU",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Enemies killed by Loveless with Radiation Damage spawn a Shuriken, targeting a random enemy. Symbiosis Effect. Shurikens deal Radiation Damage in an area on impact, its damage scales with the current amount of Symbiosis Stacks. Scream it!"
   },
-  "irradiateemall": {
-    "name": "Irradiate 'Em All",
+  "glassem": {
+    "name": "Glass 'Em!",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Wyrm Kills an enemy, a Radiation Nova Explodes on them, dealing Radiation Damage in an area. Enemies touched by the Radiation Nova immediately get Irradiated."
   },
   "secondimpact": {
     "name": "Second Impact",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Shurikens now have a chance to spawn when Loveless and Wyrm deal Non-Status Effect Radiation Damage to enemies, targeting a random nearby enemy."
   }
 };
   window.__CLASSMOD_PERK_META_BY_NAME = {
@@ -7513,49 +7513,49 @@
     "name": "Gotta Go Fast",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Melee Critical Hits receive increased benefit from Disdain."
   },
   "Flurry": {
     "name": "Flurry",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Dealing Melee Damage increases Loveless' Fire Rate and Reload Speed for a Duration."
   },
-  "Plugged In": {
-    "name": "Plugged In",
+  "Jacked In": {
+    "name": "Jacked In",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless has increased Shield Capacity. Activating an Action Skill, Function, or Executable gives Loveless increased Shield Regeneration Rate for a Duration and her Shield begins to Regenerate immediately."
   },
   "Ratio Technique": {
     "name": "Ratio Technique",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains Critical Hit Chance with Guns and Melee Attacks.No one dies the same death."
   },
   "Odium": {
     "name": "Odium",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Melee Critical Hits receive increased benefit from Disdain."
   },
   "Death Begets Death": {
     "name": "Death Begets Death",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless restores Action Skill Duration. Killing an enemy with Critical or Melee Damage gives double Action Skill Duration restoration.Begets Death."
   },
-  "Going Ghost": {
-    "name": "Going Ghost",
+  "notarget": {
+    "name": "notarget",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Stealth lasts longer. Loveless gains Movement Speed while Stealthed."
   },
-  "Initialize": {
-    "name": "Initialize",
+  "Mushroom Crowd": {
+    "name": "Mushroom Crowd",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Creating a Clone gives Loveless increased Gun Accuracy and Reload Speed for a Duration.Now we are become Death."
   },
   "Neutral Special": {
     "name": "Neutral Special",
@@ -7567,103 +7567,103 @@
     "name": "Footwork",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Loveless gains Lifesteal from Melee Critical Hits. When at Max Stacks, Loveless's next Melee Attack Critically Hits and consumes the Stacks.That is not a falcon!"
   },
   "Target Practice": {
     "name": "Target Practice",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Clones now target enemies and throw Mini Shurikens that deal Radiation Melee Damage."
   },
   "Methodical": {
     "name": "Methodical",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Gun Damage based on her Gun's Fire Rate. The lower the Fire Rate, the greater the Bonus."
   },
-  "Marathon": {
-    "name": "Marathon",
+  "Biathlon": {
+    "name": "Biathlon",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Stackof Footwork.Footwork Stacks now provide Reload Speed. When at Max Stacks, Loveless' next Critical Hit with a Sniper Rifle consumes the Stacks to deal Bonus Radiation Melee Damage.I thought it was biathalon!"
   },
   "Retribution": {
     "name": "Retribution",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "When a Clone dies, Loveless gains increased Gun and Critical Hit Damage for a Duration."
   },
   "Infinite Murder Hack": {
     "name": "Infinite Murder Hack",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Sniper Rifle Critical Hits have a chance of refunding the bullet back to your Magazine."
   },
   "Killing Machine": {
     "name": "Killing Machine",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless fully restores her Function Cooldown and partially restores her Executable Cooldown."
   },
-  "Refactored": {
-    "name": "Refactored",
+  "Refactored Damage Formula": {
+    "name": "Refactored Damage Formula",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless' Sniper Rifle Damage is multiplied.We were getting sick of soup."
   },
   "Third Party": {
     "name": "Third Party",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Action Skill Damage and Status Effect Damage.This bonus is increased for each active Clone or if Wyrm is active."
   },
   "The Sweet Science": {
     "name": "The Sweet Science",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Footwork Stacks now provide Melee Damage. When at Max Stacks, enemies damaged by Loveless' Empowered Melee receive a random Status Effect."
   },
-  "Chip Surplus": {
-    "name": "Chip Surplus",
+  "Siliconventional Warfare": {
+    "name": "Siliconventional Warfare",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Gun Damage based on RAM. Using Empowered Melee causes Loveless' Guns to deal Bonus Corrosive Melee Damage for a Duration."
   },
-  "The Gang's All Here": {
-    "name": "The Gang's All Here",
+  "Merry Bandwidth": {
+    "name": "Merry Bandwidth",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless can have more active Clones."
   },
-  "Overclocked": {
-    "name": "Overclocked",
+  "End Process": {
+    "name": "End Process",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Kill Skill. Loveless gains a percentage of her Maximum RAM.Are you sure? Y/N"
   },
   "Flow State": {
     "name": "Flow State",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Dealing Melee Damage gives Loveless a Stack of Flow State for a Duration.Stacks give Melee Damage."
   },
-  "Violent Outburst": {
-    "name": "Violent Outburst",
+  "Hard Reset": {
+    "name": "Hard Reset",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Loveless gains increased Action Skill and Ordnance Cooldown Rate for a Duration after using her Empowered Melee."
   },
-  "Watch Your Step": {
-    "name": "Watch Your Step",
+  "Tripwire": {
+    "name": "Tripwire",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Footwork Skill. Moving generates Stacks of Footwork. Loveless gains Movement Speed for each Footwork Stack.Footwork Stacks now provide Ordnance Damage. When at Max Stacks, dealing Ordnance Damage deals Bonus Corrosive Melee Damage and consumes the Stacks."
   },
-  "Assault Vest": {
-    "name": "Assault Vest",
+  "Wrap Around": {
+    "name": "Wrap Around",
     "vaultHunter": "Loveless",
     "tree": "Hack / Slash",
-    "description": ""
+    "description": "Overkill Melee Damage is converted into Overshield. Loveless gains increased Melee Damage while she has Overshield."
   },
   "Upload": {
     "name": "Upload",
@@ -7671,155 +7671,155 @@
     "tree": "Hack / Slash",
     "description": "Loveless' Melee Critical Hits now apply Contagion."
   },
-  "Sharing Tactics": {
-    "name": "Sharing Tactics",
+  "Drift Compatible": {
+    "name": "Drift Compatible",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Wyrm gains Critically Hit Chance. Symbiosis Effect. Loveless & Wyrm'sCritical Hit Damage Dealt scales with the amount of SymbiosisStacks that Loveless currently has."
   },
-  "Irradiated": {
-    "name": "Irradiated",
+  "Corrupted Path": {
+    "name": "Corrupted Path",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increasedRadiation Damage and Irradiation Chance. Symbiosis Effect. Loveless always dealsBonus RadiationDamage. This effect scales with the amount of Symbiosis Stacks she currently has."
   },
   "Antivirus": {
     "name": "Antivirus",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Kill Skill.When Loveless or Wyrm kill an enemy with Radiation Damage, Loveless gains an Overshield. Symbiosis Effect.Loveless gains increased Overshield Duration, scaling with the amount of Stacksof Symbiosis she currently has."
   },
-  "Hiding the Pain": {
-    "name": "Hiding the Pain",
+  "IDDQD": {
+    "name": "IDDQD",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless and Wyrm gain increased Damage Reduction from all incoming damage. Symbiosis Effect.Grants Lovelessa chance to completely Negate Damage based on the amount of Symbiosis Stacks she currently has.When that effect happens, Loveless gains a StackofSymbiosis. Until it is done."
   },
-  "Overclocking": {
-    "name": "Overclocking",
+  "Overclock": {
+    "name": "Overclock",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless now deals increased Action Skill Damage and gains longer Action Skill Duration."
   },
-  "Peak Performance": {
-    "name": "Peak Performance",
+  "Finisher": {
+    "name": "Finisher",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless deals damage with a FunctionorExecutable, she gains a Finisher Stack, increasing the damage she deals with Guns.Gun Kills reset the decay timer of Finisher Stacks."
   },
-  "Sharing the Pain": {
-    "name": "Sharing the Pain",
+  "IDKFA": {
+    "name": "IDKFA",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless takes damage from enemies, she has a chance to gain a Sharing the Pain Stack, increasing her Gun Damage for the duration. Symbiosis Effect. When Loveless gains a Sharing the Pain Stack, a Radiation Nova explodes on the enemy, dealing Radiation Damage."
   },
   "Pure Fusion": {
     "name": "Pure Fusion",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless and Wyrm gain increased Maximum Health Capacity.Additionally, Loveless gains increased SymbiosisDuration."
   },
   "Optimization": {
     "name": "Optimization",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains a chance to completely Refill her RAM when she spends it. Symbiosis Effect. When Loveless fails to completely refill her RAM, she gets a partial refill that scales with the current amount of Symbiosis Stacksshe currently has."
   },
   "Critically Acclaimed": {
     "name": "Critically Acclaimed",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Kill Skill. Critical Hit Kills by Loveless and Wyrm have a chance to refund Missing Action Skill Duration. While Wyrm is Active, Loveless also gains a StackofSymbiosis."
   },
   "Storage Upgrade": {
     "name": "Storage Upgrade",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased RAM-related Damage Bonuses. Symbiosis Effect. Loveless gains SymbiosisStacks when she spends RAM."
   },
-  "No Time to Think": {
-    "name": "No Time to Think",
+  "Neurokinetics": {
+    "name": "Neurokinetics",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless or Wyrm deal Critical Hit Damage, Loveless gains Increased Melee Damage for a duration. SymbiosisEffect.When dealing Melee Damage, Loveless gains a chance to Heal herself for a portion of the damage she dealt. The portion she gets scales with her current amount of Symbiosis Stacks. They're way above normal."
   },
   "Power Overwhelming": {
     "name": "Power Overwhelming",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless' Empowered Melee Attack gains Bonus Elemental Damage based on the Gun she currently has equipped for a duration. Double the effect if the current Gun is of the Radiation Element. Symbiosis Effect.The Damage Dealt scales with the amount of Symbiosis Stacks."
   },
-  "Manipulating RNG": {
-    "name": "Manipulating RNG",
+  "Perfect Execution": {
+    "name": "Perfect Execution",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains Critical Hit Chance on all Damage Dealt by Functions and Executables."
   },
-  "Everchanging": {
-    "name": "Everchanging",
+  "Intrusion": {
+    "name": "Intrusion",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "After dealing damage with her Empowered Melee Attack, Loveless Automatically deals Critical Hit Damage for a duration."
   },
-  "Deeper Connection": {
-    "name": "Deeper Connection",
+  "Fusion Friends-y": {
+    "name": "Fusion Friends-y",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased MaximumSymbiosis Stacks. Symbiosis Effect.When Loveless kills enemies she has a chance to gain Symbiosis Stacks."
   },
-  "Empowered Wyrm": {
-    "name": "Empowered Wyrm",
+  "Great Wyrm": {
+    "name": "Great Wyrm",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Wyrm's Basic Attacks now deal more Radiation Damage. Symbiosis Effect. The damage now also scales with the current amount of Symbiosis Stacks. May his passage cleanse the world."
   },
   "In Memoriam": {
     "name": "In Memoriam",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains more Symbiosis Stacks when she initially summons Wyrm. Additionally, when Wyrm dies, Loveless keeps a percentage of her current Symbiosis Stacksand continues benefitting from Symbiosis Effects."
   },
-  "Symbiosis Overflow": {
-    "name": "Symbiosis Overflow",
+  "Host Privileges": {
+    "name": "Host Privileges",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless uses an Executable, she now spends a quantity of SymbiosisStacks, converting them into Host Privilege Stacks. Host Privilege Stacks increase the damage caused by Functions and Executables."
   },
-  "FNX.bat": {
-    "name": "FNX.bat",
+  "UUDDLRLRBAS": {
+    "name": "UUDDLRLRBAS",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Wyrm dies by being damaged by enemies, Dead Code spawns at the location of their death. The Dead Code deals Radiation Damage in an area around it and remains for a time. Loveless and her Teammates can Shoot the Dead Code. If Loveless or her Teammates destroy the Dead Code, Wyrm respawns, restarting Malignant Construct at no cost. If the Dead Code phases out on its own, the Action Skill Cooldown starts."
   },
-  "What's Your Status": {
-    "name": "What's Your Status",
+  "Status Update": {
+    "name": "Status Update",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Loveless applies a Status Effect, Loveless gains Bonus Gun Damage from that Element for a duration. Double the effect if Irradiation is the effect applied. Symbiosis Effect.Loveless gains increased Status Effect Chance, scaling with Symbiosis Stacks. I don't want to talk about it..."
   },
   "Explosive Mindset": {
     "name": "Explosive Mindset",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Loveless gains increased Ordnance Damage. Symbiosis Effect.Now also scales with the amount of Symbiosis Stacks that Lovelesscurrently has."
   },
-  "I HATE YOU": {
-    "name": "I HATE YOU",
+  "IHATEYOU": {
+    "name": "IHATEYOU",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Enemies killed by Loveless with Radiation Damage spawn a Shuriken, targeting a random enemy. Symbiosis Effect. Shurikens deal Radiation Damage in an area on impact, its damage scales with the current amount of Symbiosis Stacks. Scream it!"
   },
-  "Irradiate 'Em All": {
-    "name": "Irradiate 'Em All",
+  "Glass 'Em!": {
+    "name": "Glass 'Em!",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "When Wyrm Kills an enemy, a Radiation Nova Explodes on them, dealing Radiation Damage in an area. Enemies touched by the Radiation Nova immediately get Irradiated."
   },
   "Second Impact": {
     "name": "Second Impact",
     "vaultHunter": "Loveless",
     "tree": "Manifestation",
-    "description": ""
+    "description": "Shurikens now have a chance to spawn when Loveless and Wyrm deal Non-Status Effect Radiation Damage to enemies, targeting a random nearby enemy."
   }
 };
   window.__normalizePerkName = window.__normalizePerkName || function(name){
