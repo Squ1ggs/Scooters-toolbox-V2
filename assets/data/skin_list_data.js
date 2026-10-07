@@ -2131,7 +2131,7 @@ window.SKIN_LIST_DATA = {
     {
       "id": "numeric:{273:43}",
       "kind": "weapon_skin_code",
-      "display_name": "Dahlfather",
+      "display_name": "Heimdahl",
       "cosmetic": null,
       "camo_token": null,
       "skin_code": "{273:43}",
@@ -2140,7 +2140,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{273:43}",
-      "drop_source": "Legendary skin code for Dahlfather — add to that gun's serial",
+      "drop_source": "Legendary skin code for Heimdahl — add to that gun's serial",
       "loot_link": null,
       "mat_num": null,
       "inferred": false
@@ -2199,7 +2199,7 @@ window.SKIN_LIST_DATA = {
     {
       "id": "numeric:{282:31}",
       "kind": "weapon_skin_code",
-      "display_name": "Decoy",
+      "display_name": "Flak Cannon",
       "cosmetic": null,
       "camo_token": null,
       "skin_code": "{282:31}",
@@ -2208,7 +2208,7 @@ window.SKIN_LIST_DATA = {
       "comp": null,
       "base85_serial": null,
       "spawn_hint": "{282:31}",
-      "drop_source": "Legendary skin code for Decoy — add to that gun's serial",
+      "drop_source": "Legendary skin code for Flak Cannon — add to that gun's serial",
       "loot_link": null,
       "mat_num": null,
       "inferred": false

@@ -1,3 +1,10 @@
+    /**
+     * Legit Builder data authority (Nexus/NCS converted extracts — same stack as save-editor.be):
+     * - Part identity / serial IDs: NCS_PARTS + serialIndex remap, STX rows that mirror Nexus inv keys
+     * - Slot order: NCS_SLOT_MAP / ncs_slots
+     * - Pass/Fail: TagCompValidation from Nexus inv dumps (deps / exclusions / comps)
+     * - Manifest in_pool: loot-pool badge ONLY — never hide or hard-reject parts
+     */
     var M = typeof BL4_MANIFEST !== 'undefined' ? BL4_MANIFEST : null;
     var NCS = typeof NCS_EXTRA !== 'undefined' ? NCS_EXTRA : null;
     var NMAP = typeof NCS_SLOT_MAP !== 'undefined' ? NCS_SLOT_MAP : null;
@@ -231,12 +238,150 @@
         .toLowerCase();
     }
 
-    /** Barrel rows present in STX dataset but missing from static bl4_manifest / NCS extract (Raid 2 named barrels). */
+    /**
+     * Orange named barrel (Nexus style): `part_barrel_01_complex_root` / `part_barrel_heimdahl`.
+     * Not plain `part_barrel_01`, letter mods `_a`–`_d`, or licensed barrels.
+     */
+    function invKeyLooksNamedLegendaryBarrel(invKeyLower) {
+      if (!invKeyLower) return false;
+      var inv = String(invKeyLower || '').trim().toLowerCase();
+      if (inv.indexOf('.') >= 0) inv = inv.split('.').pop();
+      if (/licensed/i.test(inv)) return false;
+      var m = /^part_barrel_\d{1,2}_([a-z0-9_]+)$/i.exec(inv);
+      if (m) {
+        var tail = m[1];
+        if (tail.length < 2) return false;
+        if (/^[abcd]$/i.test(tail)) return false;
+        if (/^(common|uncommon|rare|epic|legendary)$/i.test(tail)) return false;
+        return true;
+      }
+      if (/^part_unique_barrel_\d{0,2}_?([a-z0-9_]+)$/i.test(inv)) return true;
+      if (/^part_barrel_[a-z][a-z0-9_]{2,}$/i.test(inv) && !/^part_barrel_\d/.test(inv)) return true;
+      return false;
+    }
+    /** Alias — UI + validation share one Nexus-style detector. */
+    function invKeyLooksNamedLegendaryBarrelLite(invKeyLower) {
+      return invKeyLooksNamedLegendaryBarrel(invKeyLower);
+    }
+
+    /** Plain Midheaven-style base barrel (`part_barrel_01` / `_a`–`_d`). */
+    function invKeyLooksPlainBaseBarrel(invKeyLower) {
+      if (!invKeyLower) return false;
+      var inv = String(invKeyLower || '').trim().toLowerCase();
+      if (inv.indexOf('.') >= 0) inv = inv.split('.').pop();
+      return /^part_barrel_\d{1,2}$/i.test(inv) || /^part_barrel_\d{1,2}_[abcd]$/i.test(inv);
+    }
+
+    /** Legendary family token from rarity option (`comp_05_legendary_complex_root` → `complex_root`). */
+    function legendFamFromRaritySelection(partOrOpt) {
+      if (!partOrOpt) return '';
+      var inv = String(partOrOpt.invDumpKey || partOrOpt.inv_dump_key || partOrOpt.inv_key || partOrOpt.name || '').toLowerCase();
+      var m = inv.match(/comp_05_legendary_([a-z0-9_]+)/i);
+      if (m) return String(m[1] || '').toLowerCase();
+      var nm = String(partOrOpt.name || '').trim();
+      var m2 = nm.match(/legendary\s*[-–—]\s*(.+)$/i);
+      if (m2) {
+        return String(m2[1] || '')
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '_')
+          .replace(/^_+|_+$/g, '');
+      }
+      return '';
+    }
+
+    /** Extract Nexus fam-like tail from part inv key for ★ matching. */
+    function legendFamTailFromPartInv(invKeyLower) {
+      var inv = String(invKeyLower || '').trim().toLowerCase();
+      if (inv.indexOf('.') >= 0) inv = inv.split('.').pop();
+      var mb = /^part_barrel_\d{1,2}_([a-z0-9_]+)$/i.exec(inv);
+      if (mb) return String(mb[1] || '').toLowerCase();
+      var mu = /^part_unique_barrel_\d{0,2}_?([a-z0-9_]+)$/i.exec(inv);
+      if (mu) return String(mu[1] || '').toLowerCase();
+      var mb2 = /^part_barrel_([a-z][a-z0-9_]+)$/i.exec(inv);
+      if (mb2) return String(mb2[1] || '').toLowerCase();
+      var mg = /^part_(?:mag|grip|underbarrel|unique)_[a-z0-9]*_?([a-z][a-z0-9_]{2,})$/i.exec(inv);
+      if (mg) return String(mg[1] || '').toLowerCase();
+      /* `part_mag_noisycricket` / `part_mag_01_chuck` */
+      var mg2 = /^part_[a-z]+_(?:\d{1,2}_)?([a-z][a-z0-9_]{2,})$/i.exec(inv);
+      if (mg2) {
+        var t = String(mg2[1] || '').toLowerCase();
+        if (/^[abcd]$/.test(t)) return '';
+        return t;
+      }
+      return '';
+    }
+
+    function partInvMatchesLegendFam(invKeyLower, fam) {
+      var f = String(fam || '').trim().toLowerCase();
+      if (!f) return false;
+      var tail = legendFamTailFromPartInv(invKeyLower);
+      if (!tail) {
+        var inv = String(invKeyLower || '').trim().toLowerCase();
+        if (inv.indexOf('.') >= 0) inv = inv.split('.').pop();
+        return inv.indexOf('_' + f) >= 0 || inv.indexOf(f) >= 0 && inv.length > f.length + 4;
+      }
+      if (tail === f) return true;
+      if (f.indexOf(tail + '_') === 0) return true;
+      if (tail.indexOf(f + '_') === 0) return true;
+      return false;
+    }
+
+    function barrelOptMatchesLegendFam(opt, fam) {
+      if (!opt) return false;
+      var inv = String(opt.invDumpKey || opt.inv_dump_key || opt.inv_key || opt.name || '').trim().toLowerCase();
+      if (!invKeyLooksNamedLegendaryBarrel(inv) && !/^part_unique_barrel_/i.test(inv.split('.').pop() || '')) return false;
+      return partInvMatchesLegendFam(inv, fam);
+    }
+
+    function itemHasNamedBarrelForFam(item, fam) {
+      var f = String(fam || '').trim().toLowerCase();
+      if (!f || !item) return false;
+      var opts = (item.slots && item.slots.barrel && item.slots.barrel.options) ? item.slots.barrel.options : [];
+      var i;
+      for (i = 0; i < opts.length; i++) {
+        if (barrelOptMatchesLegendFam(opts[i], f)) return true;
+      }
+      var extras = getExtraStxBarrelOptions(item, opts);
+      for (i = 0; i < extras.length; i++) {
+        if (barrelOptMatchesLegendFam(extras[i], f)) return true;
+      }
+      return false;
+    }
+
+    /**
+     * Named legendary rarity + plain Midheaven-style barrel when Nexus has a matching orange barrel.
+     */
+    function namedLegendaryRarityPlainBarrelViolations(selectedParts, selectedItem) {
+      var out = [];
+      if (!selectedParts || !selectedItem) return out;
+      var rar = selectedParts.rarity;
+      var fam = legendFamFromRaritySelection(rar);
+      if (!fam) return out;
+      var barrel = selectedParts.barrel;
+      if (!barrel) return out;
+      var inv = String(barrel.invDumpKey || barrel.name || '').trim().toLowerCase();
+      if (!invKeyLooksPlainBaseBarrel(inv)) return out;
+      if (!itemHasNamedBarrelForFam(selectedItem, fam)) return out;
+      out.push(
+        'Named legendary rarity (' + fam + ') requires matching orange barrel (Nexus part_barrel_*_' + fam +
+          '), not plain ' + formatPartName(barrel.name)
+      );
+      return out;
+    }
+
+    /** STX/Nexus barrel (+ unique barrel) rows missing from static bl4_manifest — keyed by spawn prefix, not slug. */
     function getExtraStxBarrelOptions(item, existingOptions) {
-      var parts = getStxPartsByType('Barrel');
-      if (!item || !parts.length) return [];
+      if (!item) return [];
       var slug = String(item.slug || '').trim().toLowerCase();
       if (!slug || !/_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slug)) return [];
+      var prefix = '';
+      try {
+        prefix = String((SLUG_TO_PREFIX && SLUG_TO_PREFIX[slug]) || (typeof buildSlugPrefix === 'function' ? buildSlugPrefix(slug) : '') || '')
+          .trim()
+          .toLowerCase();
+      } catch (_e) { prefix = ''; }
+      if (!prefix) return [];
       var seenIdx = {};
       var seenName = {};
       (existingOptions || []).forEach(function (o) {
@@ -246,26 +391,43 @@
         if (nm) seenName[nm] = true;
       });
       var out = [];
-      for (var i = 0; i < parts.length; i++) {
-        var row = parts[i];
-        if (!row) continue;
+      function considerRow(row) {
+        if (!row) return;
         var code = normalizeStxSpawnCode(row.code);
-        if (!code || code.indexOf(slug + '.') !== 0) continue;
+        if (!code || code.indexOf(prefix + '.') !== 0) return;
         var pk = code.split('.').pop() || '';
-        if (!/^part_barrel_/.test(pk)) continue;
-        var itemId = Number(row.id);
-        if (!Number.isFinite(itemId) || seenIdx[itemId]) continue;
-        if (seenName[pk]) continue;
+        if (!/^part_barrel_/.test(pk) && !/^part_unique_barrel_/.test(pk)) return;
+        var itemId = Number(row.id != null ? row.id : (row.itemId != null ? row.itemId : NaN));
+        if (!Number.isFinite(itemId) || seenIdx[itemId]) return;
+        if (seenName[pk]) return;
         out.push({
           index: itemId,
           name: pk,
-          in_pool: true,
+          /* Keep real loot-pool badge; listing never filters on in_pool. */
+          in_pool: false,
           invDumpKey: code,
           _fromStxDataset: true
         });
         seenIdx[itemId] = true;
         seenName[pk] = true;
       }
+      var barrelParts = getStxPartsByType('Barrel');
+      var ui;
+      for (ui = 0; ui < barrelParts.length; ui++) considerRow(barrelParts[ui]);
+      var uniqueParts = getStxPartsByType('Unique');
+      for (ui = 0; ui < uniqueParts.length; ui++) considerRow(uniqueParts[ui]);
+      /* Some unique barrels are tagged Legendary Perks / empty partType in STX. */
+      try {
+        var allStx = [];
+        var ds = window.STX_DATASET;
+        if (ds && Array.isArray(ds.ALL_PARTS)) allStx = ds.ALL_PARTS;
+        else if (Array.isArray(window.ALL_PARTS)) allStx = window.ALL_PARTS;
+        for (ui = 0; ui < allStx.length; ui++) {
+          var r = allStx[ui];
+          var c0 = normalizeStxSpawnCode(r && r.code);
+          if (c0 && /^part_unique_barrel_/i.test((c0.split('.').pop() || ''))) considerRow(r);
+        }
+      } catch (_e2) {}
       return out;
     }
 
@@ -553,13 +715,22 @@
       return bits.length ? ('NCS: ' + bits.join('; ') + '.') : '';
     }
 
+    function getMaxItemLevel() {
+      if (typeof window.clampItemLevel === 'function' && typeof window.STX_MAX_ITEM_LEVEL === 'number') {
+        return window.STX_MAX_ITEM_LEVEL;
+      }
+      return 70;
+    }
+
     function getItemLevel() {
       var el = itemLevelInput || document.getElementById('item-level');
-      if (!el) return 60;
+      var maxLv = getMaxItemLevel();
+      if (!el) return maxLv;
       var n = parseInt(el.value, 10);
-      if (!Number.isFinite(n)) return 60;
+      if (!Number.isFinite(n)) return maxLv;
+      if (typeof window.clampItemLevel === 'function') return window.clampItemLevel(n);
       if (n < 1) return 1;
-      if (n > 60) return 60;
+      if (n > maxLv) return maxLv;
       return n;
     }
 
@@ -761,6 +932,179 @@
         if (n) set[n] = true;
       });
       return Object.keys(set).length ? set : null;
+    }
+
+    /** Bare part id for lookups: `VLA_AR.part_body_a` / `part_body_a` → `part_body_a`. */
+    function normalizeLegitPartNameKey(name) {
+      var n = String(name || '').trim().toLowerCase().replace(/^["']+|["']+$/g, '');
+      if (!n) return '';
+      if (n.indexOf('.') >= 0) n = n.split('.').pop() || n;
+      return n.trim();
+    }
+
+    /**
+     * Per-item serial IDs from the manifest (same source save-editor.be uses via root depEntries.serialIndex).
+     * NCS_PARTS catalog indices are shared across items and must NOT be written into serials as-is.
+     */
+    var __manifestSerialByNameCache = Object.create(null);
+    function getItemManifestSerialByName(item) {
+      var map = Object.create(null);
+      if (!item || !item.slots) return map;
+      var cacheKey = String(item.slug || '') + '|' + String(item.category_id || '');
+      if (cacheKey && __manifestSerialByNameCache[cacheKey]) return __manifestSerialByNameCache[cacheKey];
+      Object.keys(item.slots).forEach(function (sk) {
+        var opts = item.slots[sk] && item.slots[sk].options;
+        if (!Array.isArray(opts)) return;
+        for (var i = 0; i < opts.length; i++) {
+          var o = opts[i];
+          var key = normalizeLegitPartNameKey(o && o.name);
+          if (!key || !Number.isFinite(Number(o.index))) continue;
+          var prev = map[key];
+          if (!prev || (o.in_pool === true && prev.in_pool !== true)) {
+            map[key] = {
+              index: Number(o.index),
+              familyId: Number(item.category_id),
+              in_pool: o.in_pool === true,
+              invDumpKey: String(o.invDumpKey || o.inv_dump_key || o.inv_key || key).trim(),
+              name: o.name,
+              source: 'manifest'
+            };
+          }
+        }
+      });
+      if (cacheKey) __manifestSerialByNameCache[cacheKey] = map;
+      return map;
+    }
+
+    function isWeaponLikeLegitSlug(slug) {
+      return /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(String(slug || ''));
+    }
+
+    function isElementLikeLegitSlot(slotName) {
+      return /(?:^|_)(ele|element|pearl_elem)(?:$|_)/i.test(String(slotName || ''));
+    }
+
+    /**
+     * Resolve a shared NCS catalog row to this item's real serial token ids.
+     * Prefer manifest name→index; else STX dataset (elements → Weapon family 1, same-family parts, etc.).
+     * Returns null when no trusted serial ID exists (do not emit catalog index 0/1/…).
+     */
+    function resolveNcsPartAgainstItem(item, partName, slotName) {
+      if (!item || !partName) return null;
+      var key = normalizeLegitPartNameKey(partName);
+      if (!key) return null;
+      var manMap = getItemManifestSerialByName(item);
+      if (manMap[key]) {
+        var mh = manMap[key];
+        return {
+          index: mh.index,
+          familyId: mh.familyId,
+          name: partName,
+          invDumpKey: mh.invDumpKey || key,
+          in_pool: mh.in_pool === true,
+          ncs: true,
+          source: 'manifest'
+        };
+      }
+
+      var stxParts =
+        typeof window !== 'undefined' &&
+        window.STX_DATASET &&
+        Array.isArray(window.STX_DATASET.ALL_PARTS)
+          ? window.STX_DATASET.ALL_PARTS
+          : [];
+      if (!stxParts.length) return null;
+
+      var itemFam = Number(item.category_id);
+      var slug = String(item.slug || '');
+      var isWeapon = isWeaponLikeLegitSlug(slug);
+      var isEle = isElementLikeLegitSlot(slotName) || isElementLikePartName(partName);
+      var prefix = '';
+      try { prefix = String(buildSlugPrefix(slug) || '').toLowerCase(); } catch (_) { prefix = ''; }
+
+      var best = null;
+      var bestScore = -1;
+      for (var si = 0; si < stxParts.length; si++) {
+        var row = stxParts[si];
+        if (!row) continue;
+        var code = normalizeStxSpawnCode(row.code || row.spawnCode || '');
+        var codeLo = String(code || '').toLowerCase();
+        var tail = codeLo.indexOf('.') >= 0 ? codeLo.split('.').pop() : codeLo;
+        var nameKey = normalizeLegitPartNameKey(row.name);
+        if (tail !== key && nameKey !== key) continue;
+        var fam = Number(row.family != null ? row.family : row.familyId);
+        var id = Number(row.id != null ? row.id : row.itemId);
+        if (!Number.isFinite(id)) continue;
+        var score = 1;
+        if (Number.isFinite(fam) && Number.isFinite(itemFam) && fam === itemFam) score += 100;
+        if (isEle && isWeapon && fam === 1) score += 90;
+        if (isEle && /^weapon\.part_/.test(codeLo)) score += 25;
+        if (prefix && codeLo.indexOf(prefix + '.') === 0) score += 80;
+        if (/firmware/i.test(slotName || '') && /firmware/i.test(codeLo + ' ' + String(row.partType || ''))) score += 40;
+        if (score > bestScore) {
+          bestScore = score;
+          best = {
+            index: id,
+            familyId: Number.isFinite(fam) ? fam : itemFam,
+            name: partName,
+            invDumpKey: codeLo || key,
+            in_pool: true,
+            ncs: true,
+            source: 'stx'
+          };
+        }
+      }
+      return best;
+    }
+
+    /**
+     * Rewrite NCS dropdown options to use item serial IDs (not shared catalog indices).
+     * When the item has a manifest part map, drop rows that cannot be resolved — same idea as
+     * save-editor.be only offering depEntries with a real serialIndex for that root.
+     */
+    function remapNcsOptionsToItemSerials(item, slotName, ncsOpts) {
+      var src = Array.isArray(ncsOpts) ? ncsOpts : [];
+      var manMap = getItemManifestSerialByName(item);
+      var hasManifestParts = Object.keys(manMap).length > 0;
+      if (!hasManifestParts) {
+        /* Pure NCS supplement item — keep catalog rows, but never treat missing/NaN as selectable. */
+        return src.filter(function (o) {
+          return o && Number.isFinite(Number(o.index));
+        }).map(function (o) {
+          return {
+            index: Number(o.index),
+            name: o.name,
+            in_pool: o.in_pool !== false,
+            invDumpKey: String(o.invDumpKey || o.name || '').trim(),
+            ncs: true,
+            familyId: Number(item && item.category_id),
+            source: 'ncs-catalog'
+          };
+        });
+      }
+      var out = [];
+      var seen = Object.create(null);
+      for (var i = 0; i < src.length; i++) {
+        var o = src[i];
+        if (!o) continue;
+        var resolved = resolveNcsPartAgainstItem(item, o.name, slotName);
+        if (!resolved || !Number.isFinite(Number(resolved.index))) continue;
+        var fam = Number(resolved.familyId);
+        var idx = Number(resolved.index);
+        var dedupe = String(Number.isFinite(fam) ? fam : 'x') + ':' + idx;
+        if (seen[dedupe]) continue;
+        seen[dedupe] = true;
+        out.push({
+          index: idx,
+          name: o.name || resolved.name,
+          in_pool: resolved.in_pool === true,
+          invDumpKey: resolved.invDumpKey || '',
+          ncs: true,
+          familyId: fam,
+          source: resolved.source || 'resolved'
+        });
+      }
+      return out;
     }
 
     function getDropCategoryForSlug(slug) {
@@ -1194,8 +1538,123 @@
       __lastDropSourcesSlug = slugNow;
     }
 
+    /**
+     * After rarity pick: ★ + sort Nexus fam-matching parts.
+     * Barrel: auto-select matching orange barrel (prevents Complex Root → Sidereal Midheaven).
+     * Mag / grip / underbarrel / unique: ★ + sort only (no auto-select).
+     */
+    function syncLegitNamedLegendaryFamParts() {
+      try {
+        var rar = selectedParts && (selectedParts.rarity || selectedParts.Rarity);
+        var fam = legendFamFromRaritySelection(rar);
+        if (!slotsContainer) return;
+
+        function stripLegitOptionMarks(text) {
+          var s = String(text || '');
+          /* Strip stacked ✓/✗/★ prefixes (validity + rarity pin). */
+          while (/^[✓✗★]\s+/.test(s)) s = s.replace(/^[✓✗★]\s+/, '');
+          return s;
+        }
+
+        function starSortSlot(slotName, autoSelect) {
+          var sel = slotsContainer.querySelector('select[data-slot="' + slotName + '"]');
+          if (!sel) return;
+          var opts = Array.prototype.slice.call(sel.options || []);
+          var matchOpts = [];
+          var i;
+          for (i = 0; i < opts.length; i++) {
+            var o = opts[i];
+            if (!o || !o.value) continue;
+            var fake = {
+              name: o.getAttribute('data-name') || o.dataset.name || '',
+              invDumpKey: o.getAttribute('data-inv-key') || o.dataset.invKey || ''
+            };
+            var inv = String(fake.invDumpKey || fake.name || '').trim().toLowerCase();
+            var isMatch = false;
+            if (fam) {
+              if (slotName === 'barrel') isMatch = barrelOptMatchesLegendFam(fake, fam);
+              else isMatch = partInvMatchesLegendFam(inv, fam);
+            }
+            o.removeAttribute('data-rarity-match');
+            var prevTxt = String(o.textContent || '');
+            var validityMark = /^✓/.test(prevTxt) ? '✓ ' : (/^✗/.test(prevTxt) ? '✗ ' : '');
+            var base = stripLegitOptionMarks(o.getAttribute('data-base-text') || prevTxt);
+            o.setAttribute('data-base-text', base);
+            if (isMatch) {
+              o.setAttribute('data-rarity-match', '1');
+              o.textContent = validityMark + '★ ' + base;
+              matchOpts.push(o);
+            } else {
+              o.textContent = validityMark + base;
+            }
+          }
+          if (!matchOpts.length) return;
+          /* Exact fam tail first among ★ matches (e.g. complex_root before soft/prefix hits). */
+          matchOpts.sort(function (a, b) {
+            var invA = String(a.getAttribute('data-inv-key') || a.dataset.invKey || a.getAttribute('data-name') || '').toLowerCase();
+            var invB = String(b.getAttribute('data-inv-key') || b.dataset.invKey || b.getAttribute('data-name') || '').toLowerCase();
+            var ta = legendFamTailFromPartInv(invA);
+            var tb = legendFamTailFromPartInv(invB);
+            var ea = ta === fam ? 0 : 1;
+            var eb = tb === fam ? 0 : 1;
+            if (ea !== eb) return ea - eb;
+            return (parseInt(a.value, 10) - parseInt(b.value, 10)) || 0;
+          });
+          var noneOpt = opts[0] && !opts[0].value ? opts[0] : null;
+          var rest = opts.filter(function (x) { return x && x.value && matchOpts.indexOf(x) < 0; });
+          /* Move nodes via fragment — never sel.innerHTML='' (destroys option nodes / drops order). */
+          var frag = document.createDocumentFragment();
+          if (noneOpt) frag.appendChild(noneOpt);
+          for (var mi = 0; mi < matchOpts.length; mi++) frag.appendChild(matchOpts[mi]);
+          for (var ri = 0; ri < rest.length; ri++) frag.appendChild(rest[ri]);
+          sel.appendChild(frag);
+          if (!autoSelect) {
+            var curKeep = selectedParts && selectedParts[slotName];
+            if (curKeep && curKeep.index != null) sel.value = String(curKeep.index);
+            return;
+          }
+          var first = matchOpts[0];
+          var cur = selectedParts && selectedParts.barrel;
+          var curInv = cur ? String(cur.invDumpKey || cur.name || '').toLowerCase() : '';
+          var curIsNamed = invKeyLooksNamedLegendaryBarrelLite(curInv);
+          var curMatches = cur && fam && barrelOptMatchesLegendFam(cur, fam);
+          if (!cur || !curMatches) {
+            if (!cur || !curIsNamed || (curIsNamed && !curMatches)) {
+              sel.value = String(first.value);
+              selectedParts.barrel = {
+                index: parseInt(first.value, 10),
+                name: first.getAttribute('data-name') || first.dataset.name,
+                invDumpKey: String(first.getAttribute('data-inv-key') || first.dataset.invKey || '').trim() || null,
+                in_pool: first.getAttribute('data-in-pool') !== 'false',
+                slot: 'barrel'
+              };
+            }
+          } else {
+            sel.value = String(cur.index);
+          }
+        }
+
+        starSortSlot('barrel', true);
+        /* Same Nexus fam token on other slots — ★/sort only. */
+        starSortSlot('mag', false);
+        starSortSlot('magazine', false);
+        starSortSlot('grip', false);
+        starSortSlot('underbarrel', false);
+        starSortSlot('unique', false);
+      } catch (_e) {}
+    }
+
+    /** @deprecated alias — rarity change still calls syncBarrel */
+    function syncLegitBarrelForSelectedRarity() {
+      syncLegitNamedLegendaryFamParts();
+    }
+
     /** Shared post-selection cascade — validation owns the (debounced) option ✓/✗ refresh. */
-    function refreshAfterPartChange() {
+    function refreshAfterPartChange(opts) {
+      var o = opts || {};
+      if (o.syncBarrel) {
+        try { syncLegitNamedLegendaryFamParts(); } catch (_e) {}
+      }
       updateOutput();
       updateValidation();
       updateItemStats();
@@ -1282,6 +1741,7 @@
           if (slotBaseUi === 'rarity') {
             pool = new Set();
             try {
+              seedImplicitEleControlTags(pool, selectedItem, ncsSlotsP);
               if (compNameSel && inv.compBasetags && inv.compBasetags[compNameSel]) {
                 TC.formatTags(inv.compBasetags[compNameSel]).forEach(function (t) { pool.add(t); });
               }
@@ -1311,7 +1771,7 @@
               if (!p || !p.name || slotBaseKey(sk) === 'rarity') return;
               var metaR = resolveInvPartMeta(partsByName, p);
               if (!metaR) return;
-              TC.formatTags(metaR.addtags).forEach(function (t) { pool.add(t); });
+              applyPartAddTagsScopedToItem(pool, metaR, p, selectedItem);
             });
           } else {
             pool = buildSyntheticTagPoolFromSelection(selectedParts, inv, ncsSlotsP, slotBaseUi);
@@ -1322,7 +1782,10 @@
             var o = opts[oi];
             if (!o || !o.value) continue; /* skip placeholder */
             if (!o.dataset) continue;
-            if (!o.dataset.baseText) o.dataset.baseText = o.textContent || '';
+            var cleanedBase = String(o.dataset.baseText || o.textContent || '');
+            while (/^[✓✗★]\s+/.test(cleanedBase)) cleanedBase = cleanedBase.replace(/^[✓✗★]\s+/, '');
+            o.dataset.baseText = cleanedBase;
+            var rarityStar = (o.getAttribute('data-rarity-match') === '1' || o.dataset.rarityMatch === '1') ? '★ ' : '';
             var nm = String(o.dataset.name || '').trim().toLowerCase();
             var optInvKey = String((o.dataset && o.dataset.invKey) || '').trim().toLowerCase();
             var optIdx = parseInt(String(o.value || ''), 10);
@@ -1343,7 +1806,7 @@
               metaO = { addtags: [], dependencytags: [], exclusiontags: [] };
             }
             if (!metaO) {
-              o.textContent = o.dataset.baseText;
+              o.textContent = rarityStar + o.dataset.baseText;
               o.disabled = false;
               var dbgKeys = buildInvLookupDebugKeys(cand);
               o.title = 'No inv-tag rule for this part row in current bundle.'
@@ -1402,11 +1865,11 @@
               }
             }
             if (v.ok) {
-              o.textContent = '✓ ' + o.dataset.baseText;
+              o.textContent = '✓ ' + rarityStar + o.dataset.baseText;
               o.disabled = false;
               o.title = 'Pass preview checks for current build state.';
             } else {
-              o.textContent = '✗ ' + o.dataset.baseText;
+              o.textContent = '✗ ' + rarityStar + o.dataset.baseText;
               o.disabled = pearlMismatch ? true : !!strictMode;
               o.title = 'Will fail now: ' + formatPreviewReasonsForTooltip(v.reasons || []);
               if (strictMode && sel.value === String(o.value)) {
@@ -1417,6 +1880,8 @@
             }
           }
         }
+        /* Validity rewrites labels — re-pin ★ matches to the top afterward. */
+        try { syncLegitNamedLegendaryFamParts(); } catch (_syncAfterValid) {}
       } catch (_e) {}
     };
 
@@ -1585,13 +2050,9 @@
             var isRarity = (slotName === 'rarity' || manifestKey === 'rarity');
             var slugLc = String((item && item.slug) || '').toLowerCase();
             var isWeaponSlug = /_(?:pistol|ar|smg|shotgun|sniper|hw|heavy_weapon)$/i.test(slugLc);
-            /* Non-weapon gear: manifest in_pool is often incomplete — show full lists. Weapons: filter to manifest
-               loot-pool export so barrel/body/mag rows match natural drops for that item (barrels were exempt and allowed wrong-leg barrels). */
-            var skipInPoolFilter = !isWeaponSlug || isRarity;
-            if (!skipInPoolFilter) {
-              var poolOnly = options.filter(function(o) { return o.in_pool === true; });
-              if (poolOnly.length) options = poolOnly;
-            }
+            /* Nexus/NCS lists every part with a real serial identity. Manifest in_pool is badge-only
+               (loot-pool export is incomplete) — never hide options for weapons or gear. */
+            var isBarrelSlot = (slotName === 'barrel' || manifestKey === 'barrel');
             /* NCS alignment: exclude accessory parts from main slot dropdowns (body_acc from body, barrel_acc from barrel). */
             if (isWeaponSlug && NPARTS && (slotName === 'body' || manifestKey === 'body')) {
               var bodyAccNames = getNpartsNameSet('body_acc');
@@ -1636,9 +2097,10 @@
               var extraRarityDataset = getExtraStxRarityFromDataset(item, options);
               if (extraRarityDataset.length) options = options.concat(extraRarityDataset);
             }
-            if (isWeaponSlug && (slotName === 'barrel' || manifestKey === 'barrel')) {
+            if (isWeaponSlug && isBarrelSlot) {
               var extraBarrel = getExtraStxBarrelOptions(item, options);
               if (extraBarrel.length) options = options.concat(extraBarrel);
+              /* Do not force in_pool=true — badges stay honest; listing/strict never hide off-pool. */
             }
             if (options.length === 0) continue;
             if (isRarity) options.forEach(function(o) { o.in_pool = true; });
@@ -1648,10 +2110,12 @@
               + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="' + (manifestKey || slotName) + '">'
               /* none option appended below */
               ;
-            function optLineHtml(o) {
+            function optLineHtml(o, rarityMatch) {
               var poolMark = o.in_pool === true ? 'In pool — ' : 'Off-pool — ';
               var invDumpKey = String(o.invDumpKey || o.inv_dump_key || o.inv_key || '').trim();
-              return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + (o.in_pool === true) + '">[' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
+              var star = rarityMatch ? '\u2605 ' : '';
+              var inPoolAttr = (o.in_pool === true || rarityMatch) ? 'true' : 'false';
+              return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + inPoolAttr + '"' + (rarityMatch ? ' data-rarity-match="1"' : '') + '>[' + o.index + '] ' + star + poolMark + formatPartName(o.name) + '</option>';
             }
             var optBody = '';
             if (isRarity) {
@@ -1670,13 +2134,33 @@
                 arrG.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
                 optBody += '<optgroup label="' + escapeHtml(gnm) + '">';
                 for (var ai = 0; ai < arrG.length; ai++) {
-                  optBody += optLineHtml(arrG[ai]);
+                  optBody += optLineHtml(arrG[ai], false);
                 }
                 optBody += '</optgroup>';
               }
+            } else if (isBarrelSlot) {
+              /* Rarity not selected yet at first paint — still put named legendary barrels near the top. */
+              options.sort(function(a, b) {
+                var an = invKeyLooksNamedLegendaryBarrelLite(String((a && (a.invDumpKey || a.name)) || '')) ? 0 : 1;
+                var bn = invKeyLooksNamedLegendaryBarrelLite(String((b && (b.invDumpKey || b.name)) || '')) ? 0 : 1;
+                if (an !== bn) return an - bn;
+                return (a.index - b.index) || String(a.name).localeCompare(b.name);
+              });
+              optBody = options.map(function(o) { return optLineHtml(o, false); }).join('');
             } else {
-              options.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
-              optBody = options.map(optLineHtml).join('');
+              /* Prefer Nexus fam-like tails (named mag/grip/UB/unique) near top before rarity sync. */
+              var famSortSlots = /^(mag|magazine|grip|underbarrel|unique)$/i.test(String(slotName || ''));
+              if (famSortSlots) {
+                options.sort(function(a, b) {
+                  var at = legendFamTailFromPartInv(String((a && (a.invDumpKey || a.name)) || '')) ? 0 : 1;
+                  var bt = legendFamTailFromPartInv(String((b && (b.invDumpKey || b.name)) || '')) ? 0 : 1;
+                  if (at !== bt) return at - bt;
+                  return (a.index - b.index) || String(a.name).localeCompare(b.name);
+                });
+              } else {
+                options.sort(function(a, b) { return (a.index - b.index) || String(a.name).localeCompare(b.name); });
+              }
+              optBody = options.map(function(o) { return optLineHtml(o, false); }).join('');
             }
             div.innerHTML = selectOpen
               + '<option value="">\u2014 None \u2014</option>'
@@ -1686,12 +2170,9 @@
               var sel = e.target;
               var opt = sel.options[sel.selectedIndex];
               var sn = sel.dataset.slot;
-              if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
-                sel.value = '';
-                delete selectedParts[sn];
-                refreshAfterPartChange();
-                return;
-              }
+              var rarityMatched = opt && (opt.getAttribute('data-rarity-match') === '1' || opt.dataset.rarityMatch === '1');
+              /* Strict: clear only when preview validation disables the option (deps/allowlist/family) —
+                 never solely for loot-pool in_pool === false. */
               if (strictMode && opt && opt.disabled && opt.value) {
                 sel.value = '';
                 delete selectedParts[sn];
@@ -1703,13 +2184,13 @@
                   index: parseInt(opt.value, 10),
                   name: opt.dataset.name,
                   invDumpKey: String(opt.dataset.invKey || '').trim() || null,
-                  in_pool: opt.dataset.inPool === 'true',
+                  in_pool: opt.dataset.inPool === 'true' || rarityMatched,
                   slot: sn
                 };
               } else {
                 delete selectedParts[sn];
               }
-              refreshAfterPartChange();
+              refreshAfterPartChange({ syncBarrel: sn === 'rarity' });
             });
           } else {
             var ncsParts = NPARTS ? NPARTS[slotName] : null;
@@ -1732,32 +2213,34 @@
                 return !!allowNames[on];
               });
             }
+            /* Catalog index ≠ item serial ID — remap like save-editor.be root serialIndex. */
+            ncsOpts = remapNcsOptionsToItemSerials(item, slotName, ncsOpts);
             if (ncsOpts.length > 0) {
               rendered++;
               var labelText = getSlotDisplayLabel(slotName);
               ncsOpts.sort(function(a, b) {
                 return (a.index - b.index) || String(a.name || '').localeCompare(String(b.name || ''));
               });
-              div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span class="ncs-badge">NCS</span> <span style="opacity:0.45;font-weight:400;">(' + ncsOpts.length + ')</span></label>'
+              div.innerHTML = '<label for="slot_' + slotId + '">' + escapeHtml(labelText) + ' <span class="ncs-badge" title="IDs remapped to this item\u2019s serial indices">Serial IDs</span> <span style="opacity:0.45;font-weight:400;">(' + ncsOpts.length + ')</span></label>'
                 + '<select id="slot_' + slotId + '" data-slot="' + slotName + '" data-manifest-slot="">'
                 + '<option value="">\u2014 None \u2014</option>'
                 + ncsOpts.map(function(o) {
-                    /* NPARTS rows omit in_pool — treat as strict-allowed (same as pre-merge NCS). */
                     var ip = (o.in_pool === true) ? 'true' : ((o.in_pool === false) ? 'false' : 'true');
                     var poolMark = (o.in_pool === true) ? 'In pool \u2014 ' : ((o.in_pool === false) ? 'Off-pool \u2014 ' : '');
-                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="" data-in-pool="' + ip + '">NCS \u2014 [' + o.index + '] ' + poolMark + formatPartName(o.name) + '</option>';
+                    var famAttr = Number.isFinite(Number(o.familyId)) ? String(o.familyId) : '';
+                    var invKey = String(o.invDumpKey || '').trim();
+                    var famHint = (Number.isFinite(Number(o.familyId)) && Number(o.familyId) !== Number(item.category_id))
+                      ? ('{' + o.familyId + ':' + o.index + '} ')
+                      : '';
+                    return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invKey) + '" data-family-id="' + escapeHtml(famAttr) + '" data-in-pool="' + ip + '">[' + o.index + '] ' + famHint + poolMark + formatPartName(o.name) + '</option>';
                   }).join('')
                 + '</select>';
               div.querySelector('select').addEventListener('change', function(e) {
                 var sel = e.target;
                 var opt = sel.options[sel.selectedIndex];
                 var sn = sel.dataset.slot;
-                if (strictMode && opt && opt.value && String(opt.dataset.inPool) === 'false') {
-                  sel.value = '';
-                  delete selectedParts[sn];
-                  refreshAfterPartChange();
-                  return;
-                }
+                var rarityMatchedN = opt && (opt.getAttribute('data-rarity-match') === '1' || opt.dataset.rarityMatch === '1');
+                /* Strict: disabled preview only — never clear for off-pool badge. */
                 if (strictMode && opt && opt.disabled && opt.value) {
                   sel.value = '';
                   delete selectedParts[sn];
@@ -1765,17 +2248,24 @@
                   return;
                 }
                 if (opt.value) {
-                  selectedParts[sn] = { index: parseInt(opt.value, 10), name: opt.dataset.name, invDumpKey: null, in_pool: opt.dataset.inPool === 'true', slot: sn, ncs: true };
+                  var famSel = parseInt(opt.dataset.familyId, 10);
+                  selectedParts[sn] = {
+                    index: parseInt(opt.value, 10),
+                    name: opt.dataset.name,
+                    invDumpKey: String(opt.dataset.invKey || '').trim() || null,
+                    in_pool: opt.dataset.inPool === 'true' || rarityMatchedN,
+                    slot: sn,
+                    ncs: true,
+                    familyId: Number.isFinite(famSel) ? famSel : (selectedItem && selectedItem.category_id)
+                  };
                 } else {
                   delete selectedParts[sn];
                 }
-                refreshAfterPartChange();
+                refreshAfterPartChange({ syncBarrel: sn === 'rarity' });
               });
             } else {
-              rendered++;
-              var labelTextNcs = getSlotDisplayLabel(slotName);
-              div.innerHTML = '<label>' + escapeHtml(labelTextNcs) + ' <span class="ncs-badge">NCS</span></label>'
-                + '<div style="padding:6px 10px;font-size:0.78rem;color:rgba(179,136,255,0.6);font-style:italic;">No part data available yet</div>';
+              /* Manifest item with no remappable NCS rows for this slot — omit broken catalog list. */
+              continue;
             }
           }
           slotsContainer.appendChild(div);
@@ -1827,6 +2317,28 @@
       updateCodeOutput();
     }
 
+    /**
+     * Deserialized part tokens after `||`:
+     * - same TypeID as the item header → bare `{id}` (wire SUBTYPE_NONE)
+     * - foreign TypeID (shared ele/firmware/etc.) → `{fam:id}` (wire SUBTYPE_INT)
+     * Never emit `{headerFam:id}` for same-family parts — the bit encoder treats that as
+     * “part index = headerFam, value = id”, which breaks spawn/open in-game.
+     */
+    function formatLegitPartSerialToken(itemFamilyId, part) {
+      if (!part || part.index == null || part.index === '') return '';
+      var idx = Number(part.index);
+      if (!Number.isFinite(idx)) return '';
+      var baseFam = Number(itemFamilyId);
+      var partFam = Number(
+        part.familyId != null ? part.familyId :
+        (part.family != null ? part.family : baseFam)
+      );
+      if (Number.isFinite(partFam) && Number.isFinite(baseFam) && partFam !== baseFam) {
+        return '{' + partFam + ':' + idx + '}';
+      }
+      return '{' + idx + '}';
+    }
+
     function updateCodeOutput() {
       if (!selectedItem || Object.keys(selectedParts).length === 0) {
         codeOutput.textContent = 'No code generated yet.';
@@ -1840,8 +2352,28 @@
       var ncsSlotsOut = ncsOut && ncsOut.ncs_slots ? ncsOut.ncs_slots : null;
       var allSlotKeys = sortSlotKeysForTagValidation(Object.keys(selectedParts), ncsSlotsOut);
       for (var si = 0; si < allSlotKeys.length; si++) {
-        var p = selectedParts[allSlotKeys[si]];
+        var slotKeyOut = allSlotKeys[si];
+        var p = selectedParts[slotKeyOut];
         if (!p) continue;
+        /* NCS catalog rows can still be stale in memory — re-resolve to item serial IDs before emit. */
+        if (p.ncs && p.name) {
+          var resolvedOut = resolveNcsPartAgainstItem(selectedItem, p.name, slotKeyOut || p.slot);
+          if (resolvedOut && Number.isFinite(Number(resolvedOut.index))) {
+            p = {
+              index: resolvedOut.index,
+              name: p.name,
+              familyId: resolvedOut.familyId,
+              invDumpKey: resolvedOut.invDumpKey || p.invDumpKey,
+              in_pool: resolvedOut.in_pool,
+              ncs: true,
+              slot: slotKeyOut
+            };
+            selectedParts[slotKeyOut] = p;
+          } else if (Object.keys(getItemManifestSerialByName(selectedItem)).length > 0) {
+            /* Unmapped NCS pick on a manifest item — do not emit a bogus catalog index. */
+            continue;
+          }
+        }
         if (useSpawnMode) {
           var prefix = buildSlugPrefix(selectedItem.slug);
           if (!prefix) {
@@ -1850,7 +2382,8 @@
             partTokens.push('"' + prefix + '.' + p.name + '"');
           }
         } else {
-          partTokens.push('{' + familyId + ':' + p.index + '}');
+          var tok = formatLegitPartSerialToken(familyId, p);
+          if (tok) partTokens.push(tok);
         }
       }
       var seed = getLegitBuilderSerialSeed();
@@ -2308,7 +2841,7 @@
         if (!stats) return;
         html += '<div style="font-size:0.72rem;font-weight:700;color:#00c8ff;text-transform:uppercase;letter-spacing:0.06em;margin:10px 0 4px;">'
           + getSlotLabel(slotName) + ': ' + formatPartName(p.name)
-          + ' <span style="opacity:0.65;font-weight:600;">(' + '{' + familyId + ':' + p.index + '}' + ')</span>'
+          + ' <span style="opacity:0.65;font-weight:600;">(' + escapeHtml(formatLegitPartSerialToken(familyId, p)) + ')</span>'
           + '</div>';
         var skeys = Object.keys(stats);
         for (var si = 0; si < skeys.length; si++) {
@@ -2574,6 +3107,95 @@
       return null;
     }
 
+    /** Manufacturer tags that appear on the merged inv `part_body` row (union of all mfrs). */
+    var MANUFACTURER_POOL_TAG_SET = {
+      jakobs: 1, maliwan: 1, order: 1, tediore: 1, torgue: 1, vladof: 1,
+      daedalus: 1, borg: 1, atlas: 1, cov: 1, hyperion: 1
+    };
+
+    function manufacturerPoolTagsForItem(item) {
+      if (!item) return [];
+      var mfr = '';
+      try {
+        var ncs = getNcsInfo(item.slug);
+        if (ncs && ncs.manufacturer) mfr = String(ncs.manufacturer);
+      } catch (_e) {}
+      if (!mfr) mfr = getMfrFromSlug(item.slug) || '';
+      mfr = String(mfr).toLowerCase();
+      var out = [];
+      if (/jakobs/.test(mfr)) out.push('jakobs');
+      if (/maliwan/.test(mfr)) out.push('maliwan');
+      if (/order/.test(mfr)) out.push('order');
+      if (/tediore/.test(mfr)) out.push('tediore');
+      if (/torgue/.test(mfr)) out.push('torgue');
+      if (/vladof/.test(mfr)) out.push('vladof');
+      if (/daedalus/.test(mfr)) out.push('daedalus');
+      if (/borg|ripper/.test(mfr)) out.push('borg');
+      if (/atlas/.test(mfr)) out.push('atlas');
+      if (/^cov$|\bcov\b/.test(mfr)) out.push('cov');
+      if (/hyperion/.test(mfr)) out.push('hyperion');
+      return out;
+    }
+
+    function itemHasElementCapableSlots(item, ncsSlotsOpt) {
+      if (!item) return false;
+      var slots = Array.isArray(ncsSlotsOpt) ? ncsSlotsOpt : null;
+      if (!slots) {
+        try {
+          var ncs = getNcsInfo(item.slug);
+          slots = ncs && Array.isArray(ncs.ncs_slots) ? ncs.ncs_slots : [];
+        } catch (_e) { slots = []; }
+      }
+      var i;
+      for (i = 0; i < slots.length; i++) {
+        var s = String(slots[i] || '').toLowerCase();
+        if (s === 'element' || s === 'body_ele' || s === 'secondary_ele' || s === 'primary_ele' || s === 'pearl_elem') return true;
+        if (/(^|_)(ele|element)$/.test(s)) return true;
+      }
+      if (item.slots) {
+        if (item.slots.element || item.slots.body_ele || item.slots.secondary_ele || item.slots.primary_ele || item.slots.pearl_elem) return true;
+      }
+      return false;
+    }
+
+    /**
+     * Invisible Nexus `part_ele_control` is omitted from dropdowns but still grants allow_elemental /
+     * allow_normal on natural elemental guns. Seed those so Strict mode does not mark every element ✗.
+     */
+    function seedImplicitEleControlTags(tagPool, item, ncsSlotsOpt) {
+      if (!tagPool || !itemHasElementCapableSlots(item, ncsSlotsOpt)) return;
+      tagPool.add('allow_elemental');
+      tagPool.add('allow_normal');
+      /* part_body also grants body_acc_ele; seed so element options stay usable while Body is being chosen. */
+      tagPool.add('body_acc_ele');
+    }
+
+    function partNameLooksLikeBodyIdentity(name) {
+      var n = String(name || '').trim().toLowerCase();
+      if (!n) return false;
+      if (n.indexOf('.') >= 0) n = n.split('.').pop();
+      return n === 'part_body' || n === 'body';
+    }
+
+    /** Apply addtags, but scope merged `part_body` manufacturer tags to this item's mfr only. */
+    function applyPartAddTagsScopedToItem(tagPool, meta, part, item) {
+      if (!tagPool || !meta || !window.TagCompValidation) return;
+      var TC = window.TagCompValidation;
+      var tags = TC.formatTags(meta.addtags);
+      if (!partNameLooksLikeBodyIdentity(part && (part.name || part.invDumpKey))) {
+        tags.forEach(function (t) { tagPool.add(t); });
+        return;
+      }
+      var allowedMfr = manufacturerPoolTagsForItem(item);
+      var allowSet = Object.create(null);
+      for (var ai = 0; ai < allowedMfr.length; ai++) allowSet[allowedMfr[ai]] = 1;
+      tags.forEach(function (t) {
+        var tl = String(t || '').toLowerCase();
+        if (MANUFACTURER_POOL_TAG_SET[tl] && !allowSet[tl]) return;
+        tagPool.add(tl);
+      });
+    }
+
     /**
      * Comp + prior slots' addtags in NCS order (same as runInvTagProgression). Omits excludeSlotKey so
      * that slot's dropdown can preview alternates against the pool built without that row.
@@ -2588,6 +3210,7 @@
       var rp = selectedParts.rarity;
       var compName = effectiveRarityCompKey(rp) || null;
       var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
+      seedImplicitEleControlTags(tagPool, selectedItem, ncsSlotsOpt);
       if (rp && (rp.name || rp.invDumpKey) && compName) {
         var baseTags = compBasetags[compName];
         if (!baseTags) {
@@ -2638,7 +3261,7 @@
           if (/part_barrel_02|barrel_02/i.test(bnm)) tagPool.add('barrel_02');
           if (/part_barrel_01|barrel_01|zipgun/i.test(bnm)) tagPool.add('barrel_01');
         }
-        TC.applyPartAddTagsToPool(tagPool, meta);
+        applyPartAddTagsScopedToItem(tagPool, meta, p, selectedItem);
       }
       return tagPool;
     }
@@ -2648,44 +3271,20 @@
       return /^(?:part_unique_|part_aug_unique_|part_aug_leg_|part_leg_)/.test(invKeyLower);
     }
 
-    /** part_barrel_NN_x where x is not a single-letter variant (a–d) — Nexus uses these for orange barrels; invalid on plain comps. */
-    function invKeyLooksNamedLegendaryBarrel(invKeyLower) {
-      if (!invKeyLower) return false;
-      var m = /^part_barrel_\d{2}_([a-z0-9_]+)$/i.exec(invKeyLower);
-      if (!m) return false;
-      var tail = m[1];
-      if (tail.length < 2) return false;
-      if (/^[abcd]$/i.test(tail)) return false;
-      if (/^(common|uncommon|rare|epic|legendary)$/i.test(tail)) return false;
-      return true;
-    }
-
-    /** @returns {string[]} cumulative segments e.g. phantom_flame → phantom, phantom_flame */
-    function cumulativeUnderscorePrefixes(famSuffix) {
-      var parts = String(famSuffix || '').toLowerCase().split('_').filter(Boolean);
-      var out = [];
-      var i;
-      for (i = 1; i <= parts.length; i++) out.push(parts.slice(0, i).join('_'));
-      return out;
-    }
-
     /**
      * Named-orange weapon comps use comp_05_legendary_<fam>; barrel rows part_barrel_*_<tail> must belong to that
-     * weapon family. Inv dependencytags alone were too loose (shared leg_* prefixes across legendaries).
+     * weapon family. Named barrels on plain/non-matching rarity must fail (not silently pass).
      */
     function namedLegendaryBarrelMatchesWeaponComp(invKeyLower, partNameLower, compEffectiveKey) {
-      var compNorm = normalizeCompKeyForNamedLegFam(compEffectiveKey || '');
-      var mc = compNorm.match(/^comp_05_legendary_([a-z0-9_]+)$/i);
-      if (!mc || !mc[1]) return true;
-      var fam = mc[1].toLowerCase();
       var inv = String(invKeyLower || '').trim().toLowerCase();
       if (!inv && partNameLower) inv = normalizeInvLookupKey(partNameLower);
+      if (inv.indexOf('.') >= 0) inv = inv.split('.').pop();
       if (!invKeyLooksNamedLegendaryBarrel(inv)) return true;
-      var mb = /^part_barrel_\d{2}_([a-z0-9_]+)$/i.exec(inv);
-      var tail = mb ? String(mb[1]).toLowerCase() : '';
-      if (!tail) return true;
-      var allowed = cumulativeUnderscorePrefixes(fam);
-      return allowed.indexOf(tail) >= 0;
+      var compNorm = normalizeCompKeyForNamedLegFam(compEffectiveKey || '');
+      var mc = compNorm.match(/^comp_05_legendary_([a-z0-9_]+)$/i);
+      /* Named legendary barrel on plain / non-named rarity → not a natural roll. */
+      if (!mc || !mc[1]) return false;
+      return partInvMatchesLegendFam(inv, mc[1].toLowerCase());
     }
 
     function isPearlRarityCompName(compName) {
@@ -2792,6 +3391,7 @@
       var compName = effectiveRarityCompKey(rp) || null;
       /* Data + manifests use both comp_* and base_comp_* for the same rarity row — normalize for tier/regex logic. */
       var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
+      seedImplicitEleControlTags(tagPool, selectedItem, ncsSlotsOpt);
       if (rp && (rp.name || rp.invDumpKey) && compName) {
         var baseTags = compBasetags[compName];
         if (!baseTags) {
@@ -2922,7 +3522,7 @@
         } else {
           bySlot[sk] = { status: 'ok', partName: p.name };
         }
-        TC.applyPartAddTagsToPool(tagPool, meta);
+        applyPartAddTagsScopedToItem(tagPool, meta, p, selectedItem);
       }
 
       if (progOpts.bulkLegitStrictInvTags) {
@@ -3467,7 +4067,7 @@
 
     /**
      * Data-backed checks (same as manual slot selection). Used by updateValidation and decode-from-serial path.
-     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — bulkCheatAuditMode: bulk serial page uses strict inv hard-fails (exclusion / comp-slot min/max / allowlist). bulkGlobalExclRows: all manifest-mapped decode rows for order-independent exclusion pool + duplicate-slot counts. Interactive UI promotes Fail from inv-tag lines only when invReasonIsInteractiveHardFail.
+     * @param {{ strictMode?: boolean, itemLevel?: number, partOrderMismatches?: string[]|null, relaxInvUniLegDeps?: boolean, invTagFailuresAsErr?: boolean, detectPlainFrameUniLeg?: boolean, failOffPoolNamedLegendaryBarrels?: boolean, bulkCheatAuditMode?: boolean, bulkGlobalExclRows?: Array<{ slotKey: string, manifestName?: string, invDumpKey?: string|null }> }} opts — failOffPoolNamedLegendaryBarrels ignored (loot-pool is badge-only). Named-rarity + plain barrel fails via Nexus fam match instead. bulkCheatAuditMode: bulk serial page uses strict inv hard-fails.
      */
     function computeLegitValidationState(selectedItem, selectedParts, opts) {
       opts = opts || {};
@@ -3664,6 +4264,18 @@
           statusText = 'Fail (data)';
         }
       }
+
+      /* Named legendary rarity + plain Midheaven barrel when Nexus has matching orange barrel → Fail.
+         Off-pool alone never fails (failOffPoolNamedLegendaryBarrels is ignored / dead). */
+      (function enforceNamedLegendaryPlainBarrel() {
+        var plainViol = namedLegendaryRarityPlainBarrelViolations(selectedParts, selectedItem);
+        if (!plainViol.length) return;
+        for (var pvi = 0; pvi < plainViol.length; pvi++) details.push(plainViol[pvi]);
+        if (!bulkAudit) {
+          status = 'err';
+          statusText = 'Fail (data)';
+        }
+      })();
 
       var sched = selectedItem ? computeScheduleAnalysis(selectedItem.slug, selectedParts) : { gates: [], maxMinStage: 0, weightHits: [], zeroWeightParts: [] };
 

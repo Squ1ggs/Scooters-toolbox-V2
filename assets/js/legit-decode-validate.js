@@ -2145,8 +2145,11 @@
       } catch (_) {}
       return false;
     }
-    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 60);
-    if (!Number.isFinite(il)) il = 60;
+    var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 70);
+    if (!Number.isFinite(il)) il = 70;
+    if (typeof window.clampItemLevel === 'function') il = window.clampItemLevel(il);
+    else if (il > 70) il = 70;
+    else if (il < 1) il = 1;
     if (mappedCount === 0) {
       var rawEarly = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
         rawSerial: auditSerial,
@@ -2252,7 +2255,8 @@
       relaxInvUniLegDeps: relaxInv,
       invTagFailuresAsErr: invAsErr === true,
       detectPlainFrameUniLeg: dplain === true,
-      failOffPoolNamedLegendaryBarrels: opts.failOffPoolNamedLegendaryBarrels === true,
+      /* Ignored: loot-pool in_pool must never hard-fail; named-rarity plain-barrel uses Nexus fam check. */
+      failOffPoolNamedLegendaryBarrels: false,
       bulkCheatAuditMode: bulkAudit
     };
     if (bulkAudit && mappedRowsAll.length) {
@@ -2583,8 +2587,11 @@
         var partCount = Object.keys(selectedParts).length;
         var strictEl = document.getElementById('strict-mode');
         var ilInput = document.getElementById('item-level');
-        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 60);
-        if (!Number.isFinite(il)) il = 60;
+        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 70);
+        if (!Number.isFinite(il)) il = 70;
+        if (typeof window.clampItemLevel === 'function') il = window.clampItemLevel(il);
+        else if (il > 70) il = 70;
+        else if (il < 1) il = 1;
 
         var pre = '<div style="font-size:0.72rem;color:rgba(233,254,255,0.55);margin-bottom:6px;">' +
           'Item: <strong>' + String(manifestItem.name || '') + '</strong> (' + String(manifestItem.slug || '') + ') &middot; Dataset parts: ' + rp.length +

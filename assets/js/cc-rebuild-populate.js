@@ -671,7 +671,15 @@
           if (bcat !== 'Weapon' && bcat !== 'Gadget' && bcat !== 'Heavy Weapon') return false;
           if (String(bp.partType || '').trim().toLowerCase() !== 'barrel') return false;
           var c = String(bp.code || bp.spawnCode || '').replace(/^["']|["']$/g, '').toLowerCase();
-          return c.indexOf('part_unique_barrel') !== -1 || c.indexOf('comp_05_legendary') !== -1 || !!String(bp.legendaryName || '').trim();
+          if (c.indexOf('part_unique_barrel') !== -1 || c.indexOf('comp_05_legendary') !== -1 || !!String(bp.legendaryName || '').trim()) return true;
+          var unnumbered = c.match(/\.part_barrel_([a-z][a-z0-9_]{3,})$/);
+          if (unnumbered && !/^[abcd]$/.test(unnumbered[1])) return true;
+          var numbered = c.match(/part_barrel_\d+_([a-z0-9_]+)$/);
+          if (numbered) {
+            var suf = String(numbered[1] || '');
+            if (suf.length >= 4 && !/^[abcd]$/.test(suf)) return true;
+          }
+          return false;
         };
       for (var j = 0; j < all.length; j++) {
         var bp = all[j];

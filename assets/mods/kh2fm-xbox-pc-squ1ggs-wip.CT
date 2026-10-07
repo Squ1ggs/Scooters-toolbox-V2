@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="52">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>100</ID>
+      <Description>"Made by Squ1ggs"</Description>
+      <Color>FF8000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>99</ID>
+      <Description>"For KINGDOM HEARTS II FINAL MIX - Xbox PC / Microsoft Store version (2026). Attach Cheat Engine to KINGDOM HEARTS II FINAL MIX.exe. Does not work on the Steam or Epic versions."</Description>
+      <Color>FF8000</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>101</ID>
+      <Description>"WARNING: Avoid heavily levelling Roxas before becoming Sora. Doing so may cause Donald and Goofy to miss moves/abilities because they are not active party members during the Roxas section. Back up your save before using XP edits."</Description>
+      <Color>0000FF</Color>
+      <GroupHeader>1</GroupHeader>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>102</ID>
+      <Description>"Experience"</Description>
+      <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
+      <Color>800080</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"XP"</Description>
+          <Color>800080</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"KINGDOM HEARTS II FINAL MIX.exe"+BC7E50</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>103</ID>
+      <Description>"Munny &amp; Items"</Description>
+      <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
+      <Color>808000</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>0</ID>
+          <Description>"Munny"</Description>
+          <Color>808000</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"KINGDOM HEARTS II FINAL MIX.exe"+BC6BB0</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>3</ID>
+          <Description>"Potions"</Description>
+          <Color>808000</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"KINGDOM HEARTS II FINAL MIX.exe"+BC7CF0</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>104</ID>
+      <Description>"Unidentified"</Description>
+      <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
+      <Color>808080</Color>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"Unknown value (+2C17E80)"</Description>
+          <Color>808080</Color>
+          <VariableType>4 Bytes</VariableType>
+          <Address>"KINGDOM HEARTS II FINAL MIX.exe"+2C17E80</Address>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols />
+</CheatTable>

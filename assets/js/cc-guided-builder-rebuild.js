@@ -236,11 +236,11 @@
     { key: 'underbarrelAccVis', label: 'Underbarrel Acc. Vis', partType: 'Underbarrel' },
     { key: 'foregrip', label: 'Foregrip', partType: 'Foregrip' },
     { key: 'secondaryAmmo', label: 'Secondary Ammo', partType: 'Manufacturer Part' },
+    { key: 'element', label: 'Element', partType: 'Element' },
     { key: 'secondaryEle', label: 'Secondary Element (Maliwan Switch)', partType: 'Element Switch' },
     { key: 'pearlElem', label: 'Pearl Element', partType: '' },
     { key: 'pearlStat', label: 'Pearl Stat', partType: '' },
-    { key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part' },
-    { key: 'element', label: 'Element', partType: 'Element' }
+    { key: 'licensed', label: 'Licensed Manufacturer Part', partType: 'Manufacturer Part' }
   ];
 
   function attachWeaponSlotUi(row) {
@@ -391,6 +391,13 @@
         seen.bodyEle = true;
       }
     }
+    if (!seen.element) {
+      var elementRow = attachWeaponSlotUi({ key: 'element', label: 'Element', partType: 'Element' });
+      if (elementRow) {
+        insertBeforeBarrel(elementRow);
+        seen.element = true;
+      }
+    }
     if (!seen.secondaryEle && !isHeavy) {
       var secEleRow = attachWeaponSlotUi({
         key: 'secondaryEle',
@@ -401,10 +408,6 @@
         insertBeforeBarrel(secEleRow);
         seen.secondaryEle = true;
       }
-    }
-    if (!seen.element) {
-      var elementRow = attachWeaponSlotUi({ key: 'element', label: 'Element', partType: 'Element' });
-      if (elementRow) insertBeforeBarrel(elementRow);
     }
   }
   window.getGuidedWeaponSlots = getGuidedWeaponSlots;
@@ -423,6 +426,75 @@
         el = el.parentElement;
       }
     }
+  }
+
+  /** Inject/update per-slot “Show all parts” checkbox next to a Guided slot label. */
+  function ensureGuidedSlotShowAllToggle(slot, category) {
+    if (!slot || !slot.selectId || !slot.key) return;
+    var sel = byId(slot.selectId);
+    if (!sel) return;
+    var row = getGuidedSlotGridRow(sel);
+    if (!row) return;
+    var cat = String(category || (getGuidedFilterContext() || {}).itemType || 'Weapon').trim();
+    var supports = (typeof window.stxSlotSupportsShowAllPartsUnlock === 'function')
+      ? window.stxSlotSupportsShowAllPartsUnlock(slot.key, cat)
+      : false;
+    var wrap = row.querySelector('.cc-slot-show-all');
+    if (!supports) {
+      if (wrap) wrap.style.display = 'none';
+      return;
+    }
+    if (!wrap) {
+      wrap = document.createElement('label');
+      wrap.className = 'cc-slot-show-all';
+      wrap.style.cssText = 'display:inline-flex;align-items:center;gap:5px;margin:0 0 6px 0;font-size:0.82em;color:#9ab;font-weight:500;cursor:pointer;';
+      wrap.title = 'List parts from all manufacturers and weapon types for this slot only (Body stays locked).';
+      var cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'cc-slot-show-all-parts';
+      cb.setAttribute('data-slot-key', slot.key);
+      cb.addEventListener('change', function () {
+        if (typeof window.stxSetSlotShowAllParts === 'function') {
+          window.stxSetSlotShowAllParts(slot.key, !!cb.checked);
+        }
+        try { refreshWeaponDropdowns(true); } catch (_e) {}
+        try {
+          var gctx = getGuidedFilterContext();
+          var git = normalizeGuidedItemTypeForGear(gctx && gctx.itemType);
+          if (git && git !== 'Weapon' && typeof refreshGearDropdowns === 'function') {
+            refreshGearDropdowns(git);
+          }
+        } catch (_e2) {}
+      });
+      wrap.appendChild(cb);
+      wrap.appendChild(document.createTextNode(' Show all parts'));
+      var lab = row.querySelector('label[for="' + slot.selectId + '"]');
+      if (lab) {
+        var header = document.createElement('div');
+        header.className = 'cc-slot-header';
+        header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:2px;';
+        lab.style.marginBottom = '0';
+        lab.parentNode.insertBefore(header, lab);
+        header.appendChild(lab);
+        header.appendChild(wrap);
+      } else {
+        row.insertBefore(wrap, row.firstChild);
+      }
+    } else {
+      wrap.style.display = 'inline-flex';
+    }
+    var input = wrap.querySelector('input.cc-slot-show-all-parts');
+    if (input) {
+      var on = (typeof window.stxIsSlotShowAllPartsEnabled === 'function')
+        ? !!window.stxIsSlotShowAllPartsEnabled(slot.key)
+        : false;
+      if (input.checked !== on) input.checked = on;
+    }
+  }
+
+  function guidedSlotShowAllEnabled(slotKey) {
+    return (typeof window.stxIsSlotShowAllPartsEnabled === 'function')
+      && !!window.stxIsSlotShowAllPartsEnabled(slotKey);
   }
 
   function syncGuidedElementsPanelVisibility(ctx) {
@@ -473,7 +545,7 @@
       if (keys[k] === 'statMod') show = false;
       if (show && ui.maliwanOnly && manLo.indexOf('maliwan') < 0) show = false;
       /* Optional specialty slots with no parts for this gun — hide (Body Mag, Borg Mag, etc.). */
-      if (show && ui.hideWhenEmpty && !guidedSelectHasRealOptions(sel)) show = false;
+      if (show && ui.hideWhenEmpty && !guidedSelectHasRealOptions(sel) && !guidedSlotShowAllEnabled(keys[k])) show = false;
       /* Never hide required Body/Barrel even if the pool is momentarily empty. */
       if ((keys[k] === 'body' || keys[k] === 'barrel') && ui && ui.required) {
         if (hasGunConfig) show = true;
@@ -482,6 +554,8 @@
       if (hasGunConfig && (keys[k] === 'underbarrel' || keys[k] === 'underbarrelAcc' || keys[k] === 'underbarrelAccVis' || keys[k] === 'magazineAcc')) {
         show = true;
       }
+      /* Per-slot unlock keeps specialty rows visible so users can browse the widened pool. */
+      if (hasGunConfig && guidedSlotShowAllEnabled(keys[k])) show = true;
       setGuidedSlotRowVisible(sel, show);
     }
     try {
@@ -2232,6 +2306,20 @@
     // Check if parts list has actually changed to avoid redundant DOM work
     var partsHash = (partsList && partsList.length) ? (partsList.length + ':' + (partsList[0] ? (partsList[0].code || partsList[0].name) : '')) : '0';
     if (groupByRarity) partsHash = 'rfl:' + manHint + ':' + partsHash;
+    /* Barrel/body pin labels depend on selected rarity — include suffix so rarity changes force rebuild. */
+    try {
+      var sidHash = sel && sel.id ? String(sel.id) : '';
+      if (sidHash === 'ccBarrelSelect' || sidHash === 'ccGrenadeBodySelect' || sidHash === 'ccShieldMainPartSelect') {
+        var rpHash = getSelectedGuidedRarityPart();
+        var sufHash = '';
+        if (sidHash === 'ccGrenadeBodySelect' && typeof window.stxGrenadeRarityBodySuffixFromPart === 'function') {
+          sufHash = String(window.stxGrenadeRarityBodySuffixFromPart(rpHash) || '');
+        } else if (typeof window.stxRarityBarrelSuffixFromPart === 'function') {
+          sufHash = String(window.stxRarityBarrelSuffixFromPart(rpHash) || '');
+        }
+        partsHash += '|pin:' + sufHash;
+      }
+    } catch (_ph) {}
     if (sel.__lastPartsHash === partsHash && !sel.dataset.forceRebuild) {
         if (preferredValue && sel.value !== preferredValue) {
            sel.value = preferredValue;
@@ -2239,6 +2327,7 @@
         syncGuidedCustomSelectIfWrapped(sel);
         return;
     }
+    try { delete sel.dataset.forceRebuild; } catch (_fr) {}
     sel.__lastPartsHash = partsHash;
 
     sel.innerHTML = '';
@@ -2330,6 +2419,14 @@
     maybeDecoratedGuidedSelectPlaceholder(sel);
     bindGuidedSelectPreviewIfNeeded(sel);
     updateGuidedSelectPreview(sel);
+    /* Ensure ★ rarity-matched barrel/body rows sit at the top of the open list. */
+    try {
+      var sidPin = sel && sel.id ? String(sel.id) : '';
+      if ((sidPin === 'ccBarrelSelect' || sidPin === 'ccGrenadeBodySelect' || sidPin === 'ccShieldMainPartSelect') &&
+          typeof window.stxPinStarredBarrelOptionsToTop === 'function') {
+        window.stxPinStarredBarrelOptionsToTop(sel);
+      }
+    } catch (_pinTop) {}
     syncGuidedCustomSelectIfWrapped(sel);
   }
 
@@ -3462,7 +3559,8 @@
       try {
         var elItSkip = document.getElementById('ccGuidedItemType');
         var itSkip = elItSkip ? String(elItSkip.value || '').trim().toLowerCase() : '';
-        skipCompress = (itSkip === 'shield' || itSkip === 'repkit');
+        /* Shields: packed 246 runs often fail to spawn. Repkits want `{243:[…]}` packing. */
+        skipCompress = (itSkip === 'shield');
       } catch (_) {}
       if (!skipCompress) {
         try {
@@ -3481,7 +3579,52 @@
     if (Array.isArray(norm) && norm.length) {
       try { norm = reorderGuidedTailRarityFirst(norm, baseFamily); } catch (_) {}
     }
+    /* Grenade / Repkit / Weapon / Heavy: keep manufacturer body immediately after rarity. */
+    if (Array.isArray(norm) && norm.length) {
+      try {
+        var elKit = document.getElementById('ccGuidedItemType');
+        var itKit = elKit ? String(elKit.value || '').trim().toLowerCase() : '';
+        if (itKit === 'grenade' || itKit === 'repkit' || itKit === 'weapon' || itKit === 'heavy' || itKit === 'heavy weapon' || itKit === 'gadget') {
+          norm = reorderGuidedTailBodyAfterRarity(norm, baseFamily, itKit);
+        }
+      } catch (_kitOrd) {}
+    }
     return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
+  }
+
+  /** Move grenade/repkit body tokens to sit right after rarity comps. */
+  function reorderGuidedTailBodyAfterRarity(tokens, baseFamilyId, itemTypeLo) {
+    var src = Array.isArray(tokens) ? tokens.slice() : [];
+    if (!src.length) return src;
+    var rarity = [];
+    var bodies = [];
+    var rest = [];
+    for (var i = 0; i < src.length; i++) {
+      var t = src[i];
+      if (isGuidedRarityCompToken(t, baseFamilyId)) {
+        rarity.push(t);
+        continue;
+      }
+      var isBody = false;
+      try {
+        var p = resolveGuidedTailTokenPart(t, baseFamilyId);
+        var c = p ? guidedSpawnCodeLo(p) : '';
+        if (itemTypeLo === 'grenade') {
+          isBody = (typeof window.stxIsGrenadeBodyPoolRowCode === 'function' && window.stxIsGrenadeBodyPoolRowCode(c))
+            || (typeof window.stxIsGrenadeManufacturerIdentityBodyCode === 'function' && window.stxIsGrenadeManufacturerIdentityBodyCode(c));
+        } else if (itemTypeLo === 'repkit') {
+          isBody = (typeof window.stxIsRepkitManufacturerBodyCode === 'function' && window.stxIsRepkitManufacturerBodyCode(c))
+            || /_repair_kit\.part_(?:borg|dad|jak|mal|ord|ted|tor|vla)(?:$|[^a-z0-9])/.test(c);
+        } else if (itemTypeLo === 'weapon' || itemTypeLo === 'heavy' || itemTypeLo === 'heavy weapon' || itemTypeLo === 'gadget') {
+          isBody = /\.part_body(?:$|_[a-z0-9])/.test(c)
+            && !/part_body_(?:bolt|flap|ele|mag|acc)/.test(c);
+        }
+      } catch (_eb) {}
+      if (isBody) bodies.push(t);
+      else rest.push(t);
+    }
+    if (!bodies.length) return src;
+    return rarity.concat(bodies, rest);
   }
 
   /**
@@ -4653,7 +4796,14 @@
     var it = String(st.itemType).toLowerCase();
     if (it === 'heavy') it = 'heavy weapon';
     if (it !== 'weapon' && it !== 'heavy weapon') return;
-    var refreshKey = it + '|' + String(st.manufacturer || '') + '|' + String(st.weaponType || '') + '|' + String(getEffectiveManufacturerForFilter() || '');
+    var unlockSig = '';
+    try {
+      var _usk = Object.keys(WEAPON_SLOT_UI);
+      for (var _ui = 0; _ui < _usk.length; _ui++) {
+        if (guidedSlotShowAllEnabled(_usk[_ui])) unlockSig += _usk[_ui] + ',';
+      }
+    } catch (_ue) {}
+    var refreshKey = it + '|' + String(st.manufacturer || '') + '|' + String(st.weaponType || '') + '|' + String(getEffectiveManufacturerForFilter() || '') + '|u:' + unlockSig;
     if (!force && refreshKey === __lastWeaponDropdownRefreshKey && window.__ccWeaponDropdownsHydrated) return;
     if (force || refreshKey !== __lastWeaponDropdownRefreshKey) {
       var clearSlots = getGuidedWeaponSlots();
@@ -4790,8 +4940,10 @@
         var out = (filtered || []).filter(function (p) {
           return matchSlot ? matchSlot(slot.key, p) : true;
         });
-        /* Acc / borg rows are often stripped by partType Magazine/Underbarrel filters — rescue from full pool. */
-        if (matchSlot && (slot.key === 'magazineAcc' || slot.key === 'magazineBorg'
+        /* Acc / borg always rescued; main slots rescued when per-slot “Show all parts” is on. */
+        var rescueMain = guidedSlotShowAllEnabled(slot.key)
+          && (slot.key === 'mag' || slot.key === 'barrel' || slot.key === 'scope' || slot.key === 'underbarrel');
+        if (matchSlot && (rescueMain || slot.key === 'magazineAcc' || slot.key === 'magazineBorg'
           || slot.key === 'underbarrelAcc' || slot.key === 'underbarrelAccVis'
           || slot.key === 'scopeAcc' || slot.key === 'barrelAcc')) {
           var seenTok = {};
@@ -4804,7 +4956,7 @@
             var pr = allRescue[ri];
             if (!pr || !matchSlot(slot.key, pr)) continue;
             var catR = String(pr.category || '').trim();
-            if (catR && catR !== 'Weapon' && catR !== 'Prefix' && catR !== 'Rarity' && catR !== 'Gadget') continue;
+            if (catR && catR !== 'Weapon' && catR !== 'Prefix' && catR !== 'Rarity' && catR !== 'Gadget' && catR !== 'Heavy Weapon' && catR !== 'Heavy') continue;
             var tr = getPartToken(pr);
             if (tr && !seenTok[tr]) {
               seenTok[tr] = true;
@@ -4919,24 +5071,28 @@
       var slotMan = man || '';
       var isBodyFamily = (slot.key === 'body' || slot.key === 'bodyAcc');
       if (isBodyFamily) slotMan = getSelectedItemManufacturerForBody();
+      var slotShowAll = !isBodyFamily && guidedSlotShowAllEnabled(slot.key);
+      var widenPartType = slotShowAll && /^(mag|magazineAcc|magazineBorg|barrel|barrelAcc|scope|scopeAcc|underbarrel|underbarrelAcc|underbarrelAccVis)$/.test(String(slot.key || ''));
       // Legendary perk + firmware pools are shared — no manufacturer / weapon-type gate.
       if (slot.partType === 'Legendary Perks' || slot.key === 'legendary') slotMan = '';
       if (slot.partType === 'Firmware' || slot.key === 'firmware') slotMan = '';
       // Element pools are shared and should not be restricted by manufacturer toggle/filter.
       if (slot.key === 'bodyEle' || slot.key === 'secondaryEle') slotMan = '';
+      if (slotShowAll) slotMan = '';
       var isLegSlot = (slot.partType === 'Legendary Perks' || slot.key === 'legendary');
       var isFwSlot = (slot.partType === 'Firmware' || slot.key === 'firmware');
+      ensureGuidedSlotShowAllToggle(slot, cat);
       if (useSimpleFilter) {
         var wtForFilter = (it === 'heavy weapon') ? 'Heavy Weapon' : (wt || '');
-        if (slot.key === 'bodyEle' || slot.key === 'secondaryEle' || isLegSlot || isFwSlot) wtForFilter = '';
+        if (slotShowAll || slot.key === 'bodyEle' || slot.key === 'secondaryEle' || isLegSlot || isFwSlot) wtForFilter = '';
         var isAddSlot = (slot.key === 'additionalParts' || slot.customType === 'weaponAdditionalParts');
         filtered = window.filterPartsForGuided({
           category: 'Weapon',
           manufacturer: slotMan,
           weaponType: wtForFilter,
-          partType: isAddSlot ? undefined : slot.partType,
+          partType: (isAddSlot || widenPartType) ? undefined : slot.partType,
           forceItemManufacturer: isBodyFamily,
-          ignoreWeaponType: isAddSlot || isLegSlot || isFwSlot || slot.key === 'secondaryEle' || slot.key === 'bodyEle'
+          ignoreWeaponType: slotShowAll || isAddSlot || isLegSlot || isFwSlot || slot.key === 'secondaryEle' || slot.key === 'bodyEle'
         });
         if (isLegSlot) {
           var legPool = guidedCollectAllLegendaryPerkParts(true);
@@ -4969,7 +5125,7 @@
           filtered = window.stxSortWeaponBarrelOptionsForRarity(filtered, rarityForBarrel);
         } catch (_sb) {}
       }
-      var maxItems = (slot.partType === 'Rarity') ? 600 : 1200;
+      var maxItems = (slot.partType === 'Rarity') ? 600 : (slotShowAll ? 4000 : 1200);
       var emptyHintWeapon = '';
       if (slot.key === 'bodyEle') emptyHintWeapon = GUIDED_HINT_EMPTY_BODY_ELEMENT;
       else if (slot.key === 'secondaryEle') emptyHintWeapon = GUIDED_HINT_EMPTY_MALIWAN_SWITCH;
@@ -5050,7 +5206,19 @@
           if (it === 'Grenade') {
             refreshGearDropdowns('Grenade');
             ensureGuidedGrenadeBodyForSelectedRarity();
+          } else if (it === 'Repkit') {
+            refreshGearDropdowns('Repkit');
+            ensureGuidedRepkitBodyForSelectedManufacturer();
           } else if (it === 'Weapon' || it === 'Heavy') {
+            /* Rebuild barrel list so ★ match sorts to top (soft-fill alone only selects). */
+            try {
+              var bSelPin = byId('ccBarrelSelect');
+              if (bSelPin) {
+                try { delete bSelPin.__lastPartsHash; } catch (_h) {}
+                bSelPin.dataset.forceRebuild = '1';
+              }
+              if (typeof refreshWeaponDropdowns === 'function') refreshWeaponDropdowns(true);
+            } catch (_rb) {}
             try { if (typeof ensureGuidedWeaponBarrelForSelectedRarity === 'function') ensureGuidedWeaponBarrelForSelectedRarity(); } catch (_eb) {}
           }
         } catch (_) {}
@@ -5238,7 +5406,10 @@
       var sel = byId(slot.selectId);
       if (!sel) continue;
       var slotMan = man || '';
-      if (guidedSlotIsBodyFamily(category, slot.key)) slotMan = getSelectedItemManufacturerForBody();
+      var isGearBody = guidedSlotIsBodyFamily(category, slot.key);
+      if (isGearBody) slotMan = getSelectedItemManufacturerForBody();
+      var gearSlotShowAll = !isGearBody && guidedSlotShowAllEnabled(slot.key);
+      ensureGuidedSlotShowAllToggle(slot, category);
       // Legendary perk pools are shared; never restrict these by manufacturer filter/toggle.
       if (slot.partType === 'Legendary Perks') slotMan = '';
       if (slot.partType === 'Firmware' || slot.key === 'firmware' || slot.key === 'firmware246') slotMan = '';
@@ -5246,6 +5417,7 @@
       if (category === 'Enhancement' && (slot.partType === 'Stats' || slot.key === 'stats' || slot.partType === 'Firmware' || slot.key === 'firmware')) slotMan = '';
       // Element pools are shared; never restrict these by manufacturer filter/toggle.
       if (slot.partType === 'Element' || slot.partType === 'TypeID1Element' || slot.partType === 'Element Switch') slotMan = '';
+      if (gearSlotShowAll) slotMan = '';
       var isGearLegSlot = slot.partType === 'Legendary Perks' || slot.key === 'legendary';
       var isGearFwSlot = slot.partType === 'Firmware' || slot.key === 'firmware' || slot.key === 'firmware246';
       var filtered;
@@ -5270,7 +5442,7 @@
           if (!pgk) continue;
           var cgk = String((pgk.code || pgk.spawnCode || pgk.importCode || '')).toLowerCase().replace(/^["']|["']$/g, '');
           if (!/grenade_gadget\.part_stat_/.test(cgk)) continue;
-          if (typeof isAllPartsEnabled === 'function' && isAllPartsEnabled()) {
+          if (gearSlotShowAll || (typeof isAllPartsEnabled === 'function' && isAllPartsEnabled())) {
             filtered.push(pgk);
             continue;
           }
@@ -5333,13 +5505,14 @@
       } else if (useSimpleFilter) {
         var ptSlot = String(slot.partType || '');
         if (ptSlot === '__grenadeVariant' || ptSlot === '__grenadeKitStats') ptSlot = '';
+        var gearWidenPt = gearSlotShowAll && /^(mag|magazineAcc|magazineBorg|barrel|barrelAcc|scope|scopeAcc|underbarrel|underbarrelAcc|underbarrelAccVis)$/.test(String(slot.key || ''));
         filtered = window.filterPartsForGuided({
           category: filterCat,
           manufacturer: slotMan,
-          weaponType: filterWt,
-          partType: ptSlot,
-          forceItemManufacturer: guidedSlotIsBodyFamily(category, slot.key),
-          ignoreWeaponType: slot.partType === 'Legendary Perks' || isGearLegSlot || isGearFwSlot
+          weaponType: gearSlotShowAll ? '' : filterWt,
+          partType: gearWidenPt ? undefined : ptSlot,
+          forceItemManufacturer: isGearBody,
+          ignoreWeaponType: gearSlotShowAll || slot.partType === 'Legendary Perks' || isGearLegSlot || isGearFwSlot
         });
         if (isGearLegSlot) {
           var gearLeg = guidedCollectAllLegendaryPerkParts(true);
@@ -5357,7 +5530,7 @@
         } else {
           var ptFb = String(slot.partType || '');
           if (ptFb === '__grenadeVariant' || ptFb === '__grenadeKitStats') ptFb = '';
-          filtered = filterByPartType(all, ptFb, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, category === 'Heavy Weapon' ? 'Heavy Weapon' : null);
+          filtered = filterByPartType(all, ptFb, category === 'Heavy Weapon' ? 'Heavy Weapon' : category, slotMan, (gearSlotShowAll || category !== 'Heavy Weapon') ? null : 'Heavy Weapon');
         }
       }
       if (category === 'Repkit') {
@@ -5490,6 +5663,91 @@
     return true;
   }
   try { window.__ccEnsureGuidedGrenadeBodyForSelectedRarity = ensureGuidedGrenadeBodyForSelectedRarity; } catch (_) {}
+
+  /** Auto-add Ripper/Jakobs/… manufacturer repkit body when missing (prevents invisible kits). */
+  function ensureGuidedRepkitBodyForSelectedManufacturer() {
+    var st = getGuidedState();
+    var it = normalizeGuidedItemTypeForGear((st && st.itemType) || '');
+    if (it !== 'Repkit') return false;
+    var bodySel = byId('ccRepkitBodySelect');
+    if (!bodySel) return false;
+    var curTok = readGuidedSlotToken(bodySel);
+    if (curTok) return false;
+    var out = byId('guidedOutputDeserialized');
+    var serial = out ? String(out.value || '').trim() : '';
+    var baseFam = serial ? getBaseFamilyFromSerial(serial) : NaN;
+    if (serial) {
+      var toks = extractGuidedTailTokens(serial);
+      for (var ti = 0; ti < toks.length; ti++) {
+        var bp = resolveGuidedTailTokenPart(toks[ti], baseFam);
+        var bc = bp ? guidedSpawnCodeLo(bp) : '';
+        if ((typeof window.stxIsRepkitManufacturerBodyCode === 'function' && window.stxIsRepkitManufacturerBodyCode(bc))
+          || /_repair_kit\.part_(?:borg|dad|jak|mal|ord|ted|tor|vla)(?:$|[^a-z0-9])/.test(bc)) {
+          return false;
+        }
+      }
+    }
+    var man = String(getSelectedItemManufacturerForBody() || '').trim().toLowerCase();
+    if (!man) return false;
+    var prefix =
+      (man === 'tediore') ? 'ted' :
+      (man === 'torgue') ? 'tor' :
+      (man === 'jakobs') ? 'jak' :
+      (man === 'maliwan') ? 'mal' :
+      (man === 'vladof') ? 'vla' :
+      (man === 'daedalus') ? 'dad' :
+      (man === 'order') ? 'ord' :
+      (man === 'ripper') ? 'bor' : '';
+    if (!prefix) return false;
+    var wantCodes = (prefix === 'bor')
+      ? ['bor_repair_kit.part_borg', 'bor_repair_kit.part_bor']
+      : [prefix + '_repair_kit.part_' + prefix];
+    var pool = [];
+    try {
+      if (bodySel.__ccGuidedPartsList && Array.isArray(bodySel.__ccGuidedPartsList)) {
+        pool = bodySel.__ccGuidedPartsList.slice();
+      }
+    } catch (_) {}
+    if (!pool.length && typeof window.filterPartsForGuided === 'function') {
+      try {
+        pool = window.filterPartsForGuided({
+          category: 'Repkit',
+          manufacturer: getSelectedItemManufacturerForBody(),
+          weaponType: '',
+          partType: 'Base',
+          forceItemManufacturer: true
+        }) || [];
+      } catch (_fp) {}
+    }
+    var match = null;
+    for (var wi = 0; wi < wantCodes.length && !match; wi++) {
+      var want = wantCodes[wi];
+      for (var pi = 0; pi < pool.length; pi++) {
+        if (guidedSpawnCodeLo(pool[pi]) === want) { match = pool[pi]; break; }
+      }
+    }
+    if (!match) {
+      var all = getAllParts();
+      for (var wi2 = 0; wi2 < wantCodes.length && !match; wi2++) {
+        var want2 = wantCodes[wi2];
+        for (var ai = 0; ai < all.length; ai++) {
+          if (guidedSpawnCodeLo(all[ai]) === want2) { match = all[ai]; break; }
+        }
+      }
+    }
+    if (!match) return false;
+    var tok = getPartToken(match);
+    if (!tok) return false;
+    try { setGuidedSelectByToken('ccRepkitBodySelect', tok); } catch (_) {}
+    var bodyMeta = null;
+    var rSlots = GEAR_SLOTS_BY_CATEGORY.Repkit || [];
+    for (var si = 0; si < rSlots.length; si++) {
+      if (rSlots[si] && rSlots[si].key === 'body') { bodyMeta = rSlots[si]; break; }
+    }
+    appendToOutCode(tok, out, false, bodyMeta);
+    return true;
+  }
+  try { window.__ccEnsureGuidedRepkitBodyForSelectedManufacturer = ensureGuidedRepkitBodyForSelectedManufacturer; } catch (_) {}
 
   /** Soft-fill weapon barrel when empty and rarity is a named legendary/pearl (mirror grenade body ensure). */
   function ensureGuidedWeaponBarrelForSelectedRarity() {

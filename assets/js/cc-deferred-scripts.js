@@ -8,12 +8,12 @@
   var FAST_CORE_SCRIPTS = [
     './assets/data/stx_dataset.js',
     './assets/data/stx_rarities.js',
-    './assets/data/stx_rarities_extract.js',
+    './assets/data/stx_rarities_extract.js?v=78u',
     /* DLC/raid legendary classmod bodies (Phlebotomist, etc.) — needed before Simple Builder paints. */
     './assets/data/stx_editor_extract.js',
     './assets/data/legacy_classmod_names.js',
     './assets/data/stx_new_item_codes.js',
-    './assets/js/stx-simple-builder-core.js?v=78q',
+    './assets/js/stx-simple-builder-core.js?v=79d',
     './assets/js/cc-custom-select-rebuild.js'
   ];
 
@@ -21,23 +21,24 @@
     /* Nexus gap / raid / pearl supplements — parity with Guided + embed pages. */
     './assets/data/stx_dataset_supplement.js',
     './assets/data/stx_raid2_supplement.js',
+    './assets/data/stx_conglomerate_barrel_patch.js?v=79c',
     './assets/data/stx_nexus_gap_supplement.js',
     './assets/data/stx_rarities_supplement_patch.js',
     './assets/data/stx_rarities_raid2_patch.js',
     './assets/data/stx_rarities_community_pearl_patch.js',
     './assets/data/stx_dataset_repkit_label_patch.js',
-    './assets/data/part_display_overrides.js',
+    './assets/data/part_display_overrides.js?v=78r',
     './assets/data/inv_comp_tag_data.js',
     './assets/js/tag-comp-validation.js',
     './assets/data/part_ref_meta.js',
     './assets/data/source_paths_data.js',
     /* loot_reference_data.js (~1.6MB) loads lazily via __ccEnsureLootReferenceData / idle preload */
     './assets/js/cc-itempool-drop-check.js',
-    './assets/data/skin_data.js?v=78k',
+    './assets/data/skin_data.js?v=78r',
     /* Base85 packer needed on import — do not wait for FULL_SCRIPTS or Serial stays blank. */
-    './assets/js/cc-base85-rebuild.js?v=78q',
+    './assets/js/cc-base85-rebuild.js?v=79e',
     './assets/data/modded_preset_catalog.js',
-    './assets/js/cc-rebuild-populate.js?v=78k',
+    './assets/js/cc-rebuild-populate.js?v=78r',
     './assets/data/classmod_perk_meta.js',
     './assets/data/perk_thumb_urls.js',
     './assets/data/enhancement_data.js',
@@ -48,14 +49,14 @@
   var GUIDED_SCRIPTS = [
     './legacy/ncs_slot_map.js',
     './assets/js/cc-item-slug.js?v=77j',
-    './assets/js/cc-guided-builder-rebuild.js?v=78k',
+    './assets/js/cc-guided-builder-rebuild.js?v=79d',
     './assets/js/stx-editor-smoke-guards.js'
   ];
 
   var FULL_SCRIPTS = [
     './assets/js/cc-classmod-checklist-rebuild.js?v=77r',
     './assets/js/cc-enhancement-checklist-rebuild.js',
-    './assets/js/cc-adv-search-stable.js',
+    './assets/js/cc-adv-search-stable.js?v=78u',
     './assets/js/cc-build-stats-rebuild.js?v=77j',
     './assets/vendor/cryptojs-inline.js',
     './assets/vendor/pako-inline.js',

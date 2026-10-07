@@ -143,7 +143,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"bor_hw.part_barrel_02_draupner\"",
-    "name": "Part Barrel 02 Draupner",
+    "name": "Draupner",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -152,7 +152,7 @@
     "idRaw": "275:37",
     "id": 37,
     "family": 275,
-    "effects": "Part Barrel 02 Draupner"
+    "effects": "Draupner"
   },
   {
     "category": "Repkit",
@@ -6061,7 +6061,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"mal_hw.part_barrel_01_ichor\"",
-    "name": "Part Barrel 01 Ichor",
+    "name": "Ichor",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -6070,7 +6070,7 @@
     "idRaw": "289:27",
     "id": 27,
     "family": 289,
-    "effects": "Part Barrel 01 Ichor"
+    "effects": "Ichor"
   },
   {
     "category": "Heavy Weapon",
@@ -6079,7 +6079,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"mal_hw.part_barrel_02_barrel\"",
-    "name": "Part Barrel 02 Barrel",
+    "name": "Cooper Duper",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -6088,7 +6088,7 @@
     "idRaw": "289:30",
     "id": 30,
     "family": 289,
-    "effects": "Part Barrel 02 Barrel"
+    "effects": "Cooper Duper"
   },
   {
     "category": "Repkit",
@@ -10942,7 +10942,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"tor_hw.part_barrel_dahlfather\"",
-    "name": "Part Barrel Dahlfather",
+    "name": "Heimdahl",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -10951,7 +10951,7 @@
     "idRaw": "273:42",
     "id": 42,
     "family": 273,
-    "effects": "Part Barrel Dahlfather"
+    "effects": "Heimdahl"
   },
   {
     "category": "Heavy Weapon",
@@ -10960,7 +10960,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"tor_hw.part_barrel_loiter\"",
-    "name": "Part Barrel Loiter",
+    "name": "Loiter Sploiter",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -10969,7 +10969,7 @@
     "idRaw": "273:44",
     "id": 44,
     "family": 273,
-    "effects": "Part Barrel Loiter"
+    "effects": "Loiter Sploiter"
   },
   {
     "category": "Heavy Weapon",
@@ -13643,7 +13643,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"vla_hw.part_barrel_02_flak\"",
-    "name": "Part Barrel 02 Flak",
+    "name": "Flak Cannon",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -13652,7 +13652,7 @@
     "idRaw": "282:30",
     "id": 30,
     "family": 282,
-    "effects": "Part Barrel 02 Flak"
+    "effects": "Flak Cannon"
   },
   {
     "category": "Heavy Weapon",
@@ -13661,7 +13661,7 @@
     "weaponType": "Heavy Weapon",
     "partType": "Barrel",
     "code": "\"vla_hw.part_barrel_02_quattro\"",
-    "name": "Part Barrel 02 Quattro",
+    "name": "Quadratus",
     "source": "nexus_extract",
     "dataNote": "From inv serialindex (Nexus extract).",
     "scanSources": [
@@ -13670,7 +13670,7 @@
     "idRaw": "282:32",
     "id": 32,
     "family": 282,
-    "effects": "Part Barrel 02 Quattro"
+    "effects": "Quadratus"
   },
   {
     "category": "Heavy Weapon",

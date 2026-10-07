@@ -10,6 +10,39 @@
   function byId(id){ try{ return document.getElementById(id); }catch(_){ return null; } }
   function asArr(v){ return Array.isArray(v) ? v : []; }
   function normCodeKey(s){ return stripQuotes(s).toLowerCase(); }
+
+  /** Spawn-code prefix → UI manufacturer (repkit/grenade/shield often store manufacturer as "gadgets"). */
+  var ADV_CODE_PREFIX_MFR = {
+    ted: "Tediore",
+    tor: "Torgue",
+    jak: "Jakobs",
+    mal: "Maliwan",
+    vla: "Vladof",
+    dad: "Daedalus",
+    ord: "Order",
+    bor: "Ripper",
+    borg: "Ripper",
+    cov: "COV",
+    hyp: "Hyperion"
+  };
+  function partSpawnCode(p){
+    return stripQuotes(q(p && (p.code || p.spawnCode || p.importCode || p.raw || "")));
+  }
+  function inferredManufacturerFromSpawnCode(code){
+    var c = stripQuotes(q(code)).toLowerCase();
+    if (!c) return "";
+    var m = c.match(/^([a-z0-9]+)_(?:repair_kit|grenade_gadget|shield|enhancement)\./);
+    if (!m) m = c.match(/^([a-z0-9]+)_(?:ps|sg|sm|sr|ar|hw)\./);
+    if (!m) return "";
+    return ADV_CODE_PREFIX_MFR[m[1]] || "";
+  }
+  function partMatchesManufacturerFilter(p, curManu){
+    if (!curManu) return true;
+    var mk = q(p && (p.manufacturer || p.mfr));
+    if (mk === curManu) return true;
+    var inferred = inferredManufacturerFromSpawnCode(partSpawnCode(p));
+    return !!(inferred && inferred === curManu);
+  }
   function getStxParts(){
     try{
       var ds = window.STX_DATASET;
@@ -1114,6 +1147,9 @@
         var m = q(fp && (fp.manufacturer || fp.mfr));
         var t = q(fp && (fp.partType || fp.category || fp.weaponType || fp.itemType));
         if (m) manuSet[m] = true;
+        /* Promote gadgets/blank rows to real manufacturers via spawn prefix (War Paint → Torgue). */
+        var inferred = inferredManufacturerFromSpawnCode(partSpawnCode(fp));
+        if (inferred) manuSet[inferred] = true;
         if (t) typeSet[t] = true;
       }
       var manuOpts = Object.keys(manuSet).sort();
@@ -1138,7 +1174,7 @@
       }
       pool = pool.filter(function(p){
         if (!p) return false;
-        if (curManu && q(p.manufacturer || p.mfr) !== curManu) return false;
+        if (curManu && !partMatchesManufacturerFilter(p, curManu)) return false;
         if (curType && q(p.partType || p.category || p.weaponType || p.itemType) !== curType) return false;
         return true;
       });

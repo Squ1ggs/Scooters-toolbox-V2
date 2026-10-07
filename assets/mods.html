@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX and KINGDOM HEARTS II FINAL MIX (Xbox PC / Microsoft Store)."/>
+  <meta name="robots" content="index,follow"/>
+  <link rel="canonical" href="https://scooterstoolbox.com/assets/mods.html"/>
+  <title>Other Mods — Cheat Tables by Squ1ggs</title>
+  <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
+  <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+  <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      color-scheme: dark;
+      --text: #e8eef6;
+      --muted: #8fa3b8;
+      --accent: #00e5f0;
+      --name: #f5f8fc;
+      --gold: #ffd48a;
+      --ok: #8fe0b0;
+      --wip: #ffc089;
+      --warn: #ffb4a0;
+      --panel: rgba(8, 16, 28, 0.78);
+      --panel-border: rgba(0, 229, 240, 0.22);
+      --font-display: "Syne", "Outfit", sans-serif;
+      --font-ui: "Outfit", "Segoe UI", sans-serif;
+      --font-code: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+      --radius: 14px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(1200px 520px at 8% -10%, rgba(0, 200, 220, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 92% 0%, rgba(255, 150, 60, 0.08), transparent 50%),
+        linear-gradient(180deg, #08131f 0%, #071018 42%, #050c14 100%);
+      background-attachment: fixed;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 20%, #000 20%, transparent 75%);
+      z-index: 0;
+    }
+    header, main { position: relative; z-index: 1; }
+    header { padding: clamp(18px, 3vw, 28px) clamp(16px, 3vw, 28px) 0; }
+    .header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header-icon { border-radius: 12px; flex: 0 0 auto; }
+    .header-main { flex: 1 1 320px; min-width: 0; }
+    .header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .brand-mark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.55rem, 3.4vw, 2.15rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--name);
+      margin: 0 0 4px;
+    }
+    .brand-mark span { color: var(--accent); }
+    h1 {
+      margin: 0 0 8px;
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+    }
+    .sub { color: var(--muted); font-size: 0.95rem; line-height: 1.45; max-width: 46rem; margin: 0; }
+    main {
+      padding: 24px clamp(16px, 3vw, 28px) 56px;
+      max-width: 1100px;
+      margin: 0 auto;
+      animation: modsIn 0.55s var(--ease) both;
+    }
+    @keyframes modsIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+      margin: 0 0 6px;
+      color: var(--name);
+    }
+    .section { margin-bottom: 34px; }
+    .section > .sub { margin-bottom: 16px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      min-height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 229, 240, 0.35);
+      background: rgba(8, 18, 30, 0.75);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 0.86rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease);
+    }
+    .btn:hover {
+      border-color: rgba(255, 205, 120, 0.55);
+      background: rgba(0, 229, 240, 0.08);
+      transform: translateY(-1px);
+    }
+    .btn--primary {
+      border-color: rgba(0, 229, 240, 0.55);
+      background: linear-gradient(135deg, rgba(0, 229, 240, 0.18), rgba(255, 180, 80, 0.12));
+      color: var(--name);
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+      gap: 18px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+    }
+    .card--wip { border-color: rgba(255, 192, 137, 0.32); }
+    .card__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .card__title {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: var(--name);
+    }
+    .card__game { color: var(--muted); font-size: 0.86rem; margin: 4px 0 0; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .tag--ok { color: var(--ok); border-color: rgba(143, 224, 176, 0.45); background: rgba(143, 224, 176, 0.08); }
+    .tag--wip { color: var(--wip); border-color: rgba(255, 192, 137, 0.45); background: rgba(255, 192, 137, 0.08); }
+    .tag--platform { color: #9dc2ec; border-color: rgba(157, 194, 236, 0.35); }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .features { margin: 0; padding-left: 18px; line-height: 1.55; font-size: 0.92rem; }
+    .features li::marker { color: var(--accent); }
+    .features .soon { color: var(--muted); font-style: italic; }
+    .note {
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      border-left: 3px solid var(--warn);
+      background: rgba(255, 140, 110, 0.07);
+      color: #f2d6cc;
+    }
+    .card__foot {
+      margin-top: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .card__file { font-family: var(--font-code); font-size: 0.74rem; color: var(--muted); word-break: break-all; }
+    .steps {
+      margin: 0;
+      padding: 18px 20px 18px 38px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(8, 16, 28, 0.55);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+    .steps li { margin-bottom: 4px; }
+    .steps li::marker { color: var(--gold); font-weight: 700; }
+    code { font-family: var(--font-code); font-size: 0.85em; color: #8fe0c8; }
+    a.inline { color: var(--accent); }
+    footer { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 0 16px 28px; position: relative; z-index: 1; }
+    .card--kh {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      border-color: rgba(245, 215, 110, 0.45);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.45), 0 0 30px rgba(130, 160, 255, 0.14);
+    }
+    .card--kh::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(1.6px 1.6px at 10% 20%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 28% 62%, #fff, transparent),
+        radial-gradient(1.8px 1.8px at 46% 14%, #fff8d8, transparent),
+        radial-gradient(1.1px 1.1px at 63% 48%, #fff, transparent),
+        radial-gradient(1.4px 1.4px at 78% 82%, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 90% 36%, #fff8d8, transparent),
+        radial-gradient(1px 1px at 18% 88%, #fff, transparent),
+        radial-gradient(1.3px 1.3px at 54% 76%, #fff, transparent),
+        var(--kh-sky);
+    }
+    .card--kh::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -26px;
+      right: -22px;
+      width: 160px;
+      height: 160px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff6d5' d='M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E") no-repeat center / contain;
+      opacity: 0.2;
+      filter: drop-shadow(0 0 20px rgba(255, 236, 170, 0.7));
+      animation: khMoonGlow 6s ease-in-out infinite alternate;
+    }
+    @keyframes khMoonGlow {
+      from { opacity: 0.14; }
+      to { opacity: 0.28; }
+    }
+    .card--kh1 {
+      --kh-sky:
+        radial-gradient(420px 260px at 85% 0%, rgba(140, 170, 255, 0.28), transparent 70%),
+        linear-gradient(160deg, #0a1640 0%, #13286a 48%, #1c1250 100%);
+    }
+    .card--kh2 {
+      border-color: rgba(255, 190, 120, 0.5);
+      --kh-sky:
+        radial-gradient(380px 240px at 85% 0%, rgba(255, 210, 140, 0.3), transparent 70%),
+        linear-gradient(170deg, #2a1442 0%, #5e2648 45%, #a8483f 78%, #d9803f 100%);
+    }
+    .card--kh .card__title {
+      font-family: "Cinzel", serif;
+      font-size: 1.2rem;
+      color: #f5d76e;
+      text-shadow: 0 0 14px rgba(245, 215, 110, 0.35);
+    }
+    .card--kh .card__game,
+    .card--kh .card__file { color: rgba(240, 235, 255, 0.72); }
+    .card--kh h3 { color: #f5d76e; }
+    .card--kh .features li::marker { content: "♥  "; color: #f5d76e; font-size: 0.8em; }
+    .card--kh .note { background: rgba(10, 6, 30, 0.55); }
+    .card--kh2::after { display: none; }
+    .kh-key {
+      position: absolute;
+      z-index: -1;
+      bottom: 78px;
+      right: 34px;
+      width: 300px;
+      max-width: 70%;
+      height: auto;
+      opacity: 0.34;
+      transform: rotate(-18deg);
+      filter: drop-shadow(0 0 10px rgba(255, 220, 150, 0.55));
+      pointer-events: none;
+      animation: khKeyGlow 6s ease-in-out infinite alternate;
+    }
+    @keyframes khKeyGlow {
+      from { opacity: 0.3; }
+      to { opacity: 0.5; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .card--kh::after,
+      .kh-key { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <img alt="Scooter's Toolbox" class="header-icon" height="56" src="./img/vault-hunters/scooter_halo.png" width="56" onerror="this.src='./favicon.ico'"/>
+      <div class="header-main">
+        <p class="brand-mark">Scooter's <span>Toolbox</span></p>
+        <h1>Other Mods</h1>
+        <p class="sub">Mods and tools I've made for other games. Free to download — back up your saves before using any of them.</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn--primary" href="../index.html">Open save editor</a>
+        <a class="btn" href="./loot-reference.html">Loot reference</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" aria-labelledby="ct-heading">
+      <h2 id="ct-heading">Cheat Engine tables</h2>
+      <p class="sub">Load these in <a class="inline" href="https://www.cheatengine.org/" rel="noopener noreferrer" target="_blank">Cheat Engine</a> while the game is running.</p>
+
+      <div class="cards">
+        <article class="card card--kh card--kh1">
+          <div class="card__head">
+            <div>
+              <p class="card__title">Kingdom Hearts Final Mix</p>
+              <p class="card__game">KINGDOM HEARTS FINAL MIX</p>
+            </div>
+            <span class="tag tag--ok">Ready</span>
+          </div>
+          <div class="tags">
+            <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
+            <span class="tag">Cheat Engine table</span>
+          </div>
+          <div>
+            <h3>What's in it</h3>
+            <ul class="features">
+              <li>Sora, Donald &amp; Goofy stats: level, HP, MP, AP, strength, defense, accessory &amp; item slots</li>
+              <li>XP for all three party members</li>
+              <li>Munny</li>
+              <li>Items: consumables, stat boosts, accessories, stones, synthesis materials (one-tick "give all")</li>
+              <li>Weapons: every keyblade, staff and shield</li>
+              <li>Key items: Ansem's Reports, library books, Navi-G pieces, torn pages, slides and more</li>
+              <li>Magic: unlock every spell at level 3 in one tick</li>
+              <li>Abilities: pick abilities from a drop-down for each slot (Sora, Donald, Goofy, shared)</li>
+            </ul>
+          </div>
+          <p class="note">Back up your save first and edit with menus closed. Adding key items early can break story progress. Does not work on the Steam or Epic versions.</p>
+          <div class="card__foot">
+            <a class="btn btn--primary" href="./mods/kh1fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
+            <span class="card__file">Attach to KINGDOM HEARTS FINAL MIX.exe</span>
+          </div>
+        </article>
+
+        <article class="card card--wip card--kh card--kh2">
+          <svg class="kh-key" viewBox="0 0 120 48" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="khKeyBlade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffffff"/>
+                <stop offset="1" stop-color="#9aa6b8"/>
+              </linearGradient>
+              <linearGradient id="khKeyGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffe9a0"/>
+                <stop offset="1" stop-color="#c9962e"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 22.5 Q6.5 32 9 38.5" fill="none" stroke="#c9d1dc" stroke-width="1" stroke-dasharray="1.6 1.2"/>
+            <circle cx="9" cy="42" r="3" fill="#c9d1dc"/>
+            <circle cx="6.1" cy="38.8" r="1.8" fill="#c9d1dc"/>
+            <circle cx="11.9" cy="38.8" r="1.8" fill="#c9d1dc"/>
+            <rect x="26" y="17.5" width="88" height="5" rx="1.5" fill="url(#khKeyBlade)"/>
+            <path d="M98 17.5 V6 L102 10.5 L106 3.5 L110 10.5 L114 6 V17.5 Z" fill="url(#khKeyBlade)"/>
+            <rect x="8" y="17" width="20" height="6" rx="1.5" fill="#2a2f6b"/>
+            <rect x="11" y="8" width="15" height="24" rx="5" fill="none" stroke="url(#khKeyGold)" stroke-width="3.2"/>
+            <rect x="3.5" y="17.25" width="5.5" height="5.5" rx="1.6" fill="url(#khKeyGold)"/>
+          </svg>
+          <div class="card__head">
+            <div>
+              <p class="card__title">Kingdom Hearts II Final Mix</p>
+              <p class="card__game">KINGDOM HEARTS II FINAL MIX</p>
+            </div>
+            <span class="tag tag--wip">Work in progress</span>
+          </div>
+          <div class="tags">
+            <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
+            <span class="tag">Cheat Engine table</span>
+          </div>
+          <div>
+            <h3>What's in it so far</h3>
+            <ul class="features">
+              <li>XP</li>
+              <li>Munny</li>
+              <li>Potions</li>
+              <li class="soon">More coming — this table is still being worked on.</li>
+            </ul>
+          </div>
+          <p class="note">Don't level Roxas heavily before you become Sora — Donald and Goofy can miss moves and abilities because they aren't in the party yet. Back up your save before editing XP. Does not work on the Steam or Epic versions.</p>
+          <div class="card__foot">
+            <a class="btn btn--primary" href="./mods/kh2fm-xbox-pc-squ1ggs-wip.CT" download="KINGDOM HEARTS II FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table (WIP)</a>
+            <span class="card__file">Attach to KINGDOM HEARTS II FINAL MIX.exe</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="howto-heading">
+      <h2 id="howto-heading">How to use a cheat table</h2>
+      <ol class="steps">
+        <li>Install <a class="inline" href="https://www.cheatengine.org/" rel="noopener noreferrer" target="_blank">Cheat Engine</a> (decline any bundled offers in the installer).</li>
+        <li>Back up your save files.</li>
+        <li>Start the game and load into your save.</li>
+        <li>Open Cheat Engine, click the computer icon (top left) and pick the game's <code>.exe</code> from the process list.</li>
+        <li>Use <strong>File → Open</strong> to load the <code>.CT</code> file you downloaded.</li>
+        <li>Tick the box next to a group to turn it on, then double-click a value to change it. Keep menus closed while editing.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>Made by Squ1ggs · Use at your own risk — always keep a save backup.</footer>
+</body>
+</html>

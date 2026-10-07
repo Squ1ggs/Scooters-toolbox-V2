@@ -58,7 +58,7 @@
   },
   {
     "manufacturer": "Ripper",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "BOR_repair_kit.comp_05_legendary_augmenter",
     "familyId": 274,
     "itemId": 7,
@@ -67,7 +67,7 @@
   },
   {
     "manufacturer": "Ripper",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "BOR_repair_kit.comp_05_legendary_hugger",
     "familyId": 274,
     "itemId": 9,
@@ -1156,7 +1156,7 @@
   },
   {
     "manufacturer": "Daedalus",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "DAD_repair_kit.comp_05_legendary_healthraiser",
     "familyId": 277,
     "itemId": 9,
@@ -1165,7 +1165,7 @@
   },
   {
     "manufacturer": "Daedalus",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "DAD_repair_kit.comp_05_legendary_pacemaker",
     "familyId": 277,
     "itemId": 7,
@@ -1570,7 +1570,7 @@
   },
   {
     "manufacturer": "Jakobs",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "JAK_repair_kit.comp_05_legendary_defibrillator",
     "familyId": 265,
     "itemId": 5,
@@ -1579,7 +1579,7 @@
   },
   {
     "manufacturer": "Jakobs",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "JAK_repair_kit.comp_05_legendary_vitae",
     "familyId": 265,
     "itemId": 9,
@@ -1876,7 +1876,7 @@
   },
   {
     "manufacturer": "Maliwan",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "MAL_repair_kit.comp_05_legendary_bloodanalyzer",
     "familyId": 266,
     "itemId": 5,
@@ -1885,7 +1885,7 @@
   },
   {
     "manufacturer": "Maliwan",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "MAL_repair_kit.comp_05_legendary_geigerroid",
     "familyId": 266,
     "itemId": 8,
@@ -2353,7 +2353,7 @@
   },
   {
     "manufacturer": "Order",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "ORD_repair_kit.comp_05_legendary_paleblood",
     "familyId": 285,
     "itemId": 9,
@@ -2362,7 +2362,7 @@
   },
   {
     "manufacturer": "Order",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "ORD_repair_kit.comp_05_legendary_triplebypass",
     "familyId": 285,
     "itemId": 7,
@@ -2515,7 +2515,7 @@
   },
   {
     "manufacturer": "Weapon",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "REPAIR_kit.comp_05_legendary",
     "familyId": 243,
     "itemId": 111,
@@ -2695,7 +2695,7 @@
   },
   {
     "manufacturer": "Tediore",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "TED_repair_kit.comp_05_legendary_font",
     "familyId": 290,
     "itemId": 9,
@@ -2704,7 +2704,7 @@
   },
   {
     "manufacturer": "Tediore",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "TED_repair_kit.comp_05_legendary_killspring",
     "familyId": 290,
     "itemId": 7,
@@ -3082,7 +3082,7 @@
   },
   {
     "manufacturer": "Torgue",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "TOR_repair_kit.comp_05_legendary_outburst",
     "familyId": 261,
     "itemId": 9,
@@ -3091,7 +3091,7 @@
   },
   {
     "manufacturer": "Torgue",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "TOR_repair_kit.comp_05_legendary_shinywarpaint",
     "familyId": 261,
     "itemId": 5,
@@ -3397,7 +3397,7 @@
   },
   {
     "manufacturer": "Vladof",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "VLA_repair_kit.comp_05_legendary_adrenalinepump",
     "familyId": 269,
     "itemId": 5,
@@ -3406,7 +3406,7 @@
   },
   {
     "manufacturer": "Vladof",
-    "itemType": "Weapon",
+    "itemType": "Repkit",
     "itemTypeString": "VLA_repair_kit.comp_05_legendary_bloodiron",
     "familyId": 269,
     "itemId": 9,

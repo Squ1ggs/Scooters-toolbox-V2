@@ -710,9 +710,22 @@
   var LEVEL_PREFIX = '0110000000011001000001100';
   var MISSING_LEVEL_PATTERN = '0110000000011000100001';
 
+  /** Bit offset just past the leading item-type varint (magic + `100` + chunks); -1 if malformed. */
+  function headerAfterTypeOffset(binaryStr) {
+    var pos = 7;
+    if (binaryStr.slice(pos, pos + 3) !== '100') return -1;
+    pos += 3;
+    while (true) {
+      if (pos + 5 > binaryStr.length) return -1;
+      var cont = binaryStr.charAt(pos + 4) === '1';
+      pos += 5;
+      if (!cont) return pos;
+    }
+  }
+
   function parseVarintChunks(binaryStr) {
-    var idx = binaryStr.indexOf(LEVEL_PREFIX);
-    if (idx === -1) return null;
+    var idx = headerAfterTypeOffset(binaryStr);
+    if (idx === -1 || binaryStr.substr(idx, LEVEL_PREFIX.length) !== LEVEL_PREFIX) return null;
     var pos = idx + LEVEL_PREFIX.length;
     var valueBits = '';
     while (true) {
@@ -728,12 +741,13 @@
     return { value: value, start: idx + LEVEL_PREFIX.length, end: pos };
   }
 
-  function encodeVarintChunks(value) {
+  function encodeVarintChunks(value, minChunks) {
     var bits = value.toString(2).padStart(8, '0').split('').reverse().join('');
     bits = bits.replace(/0+$/, '');
     if (bits.length < 4) bits = bits.padEnd(4, '0');
     var chunks = [];
     for (var i = 0; i < bits.length; i += 4) chunks.push(bits.slice(i, i + 4));
+    while (minChunks && chunks.length < minChunks) chunks.push('0000');
     var out = '';
     for (var i = 0; i < chunks.length; i++) {
       var chunk = chunks[i].padEnd(4, '0');
@@ -752,17 +766,17 @@
       console.warn('updateSerialLevel: decode failed', e);
       return serial;
     }
-    var reversedBytes = new Uint8Array(decoded.length);
-    for (var r = 0; r < decoded.length; r++) reversedBytes[r] = reverseBitsInByte(decoded[r]);
-    var binaryStr = Array.from(reversedBytes).map(function (b) { return b.toString(2).padStart(8, '0'); }).join('');
+    /* customBase85Decode already returns bytes in token (bit-mirrored) order. */
+    var binaryStr = Array.from(decoded).map(function (b) { return b.toString(2).padStart(8, '0'); }).join('');
     var newBinaryStr = null;
     var maxSerialLenDelta = 32;
     var parsed = parseVarintChunks(binaryStr);
     if (parsed) {
-      newBinaryStr = binaryStr.slice(0, parsed.start) + encodeVarintChunks(newLevel) + binaryStr.slice(parsed.end);
+      /* Keep the old chunk count so trailing pad bits stay aligned and never parse as a token. */
+      newBinaryStr = binaryStr.slice(0, parsed.start) + encodeVarintChunks(newLevel, (parsed.end - parsed.start) / 5) + binaryStr.slice(parsed.end);
     } else {
-      var missIdx = binaryStr.indexOf(MISSING_LEVEL_PATTERN);
-      if (missIdx !== -1) {
+      var missIdx = headerAfterTypeOffset(binaryStr);
+      if (missIdx !== -1 && binaryStr.substr(missIdx, MISSING_LEVEL_PATTERN.length) === MISSING_LEVEL_PATTERN) {
         var insertPos = missIdx + 12;
         var insertBits = '1001000001100' + encodeVarintChunks(newLevel) + '00';
         newBinaryStr = binaryStr.slice(0, insertPos) + insertBits + binaryStr.slice(insertPos);
@@ -772,10 +786,7 @@
       }
     }
     if (newBinaryStr === null) return serial;
-    var newBytes = bitsToBytes(newBinaryStr);
-    var restoredBytes = new Uint8Array(newBytes.length);
-    for (var i = 0; i < newBytes.length; i++) restoredBytes[i] = reverseBitsInByte(newBytes[i]);
-    var b85Str = bytesToCustomB85(restoredBytes).replace(/\|/g, '/');
+    var b85Str = bytesToCustomB85(bitsToBytes(newBinaryStr)).replace(/\|/g, '/');
     var newSerial = '@U' + b85Str;
     if (Math.abs(newSerial.length - serial.length) > maxSerialLenDelta) {
       console.warn('Serial length differs by more than ' + maxSerialLenDelta + ' char(s) after level patch, keeping old value');
