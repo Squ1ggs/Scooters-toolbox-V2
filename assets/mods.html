@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <base href="/assets/"/>
+  <script>
+    if (!/\/assets\/[^/]*$/.test(location.pathname)) {
+      var stxBase = document.createElement("base");
+      stxBase.href = "/assets/";
+      document.head.appendChild(stxBase);
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
   <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX, KINGDOM HEARTS II FINAL MIX and KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC / Microsoft Store)."/>
