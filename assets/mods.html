@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
+  <base href="/assets/"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
-  <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX and KINGDOM HEARTS II FINAL MIX (Xbox PC / Microsoft Store)."/>
+  <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX, KINGDOM HEARTS II FINAL MIX and KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC / Microsoft Store)."/>
   <meta name="robots" content="index,follow"/>
-  <link rel="canonical" href="https://scooterstoolbox.com/assets/mods.html"/>
+  <link rel="canonical" href="https://scooterstoolbox.com/mods/"/>
   <title>Other Mods | Cheat Tables by Squ1ggs</title>
   <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
   <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -274,6 +275,12 @@
         radial-gradient(380px 240px at 85% 0%, rgba(255, 210, 140, 0.3), transparent 70%),
         linear-gradient(170deg, #2a1442 0%, #5e2648 45%, #a8483f 78%, #d9803f 100%);
     }
+    .card--bbs {
+      border-color: rgba(120, 220, 200, 0.5);
+      --kh-sky:
+        radial-gradient(400px 250px at 85% 0%, rgba(140, 240, 210, 0.26), transparent 70%),
+        linear-gradient(165deg, #06243a 0%, #0c4a5a 45%, #2b6a4a 78%, #c08a3a 100%);
+    }
     .card--kh .card__title {
       font-family: "Cinzel", serif;
       font-size: 1.2rem;
@@ -289,10 +296,10 @@
     .kh-key {
       position: absolute;
       z-index: -1;
-      bottom: 78px;
-      right: 34px;
-      width: 300px;
-      max-width: 70%;
+      top: 30px;
+      right: 10px;
+      width: 190px;
+      max-width: 42%;
       height: auto;
       opacity: 0.34;
       transform: rotate(-18deg);
@@ -304,9 +311,25 @@
       from { opacity: 0.3; }
       to { opacity: 0.5; }
     }
+    .card--bbs::after { display: none; }
+    .kh-crown {
+      position: absolute;
+      z-index: -1;
+      top: 96px;
+      right: 22px;
+      width: 190px;
+      max-width: 45%;
+      height: auto;
+      opacity: 0.34;
+      transform: rotate(10deg);
+      filter: drop-shadow(0 0 12px rgba(255, 220, 150, 0.6));
+      pointer-events: none;
+      animation: khKeyGlow 6s ease-in-out infinite alternate;
+    }
     @media (prefers-reduced-motion: reduce) {
       .card--kh::after,
-      .kh-key { animation: none; }
+      .kh-key,
+      .kh-crown { animation: none; }
     }
   </style>
 </head>
@@ -400,19 +423,71 @@
           <div>
             <h3>What's in it</h3>
             <ul class="features">
-              <li>Combat cheats</li>
-              <li>Sora's stats, XP and party members</li>
-              <li>Munny</li>
-              <li>Items, weapons, magic, drive forms, summons and abilities</li>
-              <li>Story and key items</li>
-              <li>Unused and debug weapons (cut content, in their own section)</li>
-              <li>Gummi Ship: infinite HP, score and medal multipliers, every gummi block and ability, higher cost and AP limits, every blueprint</li>
-              <li>Save extras: difficulty, trophies and munny pouches</li>            </ul>
+              <li>Combat: infinite HP for Sora &amp; party, infinite MP and drive gauge</li>
+              <li>Sora: XP, HP, MP, bonus AP, strength, magic, defense, armor, accessory &amp; item slots, drive bars</li>
+              <li>Party: Donald, Goofy and world party members' max HP, plus munny</li>
+              <li>Items: consumables, stat boosts, accessories, armor, synthesis materials &amp; recipes</li>
+              <li>Weapons: every keyblade, staff and shield, plus unused &amp; debug weapons in their own section</li>
+              <li>Magic, summons, all five drive forms and growth abilities (High Jump to Glide)</li>
+              <li>Abilities: all 68 of Sora's ability slots</li>
+              <li>Key items: story items, Secret Ansem Reports and world maps</li>
+              <li>Gummi Ship: infinite HP, god mode, score &amp; medal multipliers, higher cost &amp; AP limits</li>
+              <li>Gummi blocks: every block x99 and every ability in one tick (no Dummy entries), every skin, teeny ship and blueprint (earns the all-blueprints achievement)</li>
+              <li>Save extras: difficulty, trophies &amp; munny pouches</li>
+            </ul>
           </div>
           <p class="note">Don't level Roxas heavily before you become Sora. Donald and Goofy can miss moves and abilities because they aren't in the party yet. Back up your save before editing XP. Edits usually work best with the pause menu open. Does not work on the Steam or Epic versions.</p>
           <div class="card__foot">
             <a class="btn btn--primary" href="./mods/kh2fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS II FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
             <span class="card__file">Attach to KINGDOM HEARTS II FINAL MIX.exe</span>
+          </div>
+        </article>
+
+        <article class="card card--kh card--bbs">
+          <svg class="kh-crown" viewBox="0 0 100 84" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="khCrownGold" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff2b8"/>
+                <stop offset="0.55" stop-color="#f0c75a"/>
+                <stop offset="1" stop-color="#b8862a"/>
+              </linearGradient>
+            </defs>
+            <path d="M10 66 L14 24 Q22 38 33 44 Q42 26 50 8 Q58 26 67 44 Q78 38 86 24 L90 66 Z" fill="url(#khCrownGold)"/>
+            <rect x="8" y="64" width="84" height="12" rx="3" fill="url(#khCrownGold)"/>
+            <circle cx="14" cy="21" r="4" fill="url(#khCrownGold)"/>
+            <circle cx="50" cy="6" r="5" fill="url(#khCrownGold)"/>
+            <circle cx="86" cy="21" r="4" fill="url(#khCrownGold)"/>
+            <path d="M50 30 L55 46 L50 58 L45 46 Z" fill="#2a2f6b" opacity="0.55"/>
+          </svg>
+          <div class="card__head">
+            <div>
+              <p class="card__title">Kingdom Hearts Birth by Sleep Final Mix</p>
+              <p class="card__game">KINGDOM HEARTS Birth by Sleep FINAL MIX</p>
+            </div>
+            <span class="tag tag--ok">Ready</span>
+          </div>
+          <div class="tags">
+            <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
+            <span class="tag">Cheat Engine table</span>
+          </div>
+          <div>
+            <h3>What's in it</h3>
+            <ul class="features">
+              <li>Combat: no command cooldowns, infinite focus, instant command styles, infinite HP</li>
+              <li>XP and munny</li>
+              <li>Items: 99 of every crystal in one tick, plus pick-list item slots</li>
+              <li>Finish commands: unlock every finisher, activate them and max their XP</li>
+              <li>Abilities: every ability at max level, or pick each level from a list</li>
+              <li>Keyblades: every keyblade for your character plus the other characters' unique ones</li>
+              <li>Battle commands: max level everything, unlock every action command and shotlock, edit your command stock</li>
+              <li>Command decks: switch deck, open all 8 battle slots, see all three decks</li>
+              <li>Mirage Arena: medals and arena level</li>
+            </ul>
+          </div>
+          <p class="note">Back up your save first and edit with menus closed. Each save is one character (Terra, Ventus or Aqua). Other characters' keyblades can pass through enemies, and their finishers can look invisible in the menu but still work. Never carry more than 9 materials or the meld menu crashes. Does not work on the Steam or Epic versions.</p>
+          <div class="card__foot">
+            <a class="btn btn--primary" href="./mods/bbsfm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
+            <span class="card__file">Attach to KINGDOM HEARTS Birth by Sleep FINAL MIX.exe</span>
           </div>
         </article>
       </div>
