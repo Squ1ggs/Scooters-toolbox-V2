@@ -2416,6 +2416,11 @@
     var clearBtn = byId('yamlAddSerialsClearBtn');
     var status = byId('yaml-add-serials-status');
     if (!ta || !btn) return;
+    if (btn.dataset.yamlAddSerialsWired === '1') {
+      if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
+      return;
+    }
+    btn.dataset.yamlAddSerialsWired = '1';
     function runAdd(useBank) {
       var yaml = getYamlText();
       if (!yaml.text || !yaml.text.trim()) {

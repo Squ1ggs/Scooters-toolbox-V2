@@ -1076,7 +1076,7 @@ function extractFromYaml(raw) {
     if (v.startsWith('@U')) out.push(v);
   }
   if (out.length) return uniqueSerials(out);
-  const loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+  const loose = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
   return uniqueSerials(loose);
 }
 function extractJsonStrings(node, out) {
@@ -1101,7 +1101,7 @@ function extractFromJson(raw) {
     extractJsonStrings(parsed, out);
     return uniqueSerials(out);
   } catch (err) {
-    const matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+    const matches = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
     return uniqueSerials(matches);
   }
 }
@@ -1112,7 +1112,7 @@ function extractFromTxt(raw) {
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    const match = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
+    const match = trimmed.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/);
     out.push(match ? match[0] : trimmed.replace(/^['"]|['"]$/g, ''));
   }
   return uniqueSerials(out);

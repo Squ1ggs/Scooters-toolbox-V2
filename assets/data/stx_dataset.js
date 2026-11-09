@@ -69907,7 +69907,9 @@
       document.addEventListener('DOMContentLoaded', function(){ setTimeout(kick, 0); }, { once: true });
     }
   }
-  if (window.__ccDeferHeavyInit) window.__ccDeferHeavyInit(__ccScheduleRun);
+  // Validation must never race the part tables and their supplemental merges.
+  if (window.STX_BULK_CHEAT_AUDIT === true) __ccRun();
+  else if (window.__ccDeferHeavyInit) window.__ccDeferHeavyInit(__ccScheduleRun);
   else __ccScheduleRun();
 })();
 

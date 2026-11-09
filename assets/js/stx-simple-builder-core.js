@@ -985,7 +985,7 @@
     ],
     /* Enhancement: NCS `body → core_augment → firmware → stat_group1`; UI uses Core (not Body). */
     Enhancement: [
-      {key:'core', label:'Core', partType:'Core'},
+      {key:'core', label:'Cores (stack)', partType:'Core', multi:true},
       {key:'stats', label:'Stat Group 1', partType:'Stats', multi:true},
       {key:'firmware', label:'Firmware', partType:'Firmware', multi:true},
       {key:'otherParts', label:'Other parts (stack)', partType:'', multi:true, customType:'otherParts'}
@@ -1569,6 +1569,27 @@
   }
 
   /** 3-letter enhancement prefix (`atl`, `jak`, …) for `*_enhancement.` spawn paths. */
+
+  // Modded enhancement/classmod perks keep their original serial families.
+  // Match spawn roots: shared ClassMod stats are also tagged Character in data.
+  function stxIsCrossItemModdedPerk(p){
+    if (!p || stxIsBrokenClassmodDatasetPlaceholderPart(p)) return false;
+    const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
+    if (!/^(?:(?:[a-z]{3}_)?enhancement|(?:[a-z0-9_]+_)?classmod(?:_[a-z0-9]+)*)\./.test(c)) return false;
+    const pt = String(p.partType || p.kind || '').trim().toLowerCase();
+    if (/rarity|item card|firmware|^body$|main body/.test(pt)) return false;
+    if (/\.(?:comp_|(?:leg_)?body_|part_body|part_name|namepart)|part_firmware|pearl_/.test(c)) return false;
+    return true;
+  }
+
+  function stxCrossItemPartWithExplicitFamily(p){
+    const raw = String(p.idRaw != null ? p.idRaw : (p.id != null ? p.id : '')).trim().replace(/^0\s*:\s*(\d+)$/, '$1');
+    if (!/^\d+$/.test(raw)) return p;
+    const family = stxInferredFamilyNumberForPackedPoolPart(p);
+    if (!Number.isInteger(family) || family <= 0) return p;
+    return Object.assign({}, p, { family, familyId: family, idRaw: family + ':' + raw });
+  }
+
   function stxEnhancementCodePrefixForUiManufacturer(wantMan){
     const m = String(wantMan || '').trim().toLowerCase();
     const map = {
@@ -1751,7 +1772,7 @@
     if (category === 'Weapon') return slotKey === 'body' || slotKey === 'bodyAcc';
     if (category === 'Shield') return slotKey === 'mainBody' || slotKey === 'body';
     if (category === 'Grenade') return slotKey === 'body';
-    if (category === 'Enhancement') return slotKey === 'core';
+    if (category === 'Enhancement') return slotKey === 'core' && !schemaItem.multi;
     if (category === 'Repkit') return slotKey === 'body' || String(schemaItem && schemaItem.customType || '') === 'repkitBase';
     return false;
   }
@@ -2196,6 +2217,12 @@
   function numericTokenFromPart(p){
     if (!p) return '';
     var raw = String((p.idRaw ?? p.id ?? '') || '').trim();
+    // Zero is missing/invalid family metadata, never a serial TypeID.
+    var zeroFamily = raw.match(/^\{?\s*0+(?:\.)?\s*:\s*(\d+)\s*\}?$/);
+    if (zeroFamily) {
+      const inferred = stxInferredFamilyNumberForPackedPoolPart(p);
+      return Number.isInteger(inferred) && inferred > 0 ? `{${inferred}:${zeroFamily[1]}}` : '';
+    }
     if (/^\d+\s*:\s*\d+$/.test(raw)){
       var parts = raw.split(':');
       var fam = String(parts[0]).trim();
@@ -2208,7 +2235,8 @@
       // instead of `{243:73}`, causing the item to fail to load in-game.
       try{
         const baseFam = stxBaseFamilyIdForCompactIds();
-        const partFam = Number(p.family != null ? p.family : (p.familyId != null ? p.familyId : NaN));
+        const explicitFam = Number(p.family != null ? p.family : (p.familyId != null ? p.familyId : NaN));
+        const partFam = Number.isInteger(explicitFam) && explicitFam > 0 ? explicitFam : NaN;
         if (Number.isFinite(baseFam) && Number.isFinite(partFam) && partFam !== baseFam) {
           return `{${partFam}:${raw}}`;
         }
@@ -2223,6 +2251,10 @@
           // Shared numeric pools (dataset rows often omit `family` — qualify by spawn-code prefix).
           // Keep `repair_kit.` at string index 0 only: manufacturer kits use `jak_repair_kit.` etc.
           if (c.indexOf('repair_kit.') === 0) {
+            return `{243:${raw}}`;
+          }
+          // Some Repkit rows carry the element code without its `repair_kit.` prefix.
+          if (c.indexOf('part_element_') === 0 && String(p.category || '').trim().toLowerCase() === 'repkit') {
             return `{243:${raw}}`;
           }
           if (c.indexOf('heavy_weapon_gadget.') === 0) {
@@ -2274,8 +2306,8 @@
               try{
                 const rr = (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : (typeof STX_RARITIES !== 'undefined' ? STX_RARITIES : [])) || [];
                 const row = rr.find(r => String(r && r.itemType || '').trim() === 'Enhancement' && String(r && r.manufacturer || '').trim() === mfr);
-                const famInf = row ? Number(r && row.familyId) : NaN;
-                if (Number.isFinite(famInf)) return `{${famInf}:${raw}}`;
+                const famInf = row ? Number(row.familyId) : NaN;
+                if (Number.isInteger(famInf) && famInf > 0) return `{${famInf}:${raw}}`;
               }catch(_e){}
             }
           }
@@ -2299,11 +2331,15 @@
       }catch(_e){}
       return `{${raw}}`;
     }
+    if (/^0+(?:\.)?\s*:\s*\[/.test(raw)) return '';
     if (/^\d+\s*:\s*\[[^\]]+\]$/.test(raw)) return `{${raw.replace(/\s+/g, ' ').trim()}}`;
-    if (/^\{.*\}$/.test(raw)) return raw;
+    if (/^\{.*\}$/.test(raw)) {
+      if (/^\{\s*0+(?:\.)?\s*:/.test(raw)) return '';
+      return raw;
+    }
     var fam2 = p.family != null ? String(p.family) : (p.familyId != null ? String(p.familyId) : '');
     var id2 = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
-    if (/^\d+$/.test(fam2) && /^\d+$/.test(id2)) return `{${fam2}:${id2}}`;
+    if (/^\d+$/.test(fam2) && Number(fam2) > 0 && /^\d+$/.test(id2)) return `{${fam2}:${id2}}`;
     if (/^\d+$/.test(id2)) {
       if (!String(fam2).trim()) return `{${id2}}`;
       // If family is non-numeric but id is numeric, we might still want to return just {id}
@@ -2321,10 +2357,11 @@
     if (!p) return NaN;
     try{
       const partFam = Number(p.family != null ? p.family : (p.familyId != null ? p.familyId : NaN));
-      if (Number.isFinite(partFam)) return partFam;
+      if (Number.isInteger(partFam) && partFam > 0) return partFam;
       const baseFam = stxBaseFamilyIdForCompactIds();
       const c = String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase();
       if (c.indexOf('repair_kit.') === 0) return 243;
+      if (c.indexOf('part_element_') === 0 && String(p.category || '').trim().toLowerCase() === 'repkit') return 243;
       if (c.indexOf('heavy_weapon_gadget.') === 0) return 244;
       const cmInf = stxClassModSpawnCodeVaultFamilyId(c);
       if (Number.isFinite(cmInf)) return cmInf;
@@ -2356,7 +2393,7 @@
             const rr = (Array.isArray(window.STX_RARITIES) ? window.STX_RARITIES : (typeof STX_RARITIES !== 'undefined' ? STX_RARITIES : [])) || [];
             const row = rr.find(r => String(r && r.itemType || '').trim() === 'Enhancement' && String(r && r.manufacturer || '').trim() === mfr);
             const famInf = row ? Number(row && row.familyId) : NaN;
-            if (Number.isFinite(famInf)) return famInf;
+            if (Number.isInteger(famInf) && famInf > 0) return famInf;
           }catch(_e){}
         }
       }
@@ -2455,7 +2492,9 @@
           return `{246:${t1[Number(mImp[1])]}}`;
         }
       }
-      return rawTok;
+      if (!/^\{\s*0+(?:\.)?\s*:/.test(rawTok)) return rawTok;
+      // Imported rows can carry the same missing-family marker as dataset rows.
+      // Rebuild from the part metadata instead of preserving an invalid token.
     }
 
     /* Class Mod: rarity + name/leg-effect rows must always serialize as `{TypeID:itemId}` so tails normalize to
@@ -2524,7 +2563,7 @@
         const idNum = Number(String(result).replace(/[^\d]/g, ''));
 
         const needExplicitFamily = isFirmware || (Number.isFinite(baseFam) && Number.isFinite(partFam) && partFam !== baseFam);
-        if (needExplicitFamily && Number.isFinite(partFam) && Number.isFinite(idNum)) {
+        if (needExplicitFamily && Number.isFinite(partFam) && partFam > 0 && Number.isFinite(idNum)) {
           result = `{${partFam}:${idNum}}`;
         }
       }
@@ -4851,11 +4890,11 @@ function getAllParts(){
 
   function partFamilyIdOf(p){
     if (!p) return null;
-    if (p.familyId != null && Number.isFinite(Number(p.familyId))) return Number(p.familyId);
-    if (p.family != null && Number.isFinite(Number(p.family))) return Number(p.family);
+    if (Number.isInteger(Number(p.familyId)) && Number(p.familyId) > 0) return Number(p.familyId);
+    if (Number.isInteger(Number(p.family)) && Number(p.family) > 0) return Number(p.family);
     const idRaw = String((p.idRaw ?? p.idraw ?? '') || '').trim();
     const m = idRaw.match(/^(\d+)\s*:/);
-    if (m) return Number(m[1]);
+    if (m && Number(m[1]) > 0) return Number(m[1]);
     const enhFam = stxEnhancementTypeFamilyIdFromSpawnCode(String(normCode(p.code || p.spawnCode || p.importCode || '') || '').toLowerCase());
     return enhFam != null ? enhFam : null;
   }
@@ -6762,9 +6801,11 @@ function getAllParts(){
     }
 
     if ($('manufacturerLabel')){
-      if (isClassMod) $('manufacturerLabel').textContent = 'Character';
-      else if (String(catUi).trim() === 'Other') $('manufacturerLabel').textContent = 'AI / Car / Guns';
-      else $('manufacturerLabel').textContent = 'Manufacturer';
+      var _t = typeof window.stxT === 'function' ? window.stxT : function (k, f) { return f || k; };
+      var lab = $('manufacturerLabel');
+      if (isClassMod) { lab.textContent = _t('label.character'); lab.setAttribute('data-i18n', 'label.character'); }
+      else if (String(catUi).trim() === 'Other') { lab.textContent = _t('label.aiCarGuns'); lab.setAttribute('data-i18n', 'label.aiCarGuns'); }
+      else { lab.textContent = _t('label.manufacturer'); lab.setAttribute('data-i18n', 'label.manufacturer'); }
     }
 
     if (isClassMod){
@@ -7962,13 +8003,16 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       }).sort((a,b)=>displayForPart(a).localeCompare(displayForPart(b), undefined, {numeric:true, sensitivity:'base'}));
     } else if (schemaItem && schemaItem.customType === 'otherParts') {
       // Category-wide stackable pool (cross-manufacturer + cross weapon-type within the item category).
-      rawOpts = filterParts({
+      const categoryParts = filterParts({
         category,
         manufacturer: '',
         weaponType: '',
         partType: undefined,
         ignoreWeaponType: true
-      }).filter(p=>{
+      });
+      const crossItemParts = (category === 'Enhancement' || category === 'Class Mod')
+        ? getAllParts().filter(stxIsCrossItemModdedPerk).map(stxCrossItemPartWithExplicitFamily) : [];
+      rawOpts = mergeUniquePartOpts(categoryParts, crossItemParts).filter(p=>{
         if (!p) return false;
         const c = String((p && p.code) ? p.code : '').trim();
         if (/^\{\s*27\s*:\s*\d+\s*\}$/.test(c)) return false;
@@ -8801,7 +8845,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       } else if (slotKey === 'stats'){
         rawOpts = sortParts(allEnhancementAnyManufacturer().filter((p)=>isStatsLike(p) && !isRarityish(p)));
       } else if (slotKey === 'core'){
-        rawOpts = sortParts(allEnhancementAnyManufacturer().filter((p)=>isEnhancementCoreAugmentPool(p)));
+        rawOpts = sortParts(getAllParts().filter((p)=>stxIsCrossItemModdedPerk(p) && /^(?:[a-z]{3}_)?enhancement\./i.test(String(normCode(p.code || '') || '')) && isEnhancementCoreAugmentPool(p)).map(stxCrossItemPartWithExplicitFamily));
         rawOpts = rawOpts.filter((p)=>{
           const pt = String((p && p.partType) || '').trim().toLowerCase();
           if (pt === 'rarity') return false;
@@ -8809,14 +8853,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           if (/(?:^|[._])comp_0[1-6]_/.test(c) || /pearl_/.test(c) || /\.comp_/.test(c)) return false;
           return true;
         });
-        /* Prefer cores for the selected manufacturer, but never empty the list. */
-        if (state.manufacturer) {
-          const manLo = String(state.manufacturer || '').trim().toLowerCase();
-          const scoped = rawOpts.filter((p) => stxEnhancementGadgetRowMatchesSelectedManufacturer(
-            String(normCode(p && p.code || '') || '').toLowerCase(), manLo
-          ));
-          if (scoped.length) rawOpts = scoped;
-        }
+        // Stacked modded cores may come from any enhancement manufacturer.
       } else if (slotKey === 'special'){
         rawOpts = sortParts(allEnhancementAnyManufacturer().filter((p)=>isSpecialLike(p)));
         const legGadgetEn = filterParts({
@@ -9064,6 +9101,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         tickQtyInput.id = 'stx-tick-qty-' + (schemaItem.key || 'multi');
         tickQtyInput.name = tickQtyInput.id;
         tickQtyInput.min = '1';
+        tickQtyInput.max = '40';
         tickQtyInput.step = '1';
         tickQtyInput.value = '1';
         tickQtyInput.inputMode = 'numeric';
@@ -9093,7 +9131,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           const arr = Array.isArray(cur) ? cur.slice() : [];
           const tok = tokenForPart(part);
           const fromGlobal = tickQtyInput && tickQtyInput.value;
-          const n = Math.max(1, Number(qtyOverride != null ? qtyOverride : fromGlobal || 1) || 1);
+          const cap = stxRepeatCapForPart(part);
+          const n = Math.max(1, Math.min(cap, Number(qtyOverride != null ? qtyOverride : fromGlobal || 1) || 1));
           if (checked){
             const orders = stxNextImportOrders(arr, n);
             for (let i = 0; i < n; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
@@ -9196,6 +9235,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
             rowQty.type = 'number';
             rowQty.className = 'stx-tick-qty-row';
             rowQty.min = '1';
+            rowQty.max = String(stxRepeatCapForPart(part));
             rowQty.step = '1';
             rowQty.value = '1';
             rowQty.inputMode = 'numeric';
@@ -9220,7 +9260,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
             rowQty.addEventListener('change', ()=>{
               if (!schemaItem.multi || !perRowTickMultiQty) return;
               if (!input.checked) return;
-              const want = Math.max(1, Number(rowQty.value) || 1);
+              const want = Math.max(1, Math.min(stxRepeatCapForPart(part), Number(rowQty.value) || 1));
               const cur = state.slots[schemaItem.key];
               const arr = Array.isArray(cur) ? cur.slice() : [];
               const tok = tokenForPart(part);
@@ -9554,7 +9594,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     qtyInput.id = 'stx-qty-' + (schemaItem.key || 'part');
     qtyInput.name = `qty_${schemaItem.key}`;
     qtyInput.min = '1';
-    qtyInput.max = '999';
+    qtyInput.max = '40';
     qtyInput.step = '1';
     qtyInput.value = '1';
     qtyInput.inputMode = 'numeric';
@@ -9600,7 +9640,8 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
       if (!key) return;
       const part = partByOptionKey.get(key);
       if (!part) return;
-      const count = Math.max(1, Math.min(999, Number(qtyInput && qtyInput.value || 1) || 1));
+      const cap = stxRepeatCapForPart(part);
+      const count = Math.max(1, Math.min(cap, Number(qtyInput && qtyInput.value || 1) || 1));
       const isRaritySlot = schemaItem.key === 'rarity';
       /* Rarity stays single-replace. Every other Add stacks — including Select+Add of the same part. */
       const stacksOnAdd = !isRaritySlot;
@@ -9615,8 +9656,11 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
           state.slots[schemaItem.key] = [stxClonePartWithImportOrder(part, orders[0])];
         } else {
           try { sel.__ccAutoAppliedTok = ''; sel.__ccAutoAppliedAt = 0; } catch (_) {}
-          const orders = stxNextImportOrders(arr, count);
-          for (let i = 0; i < count; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
+          const tok = tokenForPart(part);
+          const have = arr.filter(function (x) { return tokenForPart(x) === tok; }).length;
+          const addN = Math.min(count, Math.max(0, cap - have));
+          const orders = stxNextImportOrders(arr, addN);
+          for (let i = 0; i < addN; i++) arr.push(stxClonePartWithImportOrder(part, orders[i]));
           state.slots[schemaItem.key] = arr;
         }
       } else {
@@ -9776,7 +9820,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     elemQty.id = 'stx-qty-element-stack';
     elemQty.name = 'qty_element_stack';
     elemQty.min = '1';
-    elemQty.max = '999';
+    elemQty.max = '4';
     elemQty.step = '1';
     elemQty.value = '1';
     elemQty.inputMode = 'numeric';
@@ -9793,7 +9837,7 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
     addBtn.addEventListener('click', ()=>{
       const v = addSel.value;
       if (!v) return;
-      const count = Math.max(1, Math.min(999, Number(elemQty.value || 1) || 1));
+      const count = Math.max(1, Math.min(4, Number(elemQty.value || 1) || 1));
       state.__simpleSlotDropdownSelections = state.__simpleSlotDropdownSelections || {};
       state.__simpleSlotDropdownSelections.__elementStack = v;
       if (!state.primaryElement || state.primaryElement === 'None') {
@@ -9892,13 +9936,14 @@ if (cat === 'Class Mod' && !isAllPartsEnabled()){
         state.slots.core = state.slots.legendary;
         delete state.slots.legendary;
       }
+      if (state.slots.core && !Array.isArray(state.slots.core)) state.slots.core = [state.slots.core];
       if (!Object.prototype.hasOwnProperty.call(state.slots, 'body')) return;
       const raw = state.slots.body;
       delete state.slots.body;
       const parts = Array.isArray(raw) ? raw.filter(Boolean) : (raw ? [raw] : []);
       if (!parts.length) return;
       if (!state.slots.core){
-        state.slots.core = parts.length === 1 ? parts[0] : parts;
+        state.slots.core = parts;
         return;
       }
       const op0 = state.slots.otherParts;
@@ -11442,9 +11487,10 @@ function randSeed(){
     const p = pair || null;
     if (!p || !Number.isFinite(Number(p.itemId))) return '';
     const itemId = Number(p.itemId);
-    const fam = Number.isFinite(Number(p.family)) ? Number(p.family)
-      : (Number.isFinite(Number(fallbackFamily)) ? Number(fallbackFamily) : null);
-    if (Number.isFinite(fam)) return `{${fam}:${itemId}}`;
+    /* Number(null) is 0 — a missing family must stay bare `{id}`, never become TypeID 0. */
+    const famOf = (v) => (v != null && v !== '' && Number.isInteger(Number(v)) && Number(v) > 0) ? Number(v) : null;
+    const fam = famOf(p.family) != null ? famOf(p.family) : famOf(fallbackFamily);
+    if (fam != null) return `{${fam}:${itemId}}`;
     return `{${itemId}}`;
   }
 
@@ -12784,6 +12830,7 @@ function computeFullDeserializedCode(){
     const isBracketList = /^\{\s*\d+\s*:\s*\[/.test(t);
     const isQuotedSpawn = /^".+"$/.test(t);
     if (!isDual && !isBareId && !isBracketList && !isQuotedSpawn) return false;
+    if (!stxExtraTokenIsWritable(t, stxActiveHeaderFamily())) return false;
 
     clearImportedOutputLock();
     try { window.__CC_LAST_CODE_TARGET = 'simple'; } catch (_) {}
@@ -12832,6 +12879,7 @@ function computeFullDeserializedCode(){
       const isDual = /^\{\s*\d+\s*:\s*\d+\s*\}$/.test(t);
       const isBare = /^\{\s*\d+\s*\}$/.test(t);
       if (!isDual && !isBare) return false;
+      if (!stxExtraTokenIsWritable(t, stxActiveHeaderFamily())) return false;
     }
 
     clearImportedOutputLock();
@@ -13008,9 +13056,15 @@ function computeFullDeserializedCode(){
     const forceStack = !!(o.forceStack || o.stackDuplicates);
     if (multi || forceStack) {
       const arr = Array.isArray(state.slots[key]) ? state.slots[key].slice() : (state.slots[key] ? [state.slots[key]] : []);
-      /* Always append on stack — same part qty 3 then another 3 must accumulate. */
-      arr.push(stxClonePartWithImportOrder(part, (stxNextImportOrders(arr, 1)[0])));
-      state.slots[key] = arr;
+      const tok = tokenForPart(part);
+      const have = arr.filter(function (x) { return tokenForPart(x) === tok; }).length;
+      const cap = stxRepeatCapForPart(part);
+      if (have < cap) {
+        arr.push(stxClonePartWithImportOrder(part, (stxNextImportOrders(arr, 1)[0])));
+        state.slots[key] = arr;
+      } else {
+        state.slots[key] = arr;
+      }
     } else {
       state.slots[key] = part;
     }
@@ -13044,11 +13098,13 @@ function computeFullDeserializedCode(){
     if (/^\d+:\d+$/.test(code)) code = `{${code}}`;
     if (/^\d+$/.test(code)) code = `{${code}}`;
     code = code.replace(/^"+|"+$/g, '');
-    const n = Math.max(1, parseInt(o.quantity, 10) || 1);
+    const requested = Math.max(1, parseInt(o.quantity, 10) || 1);
+    const resolvedForCap = tryResolveToken(code);
+    const n = resolvedForCap ? Math.min(requested, stxRepeatCapForPart(resolvedForCap)) : requested;
 
-    /* Stacked mixer braces `{fam:[id1 id2…]}` belong on the skin slot, not as loose extras.
-       Plain `{fam:id}` skins are handled by the normal skin dropdown and should not be intercepted here. */
-    if (/^\{\s*\d+\s*:\s*\[/.test(code) && !/^\{\s*1\s*:/.test(code)) {
+    /* Published skin mixers belong on the skin slot. Unknown packed ids are refused.
+       Real part lists fall through and are capped like any other part. */
+    if (/^\{\s*\d+\s*:\s*\[/.test(code) && !/^\{\s*1\s*:/.test(code) && stxTokenIsPublishedCosmetic(code)) {
       const skinSel = $('skinSelect');
       if (skinSel) {
         let found = false;
@@ -13093,6 +13149,8 @@ function computeFullDeserializedCode(){
       const mSb = prefixSb.match(/^\s*(\d+)\s*[,\|]/) || prefixSb.match(/^\s*(\d+)/);
       baseFamSb = mSb ? Number(mSb[1]) : null;
     } catch (_) {}
+
+    if (!stxExtraTokenIsWritable(code, baseFamSb != null ? baseFamSb : stxActiveHeaderFamily())) return false;
 
     const piecesSb = [];
     for (let i = 0; i < n; i++) piecesSb.push(code);
@@ -13324,7 +13382,219 @@ function computeFullDeserializedCode(){
     const c = String(codeLo || '').toLowerCase();
     if (!c || c.indexOf('part_body') < 0) return false;
     if (/part_body_(?:bolt|flap|ele|mag|acc)/.test(c)) return false;
+    /* part_body_b / part_body_c are body accessories, not the chassis that lets a gun load. */
+    if (/\.part_body_[a-z](?:_|$)/.test(c)) return false;
     return /\.part_body(?:$|_[a-z0-9])/.test(c) || /(^|\.)part_body$/.test(c);
+  }
+
+  /** Simple Builder is a modding builder: any part can be stacked. Elements keep their 4-stack limit. */
+  function stxRepeatCapForPart(part){
+    const code = String(normCode(part && (part.code || part.spawnCode || part.importCode) || '') || '').toLowerCase();
+    const pt = String(part && part.partType || '').trim().toLowerCase();
+    if (/part_core_/.test(code) || pt === 'core') return 40;
+    if (/part_element/.test(code) || pt === 'element' || pt === 'element switch') return 4;
+    return 40;
+  }
+
+  function stxPartIsRarityComposition(part){
+    if (!part) return false;
+    const pt = String(part.partType || '').trim().toLowerCase();
+    if (pt === 'rarity') return true;
+    const code = String(normCode(part.code || part.spawnCode || part.importCode || '') || '').toLowerCase();
+    return /(?:^|[._])comp_0[1-6]_/.test(code);
+  }
+
+  function stxResolvedPartIdentity(part){
+    if (!part) return '';
+    const fam = Number(part.family != null ? part.family : part.familyId);
+    const id = Number(part.id != null ? part.id : part.itemId);
+    if (Number.isFinite(fam) && Number.isFinite(id)) return fam + ':' + id;
+    const raw = String(part.idRaw || part.idraw || '').trim();
+    const m = raw.match(/^(\d+)\s*:\s*(\d+)$/);
+    if (m) return Number(m[1]) + ':' + Number(m[2]);
+    return String(normCode(part.code || part.spawnCode || '') || '').toLowerCase();
+  }
+
+  function stxNormalizeCatalogToken(tok){
+    return String(tok || '').trim().replace(/\s+/g, ' ').toLowerCase();
+  }
+
+  function stxTokenIsPublishedCosmetic(tok){
+    const raw = String(tok || '').trim();
+    const unq = raw.replace(/^"+|"+$/g, '').trim();
+    if (/^Cosmetics_Weapon_/i.test(unq)) return true;
+    if (/^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/i.test(raw)) return true;
+    if (/^["']?c["']?\s*,\s*\d+$/i.test(unq)) return true;
+    const key = stxNormalizeCatalogToken(raw);
+    if (!key) return false;
+    const lists = [];
+    try {
+      if (Array.isArray(window.__CC_EXTRA_NUMERIC_SKINS)) lists.push(window.__CC_EXTRA_NUMERIC_SKINS);
+    } catch (_) {}
+    try {
+      const skins = window.SKINS;
+      if (skins && typeof skins === 'object') {
+        Object.keys(skins).forEach(function (cat) {
+          if (Array.isArray(skins[cat])) lists.push(skins[cat]);
+        });
+      }
+    } catch (_) {}
+    for (let li = 0; li < lists.length; li++) {
+      const list = lists[li];
+      for (let i = 0; i < list.length; i++) {
+        const row = list[i];
+        const code = stxNormalizeCatalogToken(Array.isArray(row) ? row[0] : (row && (row.code || row.skin_code || row.value)));
+        if (code && code === key) return true;
+      }
+    }
+    return false;
+  }
+
+  function stxResolveExactFamId(fam, id){
+    let part = null;
+    try { part = tryResolveToken('{' + fam + ':' + id + '}'); } catch (_) { part = null; }
+    if (!part) return null;
+    if (stxResolvedPartIdentity(part) !== (Number(fam) + ':' + Number(id))) return null;
+    return part;
+  }
+
+  /** Editor rows first. Exact game definitions cover parts the dropdown table does not list. */
+  function stxLookupGamePartRef(fam, id){
+    const part = stxResolveExactFamId(fam, id);
+    if (part) {
+      return {
+        key: stxResolvedPartIdentity(part),
+        cap: stxRepeatCapForPart(part),
+        rarity: stxPartIsRarityComposition(part),
+        label: String(part.name || part.code || (fam + ':' + id))
+      };
+    }
+    let spawn = '';
+    try {
+      const data = window.EXACT_ROLL_DATA;
+      const key = Number(fam) + ':' + Number(id);
+      spawn = data && data.ids ? String(data.ids[key] || '') : '';
+      const node = spawn && data.nodes ? data.nodes[spawn] : null;
+      if (!node) return null;
+      const slot = String(node.slot || '').toLowerCase();
+      let cap = 1;
+      if (/part_core_/.test(spawn) || slot.indexOf('core') >= 0) cap = 40;
+      else if (slot === 'element' || slot.indexOf('element') >= 0) cap = 4;
+      return {
+        key: spawn,
+        cap: cap,
+        rarity: slot === 'inv_comp',
+        label: spawn
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /**
+   * Reasons a deserialized code must not be written into a save.
+   * Unknown parts and header sections other than seed / firmware lock / buyback are refused.
+   * Repeated parts and extra rarities (Pearl override prepends one) are allowed for modded builds.
+   */
+  function stxInspectDeserializedSafety(deserRaw){
+    const deser = String(deserRaw || '').trim();
+    const hardFails = [];
+    const dbl = deser.indexOf('||');
+    if (dbl < 0) return hardFails;
+    const left = deser.slice(0, dbl);
+    const segs = left.split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+    for (let si = 0; si < segs.length; si++) {
+      const nums = segs[si].split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      if (!nums.length || nums.some(function (n) { return !/^\d+$/.test(n); })) {
+        hardFails.push('Header section is not a normal number list, so this code will not be written.');
+        continue;
+      }
+      if (si === 0) {
+        if (nums.length < 4 || nums[1] !== '0' || nums[2] !== '1') {
+          hardFails.push('Item header must be family, 0, 1, level.');
+        }
+        continue;
+      }
+      const kind = Number(nums[0]);
+      if (kind !== 2 && kind !== 9 && kind !== 10) {
+        hardFails.push('Header section ' + kind + ' is not a seed, firmware lock, or buyback flag, so this code will not be written.');
+      }
+    }
+    const hm = left.match(/^\s*(\d+)\s*,/);
+    const headerFam = hm ? Number(hm[1]) : NaN;
+    const toks = (typeof parseImportTokenList === 'function') ? parseImportTokenList(deser) : [];
+    for (let i = 0; i < toks.length; i++) {
+      const t = String(toks[i] || '').trim();
+      if (!t) continue;
+      const packed = t.match(/^\{\s*(\d+)\s*:\s*\[([^\]]*)\]\s*\}$/);
+      const pair = t.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+      const bare = t.match(/^\{\s*(\d+)\s*\}$/);
+      const refs = [];
+      if (packed) {
+        const fam = Number(packed[1]);
+        const ids = String(packed[2] || '').match(/\d+/g) || [];
+        if (!ids.length) {
+          hardFails.push('Empty part list ' + t + ' will not be written.');
+          continue;
+        }
+        if (stxTokenIsPublishedCosmetic(t)) continue;
+        for (let p = 0; p < ids.length; p++) refs.push([fam, Number(ids[p]), '{' + fam + ':' + ids[p] + '}']);
+      } else if (pair) {
+        refs.push([Number(pair[1]), Number(pair[2]), '{' + Number(pair[1]) + ':' + Number(pair[2]) + '}']);
+      } else if (bare) {
+        if (!Number.isFinite(headerFam)) {
+          hardFails.push('Bare part ' + t + ' has no item family, so this code will not be written.');
+          continue;
+        }
+        refs.push([headerFam, Number(bare[1]), '{' + headerFam + ':' + Number(bare[1]) + '}']);
+      } else if (/^["']/.test(t)) {
+        let part = null;
+        try { part = tryResolveToken(t); } catch (_) { part = null; }
+        if (!part) {
+          if (stxTokenIsPublishedCosmetic(t)) continue;
+          hardFails.push('Unknown part ' + t + ' is not in the game data, so this code will not be written.');
+          continue;
+        }
+        continue;
+      } else {
+        hardFails.push('Unrecognized part ' + t + ' will not be written.');
+        continue;
+      }
+      for (let r = 0; r < refs.length; r++) {
+        if (stxLookupGamePartRef(refs[r][0], refs[r][1])) continue;
+        if (stxTokenIsPublishedCosmetic(t)) continue;
+        hardFails.push('Unknown part ' + refs[r][2] + ' is not in the game data, so this code will not be written.');
+      }
+    }
+    return hardFails;
+  }
+
+  function stxActiveHeaderFamily(){
+    try {
+      const existing = String(($('outCode') && $('outCode').value) || '');
+      const m = existing.match(/^\s*(\d+)\s*,/);
+      if (m) return Number(m[1]);
+    } catch (_) {}
+    try {
+      const base = (typeof getSelectedBaseItem === 'function') ? getSelectedBaseItem() : null;
+      const fam = Number(base && base.familyId);
+      if (Number.isFinite(fam)) return fam;
+    } catch (_) {}
+    return NaN;
+  }
+
+  function stxExtraTokenIsWritable(rawTok, headerFam){
+    const t = (typeof stxNormalizePartExtraToken === 'function')
+      ? stxNormalizePartExtraToken(rawTok)
+      : String(rawTok || '').trim();
+    if (!t) return false;
+    if (stxTokenIsPublishedCosmetic(t)) return true;
+    if (/^\{\s*\d+\s*\}$/.test(t) && !Number.isFinite(Number(headerFam))) return false;
+    const fam = Number.isFinite(Number(headerFam)) ? Number(headerFam) : 1;
+    const fails = stxInspectDeserializedSafety(fam + ', 0, 1, 1| 2, 1|| ' + t + '|');
+    return !fails.some(function (line) {
+      return /Unknown part|Unrecognized part|Empty part|Bare part/.test(line);
+    });
   }
 
   /**
@@ -13432,17 +13702,13 @@ function computeFullDeserializedCode(){
       }
       void unq;
     }
-    for (const fam in famCounts) {
-      /* Modded class mods / packed stacks routinely exceed ~80 ids — only block truly absurd sizes. */
-      if (famCounts[fam] >= 2500) {
-        hardFails.push('Absurd part stack size for family ' + fam + ' (' + famCounts[fam] + ')');
-      } else if (famCounts[fam] >= 400) {
-        warnings.push('Large stack for family ' + fam + ' (' + famCounts[fam] + ') — convert still allowed');
-      }
-    }
     if (namedBarrelMismatch) {
       warnings.push('Named legendary rarity with a barrel that does not match that rarity family');
     }
+    try {
+      const safety = stxInspectDeserializedSafety(deser);
+      for (let sf = 0; sf < safety.length; sf++) hardFails.push(safety[sf]);
+    } catch (_safe) {}
     try {
       const hm = deser.slice(0, dbl).match(/^(\d+)\s*,/);
       const headerFam = hm ? Number(hm[1]) : NaN;

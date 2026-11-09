@@ -13,7 +13,8 @@
     './assets/data/stx_editor_extract.js',
     './assets/data/legacy_classmod_names.js',
     './assets/data/stx_new_item_codes.js',
-    './assets/js/stx-simple-builder-core.js?v=79d',
+    './assets/data/exact_roll_data.js?v=80x',
+    './assets/js/stx-simple-builder-core.js?v=81b',
     './assets/js/cc-custom-select-rebuild.js'
   ];
 
@@ -36,7 +37,7 @@
     './assets/js/cc-itempool-drop-check.js',
     './assets/data/skin_data.js?v=78r',
     /* Base85 packer needed on import — do not wait for FULL_SCRIPTS or Serial stays blank. */
-    './assets/js/cc-base85-rebuild.js?v=79e',
+    './assets/js/cc-base85-rebuild.js?v=81h',
     './assets/data/modded_preset_catalog.js',
     './assets/js/cc-rebuild-populate.js?v=78r',
     './assets/data/classmod_perk_meta.js',
@@ -49,7 +50,7 @@
   var GUIDED_SCRIPTS = [
     './legacy/ncs_slot_map.js',
     './assets/js/cc-item-slug.js?v=77j',
-    './assets/js/cc-guided-builder-rebuild.js?v=79d',
+    './assets/js/cc-guided-builder-rebuild.js?v=79l',
     './assets/js/stx-editor-smoke-guards.js'
   ];
 
@@ -64,9 +65,9 @@
     /* cc-base85-rebuild.js loads in DEFERRED_CORE so import can auto-fill Serial (BL-base85). */
     './assets/js/stx-nicnl-serial-pack.js',
     './assets/js/cc-serial-nicnl-rebuild.js',
-    './assets/js/stx-decode-bridge-shared.js',
-    './assets/js/cc-sav-crypto-rebuild.js?v=77v',
-    './assets/js/cc-yaml-save-rebuild.js?v=77y',
+    './assets/js/stx-decode-bridge-shared.js?v=81h',
+    './assets/js/cc-sav-crypto-rebuild.js?v=80v',
+    './assets/js/cc-yaml-save-rebuild.js?v=80g',
     './assets/js/cc-stx-decoder-bridge.js?v=77r',
     /* Prefix/Godroll search must load before lazy-bundles so bootstrap hooks exist when open panels arm. */
     './assets/js/cc-prefix-item-search-rebuild.js',
@@ -75,19 +76,19 @@
     './assets/data/profile_progression_catalog.js',
     './assets/data/yaml_save_catalog.js',
     './assets/js/cc-preset-data-rebuild.js',
-    './assets/js/cc-preset-rebuild.js',
+    './assets/js/cc-preset-rebuild.js?v=80v',
     './assets/js/cc-part-tooltip-rebuild.js',
     './assets/js/cc-part-dropdown-meta-rebuild.js',
     './assets/js/rebuild-presets-random.js?v=77m',
     './assets/js/cc-tool-nav-buttons.js',
-    './assets/js/rebuild-credits-eggs.js',
+    './assets/js/rebuild-credits-eggs.js?v=81h',
     './assets/js/cc-toolbox-analytics.js?v=77p',
     './assets/js/cc-toolbox-items-made.js',
     './assets/js/cc-toolbox-public-counter.js?v=77p',
     './assets/js/cc-yaml-extras-rebuild.js',
     './assets/js/cc-missions-rebuild.js',
-    './assets/js/cc-profile-progression-tools-rebuild.js',
-    './assets/js/cc-yaml-drawer-wiring-rebuild.js?v=77x'
+    './assets/js/cc-profile-progression-tools-rebuild.js?v=80v',
+    './assets/js/cc-yaml-drawer-wiring-rebuild.js?v=80v'
   ];
 
   var fastCorePromise = null;

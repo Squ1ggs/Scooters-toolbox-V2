@@ -120,11 +120,60 @@
     return lines.slice(0, 25).join(' | ');
   }
 
+  function partialRuleFailure(row) {
+    var v=row.validation, ls=v && v.legitState;
+    return !!(v && v.phase==='partial_exact' && ls && ls.status==='err' && ls.exactRollEvidence && ls.exactRollEvidence.partial_read && ls.exactRollEvidence.failures.length && v.partialDecodeEvidence && v.partialDecodeEvidence.header_verified && v.partialDecodeEvidence.complete===false);
+  }
+
+  function displayDecode(row) {
+    if (!partialRuleFailure(row)) return row.rawDecode || {};
+    var prefix=row.validation.partialDecodeEvidence;
+    return {itemTypeId:prefix.itemTypeId,level:prefix.level,deserialized:prefix.deserialized_prefix,resolvedParts:[]};
+  }
+
   function rowItemLabel(row) {
-    if (row.validation && row.validation.manifestItem) {
-      return String(row.validation.manifestItem.name || row.validation.manifestItem.slug || '');
+    var decoded = row.rawDecode || {};
+    var parts = decoded.resolvedParts || [];
+    function readable(name) {
+      name = String(name || '').trim().replace(/^(?:legendary|pearlescent|epic|rare|uncommon|common)\s*[-–:]\s*/i, '');
+      if (!name || /^(?:common|uncommon|rare|epic|legendary|pearlescent)$/i.test(name)) return '';
+      if (/^(?:part_|comp_|base_comp_|leg_body_|body_\d|barrel \d|comp )/i.test(name) || /(?:augment \(id|placeholder)/i.test(name)) return '';
+      return name;
     }
-    return '';
+    var base = readable(decoded.baseName);
+    if (base) return base;
+    var namedRarity = parts.find(function (p) { return /rarity/i.test(p.part_type || '') && /^(?:legendary|pearlescent|epic|rare|uncommon|common)\s*[-–:]/i.test(p.name || ''); });
+    if (namedRarity && readable(namedRarity.name)) return readable(namedRarity.name);
+    var body = parts.find(function (p) { return /^(?:body|name\+skin)/i.test(p.part_type || '') && readable(p.name); });
+    if (body) return readable(body.name);
+    var npc = row.validation && row.validation.legitState && row.validation.legitState.nonObtainable;
+    // Nexus inv_name_part np_fl4k_weapon names this composition Fanged Beast.
+    if (npc && parts.some(function (p) { return /comp_fl4k_weapon/i.test(p.alpha_code || ''); })) return 'Fanged Beast';
+    var cores = [];
+    parts.forEach(function (p) {
+      var name = readable(p.name);
+      if (/^core$/i.test(p.part_type || '') && name && cores.indexOf(name) < 0) cores.push(name);
+    });
+    if (cores.length) return cores.join(' + ');
+    var payload = parts.find(function (p) { return /^payload$/i.test(p.part_type || '') && readable(p.name); });
+    if (payload) return readable(payload.name).replace(/\s+payload$/i, '') + ' grenade';
+    return rowItemFamily(row) || (partialRuleFailure(row) ? 'Partially read item' : '');
+  }
+
+  function rowItemFamily(row) {
+    var item = row.validation && row.validation.manifestItem;
+    return String(item && (item.name || item.slug) || '');
+  }
+
+  function rowItemMeta(row) {
+    var decoded = displayDecode(row);
+    var rarity = decoded.rarity || '';
+    if (!rarity) {
+      var part = (decoded.resolvedParts || []).find(function (p) { return /^rarity$/i.test(p.part_type || ''); });
+      var tier = part && String(part.name || '').match(/^(Common|Uncommon|Rare|Epic|Legendary|Pearlescent)\b/i);
+      if (tier) rarity = tier[1];
+    }
+    return [decoded.level != null ? 'Lv ' + decoded.level : '', rarity, rowItemFamily(row)].filter(Boolean).join(' · ');
   }
 
   function rowStatsLine(row) {
@@ -249,12 +298,15 @@
       bucket: bucket,
       legit_status_code: ls && ls.status ? String(ls.status) : null,
       legit_status_text: ls && ls.statusText ? String(ls.statusText) : null,
+      verdict: ls && ls.verdict ? String(ls.verdict) : null,
+      verdict_reason: ls && ls.verdictReason ? String(ls.verdictReason) : null,
+      firmware_flag: ls && ls.firmwareFlag && ls.firmwareFlag.text ? String(ls.firmwareFlag.text) : null,
       detail_line_categories: countDetailCategories(details),
       legit_details_all: details,
       validation: validationContextForExport(v),
       decode: compactDecodeForExport(dr)
     };
-    if (!row.decodeOk) {
+    if (!row.decodeOk && !partialRuleFailure(row)) {
       out.decode_failed = true;
       out.primary_reason = row.decodeError ? String(row.decodeError) : 'decode_failed';
       return out;
@@ -289,16 +341,29 @@
     var notes = '';
     var notesFull = '';
     var stCode = '';
+    var spawnVerdict = '';
+    var spawnReason = '';
+    var firmwareFlag = '';
     if (ls) {
       legitLabel = ls.statusText || ls.status || '—';
+      spawnVerdict = ls.verdict || (ls.status === 'ok' ? 'Can roll' : ls.status === 'err' ? 'Cannot roll' : 'Not sure');
+      spawnReason = ls.verdictReason || '';
+      firmwareFlag = ls.firmwareFlag && ls.firmwareFlag.text ? String(ls.firmwareFlag.text) : '';
       stCode = ls.status || '';
       notes = notesFromLegitState(ls);
       notesFull = notesFullFromLegitState(ls);
+    } else if (!row.decodeOk) {
+      spawnVerdict = 'Cannot roll';
+      spawnReason = row.decodeError ? String(row.decodeError) : 'Could not decode this serial.';
     } else if (row.validation && row.validation.mapped === false) {
       legitLabel = 'Uncertain (no slot map)';
+      spawnVerdict = 'Not sure';
+      spawnReason = 'Decoded, but a part did not map and there is no hard rule.';
       notes = 'Decode OK; no manifest parts matched NCS slots';
     } else if (row.validation && row.validation.phase === 'manifest') {
       legitLabel = 'No manifest';
+      spawnVerdict = 'Not sure';
+      spawnReason = 'Item type is not in our tables.';
       notes = String(row.validation.manufacturer || '') + ' / ' + String(row.validation.itemType || '');
     }
     var offPool = ls && Array.isArray(ls.offPoolParts) ? ls.offPoolParts : [];
@@ -312,20 +377,35 @@
         .join(' | ');
     }
     var align = computeAlignmentFlags(row);
+    var answer = publicResult(row);
+    spawnVerdict = answer.label;
+    spawnReason = answer.reason;
+    legitLabel = answer.label;
     var flat = {
       bucket: c,
+      failure_category: c === 'order' ? 'order' : c === 'err' ? failureCategory(row) : null,
+      exact_roll_evidence: ls && ls.exactRollEvidence || null,
       serial: row.serial,
       decode_ok: row.decodeOk,
+      partial_read_rejection: partialRuleFailure(row),
+      partial_decode_evidence: partialRuleFailure(row) ? row.validation.partialDecodeEvidence : null,
       decode_error: row.decodeError || '',
       item: rowItemLabel(row),
+      item_family: rowItemFamily(row),
+      item_description: rowItemMeta(row),
       legit_status: legitLabel,
       legit_status_code: stCode,
+      verdict: spawnVerdict,
+      verdict_reason: spawnReason,
+      firmware_flag: firmwareFlag,
       notes: notes,
       notes_full: notesFull,
       off_pool_parts: offPool,
       off_pool_summary: offPoolSummary,
       stats: rowStatsLine(row),
-      drop_hint: row.dropText || '—',
+      drop_hint: publicDropHint(row.dropText),
+      drop_match_scope: row.decodeOk && row.dropText && row.dropText !== '—' && String(row.dropText).toLowerCase() !== 'modded' ? 'named_item' : 'none',
+      exact_roll_drop_confirmed: null,
       manufacturer: row.rawDecode && row.rawDecode.manufacturer,
       item_type: row.rawDecode && row.rawDecode.itemType,
       align_strict_ok_data: align.align_strict_ok_data,
@@ -347,6 +427,7 @@
     var decodeFail = 0;
     var nomanifest = 0;
     var legitErr = 0;
+    var order = 0;
     var i;
     var r;
     var c;
@@ -355,14 +436,27 @@
       if (r.decodeOk) dec++;
       c = classifyRow(r);
       if (c === 'ok') ok++;
+      else if (c === 'order') order++;
       else if (c === 'decode') decodeFail++;
       else if (c === 'nomanifest') nomanifest++;
       else if (c === 'err') legitErr++;
       else wrn++;
     }
+    var breakdown = {balance:0, order:0, prerequisite:0, non_obtainable:0};
+    rows.forEach(function (row) { if (classifyRow(row) === 'err') breakdown[failureCategory(row)]++; });
     return {
       total: n,
+      valid: ok,
+      invalid: legitErr + decodeFail,
+      needs_attention: n-ok,
+      order_issues: order,
+      rule_failures: legitErr-breakdown.non_obtainable,
+      usually_unobtainable: breakdown.non_obtainable,
+      not_checked: wrn + nomanifest,
+      failure_breakdown: breakdown,
       decoded_ok: dec,
+      full_decode_failed: rows.filter(function (row) {return !row.decodeOk;}).length,
+      partial_read_rejections: rows.filter(partialRuleFailure).length,
       ok_data: ok,
       uncertain_or_map: wrn,
       decode_failed: decodeFail,
@@ -430,7 +524,7 @@
   function collectFailDataRows() {
     return state.rows.filter(function (r) {
       var c = classifyRow(r);
-      return c === 'err' || c === 'decode' || c === 'nomanifest';
+      return c === 'err' && failureCategory(r) !== 'non_obtainable';
     });
   }
 
@@ -457,30 +551,30 @@
     var fname;
     if (kind === 'legit') {
       rows = collectLegitPassRows();
-      label = 'OK / legit';
+      label = 'No modded parts found';
       fname = stampExportName('bulk-serials-ok-legit');
     } else if (kind === 'fail') {
       rows = collectFailDataRows();
-      label = 'Fail (data) / decode / no manifest';
+      label = 'Modded';
       fname = stampExportName('bulk-serials-fail-only');
     } else if (kind === 'ok_drop_modded') {
       rows = state.rows.filter(function (r) {
         return classifyRow(r) === 'ok' && String(r.dropText || '').trim().toLowerCase() === 'modded';
       });
-      label = 'OK + Drop hint Modded';
+      label = 'Passed checks; source not listed';
       fname = stampExportName('bulk-serials-ok-drop-modded');
     } else if (kind === 'ok_pool') {
       rows = state.rows.filter(function (r) {
         return (
-          classifyRow(r) === 'ok' && String(r.dropText || '').trim().toLowerCase() !== 'modded'
+          classifyRow(r) === 'ok' && !!r.dropText && r.dropText !== '—' && String(r.dropText).trim().toLowerCase() !== 'modded'
         );
       });
-      label = 'OK + non-Modded drop hint';
+      label = 'Passed checks; source listed';
       fname = stampExportName('bulk-serials-ok-pool-hint');
     } else {
       rows = collectNonOkModdedRows();
-      label = 'non-OK / modded (+ uncertain)';
-      fname = stampExportName('bulk-serials-nonok-modded');
+      label = 'Needs attention';
+      fname = stampExportName('bulk-serials-needs-attention');
     }
     if (!state.rows.length) {
       statusLine('Nothing to export — run validation first.', 'warn');
@@ -512,6 +606,12 @@
    */
   function getValidationDataBundleMeta() {
     var out = {
+      exact_roll_data: window.EXACT_ROLL_DATA ? {source:window.EXACT_ROLL_DATA.source, identities:Object.keys(window.EXACT_ROLL_DATA.ids).length, selection_defaults:window.EXACT_ROLL_DATA.selectionDefaults || null} : null,
+      loot_schedule_evidence: window.LEGIT_LOOT_SCHEDULE_EVIDENCE || null,
+      serial_identity_data: window.LEGIT_SERIAL_IDENTITY_DATA ? {
+        source: window.LEGIT_SERIAL_IDENTITY_DATA.source,
+        part_count: Object.keys(window.LEGIT_SERIAL_IDENTITY_DATA.parts).length
+      } : null,
       legit_builder_api: !!(
         window.LegitBuilderApi && typeof window.LegitBuilderApi.computeLegitValidationState === 'function'
       ),
@@ -569,6 +669,7 @@
       validation_data_bundle: getValidationDataBundleMeta(),
       row_schema_note:
         'Every row includes align_* booleans. If bucket is not ok, flagging holds primary_reason, full legit_details_all (every Legit Builder line, including Parts:/Stats: diagnostics omitted from notes_full), detail_line_categories counts, validation snapshot, and compact decode stats — use this to see exactly why a row failed.',
+      partial_read_note: 'partial_read_rejection means the full decoder failed, but complete verified prefix tokens independently prove a contradiction. decode_ok remains false; partial_decode_evidence records scope and bit offsets. No partial read can pass, and no missing-part inference is made from an unparsed tail.',
       alignment_definitions: {
         align_strict_ok_data:
           'Same as KPI OK (data): LegitBuilderApi status OK with mapped slots (unmapped rows are Uncertain, not OK).',
@@ -615,12 +716,17 @@
       'decode_ok',
       'item',
       'legit_status',
+      'verdict',
+      'verdict_reason',
+      'firmware_flag',
       'align_strict_ok_data',
       'align_no_fail_data',
       'align_mapped_no_fail_data',
       'align_soft_ok_or_warn',
       'stats',
       'drop_hint',
+      'drop_match_scope',
+      'exact_roll_drop_confirmed',
       'off_pool_summary',
       'notes_full'
     ];
@@ -638,12 +744,17 @@
           csvEscape(f.decode_ok ? 'yes' : 'no'),
           csvEscape(f.item),
           csvEscape(f.legit_status),
+          csvEscape(f.verdict || ''),
+          csvEscape(f.verdict_reason || ''),
+          csvEscape(f.firmware_flag || ''),
           csvEscape(f.align_strict_ok_data ? 'yes' : 'no'),
           csvEscape(f.align_no_fail_data ? 'yes' : 'no'),
           csvEscape(f.align_mapped_no_fail_data ? 'yes' : 'no'),
           csvEscape(f.align_soft_ok_or_warn ? 'yes' : 'no'),
           csvEscape(f.stats),
           csvEscape(f.drop_hint),
+          csvEscape(f.drop_match_scope),
+          csvEscape('not confirmed'),
           csvEscape(f.off_pool_summary || ''),
           csvEscape(f.notes_full)
         ].join(',')
@@ -654,97 +765,29 @@
     statusLine('Exported ' + rows.length + ' rows to ' + name + '.', 'ok');
   }
 
+  function readableReportRows(rows) {
+    return rows.map(function (row,index) {
+      var result=flattenRowForExport(row),ls=row.validation && row.validation.legitState;
+      result.report_index=state.rows.indexOf(row)+1 || index+1;
+      result.readable_reason=readableReason(row);
+      result.readable_parts=serializedPartRows(row);
+      result.readable_failures=Array.from(new Set((ls && ls.exactRollEvidence && ls.exactRollEvidence.failures || []).map(readableRuleText)));
+      return result;
+    });
+  }
+
+  function exportReadableReport() {
+    var rows=collectRowsForExport();
+    if(!rows.length){statusLine('Run validation before downloading a report.','warn');return;}
+    downloadBlob('item-validation-report-'+new Date().toISOString().slice(0,10)+'.html','text/html;charset=utf-8',window.ValidatorReadableReport.html(readableReportRows(rows)));
+    statusLine('Downloaded readable report for '+rows.length+' items. Open it in your browser to search, filter or print.','ok');
+  }
+
   function exportMarkdownSummary() {
-    var rows = collectRowsForExport();
-    if (!rows.length) {
-      statusLine('Nothing to export — run validation first.', 'warn');
-      return;
-    }
-    var s = getKpiSnapshot(rows);
-    var hist = buildStatusHistogram(rows);
-    var md = [];
-    md.push('# Bulk serial validation export');
-    md.push('');
-    md.push('- Generated: ' + new Date().toISOString());
-    md.push('- Rows in file: ' + rows.length);
-    var vdm = getValidationDataBundleMeta();
-    if (vdm && vdm.legit_decode_helpers_version) {
-      md.push('- **Validator rules:** `' + String(vdm.legit_decode_helpers_version) + '`');
-    }
-    if (vdm && vdm.inv_comp_tag_data && vdm.inv_comp_tag_data.source_files && vdm.inv_comp_tag_data.source_files.length) {
-      md.push(
-        '- **Inv tag extract:** `' +
-          vdm.inv_comp_tag_data.source_files.join('`, `') +
-          '` · generated_at `' +
-          String(vdm.inv_comp_tag_data.generated_at || '—') +
-          '` · partsByName `' +
-          String(vdm.inv_comp_tag_data.part_count != null ? vdm.inv_comp_tag_data.part_count : '—') +
-          '`'
-      );
-    }
-    if ($('bv-export-filtered') && $('bv-export-filtered').checked) md.push('- **Filter:** table filter `' + state.filter + '` only');
-    md.push('');
-    md.push('## Summary (same as KPI boxes)');
-    md.push('');
-    md.push('| Metric | Count |');
-    md.push('|--------|------:|');
-    md.push('| Serials | ' + s.total + ' |');
-    md.push('| Decoded OK | ' + s.decoded_ok + ' |');
-    md.push('| OK (data) | ' + s.ok_data + ' |');
-    md.push('| Uncertain | ' + s.uncertain_or_map + ' |');
-    md.push('| Decode failed | ' + s.decode_failed + ' |');
-    md.push('| No manifest | ' + s.no_manifest + ' |');
-    md.push('| Fail (data) | ' + s.fail_data + ' |');
-    md.push('');
-    var asum = buildAlignmentSummary(rows);
-    md.push('## Alignment flags (export buckets)');
-    md.push('');
-    md.push('| Flag | Count |');
-    md.push('|------|------:|');
-    md.push('| align_strict_ok_data (our OK (data)) | ' + asum.align_strict_ok_data + ' |');
-    md.push('| align_no_fail_data (not Fail (data)) | ' + asum.align_no_fail_data + ' |');
-    md.push('| align_mapped_no_fail_data | ' + asum.align_mapped_no_fail_data + ' |');
-    md.push('| align_soft_ok_or_warn | ' + asum.align_soft_ok_or_warn + ' |');
-    md.push('');
-    md.push('See JSON export `alignment_definitions` for meanings. Definitions apply to this validator and bundled data only.');
-    md.push('');
-    md.push('## Top status buckets (bucket + status_label)');
-    md.push('');
-    md.push('| Count | Key |');
-    md.push('|------:|-----|');
-    var hi;
-    for (hi = 0; hi < Math.min(40, hist.length); hi++) {
-      md.push('| ' + hist[hi].count + ' | `' + String(hist[hi].key).replace(/\|/g, '\\|') + '` |');
-    }
-    md.push('');
-    md.push('## Sample rows (first 40)');
-    md.push('');
-    md.push('| Bucket | Item | Serial (full) | Legit | Notes (full) |');
-    md.push('|--------|------|---------------|-------|--------------|');
-    var si;
-    var maxS = Math.min(40, rows.length);
-    for (si = 0; si < maxS; si++) {
-      var fr = flattenRowForExport(rows[si]);
-      md.push(
-        '| ' +
-          fr.bucket +
-          ' | ' +
-          String(fr.item || '—').replace(/\|/g, '\\|') +
-          ' | ' +
-          String(fr.serial || '—').replace(/\|/g, '\\|') +
-          ' | ' +
-          String(fr.legit_status).replace(/\|/g, '\\|') +
-          ' | ' +
-          String(fr.notes_full || '—').replace(/\|/g, '\\|').slice(0, 200) +
-          (String(fr.notes_full).length > 200 ? '…' : '') +
-          ' |'
-      );
-    }
-    md.push('');
-    md.push('Use **Export CSV** or **Export JSON** for all rows.');
-    var name = 'bulk-serial-validation-summary-' + new Date().toISOString().slice(0, 19).replace(/:/g, '') + '.md';
-    downloadBlob(name, 'text/markdown;charset=utf-8', md.join('\n'));
-    statusLine('Exported Markdown summary (' + rows.length + ' rows in KPI; sample 40).', 'ok');
+    var rows=collectRowsForExport();
+    if(!rows.length){statusLine('Run validation before downloading a summary.','warn');return;}
+    downloadBlob('item-validation-summary-'+new Date().toISOString().slice(0,10)+'.md','text/markdown;charset=utf-8',window.ValidatorReadableReport.markdown(readableReportRows(rows)));
+    statusLine('Downloaded readable text summary for '+rows.length+' items.','ok');
   }
 
   function statusLine(msg, kind) {
@@ -756,7 +799,7 @@
 
   function classifyRow(row) {
     var bulkPage = typeof window !== 'undefined' && window.STX_BULK_CHEAT_AUDIT === true;
-    if (!row.decodeOk) return 'decode';
+    if (!row.decodeOk) return partialRuleFailure(row) ? 'err' : 'decode';
     if (!row.validation || row.validation.phase === 'manifest') return 'nomanifest';
     if (row.validation.mapped === false) {
       var lsU = row.validation.legitState;
@@ -766,11 +809,93 @@
     }
     var st = row.validation.legitState;
     if (!st) return 'idle';
-    if (st.status === 'ok') return 'ok';
     if (st.status === 'err') return 'err';
+    if (st.status === 'order' || st.orderOnly) return 'order';
+    if (st.status === 'ok') return 'ok';
     /* computeLegitValidationState can leave status 'idle' when a warn path was skipped (bulk); that was counted as uncertain — treat as OK on this page only. */
-    if (bulkPage && st.status === 'idle') return 'ok';
+    // An unfinished validation is not a pass.
     return 'warn';
+  }
+
+  function publicResult(row) {
+    var bucket = classifyRow(row);
+    var ls = row.validation && row.validation.legitState;
+    if (bucket === 'ok') return { label: 'No modded parts found', reason: 'Parts and level pass the game-rule checks.' };
+    if (bucket === 'order') return { label: 'Order issue', reason: (ls && ls.verdictReason) || 'These parts are written in a different order than this item’s slot list. The same parts can still satisfy the other checks. This alone does not show the item was modded.' };
+    if (bucket === 'err') return { label: partialRuleFailure(row) ? 'Modded — partial read' : ls && ls.nonObtainable ? 'Usually unobtainable' : 'Modded', reason: ls && ls.nonObtainable ? 'Marked as NPC-only in the game data. It may be spawned, but is not normally available as player loot.' : ((ls && ls.verdictReason) || 'This combination breaks the game rules.').replace(/^\[exact\]\s*/, '') };
+    if (bucket === 'decode') return { label: 'Invalid serial', reason: 'Cannot read this code. Paste the complete serial again.' };
+    if (bucket === 'nomanifest') return { label: 'Cannot check: unsupported item', reason: 'This item type is missing from our validation data.' };
+    if (bucket === 'nomap') return { label: 'Cannot check: unknown parts', reason: 'The serial decodes, but its parts cannot be matched to the validation tables.' };
+    return { label: 'Cannot verify this roll', reason: (ls && ls.verdictReason) || 'Validation did not finish. Run the check again.' };
+  }
+
+  function publicDropHint(text) {
+    return String(text || '').trim().toLowerCase() === 'modded' ? 'Source not listed' : (text || '—');
+  }
+
+  function summaryText(total, passed, modded, manual, unreadable, usually, order) {
+    if (!total) return 'Your results will appear here after you select Validate all.';
+    usually=usually || 0;
+    order=order || 0;
+    var outcomes=[passed+' passed'];
+    if(order)outcomes.push(order+' order issue'+(order===1?'':'s'));
+    if(modded-usually)outcomes.push((modded-usually)+' rule failure'+(modded-usually===1?'':'s'));
+    if(usually)outcomes.push(usually+' usually unobtainable');
+    if(unreadable)outcomes.push(unreadable+' invalid serial'+(unreadable===1?'':'s'));
+    if(manual)outcomes.push(manual+(manual===1?' needs':' need')+' verification');
+    return total+' checked: '+outcomes.join(', ')+'.';
+  }
+
+  function failureCategory(row) {
+    var ls = row.validation && row.validation.legitState;
+    if (ls && ls.nonObtainable) return 'non_obtainable';
+    var reason = ls && ls.verdictReason || '';
+    if (/missing dependency|missing prerequisite/i.test(reason)) return 'prerequisite';
+    if (/part order mismatch/i.test(reason)) return 'order';
+    return 'balance';
+  }
+
+  function sourceHtml(row) {
+    if (partialRuleFailure(row)) return '<span class="muted">Drop lookup is unavailable for a partial read.</span>';
+    if (!row.decodeOk) return '<span class="muted">Read the code first</span>';
+    var text = publicDropHint(row.dropText);
+    if (text === '—' || text === 'Source not listed') {
+      return 'No drop source listed<div class="bv-source-note">Our source data does not cover this item.</div>';
+    }
+    // This lookup matches the named item's composition, not every part in the serial.
+    // Prefer player-facing enemy names; retain pool IDs in the expandable evidence.
+    var named = text.match(/Drops from: ([^•]+)/);
+    var headline = named ? 'Drops from: ' + named[1].trim() : text.split(' • ')[0];
+    return escapeHtml(headline) + '<div class="bv-source-note">Source for this item. Exact part combination not confirmed.</div>' +
+      (headline !== text ? '<details class="bv-more"><summary>Source details</summary>' + escapeHtml(text) + '</details>' : '');
+  }
+
+  function failureGroup(row) {
+    var reason = publicResult(row).reason;
+    if (/firmware/i.test(reason)) return 'Firmware that cannot roll on this item';
+    if (/wrong root|wrong family|manufacturer/i.test(reason)) return 'Parts from the wrong item or manufacturer';
+    if (/duplicate|only 1 allowed/i.test(reason)) return 'A part is repeated when only one is allowed';
+    if (/level|MinGameStage/i.test(reason)) return 'An item or part is outside its allowed level';
+    if (/exclusion|incompatible|compatibility|dependency|allowlist|tags/i.test(reason)) return 'Parts that cannot roll together';
+    if (/count|maximum|exceeds|over.max|outside range/i.test(reason)) return 'Too many parts, or a required part is missing';
+    return 'Other game-rule failures';
+  }
+
+  function renderFailureGroups() {
+    var el = $('bv-failure-groups');
+    if (!el) return;
+    var groups = {};
+    var failures = state.rows.filter(function (row) { return classifyRow(row) === 'err' && failureCategory(row) !== 'non_obtainable'; });
+    failures.forEach(function (row) {
+      var key = failureGroup(row);
+      groups[key] = (groups[key] || 0) + 1;
+    });
+    el.hidden = !failures.length;
+    el.innerHTML = '<summary>'+(failures.length === 1 ? 'Why did this item fail a rule?' : 'Why did these '+failures.length+' items fail a rule?')+'</summary>' +
+      '<p class="small">Grouped by each item’s first failed rule. Open an item below for the exact parts and evidence.</p><ul>' +
+      Object.keys(groups).sort(function (a, b) { return groups[b] - groups[a]; }).map(function (key) {
+        return '<li><strong>' + groups[key] + '</strong> — ' + escapeHtml(key) + '</li>';
+      }).join('') + '</ul>';
   }
 
   /**
@@ -817,9 +942,14 @@
     var f = state.filter;
     if (f === 'all') return true;
     var c = classifyRow(row);
+    if (f === 'attention') return c !== 'ok';
+    if (f === 'invalid') return c === 'err' || c === 'decode';
+    if (f === 'order') return c === 'order';
+    if (f === 'balance' || f === 'prerequisite' || f === 'non_obtainable') return c === 'err' && failureCategory(row) === f;
     if (f === 'ok') return c === 'ok';
-    if (f === 'warn') return c === 'warn' || c === 'nomap' || c === 'idle';
-    if (f === 'err') return c === 'err' || c === 'decode' || c === 'nomanifest';
+    if (f === 'warn') return c === 'warn' || c === 'nomap' || c === 'idle' || c === 'nomanifest';
+    if (f === 'decode') return c === 'decode';
+    if (f === 'err') return c === 'err';
     return true;
   }
 
@@ -902,7 +1032,8 @@
       serial = serials[i];
       dr = decodeResults[i];
       if (!dr || !dr.success) {
-        out.push(buildRow(serial, dr || { success: false, error: 'no result' }, null, '—'));
+        var partial=dr && helpers.validateFailedSerialPrefix && helpers.validateFailedSerialPrefix(serial,dr.error);
+        out.push(buildRow(serial, dr || { success: false, error: 'no result' }, partial || null, '—'));
         continue;
       }
       /* rawSerial must be deserialized `{fam:id}` text — Base85 (@U) breaks Critical dup/wrong-root expand. */
@@ -938,6 +1069,7 @@
     var decodeFail = 0;
     var nomanifest = 0;
     var legitErr = 0;
+    var orderCount = 0;
     var subNomap = 0;
     var subWarn = 0;
     var subIdle = 0;
@@ -957,6 +1089,7 @@
         if (c === 'ok') okDropModded++;
       }
       if (c === 'ok') ok++;
+      else if (c === 'order') orderCount++;
       else if (c === 'decode') decodeFail++;
       else if (c === 'nomanifest') nomanifest++;
       else if (c === 'err') legitErr++;
@@ -973,20 +1106,35 @@
       if (state.inputPreserveDups) elDup.textContent = '—';
       else elDup.textContent = String(state.inputDupMerged != null ? state.inputDupMerged : 0);
     }
-    $('k-decoded').textContent = String(dec);
+    if ($('k-decoded')) $('k-decoded').textContent = String(dec);
     $('k-ok').textContent = String(ok);
-    $('k-warn').textContent = String(wrn);
+    $('k-warn').textContent = String(wrn + nomanifest);
+    renderFailureGroups();
     var elDf = $('k-decode-fail');
     var elNm = $('k-nomanifest');
+    var categories = {balance:0, order:0, prerequisite:0, non_obtainable:0};
+    rows.forEach(function (row) { if (classifyRow(row) === 'err') categories[failureCategory(row)]++; });
+    if ($('bv-result-headline')) $('bv-result-headline').textContent = summaryText(n, ok, legitErr, wrn+nomanifest,decodeFail,categories.non_obtainable,orderCount);
+    if ($('k-valid')) $('k-valid').textContent = String(ok);
+    if ($('k-invalid')) $('k-invalid').textContent = String(n-ok);
+    if ($('k-order')) $('k-order').textContent = String(orderCount);
+    ['prerequisite', 'non_obtainable'].forEach(function (key) {
+      var el = $('k-' + key); if (el) el.textContent = String(categories[key]);
+    });
+    if ($('bv-extra-results')) {
+      $('bv-extra-results').hidden = !(wrn + nomanifest + decodeFail);
+      $('k-warn').closest('button').hidden = !(wrn+nomanifest);
+      $('k-decode-fail').closest('button').hidden = !decodeFail;
+    }
     var elLe = $('k-legit-err');
     if (elDf) elDf.textContent = String(decodeFail);
     if (elNm) elNm.textContent = String(nomanifest);
-    if (elLe) elLe.textContent = String(legitErr);
+    if (elLe) elLe.textContent = String(categories.balance);
     var elDm = $('k-drop-modded');
     var elOdm = $('k-ok-drop-modded');
     if (elDm) elDm.textContent = String(dropModded);
     if (elOdm) elOdm.textContent = String(okDropModded);
-    var sum = ok + wrn + decodeFail + nomanifest + legitErr;
+    var sum = ok + orderCount + wrn + decodeFail + nomanifest + legitErr;
     var rec = $('k-reconcile');
     if (rec) {
       var uncDetail = '';
@@ -997,33 +1145,88 @@
         if (subIdle) ubits.push('idle ×' + subIdle);
         uncDetail = ' (' + ubits.join(', ') + ')';
       }
-      var parts = [String(ok) + ' OK', String(wrn) + ' uncertain' + uncDetail];
+      var parts = [String(ok) + ' passed'];
+      if (orderCount) parts.push(String(orderCount) + ' order issue' + (orderCount === 1 ? '' : 's'));
+      parts.push(String(wrn) + ' need verification');
       if (decodeFail) parts.push(String(decodeFail) + ' decode fail');
       if (nomanifest) parts.push(String(nomanifest) + ' no manifest');
-      if (legitErr) parts.push(String(legitErr) + ' fail (data)');
+      if (legitErr) parts.push(String(legitErr) + ' modded');
       rec.textContent =
-        'Each KPI number lines up with the label above it. ' +
-        parts.join(' + ') +
-        ' = ' +
-        String(sum) +
-        ' serials' +
-        (sum === n ? '' : ' — mismatch ' + String(n) + ', report this');
-      if (dec !== n) {
-        rec.textContent += ' · decoded ' + String(dec) + ' / ' + String(n) + ' rows';
-      }
+        n ? 'Click a result card to see those items. Passed means the parts and level are allowed; it cannot prove an item was never edited.' : '';
+      if (sum !== n) rec.textContent += ' Count mismatch — please export a report.';
       if (!state.inputPreserveDups && state.inputDupMerged > 0) {
         rec.textContent +=
           ' · ' + String(state.inputDupMerged) + ' duplicate input line(s) merged (same serial text; enable Keep duplicate lines for one row each).';
       } else if (state.inputPreserveDups && n > 0) {
         rec.textContent += ' · duplicate lines kept as separate rows';
       }
-      if (okDropModded > 0) {
-        rec.textContent +=
-          ' · ' +
-          String(okDropModded) +
-          ' OK (data) with Drop hint Modded (composition passed; not in shiny pool — use Export non-OK or filter Drop column for editor/off-pool hygiene).';
-      }
+
     }
+  }
+
+  function readableSlot(slot) {
+    var labels = {inv_comp:'Rarity',body_acc:'Body accessory',barrel_acc:'Barrel accessory',scope_acc:'Scope accessory',magazine_acc:'Magazine accessory',body_ele:'Primary element',secondary_ele:'Secondary element',passive_points:'Skill point',primary_augment:'Primary augment',secondary_augment:'Secondary augment'};
+    return labels[slot] || String(slot || 'Part').replace(/_/g,' ').replace(/\bacc\b/g,'accessory');
+  }
+
+  function readablePart(name) {
+    return String(name || 'Unidentified part').replace(/^part_/i,'').replace(/_/g,' ');
+  }
+
+  function readableReason(row) {
+    return readableRuleText(publicResult(row).reason);
+  }
+
+  function readableRuleText(reason) {
+    reason = String(reason || '').replace(/^\[exact\]\s*/,'').replace(/Wrong inv comp part:/g,'Wrong rarity part:');
+    // A roll can contain hundreds of copies. Keep the count and rule visible;
+    // the complete identities remain in the expanded log and JSON evidence.
+    reason = reason.replace(/^(.*parts; game maximum is \d+) \([\s\S]*\)\.$/,'$1.');
+    var nodes = window.EXACT_ROLL_DATA && window.EXACT_ROLL_DATA.nodes || {};
+    reason = reason.replace(/\b[a-z][a-z0-9_]*\.[a-z0-9_]+\b/gi,function (name) {
+      var node = nodes[name.toLowerCase()];
+      return node ? readablePart(node.name) : name;
+    });
+    return reason.replace(/\b(body_acc|barrel_acc|scope_acc|magazine_acc|body_ele|secondary_ele|passive_points|primary_augment|secondary_augment)\b/g,readableSlot);
+  }
+
+  function serializedPartRows(row) {
+    var decoded = displayDecode(row), data = window.EXACT_ROLL_DATA || {};
+    var resolved = decoded.resolvedParts || [], parts = [];
+    var pattern = /\{(\d+)(?::(?:\[([\d\s,]+)\]|(\d+)))?\}|"([a-z0-9_]+\.[a-z0-9_]+)"/gi;
+    var match;
+    while ((match = pattern.exec(decoded.deserialized || '')) !== null) {
+      var token = match[0];
+      var keys = match[4] ? [match[4].toLowerCase()] : match[2] ? match[2].trim().split(/[\s,]+/).map(function (n) {return match[1]+':'+n;}) : [(match[3] == null ? decoded.itemTypeId : match[1])+':'+(match[3] == null ? match[1] : match[3])];
+      keys.forEach(function (key) {
+        var spawn = data.ids && data.ids[key] || key, node = data.nodes && data.nodes[spawn];
+        var display = resolved.find(function (part) {return part.alpha_code && part.alpha_code.toLowerCase() === spawn || part.key === key;});
+        parts.push({slot:readableSlot(node && node.slot || display && display.part_type),name:display && display.name || readablePart(node && node.name),token:keys.length > 1 ? '{'+key+'}' : token});
+      });
+    }
+    return parts;
+  }
+
+  function serializedPartsHtml(row) {
+    var parts=serializedPartRows(row);
+    return parts.length ? '<ol class="bv-parts-list">'+parts.map(function (part) {return '<li><span>'+escapeHtml(part.slot)+'</span><strong>'+escapeHtml(part.name)+'</strong><code>'+escapeHtml(part.token)+'</code></li>';}).join('')+'</ol>' : '<p class="muted">'+(row.decodeOk ? 'Part names are not available for this item.' : 'Read the serial before its parts can be shown.')+'</p>';
+  }
+
+  function itemDetailsHtml(row) {
+    var decoded = displayDecode(row), ls = row.validation && row.validation.legitState;
+    var partial=partialRuleFailure(row);
+    var log = ls && ls.details || [], readable = decoded.deserialized || '';
+    var failures = ls && ls.exactRollEvidence && ls.exactRollEvidence.failures || [];
+    var readableFailures = Array.from(new Set(failures.map(readableRuleText)));
+    return '<details class="bv-item-details"><summary>Parts, source &amp; evidence</summary>'+
+      (readableFailures.length ? '<section class="bv-rule-explanations"><h3>Rules that failed</h3><ul>'+readableFailures.slice(0,8).map(function (line) {return '<li>'+escapeHtml(line)+'</li>';}).join('')+'</ul>'+(readableFailures.length>8 ? '<p class="small muted">'+(readableFailures.length-8)+' more distinct failures are included in the technical log and report.</p>' : '')+'</section>' : '')+
+      (!row.decodeOk && row.decodeError ? '<section class="bv-rule-explanations"><h3>Read error</h3><p>'+escapeHtml(row.decodeError)+'</p></section>' : '')+
+      '<div class="bv-detail-grid">'+
+      '<section><h3>'+(partial ? 'Verified prefix parts' : 'Serialized parts')+'</h3><p class="small muted">'+(partial ? 'Only complete tokens before the parser stopped. The unparsed remainder is excluded.' : 'Shown in the order written in the serial.')+'</p>'+serializedPartsHtml(row)+'</section>'+
+      '<section><h3>Drop source</h3>'+sourceHtml(row)+
+      (readable ? '<h3>'+(partial ? 'Diagnostic prefix — not a repaired serial' : 'Readable serial')+'</h3><code class="bv-readable">'+escapeHtml(readable)+'</code><button type="button" class="btn bv-copy" data-copy-text="'+escapeHtml(readable)+'">'+(partial ? 'Copy diagnostic prefix' : 'Copy readable code')+'</button>' : '')+
+      (log.length ? '<details class="bv-more"><summary>Technical check log ('+log.length+')</summary><ul class="bv-check-log">'+log.map(function (line) {return '<li>'+escapeHtml(line)+'</li>';}).join('')+'</ul></details>' : '')+
+      '</section></div></details>';
   }
 
   function renderTable() {
@@ -1038,81 +1241,27 @@
     var html = '';
     var ri;
     var row;
-    var legitLabel;
-    var details;
-    var statsLine;
     var cls;
     for (ri = 0; ri < slice.length; ri++) {
       row = slice[ri];
       cls = classifyRow(row);
-      legitLabel = '—';
-      details = '';
-      statsLine = '—';
-      if (row.validation && row.validation.legitState) {
-        legitLabel = row.validation.legitState.statusText || row.validation.legitState.status || '—';
-        details = notesFromLegitState(row.validation.legitState);
-        statsLine =
-          'idRaw ' +
-          (row.validation.legitState.statsIdRawFound != null ? row.validation.legitState.statsIdRawFound : '?') +
-          '/' +
-          (row.validation.legitState.partCount != null ? row.validation.legitState.partCount : '?') +
-          ' · stats ' +
-          (row.validation.legitState.statsAnyFound != null ? row.validation.legitState.statsAnyFound : '?') +
-          '/' +
-          (row.validation.legitState.partCount != null ? row.validation.legitState.partCount : '?');
-      } else if (!row.decodeOk) {
-        legitLabel = 'Decode failed';
-        details = row.decodeError
-          ? String(row.decodeError)
-          : 'WASM could not decode this serial (corrupt, truncated, or unsupported format).';
-      } else if (row.validation && row.validation.mapped === false) {
-        legitLabel = 'Uncertain (no slot map)';
-        details = 'Decode OK; no manifest parts matched NCS slots';
-      } else if (row.validation && row.validation.phase === 'manifest') {
-        legitLabel = 'No manifest';
-        details = String(row.validation.manufacturer || '') + ' / ' + String(row.validation.itemType || '');
-      }
-      html +=
-        '<tr data-class="' +
-        escapeHtml(cls) +
-        '">' +
-        '<td><code title="' +
-        escapeHtml(row.serial) +
-        '">' +
-        escapeHtml(row.serial) +
-        '</code><div class="small muted">' +
-        escapeHtml((row.validation && row.validation.manifestItem && (row.validation.manifestItem.name || row.validation.manifestItem.slug)) || '—') +
-        '</div></td>' +
-        '<td>' +
-        (row.decodeOk ? '<span class="tag ok">OK</span>' : '<span class="tag bad">Fail</span>') +
-        '</td>' +
-        '<td>' +
-        (row.validation && row.validation.manifestItem ? escapeHtml(row.validation.manifestItem.name || row.validation.manifestItem.slug || '') : '—') +
-        '</td>' +
-        '<td><span class="legit-' +
-        escapeHtml(cls) +
-        '">' +
-        escapeHtml(legitLabel) +
-        '</span></td>' +
-        '<td class="mono small">' +
-        escapeHtml(statsLine) +
-        '</td>' +
-        '<td class="small">' +
-        escapeHtml(row.dropText) +
-        '</td>' +
-        '<td class="small">' +
-        highlightReasonPhrases(highlightBarrelTokens(details)) +
-        '</td>' +
-        '</tr>';
+      /* Display only; verdicts and exports continue to use publicResult. */
+      var answer = publicResult(row);
+      html += '<tr data-class="'+escapeHtml(cls)+'"'+(row.validation && row.validation.legitState && row.validation.legitState.nonObtainable ? ' data-usually-unobtainable="true"' : '')+'><td><article class="bv-result-card">'+
+        '<div class="bv-result-heading"><div><h2>'+escapeHtml(rowItemLabel(row) || (row.decodeOk ? 'Unidentified item' : 'Unreadable serial'))+'</h2><div class="bv-item-meta">'+escapeHtml(rowItemMeta(row))+'</div></div>'+
+        '<span class="bv-verdict legit-'+escapeHtml(cls)+'">'+escapeHtml(answer.label)+'</span></div>'+
+        '<p class="bv-reason">'+escapeHtml(readableReason(row))+'</p>'+
+        (partialRuleFailure(row) ? '<p class="small">Partial read: the verified tokens already break a game rule. This is a rejection, not a repaired or fully decoded item.</p>' : '')+
+        '<div class="bv-serial-line"><code>'+escapeHtml(row.serial)+'</code><button type="button" class="btn bv-copy" data-copy-text="'+escapeHtml(row.serial)+'">Copy serial</button></div>'+
+        itemDetailsHtml(row)+'</article></td></tr>';
     }
-    if (!html) {
-      html = '<tr><td colspan="7" class="muted">No rows match the filter.</td></tr>';
-    }
+    if (!html) html = '<tr><td class="muted">'+(state.rows.length ? 'No items match this filter.' : 'Paste your serials above, then select Validate all.')+'</td></tr>';
     body.innerHTML = html;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-result-filter]'), function (button) {
+      button.setAttribute('aria-pressed', String(button.getAttribute('data-result-filter') === state.filter));
+    });
     var pg = $('bv-page');
-    if (pg) {
-      pg.textContent = total ? 'Showing ' + (start + 1) + '–' + Math.min(start + slice.length, total) + ' of ' + total + ' (page ' + (state.page + 1) + '/' + pages + ')' : 'No rows';
-    }
+    if (pg) pg.textContent = total ? 'Showing '+(start+1)+'–'+Math.min(start+slice.length,total)+' of '+total+' · page '+(state.page+1)+' of '+pages : 'No items';
   }
 
   async function runValidation() {
@@ -1282,6 +1431,18 @@
     if (exJ) exJ.addEventListener('click', exportJsonReport);
     if (exC) exC.addEventListener('click', exportCsv);
     if (exM) exM.addEventListener('click', exportMarkdownSummary);
+    if ($('bv-export-readable')) $('bv-export-readable').addEventListener('click',exportReadableReport);
+    var resultsBody = $('bv-tbody');
+    if (resultsBody) resultsBody.addEventListener('click',async function (event) {
+      var button = event.target.closest('[data-copy-text]');
+      if (!button) return;
+      try {
+        await navigator.clipboard.writeText(button.getAttribute('data-copy-text'));
+        button.textContent = 'Copied';
+      } catch (_) {
+        button.textContent = 'Select the code to copy';
+      }
+    });
     var exLegit = $('bv-export-legit-txt');
     var exModded = $('bv-export-modded-txt');
     var exFail = $('bv-export-fail-txt');
@@ -1299,6 +1460,16 @@
         renderTable();
       });
     }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-result-filter]'), function (button) {
+      button.addEventListener('click', function () {
+        state.filter = button.getAttribute('data-result-filter');
+        state.page = 0;
+        if (filt) filt.value = state.filter;
+        renderTable();
+        var table = $('bv-tbody');
+        if (table) table.closest('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
     if (prev) prev.addEventListener('click', function () { if (state.page > 0) { state.page--; renderTable(); } });
     if (next) {
       next.addEventListener('click', function () {

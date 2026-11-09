@@ -1,0 +1,552 @@
+[
+  {
+    "id": "amara_bl3",
+    "kind": "character",
+    "name": "Amara",
+    "game": "Borderlands 3",
+    "file": "packs/amara_bl3.zip",
+    "downloadName": "Amara.zip"
+  },
+  {
+    "id": "athena_tps",
+    "kind": "character",
+    "name": "Athena",
+    "game": "The Pre-Sequel",
+    "file": "packs/athena_tps.zip",
+    "downloadName": "Athena.zip"
+  },
+  {
+    "id": "aurelia_tps",
+    "kind": "character",
+    "name": "Aurelia",
+    "game": "The Pre-Sequel",
+    "file": "packs/aurelia_tps.zip",
+    "downloadName": "Aurelia.zip"
+  },
+  {
+    "id": "axton_bl2",
+    "kind": "character",
+    "name": "Axton",
+    "game": "Borderlands 2",
+    "file": "packs/axton_bl2.zip",
+    "downloadName": "Axton.zip"
+  },
+  {
+    "id": "brick_bl1",
+    "kind": "character",
+    "name": "Brick",
+    "game": "Borderlands",
+    "file": "packs/brick_bl1.zip",
+    "downloadName": "Brick.zip"
+  },
+  {
+    "id": "buzz_kh3",
+    "kind": "character",
+    "name": "Buzz",
+    "game": "Kingdom Hearts III",
+    "file": "packs/buzz_kh3.zip",
+    "downloadName": "Buzz.zip"
+  },
+  {
+    "id": "claptrap_tps",
+    "kind": "character",
+    "name": "Claptrap",
+    "game": "The Pre-Sequel",
+    "file": "packs/claptrap_tps.zip",
+    "downloadName": "Claptrap.zip"
+  },
+  {
+    "id": "cloud_kh2",
+    "kind": "character",
+    "name": "Cloud",
+    "game": "Kingdom Hearts II",
+    "file": "packs/cloud_kh2.zip",
+    "downloadName": "Cloud.zip"
+  },
+  {
+    "id": "fl4k_bl3",
+    "kind": "character",
+    "name": "FL4K",
+    "game": "Borderlands 3",
+    "file": "packs/fl4k_bl3.zip",
+    "downloadName": "FL4K.zip"
+  },
+  {
+    "id": "gaige_bl2",
+    "kind": "character",
+    "name": "Gaige",
+    "game": "Borderlands 2",
+    "file": "packs/gaige_bl2.zip",
+    "downloadName": "Gaige.zip"
+  },
+  {
+    "id": "jack_sparrow_kh3",
+    "kind": "character",
+    "name": "Jack Sparrow",
+    "game": "Kingdom Hearts III",
+    "file": "packs/jack_sparrow_kh3.zip",
+    "downloadName": "Jack Sparrow.zip"
+  },
+  {
+    "id": "krieg_bl2",
+    "kind": "character",
+    "name": "Krieg",
+    "game": "Borderlands 2",
+    "file": "packs/krieg_bl2.zip",
+    "downloadName": "Krieg.zip"
+  },
+  {
+    "id": "lilith_bl1",
+    "kind": "character",
+    "name": "Lilith",
+    "game": "Borderlands",
+    "file": "packs/lilith_bl1.zip",
+    "downloadName": "Lilith.zip"
+  },
+  {
+    "id": "masterchief_halo3",
+    "kind": "character",
+    "name": "Master Chief",
+    "game": "Halo 3 MCC",
+    "file": "packs/masterchief_halo3.zip",
+    "downloadName": "Master Chief.zip"
+  },
+  {
+    "id": "maya_bl2",
+    "kind": "character",
+    "name": "Maya",
+    "game": "Borderlands 2",
+    "file": "packs/maya_bl2.zip",
+    "downloadName": "Maya.zip"
+  },
+  {
+    "id": "custom_maya_bl3_npc_review",
+    "kind": "character",
+    "name": "Maya",
+    "game": "Borderlands 3",
+    "file": "packs/custom_maya_bl3_npc_review.zip",
+    "downloadName": "Maya.zip"
+  },
+  {
+    "id": "mickey_kh3",
+    "kind": "character",
+    "name": "Mickey",
+    "game": "Kingdom Hearts III",
+    "file": "packs/mickey_kh3.zip",
+    "downloadName": "Mickey.zip"
+  },
+  {
+    "id": "mickey_black_coat_kh2",
+    "kind": "character",
+    "name": "Mickey",
+    "game": "Kingdom Hearts II",
+    "file": "packs/mickey_black_coat_kh2.zip",
+    "downloadName": "Mickey.zip"
+  },
+  {
+    "id": "mordecai_bl1",
+    "kind": "character",
+    "name": "Mordecai",
+    "game": "Borderlands",
+    "file": "packs/mordecai_bl1.zip",
+    "downloadName": "Mordecai.zip"
+  },
+  {
+    "id": "moze_bl3",
+    "kind": "character",
+    "name": "Moze",
+    "game": "Borderlands 3",
+    "file": "packs/moze_bl3.zip",
+    "downloadName": "Moze.zip"
+  },
+  {
+    "id": "neoshadow_kh3",
+    "kind": "character",
+    "name": "Neoshadow",
+    "game": "Kingdom Hearts III",
+    "file": "packs/neoshadow_kh3.zip",
+    "downloadName": "Neoshadow.zip"
+  },
+  {
+    "id": "nisha_tps",
+    "kind": "character",
+    "name": "Nisha",
+    "game": "The Pre-Sequel",
+    "file": "packs/nisha_tps.zip",
+    "downloadName": "Nisha.zip"
+  },
+  {
+    "id": "noble_six_haloreach",
+    "kind": "character",
+    "name": "Noble Six",
+    "game": "Halo Reach",
+    "file": "packs/noble_six_haloreach.zip",
+    "downloadName": "Noble Six.zip"
+  },
+  {
+    "id": "odst_mcc_campaign",
+    "kind": "character",
+    "name": "ODST",
+    "game": "Halo 3: ODST MCC",
+    "file": "packs/odst_mcc_campaign.zip",
+    "downloadName": "ODST.zip"
+  },
+  {
+    "id": "roland_bl1",
+    "kind": "character",
+    "name": "Roland",
+    "game": "Borderlands",
+    "file": "packs/roland_bl1.zip",
+    "downloadName": "Roland.zip"
+  },
+  {
+    "id": "salvador_bl2",
+    "kind": "character",
+    "name": "Salvador",
+    "game": "Borderlands 2",
+    "file": "packs/salvador_bl2.zip",
+    "downloadName": "Salvador.zip"
+  },
+  {
+    "id": "sephiroth_kh2",
+    "kind": "character",
+    "name": "Sephiroth",
+    "game": "Kingdom Hearts II",
+    "file": "packs/sephiroth_kh2.zip",
+    "downloadName": "Sephiroth.zip"
+  },
+  {
+    "id": "shadow_kh3",
+    "kind": "character",
+    "name": "Shadow",
+    "game": "Kingdom Hearts III",
+    "file": "packs/shadow_kh3.zip",
+    "downloadName": "Shadow.zip"
+  },
+  {
+    "id": "soldier_kh3",
+    "kind": "character",
+    "name": "Soldier",
+    "game": "Kingdom Hearts III",
+    "file": "packs/soldier_kh3.zip",
+    "downloadName": "Soldier.zip"
+  },
+  {
+    "id": "sora",
+    "kind": "character",
+    "name": "Sora",
+    "game": "Kingdom Hearts III",
+    "file": "packs/sora.zip",
+    "downloadName": "Sora.zip"
+  },
+  {
+    "id": "stitch_kh3",
+    "kind": "character",
+    "name": "Stitch",
+    "game": "Kingdom Hearts III",
+    "file": "packs/stitch_kh3.zip",
+    "downloadName": "Stitch.zip"
+  },
+  {
+    "id": "arbiter_halo3",
+    "kind": "character",
+    "name": "The Arbiter",
+    "game": "Halo 3 MCC",
+    "file": "packs/arbiter_halo3.zip",
+    "downloadName": "The Arbiter.zip"
+  },
+  {
+    "id": "timothy_tps",
+    "kind": "character",
+    "name": "Timothy",
+    "game": "The Pre-Sequel",
+    "file": "packs/timothy_tps.zip",
+    "downloadName": "Timothy.zip"
+  },
+  {
+    "id": "vanitas_kh3",
+    "kind": "character",
+    "name": "Vanitas",
+    "game": "Kingdom Hearts III",
+    "file": "packs/vanitas_kh3.zip",
+    "downloadName": "Vanitas.zip"
+  },
+  {
+    "id": "vivi_kh2",
+    "kind": "character",
+    "name": "Vivi",
+    "game": "Kingdom Hearts II",
+    "file": "packs/vivi_kh2.zip",
+    "downloadName": "Vivi.zip"
+  },
+  {
+    "id": "wilhelm_tps",
+    "kind": "character",
+    "name": "Wilhelm",
+    "game": "The Pre-Sequel",
+    "file": "packs/wilhelm_tps.zip",
+    "downloadName": "Wilhelm.zip"
+  },
+  {
+    "id": "woody_kh3",
+    "kind": "character",
+    "name": "Woody",
+    "game": "Kingdom Hearts III",
+    "file": "packs/woody_kh3.zip",
+    "downloadName": "Woody.zip"
+  },
+  {
+    "id": "zane_bl3",
+    "kind": "character",
+    "name": "Zane",
+    "game": "Borderlands 3",
+    "file": "packs/zane_bl3.zip",
+    "downloadName": "Zane.zip"
+  },
+  {
+    "id": "zero_bl2",
+    "kind": "character",
+    "name": "Zer0",
+    "game": "Borderlands 2",
+    "file": "packs/zero_bl2.zip",
+    "downloadName": "Zer0.zip"
+  },
+  {
+    "id": "cardboard_guardian",
+    "kind": "character",
+    "name": "Cardboard Guardian",
+    "file": "packs/cardboard_guardian.zip",
+    "downloadName": "Cardboard Guardian.zip",
+    "game": "Original"
+  },
+  {
+    "id": "scrap_robot",
+    "kind": "character",
+    "name": "Rivet",
+    "file": "packs/scrap_robot.zip",
+    "downloadName": "Rivet.zip",
+    "game": "Original"
+  },
+  {
+    "id": "custom_cortana_halo3",
+    "kind": "character",
+    "name": "Cortana",
+    "file": "packs/custom_cortana_halo3.zip",
+    "downloadName": "Cortana.zip",
+    "game": "Halo 3"
+  },
+  {
+    "id": "custom_spiderman_classic",
+    "kind": "character",
+    "name": "Spider-Man",
+    "file": "packs/custom_spiderman_classic.zip",
+    "downloadName": "Spider-Man.zip",
+    "game": "Classic suit"
+  },
+  {
+    "id": "custom_spiderman_2099",
+    "kind": "character",
+    "name": "Spider-Man 2099",
+    "file": "packs/custom_spiderman_2099.zip",
+    "downloadName": "Spider-Man 2099.zip",
+    "game": "2099 suit"
+  },
+  {
+    "id": "pumpkin_buggy_20261031",
+    "kind": "car",
+    "name": "Pumpkin Buggy",
+    "game": "Halloween",
+    "file": "packs/pumpkin_buggy_20261031.zip",
+    "downloadName": "Pumpkin Buggy.zip"
+  },
+  {
+    "id": "harvest_reaper_r4",
+    "kind": "car",
+    "name": "Harvest Reaper",
+    "game": "Halloween",
+    "file": "packs/harvest_reaper_r4.zip",
+    "downloadName": "Harvest Reaper.zip"
+  },
+  {
+    "id": "mazda_furai_2008",
+    "kind": "car",
+    "name": "2008 Mazda Furai",
+    "file": "packs/mazda_furai_2008.zip",
+    "downloadName": "2008 Mazda Furai.zip"
+  },
+  {
+    "id": "ford_raptor_r_2023",
+    "kind": "car",
+    "name": "2023 Ford F-150 Raptor R",
+    "file": "packs/ford_raptor_r_2023.zip",
+    "downloadName": "2023 Ford F-150 Raptor R.zip"
+  },
+  {
+    "id": "forza_acu_integra_23_d6e77796",
+    "kind": "car",
+    "name": "Acura Integra",
+    "file": "packs/forza_acu_integra_23_d6e77796.zip",
+    "downloadName": "Acura Integra.zip"
+  },
+  {
+    "id": "forza_acu_integrar_01_ca02414c",
+    "kind": "car",
+    "name": "Acura Integra Type R",
+    "file": "packs/forza_acu_integrar_01_ca02414c.zip",
+    "downloadName": "Acura Integra Type R.zip"
+  },
+  {
+    "id": "forza_aud_2_sportquattro_86_55479db1",
+    "kind": "car",
+    "name": "Audi Sport Quattro",
+    "file": "packs/forza_aud_2_sportquattro_86_55479db1.zip",
+    "downloadName": "Audi Sport Quattro.zip"
+  },
+  {
+    "id": "forza_ah_3000_65_18d8015b",
+    "kind": "car",
+    "name": "Austin-Healey 3000",
+    "file": "packs/forza_ah_3000_65_18d8015b.zip",
+    "downloadName": "Austin-Healey 3000.zip"
+  },
+  {
+    "id": "forza_dod_challengersrt_22_36c3a74c",
+    "kind": "car",
+    "name": "Dodge Challenger SRT",
+    "file": "packs/forza_dod_challengersrt_22_36c3a74c.zip",
+    "downloadName": "Dodge Challenger SRT.zip"
+  },
+  {
+    "id": "forza_dod_chargerrt_69_b393aa99",
+    "kind": "car",
+    "name": "Dodge Charger R/T",
+    "file": "packs/forza_dod_chargerrt_69_b393aa99.zip",
+    "downloadName": "Dodge Charger R/T.zip"
+  },
+  {
+    "id": "forza_fer_fxxk_16_c527869c",
+    "kind": "car",
+    "name": "Ferrari FXX-K",
+    "file": "packs/forza_fer_fxxk_16_c527869c.zip",
+    "downloadName": "Ferrari FXX-K.zip"
+  },
+  {
+    "id": "forza_for_2069_broncor_20_ad9617f8",
+    "kind": "car",
+    "name": "Ford Bronco R",
+    "file": "packs/forza_for_2069_broncor_20_ad9617f8.zip",
+    "downloadName": "Ford Bronco R.zip"
+  },
+  {
+    "id": "forza_mer_amgone_21_22f36239",
+    "kind": "car",
+    "name": "Mercedes-AMG One",
+    "file": "packs/forza_mer_amgone_21_22f36239.zip",
+    "downloadName": "Mercedes-AMG One.zip"
+  },
+  {
+    "id": "forza_peu_207super2000_07_145b3c87",
+    "kind": "car",
+    "name": "Peugeot 207 Super 2000",
+    "file": "packs/forza_peu_207super2000_07_145b3c87.zip",
+    "downloadName": "Peugeot 207 Super 2000.zip"
+  },
+  {
+    "id": "forza_por_raymond_17_859becd1",
+    "kind": "car",
+    "name": "Porsche Raymond",
+    "file": "packs/forza_por_raymond_17_859becd1.zip",
+    "downloadName": "Porsche Raymond.zip"
+  },
+  {
+    "id": "forza_vw_34_beetlegrc_17_bb745c50",
+    "kind": "car",
+    "name": "Volkswagen Beetle GRC",
+    "file": "packs/forza_vw_34_beetlegrc_17_bb745c50.zip",
+    "downloadName": "Volkswagen Beetle GRC.zip"
+  },
+  {
+    "id": "warthog_fh6",
+    "kind": "car",
+    "name": "Warthog",
+    "file": "packs/warthog_fh6.zip",
+    "downloadName": "Warthog.zip"
+  },
+  {
+    "id": "cardboard_apex",
+    "kind": "car",
+    "name": "Cardboard Apex",
+    "file": "packs/cardboard_apex.zip",
+    "downloadName": "Cardboard Apex.zip"
+  },
+  {
+    "id": "crimson_viper",
+    "kind": "car",
+    "name": "Crimson Viper",
+    "file": "packs/crimson_viper.zip",
+    "downloadName": "Crimson Viper.zip"
+  },
+  {
+    "id": "orbital_runner",
+    "kind": "car",
+    "name": "Orbital Runner",
+    "file": "packs/orbital_runner.zip",
+    "downloadName": "Orbital Runner.zip"
+  },
+  {
+    "id": "shopping_trolley",
+    "kind": "car",
+    "name": "Trolley Trouble",
+    "file": "packs/shopping_trolley.zip",
+    "downloadName": "Trolley Trouble.zip"
+  },
+  {
+    "id": "toy_commando",
+    "kind": "car",
+    "name": "Toy Commando",
+    "file": "packs/toy_commando.zip",
+    "downloadName": "Toy Commando.zip"
+  },
+  {
+    "id": "wheelie_bin",
+    "kind": "car",
+    "name": "Wheelie Bin Racer",
+    "file": "packs/wheelie_bin.zip",
+    "downloadName": "Wheelie Bin Racer.zip"
+  },
+  {
+    "id": "box_buggy",
+    "kind": "car",
+    "name": "Box Buggy",
+    "file": "packs/box_buggy.zip",
+    "downloadName": "Box Buggy.zip"
+  },
+  {
+    "id": "forza_koe_jesko_20_2a7a1126",
+    "kind": "car",
+    "name": "Koenigsegg Jesko",
+    "file": "packs/forza_koe_jesko_20_2a7a1126.zip",
+    "downloadName": "Koenigsegg Jesko.zip"
+  },
+  {
+    "id": "forza_lam_veneno_13_fb7c2766",
+    "kind": "car",
+    "name": "Lamborghini Veneno",
+    "file": "packs/forza_lam_veneno_13_fb7c2766.zip",
+    "downloadName": "Lamborghini Veneno.zip"
+  },
+  {
+    "id": "forza_hyu_nvision74_22_297b5f10",
+    "kind": "car",
+    "name": "Hyundai N Vision 74",
+    "file": "packs/forza_hyu_nvision74_22_297b5f10.zip",
+    "downloadName": "Hyundai N Vision 74.zip"
+  },
+  {
+    "id": "forza_sub_brzfe_22_500a90ca",
+    "kind": "car",
+    "name": "Subaru BRZ",
+    "file": "packs/forza_sub_brzfe_22_500a90ca.zip",
+    "downloadName": "Subaru BRZ.zip"
+  }
+]

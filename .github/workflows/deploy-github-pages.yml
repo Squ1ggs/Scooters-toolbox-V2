@@ -37,6 +37,9 @@ jobs:
           for f in google*.html; do [ -f "$f" ] && cp "$f" _site/; done || true
           # Never ship a CNAME in the artifact; custom host belongs in repo Settings only (and must be removed to drop it).
           rm -f _site/CNAME
+          # Appearance packs are live-site only (scooterstoolbox.com/packs/).
+          rm -rf _site/assets/packs
+          rm -f _site/assets/sdk-mods.html _site/assets/data/appearance-packs.json
 
       - name: Patch Pages mirror (SEO → primary; counters → PHP host)
         env:

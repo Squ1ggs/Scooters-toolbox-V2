@@ -11,9 +11,11 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="dark"/>
-  <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX, KINGDOM HEARTS II FINAL MIX and KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC / Microsoft Store)."/>
+  <meta name="description" content="Other mods by Squ1ggs: Cheat Engine tables for KINGDOM HEARTS FINAL MIX, KINGDOM HEARTS II FINAL MIX, KINGDOM HEARTS Birth by Sleep FINAL MIX and KINGDOM HEARTS III. Steam and Xbox PC / Microsoft Store."/>
   <meta name="robots" content="index,follow"/>
   <link rel="canonical" href="https://scooterstoolbox.com/mods/"/>
+  <meta content="https://scooterstoolbox.com/track.php" name="stx-analytics-endpoint"/>
+  <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
   <title>Other Mods | Cheat Tables by Squ1ggs</title>
   <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
   <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
@@ -302,13 +304,13 @@
     .kh-key {
       position: absolute;
       z-index: -1;
-      top: 12px;
-      right: 10px;
-      width: 190px;
-      max-width: 42%;
+      top: 64px;
+      right: 18px;
+      width: 230px;
+      max-width: 48%;
       height: auto;
       opacity: 0.34;
-      transform: rotate(-12deg);
+      transform: rotate(-14deg);
       filter: drop-shadow(0 0 10px rgba(255, 220, 150, 0.55));
       pointer-events: none;
       animation: khKeyGlow 6s ease-in-out infinite alternate;
@@ -332,10 +334,32 @@
       pointer-events: none;
       animation: khKeyGlow 6s ease-in-out infinite alternate;
     }
+    .card--kh3 {
+      border-color: rgba(170, 160, 255, 0.5);
+      --kh-sky:
+        radial-gradient(400px 250px at 85% 0%, rgba(255, 220, 150, 0.24), transparent 70%),
+        linear-gradient(160deg, #061a3a 0%, #0f3d7a 42%, #3c2c86 74%, #a8478f 100%);
+    }
+    .card--kh3::after { display: none; }
+    .kh-paopu {
+      position: absolute;
+      z-index: -1;
+      top: 58px;
+      right: 24px;
+      width: 150px;
+      max-width: 38%;
+      height: auto;
+      opacity: 0.34;
+      transform: rotate(-10deg);
+      filter: drop-shadow(0 0 12px rgba(255, 220, 150, 0.6));
+      pointer-events: none;
+      animation: khKeyGlow 6s ease-in-out infinite alternate;
+    }
     @media (prefers-reduced-motion: reduce) {
       .card--kh::after,
       .kh-key,
-      .kh-crown { animation: none; }
+      .kh-crown,
+      .kh-paopu { animation: none; }
     }
   </style>
 </head>
@@ -350,6 +374,7 @@
       </div>
       <div class="header-actions">
         <a class="btn btn--primary" href="../index.html">Open save editor</a>
+        <a class="btn stx-live-only-packs" href="../packs/">Appearance packs</a>
         <a class="btn" href="./loot-reference.html">Loot reference</a>
       </div>
     </div>
@@ -358,7 +383,7 @@
   <main>
     <section class="section" aria-labelledby="ct-heading">
       <h2 id="ct-heading">Cheat Engine tables</h2>
-      <p class="sub">Load these in <a class="inline" href="https://www.cheatengine.org/" rel="noopener noreferrer" target="_blank">Cheat Engine</a> while the game is running.</p>
+      <p class="sub">Load these in <a class="inline" href="https://www.cheatengine.org/" rel="noopener noreferrer" target="_blank">Cheat Engine</a> while the game is running. Each game has a Steam table and an Xbox PC / Microsoft Store table. Epic is not supported.</p>
 
       <div class="cards">
         <article class="card card--kh card--kh1">
@@ -370,6 +395,7 @@
             <span class="tag tag--ok">Ready</span>
           </div>
           <div class="tags">
+            <span class="tag tag--platform">Steam</span>
             <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
             <span class="tag">Cheat Engine table</span>
           </div>
@@ -379,16 +405,18 @@
               <li>Sora, Donald &amp; Goofy stats: level, HP, MP, AP, strength, defense, accessory &amp; item slots</li>
               <li>XP for all three party members</li>
               <li>Munny</li>
-              <li>Items: consumables, stat boosts, accessories, stones, synthesis materials (one-tick "give all")</li>
+              <li>Items: consumables, stat boosts, accessories, stones, synthesis materials (one-tick "give all", stops at 50 so chests still open)</li>
               <li>Weapons: every keyblade, staff and shield</li>
               <li>Key items: Ansem's Reports, library books, Navi-G pieces, torn pages, slides and more</li>
               <li>Magic: unlock every spell at level 3 in one tick</li>
               <li>Abilities: pick abilities from a drop-down for each slot (Sora, Donald, Goofy, shared)</li>
             </ul>
           </div>
-          <p class="note">Back up your save first and edit with menus closed. Adding key items early can break story progress. Does not work on the Steam or Epic versions.</p>
+          <p class="note">Back up your save first and edit with menus closed. Adding key items early can break story progress. Use the Steam table on Steam, and the Xbox PC table on the Microsoft Store version. Neither table works on Epic.</p>
           <div class="card__foot">
-            <a class="btn btn--primary" href="./mods/kh1fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
+            <a class="btn btn--primary" href="./mods/kh1fm-steam-squ1ggs.CT" data-stx-download="kh1fm-steam-squ1ggs.CT" download="KINGDOM HEARTS FINAL MIX (Steam) - Squ1ggs.CT">Steam table</a>
+            <a class="btn btn--primary" href="./mods/kh1fm-xbox-pc-squ1ggs.CT" data-stx-download="kh1fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Xbox PC table</a>
+            <a class="btn" href="https://www.nexusmods.com/kingdomheartsfinalmix/mods/262" rel="noopener noreferrer" target="_blank">Nexus Mods</a>
             <span class="card__file">Attach to KINGDOM HEARTS FINAL MIX.exe</span>
           </div>
         </article>
@@ -423,28 +451,32 @@
             <span class="tag tag--ok">Ready</span>
           </div>
           <div class="tags">
+            <span class="tag tag--platform">Steam</span>
             <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
             <span class="tag">Cheat Engine table</span>
           </div>
           <div>
             <h3>What's in it</h3>
             <ul class="features">
-              <li>Combat: infinite HP for Sora &amp; party, infinite MP and drive gauge</li>
-              <li>Sora: XP, HP, MP, bonus AP, strength, magic, defense, armor, accessory &amp; item slots, drive bars</li>
-              <li>Party: Donald, Goofy and world party members' max HP, plus munny</li>
-              <li>Items: consumables, stat boosts, accessories, armor, synthesis materials &amp; recipes</li>
-              <li>Weapons: every keyblade, staff and shield, plus unused &amp; debug weapons in their own section</li>
-              <li>Magic, summons, all five drive forms and growth abilities (High Jump to Glide)</li>
-              <li>Abilities: all 68 of Sora's ability slots</li>
-              <li>Key items: story items, Secret Ansem Reports and world maps</li>
-              <li>Gummi Ship: infinite HP, god mode, score &amp; medal multipliers, higher cost &amp; AP limits</li>
-              <li>Gummi blocks: every block x99 and every ability in one tick (no Dummy entries), every skin, teeny ship and blueprint (earns the all-blueprints achievement)</li>
-              <li>Save extras: difficulty, trophies &amp; munny pouches</li>
+              <li>Combat cheats: infinite HP for Sora and the party, infinite MP, infinite drive gauge</li>
+              <li>Sora: XP, HP, MP, bonus AP, Strength, Magic and Defense, armor, accessory and item slots, drive bars</li>
+              <li>Donald, Goofy and world party members' Max HP</li>
+              <li>Munny (up to 999,999)</li>
+              <li>Items: consumables, stat boosts, accessories, armor, synthesis materials and recipes</li>
+              <li>Weapons: every Keyblade, staff and shield, with unused and debug weapons kept in their own section</li>
+              <li>Magic, summons, all five drive forms and growth abilities</li>
+              <li>All 68 of Sora's ability slots</li>
+              <li>Story and key items, Secret Ansem Reports and world maps</li>
+              <li>Gummi missions: infinite ship HP, god mode, score and medal multipliers</li>
+              <li>Gummi editor: higher cost and AP limits, every block x99, every ship ability, paint skins, teeny ships and all blueprints (gets you the blueprint achievement)</li>
+              <li>Save extras: difficulty, trophies and munny pouches</li>
             </ul>
           </div>
-          <p class="note">Don't level Roxas heavily before you become Sora. Donald and Goofy can miss moves and abilities because they aren't in the party yet. Back up your save before editing XP. Edits usually work best with the pause menu open. Does not work on the Steam or Epic versions.</p>
+          <p class="note">Don't level Roxas heavily before you become Sora. Donald and Goofy can miss moves and abilities because they aren't in the party yet. Back up your save before editing XP. Edits usually work best with the pause menu open. Use the Steam table on Steam, and the Xbox PC table on the Microsoft Store version. Neither table works on Epic.</p>
           <div class="card__foot">
-            <a class="btn btn--primary" href="./mods/kh2fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS II FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
+            <a class="btn btn--primary" href="./mods/kh2fm-steam-squ1ggs.CT" data-stx-download="kh2fm-steam-squ1ggs.CT" download="KINGDOM HEARTS II FINAL MIX (Steam) - Squ1ggs.CT">Steam table</a>
+            <a class="btn btn--primary" href="./mods/kh2fm-xbox-pc-squ1ggs.CT" data-stx-download="kh2fm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS II FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Xbox PC table</a>
+            <a class="btn" href="https://www.nexusmods.com/kingdomhearts2finalmix/mods/431" rel="noopener noreferrer" target="_blank">Nexus Mods</a>
             <span class="card__file">Attach to KINGDOM HEARTS II FINAL MIX.exe</span>
           </div>
         </article>
@@ -473,6 +505,7 @@
             <span class="tag tag--ok">Ready</span>
           </div>
           <div class="tags">
+            <span class="tag tag--platform">Steam</span>
             <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
             <span class="tag">Cheat Engine table</span>
           </div>
@@ -488,12 +521,71 @@
               <li>Battle commands: max level everything, unlock every action command and shotlock, edit your command stock</li>
               <li>Command decks: switch deck, open all 8 battle slots, see all three decks</li>
               <li>Mirage Arena: medals and arena level</li>
+              <li>Minigame scores: Ice Cream Beat scores and combo records for every song, Fruitball scores (freeze your opponent at 0), and Rumble Racing top speed, turning and acceleration</li>
             </ul>
           </div>
-          <p class="note">Back up your save first and edit with menus closed. Each save is one character (Terra, Ventus or Aqua). Other characters' keyblades can pass through enemies, and their finishers can look invisible in the menu but still work. Never carry more than 9 materials or the meld menu crashes. Does not work on the Steam or Epic versions.</p>
+          <p class="note">Back up your save first and edit with menus closed. Each save is one character (Terra, Ventus or Aqua). Other characters' keyblades can pass through enemies, and their finishers can look invisible in the menu but still work. Never carry more than 9 materials or the meld menu crashes. On Steam, untick minigame values before you leave the minigame, or the game locks. Use the Steam table on Steam, and the Xbox PC table on the Microsoft Store version. Neither table works on Epic.</p>
           <div class="card__foot">
-            <a class="btn btn--primary" href="./mods/bbsfm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Download table</a>
+            <a class="btn btn--primary" href="./mods/bbsfm-steam-squ1ggs.CT" data-stx-download="bbsfm-steam-squ1ggs.CT" download="KINGDOM HEARTS Birth by Sleep FINAL MIX (Steam) - Squ1ggs.CT">Steam table</a>
+            <a class="btn btn--primary" href="./mods/bbsfm-xbox-pc-squ1ggs.CT" data-stx-download="bbsfm-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS Birth by Sleep FINAL MIX (Xbox PC 2026) - Squ1ggs.CT">Xbox PC table</a>
+            <a class="btn" href="https://www.nexusmods.com/kingdomheartsbirthbysleepfinalmix/mods/93" rel="noopener noreferrer" target="_blank">Nexus Mods</a>
             <span class="card__file">Attach to KINGDOM HEARTS Birth by Sleep FINAL MIX.exe</span>
+          </div>
+        </article>
+
+        <article class="card card--kh card--kh3">
+          <svg class="kh-paopu" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="khPaopuFruit" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff2b8"/>
+                <stop offset="0.55" stop-color="#f5c94e"/>
+                <stop offset="1" stop-color="#d9902a"/>
+              </linearGradient>
+              <linearGradient id="khPaopuLeaf" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#b8f0a0"/>
+                <stop offset="1" stop-color="#3f9a4a"/>
+              </linearGradient>
+            </defs>
+            <path d="M50 14 Q40 1 27 5 Q35 15 50 14 Z" fill="url(#khPaopuLeaf)"/>
+            <path d="M50 14 Q61 -1 74 4 Q65 15 50 14 Z" fill="url(#khPaopuLeaf)"/>
+            <path d="M50 19 L59.99 41.25 L86.14 43.26 L66.17 60.25 L72.34 85.74 L50 72 L27.66 85.74 L33.83 60.25 L13.86 43.26 L40.01 41.25 Z" fill="url(#khPaopuFruit)" stroke="url(#khPaopuFruit)" stroke-width="10" stroke-linejoin="round"/>
+            <path d="M50 30 L50 64 M36 46 L50 56 L64 46" fill="none" stroke="#b8741f" stroke-width="1.4" stroke-linecap="round" opacity="0.45"/>
+          </svg>
+          <div class="card__head">
+            <div>
+              <p class="card__title">Kingdom Hearts III</p>
+              <p class="card__game">KINGDOM HEARTS III + Re Mind</p>
+            </div>
+            <span class="tag tag--ok">Ready</span>
+          </div>
+          <div class="tags">
+            <span class="tag tag--platform">Steam</span>
+            <span class="tag tag--platform">Xbox PC / Microsoft Store (2026)</span>
+            <span class="tag">Cheat Engine table</span>
+          </div>
+          <div>
+            <h3>What's in it</h3>
+            <ul class="features">
+              <li>Combat cheats: infinite HP, MP and Focus, invincibility, faster running, higher jumps, low gravity, faster gliding and Flowmotion</li>
+              <li>Max all items: 80 of every item, armor, accessory and material, plus every keyblade, staff and shield (stops at 80 so chests still give you stuff)</li>
+              <li>Every spell at max level and every summon, or set each spell's level yourself</li>
+              <li>Every ability for Sora (added unequipped so your AP isn't touched)</li>
+              <li>Support abilities and max equipment slots for Donald, Goofy and the guests</li>
+              <li>Keyblades: fully upgrade them all, or pick each one's level from a list</li>
+              <li>Moogle synthesis list marked as done and every photo mission completed</li>
+              <li>Munny, EXP, difficulty, playtime, bonus stats and boosts used</li>
+              <li>Classic Kingdom games, Secret Reports and key items</li>
+              <li>Gummi Ship: every block, material, pattern, sticker, blueprint and ship ability</li>
+              <li>Gummi flight help if you hate flying: infinite ship HP, full boost, faster ship and easier steering</li>
+              <li>A fixes section for when a menu looks wrong</li>
+            </ul>
+          </div>
+          <p class="note">Back up your save first. Leave "Learn every spell" ticked, because the story can reset your spell levels. If you also play that save on an Xbox console, untick it before you save so the magic menu stays right on Xbox. Item changes show up after you reopen the menu, and ability changes after you save and reload. Adding key items before the story gives them to you can mess with events. If fullscreen stutters or tears, that's the game itself, so try borderless windowed. Use the Steam table on Steam, and the Xbox PC table on the Microsoft Store version. Neither table works on Epic.</p>
+          <div class="card__foot">
+            <a class="btn btn--primary" href="./mods/kh3-steam-squ1ggs.CT" data-stx-download="kh3-steam-squ1ggs.CT" download="KINGDOM HEARTS III (Steam) - Squ1ggs.CT">Steam table</a>
+            <a class="btn btn--primary" href="./mods/kh3-xbox-pc-squ1ggs.CT" data-stx-download="kh3-xbox-pc-squ1ggs.CT" download="KINGDOM HEARTS III (Xbox PC 2026) - Squ1ggs.CT">Xbox PC table</a>
+            <a class="btn" href="https://www.nexusmods.com/kingdomhearts3/mods/2629" rel="noopener noreferrer" target="_blank">Nexus Mods</a>
+            <span class="card__file">Attach to KINGDOM HEARTS III.exe</span>
           </div>
         </article>
       </div>
@@ -513,5 +605,14 @@
   </main>
 
   <footer>Made by Squ1ggs · Use at your own risk and always keep a save backup.</footer>
+<script src="./js/cc-toolbox-analytics.js?v=79e"></script>
+<script>
+document.querySelectorAll("a[data-stx-download]").forEach(function (link) {
+  link.addEventListener("click", function () {
+    if (window.stxBumpDownload) window.stxBumpDownload("mod", link.getAttribute("data-stx-download"));
+  });
+});
+</script>
+<script src="./js/stx-i18n.js?v=78s" defer></script>
 </body>
 </html>

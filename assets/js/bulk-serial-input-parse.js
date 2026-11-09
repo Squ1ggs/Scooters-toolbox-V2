@@ -21,7 +21,7 @@
     if (v.indexOf('@U') === 0) return false;
     if (looksDeserialized(v)) return false;
     if (/^\d+\s*,/.test(v)) return false;
-    return /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(v);
+    return /^[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+$/.test(v);
   }
 
   /**
@@ -40,9 +40,9 @@
      * Use the real STX Base85 alphabet. `}` and backtick are valid payload
      * characters, so generic JSON/YAML terminators must not truncate them.
      */
-    var mU = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
+    var mU = trimmed.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/);
     if (mU) return mU[0];
-    var mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
+    var mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
     if (mRB && looksLikeRawBase85Token(mRB[1])) return mRB[1];
     var mD = trimmed.match(/(\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*)/);
     if (mD) {
@@ -60,7 +60,8 @@
     var v;
     var i;
     for (i = 0; i < (arr || []).length; i++) {
-      v = String(arr[i] == null ? '' : arr[i]).trim().replace(/^['"]|['"]$/g, '');
+      v = String(arr[i] == null ? '' : arr[i]).trim();
+      if ((v.charAt(0) === "'" && v.charAt(v.length - 1) === "'") || (v.charAt(0) === '"' && v.charAt(v.length - 1) === '"')) v = v.slice(1, -1);
       if (!v) continue;
       if (!seen.has(v)) {
         seen.add(v);
@@ -105,7 +106,7 @@
       if (v.indexOf('@U') === 0 || looksDeserialized(v) || looksLikeRawBase85Token(v)) out.push(v);
     }
     if (out.length) return out;
-    var loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+    var loose = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
     if (loose.length) return loose.slice();
     for (li = 0; li < lines.length; li++) {
       var tok = extractStxTokenFromLine(lines[li]);
@@ -150,7 +151,7 @@
       extractJsonStrings(parsed, out);
       return out;
     } catch (err) {
-      var matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+      var matches = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
       var lines = text.split(/\r?\n/);
       var i;
       for (i = 0; i < lines.length; i++) {

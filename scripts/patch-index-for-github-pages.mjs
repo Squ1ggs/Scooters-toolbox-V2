@@ -157,8 +157,46 @@ function patchRobots(filePath) {
   return true;
 }
 
-function patchSiteDir(siteDir) {
+function stripLiveOnlyPacks(siteDir) {
   let n = 0;
+  for (const rel of ['assets/sdk-mods.html', 'assets/data/appearance-packs.json']) {
+    const file = path.join(siteDir, rel);
+    if (fs.existsSync(file)) {
+      fs.rmSync(file, { force: true });
+      console.log('Removed live-only', rel);
+      n++;
+    }
+  }
+  const packsDir = path.join(siteDir, 'assets', 'packs');
+  if (fs.existsSync(packsDir)) {
+    fs.rmSync(packsDir, { recursive: true, force: true });
+    console.log('Removed live-only assets/packs');
+    n++;
+  }
+  for (const file of walkHtmlFiles(siteDir)) {
+    const before = fs.readFileSync(file, 'utf8');
+    const next = before.replace(/<a\b[^>]*\bstx-live-only-packs\b[^>]*>[\s\S]*?<\/a>\s*/g, '');
+    if (next !== before) {
+      fs.writeFileSync(file, next, 'utf8');
+      console.log('Removed packs link', path.relative(siteDir, file));
+      n++;
+    }
+  }
+  const sitemap = path.join(siteDir, 'sitemap.xml');
+  if (fs.existsSync(sitemap)) {
+    const before = fs.readFileSync(sitemap, 'utf8');
+    const next = before.replace(/\s*<url>\s*<loc>[^<]*\/packs\/<\/loc>[\s\S]*?<\/url>/g, '');
+    if (next !== before) {
+      fs.writeFileSync(sitemap, next, 'utf8');
+      console.log('Removed packs URL from sitemap');
+      n++;
+    }
+  }
+  return n;
+}
+
+function patchSiteDir(siteDir) {
+  let n = stripLiveOnlyPacks(siteDir);
   for (const f of walkHtmlFiles(siteDir)) {
     if (patchHtmlFile(f)) {
       console.log('Patched HTML', path.relative(siteDir, f));

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <script>
+    if (!/\/assets\/[^/]*$/.test(location.pathname)) {
+      var stxBase = document.createElement("base");
+      stxBase.href = "/assets/";
+      document.head.appendChild(stxBase);
+    }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="dark"/>
+  <meta name="description" content="Borderlands 4 character packs and car packs. A pack changes the look. Skills, weapons, and driving stay with the game."/>
+  <meta name="robots" content="index,follow"/>
+  <link rel="canonical" href="https://scooterstoolbox.com/packs/"/>
+  <meta content="https://scooterstoolbox.com/track.php" name="stx-analytics-endpoint"/>
+  <meta content="Kh5diS5ddIEi//uGVWFeyKlkOpFcFGLedyg0OZwcfTo=" name="stx-analytics-track-key"/>
+  <title>Appearance Packs | Scooter's Toolbox</title>
+  <link href="./favicon.svg" rel="icon" type="image/svg+xml"/>
+  <link href="./favicon.ico" rel="icon" sizes="any" type="image/x-icon"/>
+  <link href="./favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="./favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+  <link href="./apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      color-scheme: dark;
+      --text: #e8eef6;
+      --muted: #8fa3b8;
+      --accent: #00e5f0;
+      --name: #f5f8fc;
+      --gold: #ffd48a;
+      --ok: #8fe0b0;
+      --warn: #ffb4a0;
+      --panel: rgba(8, 16, 28, 0.78);
+      --panel-border: rgba(0, 229, 240, 0.22);
+      --font-display: "Syne", "Outfit", sans-serif;
+      --font-ui: "Outfit", "Segoe UI", sans-serif;
+      --font-code: "IBM Plex Mono", "Cascadia Mono", Consolas, monospace;
+      --radius: 14px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-ui);
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(1100px 520px at 0% -8%, rgba(120, 90, 255, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 100% 0%, rgba(255, 150, 60, 0.12), transparent 50%),
+        linear-gradient(180deg, #08131f 0%, #071018 42%, #050c14 100%);
+      background-attachment: fixed;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at 50% 20%, #000 20%, transparent 75%);
+      z-index: 0;
+    }
+    header, main { position: relative; z-index: 1; }
+    header { padding: clamp(18px, 3vw, 28px) clamp(16px, 3vw, 28px) 0; }
+    .header-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .header-icon { border-radius: 12px; flex: 0 0 auto; }
+    .header-main { flex: 1 1 320px; min-width: 0; }
+    .header-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .brand-mark {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.55rem, 3.4vw, 2.15rem);
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: var(--name);
+      margin: 0 0 4px;
+    }
+    .brand-mark span { color: var(--accent); }
+    h1 {
+      margin: 0 0 8px;
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+    }
+    .sub { color: var(--muted); font-size: 0.95rem; line-height: 1.5; max-width: 46rem; margin: 0; }
+    main {
+      padding: 24px clamp(16px, 3vw, 28px) 56px;
+      max-width: 1100px;
+      margin: 0 auto;
+      animation: pageIn 0.55s var(--ease) both;
+    }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: -0.01em;
+      margin: 0 0 6px;
+      color: var(--name);
+    }
+    .section { margin-bottom: 34px; }
+    .section > .sub { margin-bottom: 16px; }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px 16px;
+      margin-bottom: 14px;
+    }
+    .section-head h2,
+    .section-head .sub { margin: 0; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      min-height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 229, 240, 0.35);
+      background: rgba(8, 18, 30, 0.75);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 0.86rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s var(--ease);
+    }
+    .btn:hover {
+      border-color: rgba(255, 205, 120, 0.55);
+      background: rgba(0, 229, 240, 0.08);
+      transform: translateY(-1px);
+    }
+    .btn--primary {
+      border-color: rgba(0, 229, 240, 0.55);
+      background: linear-gradient(135deg, rgba(0, 229, 240, 0.18), rgba(255, 180, 80, 0.12));
+      color: var(--name);
+    }
+    .split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+      gap: 18px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--panel-border);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.32);
+    }
+    .card--character { border-color: rgba(170, 150, 255, 0.42); }
+    .card--car { border-color: rgba(255, 170, 90, 0.42); }
+    .card__title {
+      font-family: var(--font-display);
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: var(--name);
+    }
+    .card__game { color: var(--muted); font-size: 0.86rem; margin: 4px 0 0; }
+    .card p { margin: 0; line-height: 1.5; font-size: 0.94rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .tag--ok { color: var(--ok); border-color: rgba(143, 224, 176, 0.45); background: rgba(143, 224, 176, 0.08); }
+    .tag--wait { color: var(--gold); border-color: rgba(255, 212, 138, 0.4); background: rgba(255, 212, 138, 0.08); }
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    .card--car h3 { color: #ffc089; }
+    .card--character h3 { color: #d2c4ff; }
+    .features { margin: 0; padding-left: 18px; line-height: 1.55; font-size: 0.92rem; }
+    .features li::marker { color: var(--accent); }
+    .note {
+      margin: 14px 0 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+    .card__foot {
+      margin-top: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .packs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+      gap: 14px;
+    }
+    .empty {
+      padding: 18px 20px;
+      border-radius: var(--radius);
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      background: rgba(8, 16, 28, 0.4);
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .empty strong { color: var(--name); font-weight: 600; }
+    .steps {
+      margin: 0;
+      padding: 18px 20px 18px 38px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(8, 16, 28, 0.55);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+    .steps li { margin-bottom: 6px; }
+    .steps li::marker { color: var(--gold); font-weight: 700; }
+    code { font-family: var(--font-code); font-size: 0.85em; color: #8fe0c8; }
+    a.inline { color: var(--accent); }
+    footer { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 0 16px 28px; position: relative; z-index: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-bar">
+      <img alt="Scooter's Toolbox" class="header-icon" height="56" src="./img/vault-hunters/scooter_halo.png" width="56" onerror="this.src='./favicon.ico'"/>
+      <div class="header-main">
+        <p class="brand-mark">Scooter's <span>Toolbox</span></p>
+        <h1>Appearance Packs</h1>
+        <p class="sub">Extra characters and cars for Borderlands 4. You get the look. Your skills and the car's driving stay the same.</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn--primary" href="../index.html">Open save editor</a>
+        <a class="btn" href="../mods/">Kingdom Hearts tables</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" aria-labelledby="kinds-heading">
+      <h2 id="kinds-heading">Characters and cars</h2>
+      <p class="sub">Borderlands 4 characters are already in the list. These packs add the others. Install the tool once, then add the packs you want.</p>
+      <div class="split">
+        <article class="card card--character">
+          <p class="card__title">Characters</p>
+          <p>Adds one character to Appearance. You still play as yourself.</p>
+          <ul class="features">
+            <li>Preview the look beside you, then apply it</li>
+            <li>Restore puts your own character back</li>
+          </ul>
+        </article>
+        <article class="card card--car">
+          <p class="card__title">Cars</p>
+          <p>Adds one car to the vehicle list. Driving stays the vehicle you are using.</p>
+          <ul class="features">
+            <li>Preview it, summon it, or put it on your current vehicle</li>
+            <li>Restore puts the original vehicle back</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="tools-heading">
+      <h2 id="tools-heading">Install the tool once</h2>
+      <p class="sub">Use the desktop app, or the two standalone mods. You only need one of those.</p>
+      <div class="split">
+        <article class="card">
+          <p class="card__title">Desktop app</p>
+          <p>Characters are on <strong>Appearance</strong>. Cars are on <strong>Vehicle</strong>, under <strong>Car appearance</strong>. Setup can install the game mod files.</p>
+        </article>
+        <article class="card">
+          <p class="card__title">Standalone mods</p>
+          <p>Character Swapper for characters. Vehicle Swapper for cars. Put the <code>.sdkmod</code> in the game's <code>sdk_mods</code> folder and enable it.</p>
+          <div class="card__foot">
+            <a class="btn btn--primary" href="https://github.com/Squ1ggs/Bl4SDKmods/releases" rel="noopener noreferrer" target="_blank">Mod downloads</a>
+            <a class="btn" href="https://bl-sdk.github.io/oak2-mod-db/" rel="noopener noreferrer" target="_blank">BL4 Python SDK</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="characters-heading">
+      <div class="section-head">
+        <div>
+          <h2 id="characters-heading">Characters</h2>
+          <p class="sub">One download each. Close the game before you install.</p>
+        </div>
+        <span class="tag tag--wait" id="character-count">None posted yet</span>
+      </div>
+      <div class="packs" id="character-packs"></div>
+      <p class="empty" id="character-empty"><strong>No character packs are posted yet.</strong> They will show up on this page as each one is ready. Borderlands 4 characters are already in the swapper, so they do not need a download from here.</p>
+    </section>
+
+    <section class="section" aria-labelledby="cars-heading">
+      <div class="section-head">
+        <div>
+          <h2 id="cars-heading">Cars</h2>
+          <p class="sub">One download each. Close the game, install it, then refresh the car list.</p>
+        </div>
+        <span class="tag tag--wait" id="car-count">None posted yet</span>
+      </div>
+      <div class="packs" id="car-packs"></div>
+      <p class="empty" id="car-empty"><strong>No car packs are posted yet.</strong> They will show up on this page as each one is ready. After you install one, refresh the car list in game.</p>
+    </section>
+
+    <section class="section" aria-labelledby="install-heading">
+      <h2 id="install-heading">Install</h2>
+      <ol class="steps">
+        <li>Close Borderlands 4. Use the folder that contains <code>OakGame</code> and <code>sdk_mods</code>.</li>
+        <li>In the desktop app, open <strong>Setup</strong> and choose <strong>Install downloaded Appearance pack…</strong>.</li>
+        <li>Or extract the zip into that Borderlands 4 folder, so it is not left only in <code>sdk_mods</code> or only in <code>Paks</code>.</li>
+        <li>Load into a map. Characters show up in Appearance. Cars show up after you refresh the car list.</li>
+      </ol>
+      <p class="note">Other players will not see the character or the car. It only shows on your game. To remove one, close the game, delete its folder in <code>sdk_mods/appearance_packs/</code>, and delete the <code>.pak</code>, <code>.utoc</code>, and <code>.ucas</code> files named in its readme from <code>OakGame/Content/Paks</code>.</p>
+    </section>
+  </main>
+
+  <footer>Back up your save before you install a pack.</footer>
+  <script>
+    (function () {
+      function text(value) {
+        return document.createTextNode(value == null ? "" : String(value));
+      }
+      function card(pack) {
+        var article = document.createElement("article");
+        article.className = "card card--" + (pack.kind === "car" ? "car" : "character");
+        var head = document.createElement("div");
+        var title = document.createElement("p");
+        title.className = "card__title";
+        title.appendChild(text(pack.name || "Appearance pack"));
+        head.appendChild(title);
+        if (pack.game) {
+          var game = document.createElement("p");
+          game.className = "card__game";
+          game.appendChild(text(pack.game));
+          head.appendChild(game);
+        }
+        article.appendChild(head);
+        if (pack.summary) {
+          var summary = document.createElement("p");
+          summary.appendChild(text(pack.summary));
+          article.appendChild(summary);
+        }
+        if (pack.file) {
+          var foot = document.createElement("div");
+          foot.className = "card__foot";
+          var link = document.createElement("a");
+          link.className = "btn btn--primary";
+          link.href = location.protocol === 'file:'
+            ? new URL(pack.file, 'https://scooterstoolbox.com/assets/').href
+            : pack.file;
+          if (location.protocol === 'file:') {
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+          }
+          link.setAttribute("download", pack.downloadName || "");
+          link.appendChild(text("Download"));
+          link.addEventListener("click", function () {
+            if (window.stxBumpDownload && pack.id) window.stxBumpDownload("pack", pack.id);
+          });
+          foot.appendChild(link);
+          article.appendChild(foot);
+        }
+        return article;
+      }
+      function fill(kind, items) {
+        var grid = document.getElementById(kind + "-packs");
+        var empty = document.getElementById(kind + "-empty");
+        var count = document.getElementById(kind + "-count");
+        if (!grid) return;
+        if (!items.length) {
+          if (count) {
+            count.textContent = "None posted yet";
+            count.className = "tag tag--wait";
+          }
+          if (empty) empty.hidden = false;
+          return;
+        }
+        if (empty) empty.hidden = true;
+        if (count) {
+          count.textContent = String(items.length);
+          count.className = "tag tag--ok";
+        }
+        items.forEach(function (pack) { grid.appendChild(card(pack)); });
+      }
+      function render(list) {
+        var packs = Array.isArray(list) ? list.filter(function (pack) {
+          return pack && (pack.kind === "character" || pack.kind === "car") && pack.name && pack.file;
+        }) : [];
+        fill("character", packs.filter(function (pack) { return pack.kind === "character"; }));
+        fill("car", packs.filter(function (pack) { return pack.kind === "car"; }));
+      }
+      fetch("./data/appearance-packs.json", { cache: "no-cache" })
+        .then(function (response) { return response.ok ? response.json() : []; })
+        .then(render)
+        .catch(function () { render([]); });
+    })();
+  </script>
+<script src="./js/cc-toolbox-analytics.js?v=79e"></script>
+<script src="./js/stx-i18n.js?v=79s" defer></script>
+</body>
+</html>

@@ -26,20 +26,20 @@
       <ID>300</ID>
       <Description>"Party Stats (permanent - edit with the menu closed)"</Description>
       <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-      <Color>800080</Color>
+      <Color>FF80C0</Color>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
           <ID>301</ID>
           <Description>"Sora"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>800080</Color>
+          <Color>FF80C0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>213</ID>
               <Description>"Level"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D4</Address>
@@ -47,7 +47,7 @@
             <CheatEntry>
               <ID>214</ID>
               <Description>"Current HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D5</Address>
@@ -55,7 +55,7 @@
             <CheatEntry>
               <ID>215</ID>
               <Description>"Max HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D6</Address>
@@ -63,7 +63,7 @@
             <CheatEntry>
               <ID>216</ID>
               <Description>"Current MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D7</Address>
@@ -71,7 +71,7 @@
             <CheatEntry>
               <ID>217</ID>
               <Description>"Max MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D8</Address>
@@ -79,7 +79,7 @@
             <CheatEntry>
               <ID>230</ID>
               <Description>"Max AP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058D9</Address>
@@ -87,7 +87,7 @@
             <CheatEntry>
               <ID>231</ID>
               <Description>"Strength"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058DA</Address>
@@ -95,7 +95,7 @@
             <CheatEntry>
               <ID>232</ID>
               <Description>"Defense"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058DB</Address>
@@ -103,7 +103,7 @@
             <CheatEntry>
               <ID>720</ID>
               <Description>"Accessory Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058EC</Address>
@@ -111,7 +111,7 @@
             <CheatEntry>
               <ID>721</ID>
               <Description>"Item Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30058F5</Address>
@@ -122,13 +122,13 @@
           <ID>302</ID>
           <Description>"Donald"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>800080</Color>
+          <Color>FF80C0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>218</ID>
               <Description>"Level"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005948</Address>
@@ -136,7 +136,7 @@
             <CheatEntry>
               <ID>219</ID>
               <Description>"Current HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005949</Address>
@@ -144,7 +144,7 @@
             <CheatEntry>
               <ID>220</ID>
               <Description>"Max HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594A</Address>
@@ -152,7 +152,7 @@
             <CheatEntry>
               <ID>221</ID>
               <Description>"Current MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594B</Address>
@@ -160,7 +160,7 @@
             <CheatEntry>
               <ID>222</ID>
               <Description>"Max MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594C</Address>
@@ -168,7 +168,7 @@
             <CheatEntry>
               <ID>229</ID>
               <Description>"Max AP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594D</Address>
@@ -176,7 +176,7 @@
             <CheatEntry>
               <ID>233</ID>
               <Description>"Strength"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594E</Address>
@@ -184,7 +184,7 @@
             <CheatEntry>
               <ID>234</ID>
               <Description>"Defense"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+300594F</Address>
@@ -192,7 +192,7 @@
             <CheatEntry>
               <ID>722</ID>
               <Description>"Accessory Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005960</Address>
@@ -200,7 +200,7 @@
             <CheatEntry>
               <ID>723</ID>
               <Description>"Item Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005969</Address>
@@ -211,13 +211,13 @@
           <ID>303</ID>
           <Description>"Goofy"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>800080</Color>
+          <Color>FF80C0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>223</ID>
               <Description>"Level"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059BC</Address>
@@ -225,7 +225,7 @@
             <CheatEntry>
               <ID>224</ID>
               <Description>"Current HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059BD</Address>
@@ -233,7 +233,7 @@
             <CheatEntry>
               <ID>225</ID>
               <Description>"Max HP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059BE</Address>
@@ -241,7 +241,7 @@
             <CheatEntry>
               <ID>226</ID>
               <Description>"Current MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059BF</Address>
@@ -249,7 +249,7 @@
             <CheatEntry>
               <ID>227</ID>
               <Description>"Max MP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059C0</Address>
@@ -257,7 +257,7 @@
             <CheatEntry>
               <ID>228</ID>
               <Description>"Max AP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059C1</Address>
@@ -265,7 +265,7 @@
             <CheatEntry>
               <ID>235</ID>
               <Description>"Strength"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059C2</Address>
@@ -273,7 +273,7 @@
             <CheatEntry>
               <ID>236</ID>
               <Description>"Defense"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059C3</Address>
@@ -281,7 +281,7 @@
             <CheatEntry>
               <ID>724</ID>
               <Description>"Accessory Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059D4</Address>
@@ -289,7 +289,7 @@
             <CheatEntry>
               <ID>725</ID>
               <Description>"Item Slots (max 8)"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059DD</Address>
@@ -300,27 +300,27 @@
           <ID>101</ID>
           <Description>"Experience (XP)"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>800080</Color>
+          <Color>FF80C0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>0</ID>
               <Description>"Sora XP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005910</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>1</ID>
               <Description>"Donald XP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005984</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>2</ID>
               <Description>"Goofy XP"</Description>
-              <Color>800080</Color>
+              <Color>FF80C0</Color>
               <VariableType>4 Bytes</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+30059F8</Address>
             </CheatEntry>
@@ -332,13 +332,13 @@
       <ID>103</ID>
       <Description>"Munny"</Description>
       <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-      <Color>008080</Color>
+      <Color>00D0D0</Color>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
           <ID>4</ID>
           <Description>"Munny"</Description>
-          <Color>008080</Color>
+          <Color>00D0D0</Color>
           <VariableType>4 Bytes</VariableType>
           <Address>"KINGDOM HEARTS FINAL MIX.exe"+301BCEC</Address>
         </CheatEntry>
@@ -346,69 +346,68 @@
     </CheatEntry>
     <CheatEntry>
       <ID>200</ID>
-      <Description>"Items (keep counts at 99 or below)"</Description>
+      <Description>"Items (keep counts at 50 or below so chests can still be opened)"</Description>
       <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-      <Color>808000</Color>
+      <Color>D0D000</Color>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
           <ID>201</ID>
           <Description>"Consumables"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>808000</Color>
+          <Color>D0D000</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>601</ID>
-              <Description>"Give all consumables (x99) - tick once"</Description>
-              <Color>008000</Color>
+              <Description>"Give all consumables (x50) - tick once"</Description>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Potion
 "KINGDOM HEARTS FINAL MIX.exe"+3005D6A:
-db 63
+db 32
 // Hi-Potion
 "KINGDOM HEARTS FINAL MIX.exe"+3005D6B:
-db 63
+db 32
 // Ether
 "KINGDOM HEARTS FINAL MIX.exe"+3005D6C:
-db 63
+db 32
 // Elixir
 "KINGDOM HEARTS FINAL MIX.exe"+3005D6D:
-db 63
+db 32
 // Mega-Potion
 "KINGDOM HEARTS FINAL MIX.exe"+3005D6F:
-db 63
+db 32
 // Mega-Ether
 "KINGDOM HEARTS FINAL MIX.exe"+3005D70:
-db 63
+db 32
 // Megalixir
 "KINGDOM HEARTS FINAL MIX.exe"+3005D71:
-db 63
+db 32
 // Tent
 "KINGDOM HEARTS FINAL MIX.exe"+3005DF7:
-db 63
+db 32
 // Camping Set
 "KINGDOM HEARTS FINAL MIX.exe"+3005DF8:
-db 63
+db 32
 // Cottage
 "KINGDOM HEARTS FINAL MIX.exe"+3005DF9:
-db 63
-
+db 32
 [DISABLE]
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>104</ID>
               <Description>"Potion"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D6A</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>105</ID>
               <Description>"Hi-Potion"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D6B</Address>
@@ -416,7 +415,7 @@ db 63
             <CheatEntry>
               <ID>106</ID>
               <Description>"Ether"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D6C</Address>
@@ -424,7 +423,7 @@ db 63
             <CheatEntry>
               <ID>107</ID>
               <Description>"Elixir"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D6D</Address>
@@ -432,7 +431,7 @@ db 63
             <CheatEntry>
               <ID>108</ID>
               <Description>"Mega-Potion"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D6F</Address>
@@ -440,7 +439,7 @@ db 63
             <CheatEntry>
               <ID>109</ID>
               <Description>"Mega-Ether"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D70</Address>
@@ -448,7 +447,7 @@ db 63
             <CheatEntry>
               <ID>110</ID>
               <Description>"Megalixir"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D71</Address>
@@ -456,7 +455,7 @@ db 63
             <CheatEntry>
               <ID>304</ID>
               <Description>"Tent"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DF7</Address>
@@ -464,7 +463,7 @@ db 63
             <CheatEntry>
               <ID>359</ID>
               <Description>"Camping Set"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DF8</Address>
@@ -472,7 +471,7 @@ db 63
             <CheatEntry>
               <ID>360</ID>
               <Description>"Cottage"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DF9</Address>
@@ -483,32 +482,31 @@ db 63
           <ID>510</ID>
           <Description>"Stat Boosts"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>808000</Color>
+          <Color>D0D000</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>602</ID>
-              <Description>"Give all stat boosts (x99) - tick once"</Description>
-              <Color>008000</Color>
+              <Description>"Give all stat boosts (x50) - tick once"</Description>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Power Up
 "KINGDOM HEARTS FINAL MIX.exe"+3005E01:
-db 63
+db 32
 // Defense Up
 "KINGDOM HEARTS FINAL MIX.exe"+3005E02:
-db 63
+db 32
 // AP Up
 "KINGDOM HEARTS FINAL MIX.exe"+3005E03:
-db 63
-
+db 32
 [DISABLE]
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>361</ID>
               <Description>"Power Up"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E01</Address>
@@ -516,7 +514,7 @@ db 63
             <CheatEntry>
               <ID>357</ID>
               <Description>"Defense Up"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E02</Address>
@@ -524,7 +522,7 @@ db 63
             <CheatEntry>
               <ID>366</ID>
               <Description>"AP Up"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E03</Address>
@@ -535,185 +533,184 @@ db 63
           <ID>203</ID>
           <Description>"Accessories"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>808000</Color>
+          <Color>D0D000</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>603</ID>
-              <Description>"Give all accessories (x99) - tick once"</Description>
-              <Color>008000</Color>
+              <Description>"Give all accessories (x50) - tick once"</Description>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Protect Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7A:
-db 63
+db 32
 // Protera Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7B:
-db 63
+db 32
 // Protega Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7C:
-db 63
+db 32
 // Fire Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7D:
-db 63
+db 32
 // Fira Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7E:
-db 63
+db 32
 // Firaga Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D7F:
-db 63
+db 32
 // Blizzard Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D80:
-db 63
+db 32
 // Blizzara Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D81:
-db 63
+db 32
 // Blizzaga Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D82:
-db 63
+db 32
 // Thunder Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D83:
-db 63
+db 32
 // Thundara Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D84:
-db 63
+db 32
 // Thundaga Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D85:
-db 63
+db 32
 // Ability Stud
 "KINGDOM HEARTS FINAL MIX.exe"+3005D86:
-db 63
+db 32
 // Guard Earring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D87:
-db 63
+db 32
 // Master Earring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D88:
-db 63
+db 32
 // Chaos Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D89:
-db 63
+db 32
 // Dark Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8A:
-db 63
+db 32
 // Element Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8B:
-db 63
+db 32
 // Three Stars
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8C:
-db 63
+db 32
 // Power Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8D:
-db 63
+db 32
 // Golem Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8E:
-db 63
+db 32
 // Titan Chain
 "KINGDOM HEARTS FINAL MIX.exe"+3005D8F:
-db 63
+db 32
 // Energy Bangle
 "KINGDOM HEARTS FINAL MIX.exe"+3005D90:
-db 63
+db 32
 // Angel Bangle
 "KINGDOM HEARTS FINAL MIX.exe"+3005D91:
-db 63
+db 32
 // Gaia Bangle
 "KINGDOM HEARTS FINAL MIX.exe"+3005D92:
-db 63
+db 32
 // Magic Armlet
 "KINGDOM HEARTS FINAL MIX.exe"+3005D93:
-db 63
+db 32
 // Rune Armlet
 "KINGDOM HEARTS FINAL MIX.exe"+3005D94:
-db 63
+db 32
 // Atlas Armlet
 "KINGDOM HEARTS FINAL MIX.exe"+3005D95:
-db 63
+db 32
 // Heartguard
 "KINGDOM HEARTS FINAL MIX.exe"+3005D96:
-db 63
+db 32
 // Ribbon
 "KINGDOM HEARTS FINAL MIX.exe"+3005D97:
-db 63
+db 32
 // Crystal Crown
 "KINGDOM HEARTS FINAL MIX.exe"+3005D98:
-db 63
+db 32
 // Brave Warrior
 "KINGDOM HEARTS FINAL MIX.exe"+3005D99:
-db 63
+db 32
 // Ifrit's Horn
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9A:
-db 63
+db 32
 // Inferno Band
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9B:
-db 63
+db 32
 // White Fang
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9C:
-db 63
+db 32
 // Ray of Light
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9D:
-db 63
+db 32
 // Holy Circlet
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9E:
-db 63
+db 32
 // Raven's Claw
 "KINGDOM HEARTS FINAL MIX.exe"+3005D9F:
-db 63
+db 32
 // Omega Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA0:
-db 63
+db 32
 // EXP Earring
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA1:
-db 63
+db 32
 // EXP Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA3:
-db 63
+db 32
 // EXP Bracelet
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA4:
-db 63
+db 32
 // EXP Necklace
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA5:
-db 63
+db 32
 // Firagun Band
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA6:
-db 63
+db 32
 // Blizzagun Band
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA7:
-db 63
+db 32
 // Thundagun Band
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA8:
-db 63
+db 32
 // Ifrit Belt
 "KINGDOM HEARTS FINAL MIX.exe"+3005DA9:
-db 63
+db 32
 // Shiva Belt
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAA:
-db 63
+db 32
 // Ramuh Belt
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAB:
-db 63
+db 32
 // Moogle Badge
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAC:
-db 63
+db 32
 // Cosmic Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAD:
-db 63
+db 32
 // Royal Crown
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAE:
-db 63
+db 32
 // Prime Cap
 "KINGDOM HEARTS FINAL MIX.exe"+3005DAF:
-db 63
+db 32
 // Obsidian Ring
 "KINGDOM HEARTS FINAL MIX.exe"+3005DB0:
-db 63
-
+db 32
 [DISABLE]
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>119</ID>
               <Description>"Protect Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7A</Address>
@@ -721,7 +718,7 @@ db 63
             <CheatEntry>
               <ID>120</ID>
               <Description>"Protera Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7B</Address>
@@ -729,7 +726,7 @@ db 63
             <CheatEntry>
               <ID>121</ID>
               <Description>"Protega Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7C</Address>
@@ -737,7 +734,7 @@ db 63
             <CheatEntry>
               <ID>122</ID>
               <Description>"Fire Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7D</Address>
@@ -745,7 +742,7 @@ db 63
             <CheatEntry>
               <ID>123</ID>
               <Description>"Fira Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7E</Address>
@@ -753,7 +750,7 @@ db 63
             <CheatEntry>
               <ID>124</ID>
               <Description>"Firaga Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D7F</Address>
@@ -761,7 +758,7 @@ db 63
             <CheatEntry>
               <ID>125</ID>
               <Description>"Blizzard Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D80</Address>
@@ -769,7 +766,7 @@ db 63
             <CheatEntry>
               <ID>126</ID>
               <Description>"Blizzara Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D81</Address>
@@ -777,7 +774,7 @@ db 63
             <CheatEntry>
               <ID>127</ID>
               <Description>"Blizzaga Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D82</Address>
@@ -785,7 +782,7 @@ db 63
             <CheatEntry>
               <ID>128</ID>
               <Description>"Thunder Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D83</Address>
@@ -793,7 +790,7 @@ db 63
             <CheatEntry>
               <ID>129</ID>
               <Description>"Thundara Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D84</Address>
@@ -801,7 +798,7 @@ db 63
             <CheatEntry>
               <ID>130</ID>
               <Description>"Thundaga Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D85</Address>
@@ -809,7 +806,7 @@ db 63
             <CheatEntry>
               <ID>133</ID>
               <Description>"Ability Stud"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D86</Address>
@@ -817,7 +814,7 @@ db 63
             <CheatEntry>
               <ID>134</ID>
               <Description>"Guard Earring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D87</Address>
@@ -825,7 +822,7 @@ db 63
             <CheatEntry>
               <ID>135</ID>
               <Description>"Master Earring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D88</Address>
@@ -833,7 +830,7 @@ db 63
             <CheatEntry>
               <ID>132</ID>
               <Description>"Chaos Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D89</Address>
@@ -841,7 +838,7 @@ db 63
             <CheatEntry>
               <ID>137</ID>
               <Description>"Dark Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8A</Address>
@@ -849,7 +846,7 @@ db 63
             <CheatEntry>
               <ID>136</ID>
               <Description>"Element Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8B</Address>
@@ -857,7 +854,7 @@ db 63
             <CheatEntry>
               <ID>646</ID>
               <Description>"Three Stars"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8C</Address>
@@ -865,7 +862,7 @@ db 63
             <CheatEntry>
               <ID>644</ID>
               <Description>"Power Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8D</Address>
@@ -873,7 +870,7 @@ db 63
             <CheatEntry>
               <ID>645</ID>
               <Description>"Golem Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8E</Address>
@@ -881,7 +878,7 @@ db 63
             <CheatEntry>
               <ID>643</ID>
               <Description>"Titan Chain"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D8F</Address>
@@ -889,7 +886,7 @@ db 63
             <CheatEntry>
               <ID>642</ID>
               <Description>"Energy Bangle"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D90</Address>
@@ -897,7 +894,7 @@ db 63
             <CheatEntry>
               <ID>641</ID>
               <Description>"Angel Bangle"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D91</Address>
@@ -905,7 +902,7 @@ db 63
             <CheatEntry>
               <ID>640</ID>
               <Description>"Gaia Bangle"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D92</Address>
@@ -913,7 +910,7 @@ db 63
             <CheatEntry>
               <ID>639</ID>
               <Description>"Magic Armlet"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D93</Address>
@@ -921,7 +918,7 @@ db 63
             <CheatEntry>
               <ID>638</ID>
               <Description>"Rune Armlet"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D94</Address>
@@ -929,7 +926,7 @@ db 63
             <CheatEntry>
               <ID>637</ID>
               <Description>"Atlas Armlet"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D95</Address>
@@ -937,7 +934,7 @@ db 63
             <CheatEntry>
               <ID>636</ID>
               <Description>"Heartguard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D96</Address>
@@ -945,7 +942,7 @@ db 63
             <CheatEntry>
               <ID>634</ID>
               <Description>"Ribbon"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D97</Address>
@@ -953,7 +950,7 @@ db 63
             <CheatEntry>
               <ID>635</ID>
               <Description>"Crystal Crown"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D98</Address>
@@ -961,7 +958,7 @@ db 63
             <CheatEntry>
               <ID>632</ID>
               <Description>"Brave Warrior"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D99</Address>
@@ -969,7 +966,7 @@ db 63
             <CheatEntry>
               <ID>631</ID>
               <Description>"Ifrit's Horn"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9A</Address>
@@ -977,7 +974,7 @@ db 63
             <CheatEntry>
               <ID>630</ID>
               <Description>"Inferno Band"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9B</Address>
@@ -985,7 +982,7 @@ db 63
             <CheatEntry>
               <ID>629</ID>
               <Description>"White Fang"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9C</Address>
@@ -993,7 +990,7 @@ db 63
             <CheatEntry>
               <ID>628</ID>
               <Description>"Ray of Light"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9D</Address>
@@ -1001,7 +998,7 @@ db 63
             <CheatEntry>
               <ID>627</ID>
               <Description>"Holy Circlet"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9E</Address>
@@ -1009,7 +1006,7 @@ db 63
             <CheatEntry>
               <ID>626</ID>
               <Description>"Raven's Claw"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D9F</Address>
@@ -1017,7 +1014,7 @@ db 63
             <CheatEntry>
               <ID>625</ID>
               <Description>"Omega Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA0</Address>
@@ -1025,7 +1022,7 @@ db 63
             <CheatEntry>
               <ID>624</ID>
               <Description>"EXP Earring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA1</Address>
@@ -1033,7 +1030,7 @@ db 63
             <CheatEntry>
               <ID>623</ID>
               <Description>"EXP Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA3</Address>
@@ -1041,7 +1038,7 @@ db 63
             <CheatEntry>
               <ID>622</ID>
               <Description>"EXP Bracelet"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA4</Address>
@@ -1049,7 +1046,7 @@ db 63
             <CheatEntry>
               <ID>621</ID>
               <Description>"EXP Necklace"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA5</Address>
@@ -1057,7 +1054,7 @@ db 63
             <CheatEntry>
               <ID>620</ID>
               <Description>"Firagun Band"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA6</Address>
@@ -1065,7 +1062,7 @@ db 63
             <CheatEntry>
               <ID>619</ID>
               <Description>"Blizzagun Band"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA7</Address>
@@ -1073,7 +1070,7 @@ db 63
             <CheatEntry>
               <ID>618</ID>
               <Description>"Thundagun Band"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA8</Address>
@@ -1081,7 +1078,7 @@ db 63
             <CheatEntry>
               <ID>617</ID>
               <Description>"Ifrit Belt"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DA9</Address>
@@ -1089,7 +1086,7 @@ db 63
             <CheatEntry>
               <ID>612</ID>
               <Description>"Shiva Belt"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAA</Address>
@@ -1097,7 +1094,7 @@ db 63
             <CheatEntry>
               <ID>613</ID>
               <Description>"Ramuh Belt"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAB</Address>
@@ -1105,7 +1102,7 @@ db 63
             <CheatEntry>
               <ID>616</ID>
               <Description>"Moogle Badge"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAC</Address>
@@ -1113,7 +1110,7 @@ db 63
             <CheatEntry>
               <ID>615</ID>
               <Description>"Cosmic Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAD</Address>
@@ -1121,7 +1118,7 @@ db 63
             <CheatEntry>
               <ID>614</ID>
               <Description>"Royal Crown"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAE</Address>
@@ -1129,7 +1126,7 @@ db 63
             <CheatEntry>
               <ID>611</ID>
               <Description>"Prime Cap"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DAF</Address>
@@ -1137,7 +1134,7 @@ db 63
             <CheatEntry>
               <ID>131</ID>
               <Description>"Obsidian Ring"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DB0</Address>
@@ -1148,47 +1145,46 @@ db 63
           <ID>202</ID>
           <Description>"Stones"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>808000</Color>
+          <Color>D0D000</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>604</ID>
-              <Description>"Give all stones (x99) - tick once"</Description>
-              <Color>008000</Color>
+              <Description>"Give all stones (x50) - tick once"</Description>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Fury Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D72:
-db 63
+db 32
 // Power Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D73:
-db 63
+db 32
 // Energy Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D74:
-db 63
+db 32
 // Blazing Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D75:
-db 63
+db 32
 // Frost Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D76:
-db 63
+db 32
 // Lightning Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D77:
-db 63
+db 32
 // Dazzling Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D78:
-db 63
+db 32
 // Stormy Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005D79:
-db 63
-
+db 32
 [DISABLE]
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>111</ID>
               <Description>"Fury Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D72</Address>
@@ -1196,7 +1192,7 @@ db 63
             <CheatEntry>
               <ID>112</ID>
               <Description>"Power Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D73</Address>
@@ -1204,7 +1200,7 @@ db 63
             <CheatEntry>
               <ID>113</ID>
               <Description>"Energy Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D74</Address>
@@ -1212,7 +1208,7 @@ db 63
             <CheatEntry>
               <ID>114</ID>
               <Description>"Blazing Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D75</Address>
@@ -1220,7 +1216,7 @@ db 63
             <CheatEntry>
               <ID>115</ID>
               <Description>"Frost Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D76</Address>
@@ -1228,7 +1224,7 @@ db 63
             <CheatEntry>
               <ID>116</ID>
               <Description>"Lightning Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D77</Address>
@@ -1236,7 +1232,7 @@ db 63
             <CheatEntry>
               <ID>117</ID>
               <Description>"Dazzling Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D78</Address>
@@ -1244,7 +1240,7 @@ db 63
             <CheatEntry>
               <ID>118</ID>
               <Description>"Stormy Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005D79</Address>
@@ -1255,131 +1251,130 @@ db 63
           <ID>511</ID>
           <Description>"Synthesis Materials"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>808000</Color>
+          <Color>D0D000</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>605</ID>
-              <Description>"Give all synthesis materials (x99) - tick once"</Description>
-              <Color>008000</Color>
+              <Description>"Give all synthesis materials (x50) - tick once"</Description>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Lucid Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E52:
-db 63
+db 32
 // Lucid Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E53:
-db 63
+db 32
 // Lucid Crystal
 "KINGDOM HEARTS FINAL MIX.exe"+3005E54:
-db 63
+db 32
 // Spirit Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E55:
-db 63
+db 32
 // Spirit Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E56:
-db 63
+db 32
 // Power Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E57:
-db 63
+db 32
 // Power Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E58:
-db 63
+db 32
 // Power Crystal
 "KINGDOM HEARTS FINAL MIX.exe"+3005E59:
-db 63
+db 32
 // Blaze Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5A:
-db 63
+db 32
 // Blaze Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5B:
-db 63
+db 32
 // Frost Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5C:
-db 63
+db 32
 // Frost Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5D:
-db 63
+db 32
 // Thunder Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5E:
-db 63
+db 32
 // Thunder Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E5F:
-db 63
+db 32
 // Shiny Crystal
 "KINGDOM HEARTS FINAL MIX.exe"+3005E60:
-db 63
+db 32
 // Bright Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E61:
-db 63
+db 32
 // Bright Gem
 "KINGDOM HEARTS FINAL MIX.exe"+3005E62:
-db 63
+db 32
 // Bright Crystal
 "KINGDOM HEARTS FINAL MIX.exe"+3005E63:
-db 63
+db 32
 // Mystery Goo
 "KINGDOM HEARTS FINAL MIX.exe"+3005E64:
-db 63
+db 32
 // Gale
 "KINGDOM HEARTS FINAL MIX.exe"+3005E65:
-db 63
+db 32
 // Mythril Shard
 "KINGDOM HEARTS FINAL MIX.exe"+3005E66:
-db 63
+db 32
 // Mythril
 "KINGDOM HEARTS FINAL MIX.exe"+3005E67:
-db 63
+db 32
 // Orichalcum
 "KINGDOM HEARTS FINAL MIX.exe"+3005E68:
-db 63
+db 32
 // Serenity Power
 "KINGDOM HEARTS FINAL MIX.exe"+3005E04:
-db 63
+db 32
 // Dark Matter
 "KINGDOM HEARTS FINAL MIX.exe"+3005E05:
-db 63
+db 32
 // Mythril Stone
 "KINGDOM HEARTS FINAL MIX.exe"+3005E06:
-db 63
+db 32
 // Fire Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E07:
-db 63
+db 32
 // Blizzard Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E08:
-db 63
+db 32
 // Thunder Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E09:
-db 63
+db 32
 // Cure Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0A:
-db 63
+db 32
 // Gravity Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0B:
-db 63
+db 32
 // Stop Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0C:
-db 63
+db 32
 // Aero Arts
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0D:
-db 63
+db 32
 // Shiitake Rank
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0E:
-db 63
+db 32
 // Matsutake Rank
 "KINGDOM HEARTS FINAL MIX.exe"+3005E0F:
-db 63
+db 32
 // Mystery Mold
 "KINGDOM HEARTS FINAL MIX.exe"+3005E10:
-db 63
-
+db 32
 [DISABLE]
 </AssemblerScript>
             </CheatEntry>
             <CheatEntry>
               <ID>367</ID>
               <Description>"Serenity Power"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E04</Address>
@@ -1387,7 +1382,7 @@ db 63
             <CheatEntry>
               <ID>368</ID>
               <Description>"Dark Matter"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E05</Address>
@@ -1395,7 +1390,7 @@ db 63
             <CheatEntry>
               <ID>369</ID>
               <Description>"Mythril Stone"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E06</Address>
@@ -1403,7 +1398,7 @@ db 63
             <CheatEntry>
               <ID>378</ID>
               <Description>"Fire Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E07</Address>
@@ -1411,7 +1406,7 @@ db 63
             <CheatEntry>
               <ID>377</ID>
               <Description>"Blizzard Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E08</Address>
@@ -1419,7 +1414,7 @@ db 63
             <CheatEntry>
               <ID>376</ID>
               <Description>"Thunder Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E09</Address>
@@ -1427,7 +1422,7 @@ db 63
             <CheatEntry>
               <ID>375</ID>
               <Description>"Cure Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0A</Address>
@@ -1435,7 +1430,7 @@ db 63
             <CheatEntry>
               <ID>374</ID>
               <Description>"Gravity Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0B</Address>
@@ -1443,7 +1438,7 @@ db 63
             <CheatEntry>
               <ID>373</ID>
               <Description>"Stop Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0C</Address>
@@ -1451,7 +1446,7 @@ db 63
             <CheatEntry>
               <ID>372</ID>
               <Description>"Aero Arts"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0D</Address>
@@ -1459,7 +1454,7 @@ db 63
             <CheatEntry>
               <ID>371</ID>
               <Description>"Shiitake Rank"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0E</Address>
@@ -1467,7 +1462,7 @@ db 63
             <CheatEntry>
               <ID>370</ID>
               <Description>"Matsutake Rank"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E0F</Address>
@@ -1475,7 +1470,7 @@ db 63
             <CheatEntry>
               <ID>379</ID>
               <Description>"Mystery Mold"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E10</Address>
@@ -1483,7 +1478,7 @@ db 63
             <CheatEntry>
               <ID>446</ID>
               <Description>"Lucid Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E52</Address>
@@ -1491,7 +1486,7 @@ db 63
             <CheatEntry>
               <ID>447</ID>
               <Description>"Lucid Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E53</Address>
@@ -1499,7 +1494,7 @@ db 63
             <CheatEntry>
               <ID>448</ID>
               <Description>"Lucid Crystal"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E54</Address>
@@ -1507,7 +1502,7 @@ db 63
             <CheatEntry>
               <ID>449</ID>
               <Description>"Spirit Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E55</Address>
@@ -1515,7 +1510,7 @@ db 63
             <CheatEntry>
               <ID>450</ID>
               <Description>"Spirit Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E56</Address>
@@ -1523,7 +1518,7 @@ db 63
             <CheatEntry>
               <ID>451</ID>
               <Description>"Power Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E57</Address>
@@ -1531,7 +1526,7 @@ db 63
             <CheatEntry>
               <ID>452</ID>
               <Description>"Power Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E58</Address>
@@ -1539,7 +1534,7 @@ db 63
             <CheatEntry>
               <ID>453</ID>
               <Description>"Power Crystal"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E59</Address>
@@ -1547,7 +1542,7 @@ db 63
             <CheatEntry>
               <ID>454</ID>
               <Description>"Blaze Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5A</Address>
@@ -1555,7 +1550,7 @@ db 63
             <CheatEntry>
               <ID>455</ID>
               <Description>"Blaze Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5B</Address>
@@ -1563,7 +1558,7 @@ db 63
             <CheatEntry>
               <ID>456</ID>
               <Description>"Frost Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5C</Address>
@@ -1571,7 +1566,7 @@ db 63
             <CheatEntry>
               <ID>457</ID>
               <Description>"Frost Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5D</Address>
@@ -1579,7 +1574,7 @@ db 63
             <CheatEntry>
               <ID>458</ID>
               <Description>"Thunder Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5E</Address>
@@ -1587,7 +1582,7 @@ db 63
             <CheatEntry>
               <ID>459</ID>
               <Description>"Thunder Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E5F</Address>
@@ -1595,7 +1590,7 @@ db 63
             <CheatEntry>
               <ID>460</ID>
               <Description>"Shiny Crystal"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E60</Address>
@@ -1603,7 +1598,7 @@ db 63
             <CheatEntry>
               <ID>461</ID>
               <Description>"Bright Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E61</Address>
@@ -1611,7 +1606,7 @@ db 63
             <CheatEntry>
               <ID>462</ID>
               <Description>"Bright Gem"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E62</Address>
@@ -1619,7 +1614,7 @@ db 63
             <CheatEntry>
               <ID>463</ID>
               <Description>"Bright Crystal"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E63</Address>
@@ -1627,7 +1622,7 @@ db 63
             <CheatEntry>
               <ID>464</ID>
               <Description>"Mystery Goo"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E64</Address>
@@ -1635,7 +1630,7 @@ db 63
             <CheatEntry>
               <ID>465</ID>
               <Description>"Gale"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E65</Address>
@@ -1643,7 +1638,7 @@ db 63
             <CheatEntry>
               <ID>466</ID>
               <Description>"Mythril Shard"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E66</Address>
@@ -1651,7 +1646,7 @@ db 63
             <CheatEntry>
               <ID>467</ID>
               <Description>"Mythril"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E67</Address>
@@ -1659,7 +1654,7 @@ db 63
             <CheatEntry>
               <ID>468</ID>
               <Description>"Orichalcum"</Description>
-              <Color>808000</Color>
+              <Color>D0D000</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005E68</Address>
@@ -1672,20 +1667,20 @@ db 63
       <ID>520</ID>
       <Description>"Weapons"</Description>
       <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-      <Color>C00000</Color>
+      <Color>FFA040</Color>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
           <ID>204</ID>
           <Description>"Sora - Keyblades"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>C00000</Color>
+          <Color>FFA040</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>606</ID>
               <Description>"Give all keyblades (x1) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Kingdom Key
@@ -1749,7 +1744,7 @@ db 01
             <CheatEntry>
               <ID>356</ID>
               <Description>"Kingdom Key"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DBA</Address>
@@ -1757,7 +1752,7 @@ db 01
             <CheatEntry>
               <ID>609</ID>
               <Description>"Jungle King"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DBF</Address>
@@ -1765,7 +1760,7 @@ db 01
             <CheatEntry>
               <ID>610</ID>
               <Description>"Three Wishes"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC0</Address>
@@ -1773,7 +1768,7 @@ db 01
             <CheatEntry>
               <ID>350</ID>
               <Description>"Fairy Harp"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC1</Address>
@@ -1781,7 +1776,7 @@ db 01
             <CheatEntry>
               <ID>349</ID>
               <Description>"Pumpkinhead"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC2</Address>
@@ -1789,7 +1784,7 @@ db 01
             <CheatEntry>
               <ID>348</ID>
               <Description>"Crabclaw"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC3</Address>
@@ -1797,7 +1792,7 @@ db 01
             <CheatEntry>
               <ID>332</ID>
               <Description>"Divine Rose"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC4</Address>
@@ -1805,7 +1800,7 @@ db 01
             <CheatEntry>
               <ID>331</ID>
               <Description>"Spellbinder"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC5</Address>
@@ -1813,7 +1808,7 @@ db 01
             <CheatEntry>
               <ID>330</ID>
               <Description>"Olympia"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC6</Address>
@@ -1821,7 +1816,7 @@ db 01
             <CheatEntry>
               <ID>329</ID>
               <Description>"Lionheart"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC7</Address>
@@ -1829,7 +1824,7 @@ db 01
             <CheatEntry>
               <ID>333</ID>
               <Description>"Metal Chocobo"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC8</Address>
@@ -1837,7 +1832,7 @@ db 01
             <CheatEntry>
               <ID>328</ID>
               <Description>"Oathkeeper"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DC9</Address>
@@ -1845,7 +1840,7 @@ db 01
             <CheatEntry>
               <ID>327</ID>
               <Description>"Oblivion"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCA</Address>
@@ -1853,7 +1848,7 @@ db 01
             <CheatEntry>
               <ID>326</ID>
               <Description>"Lady Luck"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCB</Address>
@@ -1861,7 +1856,7 @@ db 01
             <CheatEntry>
               <ID>325</ID>
               <Description>"Wishing Star"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCC</Address>
@@ -1869,7 +1864,7 @@ db 01
             <CheatEntry>
               <ID>322</ID>
               <Description>"Ultima Weapon"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCD</Address>
@@ -1877,7 +1872,7 @@ db 01
             <CheatEntry>
               <ID>323</ID>
               <Description>"Diamond Dust"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCE</Address>
@@ -1885,7 +1880,7 @@ db 01
             <CheatEntry>
               <ID>324</ID>
               <Description>"One-Winged Angel"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DCF</Address>
@@ -1943,13 +1938,13 @@ db 01
           <ID>521</ID>
           <Description>"Donald - Staffs"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>C00000</Color>
+          <Color>FFA040</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>607</ID>
               <Description>"Give all staffs (x1) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Mage's Staff
@@ -2004,7 +1999,7 @@ db 01
             <CheatEntry>
               <ID>880</ID>
               <Description>"Mage's Staff"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD0</Address>
@@ -2012,7 +2007,7 @@ db 01
             <CheatEntry>
               <ID>305</ID>
               <Description>"Morning Star"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD1</Address>
@@ -2020,7 +2015,7 @@ db 01
             <CheatEntry>
               <ID>309</ID>
               <Description>"Shooting Star"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD2</Address>
@@ -2028,7 +2023,7 @@ db 01
             <CheatEntry>
               <ID>310</ID>
               <Description>"Magus Staff"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD3</Address>
@@ -2036,7 +2031,7 @@ db 01
             <CheatEntry>
               <ID>311</ID>
               <Description>"Wisdom Staff"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD4</Address>
@@ -2044,7 +2039,7 @@ db 01
             <CheatEntry>
               <ID>306</ID>
               <Description>"Warhammer"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD5</Address>
@@ -2052,7 +2047,7 @@ db 01
             <CheatEntry>
               <ID>313</ID>
               <Description>"Silver Mallet"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD6</Address>
@@ -2060,7 +2055,7 @@ db 01
             <CheatEntry>
               <ID>314</ID>
               <Description>"Grand Mallet"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD7</Address>
@@ -2068,7 +2063,7 @@ db 01
             <CheatEntry>
               <ID>315</ID>
               <Description>"Lord Fortune"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD8</Address>
@@ -2076,7 +2071,7 @@ db 01
             <CheatEntry>
               <ID>316</ID>
               <Description>"Violetta"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DD9</Address>
@@ -2084,7 +2079,7 @@ db 01
             <CheatEntry>
               <ID>317</ID>
               <Description>"Dream Rod (Donald staff - safe)"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DDA</Address>
@@ -2092,7 +2087,7 @@ db 01
             <CheatEntry>
               <ID>318</ID>
               <Description>"Save the Queen"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DDB</Address>
@@ -2100,7 +2095,7 @@ db 01
             <CheatEntry>
               <ID>320</ID>
               <Description>"Wizard's Relic"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DDC</Address>
@@ -2108,7 +2103,7 @@ db 01
             <CheatEntry>
               <ID>321</ID>
               <Description>"Meteor Strike"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DDD</Address>
@@ -2116,7 +2111,7 @@ db 01
             <CheatEntry>
               <ID>319</ID>
               <Description>"Fantasista"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DDE</Address>
@@ -2127,13 +2122,13 @@ db 01
           <ID>522</ID>
           <Description>"Goofy - Shields"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>C00000</Color>
+          <Color>FFA040</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>608</ID>
               <Description>"Give all shields (x1) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Knight's Shield
@@ -2188,7 +2183,7 @@ db 01
             <CheatEntry>
               <ID>881</ID>
               <Description>"Knight's Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE0</Address>
@@ -2196,7 +2191,7 @@ db 01
             <CheatEntry>
               <ID>335</ID>
               <Description>"Mythril Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE1</Address>
@@ -2204,7 +2199,7 @@ db 01
             <CheatEntry>
               <ID>336</ID>
               <Description>"Onyx Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE2</Address>
@@ -2212,7 +2207,7 @@ db 01
             <CheatEntry>
               <ID>308</ID>
               <Description>"Stout Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE3</Address>
@@ -2220,7 +2215,7 @@ db 01
             <CheatEntry>
               <ID>337</ID>
               <Description>"Golem Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE4</Address>
@@ -2228,7 +2223,7 @@ db 01
             <CheatEntry>
               <ID>338</ID>
               <Description>"Adamant Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE5</Address>
@@ -2236,7 +2231,7 @@ db 01
             <CheatEntry>
               <ID>307</ID>
               <Description>"Smasher"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE6</Address>
@@ -2244,7 +2239,7 @@ db 01
             <CheatEntry>
               <ID>340</ID>
               <Description>"Gigas Fist"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE7</Address>
@@ -2252,7 +2247,7 @@ db 01
             <CheatEntry>
               <ID>341</ID>
               <Description>"Genji Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE8</Address>
@@ -2260,7 +2255,7 @@ db 01
             <CheatEntry>
               <ID>342</ID>
               <Description>"Herc's Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DE9</Address>
@@ -2268,7 +2263,7 @@ db 01
             <CheatEntry>
               <ID>343</ID>
               <Description>"Dream Shield (Goofy shield - safe)"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DEA</Address>
@@ -2276,7 +2271,7 @@ db 01
             <CheatEntry>
               <ID>344</ID>
               <Description>"Save the King"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DEB</Address>
@@ -2284,7 +2279,7 @@ db 01
             <CheatEntry>
               <ID>345</ID>
               <Description>"Defender"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DEC</Address>
@@ -2292,7 +2287,7 @@ db 01
             <CheatEntry>
               <ID>346</ID>
               <Description>"Mighty Shield"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DED</Address>
@@ -2300,7 +2295,7 @@ db 01
             <CheatEntry>
               <ID>347</ID>
               <Description>"Seven Elements"</Description>
-              <Color>C00000</Color>
+              <Color>FFA040</Color>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>"KINGDOM HEARTS FINAL MIX.exe"+3005DEE</Address>
@@ -2936,7 +2931,7 @@ db 01
         <CheatEntry>
           <ID>718</ID>
           <Description>"Give all magic (unlock all + level 3) - tick once"</Description>
-          <Color>008000</Color>
+          <Color>40D040</Color>
           <VariableType>Auto Assembler Script</VariableType>
           <AssemblerScript>[ENABLE]
 // Spell unlocks: all 7
@@ -3046,26 +3041,26 @@ db 03
       <ID>205</ID>
       <Description>"Abilities (back up your save first - pick abilities from the drop-down in each slot, menus closed)"</Description>
       <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-      <Color>004080</Color>
+      <Color>40A0E0</Color>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
           <ID>703</ID>
           <Description>"Each ability can show as its number or its number +128 - one means equipped, the other not equipped. Your Treasure Magnet slot (Sora Slot 4) shows which is which."</Description>
-          <Color>004080</Color>
+          <Color>40A0E0</Color>
           <GroupHeader>1</GroupHeader>
         </CheatEntry>
         <CheatEntry>
           <ID>704</ID>
           <Description>"Shared - 48 slots (High Jump, Mermaid Kick, Glide, Superglide)"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>004080</Color>
+          <Color>40A0E0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>904</ID>
               <Description>"Give all shared abilities (High Jump, Mermaid Kick, Glide, Superglide into slots 1-4) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Shared ability slots 1-4
@@ -3078,8 +3073,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>469</ID>
               <Description>"Slot 1"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3095,8 +3090,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>470</ID>
               <Description>"Slot 2"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3112,8 +3107,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>471</ID>
               <Description>"Slot 3"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3129,8 +3124,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>472</ID>
               <Description>"Slot 4"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3146,8 +3141,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>910</ID>
               <Description>"Slot 5"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3163,8 +3158,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>911</ID>
               <Description>"Slot 6"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3180,8 +3175,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>912</ID>
               <Description>"Slot 7"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3197,8 +3192,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>913</ID>
               <Description>"Slot 8"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3214,8 +3209,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>914</ID>
               <Description>"Slot 9"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3231,8 +3226,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>915</ID>
               <Description>"Slot 10"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3248,8 +3243,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>916</ID>
               <Description>"Slot 11"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3265,8 +3260,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>917</ID>
               <Description>"Slot 12"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3282,8 +3277,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>918</ID>
               <Description>"Slot 13"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3299,8 +3294,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>919</ID>
               <Description>"Slot 14"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3316,8 +3311,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>920</ID>
               <Description>"Slot 15"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3333,8 +3328,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>921</ID>
               <Description>"Slot 16"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3350,8 +3345,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>922</ID>
               <Description>"Slot 17"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3367,8 +3362,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>923</ID>
               <Description>"Slot 18"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3384,8 +3379,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>924</ID>
               <Description>"Slot 19"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3401,8 +3396,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>925</ID>
               <Description>"Slot 20"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3418,8 +3413,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>926</ID>
               <Description>"Slot 21"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3435,8 +3430,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>927</ID>
               <Description>"Slot 22"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3452,8 +3447,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>928</ID>
               <Description>"Slot 23"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3469,8 +3464,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>929</ID>
               <Description>"Slot 24"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3486,8 +3481,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>930</ID>
               <Description>"Slot 25"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3503,8 +3498,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>931</ID>
               <Description>"Slot 26"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3520,8 +3515,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>932</ID>
               <Description>"Slot 27"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3537,8 +3532,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>933</ID>
               <Description>"Slot 28"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3554,8 +3549,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>934</ID>
               <Description>"Slot 29"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3571,8 +3566,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>935</ID>
               <Description>"Slot 30"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3588,8 +3583,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>936</ID>
               <Description>"Slot 31"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3605,8 +3600,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>937</ID>
               <Description>"Slot 32"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3622,8 +3617,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>938</ID>
               <Description>"Slot 33"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3639,8 +3634,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>939</ID>
               <Description>"Slot 34"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3656,8 +3651,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>940</ID>
               <Description>"Slot 35"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3673,8 +3668,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>941</ID>
               <Description>"Slot 36"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3690,8 +3685,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>942</ID>
               <Description>"Slot 37"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3707,8 +3702,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>943</ID>
               <Description>"Slot 38"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3724,8 +3719,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>944</ID>
               <Description>"Slot 39"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3741,8 +3736,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>945</ID>
               <Description>"Slot 40"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3758,8 +3753,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>946</ID>
               <Description>"Slot 41"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3775,8 +3770,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>947</ID>
               <Description>"Slot 42"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3792,8 +3787,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>948</ID>
               <Description>"Slot 43"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3809,8 +3804,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>949</ID>
               <Description>"Slot 44"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3826,8 +3821,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>950</ID>
               <Description>"Slot 45"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3843,8 +3838,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>951</ID>
               <Description>"Slot 46"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3860,8 +3855,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>952</ID>
               <Description>"Slot 47"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3877,8 +3872,8 @@ db 01 02 03 04
             <CheatEntry>
               <ID>953</ID>
               <Description>"Slot 48"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 1:High Jump
 2:Mermaid Kick
 3:Glide
@@ -3897,13 +3892,13 @@ db 01 02 03 04
           <ID>700</ID>
           <Description>"Sora - 48 ability slots"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>004080</Color>
+          <Color>40A0E0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>901</ID>
               <Description>"Give Sora all abilities (replaces slots 1-43) - tick once, then make sure EXP Zero is NOT equipped"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Sora ability slots 1-43
@@ -3916,8 +3911,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>730</ID>
               <Description>"Slot 1"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4005,8 +4000,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>731</ID>
               <Description>"Slot 2"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4094,8 +4089,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>732</ID>
               <Description>"Slot 3"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4183,8 +4178,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>647</ID>
               <Description>"Slot 4"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4272,8 +4267,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>733</ID>
               <Description>"Slot 5"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4361,8 +4356,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>734</ID>
               <Description>"Slot 6"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4450,8 +4445,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>735</ID>
               <Description>"Slot 7"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4539,8 +4534,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>736</ID>
               <Description>"Slot 8"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4628,8 +4623,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>737</ID>
               <Description>"Slot 9"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4717,8 +4712,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>738</ID>
               <Description>"Slot 10"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4806,8 +4801,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>739</ID>
               <Description>"Slot 11"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4895,8 +4890,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>740</ID>
               <Description>"Slot 12"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -4984,8 +4979,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>741</ID>
               <Description>"Slot 13"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5073,8 +5068,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>742</ID>
               <Description>"Slot 14"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5162,8 +5157,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>743</ID>
               <Description>"Slot 15"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5251,8 +5246,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>744</ID>
               <Description>"Slot 16"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5340,8 +5335,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>745</ID>
               <Description>"Slot 17"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5429,8 +5424,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>746</ID>
               <Description>"Slot 18"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5518,8 +5513,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>747</ID>
               <Description>"Slot 19"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5607,8 +5602,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>748</ID>
               <Description>"Slot 20"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5696,8 +5691,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>749</ID>
               <Description>"Slot 21"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5785,8 +5780,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>750</ID>
               <Description>"Slot 22"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5874,8 +5869,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>751</ID>
               <Description>"Slot 23"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -5963,8 +5958,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>752</ID>
               <Description>"Slot 24"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6052,8 +6047,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>753</ID>
               <Description>"Slot 25"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6141,8 +6136,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>754</ID>
               <Description>"Slot 26"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6230,8 +6225,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>755</ID>
               <Description>"Slot 27"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6319,8 +6314,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>756</ID>
               <Description>"Slot 28"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6408,8 +6403,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>757</ID>
               <Description>"Slot 29"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6497,8 +6492,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>758</ID>
               <Description>"Slot 30"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6586,8 +6581,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>759</ID>
               <Description>"Slot 31"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6675,8 +6670,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>760</ID>
               <Description>"Slot 32"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6764,8 +6759,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>761</ID>
               <Description>"Slot 33"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6853,8 +6848,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>762</ID>
               <Description>"Slot 34"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -6942,8 +6937,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>763</ID>
               <Description>"Slot 35"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7031,8 +7026,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>764</ID>
               <Description>"Slot 36"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7120,8 +7115,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>765</ID>
               <Description>"Slot 37"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7209,8 +7204,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>766</ID>
               <Description>"Slot 38"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7298,8 +7293,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>767</ID>
               <Description>"Slot 39"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7387,8 +7382,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>768</ID>
               <Description>"Slot 40"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7476,8 +7471,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>769</ID>
               <Description>"Slot 41"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7565,8 +7560,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>770</ID>
               <Description>"Slot 42"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7654,8 +7649,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>771</ID>
               <Description>"Slot 43"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7743,8 +7738,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>772</ID>
               <Description>"Slot 44"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7832,8 +7827,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>773</ID>
               <Description>"Slot 45"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -7921,8 +7916,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>774</ID>
               <Description>"Slot 46"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8010,8 +8005,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>775</ID>
               <Description>"Slot 47"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8099,8 +8094,8 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
             <CheatEntry>
               <ID>776</ID>
               <Description>"Slot 48"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8191,13 +8186,13 @@ db 85 85 86 86 86 87 87 88 88 8A 8B 8C 8D 8E 8F 90 91 92 93 94 95 96 97 98 98 98
           <ID>701</ID>
           <Description>"Donald - 31 ability slots"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>004080</Color>
+          <Color>40A0E0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>902</ID>
               <Description>"Give Donald all abilities (replaces slots 1-10) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Donald ability slots 1-10
@@ -8210,8 +8205,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>800</ID>
               <Description>"Slot 1"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8299,8 +8294,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>801</ID>
               <Description>"Slot 2"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8388,8 +8383,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>802</ID>
               <Description>"Slot 3"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8477,8 +8472,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>803</ID>
               <Description>"Slot 4"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8566,8 +8561,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>804</ID>
               <Description>"Slot 5"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8655,8 +8650,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>805</ID>
               <Description>"Slot 6"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8744,8 +8739,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>806</ID>
               <Description>"Slot 7"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8833,8 +8828,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>807</ID>
               <Description>"Slot 8"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -8922,8 +8917,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>808</ID>
               <Description>"Slot 9"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9011,8 +9006,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>809</ID>
               <Description>"Slot 10"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9100,8 +9095,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>810</ID>
               <Description>"Slot 11"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9189,8 +9184,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>811</ID>
               <Description>"Slot 12"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9278,8 +9273,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>812</ID>
               <Description>"Slot 13"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9367,8 +9362,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>813</ID>
               <Description>"Slot 14"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9456,8 +9451,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>814</ID>
               <Description>"Slot 15"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9545,8 +9540,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>815</ID>
               <Description>"Slot 16"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9634,8 +9629,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>816</ID>
               <Description>"Slot 17"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9723,8 +9718,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>817</ID>
               <Description>"Slot 18"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9812,8 +9807,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>818</ID>
               <Description>"Slot 19"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9901,8 +9896,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>819</ID>
               <Description>"Slot 20"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -9990,8 +9985,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>820</ID>
               <Description>"Slot 21"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10079,8 +10074,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>821</ID>
               <Description>"Slot 22"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10168,8 +10163,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>822</ID>
               <Description>"Slot 23"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10257,8 +10252,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>823</ID>
               <Description>"Slot 24"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10346,8 +10341,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>824</ID>
               <Description>"Slot 25"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10435,8 +10430,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>825</ID>
               <Description>"Slot 26"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10524,8 +10519,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>826</ID>
               <Description>"Slot 27"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10613,8 +10608,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>827</ID>
               <Description>"Slot 28"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10702,8 +10697,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>828</ID>
               <Description>"Slot 29"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10791,8 +10786,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>829</ID>
               <Description>"Slot 30"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10880,8 +10875,8 @@ db 9A 97 98 98 99 85 85 89 9B 9C
             <CheatEntry>
               <ID>830</ID>
               <Description>"Slot 31"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -10972,13 +10967,13 @@ db 9A 97 98 98 99 85 85 89 9B 9C
           <ID>702</ID>
           <Description>"Goofy - 31 ability slots"</Description>
           <Options moHideChildren="1" moAllowManualCollapseAndExpand="1" moManualExpandCollapse="1" />
-          <Color>004080</Color>
+          <Color>40A0E0</Color>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>903</ID>
               <Description>"Give Goofy all abilities (replaces slots 1-14) - tick once"</Description>
-              <Color>008000</Color>
+              <Color>40D040</Color>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 // Goofy ability slots 1-14
@@ -10991,8 +10986,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>840</ID>
               <Description>"Slot 1"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11080,8 +11075,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>841</ID>
               <Description>"Slot 2"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11169,8 +11164,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>842</ID>
               <Description>"Slot 3"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11258,8 +11253,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>843</ID>
               <Description>"Slot 4"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11347,8 +11342,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>844</ID>
               <Description>"Slot 5"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11436,8 +11431,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>845</ID>
               <Description>"Slot 6"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11525,8 +11520,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>846</ID>
               <Description>"Slot 7"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11614,8 +11609,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>847</ID>
               <Description>"Slot 8"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11703,8 +11698,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>848</ID>
               <Description>"Slot 9"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11792,8 +11787,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>849</ID>
               <Description>"Slot 10"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11881,8 +11876,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>850</ID>
               <Description>"Slot 11"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -11970,8 +11965,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>851</ID>
               <Description>"Slot 12"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12059,8 +12054,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>852</ID>
               <Description>"Slot 13"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12148,8 +12143,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>853</ID>
               <Description>"Slot 14"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12237,8 +12232,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>854</ID>
               <Description>"Slot 15"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12326,8 +12321,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>855</ID>
               <Description>"Slot 16"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12415,8 +12410,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>856</ID>
               <Description>"Slot 17"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12504,8 +12499,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>857</ID>
               <Description>"Slot 18"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12593,8 +12588,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>858</ID>
               <Description>"Slot 19"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12682,8 +12677,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>859</ID>
               <Description>"Slot 20"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12771,8 +12766,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>860</ID>
               <Description>"Slot 21"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12860,8 +12855,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>861</ID>
               <Description>"Slot 22"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -12949,8 +12944,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>862</ID>
               <Description>"Slot 23"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13038,8 +13033,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>863</ID>
               <Description>"Slot 24"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13127,8 +13122,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>864</ID>
               <Description>"Slot 25"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13216,8 +13211,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>865</ID>
               <Description>"Slot 26"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13305,8 +13300,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>866</ID>
               <Description>"Slot 27"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13394,8 +13389,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>867</ID>
               <Description>"Slot 28"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13483,8 +13478,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>868</ID>
               <Description>"Slot 29"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13572,8 +13567,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>869</ID>
               <Description>"Slot 30"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus
@@ -13661,8 +13656,8 @@ db 9E 9B 9D 85 85 9F 9C A0 89 99 98 98 97 9A
             <CheatEntry>
               <ID>870</ID>
               <Description>"Slot 31"</Description>
-              <Color>004080</Color>
-              <DropDownList DisplayValueAsItem="1">0:(empty)
+              <Color>40A0E0</Color>
+              <DropDownList DescriptionOnly="1" DisplayValueAsItem="1">0:(empty)
 5:Treasure Magnet
 6:Combo Plus
 7:Air Combo Plus

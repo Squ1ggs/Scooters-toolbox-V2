@@ -562,6 +562,7 @@
       slotOrder[i] = undefined;
       if (!row || row.unresolved) continue;
       sk = partTypeToSlotKey(row.part_type);
+      if (/^(?:404|234):/.test(String(row.key || '')) && row.source === 'nexus_family_serialindex') sk = row.validation_slot;
       if (!sk) sk = partTypeToSlotKey(row.weapon_type_or_category || '');
       sk = refineSlotKeyIfBodyGeneric(row, sk);
       /* Prefer part id over decoder part_type — named legendary foregrips/underbarrels
@@ -577,7 +578,7 @@
         var bl = String(bare0 || '').toLowerCase();
         if (!bl) return;
         if (/^part_foregrip/i.test(bl)) sk = 'foregrip';
-        else if (/^part_underbarrel/i.test(bl)) sk = 'underbarrel';
+        else if (/^part_underbarrel/i.test(bl)) sk = /_acc(?:_|$)|_0[1-9]_[a-d]$/i.test(bl) ? 'underbarrel_acc' : 'underbarrel';
         else if (/^part_secondary_ammo/i.test(bl)) sk = 'secondary_ammo';
         else if (
           /^part_(?:unique_)?barrel/i.test(bl) &&
@@ -725,6 +726,8 @@
   }
 
   function pickPartsDbRowForKey(key) {
+    var canonical = window.LEGIT_SERIAL_IDENTITY_DATA && window.LEGIT_SERIAL_IDENTITY_DATA.parts[key];
+    if (canonical) return canonical;
     if (!window.PARTS_DB || !key) return null;
     var arr = window.PARTS_DB[key];
     if (!Array.isArray(arr) || !arr.length) return null;
@@ -976,12 +979,16 @@
           '[critical] Conflicting repair-kit primary augments: unique primary plus an additional primary augment'
         );
       }
-      if (namedRepairSuffix && !repairUniqueNames[namedRepairSuffix]) {
+      // A named rarity need not use a same-named primary. GeigerRoid uses a
+      // normal primary plus an elemental secondary in the actual Nexus rules.
+      var requirements = window.LEGIT_SERIAL_IDENTITY_DATA && window.LEGIT_SERIAL_IDENTITY_DATA.repairPrimaryRequirements;
+      var requiredPrimaries = requirements && Object.prototype.hasOwnProperty.call(requirements, namedRepairSuffix)
+        ? requirements[namedRepairSuffix] : (namedRepairSuffix ? ['part_augment_unique_' + namedRepairSuffix] : []);
+      if (requiredPrimaries.length && !requiredPrimaries.some(function (name) { return repairUniqueNames[name.replace(/^part_augment_unique_/, '')]; })) {
         out.push(
           '[critical] Missing named repair-kit primary augment: ' +
             namedRepairSuffix +
-            ' rarity requires part_augment_unique_' +
-            namedRepairSuffix
+            ' rarity requires ' + requiredPrimaries.join(' or ')
         );
       }
     }
@@ -1230,10 +1237,41 @@
         }
       }
     }
+    if (keys.length > 64) {
+      out.push('[critical] Too many part tokens (' + keys.length + ' > 64)');
+    }
+    var packedRe = /\{(\d+)\s*:\s*\[([^\]]+)\]\}/g;
+    var packedM;
+    var packedSeen = Object.create(null);
+    while ((packedM = packedRe.exec(String(serialSrc || ''))) !== null) {
+      var packedVals = String(packedM[2] || '').split(/[\s,]+/).filter(Boolean);
+      var packedCount = Object.create(null);
+      var pv;
+      for (pv = 0; pv < packedVals.length; pv++) {
+        var pvNum = packedVals[pv];
+        if (!/^\d+$/.test(pvNum)) continue;
+        packedCount[pvNum] = (packedCount[pvNum] || 0) + 1;
+        if (packedCount[pvNum] === 2) {
+          var packedKey = packedM[1] + ':' + pvNum;
+          if (!packedSeen[packedKey]) {
+            packedSeen[packedKey] = true;
+            out.push('[critical] Packed part list repeats value ' + pvNum);
+          }
+        }
+      }
+    }
     if (firmwareCount > 1) {
       out.push(
         '[critical] Multiple firmware parts: found ' + firmwareCount + ' firmware parts (maximum 1 allowed)'
       );
+    }
+    if (
+      firmwareCount > 0 &&
+      window.LegitBuilderApi &&
+      typeof window.LegitBuilderApi.itemHostsFirmware === 'function' &&
+      window.LegitBuilderApi.itemHostsFirmware(slugLow) === false
+    ) {
+      out.push('Firmware cannot roll on this item.');
     }
     if (wrongRootN > 0) {
       out.unshift('[critical] Missing or root-mismatched parts (' + wrongRootN + ')');
@@ -1388,11 +1426,20 @@
         miniLineageHtml: ''
       };
     var prev = ls.details && ls.details.length ? ls.details.slice() : [];
+    var haveLine = Object.create(null);
+    var hi;
+    for (hi = 0; hi < prev.length; hi++) haveLine[String(prev[hi])] = true;
+    var addLines = [];
+    var ei;
+    var extra = extraLines || [];
+    for (ei = 0; ei < extra.length; ei++) {
+      if (!haveLine[String(extra[ei])]) addLines.push(extra[ei]);
+    }
     return Object.assign({}, ls, {
       status: 'err',
       statusText: 'Fail (data)',
       className: 'v-err',
-      details: prev.concat(extraLines)
+      details: prev.concat(addLines)
     });
   }
 
@@ -2084,6 +2131,32 @@
     return fromDr || fromOpts || '';
   }
 
+  function stampSpawnVerdict(ls) {
+    if (!ls) return ls;
+    if (window.LegitBuilderApi && typeof window.LegitBuilderApi.finalizeSpawnVerdict === 'function') {
+      return window.LegitBuilderApi.finalizeSpawnVerdict(ls);
+    }
+    return ls;
+  }
+
+  function validateFailedSerialPrefix(serial, decodeError) {
+    if (!window.SerialPrefixEvidence || !window.ExactRollValidation) return null;
+    var prefix = window.SerialPrefixEvidence.inspect(serial);
+    if (!prefix || !prefix.header_verified) return null;
+    var checked = window.ExactRollValidation.check({success:true,itemTypeId:prefix.itemTypeId,level:prefix.level,deserialized:prefix.deserialized_prefix});
+    // Only contradictions that additional tail tokens cannot repair. Never
+    // infer a missing prerequisite/part, exhaustion, or a pass from a prefix.
+    var failures = checked.failures.filter(function (reason) {
+      return /^Duplicate .* part:|^Firmware: found |^Firmware requires item level 25/.test(reason);
+    });
+    if (!failures.length) return null;
+    var state = stampSpawnVerdict({status:'err',statusText:'Confirmed failure from partial read',className:'v-err',
+      details:failures.map(function (reason) {return '[exact] '+reason;}).concat(['Partial read: complete tokens already violate game rules. Unparsed tail was not used.','Full decoder error: '+String(decodeError || 'decode failed')]),
+      partialDecodeEvidence:prefix,
+      exactRollEvidence:{failures:failures,missing:[],evidence:['Verified prefix only; no absence-based checks or pass verdict.'],diagnostics:[],partial_read:true},nonObtainable:false});
+    return {ok:true,phase:'partial_exact',mapped:false,decodeComplete:false,legitState:state,partialDecodeEvidence:prefix};
+  }
+
   function validateDecodedSerial(decodeResult, opts) {
     opts = opts || {};
     var bulkAudit =
@@ -2091,18 +2164,88 @@
       (typeof window !== 'undefined' && window.STX_BULK_CHEAT_AUDIT === true);
     var r = decodeResult;
     var auditSerial = resolveAuditSerialText(opts, r);
+    var exactRoll = bulkAudit && window.ExactRollValidation && r && r.success ? window.ExactRollValidation.check(r) : null;
+    function finishState(ls) {
+      if (ls && exactRoll) {
+        var alreadyFailed = ls.status === 'err';
+        ls.exactRollEvidence = exactRoll;
+        if (exactRoll.firmwareParts && exactRoll.firmwareParts.length && (!ls.firmwareFlag || ls.firmwareFlag.code === 'none')) {
+          ls.firmwareFlag = {
+            code: Number(r.level) < 25 ? 'level' : 'can',
+            text: Number(r.level) < 25 ? 'Firmware requires item level 25; this item is level ' + r.level + '.' : 'Firmware present.'
+          };
+        }
+        if (exactRoll.failures.length) {
+          ls.status = 'err'; ls.statusText = 'Fail (exact game data)'; ls.className = 'v-err';
+          ls.details = exactRoll.failures.map(function (f) { return '[exact] ' + f; }).concat(ls.details || []);
+          ls.nonObtainable = exactRoll.npcOnly && !alreadyFailed && exactRoll.failures.length === 1;
+        } else if (exactRoll.missing.length && !alreadyFailed) {
+          ls.status = 'warn'; ls.statusText = 'Exact data incomplete'; ls.className = 'v-warn';
+          ls.details = exactRoll.missing.concat(ls.details || []);
+        }
+      }
+      ls = stampSpawnVerdict(ls);
+      if (ls && exactRoll && exactRoll.orderIssues && exactRoll.orderIssues.length) {
+        var orderLines = exactRoll.orderIssues.map(function (line) { return '[order] ' + line; });
+        var orderOnly = !exactRoll.failures.length && !(exactRoll.missing || []).length && ls.status === 'ok';
+        if (orderOnly) {
+          ls.orderOnly = true;
+          ls.status = 'order';
+          ls.statusText = 'Order issue';
+          ls.className = 'v-warn';
+          ls.verdict = 'Order issue';
+          ls.verdictReason = exactRoll.orderIssues[0] + ' The same parts can still satisfy the other checks. This alone does not show the item was modded.';
+          ls.details = orderLines.concat(ls.details || []);
+        } else {
+          ls.details = (ls.details || []).concat(orderLines);
+        }
+      }
+      return ls;
+    }
     if (!r || !r.success) {
+      var recovered = r && validateFailedSerialPrefix(opts.rawSerial || r.input,r.error);
+      if (recovered) return recovered;
       return { ok: false, phase: 'decode', error: String((r && r.error) || 'decode failed') };
+    }
+    // Shared family IDs are separate namespaces. A 245:9 firmware must not
+    // become the manufacturer-local payload whose numeric index also is 9.
+    var identities = window.LEGIT_SERIAL_IDENTITY_DATA && window.LEGIT_SERIAL_IDENTITY_DATA.parts;
+    if (identities) {
+      var normalized = [];
+      var seenCanonical = Object.create(null);
+      (r.resolvedParts || []).forEach(function (row) {
+        var identity = identities[row.key];
+        if (!identity) { normalized.push(row); return; }
+        if (seenCanonical[row.key]) return;
+        seenCanonical[row.key] = true;
+        var exact = Object.assign({}, row, identity, { unresolved: false });
+        // Repair augment slots are validated from their raw identities until
+        // the legacy unscoped Comp tables support the complete family layout.
+        if (/^243:/.test(row.key) && /^(primary|secondary)_augment$/.test(identity.validation_slot)) exact.part_type = '';
+        normalized.push(exact);
+      });
+      r = Object.assign({}, r, { resolvedParts: normalized });
     }
     if (!window.LegitBuilderApi || typeof window.LegitBuilderApi.computeLegitValidationState !== 'function') {
       return { ok: false, phase: 'api', error: 'LegitBuilderApi.computeLegitValidationState missing' };
     }
     var manifestItem = resolveManifestItem(window.LegitBuilderApi.getAllItems, r);
     if (!manifestItem) {
+      // Legacy UI coverage must not discard a hard failure already established
+      // from the raw serial and scoped source definitions (foreign rarity,
+      // duplicate/over-limit parts, NPC-only compositions, etc.). Unknown data
+      // alone remains unsupported; it never becomes proof of modding or a pass.
+      var rawState = exactRoll ? finishState({
+        status:'warn', statusText:'Legacy manifest unavailable', className:'v-warn',
+        details:['Legacy item manifest unavailable; raw source checks were still applied.']
+      }) : null;
+      var sourceFailure = rawState && rawState.status === 'err';
       return {
-        ok: false,
-        phase: 'manifest',
+        ok: !!sourceFailure,
+        phase: sourceFailure ? 'exact' : 'manifest',
         error: 'no_manifest',
+        mapped: false,
+        legitState: rawState,
         manufacturer: r.manufacturer,
         itemType: r.itemType
       };
@@ -2146,10 +2289,25 @@
       return false;
     }
     var il = r.level != null ? Number(r.level) : (opts.itemLevel != null ? Number(opts.itemLevel) : 70);
-    if (!Number.isFinite(il)) il = 70;
-    if (typeof window.clampItemLevel === 'function') il = window.clampItemLevel(il);
-    else if (il > 70) il = 70;
-    else if (il < 1) il = 1;
+    /* Validation must inspect the decoded level, not repair it into a valid UI value. */
+    var levelIssue = window.LegitBuilderApi.getItemLevelIssue(il);
+    if (levelIssue) {
+      return {
+        ok: true,
+        phase: 'level',
+        manifestItem: manifestItem,
+        selectedParts: selectedParts,
+        unresolved: unresolved,
+        resolvedRowCount: rp.length,
+        mappedCount: mappedCount,
+        mapped: mappedCount > 0,
+        itemLevel: il,
+        legitState: finishState({
+          status: 'err', statusText: 'Fail (data)', className: 'v-err',
+          details: [levelIssue], partCount: mappedCount, miniLineageHtml: ''
+        })
+      };
+    }
     if (mappedCount === 0) {
       var rawEarly = computeRawResolvedInvIssues(r, manifestItem, selectedParts, {
         rawSerial: auditSerial,
@@ -2177,7 +2335,7 @@
           mappedCount: 0,
           mapped: false,
           itemLevel: il,
-          legitState: applyBalanceFailStatusLabel({
+          legitState: finishState(applyBalanceFailStatusLabel({
             status: 'err',
             statusText: 'Fail (data)',
             className: 'v-err',
@@ -2191,7 +2349,7 @@
             partCount: 0,
             itemSlotMax: 0,
             miniLineageHtml: ''
-          })
+          }))
         };
       }
       if (bulkAudit) {
@@ -2205,7 +2363,7 @@
           mappedCount: 0,
           mapped: false,
           itemLevel: il,
-          legitState: {
+          legitState: finishState({
             status: 'warn',
             statusText: 'Uncertain (no slot map)',
             className: 'v-warn',
@@ -2221,7 +2379,7 @@
             partCount: 0,
             itemSlotMax: 0,
             miniLineageHtml: ''
-          }
+          })
         };
       }
       return {
@@ -2500,6 +2658,7 @@
     if (bulkAudit && legitState && legitState.status === 'err') {
       legitState = applyBalanceFailStatusLabel(legitState);
     }
+    legitState = finishState(legitState);
     return {
       ok: true,
       phase: 'full',
@@ -2527,7 +2686,8 @@
     verifyPartOrderToNcs: verifyPartOrderToNcs,
     /** Exposed for `scripts/smoke-raw-inv-check.cjs` — same logic bulk uses via validateDecodedSerial. */
     computeRawResolvedInvIssues: computeRawResolvedInvIssues,
-    __version: 'raw-inv-check-v78-exact-inv-parity'
+    validateFailedSerialPrefix: validateFailedSerialPrefix,
+    __version: 'raw-inv-check-v80s-verified-prefix-failures'
   };
 
   function init() {
@@ -2567,53 +2727,58 @@
           return;
         }
         if (!r.success) {
+          var partial = validateFailedSerialPrefix(raw,r.error);
+          if (partial && partial.legitState) {
+            out.className = 'validation-bar v-err';
+            out.innerHTML = window.LegitBuilderApi.renderSpawnCheckHtml(partial.legitState);
+            return;
+          }
           out.className = 'validation-bar v-err';
           out.innerHTML = '<strong>Decode failed</strong><div class="v-details">' + String(r.error || 'unknown') + '</div>';
           return;
         }
         var manifestItem = resolveManifestItem(window.LegitBuilderApi.getAllItems, r);
         if (!manifestItem) {
-          out.className = 'validation-bar v-err';
-          out.innerHTML = '<strong>No manifest item</strong><div class="v-details">Could not map manufacturer/item type to a bl4_manifest slug. Got: ' +
-            String(r.manufacturer || '—') + ' / ' + String(r.itemType || '—') + '</div>';
+          var rawChecked = window.LegitDecodeHelpers.validateDecodedSerial(r,{rawSerial:r.deserialized || raw,bulkCheatAuditMode:true});
+          var rawState = rawChecked && rawChecked.legitState;
+          out.className = 'validation-bar ' + (rawState && rawState.className || 'v-warn');
+          out.innerHTML = rawState && window.LegitBuilderApi.renderSpawnCheckHtml
+            ? window.LegitBuilderApi.renderSpawnCheckHtml(rawState)
+            : '<strong>Cannot verify this item</strong><div class="v-details">The legacy item manifest is unavailable. This is not a pass.</div>';
           return;
         }
         var rp = r.resolvedParts || [];
         var unresolved = 0;
         var u;
         for (u = 0; u < rp.length; u++) if (rp[u] && rp[u].unresolved) unresolved++;
-        var matchResult = matchResolvedToManifest(manifestItem, rp);
-        var selectedParts = matchResult.selectedParts;
-        var partCount = Object.keys(selectedParts).length;
         var strictEl = document.getElementById('strict-mode');
-        var ilInput = document.getElementById('item-level');
-        var il = r.level != null ? Number(r.level) : (ilInput ? parseInt(ilInput.value, 10) : 70);
-        if (!Number.isFinite(il)) il = 70;
-        if (typeof window.clampItemLevel === 'function') il = window.clampItemLevel(il);
-        else if (il > 70) il = 70;
-        else if (il < 1) il = 1;
-
+        var checked = window.LegitDecodeHelpers && window.LegitDecodeHelpers.validateDecodedSerial
+          ? window.LegitDecodeHelpers.validateDecodedSerial(r, {
+              strictMode: strictEl ? !!strictEl.checked : true,
+              relaxInvUniLegDeps: false,
+              invTagFailuresAsErr: true,
+              detectPlainFrameUniLeg: true,
+              failOffPoolNamedLegendaryBarrels: false,
+              rawSerial: r.deserialized || raw,
+              bulkCheatAuditMode: true
+            })
+          : null;
+        var legitState = checked && checked.legitState;
+        var partCount = checked && checked.mappedCount != null ? checked.mappedCount : 0;
         var pre = '<div style="font-size:0.72rem;color:rgba(233,254,255,0.55);margin-bottom:6px;">' +
           'Item: <strong>' + String(manifestItem.name || '') + '</strong> (' + String(manifestItem.slug || '') + ') &middot; Dataset parts: ' + rp.length +
           (unresolved ? ' (' + unresolved + ' unresolved)' : '') + ' &middot; Mapped to manifest slots: ' + partCount + '</div>';
 
-        if (partCount === 0) {
+        if (!legitState) {
           out.className = 'validation-bar v-warn';
-          out.innerHTML = pre + '<strong>NO PARTS MAPPED</strong><div class="v-details">Decode succeeded but no resolved row matched a manifest option (by part_type → slot and name/alpha_code). Add parts manually above to validate.</div>';
+          out.innerHTML = pre + '<strong>Not sure</strong><div class="v-reason">Decoded, but a part did not map and there is no hard rule.</div>';
           return;
         }
 
-        var legitState = window.LegitBuilderApi.computeLegitValidationState(manifestItem, selectedParts, {
-          strictMode: strictEl ? !!strictEl.checked : true,
-          itemLevel: il,
-          relaxInvUniLegDeps: false,
-          invTagFailuresAsErr: true,
-          detectPlainFrameUniLeg: true,
-          failOffPoolNamedLegendaryBarrels: false
-        });
-
-        out.className = 'validation-bar ' + legitState.className;
-        out.innerHTML = pre + '<strong>' + escapeHtmlLegit(legitState.statusText) + '</strong><div class="v-details">' + formatLegitDetailsHtml(legitState.details) + '</div>' + legitState.miniLineageHtml;
+        out.className = 'validation-bar ' + (legitState.className || 'v-idle');
+        out.innerHTML = pre + (window.LegitBuilderApi.renderSpawnCheckHtml
+          ? window.LegitBuilderApi.renderSpawnCheckHtml(legitState)
+          : ('<strong>' + escapeHtmlLegit(legitState.verdict || legitState.statusText) + '</strong>'));
       }, { enrichResolved: true });
     });
   }

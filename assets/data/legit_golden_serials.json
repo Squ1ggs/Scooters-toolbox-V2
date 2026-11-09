@@ -1,5 +1,199 @@
 {
-  "version": 1,
-  "description": "Optional known-good @U serials for manual regression checks after decode + legit validation. Add serials you have verified in-game.",
-  "serials": []
+  "version": 2,
+  "description": "User-confirmed pool-generated regression cases. Passing these cases does not prove universal natural-drop legality.",
+  "engineParserVerified": false,
+  "source": "sqbt-party-bay-p0-25serials.txt; user-confirmed provenance recorded in PROJECT_NOTES.md",
+  "serials": [
+    "@Uge(J0FqRNues)k;RG/*ls9{5o8j0$M%2XWGAJi#SD%361PXq",
+    "@UgbV{rFqRNuIu}q+RG}7is6;htC+Zw(9jYCwQ*%(WP~#8",
+    "@Ugy3L+3C0p4%w/wdRG/{psGF#KsC%d/s5z)ys9gv",
+    "@Uguq~c3C0p44EzQvi7M2g5;bIKP&-j!QDIPZP`Oa~5C",
+    "@Uge9B?m/!d+!dy+DNkyuCG&+Qf`~U",
+    "@Ugr$iFm/!d+!b}2%LS1T8g8%",
+    "@Ugr$N8m/!d+!qA(bMLp_#G}%NNYSj7e0ss",
+    "@Uge8Oqm/!d+!c0t{NWCv7Xi/lG9}O+3D+K@",
+    "@Uge8Cmm/!d+!d#7@I;cwhPQ5UwUIrBobr&@vwcDU-M-xRtYyk",
+    "@Ug!pHG3C0p4jE)3~hpJTi)acYXgDRa0Wl-e}YTQB9jz)&`5l#R",
+    "@Ugr$cDm/!d+!cd){NWCv7s8EM`A5AQ/D+K@",
+    "@Uge8Cmm/!d+!fZdFI;cvuFsK&>^*goFpi&%EIMm65svS)fsQ~~",
+    "@Uge8Cmm/!d+!b~loHmFXWPnANIGpL@Z^r$+i@di~p8Y=P!00",
+    "@Uge8^+m/!d+!sz{=NkyuCbwKg^Q2X`(00",
+    "@Uge8Rrm/!d+!pKaZMLp_#G}vSsYSj7S0ss",
+    "@Uge9B?m/!d+!eH;9NkyuCb3pN<nIVqacK`",
+    "@Uge8Oqm/!d+!t^bmNWCv7Xi/rIAB`@7F9-k",
+    "@Ugfs(8FqRNuHa$>k)SwC#sYzX`QgKkJP^(bkQ0-7R5d",
+    "@UgdhV<FqRNuE-uhJRG}8t4s{Y$5>*pbsW7NJs8gs?s930RsGSG",
+    "@Ugr$K7m/!d+!stt&HmFYBLESK@ng%uFpu(YI9#mV@7=x-E%`d4Tod5",
+    "@Ugydj=3C0p440X^wRG}8ts6!=c*iaf&Nz_SHO4LZy7}OoqA5<vRE>t)K",
+    "@Ugr$fEm/!d+!ljW=DpaS&pw6ITApi",
+    "@Ugr$iFm/!d+!c;DxP^e3FY7h",
+    "@Ugr$iFm/!d+!f-sGKd4J(s#ARs",
+    "@Ugr$oHm/!d+!gPJ0NfoMnaX/5-Nf8tY"
+  ],
+  "cases": [
+    {
+      "serial": "@Uge(J0FqRNues)k;RG/*ls9{5o8j0$M%2XWGAJi#SD%361PXq",
+      "label": "★ Weapon 1 — Husky Friend · Legendary / Tediore / Shotgun L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@UgbV{rFqRNuIu}q+RG}7is6;htC+Zw(9jYCwQ*%(WP~#8",
+      "label": "★ Weapon 2 — Phantom Flame · Legendary / Jakobs / Pistol L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugy3L+3C0p4%w/wdRG/{psGF#KsC%d/s5z)ys9gv",
+      "label": "★ Weapon 3 — Truck · Legendary / Jakobs / Sniper L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uguq~c3C0p44EzQvi7M2g5;bIKP&-j!QDIPZP`Oa~5C",
+      "label": "★ Weapon 4 — Finnity XXX-L · Legendary / Vladof / Sniper L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge9B?m/!d+!dy+DNkyuCG&+Qf`~U",
+      "label": "★ Shield — Super Soldier · Legendary / Daedalus / Shield L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$iFm/!d+!b}2%LS1T8g8%",
+      "label": "★ Grenade — Streamer · Legendary / Ripper / Heavy Weapon L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$N8m/!d+!qA(bMLp_#G}%NNYSj7e0ss",
+      "label": "★ Class mod — Shiny War Paint · Legendary / Torgue / Repkit L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Oqm/!d+!c0t{NWCv7Xi/lG9}O+3D+K@",
+      "label": "★ Repkit — Shockguard · Legendary / Hyperion / Enhancement L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Cmm/!d+!d#7@I;cwhPQ5UwUIrBobr&@vwcDU-M-xRtYyk",
+      "label": "★ Enhancement — Dancer · Legendary / Classmod L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ug!pHG3C0p4jE)3~hpJTi)acYXgDRa0Wl-e}YTQB9jz)&`5l#R",
+      "label": "0 — Technomancer · Legendary / Classmod L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$cDm/!d+!cd){NWCv7s8EM`A5AQ/D+K@",
+      "label": "2 — Primedpotency · Legendary / Maliwan / Enhancement L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Cmm/!d+!fZdFI;cvuFsK&>^*goFpi&%EIMm65svS)fsQ~~",
+      "label": "6 — Dancer · Legendary / Classmod L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Cmm/!d+!b~loHmFXWPnANIGpL@Z^r$+i@di~p8Y=P!00",
+      "label": "7 — Esgrimidor · Legendary / Classmod L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8^+m/!d+!sz{=NkyuCbwKg^Q2X`(00",
+      "label": "8 — Watts 4 Dinner · Legendary / Ripper / Shield L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Rrm/!d+!pKaZMLp_#G}vSsYSj7S0ss",
+      "label": "9 — Blood Analyzer · Legendary / Maliwan / Repkit L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge9B?m/!d+!eH;9NkyuCb3pN<nIVqacK`",
+      "label": "10 — Super Soldier · Legendary / Daedalus / Shield L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Uge8Oqm/!d+!t^bmNWCv7Xi/rIAB`@7F9-k",
+      "label": "11 — Shockguard · Legendary / Hyperion / Enhancement L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugfs(8FqRNuHa$>k)SwC#sYzX`QgKkJP^(bkQ0-7R5d",
+      "label": "16 — Oscar Mike · Legendary / Daedalus / Assault Rifle L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@UgdhV<FqRNuE-uhJRG}8t4s{Y$5>*pbsW7NJs8gs?s930RsGSG",
+      "label": "17 — Acey May · Legendary / Daedalus / Shotgun L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$K7m/!d+!stt&HmFYBLESK@ng%uFpu(YI9#mV@7=x-E%`d4Tod5",
+      "label": "18 — Skeptic · Legendary / Classmod L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugydj=3C0p440X^wRG}8ts6!=c*iaf&Nz_SHO4LZy7}OoqA5<vRE>t)K",
+      "label": "19 — Complex Root · Legendary / Maliwan / Sniper L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$fEm/!d+!ljW=DpaS&pw6ITApi",
+      "label": "21 — Ravenfire · Legendary / Torgue / Heavy Weapon L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$iFm/!d+!c;DxP^e3FY7h",
+      "label": "22 — Streamer · Legendary / Ripper / Heavy Weapon L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$iFm/!d+!f-sGKd4J(s#ARs",
+      "label": "23 — Disc Jockey · Legendary / Ripper / Heavy Weapon L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ugr$oHm/!d+!gPJ0NfoMnaX/5-Nf8tY",
+      "label": "24 — Momento · Legendary / Maliwan / Shield L70",
+      "provenance": "user-confirmed-pool-generated",
+      "expectedVerdict": "Can roll"
+    },
+    {
+      "serial": "@Ubad",
+      "label": "Malformed control",
+      "provenance": "synthetic-negative",
+      "expectedVerdict": "Decode error"
+    },
+    {
+      "serial": "@Ugr$ZCm/z4E=4S^D>QU#b4FC",
+      "label": "Level-2 Vladof repkit: confirmed starting loot",
+      "provenance": "user-confirmed-starting-loadout",
+      "naturalRollConfirmed": false,
+      "expectedVerdict": "Can roll",
+      "legitimateAcquisitionConfirmed": true
+    }
+  ]
 }

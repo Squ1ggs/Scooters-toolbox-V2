@@ -424,7 +424,7 @@
     var s = stripOuterQuotes(b85);
     if (!s) return '';
     if (s.indexOf('@u') === 0) s = '@U' + s.slice(2);
-    else if (s.indexOf('@U') !== 0 && /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(s)) s = '@U' + s;
+    else if (s.indexOf('@U') !== 0 && /^[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+$/.test(s)) s = '@U' + s;
     return s;
   }
 

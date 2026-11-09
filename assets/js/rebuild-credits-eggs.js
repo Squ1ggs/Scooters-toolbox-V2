@@ -6,7 +6,7 @@
   var THEME_KEY = 'stx_rebuild_theme';
   var FULLANIM_KEY = 'stx_rebuild_fullanim';
   var NOANIM_KEY = 'stx_rebuild_noanim';
-  var THEME_CLASS_BY_VALUE = { default: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin', tobgun: 'tobgun-reskin' };
+  var THEME_CLASS_BY_VALUE = { default: '', halloween: '', mattmab: 'mattmab-reskin', mac10: 'mac10-reskin', badley: 'badley-reskin', scooter: 'scooter-reskin', ynot: 'ynot-reskin', grimeey: 'grimeey-reskin', tobgun: 'tobgun-reskin' };
 
   function byId(id){ return document.getElementById(id); }
   function setEggsEnabled(on){
@@ -46,6 +46,10 @@
     var cls = THEME_CLASS_BY_VALUE[theme] || '';
     if(cls) body.classList.add(cls);
     try { localStorage.setItem(THEME_KEY, theme); } catch(_){}
+    if (theme === 'halloween') document.documentElement.setAttribute('data-theme', 'halloween');
+    else document.documentElement.removeAttribute('data-theme');
+    var picker = byId('stxThemePicker');
+    if (picker) picker.value = Object.prototype.hasOwnProperty.call(THEME_CLASS_BY_VALUE, theme) ? theme : 'default';
     syncFullAnim();
     updateEggOffBtnVisibility();
   }
@@ -192,6 +196,13 @@
     }
     bindEggOff(byId('eggOffBtn'));
     bindEggOff(byId('eggOffBtnHeader'));
+
+    var themePicker = byId('stxThemePicker');
+    if (themePicker) themePicker.addEventListener('change', function(){
+      if (!Object.prototype.hasOwnProperty.call(THEME_CLASS_BY_VALUE, themePicker.value)) return;
+      setEggsEnabled(true);
+      setTheme(themePicker.value);
+    });
 
     if(eggsEnabled()) setTheme(currentTheme());
     else setTheme('default');

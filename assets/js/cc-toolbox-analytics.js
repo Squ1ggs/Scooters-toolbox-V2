@@ -124,6 +124,37 @@
     return next();
   }
 
+  window.stxBumpDownload = function (kind, id) {
+    if (!allowRemoteAnalyticsEndpoints()) return;
+    var cfg = configuredEndpoint();
+    if (!cfg || !kind || !id) return;
+    var url = cfg.replace(/track\.php(?:\?.*)?$/i, 'download-bump.php');
+    if (url === cfg) return;
+    var params = new URLSearchParams();
+    params.set('kind', String(kind));
+    params.set('id', String(id));
+    try {
+      var mk = document.querySelector('meta[name="stx-analytics-track-key"]');
+      if (mk && mk.content) params.set('track_key', String(mk.content).trim());
+    } catch (_) {}
+    var body = params.toString();
+    try {
+      if (navigator.sendBeacon) {
+        var blob = new Blob([body], { type: 'application/x-www-form-urlencoded' });
+        if (navigator.sendBeacon(url, blob)) return;
+      }
+    } catch (_) {}
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body,
+      mode: 'cors',
+      credentials: 'omit',
+      cache: 'no-store',
+      keepalive: true
+    }).catch(function () {});
+  };
+
   function track() {
     if (!allowRemoteAnalyticsEndpoints()) return;
     var urls = candidateEndpoints('track.php');

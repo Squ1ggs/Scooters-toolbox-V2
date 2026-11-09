@@ -493,7 +493,8 @@ function uniqueSerials(arr) {
   const seen = new Set();
   const out = [];
   for (const value of (arr || [])) {
-    const s = String(value == null ? '' : value).trim().replace(/^['"]|['"]$/g, '');
+    let s = String(value == null ? '' : value).trim();
+    if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith('"') && s.endsWith('"'))) s = s.slice(1, -1);
     if (!s) continue;
     if (!seen.has(s)) { seen.add(s); out.push(s); }
   }
@@ -511,7 +512,7 @@ function looksLikeRawBase85TokenStx(s) {
   if (!v || v.length < 12 || v.startsWith('@U')) return false;
   if (looksDeserializedStx(v)) return false;
   if (/^\d+\s*,/.test(v)) return false;
-  return /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(v);
+  return /^[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+$/.test(v);
 }
 /** Same rules as BulkSerialInputParse.extractStxTokenFromLine (BOM, # comments, TSV junk, quotes). */
 function extractStxTokenFromLineBulk(line) {
@@ -525,9 +526,9 @@ function extractStxTokenFromLineBulk(line) {
    * characters; treating them as JSON/YAML terminators truncated most plain
    * validator exports before they reached WASM.
    */
-  const mU = trimmed.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/);
+  const mU = trimmed.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/);
   if (mU) return mU[0];
-  const mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
+  const mRB = trimmed.match(/(?:^|[\s:;,\t])([0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]{14,})(?:\s|$)/);
   if (mRB && looksLikeRawBase85TokenStx(mRB[1])) return mRB[1];
   const mD = trimmed.match(/(\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\|[\s\S]*)/);
   if (mD) {
@@ -566,7 +567,7 @@ function extractFromYaml(raw) {
     if (v.startsWith('@U') || looksDeserializedStx(v) || looksLikeRawBase85TokenStx(v)) out.push(v);
   }
   if (out.length) return uniqueSerials(out);
-  const loose = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+  const loose = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
   if (loose.length) return uniqueSerials(loose);
   const fallback = [];
   for (const ln of text.split('\n')) {
@@ -601,7 +602,7 @@ function extractFromJson(raw) {
     extractJsonStrings(parsed, out);
     return uniqueSerials(out);
   } catch (err) {
-    const matches = text.match(/@U[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+/g) || [];
+    const matches = text.match(/@U[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+/g) || [];
     const lines = text.split(/\r?\n/);
     for (const ln of lines) {
       const tok = extractStxTokenFromLineBulk(ln);

@@ -1,0 +1,5 @@
+# Netlify mirror of scooterstoolbox.com. No npm install: this is a static site with no package.json.
+# The patch script strips the live-only packs page and points counters + canonical URLs at scooterstoolbox.com.
+[build]
+  publish = "."
+  command = "node scripts/patch-index-for-github-pages.mjs ."

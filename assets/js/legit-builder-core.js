@@ -324,6 +324,19 @@
       if (tail === f) return true;
       if (f.indexOf(tail + '_') === 0) return true;
       if (tail.indexOf(f + '_') === 0) return true;
+      /* Pool loot uses short tails (om) against the full family name (oscar_mike). */
+      function famAlias(token) {
+        var t = String(token || '').toLowerCase();
+        var last = t.split('_').pop();
+        if (last === 'om' || t === 'oscar_mike' || t === 'oscarmike') return { om: 1, oscar_mike: 1, oscarmike: 1 };
+        return null;
+      }
+      var ta = famAlias(tail);
+      var fa = famAlias(f);
+      if (ta && fa) {
+        var key;
+        for (key in ta) if (fa[key]) return true;
+      }
       return false;
     }
 
@@ -716,7 +729,7 @@
     }
 
     function getMaxItemLevel() {
-      if (typeof window.clampItemLevel === 'function' && typeof window.STX_MAX_ITEM_LEVEL === 'number') {
+      if (typeof window.STX_MAX_ITEM_LEVEL === 'number' && Number.isInteger(window.STX_MAX_ITEM_LEVEL) && window.STX_MAX_ITEM_LEVEL >= 1) {
         return window.STX_MAX_ITEM_LEVEL;
       }
       return 70;
@@ -732,6 +745,14 @@
       if (n < 1) return 1;
       if (n > maxLv) return maxLv;
       return n;
+    }
+
+    function getItemLevelIssue(level) {
+      var n = Number(level);
+      var min = M.validation.level.min;
+      var max = getMaxItemLevel();
+      return Number.isInteger(n) && n >= min && n <= max ? ''
+        : 'Item level must be a whole number from ' + min + ' to ' + max + '. Got: ' + String(level) + '.';
     }
 
     /** Weight rows that use 0–1 style probabilities in weapon_part_weight_table (not HypShield scalars). */
@@ -880,6 +901,193 @@
     function getNcsInfo(slug) {
       if (!NMAP || !NMAP.items) return null;
       return NMAP.items[slug] || null;
+    }
+
+    /**
+     * true = this item type can roll firmware, false = a normal gun cannot,
+     * null = we cannot tell (do not hard-fail the host).
+     * NCS lists firmware on shields, enhancements, ordnance, and repkits.
+     * Class mods can roll it even though their NCS lane list is only body/stats.
+     */
+    function itemHostsFirmware(slug) {
+      var s = String(slug || '').toLowerCase();
+      if (!s) return null;
+      if (/classmod|class_mod|enhancement|shield|repair_kit|repkit|grenade|turret_gadget|terminal|heavy_weapon/.test(s)) return true;
+      var ncs = getNcsInfo(s);
+      if (ncs && Array.isArray(ncs.ncs_slots) && ncs.ncs_slots.indexOf('firmware') >= 0) return true;
+      if (/_(?:pistol|ar|smg|shotgun|sniper)$/.test(s)) return false;
+      if (ncs && /weapon/i.test(String(ncs.type || '')) && !/heavy|gadget/i.test(String(ncs.type || ''))) return false;
+      return null;
+    }
+
+    function partRowIsFirmware(slotName, part) {
+      var slot = String(slotName || '').toLowerCase();
+      var name = String(part && part.name ? part.name : '').toLowerCase();
+      if (slot === 'firmware' || slot.indexOf('firmware') >= 0) return true;
+      return /part_firmware/.test(name);
+    }
+
+    function countFirmwareParts(selectedParts) {
+      var n = 0;
+      Object.keys(selectedParts || {}).forEach(function (slotName) {
+        if (partRowIsFirmware(slotName, selectedParts[slotName])) n++;
+      });
+      return n;
+    }
+
+    function firmwareChanceDetail(selectedParts) {
+      var rp = selectedParts && selectedParts.rarity;
+      var name = String(rp && rp.name ? rp.name : '').toLowerCase();
+      var here = '';
+      if (/legendary|comp_05/.test(name)) here = 'This rarity: Legendary 23%. ';
+      else if (/epic|comp_04/.test(name)) here = 'This rarity: Epic 17%. ';
+      else if (/rare|comp_03/.test(name)) here = 'This rarity: Rare 13%. ';
+      else if (/uncommon|comp_02/.test(name)) here = 'This rarity: Uncommon 9%. ';
+      else if (/common|comp_01/.test(name)) here = 'This rarity: Common 5%. ';
+      return here + 'Firmware chance by rarity: Common 5%, Uncommon 9%, Rare 13%, Epic 17%, Legendary 23%. A firmware on any of these can still roll.';
+    }
+
+    function isSpawnFooterDetail(line) {
+      return /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:|Passes our checks|Rules passed:|Spawn claim:|Bulk natural|Composition:|Natural legitimacy:|FYI:|Firmware chance|This rarity:|Loot-pool export)/i.test(String(line || ''));
+    }
+
+    function isSoftSpawnDetail(line) {
+      var s = String(line || '');
+      if (!s || isSpawnFooterDetail(s) || /^FYI\b/i.test(s)) return true;
+      if (/^Slot\(s\) not in NCS/i.test(s)) return true;
+      if (/^Part order mismatch/i.test(s)) return true;
+      if (/^Firmware chance/i.test(s)) return true;
+      if (/^Firmware can roll on this item from level/i.test(s)) return true;
+      if (/^No enemy\/reward\/other row/i.test(s)) return true;
+      if (/missing dependency tag "(?:barrel_01|barrel_02)"/i.test(s)) return true;
+      return false;
+    }
+
+    function firstSpawnProblemLine(details, firmwareFlag) {
+      if (firmwareFlag && (firmwareFlag.code === 'level' || firmwareFlag.code === 'host' || firmwareFlag.code === 'many')) {
+        return firmwareFlag.text;
+      }
+      var i;
+      var line;
+      for (i = 0; i < (details || []).length; i++) {
+        line = String(details[i] || '');
+        if (isSoftSpawnDetail(line)) continue;
+        return line;
+      }
+      return '';
+    }
+
+    /** Summary lines. Anything else is a mismatch and cannot stay Can roll. */
+    function isInformationalSpawnDetail(line) {
+      if (/^FYI: /i.test(String(line || ''))) return true;
+      if (/^FYI \[composition\]/i.test(String(line || ''))) return true;
+      return /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:|Passes our checks|Rules passed:|Spawn claim:|Bulk natural scan:|Composition:|Natural legitimacy:|Firmware chance|Firmware can roll on this item from level|This rarity:|FYI \(NCS bundled combo\)|FYI \[slot-map\]|FYI: no enemy\/reward\/other source|No enemy\/reward\/other row|Bulk cheat-audit:|Slot\(s\) not in NCS|Part order mismatch vs NCS|Loot-pool export \(FYI\))/i.test(String(line || ''))
+        || /missing dependency tag "(?:barrel_01|barrel_02)"/i.test(String(line || ''));
+    }
+
+    function unmappedPartExplainsEmptyCount(details) {
+      var i;
+      for (i = 0; i < (details || []).length; i++) {
+        if (/FYI \[slot-map\]/i.test(String(details[i] || '')) && /no slot key|not on this item/i.test(String(details[i] || ''))) return true;
+      }
+      return false;
+    }
+
+    function firstDiscrepancyLine(details) {
+      var i;
+      var line;
+      var unmapped = unmappedPartExplainsEmptyCount(details);
+      for (i = 0; i < (details || []).length; i++) {
+        line = String(details[i] || '');
+        if (!line || isInformationalSpawnDetail(line)) continue;
+        if (unmapped && /Comp slot [^:]+: count 0 outside range/i.test(line)) continue;
+        return line;
+      }
+      return '';
+    }
+
+    function finalizeSpawnVerdict(state) {
+      if (!state) return state;
+      var soft = state.status === 'err' ? '' : firstDiscrepancyLine(state.details);
+      if (soft && (state.status === 'ok' || state.status === 'idle')) {
+        state.status = 'warn';
+        state.statusText = 'Uncertain (soft edit)';
+        state.className = 'v-warn';
+      } else if (!soft && state.status === 'warn' && state.statusText === 'Uncertain (soft edit)') {
+        state.status = 'ok';
+        state.statusText = 'OK (data)';
+        state.className = 'v-ok';
+      }
+      var verdict = 'Not sure';
+      if (state.status === 'ok') verdict = 'Can roll';
+      else if (state.status === 'err') verdict = 'Cannot roll';
+      var reason = state.status === 'ok' ? '' : firstSpawnProblemLine(state.details, state.firmwareFlag);
+      if (reason && isInformationalSpawnDetail(reason)) reason = '';
+      if (!reason && soft) reason = soft;
+      if (!reason) {
+        if (verdict === 'Can roll') reason = 'Parts and level look like a natural roll.';
+        else if (verdict === 'Cannot roll') reason = 'This mix cannot roll.';
+        else reason = 'Decoded, but a part did not map and there is no hard rule.';
+      }
+      state.verdict = verdict;
+      state.verdictReason = reason;
+      if (!state.firmwareFlag) state.firmwareFlag = { code: 'none', text: 'No firmware' };
+      return state;
+    }
+
+    function renderSpawnCheckHtml(st) {
+      if (!st) return '';
+      var verdict = st.verdict || (st.status === 'ok' ? 'Can roll' : st.status === 'err' ? 'Cannot roll' : 'Not sure');
+      var reason = st.verdictReason || '';
+      if(st.nonObtainable){
+        verdict='Usually unobtainable';
+        reason='Marked as NPC-only in the game data. It may be spawned, but is not normally available as player loot.';
+      }
+      var fw = st.firmwareFlag && st.firmwareFlag.text ? st.firmwareFlag.text : '';
+      var fwCode = st.firmwareFlag && st.firmwareFlag.code ? st.firmwareFlag.code : '';
+      var metaRe = /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:)/;
+      var lines = '';
+      var details = st.details || [];
+      var i;
+      for (i = 0; i < details.length; i++) {
+        var line = String(details[i] || '');
+        lines += '<div class="v-detail-line' + (metaRe.test(line) ? ' v-detail-meta' : '') + '">' + escapeHtml(line) + '</div>';
+      }
+      var fwClass = 'v-firmware';
+      if (fwCode === 'level' || fwCode === 'host' || fwCode === 'many') fwClass += ' v-firmware-bad';
+      else if (fwCode === 'can') fwClass += ' v-firmware-ok';
+      return '<strong class="v-verdict">' + escapeHtml(verdict) + '</strong>'
+        + (reason ? '<div class="v-reason">' + escapeHtml(reason) + '</div>' : '')
+        + (fw ? '<div class="' + fwClass + '">' + escapeHtml(fw) + '</div>' : '')
+        + '<details class="v-more"><summary>More details</summary><div class="v-details">' + lines
+        + '<p class="v-detail-meta">Checks our extracted tables. Not a Gearbox stamp.</p></div></details>'
+        + (st.miniLineageHtml || '');
+    }
+
+    function refreshFirmwareLevelMarks() {
+      var lvl = getItemLevel();
+      var slug = selectedItem && selectedItem.slug;
+      var hosts = slug ? itemHostsFirmware(slug) : null;
+      var opts = document.querySelectorAll('option[data-fw-label]');
+      var i;
+      for (i = 0; i < opts.length; i++) {
+        var opt = opts[i];
+        var base = opt.getAttribute('data-fw-label') || '';
+        var current = String(opt.textContent || '');
+        var prefix = /^✓\s/.test(current) ? '✓ ' : (/^✗\s/.test(current) ? '✗ ' : '');
+        var note = '';
+        var title = 'Firmware can roll at this level.';
+        if (hosts === false) {
+          note = ' — cannot roll on this item';
+          title = 'Firmware cannot roll on this item.';
+        } else if (lvl < 25) {
+          note = ' — needs level 25';
+          title = 'Firmware needs item level 25. This item is ' + lvl + '.';
+        }
+        var failTitle = /^Will fail now:/.test(String(opt.title || '')) ? String(opt.title) : '';
+        opt.textContent = prefix + base + note;
+        opt.title = failTitle ? (title + ' ' + failTitle) : title;
+      }
     }
 
     /**
@@ -1880,8 +2088,9 @@
             }
           }
         }
-        /* Validity rewrites labels — re-pin ★ matches to the top afterward. */
+        /* Validity rewrites labels — re-pin ★ matches, then put the firmware level note back. */
         try { syncLegitNamedLegendaryFamParts(); } catch (_syncAfterValid) {}
+        try { refreshFirmwareLevelMarks(); } catch (_fwMarks) {}
       } catch (_e) {}
     };
 
@@ -2115,7 +2324,12 @@
               var invDumpKey = String(o.invDumpKey || o.inv_dump_key || o.inv_key || '').trim();
               var star = rarityMatch ? '\u2605 ' : '';
               var inPoolAttr = (o.in_pool === true || rarityMatch) ? 'true' : 'false';
-              return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + inPoolAttr + '"' + (rarityMatch ? ' data-rarity-match="1"' : '') + '>[' + o.index + '] ' + star + poolMark + formatPartName(o.name) + '</option>';
+              var plain = '[' + o.index + '] ' + star + poolMark + formatPartName(o.name);
+              var fwAttr = '';
+              if (slotName === 'firmware' || /part_firmware/i.test(String(o.name || ''))) {
+                fwAttr = ' data-fw-label="' + escapeHtml(plain) + '"';
+              }
+              return '<option value="' + o.index + '" data-name="' + escapeHtml(o.name) + '" data-inv-key="' + escapeHtml(invDumpKey) + '" data-in-pool="' + inPoolAttr + '"' + (rarityMatch ? ' data-rarity-match="1"' : '') + fwAttr + '>' + plain + '</option>';
             }
             var optBody = '';
             if (isRarity) {
@@ -2275,6 +2489,7 @@
       if (!rendered) {
         slotsContainer.innerHTML = '<div class="slot-empty-msg">No configurable slots for this item.</div>';
       }
+      refreshFirmwareLevelMarks();
     }
 
     /**
@@ -3162,6 +3377,17 @@
      * Invisible Nexus `part_ele_control` is omitted from dropdowns but still grants allow_elemental /
      * allow_normal on natural elemental guns. Seed those so Strict mode does not mark every element ✗.
      */
+    function seedRolledBarrelTags(tagPool, selectedParts) {
+      Object.keys(selectedParts || {}).forEach(function (barrelKey) {
+        if (slotBaseKey(barrelKey) !== 'barrel') return;
+        var barrelPart = selectedParts[barrelKey];
+        if (!barrelPart || !barrelPart.name) return;
+        var barrelName = String(barrelPart.invDumpKey || barrelPart.name).toLowerCase();
+        if (/barrel_02/i.test(barrelName)) tagPool.add('barrel_02');
+        else tagPool.add('barrel_01');
+      });
+    }
+
     function seedImplicitEleControlTags(tagPool, item, ncsSlotsOpt) {
       if (!tagPool || !itemHasElementCapableSlots(item, ncsSlotsOpt)) return;
       tagPool.add('allow_elemental');
@@ -3211,6 +3437,7 @@
       var compName = effectiveRarityCompKey(rp) || null;
       var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
       seedImplicitEleControlTags(tagPool, selectedItem, ncsSlotsOpt);
+      seedRolledBarrelTags(tagPool, selectedParts);
       if (rp && (rp.name || rp.invDumpKey) && compName) {
         var baseTags = compBasetags[compName];
         if (!baseTags) {
@@ -3392,6 +3619,7 @@
       /* Data + manifests use both comp_* and base_comp_* for the same rarity row — normalize for tier/regex logic. */
       var compKeyNorm = compName ? compName.replace(/^base_comp_/i, 'comp_') : null;
       seedImplicitEleControlTags(tagPool, selectedItem, ncsSlotsOpt);
+      seedRolledBarrelTags(tagPool, selectedParts);
       if (rp && (rp.name || rp.invDumpKey) && compName) {
         var baseTags = compBasetags[compName];
         if (!baseTags) {
@@ -4088,7 +4316,8 @@
       var statsAnyFound = 0;
       var statsMissingExamples = [];
       var useStrict = opts.strictMode !== undefined ? opts.strictMode : strictMode;
-      var il = opts.itemLevel != null && Number.isFinite(Number(opts.itemLevel)) ? Number(opts.itemLevel) : getItemLevel();
+      /* Explicit decoded levels must be validated, never replaced by the UI default. */
+      var il = opts.itemLevel != null ? Number(opts.itemLevel) : getItemLevel();
 
       if (selectedItem && partCount) {
         var slugForStats = selectedItem.slug;
@@ -4106,6 +4335,15 @@
 
       if (partCount === 0) {
         return { status: 'idle', statusText: '', details: [], className: 'v-idle', miniLineageHtml: '', sourceEvidence: null, statsIdRawFound: 0, statsAnyFound: 0, partCount: 0, partSlotDiagnostics: [], offPoolParts: [] };
+      }
+
+      var minItemLevel = v.level.min;
+      var maxItemLevel = getMaxItemLevel();
+      var levelIssue = getItemLevelIssue(il);
+      if (levelIssue) {
+        details.push(levelIssue);
+        status = 'err';
+        statusText = 'Fail (data)';
       }
 
       var ncsInfo = selectedItem ? getNcsInfo(selectedItem.slug) : null;
@@ -4240,7 +4478,10 @@
         for (var tri = 0; tri < tagProgResult.globalReasons.length; tri++) {
           var grLine = tagProgResult.globalReasons[tri];
           if (isNonActionableCompUnderMinLine(grLine)) continue;
-          details.push(grLine);
+          // Keep the final verdict consistent with the rule's evidence strength.
+          // Export gaps and soft dependencies must not become failures just because
+          // their diagnostic text is present in the detail list.
+          details.push(bulkAudit && !invReasonIsBulkHardFail(grLine) ? 'FYI: ' + grLine : grLine);
         }
       }
 
@@ -4278,23 +4519,90 @@
       })();
 
       var sched = selectedItem ? computeScheduleAnalysis(selectedItem.slug, selectedParts) : { gates: [], maxMinStage: 0, weightHits: [], zeroWeightParts: [] };
+      var scheduleHard = false;
+      var repkitStarterScheduleUncertain = false;
+      /* User-confirmed starting loadout, captured at level 2. Match the whole part
+         selection so this does not exempt arbitrary low-level repkits. */
+      var confirmedStarterRepkit = selectedItem && selectedItem.slug === 'vladof_repair_kit' && il === 2 &&
+        Object.keys(selectedParts).length === 3 &&
+        selectedParts.rarity && selectedParts.rarity.name === 'comp_01_common' && Number(selectedParts.rarity.index) === 1 &&
+        selectedParts.body && selectedParts.body.name === 'part_vla' && Number(selectedParts.body.index) === 7 &&
+        selectedParts.payload && selectedParts.payload.name === 'part_payload_huge' && Number(selectedParts.payload.index) === 106;
+      var firmwareFlag = { code: 'none', text: 'No firmware' };
+      var fwCount = countFirmwareParts(selectedParts);
+      var fwHosts = selectedItem ? itemHostsFirmware(selectedItem.slug) : null;
+      if (fwCount > 1) {
+        firmwareFlag = { code: 'many', text: 'More than one firmware. Only one can roll.' };
+        details.push(firmwareFlag.text);
+        status = 'err';
+        statusText = 'Fail (data)';
+      } else if (fwCount === 1 && fwHosts === false) {
+        firmwareFlag = { code: 'host', text: 'Firmware cannot roll on this item.' };
+        details.push(firmwareFlag.text);
+        status = 'err';
+        statusText = 'Fail (data)';
+      } else if (fwCount === 1 && il < 25) {
+        firmwareFlag = { code: 'level', text: 'Firmware needs item level 25. This item is ' + il + '.' };
+        details.push(firmwareFlag.text);
+        status = 'err';
+        statusText = 'Fail (data)';
+      } else if (fwCount === 1) {
+        firmwareFlag = { code: 'can', text: 'Firmware can roll' };
+      } else if (fwHosts === true && il < 25) {
+        details.push('Firmware can roll on this item from level 25.');
+      }
+      if (fwHosts !== false) details.push(firmwareChanceDetail(selectedParts));
 
-      if (status !== 'err' && sched.zeroWeightParts && sched.zeroWeightParts.length) {
-        details.push('weapon_part_weight_table: 0% roll weight for ' + sched.zeroWeightParts.map(function(z) {
+      if (sched.zeroWeightParts && sched.zeroWeightParts.length) {
+        details.push((bulkAudit ? 'FYI: ' : '') + 'weapon_part_weight_table: 0% roll weight for ' + sched.zeroWeightParts.map(function(z) {
           return z.slot + ':' + formatPartName(z.part) + ' [' + z.row + ']';
         }).join('; '));
-        /* Interactive: hard Fail. Bulk balance parity: FYI — weight tables are incomplete vs .be Pass. */
+        /* Interactive: hard Fail. Bulk: FYI — weight tables are incomplete vs real drops. */
         if (!bulkAudit) {
           status = 'err';
           statusText = 'Fail (data)';
         }
       }
-      if (status !== 'err' && useStrict && LSCHED && sched.maxMinStage > 0 && il < sched.maxMinStage) {
-        details.push('Item level ' + il + ' < LootSchedule MinGameStage ' + sched.maxMinStage);
-        /* Interactive: hard Fail. Bulk: FYI (loot schedule coverage ≠ .be Balance Invalid). */
-        if (!bulkAudit) {
-          status = 'err';
-          statusText = 'Fail (data)';
+      if (LSCHED && sched.gates && sched.gates.length) {
+        var levelMisses = [];
+        var lg;
+        for (lg = 0; lg < sched.gates.length; lg++) {
+          var gate = sched.gates[lg];
+          if (!gate || gate.key === 'Firmware') continue;
+          if (il < gate.min) {
+            // LootSchedule is an acquisition-stage threshold, not an intrinsic
+            // item-level limit. User-confirmed level-1 grenades exist; a blanket
+            // level-2 item ban wrongly rejects them. Firmware keeps its own gate.
+            if (gate.key === 'Gadget_Grenade') {
+              details.push('FYI: Normal grenade loot starts at game stage ' + gate.min + '; this does not prohibit a lower-level grenade.');
+              continue;
+            }
+            /* A level-2 repkit was captured in-game and reported as possible starter gear.
+               RepKit MinGameStage alone cannot exclude starter/reward pathways. Keep this
+               uncertain until that provenance is verified; do not weaken other hard rules. */
+            if (gate.key === 'RepKit') {
+              if (confirmedStarterRepkit) {
+                details.push('Rules passed: Confirmed starting-loadout repkit; the normal loot schedule stage does not exclude this starter item.');
+                continue;
+              }
+              repkitStarterScheduleUncertain = true;
+              details.push('Repkit is below the normal loot schedule stage ' + gate.min + '. Starter or reward exceptions have not been verified for this serial.');
+              continue;
+            }
+            levelMisses.push(gate.reason + ' needs item level ' + gate.min + '. This item is ' + il + '.');
+          }
+        }
+        if (levelMisses.length) {
+          var failLevel = bulkAudit || useStrict;
+          var lmi;
+          for (lmi = 0; lmi < levelMisses.length; lmi++) {
+            details.push((failLevel ? '' : 'FYI: ') + levelMisses[lmi]);
+          }
+          if (failLevel) {
+            status = 'err';
+            statusText = 'Fail (data)';
+            scheduleHard = true;
+          }
         }
       }
 
@@ -4307,7 +4615,7 @@
 
       if (status !== 'err') {
         var finalSourceOk = bulkAudit ? true : useStrict ? sourceOk : sourceEvidence && sourceEvidence.rowsMapped > 0;
-        var schedLevelOk = !LSCHED || sched.maxMinStage === 0 || il >= sched.maxMinStage;
+        var schedLevelOk = !scheduleHard;
         /* Schedule under-min already hard-fails above when useStrict; do not soft-pass in bulk. */
         var schedBlockOk = schedLevelOk;
         if (finalSourceOk) {
@@ -4332,7 +4640,7 @@
                   if (hasBulkHardInv) {
                     status = 'err';
                     statusText = 'Fail (data)';
-                  } else {
+                  } else if (status !== 'warn') {
                     status = 'ok';
                     statusText = 'OK (data)';
                     details.push(
@@ -4379,12 +4687,12 @@
                   );
                 }
               }
-            } else {
+            } else if (status !== 'warn') {
               status = 'ok';
               statusText = 'OK (data)';
               details.push(
                 bulkAudit
-                  ? 'Natural legitimacy: composition passed (critical wrong-root/dups, exclusions, over-max). Soft: uni_/leg_ deps, NCS order, weight/schedule, under-min.'
+                  ? 'Natural legitimacy: composition passed (critical wrong-root/dups, exclusions, over-max, level gates). Soft: uni_/leg_ deps, NCS order, 0% weight, under-min.'
                   : 'Rules passed: NCS/slots, inv-tag chain (if bundle loaded), weight table, elements, preferred parts — and bundled source tables show at least one pathway for this item type (not this exact roll).'
               );
             }
@@ -4421,7 +4729,7 @@
       details.push('Stats by idRaw: ' + statsIdRawFound + ' / ' + partCount);
       details.push('Stats known: ' + statsAnyFound + ' / ' + partCount);
       if (statsMissingExamples.length) details.push('Missing stat examples: ' + statsMissingExamples.join(', '));
-      details.push('Level range: ' + v.level.min + '\u2013' + v.level.max);
+      details.push('Level range: ' + minItemLevel + '\u2013' + maxItemLevel);
       details.push('Item level: ' + il + ' &middot; LootSchedule max MinGameStage: ' + sched.maxMinStage + (LSCHED ? '' : ' (data missing)'));
 
       if (bulkAudit && partCount > 0 && status === 'idle') {
@@ -4436,9 +4744,13 @@
         );
       }
 
+      if (repkitStarterScheduleUncertain && status !== 'err') {
+        status = 'warn';
+        statusText = 'Uncertain (starter schedule)';
+      }
       var cls = status === 'ok' ? 'v-ok' : status === 'warn' ? 'v-warn' : status === 'err' ? 'v-err' : 'v-idle';
       var miniLineageHtml = renderValidationSourceMini(sourceEvidence);
-      return {
+      return finalizeSpawnVerdict({
         status: status,
         statusText: statusText,
         details: details,
@@ -4452,8 +4764,9 @@
         sched: sched,
         il: il,
         partSlotDiagnostics: getPartSlotDiagnostics(selectedParts, tagBySlotForDiag, ncsInfo && ncsInfo.ncs_slots),
-        offPoolParts: offPoolParts
-      };
+        offPoolParts: offPoolParts,
+        firmwareFlag: firmwareFlag
+      });
     }
 
 
@@ -4465,5 +4778,11 @@
       getAllItems: getAllItems,
       getNcsInfo: getNcsInfo,
       formatPartName: formatPartName,
-      slotNameAllowedOnNcs: slotNameAllowedOnNcs
+      slotNameAllowedOnNcs: slotNameAllowedOnNcs,
+      itemHostsFirmware: itemHostsFirmware,
+      getItemLevelIssue: getItemLevelIssue,
+      finalizeSpawnVerdict: finalizeSpawnVerdict,
+      renderSpawnCheckHtml: renderSpawnCheckHtml,
+      refreshFirmwareLevelMarks: refreshFirmwareLevelMarks
     };
+

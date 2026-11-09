@@ -621,7 +621,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
-<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
+<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="40" name="steamIdInput" placeholder="76561198012345678 or Epic ID" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
 <p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Same store as the save: Steam PC → 17-digit SteamID64; Epic PC → Epic id (often hex). Remembered locally for next time.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
@@ -652,7 +652,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
 <div>
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Name:</label>
-<input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
+<input data-requires="character" aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
 <button class="btn btn-Firmware" data-action="apply-stats" data-requires="character" style="flex: 1; min-width: 140px;" type="button">Apply Stats Changes</button>
 <button class="btn btn-primary" id="saveYAMLToSAVBtnTop" style="flex: 1; min-width: 120px;" type="button">Save YAML</button>
@@ -885,28 +885,28 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 </div>
 <div>
 <label for="yaml-char-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Character Level:</label>
-<input aria-label="YAML character level" id="yaml-char-level" max="70" min="1" name="yaml-char-level" placeholder="70" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML character level" id="yaml-char-level" max="70" min="1" name="yaml-char-level" placeholder="70" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./img/reward-icons/ico_reward_exp.png" width="22"/>Experience Points:</label>
-<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 70" type="number"/>
+<input data-requires="character" aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 70" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>
-<input aria-label="YAML specialization level" id="yaml-spec-level" min="1" name="yaml-spec-level" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML specialization level" id="yaml-spec-level" min="1" name="yaml-spec-level" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-points" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Points:</label>
-<input aria-label="YAML specialization points" id="yaml-spec-points" min="0" name="yaml-spec-points" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML specialization points" id="yaml-spec-points" min="0" name="yaml-spec-points" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 </div>
 <div>
 <label class="yaml-stat-label" for="yaml-cash"><img alt="" decoding="async" height="22" loading="lazy" src="./img/ui/cash.png" width="22"/>Cash:</label>
-<input aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label class="yaml-stat-label" for="yaml-eridium"><img alt="" decoding="async" height="22" loading="lazy" src="./img/ui/eridium.png" width="22"/>Eridium:</label>
-<input aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div id="ccExtraYamlEditors" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.28); background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -1151,14 +1151,14 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
 <script src="js/cc-preset-data-rebuild.js"></script>
 <script src="js/cc-base85-rebuild.js"></script>
 <script src="js/stx-nicnl-serial-pack.js"></script>
-<script src="js/cc-sav-crypto-rebuild.js?v=77v"></script>
-<script src="js/cc-yaml-save-rebuild.js?v=77x"></script>
-<script src="js/cc-preset-rebuild.js"></script>
+<script src="js/cc-sav-crypto-rebuild.js?v=80v"></script>
+<script src="js/cc-yaml-save-rebuild.js?v=80g"></script>
+<script src="js/cc-preset-rebuild.js?v=80v"></script>
 <script src="js/cc-stx-decoder-bridge.js?v=77r"></script>
 <script src="js/cc-yaml-extras-rebuild.js"></script>
 <script src="js/cc-missions-rebuild.js"></script>
-<script src="js/cc-profile-progression-tools-rebuild.js"></script>
-<script src="js/cc-yaml-drawer-wiring-rebuild.js?v=77x"></script>
+<script src="js/cc-profile-progression-tools-rebuild.js?v=80v"></script>
+<script src="js/cc-yaml-drawer-wiring-rebuild.js?v=80v"></script>
 <script src="js/cc-build-stats-rebuild.js?v=77j"></script>
 <script src="js/rebuild-presets-random.js?v=77m"></script>
 <script>
@@ -1251,6 +1251,7 @@ window.STX_DECODER_IFRAME_URL = '../legacy/bl4-bulk-decoder.html';
   }
 })();
 </script>
+<script src="./js/stx-i18n.js?v=78s" defer></script>
 </body>
 </html>
 

@@ -18,14 +18,9 @@
       var st = computeLegitValidationState(selectedItem, selectedParts, {});
       try { window.__legitLastPartSlotDiagnostics = st.partSlotDiagnostics || null; } catch (_) {}
       validationEl.className = 'validation-bar ' + st.className;
-      var metaRe = /^(Parts:|Sources:|Stats by|Stats known|Missing stat examples|Level range:|Item level:)/;
-      var detailLines = '';
-      var di;
-      for (di = 0; di < st.details.length; di++) {
-        var line = st.details[di];
-        detailLines += '<div class="v-detail-line' + (metaRe.test(line) ? ' v-detail-meta' : '') + '">' + escapeV(line) + '</div>';
-      }
-      validationEl.innerHTML = '<strong>' + escapeV(st.statusText) + '</strong><div class="v-details">' + detailLines + '</div>' + st.miniLineageHtml;
+      validationEl.innerHTML = (window.LegitBuilderApi && window.LegitBuilderApi.renderSpawnCheckHtml)
+        ? window.LegitBuilderApi.renderSpawnCheckHtml(st)
+        : ('<strong>' + escapeV(st.verdict || st.statusText) + '</strong>');
       /* Debounced once — avoid sync refresh + second scheduled refresh per part change. */
       scheduleLegitSlotOptionValidityRefresh();
     }
@@ -98,11 +93,17 @@
     if (itemLevelInput) {
       itemLevelInput.addEventListener('input', function() {
         updateCodeOutput();
+        if (window.LegitBuilderApi && typeof window.LegitBuilderApi.refreshFirmwareLevelMarks === 'function') {
+          window.LegitBuilderApi.refreshFirmwareLevelMarks();
+        }
         updateValidation();
         updateProofEvidence();
       });
       itemLevelInput.addEventListener('change', function() {
         updateCodeOutput();
+        if (window.LegitBuilderApi && typeof window.LegitBuilderApi.refreshFirmwareLevelMarks === 'function') {
+          window.LegitBuilderApi.refreshFirmwareLevelMarks();
+        }
         updateValidation();
         updateProofEvidence();
       });

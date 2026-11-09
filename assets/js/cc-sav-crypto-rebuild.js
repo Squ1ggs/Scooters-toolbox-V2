@@ -10,21 +10,23 @@
   var STEAM_ID_STORAGE_KEY = 'stx_last_steam_id';
 
   /**
-   * Accept account identifiers in common forms:
-   * - decimal digits (SteamID64-style)
-   * - hex string (with/without 0x; Epic/account exports sometimes provide this)
-   * Returns canonical decimal string for key derivation, or '' when invalid.
+   * Same split as the other BL4 editors (iyre bl4-save-tools / mi5hmash resigner):
+   * - all digits (SteamID64, or a long Epic decimal such as 39 digits) stay decimal
+   * - a 32-character Epic account id stays hex text (optional 0x or dashes)
+   * A shorter hex string is a Steam id written in hex and is returned as decimal.
    */
   function normalizeAccountId(raw) {
     var s = String(raw || '').trim();
     if (!s) return '';
-    var digitsOnly = s.replace(/\D/g, '');
-    if (/^\d{10,20}$/.test(digitsOnly)) return digitsOnly;
-    var hex = s.toLowerCase();
+    var compact = s.replace(/[\s\-]/g, '');
+    if (/^\d{10,39}$/.test(compact)) return compact;
+    var hex = compact.toLowerCase();
     if (hex.indexOf('0x') === 0) hex = hex.slice(2);
-    if (/^[0-9a-f]{16,32}$/.test(hex)) {
+    if (/^[0-9a-f]{32}$/.test(hex) && /[a-f]/.test(hex)) return hex;
+    if (/^[0-9a-f]{16,31}$/.test(hex)) {
       try { return BigInt('0x' + hex).toString(10); } catch (_) { return ''; }
     }
+    if (/^[0-9a-f]{32}$/.test(hex)) return hex;
     return '';
   }
 
@@ -115,6 +117,51 @@
     return key;
   }
 
+  /** Epic account id: UTF-16LE of the hex text, XORed into the 32-byte key (second half of the 64-byte string is unused). */
+  function deriveKeyFromEpicHex(hex32) {
+    var key = new Uint8Array(BASE_KEY);
+    var n = Math.min(key.length, hex32.length * 2);
+    for (var i = 0; i < n; i++) {
+      var code = hex32.charCodeAt(i >> 1);
+      var b = (i & 1) === 0 ? (code & 0xff) : ((code >> 8) & 0xff);
+      key[i] ^= b;
+    }
+    return key;
+  }
+
+  function isEpicAccountHex(id) {
+    return /^[0-9a-f]{32}$/.test(id || '') && /[a-f]/.test(id || '');
+  }
+
+  function decryptionKeysForAccount(normalized) {
+    var out = [];
+    var seen = Object.create(null);
+    function pushKey(k) {
+      var tag = '';
+      for (var i = 0; i < k.length; i++) tag += (k[i] < 16 ? '0' : '') + k[i].toString(16);
+      if (seen[tag]) return;
+      seen[tag] = 1;
+      out.push(k);
+    }
+    pushKey(deriveKeyFromSteamId(normalized));
+    if (isEpicAccountHex(normalized)) {
+      var asDec = BigInt('0x' + normalized).toString(10);
+      var epicLegacy = accountBigIntCandidates(asDec);
+      for (var ei = 0; ei < epicLegacy.length; ei++) pushKey(deriveKeyFromAccountBigInt(epicLegacy[ei]));
+      return out;
+    }
+    if (/^\d{21,39}$/.test(normalized)) {
+      try {
+        var asHex = BigInt(normalized).toString(16);
+        while (asHex.length < 32) asHex = '0' + asHex;
+        if (asHex.length === 32 && /[a-f]/.test(asHex)) pushKey(deriveKeyFromEpicHex(asHex));
+      } catch (_) {}
+    }
+    var steamCands = accountBigIntCandidates(normalized);
+    for (var si = 1; si < steamCands.length; si++) pushKey(deriveKeyFromAccountBigInt(steamCands[si]));
+    return out;
+  }
+
   /**
    * Some users paste the 32-bit account id from Steam Community URLs; Epic keys differ.
    * Try a small ordered set of BigInts so one correct form still unlocks the save.
@@ -140,9 +187,11 @@
 
   function deriveKeyFromSteamId(steamid) {
     if (!steamid) throw new Error('Account ID required.');
-    var digits = normalizeAccountId(steamid);
-    if (!digits) throw new Error('Account ID required (SteamID64 decimal or supported hex ID).');
-    return deriveKeyFromAccountBigInt(accountBigIntCandidates(digits)[0]);
+    var id = normalizeAccountId(steamid);
+    if (!id) throw new Error('Account ID required (SteamID64, 32-character Epic ID, or Epic ID as decimal).');
+    if (/^\d+$/.test(id)) return deriveKeyFromAccountBigInt(BigInt(id));
+    if (/^[0-9a-f]{32}$/.test(id)) return deriveKeyFromEpicHex(id);
+    throw new Error('Account ID required (SteamID64, 32-character Epic ID, or Epic ID as decimal).');
   }
 
   function uint8ArrayToWordArray(u8) {
@@ -528,18 +577,17 @@
   function decryptSavBytesToYaml(cipherBytesU8, steamid) {
     if (!steamid) throw new Error('Account ID required.');
     var digits = normalizeAccountId(steamid);
-    if (!digits) throw new Error('Account ID required (SteamID64 decimal or supported hex ID).');
-    var candidates = accountBigIntCandidates(digits);
+    if (!digits) throw new Error('Account ID required (SteamID64, 32-character Epic ID, or Epic ID as decimal).');
+    var keyCandidates = decryptionKeysForAccount(digits);
     var lastErr = null;
-    for (var ci = 0; ci < candidates.length; ci++) {
+    for (var ci = 0; ci < keyCandidates.length; ci++) {
       try {
-        var keyBytes = deriveKeyFromAccountBigInt(candidates[ci]);
-        return decryptSavBytesToYamlWithKey(cipherBytesU8, keyBytes);
+        return decryptSavBytesToYamlWithKey(cipherBytesU8, keyCandidates[ci]);
       } catch (e) {
         lastErr = e;
       }
     }
-    var hint = ' Tried ' + candidates.length + ' key form(s) from your ID.';
+    var hint = ' Tried ' + keyCandidates.length + ' key form(s) from your ID.';
     if (lastErr && lastErr.message) {
       throw new Error(lastErr.message + hint);
     }
@@ -563,6 +611,7 @@
   /** True when YAML looks like a profile.sav decode (domains / profile root, no character state block). */
   function isProfileYamlStructure(yamlStr) {
     if (!yamlStr || typeof yamlStr !== 'string') return false;
+    if (typeof window.detectYamlSaveKind === 'function') return window.detectYamlSaveKind(yamlStr) === 'profile';
     if (/(^|\n)\s*state\s*:/m.test(yamlStr)) return false;
     if (/(^|\n)\s*domains\s*:/m.test(yamlStr)) return true;
     if (/(^|\n)\s*profile\s*:/m.test(yamlStr)) return true;
@@ -574,6 +623,7 @@
   function getNextStbxFilename(ext, yamlStr) {
     ext = (ext || 'yaml').toLowerCase().replace(/^\./, '');
     var isProfile = isProfileYamlStructure(yamlStr || '');
+    if (ext === 'sav') return isProfile ? 'stx-profile.sav' : 'stx character.sav';
     var charName = getCharNameFromYaml(yamlStr || '');
     // Profile downloads use a clear game-facing name so they are not mistaken for character saves.
     var base = isProfile ? 'profile' : (charName ? 'STBX-' + charName : 'STBX');
@@ -630,11 +680,11 @@
     steamId = normalizeAccountId(steamId);
     if (steamInput && steamId) steamInput.value = steamId;
     if (!steamId) {
-      steamId = prompt('Enter your account ID (SteamID64 decimal, or supported hex ID) required to decrypt .sav:') || '';
+      steamId = prompt('Enter your account ID (SteamID64, 32-character Epic ID, or Epic ID as decimal) required to decrypt .sav:') || '';
       steamId = normalizeAccountId(steamId);
       if (steamInput) steamInput.value = steamId;
     }
-    if (!steamId) return alert('Account ID required to decrypt .sav (SteamID64 decimal, or supported hex ID).');
+    if (!steamId) return alert('Account ID required to decrypt .sav (SteamID64, 32-character Epic ID, or Epic ID as decimal).');
     var bytes = null;
     try {
       if (typeof window.__stxHideSavDecryptErrorPanel === 'function') window.__stxHideSavDecryptErrorPanel();
@@ -654,7 +704,8 @@
       persistSteamId(steamId);
       var downloadName = getNextStbxFilename('yaml', rawYaml);
       var ta = document.getElementById('yamlInput') || document.getElementById('fullYamlInput');
-      if (ta) ta.value = rawYaml;
+      if (typeof window.setYamlText === 'function') window.setYamlText(rawYaml);
+      else if (ta) ta.value = rawYaml;
       if (typeof window.invalidateYamlParseCache === 'function') window.invalidateYamlParseCache();
       // Paint YAML first; serial name-decode runs in the background (can be slow on file://).
       if (statusDiv) {
@@ -765,6 +816,7 @@
 
   window.saveYAMLToSAV = function () {
     try {
+      if (typeof window.flushYamlFieldChanges === 'function') window.flushYamlFieldChanges();
       var yamlTa = document.getElementById('yamlInput') || document.getElementById('fullYamlInput') || document.querySelector('textarea[id*="yaml"]');
       var yamlDataStr = (yamlTa && yamlTa.value ? yamlTa.value : '').trim();
       if (!yamlDataStr) return alert('No YAML in the editor to save.');
@@ -784,23 +836,17 @@
       steamid = normalizeAccountId(steamid);
       if (steamInput && steamid) steamInput.value = steamid;
       if (!steamid) {
-        steamid = prompt('Enter your account ID (SteamID64 decimal, or supported hex ID) required to encrypt .sav:');
+        steamid = prompt('Enter your account ID (SteamID64, 32-character Epic ID, or Epic ID as decimal) required to encrypt .sav:');
         steamid = normalizeAccountId(steamid);
         if (!steamid) return alert('Account ID required to generate .sav');
         if (steamInput) steamInput.value = steamid;
       }
       if (!steamid) {
-        alert('Invalid account ID. Please enter SteamID64 decimal or a supported hex ID.');
+        alert('Invalid account ID. Enter a SteamID64, a 32-character Epic ID, or the Epic ID as a decimal.');
         return;
       }
       /* Ensure form fields (name/level/cash/etc.) are written into the textarea before encrypt. */
-      try {
-        if (typeof window.applyYAMLStatsChanges === 'function') {
-          window.applyYAMLStatsChanges();
-        }
-      } catch (applyErr) {
-        console.warn('applyYAMLStatsChanges before convert failed', applyErr);
-      }
+      if (typeof window.flushYamlFieldChanges === 'function') window.flushYamlFieldChanges();
       var yamlTa = document.getElementById('yamlInput') || document.getElementById('fullYamlInput') || document.querySelector('textarea[id*="yaml"]');
       var yamlDataStr = (yamlTa && yamlTa.value ? yamlTa.value : '').trim();
       if (!yamlDataStr) return alert('No YAML found in the editor to convert.');
@@ -813,7 +859,7 @@
       }
       var enc = new TextEncoder();
       var yamlBytes = enc.encode(yamlDataStr);
-      var comp = pako.deflate(yamlBytes);
+      var comp = pako.deflate(yamlBytes, { level: 9 });
       var a32 = adler32(yamlBytes) >>> 0;
       var len = yamlBytes.length >>> 0;
       var trailer = new Uint8Array(8);

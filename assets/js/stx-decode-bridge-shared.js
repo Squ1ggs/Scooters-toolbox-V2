@@ -58,7 +58,7 @@
     if (v.indexOf('@U') === 0) return false;
     if (looksDeserialized(v)) return false;
     if (/^\d+\s*,/.test(v)) return false;
-    return /^[0-9A-Za-z!#$%&()*+;<=>?@^_`{|}~\/-]+$/.test(v);
+    return /^[0-9A-Za-z!#$%&'()*+;<=>?@^_`{|}~\/-]+$/.test(v);
   }
 
   /**

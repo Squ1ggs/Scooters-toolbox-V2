@@ -14,6 +14,9 @@
   } catch (_) {}
   document.documentElement.classList.add(m === 'guided' ? 'stx-builder-mode-guided' : 'stx-builder-mode-simple');
   try {
+    if (localStorage.getItem('stx_rebuild_theme') === 'halloween') document.documentElement.setAttribute('data-theme', 'halloween');
+  } catch (_) {}
+  try {
     var na = String(localStorage.getItem('stx_rebuild_noanim') || '').toLowerCase();
     if (na === '1' || na === 'true' || na === 'yes' || na === 'on') {
       document.documentElement.classList.add('stx-no-anim');
@@ -35,7 +38,7 @@
 <meta content="Scooter's Toolbox — free Borderlands 4 (BL4) save editor at scooterstoolbox.com. Edit .sav / YAML, build &amp; decode item serials, bulk tools, loot reference. Browser or portable EXE." name="description"/>
 <meta content="index,follow,max-image-preview:large" name="robots"/>
 <meta content="Scooter's Toolbox" name="application-name"/>
-<meta content="#060a12" name="theme-color"/>
+<meta content="#100b16" name="theme-color"/>
 <meta content="Borderlands 4 save editor, BL4 save editor, Scooter's Toolbox, scooterstoolbox, Borderlands 4 YAML editor, BL4 item editor, sav to yaml, item serial decoder, Base85 serial, BL4 inventory, profile sav, character sav, serial builder, Borderlands 4 mods" name="keywords"/>
 <link href="https://scooterstoolbox.com/" rel="canonical"/>
 <meta content="website" property="og:type"/>
@@ -1644,6 +1647,106 @@
     body.ynot-reskin { --accent-cyan: #00d4e8; --accent-pink: #0a0a0c; background: linear-gradient(135deg,#030508,#050a10,#020406,#080c12) !important; }
     body.ynot-reskin .header-bar, body.ynot-reskin .panel { border-color: rgba(0,212,232,0.42) !important; }
 
+    html[data-theme="halloween"] {
+      --bg-base: #100b16;
+      --bg-navy: #1b1225;
+      --bg-panel: rgba(27, 18, 37, 0.94);
+      --bg-panel-border: #67407d;
+      --accent-cyan: #ffa344;
+      --accent-cyan-dim: rgba(255, 163, 68, 0.78);
+      --accent-blue: #bd95ff;
+      --accent-blue-dim: rgba(189, 149, 255, 0.7);
+      --accent-pink: #ffcd70;
+      --accent-pink-dim: rgba(255, 205, 112, 0.75);
+      --text-primary: #fff5e9;
+      --text-secondary: #c7b4d4;
+      --text-muted: #c7b4d4;
+      --text-soft: #fff5e9;
+      --glow-cyan: 0 0 12px rgba(255, 163, 68, 0.35);
+      --glow-pink: 0 0 12px rgba(189, 149, 255, 0.28);
+    }
+    html[data-theme="halloween"] body {
+      background:
+        linear-gradient(135deg, rgba(16, 11, 22, 0), rgba(16, 11, 22, 0.8) 72%),
+        url("./assets/halloween-web.svg") left top / 200px 200px no-repeat,
+        radial-gradient(ellipse at 8% 0%, rgba(193, 91, 25, 0.16), transparent 43%),
+        radial-gradient(ellipse at 100% 12%, rgba(129, 67, 189, 0.18), transparent 44%),
+        #100b16 !important;
+      color: #fff5e9;
+    }
+    html[data-theme="halloween"] .header-bar {
+      position: relative;
+      background: linear-gradient(145deg, #24172d, #18111f) !important;
+      border-color: #67407d !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 18px rgba(255, 129, 23, 0.12);
+    }
+    html[data-theme="halloween"] .header-title {
+      background: none;
+      color: #ffb663;
+      filter: none;
+      text-shadow: 0 2px 18px rgba(252, 128, 29, 0.19);
+    }
+    html[data-theme="halloween"] .header-title::after {
+      content: "HALLOWEEN";
+      display: inline-block;
+      margin-left: 12px;
+      padding: 4px 7px 4px 25px;
+      border: 1px solid #b3662d;
+      border-radius: 4px;
+      background: url("./assets/halloween-pumpkin.svg") 5px center / 16px 16px no-repeat #3c211c;
+      color: #ffcf8e;
+      font: 700 9px/1.3 "Segoe UI", sans-serif;
+      letter-spacing: 0.12em;
+      vertical-align: middle;
+      text-shadow: none;
+      -webkit-text-fill-color: #ffcf8e;
+    }
+    html[data-theme="halloween"] .header-icon {
+      filter: drop-shadow(0 0 10px rgba(255, 163, 68, 0.45));
+    }
+    html[data-theme="halloween"] .panel,
+    html[data-theme="halloween"] .header-bar {
+      border-color: #67407d;
+    }
+    html[data-theme="halloween"] .panel {
+      background: linear-gradient(145deg, rgba(36, 23, 45, 0.96), rgba(24, 17, 31, 0.96));
+      border-color: #67407d;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    html[data-theme="halloween"] .btn--brand {
+      background: linear-gradient(135deg, #ffb656, #ed8438);
+      color: #281207;
+      border-color: #ffc674;
+      text-shadow: none;
+    }
+    html[data-theme="halloween"] .btn--brand:hover {
+      border-color: #ffcf8e;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+      filter: brightness(1.08);
+    }
+    html[data-theme="halloween"] .editor-select,
+    html[data-theme="halloween"] .editor-input,
+    html[data-theme="halloween"] textarea,
+    html[data-theme="halloween"] input,
+    html[data-theme="halloween"] select {
+      background-color: #140e1c;
+      color: #fff5e9;
+      border-color: #79518f;
+      accent-color: #ffa344;
+    }
+    html[data-theme="halloween"] .halloween-pumpkins {
+      display: flex;
+    }
+    .halloween-pumpkins {
+      display: none;
+      align-items: flex-end;
+      gap: 5px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 7px rgba(238, 121, 40, 0.28));
+    }
+    .halloween-pumpkins img:first-child { transform: rotate(-9deg); }
+    .halloween-pumpkins img:last-child { transform: rotate(7deg); }
+
     
     .egg-off-btn {
       display: none; align-items: center; gap: 8px;
@@ -1663,6 +1766,8 @@
       font-size: 12px;
       white-space: nowrap;
     }
+    .stx-theme-picker { display: inline-flex; align-items: center; gap: 6px; color: #fff; font-size: 12px; white-space: nowrap; }
+    .stx-theme-picker select { max-width: 150px; padding: 6px 8px; border: 1px solid var(--accent-cyan); border-radius: var(--radius-btn); background: #171626; color: #fff; font: inherit; cursor: pointer; }
     .egg-off-btn:hover {
       background: rgba(255, 0, 200, 0.25);
       box-shadow: 0 0 15px rgba(255, 0, 200, 0.4);
@@ -4564,7 +4669,7 @@
 </div>
 <img alt="" aria-hidden="true" class="splash__logo" height="108" src="./assets/favicon.ico" width="108"/>
 <h1 class="splash__title" id="stxToolboxSplashTitle">Scooter's Toolbox</h1>
-<p class="splash__sub">BL4 save &amp; item editor · scooterstoolbox.com · V2 2.5.14</p>
+<p class="splash__sub">BL4 save &amp; item editor · scooterstoolbox.com · V2 2.5.20</p>
 <p class="splash__tag">Build · Convert · Edit</p>
 <button class="splash__btn" id="splashDismiss" type="button">Enter</button>
 </div>
@@ -4597,7 +4702,7 @@
   } catch (_) {}
 })();
 </script>
-<script src="./assets/js/cc-deferred-scripts.js?v=79e"></script>
+<script src="./assets/js/cc-deferred-scripts.js?v=81i"></script>
 <div class="app-shell">
 <header class="header-bar">
 <img alt="" class="header-icon" height="48" src="./assets/favicon.ico" width="48"/>
@@ -4611,7 +4716,12 @@
 <img alt="Loveless (The Hacker)" decoding="async" height="32" loading="lazy" src="./assets/img/vault-hunters/player_corpohacker.png" title="Loveless · The Hacker" width="32"/>
 <img alt="Scooter" decoding="async" height="32" loading="lazy" src="./assets/img/vault-hunters/scooter_halo.png?v=3" title="Scooter" width="32"/>
 </div>
+<div class="halloween-pumpkins" aria-hidden="true">
+<img alt="" height="32" src="./assets/halloween-pumpkin.svg" width="32"/>
+<img alt="" height="40" src="./assets/halloween-pumpkin.svg" width="40"/>
+</div>
 <div class="header-top-ctas" id="stxTopControls">
+<label class="stx-theme-picker" for="stxThemePicker">Theme <select id="stxThemePicker" aria-label="Website theme"><option value="default">Original</option><option value="halloween">Halloween</option><option value="mattmab">Gold &amp; blue</option><option value="mac10">Crimson</option><option value="badley">Violet bloom</option><option value="scooter">Neon garage</option><option value="ynot">Cyber cyan</option><option value="grimeey">Amber glow</option><option value="tobgun">Red &amp; blue</option></select></label>
 <div class="anim-toggle-group" role="group" aria-label="Animation controls">
 <label class="anim-toggle" data-i18n-title="anim.fullTitle" title="Enable slow colour sweeps on buttons">
 <span class="anim-toggle__label" data-i18n="anim.full">Full anim</span>
@@ -4674,7 +4784,7 @@
 <img alt="" decoding="async" height="24" loading="lazy" src="./assets/img/ui/ico_ui_art_currency_vc4.png" width="24"/>
 <span data-i18n="banner.vc4">Updated for Vault Card 5 and Loveless</span>
 </div>
-<script src="./assets/js/stx-i18n.js?v=77s" defer></script>
+<script src="./assets/js/stx-i18n.js?v=79s" defer></script>
 <script>
     (function () {
       var menu = document.getElementById('stxInstructionsMenuMain');
@@ -4846,22 +4956,23 @@
 <a class="btn btn--brand btn--discord-secondary" href="https://discord.gg/XMbV59vmhz" rel="noopener noreferrer" target="_blank" title="Scooters Garage (issues/ideas)">💭 Issues &amp; ideas</a>
 <a class="btn btn--brand btn--discord-secondary" href="https://github.com/Squ1ggs/Bl4SDKmods" rel="noopener noreferrer" target="_blank" title="In-game SDK mods and boosting tools (GitHub)">🔧 SDK mods &amp; tools</a>
 </div>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/> Bulk decoder</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/> Bulk serial validator</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/> Parts stats catalog</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/> Prefix Lookup</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/> Legit Builder</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/> Loot reference</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/> Save/Yaml</a>
-<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/mods.html" rel="noopener noreferrer" target="_blank" title="Other mods by Squ1ggs — Kingdom Hearts cheat tables and more"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎮</span> Other mods</a>
-<button class="btn btn--brand stx-touch-tool-nav-link js-stx-show-history" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> Items Made</button>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/><span data-i18n="nav.bulkDecoder">Bulk decoder</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/><span data-i18n="nav.bulkValidator">Bulk serial validator</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/><span data-i18n="nav.partsCatalog">Parts stats catalog</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/><span data-i18n="nav.prefixLookup">Prefix Lookup</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/><span data-i18n="nav.legitBuilder">Legit Builder</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/><span data-i18n="nav.lootRef">Loot reference</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/><span data-i18n="nav.saveYaml">Save/Yaml</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link" href="./mods/" rel="noopener noreferrer" target="_blank" title="Other mods by Squ1ggs — Kingdom Hearts cheat tables and more"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎮</span> <span data-i18n="nav.otherMods">Other mods</span></a>
+<a class="btn btn--brand stx-touch-tool-nav-link stx-live-only-packs" href="./packs/" rel="noopener noreferrer" target="_blank" title="Borderlands 4 character packs and car packs"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎭</span> <span data-i18n="nav.appearancePacks">Appearance packs</span></a>
+<button class="btn btn--brand stx-touch-tool-nav-link js-stx-show-history" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> <span data-i18n="nav.itemsMade">Items Made</span></button>
 </div>
 <button class="egg-off-btn" hidden="" id="eggOffBtn" style="display:none;" type="button">Disable Easter Eggs &amp; Reset Theme</button>
 </div>
 
 <div id="stxDockBlock">
 <div class="stxDockTopRow">
-<button aria-controls="stxDockDetails rebuildGuidedBuilderSection" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button" title="Switch to Guided Builder"><img alt="" aria-hidden="true" class="stx-btn-ico stx-dock-toggle-ico" height="34" src="./assets/img/tool-nav/guided-builder.png" width="34"/> <span class="stx-dock-toggle-label">Guided Builder</span></button>
+<button aria-controls="stxDockDetails rebuildGuidedBuilderSection" aria-expanded="true" class="stxDockToggleBtn" id="stxDockToggleBtn" type="button" title="Switch to Guided Builder"><img alt="" aria-hidden="true" class="stx-btn-ico stx-dock-toggle-ico" height="34" src="./assets/img/tool-nav/guided-builder.png" width="34"/> <span class="stx-dock-toggle-label" data-i18n="section.guided">Guided Builder</span></button>
 <script>
 (function () {
   var btn = document.getElementById('stxDockToggleBtn');
@@ -4869,27 +4980,40 @@
   var label = btn.querySelector('.stx-dock-toggle-label');
   var ico = btn.querySelector('.stx-dock-toggle-ico');
   function setDockToggle(guided) {
-    if (label) label.textContent = guided ? 'Simple Builder' : 'Guided Builder';
-    btn.title = guided ? 'Switch to Simple Builder' : 'Switch to Guided Builder';
+    var t = typeof window.stxT === 'function' ? window.stxT : null;
+    if (label) {
+      label.textContent = t
+        ? (guided ? t('section.simple') : t('section.guided'))
+        : (guided ? 'Simple Builder' : 'Guided Builder');
+      label.setAttribute('data-i18n', guided ? 'section.simple' : 'section.guided');
+    }
+    btn.title = t
+      ? (guided ? t('dock.switchSimple') : t('dock.switchGuided'))
+      : (guided ? 'Switch to Simple Builder' : 'Switch to Guided Builder');
+    btn.setAttribute('data-i18n-title', guided ? 'dock.switchSimple' : 'dock.switchGuided');
     btn.setAttribute('aria-expanded', guided ? 'false' : 'true');
     if (ico) ico.src = guided ? './assets/img/tool-nav/simple-builder.png' : './assets/img/tool-nav/guided-builder.png';
   }
+  window.addEventListener('stx:ui-lang', function () {
+    setDockToggle(document.documentElement.classList.contains('stx-builder-mode-guided'));
+  });
   setDockToggle(document.documentElement.classList.contains('stx-builder-mode-guided'));
   window.__stxSyncDockToggleIcons = setDockToggle;
 })();
 </script>
 <details class="stxDockMoreTools" id="stxDockMoreTools" open>
-<summary class="btn btn--brand stxDockMoreToolsSummary" title="Open bulk decoder, prefix lookup, loot reference, and other standalone tools">More toolbox tools</summary>
+<summary class="btn btn--brand stxDockMoreToolsSummary" title="Open bulk decoder, prefix lookup, loot reference, and other standalone tools" data-i18n="nav.moreTools">More toolbox tools</summary>
 <div class="stxDockMoreToolsLinks">
-<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/> Bulk decoder</a>
-<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/> Bulk serial validator</a>
-<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/> Parts stats catalog</a>
-<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/> Prefix Lookup</a>
-<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/> Legit Builder</a>
-<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/> Loot reference</a>
-<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/> Save/Yaml</a>
-<a class="btn btn--brand" href="./assets/mods.html" rel="noopener noreferrer" target="_blank" title="Other mods by Squ1ggs — Kingdom Hearts cheat tables and more"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎮</span> Other mods</a>
-<button class="btn btn--brand" id="btnShowHistory" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> Items Made</button>
+<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-decoder.png" width="32"/><span data-i18n="nav.bulkDecoder">Bulk decoder</span></a>
+<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/bulk-serial-validator.png" width="32"/><span data-i18n="nav.bulkValidator">Bulk serial validator</span></a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/parts-stats-catalog.png" width="32"/><span data-i18n="nav.partsCatalog">Parts stats catalog</span></a>
+<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/prefix-lookup.png" width="32"/><span data-i18n="nav.prefixLookup">Prefix Lookup</span></a>
+<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/legit-builder.png" width="32"/><span data-i18n="nav.legitBuilder">Legit Builder</span></a>
+<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/loot-reference.png" width="32"/><span data-i18n="nav.lootRef">Loot reference</span></a>
+<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><img alt="" aria-hidden="true" class="stx-btn-ico" height="32" src="./assets/img/tool-nav/save-yaml.png" width="32"/><span data-i18n="nav.saveYaml">Save/Yaml</span></a>
+<a class="btn btn--brand" href="./mods/" rel="noopener noreferrer" target="_blank" title="Other mods by Squ1ggs — Kingdom Hearts cheat tables and more"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎮</span> <span data-i18n="nav.otherMods">Other mods</span></a>
+<a class="btn btn--brand stx-live-only-packs" href="./packs/" rel="noopener noreferrer" target="_blank" title="Borderlands 4 character packs and car packs"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">🎭</span> <span data-i18n="nav.appearancePacks">Appearance packs</span></a>
+<button class="btn btn--brand" id="btnShowHistory" title="View a history of items you have crafted in this browser" type="button"><span class="stx-btn-ico stx-btn-ico--emoji" aria-hidden="true">📄</span> <span data-i18n="nav.itemsMade">Items Made</span></button>
 </div>
 </details>
 <script>
@@ -4910,8 +5034,8 @@
 <div class="panel" id="stxSimpleBuilderPanel" style="max-width:100%;padding:14px;">
 <div class="stx-builder-grid" style="display:grid;grid-template-columns:minmax(280px,360px) 1fr;align-items:start;">
 <div>
-<div class="panel__title" style="margin-bottom:10px;">Start</div>
-<div class="form-row"><label for="stx_itemType">Item Type</label></div>
+<div class="panel__title" style="margin-bottom:10px;" data-i18n="btn.start">Start</div>
+<div class="form-row"><label for="stx_itemType" data-i18n="label.itemType">Item Type</label></div>
 <select class="editor-select" id="stx_itemType" name="stx_itemType" style="width:100%;margin-bottom:10px;">
 <option value="">Select item type...</option>
 <option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
@@ -4922,10 +5046,10 @@
 <option value="Enhancement" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Enhancement</option>
 <option value="Class Mod" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_classmod.png">Class Mod</option>
 </select>
-<div class="form-row"><label for="stx_manufacturer" id="manufacturerLabel">Manufacturer</label></div>
+<div class="form-row"><label for="stx_manufacturer" id="manufacturerLabel" data-i18n="label.manufacturer">Manufacturer</label></div>
 <select class="editor-select" id="stx_manufacturer" name="stx_manufacturer" style="width:100%;margin-bottom:10px;"><option value="">Select manufacturer...</option></select>
 <div id="weaponTypeRow" style="display:none;margin-bottom:10px;">
-<label for="weaponType">Weapon Type</label>
+<label for="weaponType" data-i18n="label.weaponType">Weapon Type</label>
 <select class="editor-select" id="weaponType" name="weaponType" style="width:100%;">
 <option value="">Select weapon type...</option>
 <option value="Assault Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_assault_small.png">Assault Rifle</option>
@@ -4934,31 +5058,31 @@
 <option value="SMG" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_smg_small.png">SMG</option>
 <option value="Sniper Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_sniper_small.png">Sniper Rifle</option>
 </select>
-<label for="level">Item level</label>
+<label for="level" data-i18n="label.itemLevel">Item level</label>
 <input class="editor-input" id="level" max="70" min="1" name="level" style="width:100%;" type="number" value="70"/>
 </div>
 <div id="nonWeaponRow" style="margin-bottom:10px;">
 <div id="stxRarityTierWrap">
-<label for="rarity">Rarity</label>
+<label for="rarity" data-i18n="label.rarity">Rarity</label>
 <select class="editor-select" id="rarity" name="rarity" style="width:100%;"><option value="">(select rarity tier)</option></select>
 </div>
-<label for="level2">Item level</label>
+<label for="level2" data-i18n="label.itemLevel">Item level</label>
 <input class="editor-input" id="level2" max="70" min="1" name="level2" style="width:100%;" type="number" value="70"/>
 </div>
-<label for="mainPart" id="mainPartLabel">Main / Prefix Part</label>
+<label for="mainPart" id="mainPartLabel" data-i18n="label.mainPrefix">Main / Prefix Part</label>
 <select class="editor-select" id="mainPart" name="mainPart" style="width:100%;margin-bottom:0;"><option value="">Select main / prefix part...</option></select>
 <div id="stxMainPartPreview" class="stx-part-preview small" role="status" aria-live="polite"></div>
 <div id="optionalExtrasRow" style="margin-bottom:10px; display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
 <div>
-<label for="seedInput" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Seed (optional)</label>
+<label for="seedInput" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);"><span data-i18n="label.seed">Seed (optional)</span></label>
 <input class="editor-input" id="seedInput" max="99999" min="0" name="seedInput" placeholder="random" style="width:100%;" type="number"/>
 </div>
 <div>
-<label for="skinSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Skin brace <span style="font-weight:400;opacity:.75;">(optional)</span></label>
+<label for="skinSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);"><span data-i18n="label.skin">Skin (optional)</span></label>
 <select class="editor-select" id="skinSelect" name="skinSelect" style="width:100%;" title="Numeric {fam:id} skins and custom mixes — not Cosmetics_Weapon names"><option value="">-- None --</option></select>
 </div>
 <div>
-<label for="camoSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);">Weapon camo / skin <span style="font-weight:400;opacity:.75;">(optional)</span></label>
+<label for="camoSelect" style="display:block; margin-bottom:4px; font-size:12px; color:var(--text-secondary);"><span data-i18n="label.camo">Camo (optional)</span></label>
 <select class="editor-select" id="camoSelect" name="camoSelect" style="width:100%;" title="Skin customization (c) — e.g. Snowfall → |&quot;c&quot;,119|"><option value="">-- None --</option></select>
 </div>
 </div>
@@ -4966,31 +5090,31 @@
 <label style="min-width:auto;"><input checked="" id="idMode" name="idMode" type="checkbox"/> <span id="modeLabel">Numeric</span> IDs in output (off = spawn codes)</label>
 </div>
 <div class="form-row" style="margin:10px 0;display:flex;flex-wrap:wrap;gap:14px;align-items:center;">
-<label style="min-width:auto;"><input id="firmwareLock" name="firmwareLock" type="checkbox"/> Firmware lock <span style="font-size:0.85em;color:var(--text-muted);">(<code>9, 1</code>)</span></label>
-<label style="min-width:auto;"><input id="buybackFlag" name="buybackFlag" type="checkbox"/> Buyback flag <span style="font-size:0.85em;color:var(--text-muted);">(<code>10, 1</code>)</span></label>
+<label style="min-width:auto;"><input id="firmwareLock" name="firmwareLock" type="checkbox"/> <span data-i18n="label.firmwareLock">Firmware lock</span> <span style="font-size:0.85em;color:var(--text-muted);">(<code>9, 1</code>)</span></label>
+<label style="min-width:auto;"><input id="buybackFlag" name="buybackFlag" type="checkbox"/> <span data-i18n="label.buyback">Buyback flag</span> <span style="font-size:0.85em;color:var(--text-muted);">(<code>10, 1</code>)</span></label>
 </div>
 <div class="form-row" style="margin:10px 0;">
 <label style="min-width:auto;display:inline-flex;align-items:flex-start;gap:8px;cursor:pointer;max-width:100%;">
 <input id="stxPearlOverride" name="stxPearlOverride" type="checkbox"/>
 <img alt="" src="./assets/img/dlc_rarity_pips/ico_misc_pearl.png" width="20" height="20" style="flex-shrink:0;margin-top:1px;" loading="lazy"/>
 <span style="display:flex;flex-direction:column;gap:2px;line-height:1.25;">
-<span>Pearl override</span>
+<span data-i18n="label.pearlOverride">Pearl override</span>
 <span style="font-size:0.72em;color:var(--text-muted);font-weight:400;">Will make the item you are making pearlescent (adds a pearl rarity token first after&nbsp;||).</span>
 </span>
 </label>
 </div>
 <div class="form-row" style="margin:10px 0;">
-<label style="min-width:auto;" title="Widen every part dropdown to all manufacturers. For cross weapon-type mixes (e.g. a Jakobs mag on a Maliwan AR), use Show all parts on that slot."><input id="allPartsToggle" name="allPartsToggle" type="checkbox"/> All manufacturers</label>
+<label style="min-width:auto;" title="Widen every part dropdown to all manufacturers. For cross weapon-type mixes (e.g. a Jakobs mag on a Maliwan AR), use Show all parts on that slot."><input id="allPartsToggle" name="allPartsToggle" type="checkbox"/> <span data-i18n="label.allMfr">All manufacturers</span></label>
 </div>
 <div id="dsStatus" style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">—</div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-<button class="btn btn--brand" id="btnNew" type="button">New</button>
-<button class="btn" id="btnCopyList" type="button">Copy Parts List</button>
-<button class="btn" id="btnCopyJson" type="button">Copy JSON</button>
-<button class="btn btn-clear" id="btnClear" type="button">Clear Parts</button>
+<button class="btn btn--brand" id="btnNew" type="button" data-i18n="btn.new">New</button>
+<button class="btn" id="btnCopyList" type="button" data-i18n="btn.copyParts">Copy Parts List</button>
+<button class="btn" id="btnCopyJson" type="button" data-i18n="btn.copyJson">Copy JSON</button>
+<button class="btn btn-clear" id="btnClear" type="button" data-i18n="btn.clearParts">Clear Parts</button>
 </div>
 <div id="simpleBuilderPresetRow" style="margin-top:16px; padding-top:14px; border-top:1px solid rgba(0,243,255,0.15);" role="group" aria-labelledby="simpleBuilderPresetHeading">
-<p id="simpleBuilderPresetHeading" style="display:block; margin:0 0 8px; font-size:12px; color:var(--text-secondary);">Quick presets (optional)</p>
+<p id="simpleBuilderPresetHeading" style="display:block; margin:0 0 8px; font-size:12px; color:var(--text-secondary);" data-i18n="label.quickPresets">Quick presets (optional)</p>
 <label for="simpleBuilderPresetSelect" class="stx-preset-modifier-label" style="display:block;margin-bottom:4px;" title="Optional damage, crit, reload, and other preset part tokens to append to your build">Preset part</label>
 <select class="editor-select" id="simpleBuilderPresetSelect" name="simpleBuilderPresetSelect" style="width:100%;margin-bottom:4px;">
 <option value="">-- Select preset part --</option>
@@ -4999,32 +5123,32 @@
 <select class="editor-select" id="simpleBuilderMorePresetSelect" name="simpleBuilderMorePresetSelect" style="width:100%;margin-bottom:8px;">
 <option value="">-- More from catalog --</option>
 </select>
-<button class="btn" id="simpleBuilderPresetAddBtn" type="button">Add</button>
+<button class="btn" id="simpleBuilderPresetAddBtn" type="button" data-i18n="btn.add">Add</button>
 </div>
 </div>
 <div>
-<div class="panel__title" style="margin-bottom:10px;">Builder <span id="detectedCat" style="opacity:0.8;font-weight:500;">—</span></div>
+<div class="panel__title" style="margin-bottom:10px;"><span data-i18n="label.builder">Builder</span> <span id="detectedCat" style="opacity:0.8;font-weight:500;">—</span></div>
 <div id="builderEmpty" style="color:var(--text-muted);font-size:12px;margin-bottom:10px;">Pick a Rarity ID Part to open the builder.</div>
 <div id="builder" style="min-height:60px;"></div>
 <div style="margin-top:14px;">
 <div class="stx-simple-code-mirror" aria-hidden="true">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="outCode">Simple Builder Generated Code</label>
+<label for="outCode" data-i18n="gen.simpleCode">Simple Builder Generated Code</label>
 <div style="display:flex;gap:8px;align-items:center;">
-<button class="btn" id="btnCopyCode" style="padding:4px 10px;font-size:12px;" title="Copy code to clipboard" type="button">Copy</button>
-<button class="btn" id="btnCopyCodeB85" style="padding:4px 10px;font-size:12px;" title="Copy Base85 to clipboard" type="button">Copy Base85</button>
+<button class="btn" id="btnCopyCode" style="padding:4px 10px;font-size:12px;" title="Copy code to clipboard" type="button" data-i18n="btn.copy">Copy</button>
+<button class="btn" id="btnCopyCodeB85" style="padding:4px 10px;font-size:12px;" title="Copy Base85 to clipboard" type="button" data-i18n="btn.copyB85">Copy Base85</button>
 </div>
 </div>
 <textarea class="editor-output-code" id="outCode" name="outCode" placeholder="(Select parts to generate — or paste Base85/deserialized to edit)" rows="4" spellcheck="false" tabindex="-1"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeCharCount">0</span> characters</div>
 <div style="margin-top:8px;">
-<label for="outCodeB85">Simple Builder Serial (BL-base85)</label>
+<label for="outCodeB85" data-i18n="gen.simpleSerial">Simple Builder Serial (BL-base85)</label>
 <textarea class="editor-output-code" id="outCodeB85" name="outCodeB85" placeholder="—" rows="2" readonly="" spellcheck="false" tabindex="-1"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="outCodeB85CharCount">0</span> characters</div>
 </div>
 </div>
 <div style="margin-top:8px;">
-<label for="outList">Parts List</label>
+<label for="outList" data-i18n="label.partsList">Parts List</label>
 <textarea class="editor-output-code" id="outList" name="outList" placeholder="(Editable)" rows="2" spellcheck="false"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="outListCharCount">0</span> characters</div>
 </div>
@@ -5041,13 +5165,13 @@
 </div>
 
 <div class="panel panel--guided-builder" id="rebuildGuidedBuilderSection" style="margin-top:16px;">
-<div class="panel__title">Main Guided Builder</div>
+<div class="panel__title" data-i18n="section.guidedMain">Main Guided Builder</div>
 <div class="info-box" style="margin-bottom:12px;">
-        Item-type-specific guided builders. Select item type, manufacturer, and level below.
+        <span data-i18n="hint.guidedIntro">Item-type-specific guided builders. Select item type, manufacturer, and level below.</span>
       </div>
 <div id="ccGuidedBuilderControls" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:14px; padding:12px; background: rgba(0,243,255,0.06); border-radius:8px; border: 1px solid rgba(0,243,255,0.25);">
 <div>
-<label for="ccGuidedItemType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Item Type</label>
+<label for="ccGuidedItemType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;" data-i18n="label.itemType">Item Type</label>
 <select class="editor-select" id="ccGuidedItemType" name="ccGuidedItemType" style="width:100%;">
 <option value="">Select item type...</option>
 <option value="Weapon" data-cc-icon="./assets/img/guided-dropdowns/legendary-augments/ico_legendary_aug_gun_assault.png">Weapon</option>
@@ -5060,11 +5184,11 @@
 </select>
 </div>
 <div>
-<label for="ccGuidedManufacturer" id="ccGuidedManufacturerLabel" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Manufacturer</label>
+<label for="ccGuidedManufacturer" id="ccGuidedManufacturerLabel" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;" data-i18n="label.manufacturer">Manufacturer</label>
 <select class="editor-select" id="ccGuidedManufacturer" name="ccGuidedManufacturer" style="width:100%;"><option value="">Select manufacturer...</option></select>
 </div>
 <div id="ccGuidedWeaponTypeWrap" style="display:none;">
-<label for="ccGuidedWeaponType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Weapon Type</label>
+<label for="ccGuidedWeaponType" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;" data-i18n="label.weaponType">Weapon Type</label>
 <select class="editor-select" id="ccGuidedWeaponType" name="ccGuidedWeaponType" style="width:100%;">
 <option value="">Select weapon type...</option>
 <option value="Assault Rifle" data-cc-icon="./assets/img/guided-dropdowns/weapon-type/ico_ui_art_assault_small.png">Assault Rifle</option>
@@ -5075,23 +5199,23 @@
 </select>
 </div>
 <div>
-<label for="ccGuidedLevel" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;">Item level</label>
+<label for="ccGuidedLevel" style="color:#00c8ff; font-size:0.9em; display:block; margin-bottom:4px;" data-i18n="label.itemLevel">Item level</label>
 <input class="editor-input" id="ccGuidedLevel" max="70" min="1" name="ccGuidedLevel" style="width:100%;" type="number" value="70"/>
 </div>
 <div style="display:flex;align-items:flex-end;flex-wrap:wrap;gap:14px;">
 <label for="ccGuidedFirmwareLockFlag" style="min-width:auto;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
 <input id="ccGuidedFirmwareLockFlag" name="ccGuidedFirmwareLockFlag" type="checkbox"/>
-<span style="color:#00c8ff;font-size:0.9em;">Firmware lock <span style="font-size:0.85em;opacity:0.75;">(<code>9, 1</code>)</span></span>
+<span style="color:#00c8ff;font-size:0.9em;"><span data-i18n="label.firmwareLock">Firmware lock</span> <span style="font-size:0.85em;opacity:0.75;">(<code>9, 1</code>)</span></span>
 </label>
 <label for="ccGuidedBuybackFlag" style="min-width:auto;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;">
 <input id="ccGuidedBuybackFlag" name="ccGuidedBuybackFlag" type="checkbox"/>
-<span style="color:#00c8ff;font-size:0.9em;">Buyback flag <span style="font-size:0.85em;opacity:0.75;">(<code>10, 1</code>)</span></span>
+<span style="color:#00c8ff;font-size:0.9em;"><span data-i18n="label.buyback">Buyback flag</span> <span style="font-size:0.85em;opacity:0.75;">(<code>10, 1</code>)</span></span>
 </label>
 <label for="ccGuidedPearlOverride" style="min-width:auto;margin:0;display:flex;align-items:flex-start;gap:6px;cursor:pointer;max-width:280px;">
 <input id="ccGuidedPearlOverride" name="ccGuidedPearlOverride" type="checkbox"/>
 <img alt="" src="./assets/img/dlc_rarity_pips/ico_misc_pearl.png" width="18" height="18" style="flex-shrink:0;margin-top:2px;" loading="lazy"/>
 <span style="display:flex;flex-direction:column;gap:2px;line-height:1.25;">
-<span style="color:#00c8ff;font-size:0.9em;">Pearl override</span>
+<span style="color:#00c8ff;font-size:0.9em;" data-i18n="label.pearlOverride">Pearl override</span>
 <span style="color:var(--text-muted);font-size:0.72em;font-weight:400;">Will make the item you are making pearlescent (adds a pearl rarity token first after&nbsp;||).</span>
 </span>
 </label>
@@ -5104,7 +5228,7 @@
 <label style="min-width:auto; margin-left:16px;" title="Shows PARTS_STATS_DATA / weapon init lines under each slot preview, sorted by strongest numeric impact"><input id="ccGuidedFullStatsPreview" name="ccGuidedFullStatsPreview" type="checkbox"/> Full stats in guided previews</label>
 </div>
 <div id="seedOverrideRow" style="margin-top:8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-<label for="rebuildSeedOverrideInput" style="min-width:0; flex-shrink: 0;">Seed (optional)</label>
+<label for="rebuildSeedOverrideInput" style="min-width:0; flex-shrink: 0;"><span data-i18n="label.seed">Seed (optional)</span></label>
 <input id="rebuildSeedOverrideInput" max="9999" min="0" name="rebuildSeedOverrideInput" placeholder="Random" style="flex:1; padding:8px; background:#2a2a2a; border:2px solid rgba(0,255,200,0.4); border-radius:8px; color:#00f3ff;" type="number"/>
 <button class="btn" id="rebuildBtnSeedEnter" type="button">Enter</button>
 <button class="btn" id="rebuildBtnSeedRandom" type="button">Random</button>
@@ -5422,43 +5546,43 @@
 </div>
 
 <div class="panel panel--generated-code" id="rebuildGeneratedItemCodeSection" style="margin-top:16px;">
-<div class="panel__title">Generated Item Code</div>
+<div class="panel__title" data-i18n="gen.code">Generated Item Code</div>
 <div class="info-box" style="margin-bottom:12px;">
         Live preview of what you built above. Simple + Guided are for <strong>modding</strong> (and legit when parts match). Strict legit pools live in the Legit Builder. Add the current item to your YAML backpack or bank.
       </div>
 <div id="ccSerialHealthBar" class="cc-serial-health" role="status" aria-live="polite">
 <span id="ccSerialHealthChip" class="cc-serial-health__chip cc-serial-health__chip--idle">No item</span>
 <span id="ccSerialHealthMsg" class="cc-serial-health__msg">Build or paste a serial to see convert health.</span>
-<button class="btn" id="ccFixItemSerialBtn" type="button" hidden title="Spawn-safe only: sanitize cosmetics, strip junk tokens, put rarity first, re-pack. Does not de-mod or force legit parts.">Quick fix</button>
+<button class="btn" id="ccFixItemSerialBtn" type="button" hidden title="Spawn-safe only: sanitize cosmetics, strip junk tokens, put rarity first, re-pack. Does not de-mod or force legit parts." data-i18n="btn.quickFix">Quick fix</button>
 </div>
 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-bottom:12px;">
 <div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="guidedOutputSerial" style="color:#00c8ff; font-size:0.9em;">Serial (BL-base85)</label>
-<button class="btn" id="btnCopyGuidedSerial" style="padding:2px 8px;font-size:11px;" title="Copy serial" type="button">Copy</button>
+<label for="guidedOutputSerial" style="color:#00c8ff; font-size:0.9em;" data-i18n="gen.serial">Serial (BL-base85)</label>
+<button class="btn" id="btnCopyGuidedSerial" style="padding:2px 8px;font-size:11px;" title="Copy serial" type="button" data-i18n="btn.copy">Copy</button>
 </div>
 <textarea class="editor-output-code" id="guidedOutputSerial" name="guidedOutputSerial" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below" spellcheck="false"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="guidedOutputSerialCharCount">0</span> characters</div>
 </div>
 <div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;">Generated Code (Deserialized)</label>
-<button class="btn" id="btnCopyGuidedDeser" style="padding:2px 8px;font-size:11px;" title="Copy deserialized" type="button">Copy</button>
+<label for="guidedOutputDeserialized" style="color:#00c8ff; font-size:0.9em;" data-i18n="gen.deser">Generated Code (Deserialized)</label>
+<button class="btn" id="btnCopyGuidedDeser" style="padding:2px 8px;font-size:11px;" title="Copy deserialized" type="button" data-i18n="btn.copy">Copy</button>
 </div>
 <textarea class="editor-output-code" id="guidedOutputDeserialized" name="guidedOutputDeserialized" placeholder="—" rows="3" style="width:100%; font-size:0.9em;" title="Paste Base85 or deserialized; use Convert buttons below" spellcheck="false"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="guidedOutputDeserializedCharCount">0</span> characters</div>
 </div>
 </div>
 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-<button class="btn btn--brand" id="guidedAddItemToYaml" type="button">💾 Add Item to YAML</button>
-<button class="btn btn--brand" id="guidedAddItemToBank" type="button">🏦 Add Item to Bank</button>
-<button class="btn" id="guidedConvertToSerial" type="button">Convert to Serial</button>
-<button class="btn" id="guidedConvertToDeserialized" type="button">Convert to Deserialized</button>
+<button class="btn btn--brand" id="guidedAddItemToYaml" type="button" data-i18n="btn.addYaml">💾 Add Item to YAML</button>
+<button class="btn btn--brand" id="guidedAddItemToBank" type="button" data-i18n="btn.addBank">🏦 Add Item to Bank</button>
+<button class="btn" id="guidedConvertToSerial" type="button" data-i18n="btn.convertSerial">Convert to Serial</button>
+<button class="btn" id="guidedConvertToDeserialized" type="button" data-i18n="btn.convertDeser">Convert to Deserialized</button>
 </div>
 </div>
 
 <details class="rebuild-details rebuild-details--stats" id="rebuildBuildStatsSection" style="margin-top:16px;overflow:visible;">
-<summary>Build stats (core snapshot)</summary>
+<summary data-i18n="section.buildStats">Build stats (core snapshot)</summary>
 <div id="buildStatsCoreEstimates" style="margin-top:0;padding:14px 16px;border:1px solid rgba(255,255,255,0.12);border-radius:10px;background:rgba(0, 0, 10, 1);overflow:visible;">
 <div style="font-weight:700;color:#fff;margin-bottom:4px;">Core Snapshot</div>
 <div id="buildStatsCoreSubtitle" style="font-size:12px;margin-bottom:6px;">Model estimate — coarse buckets, not in-game DPS. Import or select parts. Full lines and per-bucket contributions below.</div>
@@ -5475,20 +5599,20 @@
 </details>
 
 <div class="panel panel--paste-import" id="rebuildPasteCodeSection" style="margin-top:16px;">
-<div class="panel__title">Paste code to edit (import)</div>
+<div class="panel__title" data-i18n="section.pasteImport">Paste code to edit (import)</div>
 <div id="rebuildPasteCodeDetails" style="margin-top:10px;">
 <textarea class="editor-output-code" id="importBox" name="importBox" placeholder="Paste BL-base85 or deserialized code here (Ctrl+Enter to import)" rows="3"></textarea>
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;">
-<button class="btn btn--brand" id="btnImport" type="button">Import to Guided</button>
-<button class="btn btn--brand" id="btnImportSimple" type="button">Import to Simple</button>
-<button class="btn" id="btnClearImport" title="Clear paste area" type="button">Clear</button>
+<button class="btn btn--brand" id="btnImport" type="button" data-i18n="btn.importGuided">Import to Guided</button>
+<button class="btn btn--brand" id="btnImportSimple" type="button" data-i18n="btn.importSimple">Import to Simple</button>
+<button class="btn" id="btnClearImport" title="Clear paste area" type="button" data-i18n="btn.clear">Clear</button>
 <span id="importFeedback" style="color:var(--accent-cyan);font-size:0.9em;opacity:0;"></span>
 </div>
 </div>
 </div>
 
 <details class="rebuild-details" id="rebuildPrefixItemSearchSection" style="margin-top:16px;">
-<summary>Prefix / Item Search and Add</summary>
+<summary data-i18n="section.prefixSearch">Prefix / Item Search and Add</summary>
 <div>
 <p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Search bundled serials by item name, prefix, or ID (e.g. 254:10). Add to editor or YAML.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
@@ -5509,7 +5633,7 @@
 </div>
 </details>
 <details class="rebuild-details" id="rebuildGodrollSection" style="margin-top:12px;">
-<summary>Godroll Search and Add</summary>
+<summary data-i18n="section.godroll">Godroll Search and Add</summary>
 <div>
 <p style="color:var(--text-secondary);font-size:0.9em;margin:0 0 12px 0;">Hard-to-drop community Godroll serials. Search by name, manufacturer/type, rarity, or ID and add directly to editor/YAML.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;">
@@ -5542,20 +5666,20 @@
 <div class="panel panel--tools-parts" id="rebuildToolsPanel" style="margin-top:16px;">
 <div class="panel__title" data-i18n="section.tools">Tools &amp; Parts</div>
 <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
-<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/.">Bulk decoder</a>
-<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints">Bulk serial validator</a>
-<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
-<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)">Prefix Lookup</a>
-<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)">Legit Builder</a>
-<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials">Loot reference</a>
-<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools.">Save/Yaml</a>
+<a class="btn btn--brand" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank" title="Offline bulk serial decode (YAML, TXT, JSON). WASM + part datasets from assets/."><span data-i18n="nav.bulkDecoder">Bulk decoder</span></a>
+<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank" title="Bulk @U list: decode + Legit Builder data checks + drop hints"><span data-i18n="nav.bulkValidator">Bulk serial validator</span></a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><span data-i18n="nav.partsCatalog">Parts stats catalog</span></a>
+<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Open legacy prefix lookup (standalone)"><span data-i18n="nav.prefixLookup">Prefix Lookup</span></a>
+<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank" title="Legit Builder — data checks (manifest, NCS, schedules)"><span data-i18n="nav.legitBuilder">Legit Builder</span></a>
+<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part + c token + base85 @U serials"><span data-i18n="nav.lootRef">Loot reference</span></a>
+<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use the Save / YAML slide-out on this page for quick edits, or open the full-page editor for more room and the same import/export tools."><span data-i18n="nav.saveYaml">Save/Yaml</span></a>
 </div>
 <details class="rebuild-details rebuild-details--adv-search" id="ccAdvancedPartsSearch">
-<summary>Advanced part search</summary>
+<summary data-i18n="section.advSearch">Advanced part search</summary>
 <div id="ccAdvancedMount" style="margin-top:10px;"></div>
 </details>
 <details class="rebuild-details" id="rebuildQuickAddDetails">
-<summary>Quick add presets</summary>
+<summary data-i18n="section.quickAdd">Quick add presets</summary>
 <div class="form-group" style="margin-top:12px;">
 <p style="color:var(--text-secondary);font-size:12px;margin-bottom:10px;">Use the Simple Builder above for guided part selection, or Advanced Part Search for full part lookup. Modded stack candidates to try before adding: <code>assets/data/modded_preset_test_list.txt</code>.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
@@ -5866,11 +5990,11 @@
 </div>
 </div>
 
-<div aria-controls="rp-saveyaml-drawer" id="rp-saveyaml-tab" role="button" tabindex="0">Save/YAML</div>
+<div aria-controls="rp-saveyaml-drawer" id="rp-saveyaml-tab" role="button" tabindex="0" data-i18n="yaml.tab">Save/YAML</div>
 <aside aria-label="Save and YAML panel" id="rp-saveyaml-drawer">
 <div id="rp-saveyaml-drawer-header">
-<h2 id="rp-saveyaml-drawer-title">Save / YAML</h2>
-<button aria-label="Close Save and YAML panel" id="rp-saveyaml-drawer-close" type="button">Close</button>
+<h2 id="rp-saveyaml-drawer-title" data-i18n="yaml.drawerTitle">Save / YAML</h2>
+<button aria-label="Close Save and YAML panel" id="rp-saveyaml-drawer-close" type="button" data-i18n="btn.close">Close</button>
 </div>
 <div id="rp-saveyaml-drawer-body">
 <p role="note" style="margin:0 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,170,90,0.5);background:rgba(255,120,40,0.14);color:rgba(255,235,210,0.96);font-size:0.88em;line-height:1.45;box-sizing:border-box;"><span aria-hidden="true" style="margin-right:6px;">⚠️</span>Always backup your original save and <strong>profile.sav</strong> before making changes.</p>
@@ -5884,19 +6008,19 @@
 <div style="color: #00f3ff; font-weight: 700; font-size: 0.95em; margin-bottom: 6px;">Data validation (Legit Builder)</div>
 <p style="color: rgba(255,255,255,0.72); font-size: 0.88em; margin: 0 0 12px 0; line-height: 1.45;">Same <code>legit-builder-core</code> checks as the standalone pages — open in a new tab.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="yamlDrawerToolsRow">
-<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank">Legit Builder</a>
-<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part, c token, and base85 serials">Loot reference</a>
-<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use this slide-out for quick YAML work, or open the full page for more room — same tools.">Save/Yaml</a>
-<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank">Bulk serial validator</a>
-<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables">Parts stats catalog</a>
-<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Enhancement prefix lookup and stat bucket index">Prefix Lookup</a>
-<a class="btn" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank">Bulk decoder</a>
+<a class="btn btn--brand" href="./legacy/legit-builder.html" rel="noopener noreferrer" target="_blank"><span data-i18n="nav.legitBuilder">Legit Builder</span></a>
+<a class="btn btn--brand" href="./assets/loot-reference.html" rel="noopener noreferrer" target="_blank" title="Named enemies/bosses → shiny drops; skin part, c token, and base85 serials"><span data-i18n="nav.lootRef">Loot reference</span></a>
+<a class="btn btn--brand" href="./assets/stx-save-yaml-full.html" rel="noopener noreferrer" target="_blank" title="Use this slide-out for quick YAML work, or open the full page for more room — same tools."><span data-i18n="nav.saveYaml">Save/Yaml</span></a>
+<a class="btn btn--brand" href="./assets/bulk-serial-validator.html" rel="noopener noreferrer" target="_blank"><span data-i18n="nav.bulkValidator">Bulk serial validator</span></a>
+<a class="btn btn--brand" href="./assets/parts-stats-catalog.html" rel="noopener noreferrer" target="_blank" title="Human-readable part stats catalog with filters and per-part stat tables"><span data-i18n="nav.partsCatalog">Parts stats catalog</span></a>
+<a class="btn btn--brand" href="./legacy/prefix-lookup.html" rel="noopener noreferrer" target="_blank" title="Enhancement prefix lookup and stat bucket index"><span data-i18n="nav.prefixLookup">Prefix Lookup</span></a>
+<a class="btn" href="./legacy/bl4-bulk-decoder.html" rel="noopener noreferrer" target="_blank"><span data-i18n="nav.bulkDecoder">Bulk decoder</span></a>
 </div>
 </div>
 <div class="info-box"><strong>YAML Backpack Editor:</strong> Import, edit, and export backpack items from YAML files.</div>
 <div style="margin-top: 15px; padding: 15px; background: rgba(0, 107, 255, 0.1); border-radius: 8px; border: 1px solid #006bff;">
 <label for="steamIdInput" style="color: #00bfff; font-size: 0.95em; display: block; margin-bottom: 8px;"><strong>Steam/Epic ID (Required for Save File Operations):</strong></label>
-<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="34" name="steamIdInput" pattern="[0-9a-fA-FxX]{10,34}" placeholder="76561198012345678 or 0x..." style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
+<input aria-label="Steam or Epic account ID" id="steamIdInput" maxlength="40" name="steamIdInput" placeholder="76561198012345678 or Epic ID" style="width: 100%; padding: 10px; background: #2a2a2a; border: 2px solid #006bff; border-radius: 8px; color: #00bfff; font-size: 1em; font-family: monospace;" type="text"/>
 <p style="color: #a0c4ff; font-size: 0.85em; margin-top: 8px; margin-bottom: 0;">Use the ID for the <strong>same store and account</strong> that created the file: Steam PC ? 17-digit SteamID64; Epic PC ? Epic account id. If decrypt fails with the right Steam ID, the save may be Epic/console or another Windows user.</p>
 </div>
 <div class="gradient-panel aqua-blue-panel" style="margin-top: 15px;">
@@ -5919,16 +6043,16 @@
 </div>
 </div>
 </div>
-<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML, load a file with the buttons above, or drag &amp; drop a .yaml / .yml / .sav here (character or profile)." style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;" spellcheck="false"></textarea>
+<textarea aria-label="YAML editor" class="stx-yaml-drop-target" id="yamlInput" name="yamlInput" placeholder="Paste YAML, load a file with the buttons above, or drag &amp; drop a .yaml / .yml / .sav here (character or profile)." data-i18n-placeholder="yaml.pasteHint" style="width: 100%; min-height: 300px; padding: 15px; border: 2px solid rgba(0,255,200,0.4); border-radius: 8px; font-size: 1em; background: #1a2332; color: #b8e6f0; font-family: 'Courier New', monospace; resize: vertical;" spellcheck="false"></textarea>
 <div class="cc-code-char-count-row" aria-live="polite"><span id="yamlInputCharCount">0</span> characters <span style="opacity:0.65">(large saves OK — no fixed cap)</span></div>
 <div id="stx-yaml-kind-strip" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.88em;line-height:1.4;color:rgba(0,243,255,0.92);background:rgba(0,40,80,0.35);border:1px solid rgba(0,243,255,0.28);">Detected: — paste or load YAML to classify this editor.</div>
 <div id="yaml-items-count-top" role="status" style="margin-top:8px;padding:8px 12px;border-radius:8px;font-size:0.9em;line-height:1.4;color:#b8e6f0;background:rgba(0,30,50,0.4);border:1px solid rgba(0,200,255,0.3);">Items in this save: <strong id="yaml-serial-count-top" style="color:#00f3ff;">0</strong><span id="yaml-serials-source-badge-top" style="font-weight:600;opacity:0.9;margin-left:6px;"></span></div>
 <div id="yaml-stats-section" style="margin-top: 15px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border: 1px solid #00f3ff;">
-<div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong>Character Stats Editor (Lines 5-13):</strong></div>
+<div aria-level="3" role="heading" style="color: #00f3ff; font-size: 0.95em; display: block; margin-bottom: 10px;"><strong data-i18n="yaml.statsHeading">Character Stats Editor (Lines 5-13):</strong></div>
 <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
 <div>
 <label for="yaml-char-name" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" data-i18n="label.charName">Character Name:</label>
-<input aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
+<input data-requires="character" aria-label="YAML character name" id="yaml-char-name" name="yaml-char-name" placeholder="Vexen" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="text"/>
 <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
 <button class="btn btn-Firmware" data-action="apply-stats" data-requires="character" style="flex: 1; min-width: 140px;" type="button">Apply yaml Changes</button>
 <button class="btn btn-primary" id="saveYAMLToSAVBtnTop" style="flex: 1; min-width: 120px;" type="button">Save YAML</button>
@@ -6161,28 +6285,28 @@
 </div>
 <div>
 <label for="yaml-char-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;" data-i18n="label.charLevel">Character Level:</label>
-<input aria-label="YAML character level" id="yaml-char-level" max="70" min="1" name="yaml-char-level" placeholder="70" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML character level" id="yaml-char-level" max="70" min="1" name="yaml-char-level" placeholder="70" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label for="yaml-char-xp" style="color: #00c8ff; font-size: 0.9em; display: flex; align-items: center; gap: 8px; margin-bottom: 5px;"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/reward-icons/ico_reward_exp.png" width="22"/><span data-i18n="label.xp">Experience Points:</span></label>
-<input aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 70" type="number"/>
+<input data-requires="character" aria-label="YAML character experience" id="yaml-char-xp" min="0" name="yaml-char-xp" placeholder="6352462" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" title="Cumulative character XP; max level 70" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-level" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Level:</label>
-<input aria-label="YAML specialization level" id="yaml-spec-level" min="1" name="yaml-spec-level" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML specialization level" id="yaml-spec-level" min="1" name="yaml-spec-level" placeholder="701" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label for="yaml-spec-points" style="color: #00c8ff; font-size: 0.9em; display: block; margin-bottom: 5px;">Specialization Points:</label>
-<input aria-label="YAML specialization points" id="yaml-spec-points" min="0" name="yaml-spec-points" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML specialization points" id="yaml-spec-points" min="0" name="yaml-spec-points" placeholder="123456789" style="width: 100%; padding: 8px; background: #2a2a2a; border: 2px solid #00f3ff; border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 </div>
 <div>
 <label class="yaml-stat-label" for="yaml-cash"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ui/cash.png" width="22"/>Cash:</label>
-<input aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML cash" id="yaml-cash" min="0" name="yaml-cash" placeholder="e.g. 15000" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div>
 <label class="yaml-stat-label" for="yaml-eridium"><img alt="" decoding="async" height="22" loading="lazy" src="./assets/img/ui/eridium.png" width="22"/>Eridium:</label>
-<input aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
+<input data-requires="character" aria-label="YAML eridium" id="yaml-eridium" min="0" name="yaml-eridium" placeholder="e.g. 25" style="width: 100%; padding: 12px; background: #1f1f1f; border: 1px solid rgba(0,243,255,0.5); border-radius: 8px; color: #00f3ff; font-size: 1em;" type="number"/>
 </div>
 <div id="ccExtraYamlEditors" style="margin-top: 12px; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,255,200,0.28); background: rgba(0,0,0,0.18);">
 <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -6668,7 +6792,7 @@
           if (typeof window.__stxSyncDockToggleIcons === 'function') {
             window.__stxSyncDockToggleIcons(mode === 'guided');
           } else {
-            btn.title = mode === 'guided' ? 'Switch to Simple Builder' : 'Switch to Guided Builder';
+            btn.title = mode === 'guided' ? (typeof window.stxT==='function'?window.stxT('dock.switchSimple'):'Switch to Simple Builder') : (typeof window.stxT==='function'?window.stxT('dock.switchGuided'):'Switch to Guided Builder');
             btn.setAttribute('aria-expanded', mode === 'guided' ? 'false' : 'true');
           }
           try { localStorage.setItem(STORAGE_KEY, mode); } catch (_) {}
@@ -8134,9 +8258,9 @@
 <div id="stxHistoryModal" class="stx-modal">
   <div class="stx-modal__content">
     <div class="stx-modal__header">
-      <h3 class="stx-modal__title">📄 Items Made (History)</h3>
-      <button id="stxHistoryDownloadTxt" class="btn btn--brand" type="button">Download .txt</button>
-      <button id="stxHistoryClose" class="btn" type="button">Close</button>
+      <h3 class="stx-modal__title">📄 <span data-i18n="history.title">Items Made (History)</span></h3>
+      <button id="stxHistoryDownloadTxt" class="btn btn--brand" type="button" data-i18n="history.download">Download .txt</button>
+      <button id="stxHistoryClose" class="btn" type="button" data-i18n="history.close">Close</button>
     </div>
     <div class="stx-modal__body">
       <table class="stx-history-table">

@@ -117,7 +117,7 @@
 
   window.applyUpdatedYAMLToEditors = function (updatedYAML) {
     if (!updatedYAML) return;
-    if (typeof window.setYamlText === 'function') window.setYamlText(String(updatedYAML));
+    if (typeof window.setYamlText === 'function') window.setYamlText(String(updatedYAML), { preserveFields: true });
     else {
       var ta = yamlTextarea();
       if (ta) ta.value = String(updatedYAML);
@@ -1046,6 +1046,15 @@
     window.commitYamlDataToEditor(data);
   };
   function getContainerForInsert(data) {
+    var kind = typeof window.detectYamlSaveKind === 'function' ? window.detectYamlSaveKind(window.getYamlText().text) : '';
+    if (kind === 'profile') {
+      data.domains = data.domains || {};
+      data.domains.local = data.domains.local || {};
+      var shared = data.domains.local.shared = data.domains.local.shared || {};
+      shared.inventory = shared.inventory || {};
+      shared.inventory.items = shared.inventory.items || {};
+      return shared.inventory.items.bank = shared.inventory.items.bank || {};
+    }
     if (data && data.state && data.state.inventory && data.state.inventory.items) {
       data.state.inventory.items.backpack = data.state.inventory.items.backpack || {};
       return data.state.inventory.items.backpack;
@@ -1081,6 +1090,7 @@
   }
 
   window.insertSerials = function (serials, opts) {
+    if (typeof window.flushYamlFieldChanges === 'function') window.flushYamlFieldChanges();
     var data = (typeof window.getYamlDataFromEditor === 'function') ? window.getYamlDataFromEditor() : null;
     if (!data) return false;
     var container = getContainerForInsert(data);
@@ -1107,16 +1117,17 @@
         : s0;
       if (!s) continue;
       if (s.indexOf('@U') !== 0) s = '@U' + s.replace(/^@U/, '');
-      if (s.length < 10 || s.indexOf(',') >= 0 || s.indexOf('||') >= 0) continue;
-      container['slot_' + (start + added)] = { serial: s, flags: flags, state_flags: stateFlags };
+      if (s.length < 10 || s.indexOf(',') >= 0) continue;
+      var item = { serial: s, flags: flags, state_flags: stateFlags };
+      if (Array.isArray(container)) container.push(item);
+      else container['slot_' + (start + added)] = item;
       added++;
     }
     if (!added) {
       alert('No valid BL-base85 serials to add.');
       return false;
     }
-    window.commitYamlDataToEditor(data);
-    return true;
+    return !!window.commitYamlDataToEditor(data);
   };
 
   window.showAddItemsPopup = function () {

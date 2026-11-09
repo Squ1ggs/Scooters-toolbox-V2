@@ -216,7 +216,7 @@ select, input[type="number"], input[type="file"] {
 }
 .kpis {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
 }
 @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
@@ -257,9 +257,13 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.78rem; word-
 .tag { font-size: 0.72rem; padding: 2px 8px; border-radius: var(--radius-pill); font-weight: 700; }
 .tag.ok { background: rgba(110, 231, 168, 0.15); color: var(--ok); }
 .tag.bad { background: rgba(255, 138, 138, 0.15); color: var(--bad); }
+.bv-firmware { margin-top: 4px; font-weight: 650; }
+.bv-more { margin-top: 6px; }
+.bv-more summary { cursor: pointer; color: var(--accent-cyan-dim); }
 .legit-ok { color: var(--ok); font-weight: 600; }
 .legit-warn, .legit-nomap, .legit-idle { color: var(--warn); }
-.legit-err, .legit-decode, .legit-nomanifest { color: var(--bad); }
+.legit-nomanifest { color: var(--warn); }
+.legit-err, .legit-decode { color: var(--bad); }
 .bv-badtoken { color: var(--bad); font-weight: 800; }
 .bv-reason-bad { color: var(--bad); font-weight: 800; }
 .mono { font-family: ui-monospace, Consolas, monospace; }
@@ -397,6 +401,86 @@ aside li { margin-bottom: 6px; }
   line-height: 1.4;
 }
 .stx-site-stats-hidden { display: none !important; }
+.bv-result-headline { font-size:1.18rem; font-weight:700; line-height:1.5; margin:4px 0 16px; }
+button.kpi { text-align:left; cursor:pointer; font:inherit; color:var(--text-primary); display:flex; flex-direction:column; gap:8px; min-width:0; padding:16px; }
+button.kpi strong { font-size:2.2rem; line-height:1; }
+button.kpi span { font-size:.85rem; text-transform:none; letter-spacing:0; color:var(--text-primary); font-weight:700; }
+button.kpi small { font-size:.74rem; color:var(--text-muted); line-height:1.5; }
+button.kpi[aria-pressed="true"], button.kpi:focus-visible { outline:2px solid var(--accent-cyan-dim); outline-offset:2px; }
+button.kpi:hover { background:rgba(0,243,255,.08); }
+.kpi--bad strong { color:var(--bad); } .kpi--ok strong { color:var(--ok); } .kpi--warn strong { color:var(--warn); }
+.bv-failure-groups { margin-top:18px; padding:14px; border:1px solid var(--line-soft); border-radius:8px; }
+.bv-failure-groups summary { cursor:pointer; font-weight:700; }
+.bv-failure-groups li { margin:8px 0; }
+.bv-source-note { margin:5px 0; font-size:.74rem; color:var(--text-muted); }
+.kpis--primary { grid-template-columns:repeat(3,minmax(0,1fr)); margin-bottom:12px; }
+.kpis--secondary { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.kpis--secondary button.kpi strong { font-size:1.6rem; }
+.kpi--npc strong { color:#c9a9ff; }
+[hidden] { display:none !important; }
+@media(max-width:700px) { .kpis--secondary { grid-template-columns:repeat(2,minmax(0,1fr)); } button.kpi { padding:12px; } }
+.bv-item-name { display:block; font-size:.9rem; line-height:1.4; }
+.bv-item-meta { margin-top:5px; font-size:.74rem; color:var(--text-muted); line-height:1.5; }
+/* A compact starting point, with the full report available on demand. */
+[hidden] { display:none !important; }
+.app-shell { max-width:1120px; }
+.layout { grid-template-columns:minmax(0,1fr); gap:12px; }
+.panel { padding:18px; }
+.panel--bv-input .dropzone { padding:10px; }
+textarea#bv-input { min-height:145px; margin:6px 0 12px; font-size:13px; }
+.bv-input-label { display:block; color:var(--text-primary); font-weight:600; margin-top:12px; }
+.bv-options { border-top:1px solid var(--line-soft); margin:10px 0; padding-top:10px; }
+.bv-options > summary, .bv-help > summary { cursor:pointer; color:var(--text-secondary); font-size:13px; font-weight:600; }
+.bv-options[open] > summary, .bv-help[open] > summary { margin-bottom:12px; }
+.bv-help ul { padding-top:4px; }
+.panel--bv-aside { padding:13px 18px; }
+.kpis--primary .kpi { text-align:left; padding:14px 18px; }
+.kpis--primary .kpi strong { font-size:28px; }
+.table-wrap td { padding:0; }
+.table-wrap td.muted { padding:22px; }
+.bv-result-card { padding:20px; border-left:3px solid var(--line-soft); }
+tr[data-class="ok"] .bv-result-card { border-left-color:var(--ok); }
+tr[data-class="err"] .bv-result-card, tr[data-class="decode"] .bv-result-card { border-left-color:var(--bad); }
+tr[data-usually-unobtainable="true"] .bv-result-card { border-left-color:var(--warn); }
+tr[data-usually-unobtainable="true"] .bv-verdict { color:var(--warn); }
+tr[data-class="warn"] .bv-result-card, tr[data-class="nomap"] .bv-result-card, tr[data-class="order"] .bv-result-card { border-left-color:var(--warn); }
+tr[data-class="order"] .bv-verdict { color:var(--warn); }
+.bv-result-heading { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; }
+.bv-result-heading h2 { margin:0; font-size:17px; line-height:1.35; }
+.bv-verdict { border:1px solid currentColor; border-radius:6px; padding:5px 9px; font-size:12px; white-space:nowrap; }
+.bv-reason { margin:12px 0; color:var(--text-primary); font-size:14px; line-height:1.55; overflow-wrap:anywhere; }
+.bv-serial-line { display:flex; gap:12px; align-items:center; justify-content:space-between; }
+.bv-serial-line code { color:var(--text-muted); overflow-wrap:anywhere; }
+.bv-serial-line code { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
+.bv-copy { padding:5px 10px; min-height:30px; flex-shrink:0; }
+.bv-item-details { margin-top:14px; border-top:1px solid var(--line-soft); padding-top:12px; }
+.bv-item-details > summary { cursor:pointer; color:var(--accent-cyan-dim); font-weight:600; }
+.bv-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding-top:10px; }
+.bv-detail-grid h3 { font-size:13px; color:var(--text-primary); margin:12px 0 6px; }
+.bv-parts-list { margin:8px 0; padding:0; list-style:none; }
+.bv-parts-list li { display:grid; grid-template-columns:110px 1fr auto; gap:10px; padding:8px 0; border-bottom:1px solid var(--line-soft); align-items:baseline; }
+.bv-parts-list li > span { color:var(--text-muted); font-size:12px; }
+.bv-parts-list strong { font-weight:500; overflow-wrap:anywhere; }
+.bv-readable { display:block; padding:10px; margin-bottom:8px; border:1px solid var(--line-soft); border-radius:6px; }
+.bv-check-log { padding-left:18px; overflow-wrap:anywhere; }
+.bv-check-log li { margin:7px 0; color:var(--text-secondary); }
+.bv-rule-explanations { margin-top:12px; padding:12px; border:1px solid rgba(255,138,138,.25); border-radius:6px; }
+.bv-rule-explanations h3 { margin:0 0 6px; font-size:13px; }
+.bv-rule-explanations ul { padding-left:18px; margin:0; }
+.bv-rule-explanations li { margin:6px 0; overflow-wrap:anywhere; }
+@media(max-width:650px) {
+  .table-wrap { max-height:none; overflow:visible; }
+  .app-shell { padding:10px; }
+  .panel { padding:14px; }
+  .bv-result-card { padding:14px; }
+  .bv-result-heading { flex-direction:column; gap:9px; }
+  .bv-verdict { white-space:normal; }
+  .bv-detail-grid { grid-template-columns:minmax(0,1fr); gap:4px; }
+  .bv-parts-list li { grid-template-columns:90px 1fr; gap:6px; }
+  .bv-parts-list li code { grid-column:2; }
+  .kpis--primary .kpi { padding:10px; }
+  .kpis--primary .kpi span { font-size:11px; letter-spacing:0; }
+}
 </style>
 </meta></meta></head>
 <body class="editor-page">
@@ -405,13 +489,10 @@ aside li { margin-bottom: 6px; }
 <img alt="" aria-hidden="true" class="header-icon" height="48" src="./favicon.ico" width="48"/>
 <div class="header-main">
 <h1 class="header-title">Bulk serial validator</h1>
-<p>
-      Paste <code>@U</code> Base85 serials or <strong>deserialized lines</strong> (pipes + part tokens like <code>261, 0, 1, 50| 2, 2730|| …</code>). Deserialized text is normalized on this page and decoded with the same inline WASM path as <code>legacy/bl4-bulk-decoder.html</code> (no iframe). YAML/JSON with <code>serial:</code> fields work too. Each row gets part resolution,
-      then checked with the same <strong>data-backed</strong> rules as <a href='../legacy/legit-builder.html' rel='noopener noreferrer' target='_blank'>Legit Builder</a>
-      (manifest, NCS, <strong>inv composition tags</strong> from <code>inv_comp_tag_data.js</code> + <code>tag-comp-validation.js</code>, loot schedules, weights, source tables, stats coverage). Parts not on the manifest loot-pool export are listed as <strong>FYI</strong> only (rewards/vendors/quests are still valid). Drop hints use <code>SOURCE_PATHS_DATA</code> when applicable.
-    </p>
+<p>Check your items for modded parts and impossible rolls. Paste serial codes, YAML, JSON, or decoded item codes, then select <strong>Validate all</strong>.</p>
 </div>
 <div class="bv-header-actions">
+<div id="stxUiLangHost" aria-label="Display language"></div>
 <a class='btn btn--brand bv-back-link' href='../index.html'>Scooter's Toolbox</a>
 <a class='btn btn--brand bv-back-link' href='./stx-save-yaml-full.html'>Save / YAML</a>
 <details class="support-menu stx-counter-menu stx-site-stats-hidden" data-stx-stats-dev="1" id="stxPublicCounterMenu">
@@ -540,10 +621,12 @@ aside li { margin-bottom: 6px; }
 </script>
 <div class="layout">
 <div class="panel panel--bv-input">
-<div class="panel__title">Input</div>
+<div class="panel__title">Check your items</div>
 <div class="dropzone" id="bv-dropzone"><strong>Drop a file</strong> here or use the file picker — or paste below.</div>
 <div class="row">
 <input accept=".yaml,.yml,.txt,.json,.log,.save" id="bv-file" name="bv-file" type="file"/>
+</div>
+<details class="bv-options"><summary>Input options</summary><div class="row">
 <label>Format <select id="bv-mode" name="bv-mode">
 <option value="auto">Auto</option>
 <option value="yaml">YAML</option>
@@ -554,92 +637,83 @@ aside li { margin-bottom: 6px; }
 <label class="small" style="display:inline-flex;align-items:center;gap:6px;max-width:28rem;" title="Default merges identical serial strings so each unique code is validated once.">
 <input id="bv-preserve-dup-lines" name="bv-preserve-dup-lines" type="checkbox"/>
 Keep duplicate lines</label>
-</div>
+</div><p class="small muted">Auto detects the input format. Item level is a fallback for codes without a decoded level.</p></details>
+<label class="bv-input-label" for="bv-input">Serials to check</label>
 <textarea id="bv-input" name="bv-input" placeholder="Paste YAML (serial: @U…), JSON, or one serial per line…"></textarea>
 <div class="row" style="flex-wrap:wrap;align-items:center;">
 <button class="btn btn--brand" id="bv-run" type="button">Validate all</button>
-<button class="btn" id="bv-clear" type="button">Clear</button>
+<button class="btn" id="bv-clear" type="button">Clear input</button>
+</div>
+<details class="bv-options"><summary>Download results</summary>
+<div class="row">
 <label class="small" style="display:inline-flex;align-items:center;gap:6px;margin-left:4px;">
 <input id="bv-export-filtered" name="bv-export-filtered" type="checkbox">
-        Export only rows matching the table filter below
+        Export only items matching the current result filter
       </input></label>
 </div>
 <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;">
-<button class="btn" id="bv-export-json" type="button">Export JSON (report)</button>
-<button class="btn" id="bv-export-csv" type="button">Export CSV</button>
-<button class="btn" id="bv-export-md" type="button">Export Markdown summary</button>
+<button class="btn btn--brand" id="bv-export-readable" type="button">Readable report (.html)</button>
+<button class="btn" id="bv-export-md" type="button">Text summary (.md)</button>
+<button class="btn" id="bv-export-json" type="button">Technical JSON</button>
+<button class="btn" id="bv-export-csv" type="button">Spreadsheet CSV</button>
 </div>
 <div class="row" style="flex-wrap:wrap;gap:8px;margin-top:8px;align-items:center;">
-<button class="btn btn--brand" id="bv-export-legit-txt" title="One @U / serial per line — only OK (data) rows. Safe list for legit-only save inject." type="button">Export OK / legit serials (.txt)</button>
-<button class="btn" id="bv-export-modded-txt" title="One serial per line — everything that is not OK (data): Fail, Uncertain, decode/manifest issues. Use to filter slightly modded loot out of save adds." type="button">Export non-OK / modded serials (.txt)</button>
-<button class="btn" id="bv-export-fail-txt" title="One serial per line — Fail (data) composition hard-fails only (excludes Uncertain)." type="button">Export Fail only (.txt)</button>
-<button class="btn" id="bv-export-ok-drop-modded-txt" title="OK (data) composition but Drop hint is Modded — off shiny pool / editor-looking. Filter these out for strict drop-table saves." type="button">Export OK+drop Modded (.txt)</button>
-<button class="btn btn--brand" id="bv-export-ok-drop-clean-txt" title="OK (data) and Drop hint is not Modded — composition pass + has a shiny/pool path hint." type="button">Export OK + pool hint (.txt)</button>
+<button class="btn btn--brand" id="bv-export-legit-txt" type="button" title="Only items that passed all validation checks.">Export passed serials (.txt)</button>
+<button class="btn" id="bv-export-modded-txt" type="button" title="Modded, unreadable, and unverified items. Not all of these are modded.">Export items needing attention (.txt)</button>
+<button class="btn" id="bv-export-fail-txt" type="button" title="Only items that break a game rule. Unknown and unreadable items are excluded.">Export rule-breaking serials (.txt)</button>
+
+
 </div>
+</details>
 <div class="row" style="align-items:center;gap:10px;flex-wrap:wrap;">
-<div class="bv-status" id="bv-status">Idle. <strong>Natural legitimacy</strong>: OK means the serial can occur in-game (strict slot-map + inv tags + elements/pearl/frame + weights/schedule). Parts outside the item map, unique/licensed conflicts, 0% weight, or below MinGameStage → Fail. Soft uni_/leg_ dep gaps alone stay FYI.</div>
+<div class="bv-status" id="bv-status" role="status" aria-live="polite">Ready. Paste your items and select Validate all.</div>
 <span class="bv-inv-tag-badge" id="bv-inv-tag-badge" style="display:none;" title="add/dependency/exclusion tags + comp basetags from inv extract">Using NCS inv rules</span>
 </div>
 </div>
 <aside class="panel panel--bv-aside">
-<div class="panel__title">How it works</div>
+<details class="bv-help"><summary>What the results mean</summary>
 <ul>
-<li><strong>Decode</strong>: Serials are decoded in this page (same engine as the bulk decoder). Paste <code>@U…</code> lines or deserialized forms.</li>
-<li><strong>OK (data)</strong>: Composition looks naturally possible under our balance rules — close to a strict Balance <em>Pass</em>. Not a promise that a specific boss dropped this exact roll. Quest/vendor/mail gear can still be OK even if Drop hint is empty.</li>
-<li><strong>Fail / Balance Fail (Modded)</strong>: Hard problems such as <em>wrong-root weapon parts</em> (e.g. Ripper parts on a Maliwan gun), <em>exact duplicate</em> part keys in a slot, inv <em>exclusion</em> clashes (incl. unique/licensed), <em>over-max</em> slot counts, element/pearl/frame conflicts, and clear NCS base-map breaches. Shared ClassMod / Shield / Grenade / Enhancement / Weapon pools are allowed.</li>
-<li><strong>FYI (does not Fail by itself)</strong>: Soft <code>uni_</code>/<code>leg_</code> and most other dependency gaps (only missing <code>licensed</code>/<code>unique</code> hard-fail), NCS part-order noise, loot weight 0%, MinGameStage, under-min slot counts, barrel_01/02 structure tags, and most “not in our option list” gaps. Those may still show in Notes.</li>
-<li><strong>Drop hint</strong>: Legendary shiny / pool path hint. <strong>Modded</strong> here is visibility only — it does not flip OK→Fail. Use KPI <em>OK + drop Modded</em> when you want editor/off-pool gear that still passes composition.</li>
-<li><strong>Notes</strong>: Actionable failure lines (exclusions, duplicates, wrong-root, etc.), not the footer stats block.</li>
-<li><strong>Export</strong>: JSON / CSV / Markdown summaries, plus quick lists: OK only, non-OK, Fail only, or OK+drop Modded. Optional “export only rows matching filter.”</li>
+<li><strong style="color:var(--ok)">No modded parts found</strong>: Parts and level pass the game-rule checks.</li>
+<li><strong style="color:var(--warn)">Order issue</strong>: The same parts can satisfy the other checks, but they are written in a different order than the item’s slot list. This alone does not show the item was modded. Firmware is not always last; shields can have parts after it, and a packed number block keeps its written order.</li>
+<li><strong style="color:var(--bad)">Modded</strong>: An impossible part combination or level. The reason tells you which rule failed.</li>
+<li><strong style="color:var(--warn)">Usually unobtainable</strong>: NPC, AI or vehicle equipment may be spawnable even when it is not normally available as player loot. Kept separate from modded-only exports.</li>
+<li><strong>Cannot check / verify</strong>: The result names the missing data or unverified exception. These items are kept out of the passed list.</li>
+<li><strong>Invalid serial</strong>: The code could not be read. Paste the complete code again.</li>
 </ul>
+<p class="small">This checks whether a roll is allowed. A legal roll can also be created in an editor, so serials cannot prove who made an item.</p>
+</details>
 </aside>
 <div class="panel panel--bv-summary" style="grid-column: 1 / -1;">
 <div class="panel__title">Summary</div>
-<p class="small muted" style="margin:0 0 12px;line-height:1.45;">Use <strong>Notes</strong> for the real fail reasons (exclusions, duplicates, wrong-root, etc.). Drop hint is separate from OK/Fail.</p>
-<div class="kpis">
-<div class="kpi" title="Rows in the table for this run (unique serial strings after default dedupe)."><span>Serials <strong id="k-total">0</strong></span></div>
-<div class="kpi" title="Input lines with the same serial text collapsed into one row when deduping. — when Keep duplicate lines is on."><span>Dup lines merged <strong id="k-dup-merged">0</strong></span></div>
-<div class="kpi" title="WASM decode succeeded."><span>Decoded OK <strong id="k-decoded">0</strong></span></div>
-<div class="kpi" title="Passed composition / balance gates."><span>OK (data) <strong id="k-ok">0</strong></span></div>
-<div class="kpi" title="Not OK and not hard-fail (warn / unmapped without Fail, etc.)."><span>Uncertain <strong id="k-warn">0</strong></span></div>
-<div class="kpi" title="Could not parse serial."><span>Decode failed <strong id="k-decode-fail">0</strong></span></div>
-<div class="kpi" title="Decoded but item type not recognized."><span>No manifest <strong id="k-nomanifest">0</strong></span></div>
-<div class="kpi" title="Composition hard-fail (wrong-root, duplicates, exclusions, over-max, elements/pearl/frame, etc.)."><span>Fail (data) <strong id="k-legit-err">0</strong></span></div>
-<div class="kpi" title="Drop hint column says Modded (no legendary shiny pool row). Separate from Fail (data) — composition can still be OK."><span>Drop hint Modded <strong id="k-drop-modded">0</strong></span></div>
-<div class="kpi" title="OK (data) composition but Drop hint is Modded (off shiny pool / not in SOURCE_PATHS)."><span>OK + drop Modded <strong id="k-ok-drop-modded">0</strong></span></div>
+<p class="small muted" style="margin:0 0 12px;line-height:1.45;">Start with the counts below. Select any card to see its items and the reason for each result.</p>
+<p id="bv-result-headline" class="bv-result-headline" role="status" aria-live="polite">Your results will appear here after you select Validate all.</p>
+<div class="kpis kpis--primary" aria-label="Overall results">
+<button type="button" class="kpi " data-result-filter="all" aria-pressed="true"><strong id="k-total">0</strong><span>Total serials</span><small>View all items</small></button>
+<button type="button" class="kpi kpi--ok" data-result-filter="ok" aria-pressed="false"><strong id="k-valid">0</strong><span>Valid</span><small>Passes the checks</small></button>
+<button type="button" class="kpi kpi--warn" data-result-filter="attention" aria-pressed="false"><strong id="k-invalid">0</strong><span>Needs attention</span><small>See each outcome</small></button>
 </div>
-<p class="small muted" id="k-reconcile" style="margin:10px 0 0;line-height:1.5;" title="Each serial is counted in exactly one bucket."></p>
-<details class="bv-kpi-key" style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;border:1px solid var(--line-soft);">
-<summary class="small" style="cursor:pointer;color:var(--accent-cyan-dim);">What do these mean?</summary>
-<dl class="small" style="margin:10px 0 0 16px;line-height:1.6;">
-<dt><strong>Serials</strong></dt>
-<dd>How many rows ran (after default dedupe of identical serial text).</dd>
-<dt><strong>Dup lines merged</strong></dt>
-<dd>How many extra input lines were dropped because they repeated the same serial string. Use <strong>Keep duplicate lines</strong> to validate every line; then this shows —.</dd>
-<dt><strong>Decoded OK</strong></dt>
-<dd>WASM successfully decoded the serial. If this is less than Serials, some input couldn’t be parsed.</dd>
-<dt><strong>OK (data)</strong></dt>
-<dd>Balance / natural composition pass (wrong-root, duplicates, exclusions, over-max, etc. clear). Soft FYI lines may still appear in Notes. Not a guarantee of a specific boss drop.</dd>
-<dt><strong>Uncertain</strong></dt>
-<dd>Decoded but not a clear OK or Fail — often unmapped without a hard critical rule, or warn-state only.</dd>
-<dt><strong>Decode failed</strong></dt>
-<dd>Couldn’t decode — see Notes for the error (corrupt/truncated/@U). Filter “Failures” to find them.</dd>
-<dt><strong>No manifest</strong></dt>
-<dd>Decoded but manufacturer/item type don’t match any known item type we validate.</dd>
-<dt><strong>Fail (data)</strong></dt>
-<dd>Hard composition fail — often labeled <strong>Balance Fail (Modded)</strong> with buckets (Critical Rules, Tag Exclusion, …). Includes wrong-root weapon parts, exact duplicates, exclusion clashes, over-max stacks, element/pearl/frame issues.</dd>
-<dt><strong>Drop hint Modded</strong></dt>
-<dd>No legendary shiny / pool path hint. Common for quests, vendors, mail, or editor items. <strong>Does not by itself change OK/Fail.</strong></dd>
-<dt><strong>OK + drop Modded</strong></dt>
-<dd>Passed composition (OK) but Drop hint is Modded — useful when filtering editor/off-pool gear that still passes balance checks.</dd>
-</dl>
+<details class="bv-options"><summary>Result breakdown</summary>
+<div class="kpis kpis--secondary" aria-label="Result breakdown">
+<button type="button" class="kpi kpi--ok" data-result-filter="ok" aria-pressed="false"><strong id="k-ok">0</strong><span>Pass</span><small>View items</small></button>
+<button type="button" class="kpi kpi--warn" data-result-filter="order" aria-pressed="false"><strong id="k-order">0</strong><span>Order issue</span><small>View items</small></button>
+<button type="button" class="kpi kpi--bad" data-result-filter="prerequisite" aria-pressed="false"><strong id="k-prerequisite">0</strong><span>Prerequisite fail</span><small>View items</small></button>
+<button type="button" class="kpi kpi--bad" data-result-filter="balance" aria-pressed="false"><strong id="k-legit-err">0</strong><span>Balance fail (modded)</span><small>View items</small></button>
+<button type="button" class="kpi kpi--npc" data-result-filter="non_obtainable" aria-pressed="false"><strong id="k-non_obtainable">0</strong><span>Usually unobtainable</span><small>May be spawnable</small></button>
+</div>
 </details>
+<div id="bv-extra-results" class="row" hidden>
+<button type="button" class="btn" data-result-filter="warn">Not checked: <strong id="k-warn">0</strong></button>
+<button type="button" class="btn" data-result-filter="decode">Unreadable codes: <strong id="k-decode-fail">0</strong></button>
+</div>
+<details id="bv-failure-groups" class="bv-failure-groups" hidden></details>
+<p class="small muted" id="k-reconcile" style="margin:10px 0 0;line-height:1.5;" title="Each serial is counted in exactly one bucket."></p>
+
 <div class="row" style="margin-top:14px;">
 <label>Show <select id="bv-filter" name="bv-filter">
 <option value="all">All rows</option>
-<option value="ok">OK / legit only</option>
-<option value="warn">Uncertain only</option>
-<option value="err">Failures / modded only</option>
+<option value="ok">No modded parts found only</option>
+<option value="warn">Needs manual check</option>
+<option value="attention">Needs attention</option><option value="invalid">Rule failures and invalid codes</option><option value="balance">Rule failure (modded)</option><option value="order">Order issue</option><option value="prerequisite">Prerequisite fail</option><option value="non_obtainable">Usually unobtainable</option><option value="decode">Invalid serial format</option>
 </select></label>
 <button class="btn" id="bv-prev" type="button">Previous page</button>
 <button class="btn" id="bv-next" type="button">Next page</button>
@@ -649,17 +723,11 @@ Keep duplicate lines</label>
 <table>
 <thead>
 <tr>
-<th>Serial</th>
-<th>Decode</th>
-<th>Item</th>
-<th>Legit</th>
-<th>Stats</th>
-<th>Drop hint</th>
-<th>Notes (inv tags, NCS, weights, …)</th>
+<th>Items and explanations</th>
 </tr>
 </thead>
 <tbody id="bv-tbody">
-<tr><td class="muted" colspan="7">Paste serials and click Validate all.</td></tr>
+<tr><td class="muted">Paste serials and click Validate all.</td></tr>
 </tbody>
 </table>
 </div>
@@ -673,22 +741,23 @@ window.STX_BULK_CHEAT_AUDIT = true;
 </script>
 <script src="js/stx-wasm-inline.js"></script>
 <script src="js/stx-bulk-decoder-deps.js"></script>
-<script src="js/cc-base85-rebuild.js"></script>
+<script src="js/cc-base85-rebuild.js?v=81h"></script>
+<script src="js/serial-prefix-evidence.js?v=80s"></script>
 <script src="js/stx-nicnl-serial-pack.js"></script>
 <script src="js/stx-go-wasm-polyfill.js"></script>
 <script src="js/stx-parts-db.js"></script>
-<script src="data/stx_dataset.js"></script>
+<script src="data/stx_dataset.js?v=80c"></script>
 <script src="data/stx_dataset_supplement.js"></script>
 <script src="data/stx_raid2_supplement.js"></script>
 <script src="data/part_display_overrides.js"></script>
 <script src="data/part_ref_meta.js"></script>
-<script src="js/stx-bulk-decoder-main.js?v=77n"></script>
+<script src="js/stx-bulk-decoder-main.js?v=81h"></script>
 <script src="js/stx-bulk-decoder-patch-parts-lookup.js"></script>
 <script src="js/stx-bulk-decoder-patch-dataset.js"></script>
 <script src="js/stx-bulk-decoder-patch-classmod-aliases.js"></script>
 <script src="js/stx-bulk-decoder-patch-gap-fill.js?v=77e"></script>
-<script src="js/stx-decode-bridge-shared.js"></script>
-<script src="../legacy/bl4_manifest.js"></script>
+<script src="js/stx-decode-bridge-shared.js?v=81h"></script>
+<script src="../legacy/bl4_manifest.js?v=79d"></script>
 <script src="../legacy/ncs_extra.js"></script>
 <script src="../legacy/ncs_slot_map.js"></script>
 <script src="../legacy/ncs_parts.js"></script>
@@ -698,28 +767,33 @@ window.STX_BULK_CHEAT_AUDIT = true;
 <script src="data/itempoollist_droprows_data.js"></script>
 <script src="data/source_paths_data.js"></script>
 <script src="data/loot_reference_data.js"></script>
-<script src="data/legit_schedule_data.js"></script>
+<script src="data/legit_schedule_data.js?v=80k"></script>
 <script src="data/stx_rarities.js"></script>
 <script src="data/stx_rarities_raid2_patch.js"></script>
 <script src="data/stx_rarities_community_pearl_patch.js"></script>
 <script src="data/stx_rarities_supplement_patch.js"></script>
 <script src="data/classmod_manifest_items.js"></script>
+<script src="data/legit_serial_identity_data.js?v=80c"></script>
+<script src="data/exact_roll_data.js?v=80p"></script>
+<script src="js/exact-roll-validation.js?v=80u"></script>
 <script src="js/cc-item-slug.js?v=77j"></script>
 <script src="js/tag-comp-validation.js"></script>
 <script src="data/inv_comp_tag_data.js"></script>
 <script src="data/inv_comp_slot_rules.js?v=77e"></script>
 <script src="data/inventory_item_catalog.js"></script>
 <script src="data/inv_part_layout_rules.js"></script>
-<script src="js/legit-builder-core.js?v=77f"></script>
-<script src="js/legit-decode-validate.js?v=78"></script>
+<script src="js/legit-builder-core.js?v=80t"></script>
+<script src="js/legit-decode-validate.js?v=80u"></script>
 <script src="js/rebuild-presets-random.js?v=77m"></script>
 <script src="js/cc-stx-decoder-bridge.js"></script>
 <script src="js/cc-itempool-drop-check.js"></script>
-<script src="js/bulk-serial-input-parse.js?v=77g"></script>
-<script src="js/bulk-serial-validator-app.js?v=77e"></script>
+<script src="js/bulk-serial-input-parse.js?v=81h"></script>
+<script src="js/validator-readable-report.js?v=80u"></script>
+<script src="js/bulk-serial-validator-app.js?v=80u"></script>
 <script src="js/cc-toolbox-analytics.js"></script>
 <script src="js/cc-toolbox-items-made.js"></script>
 <script src="js/cc-toolbox-public-counter.js"></script>
+<script src="./js/stx-i18n.js?v=78s" defer></script>
 </body>
 </html>
 

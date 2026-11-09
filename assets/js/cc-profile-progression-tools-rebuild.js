@@ -95,6 +95,7 @@
 
   function getProfileProgressionShared(data, create) {
     if (!data) return null;
+    if (!create) return data.domains && data.domains.local && data.domains.local.progression_shared;
     data.domains = data.domains || {};
     data.domains.local = data.domains.local || {};
     if (create) data.domains.local.progression_shared = data.domains.local.progression_shared || {};

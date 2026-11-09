@@ -52,6 +52,58 @@
     });
   }
 
+  /** `{243:[107 106]}` → `{243:107}` `{243:106}` so slot / rarity checks see ids inside packed runs. */
+  function expandGuidedPackedTokens(tokens) {
+    var out = [];
+    var src = Array.isArray(tokens) ? tokens : [];
+    for (var i = 0; i < src.length; i++) {
+      var t = String(src[i] || '').trim();
+      var m = t.match(/^\{\s*(\d+)\s*:\s*\[([^\]]*)\]\s*\}$/);
+      if (!m) { if (t) out.push(t); continue; }
+      var ids = String(m[2] || '').match(/\d+/g) || [];
+      for (var j = 0; j < ids.length; j++) out.push('{' + Number(m[1]) + ':' + Number(ids[j]) + '}');
+    }
+    return out;
+  }
+
+  /** Compare key where bare `{id}` means the item's own TypeID (so `{7}` and `{269:7}` match on a 269 item). */
+  function guidedCanonTokenKey(tok, baseFam) {
+    var s = String(tok || '').trim();
+    var m = s.match(/^\{\s*(\d+)\s*:\s*(\d+)\s*\}$/);
+    if (m) return Number(m[1]) + ':' + Number(m[2]);
+    m = s.match(/^\{\s*(\d+)\s*\}$/);
+    if (m) return (baseFam != null && Number.isFinite(Number(baseFam)) ? Number(baseFam) : 'base') + ':' + Number(m[1]);
+    return s.replace(/^"+|"+$/g, '').toLowerCase();
+  }
+
+  /**
+   * TypeID 0 does not exist in the game and breaks items. A `{0:id}` only comes from missing family metadata,
+   * so keep it as the item's own `{id}` when that part exists, otherwise drop it.
+   */
+  function stripGuidedZeroTypeTokens(tokens, baseFam) {
+    var src = Array.isArray(tokens) ? tokens : [];
+    var bf = Number(baseFam);
+    var out = [];
+    var keepBareId = function (id) {
+      if (!Number.isFinite(bf) || bf <= 0 || typeof window.tryResolveToken !== 'function') return false;
+      try { return !!window.tryResolveToken('{' + bf + ':' + id + '}'); } catch (_) { return false; }
+    };
+    for (var i = 0; i < src.length; i++) {
+      var t = String(src[i] || '').trim();
+      var m = t.match(/^\{\s*0+(?:\.)?\s*:\s*(?:(\d+)|\[([^\]]*)\])\s*\}$/);
+      if (!m) {
+        // Unknown zero-family forms cannot be repaired safely. Never let them reach a serial.
+        if (!/^\{\s*0+(?:\.)?\s*:/.test(t.replace(/^"+|"+$/g, ''))) out.push(src[i]);
+        continue;
+      }
+      var ids = m[1] != null ? [m[1]] : (String(m[2] || '').match(/\d+/g) || []);
+      for (var j = 0; j < ids.length; j++) {
+        if (keepBareId(Number(ids[j]))) out.push('{' + Number(ids[j]) + '}');
+      }
+    }
+    return out;
+  }
+
   function getGuidedBuilderStateObj() {
     try {
       return window.state || window.__STX_SIMPLE_STATE || null;
@@ -1502,9 +1554,9 @@
       var id = p.id != null ? String(p.id) : (p.itemId != null ? String(p.itemId) : '');
       if (raw && /^\d+\s*:\s*\d+$/.test(raw.replace(/\s+/g, ' '))) {
         var parts = raw.split(':');
-        return '{' + String(parts[0]).trim() + ':' + String(parts[1]).trim() + '}';
+        if (Number(parts[0]) > 0) return '{' + String(parts[0]).trim() + ':' + String(parts[1]).trim() + '}';
       }
-      if (fam && id && /^\d+$/.test(fam) && /^\d+$/.test(id)) return '{' + fam + ':' + id + '}';
+      if (fam && id && /^\d+$/.test(fam) && Number(fam) > 0 && /^\d+$/.test(id)) return '{' + fam + ':' + id + '}';
     }
     if (c) return unwrap(c);
     return '';
@@ -3534,9 +3586,12 @@
     if (baseFamily == null) {
       for (var i = 0; i < tokens.length; i++) {
         baseFamily = getFamilyFromToken(tokens[i]);
-        if (baseFamily != null) break;
+        if (baseFamily != null && baseFamily > 0) break;
+        baseFamily = null;
       }
     }
+    tokens = stripGuidedZeroTypeTokens(tokens, baseFamily);
+    if (!tokens.length) return '';
     if (baseFamily == null) return tokens.join(' ');
     var norm = null;
     if (window.normalizeIdTokensForBaseFamily) {
@@ -3552,6 +3607,10 @@
 
     if (Array.isArray(norm) && guidedCm) {
       try { norm = reorderClassModGuidedTail(norm, baseFamily); } catch (_) {}
+    }
+    /* Rarity first before packing, so a shared-pool rarity (e.g. `{243:107}`) is not folded into a later `{243:[…]}` run. */
+    if (Array.isArray(norm) && norm.length) {
+      try { norm = reorderGuidedTailRarityFirst(norm, baseFamily); } catch (_) {}
     }
 
     if (Array.isArray(norm) && typeof window.compressConsecutiveFamilyRefs === 'function') {
@@ -3589,7 +3648,8 @@
         }
       } catch (_kitOrd) {}
     }
-    return Array.isArray(norm) ? norm.join(' ') : tokens.join(' ');
+    // Normalizers and packers may return tokens from imported or stale dropdown state.
+    return stripGuidedZeroTypeTokens(Array.isArray(norm) ? norm : tokens, baseFamily).join(' ');
   }
 
   /** Move grenade/repkit body tokens to sit right after rarity comps. */
@@ -3695,9 +3755,25 @@
     if (!/\.comp_0[1-6]_/.test(code) && !/(?:^|[._])comp_0[1-6]_/.test(code)) return false;
     if (Number.isFinite(Number(baseFamilyId))) {
       var pf = Number(p.familyId != null ? p.familyId : p.family);
-      if (Number.isFinite(pf) && pf !== Number(baseFamilyId)) return false;
+      /* Shared-pool rarities (Repkit `repair_kit.comp_*` = `{243:107}` …) or ones offered in this item's Rarity ID dropdown. */
+      if (Number.isFinite(pf) && pf !== Number(baseFamilyId)) {
+        if (pf === 243 && /^repair_kit\.comp_0[1-6]_/.test(code)) return true;
+        return guidedRarityDropdownOffersToken(s, baseFamilyId);
+      }
     }
     return true;
+  }
+
+  function guidedRarityDropdownOffersToken(tok, baseFamilyId) {
+    var meta = getGuidedRaritySlotMetaForCurrentItem();
+    var sel = meta && meta.selectId ? byId(meta.selectId) : null;
+    if (!sel || !sel.options) return false;
+    var want = guidedCanonTokenKey(tok, baseFamilyId);
+    for (var i = 0; i < sel.options.length; i++) {
+      var v = String(sel.options[i].value || '').trim();
+      if (v && guidedCanonTokenKey(v, baseFamilyId) === want) return true;
+    }
+    return false;
   }
 
   function getGuidedRaritySlotMetaForCurrentItem() {
@@ -3744,7 +3820,7 @@
 
   function guidedSerialTailHasRarityComp(serial) {
     var baseFam = getBaseFamilyFromSerial(serial);
-    var toks = extractGuidedTailTokens(serial);
+    var toks = expandGuidedPackedTokens(extractGuidedTailTokens(serial));
     for (var i = 0; i < toks.length; i++) {
       if (isGuidedRarityCompToken(toks[i], baseFam)) return true;
     }
@@ -3768,11 +3844,11 @@
     var serial = String(out.value || '').trim();
     if (serial && guidedSerialTailHasRarityComp(serial)) {
       var baseFam = getBaseFamilyFromSerial(serial);
-      var wantKey = normTailTokenKey(tok);
-      var toks = extractGuidedTailTokens(serial);
+      var wantKey = guidedCanonTokenKey(tok, baseFam);
+      var toks = expandGuidedPackedTokens(extractGuidedTailTokens(serial));
       var already = false;
       for (var i = 0; i < toks.length; i++) {
-        if (normTailTokenKey(toks[i]) === wantKey) { already = true; break; }
+        if (guidedCanonTokenKey(toks[i], baseFam) === wantKey) { already = true; break; }
         if (isGuidedRarityCompToken(toks[i], baseFam)) {
           var p = resolveGuidedTailTokenPart(toks[i], baseFam);
           var sel = getSelectedGuidedRarityPart();
@@ -3995,9 +4071,21 @@
     }
     var p = resolveGuidedTailTokenPart(tok, baseFamilyId);
     if (!p) return false;
-    /* Prefer NCS slot matchers so Mag Acc / Borg Mag / Underbarrel Acc are not wiped with the main slot. */
+    /* Weapon slot matchers answer true for any non-weapon part, so on gear they would wipe the whole tail. */
+    var itemTypeForSlots = '';
+    try { itemTypeForSlots = normalizeGuidedItemTypeForGear(String((getGuidedState() || {}).itemType || '')); } catch (_) {}
+    var isGearItem = !!itemTypeForSlots && itemTypeForSlots !== 'Weapon' && itemTypeForSlots !== 'Heavy Weapon'
+      && !/^(assault rifle|pistol|smg|shotgun|sniper rifle|sniper)$/i.test(itemTypeForSlots);
+    if (isGearItem) {
+      var wantGear = String(slotMeta.partType || '').trim();
+      return !!wantGear && String(p.partType || '').trim().toLowerCase() === wantGear.toLowerCase();
+    }
+    /* Prefer NCS slot matchers so Mag Acc / Borg Mag / Underbarrel Acc are not wiped with the main slot.
+       Only for keys it really knows: for any other key it returns true (dropdown "no filter"), which here
+       would make Body / Grip / Element Switch / Foregrip picks wipe the whole tail. */
     var slotKey = String(slotMeta.key || '');
-    if (slotKey && typeof window.stxWeaponSlotPartMatch === 'function') {
+    var weaponMatcherKnowsKey = /^(mag|magazine|magazineAcc|magazineBorg|barrel|barrelAcc|scope|scopeAcc|underbarrel|underbarrelAcc|underbarrelAccVis)$/.test(slotKey);
+    if (weaponMatcherKnowsKey && typeof window.stxWeaponSlotPartMatch === 'function') {
       try {
         if (window.stxWeaponSlotPartMatch(slotKey, p)) return true;
         /* Explicit non-match when a fine matcher exists for this key family. */
@@ -4007,7 +4095,9 @@
       } catch (_) {}
     }
     var ncs = String(slotMeta.ncsSlot || '').trim();
-    if (ncs && typeof window.weaponPartMatchesNcsSlot === 'function') {
+    /* Same rule: `body`, `body_acc` and unknown NCS slots match almost anything there; use partType instead. */
+    var ncsMatcherIsSpecific = /^(hyperion_secondary_acc|magazine_ted_thrown|magazine_borg|magazine_acc|barrel|barrel_acc|scope|scope_acc|underbarrel|secondary_ammo|barrel_licensed|body_mag|underbarrel_acc|underbarrel_acc_vis|body_ele|body_bolt|secondary_ele|pearl_elem|pearl_stat|tediore_acc|tediore_secondary_acc)$/.test(ncs);
+    if (ncs && ncsMatcherIsSpecific && typeof window.weaponPartMatchesNcsSlot === 'function') {
       try {
         if (window.weaponPartMatchesNcsSlot(p, ncs)) return true;
         if (/^(magazine|magazine_acc|magazine_borg|barrel|barrel_acc|scope|scope_acc|underbarrel|underbarrel_acc|body|body_acc)$/.test(ncs)) {
@@ -4067,27 +4157,52 @@
     var newKey = normTailTokenKey(newToken);
     var prevKeys = collectSlotReplaceTokenKeys(slotMeta, serialBefore);
     var replacingRarity = !!(replaceRarity || (slotMeta && slotMeta.key === 'rarity'));
-    return tokens.filter(function (t) {
-      var tk = normTailTokenKey(t);
-      if (replacingRarity) {
-        /* Only strip real rarity-id / comp rows — bare `{id}` body/perk tokens must stay. */
-        if (isGuidedRarityCompToken(t, baseFam)) return false;
-        for (var ri = 0; ri < prevKeys.length; ri++) {
-          if (tk === prevKeys[ri]) return false;
-        }
-        return true;
-      }
-      for (var i = 0; i < prevKeys.length; i++) {
-        if (tk === prevKeys[i]) return false;
-      }
-      return !tokenMatchesGuidedSlotPartType(t, slotMeta, baseFam);
+    var prevCanon = prevKeys.map(function (k) {
+      var m = String(k).match(/^(\d+):(\d+)$/);
+      if (m) return Number(m[1]) + ':' + Number(m[2]);
+      m = String(k).match(/^s:(\d+)$/);
+      if (m) return guidedCanonTokenKey('{' + m[1] + '}', baseFam);
+      return String(k).toLowerCase();
     });
+    var keep = function (t) {
+      var tk = guidedCanonTokenKey(t, baseFam);
+      for (var i = 0; i < prevCanon.length; i++) {
+        if (tk === prevCanon[i]) return false;
+      }
+      /* Rarity: only strip real rarity-id / comp rows — bare `{id}` body/perk tokens must stay. */
+      if (replacingRarity) return !isGuidedRarityCompToken(t, baseFam);
+      return !tokenMatchesGuidedSlotPartType(t, slotMeta, baseFam);
+    };
+    var out = [];
+    for (var ti = 0; ti < tokens.length; ti++) {
+      var t = tokens[ti];
+      var pk = String(t || '').trim().match(/^\{\s*(\d+)\s*:\s*\[([^\]]*)\]\s*\}$/);
+      if (!pk) {
+        if (keep(t)) out.push(t);
+        continue;
+      }
+      /* Packed run: drop only the ids that belong to this slot. */
+      var fam = Number(pk[1]);
+      var ids = String(pk[2] || '').match(/\d+/g) || [];
+      var left = ids.filter(function (id) { return keep('{' + fam + ':' + Number(id) + '}'); });
+      if (left.length === ids.length) out.push(t);
+      else if (left.length === 1) out.push('{' + fam + ':' + left[0] + '}');
+      else if (left.length > 1) out.push('{' + fam + ':[' + left.join(' ') + ']}');
+    }
+    return out;
   }
 
   function syncGuidedSlotStateAfterTailEdit(slotMeta, newTokenRaw, forceStack) {
     if (!slotMeta || typeof window.tryResolveToken !== 'function') return;
     var part = null;
     try { part = window.tryResolveToken(String(newTokenRaw || '').trim()); } catch (_) {}
+    if (!part) {
+      /* Bare `{id}` = the item's own TypeID; resolve it so the slot remembers its part (and replaces it next time). */
+      try {
+        var outSync = byId('guidedOutputDeserialized') || getActiveTailOutputEl();
+        part = resolveGuidedTailTokenPart(newTokenRaw, getBaseFamilyFromSerial(outSync ? outSync.value : ''));
+      } catch (_) {}
+    }
     if (!part) return;
     var st = getGuidedBuilderStateObj();
     if (!st) return;
@@ -4103,6 +4218,12 @@
   }
 
   function appendToOutCode(token, forceTarget, replaceRarity, slotMeta, forceStack, quantity) {
+    var guidedOut = byId('guidedOutputDeserialized');
+    var safeBaseFamily = getBaseFamilyFromSerial(String((guidedOut && guidedOut.value) || ''));
+    if (safeBaseFamily == null) safeBaseFamily = getBaseFamilyFromPrefix(computeGuidedPrefixSafe());
+    var safeToken = stripGuidedZeroTypeTokens([String(token || '').trim()], safeBaseFamily);
+    if (!safeToken.length) return;
+    token = safeToken[0];
     var qty = Math.max(1, Math.min(999, Number(quantity) || 1));
     /* Intentional stacks must never divert to Simple replace-only placement. */
     if (!forceTarget && !forceStack && qty === 1 && !shouldEditGuidedTailDirectly() && typeof window.stxAppendPresetToActiveBuilder === 'function') {
@@ -4186,11 +4307,12 @@
     var skinTokens = [];
     var camoTokens = [];
     var otherTokens = [];
+    var baseFamForSkin = getBaseFamilyFromSerial(serial);
     for (var i = 0; i < tokens.length; i++) {
       var t = tokens[i];
       if (/^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/i.test(String(t).trim())) {
         camoTokens.push(t);
-      } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(t)) {
+      } else if (guidedTailTokenIsSkin(t, baseFamForSkin)) {
         skinTokens.push(t);
       } else {
         otherTokens.push(t);
@@ -4227,7 +4349,7 @@
     for (var qi = 0; qi < pushCount; qi++) {
       if (/^\|\s*["']?c["']?\s*,\s*\d+\s*\|$/i.test(String(newToken).trim())) {
         camoTokens.push(newToken);
-      } else if (typeof window.isSkinTokenCandidate === 'function' && window.isSkinTokenCandidate(newToken)) {
+      } else if (guidedTailTokenIsSkin(newToken, baseFamForSkin)) {
         skinTokens.push(newToken);
       } else {
         otherTokens.push(newToken);
@@ -4265,6 +4387,20 @@
     } catch (_) {}
     deferGuidedTailEditSideEffects();
   }
+  /**
+   * Simple's `isSkinTokenCandidate` treats every packed `{fam:[…]}` as a skin mixer, which floated packed gear
+   * runs (e.g. Repkit `{243:[106 102]}`) ahead of rarity/body. Packed runs of real non-cosmetic parts are not skins.
+   */
+  function guidedTailTokenIsSkin(tok, baseFam) {
+    if (typeof window.isSkinTokenCandidate !== 'function' || !window.isSkinTokenCandidate(tok)) return false;
+    if (!/^\{\s*\d+\s*:\s*\[/.test(String(tok || '').trim())) return true;
+    var first = expandGuidedPackedTokens([tok])[0];
+    var p = first ? resolveGuidedTailTokenPart(first, baseFam) : null;
+    if (!p) return true;
+    var lo = (String(p.partType || '') + ' ' + guidedSpawnCodeLo(p) + ' ' + String(p.category || '')).toLowerCase();
+    return /skin|cosmetic/.test(lo);
+  }
+
   /** Tools / rebuild quick-add paths call `window.appendToOutCode`; delegate here when target is Guided output. */
   try { window.appendToOutCodeGuided = appendToOutCode; } catch (_) {}
 
@@ -4577,7 +4713,7 @@
           }
           if (!picked && part) {
             var rraw = String((part.idRaw || part.idraw || '')).trim();
-            if (/^\d+\s*:\s*\d+$/.test(rraw)) picked = '{' + rraw.replace(/\s+/g, '') + '}';
+            if (/^\d+\s*:\s*\d+$/.test(rraw) && Number(rraw.split(':')[0]) > 0) picked = '{' + rraw.replace(/\s+/g, '') + '}';
           }
           if (!picked && part) picked = String((part.code || part.spawnCode || '')).trim();
           if (picked) setGuidedSelectByToken(slot.selectId, picked);
@@ -4613,7 +4749,7 @@
           }
           if (!picked) {
             var raw = String((part.idRaw || part.idraw || '')).trim();
-            if (/^\d+\s*:\s*\d+$/.test(raw)) picked = '{' + raw.replace(/\s+/g, '') + '}';
+            if (/^\d+\s*:\s*\d+$/.test(raw) && Number(raw.split(':')[0]) > 0) picked = '{' + raw.replace(/\s+/g, '') + '}';
           }
           if (!picked) picked = String((part.code || part.spawnCode || '')).trim();
         }
@@ -4796,6 +4932,9 @@
     var it = String(st.itemType).toLowerCase();
     if (it === 'heavy') it = 'heavy weapon';
     if (it !== 'weapon' && it !== 'heavy weapon') return;
+    /* The weapon slot list depends on manufacturer / weapon type; wire slots that were not in the list at startup
+       (Stat Mod, Legendary, Firmware, Additional) so their first pick is added too. Wiring is idempotent. */
+    try { wireWeaponAddButtons(); } catch (_w) {}
     var unlockSig = '';
     try {
       var _usk = Object.keys(WEAPON_SLOT_UI);
@@ -5168,13 +5307,30 @@
     return false;
   }
 
+  /**
+   * True only when this slot's part is really in the current serial. Slot state alone can be stale
+   * (token removed, other item type, Simple carry-over) and would swallow the first dropdown pick.
+   */
   function guidedSlotHasParts(slot) {
     if (!slot) return false;
     var st = getGuidedBuilderStateObj();
     if (!st || !st.slots) return false;
     var cur = st.slots[slot.key];
-    if (Array.isArray(cur)) return cur.length > 0;
-    return !!cur;
+    var list = Array.isArray(cur) ? cur : (cur ? [cur] : []);
+    if (!list.length) return false;
+    var out = byId('guidedOutputDeserialized') || getActiveTailOutputEl();
+    var serial = out ? String(out.value || '').trim() : '';
+    if (serial.indexOf('||') < 0) return false;
+    var baseFam = getBaseFamilyFromSerial(serial);
+    var have = Object.create(null);
+    var toks = expandGuidedPackedTokens(extractGuidedTailTokens(serial));
+    for (var i = 0; i < toks.length; i++) have[guidedCanonTokenKey(toks[i], baseFam)] = true;
+    for (var j = 0; j < list.length; j++) {
+      var tok = '';
+      try { tok = typeof window.tokenForPart === 'function' ? String(window.tokenForPart(list[j]) || '') : ''; } catch (_) { tok = ''; }
+      if (tok && have[guidedCanonTokenKey(tok, baseFam)]) return true;
+    }
+    return false;
   }
 
   /** First selection writes/replaces the part. Add button always stacks (except rarity). */
@@ -5889,17 +6045,21 @@
     if (weaponTypeWrap) weaponTypeWrap.style.display = isWeapon ? '' : 'none';
 
     if (manLabel && manSel) {
+      var _t = typeof window.stxT === 'function' ? window.stxT : function (k) { return k; };
       if (itemType === 'Class Mod') {
-        manLabel.textContent = 'Character';
-        if (manSel.options.length && manSel.options[0]) manSel.options[0].text = 'Select character...';
+        manLabel.textContent = _t('label.character');
+        manLabel.setAttribute('data-i18n', 'label.character');
+        if (manSel.options.length && manSel.options[0]) manSel.options[0].text = _t('ph.selectCharacter');
         manSel.disabled = false;
       } else if (itemType === 'Enhancement') {
-        manLabel.textContent = 'Choose below';
-        manSel.innerHTML = '<option value="">Choose below</option>';
+        manLabel.textContent = _t('label.chooseBelow');
+        manLabel.setAttribute('data-i18n', 'label.chooseBelow');
+        manSel.innerHTML = '<option value="">' + _t('ph.chooseBelow') + '</option>';
         manSel.disabled = true;
       } else {
-        manLabel.textContent = 'Manufacturer';
-        if (manSel.options.length && manSel.options[0]) manSel.options[0].text = 'Select manufacturer...';
+        manLabel.textContent = _t('label.manufacturer');
+        manLabel.setAttribute('data-i18n', 'label.manufacturer');
+        if (manSel.options.length && manSel.options[0]) manSel.options[0].text = _t('ph.selectManufacturer');
         manSel.disabled = false;
       }
     }
@@ -5912,6 +6072,12 @@
     }
   }
   window.syncGuidedVisibilityLayoutOnly = syncGuidedVisibilityLayoutOnly;
+  try {
+    window.addEventListener('stx:ui-lang', function () {
+      try { if (typeof syncGuidedVisibilityLayoutOnly === 'function') syncGuidedVisibilityLayoutOnly(); } catch (_e) {}
+    });
+  } catch (_e) {}
+
 
   function syncGuidedVisibility() {
     syncGuidedVisibilityLayoutOnly();

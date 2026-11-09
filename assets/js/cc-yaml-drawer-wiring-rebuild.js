@@ -30,7 +30,14 @@
   var __yamlKindCacheText = '';
   var __yamlKindCache = 'unknown';
 
-  window.setYamlText = function (text) {
+  var pendingFieldEdits = new Set();
+  function clearPendingFieldEdits() { pendingFieldEdits.clear(); }
+  document.addEventListener('input', function (event) {
+    var el = event.target;
+    if (el && /^yaml-/.test(el.id || '') && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) pendingFieldEdits.add(el.id);
+  });
+  window.setYamlText = function (text, opts) {
+    if (!opts || !opts.preserveFields) clearPendingFieldEdits();
     invalidateYamlParseCache();
     var el = yamlTextarea();
     if (el) el.value = text;
@@ -302,6 +309,11 @@
   };
 
   window.syncYamlToFields = function () {
+    var pending = [];
+    pendingFieldEdits.forEach(function (id) {
+      var el = byId(id);
+      if (el) pending.push({ el: el, value: el.value });
+    });
     var t = window.getYamlText();
     var text = (t && t.text) || '';
     if (!text || !text.trim()) {
@@ -320,6 +332,10 @@
     try {
       var data = window.getYamlDataFromEditor();
       if (!data) return;
+      ['yaml-char-name', 'yaml-char-level', 'yaml-char-xp', 'yaml-spec-level', 'yaml-spec-points', 'yaml-cash', 'yaml-eridium', 'yaml-vh-level-unlocked', 'yaml-profile-vh-unlocked', 'yaml-profile-vh-current', 'yaml-profile-echotoken-points'].forEach(function (id) {
+        var el = byId(id);
+        if (el) el.value = '';
+      });
       var levelEl = byId('yaml-char-level');
       var xpEl = byId('yaml-char-xp');
       var specLevelEl = byId('yaml-spec-level');
@@ -469,6 +485,10 @@
         if (achTaClear) achTaClear.value = '';
       }
     } catch (_e) {}
+    finally {
+      pending.forEach(function (edit) { edit.el.value = edit.value; });
+      updateButtons();
+    }
   };
   var syncFieldsTimer = null;
   window.scheduleSyncYamlToFields = function (delay) {
@@ -550,6 +570,7 @@
   window.applyYAMLStatsChanges = function () {
     var data = window.getYamlDataFromEditor();
     if (!data) return alert('Load or paste a YAML file first.');
+    if (detectYamlKind(window.getYamlText().text) !== 'character') return;
     var levelEl = byId('yaml-char-level');
     var xpEl = byId('yaml-char-xp');
     var specLevelEl = byId('yaml-spec-level');
@@ -568,8 +589,13 @@
       for (var i = 0; i < data.state.experience.length; i++) {
         var e = data.state.experience[i];
         if (e && String(e.type || '').toLowerCase() === 'character') {
-          if (levelEl && levelEl.value.trim() !== '') { e.level = parseInt(levelEl.value, 10) || e.level; }
-          if (xpEl && xpEl.value.trim() !== '') { e.points = parseInt(xpEl.value, 10) || e.points; }
+          var newLevel = parseOptionalInt(levelEl);
+          var newXp = parseOptionalInt(xpEl);
+          if (newLevel != null && newLevel !== e.level && typeof window.getCharacterCumulativeXpForLevel === 'function' && (newXp == null || String(newXp) === String(e.points))) {
+            e.points = window.getCharacterCumulativeXpForLevel(newLevel);
+            if (xpEl) xpEl.value = String(e.points);
+          } else if (newXp != null) e.points = newXp;
+          if (newLevel != null) e.level = Math.max(1, Math.min(70, newLevel));
         }
         if (e && String(e.type || '').toLowerCase().indexOf('special') !== -1 && specLevelEl && specLevelEl.value.trim() !== '') {
           e.level = parseInt(specLevelEl.value, 10) || e.level;
@@ -598,10 +624,11 @@
       data.globals.vault_hunter_level = clampVaultHunterLevel(parseInt(vhCurEl.value, 10));
     }
     if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
+    clearPendingFieldEdits();
   };
 
   function parseOptionalInt(el) {
-    if (!el || el.value.trim() === '') return null;
+    if (!el || el.disabled || el.value.trim() === '') return null;
     var n = parseInt(el.value, 10);
     return Number.isFinite(n) ? n : null;
   }
@@ -748,6 +775,7 @@
       }
     }
     if (typeof window.commitYamlDataToEditor === 'function') window.commitYamlDataToEditor(data);
+    clearPendingFieldEdits();
   };
   function detectYamlKind(text) {
     var t = String(text || '').replace(/^\uFEFF/, '');
@@ -762,7 +790,8 @@
       /profile_guid\s*:/i.test(t) ||
       /(^|\n)\s*bank\s*:/m.test(t);
     var kind = 'unknown';
-    if (hasRootState && !hasDomains) kind = 'character';
+    var hasEmptyRootState = /^state\s*:\s*(?:\{\}|null|~)\s*$/m.test(t);
+    if (hasRootState && !(hasDomains && hasEmptyRootState)) kind = 'character';
     else if (hasDomains || hasProfileHints) kind = 'profile';
     else if (hasRootState) kind = 'character';
     /* Ambiguous / tiny files only: confirm with jsyaml (never on multi‑MB banks). */
@@ -789,10 +818,19 @@
     return kind;
   }
   window.detectYamlSaveKind = detectYamlKind;
+  window.flushYamlFieldChanges = function () {
+    // Apply the matching form before exports and inventory commits can refresh it.
+    updateButtons();
+    window.syncYamlToFields();
+    var kind = detectYamlKind(getActiveYamlText());
+    if (kind === 'profile') window.applyProfileYamlFieldChanges();
+    else if (kind === 'character') window.applyYAMLStatsChanges();
+    clearPendingFieldEdits();
+  };
   function updateButtons() {
     var text = getActiveYamlText();
     var kind = detectYamlKind(text);
-    var buttons = document.querySelectorAll('button[data-requires]');
+    var buttons = document.querySelectorAll('[data-requires]');
     buttons.forEach(function (btn) {
       var req = btn.getAttribute('data-requires') || 'character';
       var ok = false;
@@ -803,6 +841,9 @@
         else ok = true;
       }
       btn.disabled = !ok;
+      btn.setAttribute('aria-disabled', String(!ok));
+      btn.style.opacity = ok ? '' : '0.4';
+      btn.style.filter = ok ? '' : 'grayscale(1)';
     });
     var banner = byId('ccYamlKindBanner');
     if (banner) {
@@ -822,7 +863,13 @@
     }
     if (typeof window.updateYamlInjectButtons === 'function') window.updateYamlInjectButtons();
     var profTools = byId('ccProfileYamlTools');
-    if (profTools) profTools.style.display = kind === 'profile' ? 'block' : 'none';
+    if (profTools) {
+      profTools.style.display = 'block';
+      profTools.style.opacity = kind === 'profile' ? '' : '0.4';
+      profTools.querySelectorAll('input, select, textarea, button').forEach(function (el) {
+        el.disabled = kind !== 'profile';
+      });
+    }
   }
   window.__updatePresetButtonsAvailability = updateButtons;
   function boolIcon(ok) { return ok ? '&#x2713;' : '&#x2717;'; }
@@ -900,7 +947,7 @@
     if (!syncFn) return;
     var ta1 = byId('yamlInput');
     var ta2 = byId('fullYamlInput');
-    function onYamlEdit() { syncFn(); }
+    function onYamlEdit() { clearPendingFieldEdits(); syncFn(); }
     if (ta1 && ta1.dataset.ccYamlSyncWired !== '1') {
       ta1.dataset.ccYamlSyncWired = '1';
       ta1.addEventListener('input', onYamlEdit);

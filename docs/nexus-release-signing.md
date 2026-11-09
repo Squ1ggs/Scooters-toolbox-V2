@@ -28,5 +28,6 @@ Get-AuthenticodeSignature ".\dist\Scooters Toolbox-2.5.12-win-x64.exe" | Format-
 - Upload the generated `.zip` as the preferred Nexus file when possible.
 - Keep the portable `.exe` available as an alternate/manual file if users want one.
 - Include the source repo/link, changelog, SHA256 hashes, and VirusTotal link in the mod page.
+- Paste the live mod description from [`nexus-mod-description.md`](nexus-mod-description.md) (site: scooterstoolbox.com, Discord: https://discord.com/invite/DqetrAK2sJ).
 - Avoid packers/obfuscators/UPX. The build should stay transparent.
 - The desktop build disables remote telemetry/counters and remote serialization fallback.
